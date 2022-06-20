@@ -1,0 +1,11 @@
+.login-page{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center !important;
+    height: 50vh;
+}
+
+.login-page h3 {
+    padding-bottom: 2rem;
+}
