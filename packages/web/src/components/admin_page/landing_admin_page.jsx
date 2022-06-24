@@ -1,32 +1,46 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
 import "./admin.css";
-import {useState} from "react";
-import { hasSelectionSupport } from "@testing-library/user-event/dist/utils";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"
 
 const LandingAdminPage = () => {
-  const [user, setUser] = useState("");
-  const [pwd, setPwd] = useState("");
-  const [success, setSuccess] = useState(false);
+  const history = useNavigate() 
 
-  const handleInputChange = (e) => hasSelectionSupport(e.target.value);
+  const [formState, setFormState] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleInputChange = (e) => {
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+
+    setFormState({
+      ...formState,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = (event) => {
-    let admin = {
-        username: user,
-        password: pwd
-    }
-
-    axios.post("http://127.0.0.1:8000/api/login", admin)
-    .then((res)=>{
-        console.log(res.status);
-        setSuccess(true)
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:8000/api/login",
+      headers:{},
+      data:{...formState}
     })
-    .catch((err)=>{
-        console.log(err)
-        setSuccess(false)
+    .then((res) => {
+      localStorage.setItem('auth_token', res.data.data.auth_token)
+      history('/')
     })
-  }
+    .catch((err) => {
+      // console.log({...formState});
+      // console.log(err);
+      console.log("Error logging in")
+    })
+  };
 
   return (
     <div className="login-page">
@@ -34,18 +48,28 @@ const LandingAdminPage = () => {
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>User</Form.Label>
-          <Form.Control type="email" placeholder="Enter default user" value={user} onChange={handleInputChange} />
+          <Form.Control
+            type="text"
+            name="username"
+            placeholder="Enter default user"
+            onChange={handleInputChange}
+          />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" value={pwd} onChange={handleInputChange}/>
+          <Form.Control
+            name="password"
+            type="password"
+            onChange={handleInputChange}
+          />
         </Form.Group>
-        <Button variant="primary" type="submit" onClick={()=>{
+        <Button
+          variant="primary"
+          type="button"
+          onClick={() => {
             handleSubmit()
-            if(success === true){
-                console.log("logged in");
-            }
-        }}>
+          }}
+        >
           Submit
         </Button>
       </Form>
