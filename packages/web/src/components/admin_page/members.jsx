@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
@@ -18,7 +18,7 @@ const Members = () => {
   }
 
   const [loading, setLoading] = useState(true);
-  const [members, setMembers] = useState([{}])
+  const [members, setMembers] = useState([{}]);
 
   const getMembers = () => {
     axios({
@@ -26,45 +26,39 @@ const Members = () => {
       url: "http://127.0.0.1:8000/api/members",
     })
       .then((res) => {
-        setLoading(false);
-        setMembers(res.data.data.data)
+        setMembers(res.data.data.data);
+        setLoading(false)
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  getMembers()
+  useEffect(()=>{
+    getMembers()
+  }, [])
 
+  console.log("RENDER")
 
   if (state_of_validated) {
-    if (loading) {
-      return <h3>Awaiting data!</h3>;
+    if(loading){
+      return <h3>Fetching data!</h3>
     } else {
-      return (
-        <div className="members-div">
-          {
-            members[0].firstname
-          }
-          {/* <RenderMembers members={members} /> */}
-        </div>
-      );
+      return <RenderMembers members={members}/>
     }
   } else {
-    return (
-      <div className="client-not-validated">
-        <div>
-          <h3>Client is not validated</h3>
-          <Button
-            onClick={() => {
-              history("/admin/");
-            }}
-          >
-            Return to login page
-          </Button>
-        </div>
+    <div className="client-not-validated">
+      <div>
+        <h3>Client is not validated</h3>
+        <Button
+          onClick={() => {
+            history("/admin/");
+          }}
+        >
+          Return to login page
+        </Button>
       </div>
-    );
+    </div>;
   }
 };
 

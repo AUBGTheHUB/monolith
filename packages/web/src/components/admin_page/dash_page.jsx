@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Dash = (validated) => {
   const history = useNavigate();
+  console.log("First dashboard!");
   return (
     <div className="dash">
       <div className="dash-box">

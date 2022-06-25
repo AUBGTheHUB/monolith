@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 
 const LandingAdminPage = () => {
   const history = useNavigate() 
+  // console.log("Welcome to the login page!");
 
   const [formState, setFormState] = useState({
     username: "",
@@ -24,7 +25,7 @@ const LandingAdminPage = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = () => {
     axios({
       method: "post",
       url: "http://127.0.0.1:8000/api/login",
@@ -33,6 +34,7 @@ const LandingAdminPage = () => {
     })
     .then((res) => {
       localStorage.setItem('auth_token', res.data.data.auth_token)
+      console.log("Logged in!");
       history('/admin/dashboard')
     })
     .catch((err) => {
