@@ -33,7 +33,7 @@ const LandingAdminPage = () => {
     })
     .then((res) => {
       localStorage.setItem('auth_token', res.data.data.auth_token)
-      history('/')
+      history('/admin/dashboard')
     })
     .catch((err) => {
       // console.log({...formState});

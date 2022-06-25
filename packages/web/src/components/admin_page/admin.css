@@ -1,3 +1,4 @@
+/* login form css */
 .login-page{
     display: flex;
     flex-direction: column;
@@ -6,6 +7,40 @@
     height: 50vh;
 }
 
+/* login form css */
 .login-page h3 {
     padding-bottom: 2rem;
+}
+
+/* client not validated response css */
+.client-not-validated{
+    display: flex;
+    height: 50vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* dashboard */
+.dash{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.dash-box {
+    display: flex;
+    flex-direction: row;
+}
+
+/* members page */
+.members-div{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
