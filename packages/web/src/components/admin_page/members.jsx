@@ -23,7 +23,7 @@ const Members = () => {
   // Important
   // The GET request and the whole logic behind the code triggers multiple rerenders >2 when in strict mode
   // Two rerenders in normal mode
-  // This code can be heavily optimized but as of now, it does not trigger any heavy duty issues
+  // This code can be heavily optimized but as of now, it does not cause any heavy duty issues
 
   const getMembers = () => {
     axios({

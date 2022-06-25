@@ -44,3 +44,19 @@
     justify-content: center;
     align-items: center;
 }
+
+.members-box{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 80vw;
+    margin-left: 10vw;
+}
+
+.member-card{
+    margin: 0.5rem;
+}
+
+.linkedin-button{
+    margin-right: 0.25rem;
+}
