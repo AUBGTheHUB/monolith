@@ -1,9 +1,15 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const RenderMembers = (members) => {
   // console.log(members.members[0]["firstname"]);
+  const history = useNavigate();
   return (
+  <div className="members-box-add-button">
+    <Button variant="primary" onClick={()=>{
+      history("/admin/dashboard/members/add")
+    }}>Add Member</Button>
     <div className="members-box">
       {members.members.map((person, index) => (
         <Card style={{ width: "18rem" }} key={index} className="member-card">
@@ -41,6 +47,12 @@ const RenderMembers = (members) => {
             <Button
               variant="primary"
               onClick={() => {
+                history("/admin/dashboard/members/actions", {
+                  state: {
+                    member_data: members.members[index],
+                    memberid: members.members[index]["memberid"]
+                  }
+                })
                 console.log(members.members[index]["memberid"]);
               }}
             >
@@ -50,6 +62,7 @@ const RenderMembers = (members) => {
         </Card>
       ))}
     </div>
+  </div>
   );
   // return <h1>Hello, {members.members[0]["firstname"]}!</h1>
 };

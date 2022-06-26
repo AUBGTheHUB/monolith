@@ -52,6 +52,7 @@ const Members = () => {
       return <RenderMembers members={members}/>
     }
   } else {
+    return(
     <div className="client-not-validated">
       <div>
         <h3>Client is not validated</h3>
@@ -63,7 +64,7 @@ const Members = () => {
           Return to login page
         </Button>
       </div>
-    </div>;
+    </div>);
   }
 };
 
