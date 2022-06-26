@@ -3,12 +3,16 @@ import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const AddMember = () => {
   const history = useNavigate();
+  const location = useLocation();
+  let new_member_id = parseInt(location.state.new_member_id) + 1
+  new_member_id = new_member_id.toString();
 
   const [formState, setFormState] = useState({
-    memberid: "",
+    memberid: new_member_id,
     firstname: "",
     lastname: "",
     department: "",
@@ -53,7 +57,8 @@ const AddMember = () => {
             type="text"
             placeholder="last memberid++"
             name="memberid"
-            onChange={handleInputChange}
+            value={new_member_id}
+            readOnly
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicText">
