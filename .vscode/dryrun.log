@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/mihail/go/src/spa-website-2022'
-cd ./packages/web/ && npm install &&\
-
-make: Leaving directory '/home/mihail/go/src/spa-website-2022'
- 
