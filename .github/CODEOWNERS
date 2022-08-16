@@ -1,0 +1,5 @@
+* @AUBGTheHUB/nosyncdev
+
+/packages/api/** @asynchroza
+
+/packages/web/src/components/admin_page/** @asynchroza

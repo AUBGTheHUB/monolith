@@ -1,1 +1,75 @@
-# spa-website-2022
+# @AUBGTheHUB's Single-Page Application
+
+## How to run the project
+---
+
+### Backend
+* Installation: 
+```shell
+# 1. install go - https://go.dev/doc/install
+# 2. git clone the repo in go/src
+# 3. download the .env file from Google Drive and place it in root/packages/api
+```
+
+* Run:
+```shell
+cd root/packages/api
+go run main.go
+```
+
+
+### Frontend 
+* Installation: 
+```shell
+# update node to 16.16.0
+cd root/packages/web
+npm install
+```
+
+* Run:
+```shell
+cd root/packages/web
+npm start
+```
+
+--- 
+## Directory structure
+```
+.
+└── packages
+    │   └── api
+    │       ├── controllers
+    │       ├── models
+    │       ├── configs
+    │       ├── responses
+    │       └── routes
+    └── web
+        ├── public
+        └── src
+```
+---
+## How to work on a feature and open a Pull Request?
+1. Choose an issue you want to work on (e.g. [#11 - Optimizations](https://github.com/AUBGTheHUB/spa-website-2022/issues/11))
+2. Create a new branch by running the following command:
+```shell
+git checkout -b "#11-Optimizations"
+```
+3. When commiting, place the issue number at the beginning of the commit message
+```shell
+git add .                               # be careful if something important is not gitignored
+git commit -m "#11 Added new feature"
+```
+4. Push your updates to the remote branch 
+```
+git push --set-upstream origin #11-Optimizations
+```
+5. Contribute 😎 (Open a Pull Request towards the main branch)
+- Write a brief discription of what you have worked on  
+
+#### If nobody has reviewed the Pull Request by the end of the day, ping [@asynchroza](https://github.com/asynchroza)
+
+---
+### Important: 
+* If you encounter any issues setting up the project, ping either [@asynchroza](https://github.com/asynchroza) or [@nikolayninov](https://github.com/nikolayninov)
+* If you are stuck and you need help, ping the dev group chat in facebook 🤼
+* Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spanding countless hours debugging rendering issues 😁
