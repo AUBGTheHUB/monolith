@@ -2,6 +2,7 @@
 
 ## How to run the project
 ---
+<em>Commands should be run in the root directory of the project</em>
 
 ### Backend
 * Installation: 
@@ -13,8 +14,7 @@
 
 * Run:
 ```shell
-cd root/packages/api
-go run main.go
+make run-api
 ```
 
 
@@ -22,14 +22,12 @@ go run main.go
 * Installation: 
 ```shell
 # update node to 16.16.0
-cd root/packages/web
-npm install
+make install-web
 ```
 
 * Run:
 ```shell
-cd root/packages/web
-npm start
+make run-web
 ```
 
 --- 
@@ -73,3 +71,6 @@ git push --set-upstream origin #11-Optimizations
 * If you encounter any issues setting up the project, ping either [@asynchroza](https://github.com/asynchroza) or [@nikolayninov](https://github.com/nikolayninov)
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spanding countless hours debugging rendering issues 😁
+
+---
+###### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
