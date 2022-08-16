@@ -30,6 +30,11 @@ make install-web
 make run-web
 ```
 
+* Lint:
+```shell
+make lint  # makes your code more readable 🥰
+```
+
 --- 
 ## Directory structure
 ```

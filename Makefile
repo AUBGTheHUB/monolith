@@ -9,3 +9,7 @@ run-web:
 .PHONY: run-api
 run-api:
 	cd ./packages/api/ && go run main.go
+
+.PHONY: lint
+lint:
+	cd ./packages/web/ && ./node_modules/.bin/eslint . --fix
