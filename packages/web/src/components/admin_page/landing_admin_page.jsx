@@ -4,11 +4,10 @@ import "./admin.css";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
-import url from "../../Global";
+import {url} from "../../Global";
 
 const LandingAdminPage = () => {
   const history = useNavigate() 
-  // console.log("Welcome to the login page!");
 
   const [formState, setFormState] = useState({
     username: "",
@@ -39,8 +38,6 @@ const LandingAdminPage = () => {
       history('/admin/dashboard')
     })
     .catch((err) => {
-      // console.log({...formState});
-      // console.log(err);
       console.log("Error logging in")
     })
   };

@@ -4,7 +4,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import url from "../../../Global";
+import Validate, {url} from "../../../Global";
+import InvalidClient from "../invalid_client";
 
 const AddMember = () => {
   const history = useNavigate();
@@ -46,6 +47,7 @@ const AddMember = () => {
       });
   };
 
+  if (Validate()) {
   return (
     <div className="add-member-main-div">
       <Form>
@@ -120,6 +122,8 @@ const AddMember = () => {
       </Form>
     </div>
   );
-};
+} else {
+  return <InvalidClient/>
+}}
 
 export default AddMember;

@@ -1,9 +1,13 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
+import Validate from "../../../Global";
 import { useNavigate } from "react-router-dom";
+import InvalidClient from "../invalid_client";
 
 const RenderMembers = (members) => {
   const history = useNavigate();
+
+  if (Validate()) {
   return (
     <div className="members-box-add-button">
       <Button
@@ -65,6 +69,8 @@ const RenderMembers = (members) => {
       </div>
     </div>
   );
-};
+} else {
+  <InvalidClient/>
+}};
 
 export default RenderMembers;

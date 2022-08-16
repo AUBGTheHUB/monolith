@@ -4,19 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import RenderMembers from "./render_members";
 import { useState } from "react";
-import url from "../../../Global";
+import {url} from "../../../Global";
+import Validate from "../../../Global";
 
 const Members = () => {
   const history = useNavigate();
   const location = useLocation();
-  let state_of_validated;
-  const val = location.state;
-
-  if (val === null) {
-    state_of_validated = false;
-  } else {
-    state_of_validated = location.state.validated;
-  }
 
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([{}]);
@@ -41,7 +34,7 @@ const Members = () => {
   }, [])
 
 
-  if (state_of_validated) {
+  if (Validate()) {
     if(loading){
       return <h3>Fetching data!</h3>
     } else {

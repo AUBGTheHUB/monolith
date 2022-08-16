@@ -4,7 +4,7 @@ import { Card, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import url from "../../../Global";
+import {url} from "../../../Global";
 
 const MemberActions = () => {
   const location = useLocation();

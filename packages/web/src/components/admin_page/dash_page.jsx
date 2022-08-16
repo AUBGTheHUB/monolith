@@ -1,10 +1,14 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-
-const Dash = (validated) => {
+import InvalidClient from "./invalid_client";
+import Validate from "../../Global";
+const Dash = () => {
   const history = useNavigate();
-  console.log("First dashboard!");
+
+  console.log("Dashboard!");
+
+  if (Validate()) {
   return (
     <div className="dash">
       <div className="dash-box">
@@ -16,10 +20,7 @@ const Dash = (validated) => {
               variant="primary"
               onClick={() => {
                 history("/admin/dashboard/members", {
-                  state: {
-                    validated: validated,
-                  },
-                });
+                  state: {},});
               }}
             >
               See current members
@@ -91,6 +92,10 @@ const Dash = (validated) => {
       </div>
     </div>
   );
-};
+} else {
+  return (
+    <InvalidClient />
+  )
+}}
 
 export default Dash;
