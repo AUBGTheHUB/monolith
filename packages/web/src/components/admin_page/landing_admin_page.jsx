@@ -4,6 +4,7 @@ import "./admin.css";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
+import url from "../../Global";
 
 const LandingAdminPage = () => {
   const history = useNavigate() 
@@ -28,7 +29,7 @@ const LandingAdminPage = () => {
   const handleSubmit = () => {
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/api/login",
+      url: url + "/api/login",
       headers:{},
       data:{...formState}
     })

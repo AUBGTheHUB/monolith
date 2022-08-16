@@ -4,6 +4,7 @@ import { Card, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import url from "../../../Global";
 
 const MemberActions = () => {
   const location = useLocation();
@@ -34,7 +35,7 @@ const MemberActions = () => {
   const remove_member = () => {
     axios({
       method: "delete",
-      url: "http://127.0.0.1:8000/api/member/" + member_data["memberid"],
+      url: url + "/api/member/" + member_data['id'] + "/",
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
     })
       .then((res) => {
@@ -49,7 +50,7 @@ const MemberActions = () => {
   const edit_member = () => {
     axios({
       method: "put",
-      url: "http://127.0.0.1:8000/api/member/" + member_data["memberid"],
+      url: url + "/api/member/" + member_data["id"],
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
       data: { ...formState },
     })

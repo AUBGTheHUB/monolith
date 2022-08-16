@@ -4,15 +4,13 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import url from "../../../Global";
 
 const AddMember = () => {
   const history = useNavigate();
   const location = useLocation();
-  let new_member_id = parseInt(location.state.new_member_id) + 1
-  new_member_id = new_member_id.toString();
 
   const [formState, setFormState] = useState({
-    memberid: new_member_id,
     firstname: "",
     lastname: "",
     department: "",
@@ -35,7 +33,7 @@ const AddMember = () => {
   const addNewMember = () => {
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/api/member/",
+      url: url + "/api/member/",
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
       data: { ...formState },
     })
@@ -51,16 +49,6 @@ const AddMember = () => {
   return (
     <div className="add-member-main-div">
       <Form>
-        <Form.Group className="mb-3" controlId="formBasicText">
-          <Form.Label>Member ID</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="last memberid++"
-            name="memberid"
-            value={new_member_id}
-            readOnly
-          />
-        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicText">
           <Form.Label>First Name</Form.Label>
           <Form.Control

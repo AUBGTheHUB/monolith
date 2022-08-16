@@ -29,12 +29,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
 
 .dash-box {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.card-dash{
+    margin: 1rem
 }
 
 /* members page */

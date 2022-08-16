@@ -5,13 +5,14 @@ import "./admin.css";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Dash from "./dash_page";
+import url from "../../Global";
 
 const Dashboard = () => {
   const [validated, setValidated] = useState(false);
   const validate = () => {
     axios({
       method: "post",
-      url: "http://127.0.0.1:8000/api/validate",
+      url: url + "/api/validate",
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
     })
       .then((res) => {

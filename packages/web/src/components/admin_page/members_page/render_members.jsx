@@ -3,9 +3,7 @@ import { Card, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const RenderMembers = (members) => {
-  // console.log(members.members[0]["firstname"]);
   const history = useNavigate();
-  // console.log(members.members[members.members.length-1]["memberid"]);
   return (
     <div className="members-box-add-button">
       <Button
@@ -13,8 +11,7 @@ const RenderMembers = (members) => {
         onClick={() => {
           history("/admin/dashboard/members/add", {
             state: {
-              new_member_id:
-                members.members[members.members.length - 1]["memberid"],
+              // we do not need it anymore -- id is generated in mongo automatically
             },
           });
         }}
@@ -26,24 +23,24 @@ const RenderMembers = (members) => {
           <Card style={{ width: "18rem" }} key={index} className="member-card">
             <Card.Img
               variant="top"
-              src={members.members[index]["profilepicture"]}
+              src={person["profilepicture"]}
             />
             <Card.Body>
               <Card.Title>
-                {members.members[index]["firstname"] +
+                {person["firstname"] +
                   " " +
-                  members.members[index]["lastname"]}
+                  person["lastname"]}
               </Card.Title>
               <Card.Text>
-                {"Position: " + members.members[index]["position"]}
+                {"Position: " + person["position"]}
               </Card.Text>
               <Card.Text>
-                {"Department: " + members.members[index]["department"]}
+                {"Department: " + person["department"]}
               </Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
-                  window.open(members.members[index]["sociallink"]);
+                  window.open(person["sociallink"]);
                 }}
                 className="linkedin-button"
               >
@@ -54,11 +51,10 @@ const RenderMembers = (members) => {
                 onClick={() => {
                   history("/admin/dashboard/members/actions", {
                     state: {
-                      member_data: members.members[index],
-                      memberid: members.members[index]["memberid"],
+                      member_data: person
                     },
                   });
-                  console.log(members.members[index]["memberid"]);
+                  console.log(person["id"]);
                 }}
               >
                 Actions
@@ -69,7 +65,6 @@ const RenderMembers = (members) => {
       </div>
     </div>
   );
-  // return <h1>Hello, {members.members[0]["firstname"]}!</h1>
 };
 
 export default RenderMembers;
