@@ -1,4 +1,5 @@
 #!/bin/bash
 
-ln -s ./pre-commit ../.git/hooks/pre-commit 
+
+ln -s $PWD/pre-commit $PWD/../.git/hooks/pre-commit 
 ls -l ../.git/hooks/pre-commit
