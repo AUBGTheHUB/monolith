@@ -35,6 +35,13 @@ make run-web
 make lint  # makes your code more readable 🥰
 ```
 
+### Git hooks
+
+* Install pre-commit hook:
+```shell 
+make install-hooks  # GitBash, WSL, UNIX/Linux -> anything that can run bash scripts
+```
+
 --- 
 ## Directory structure
 ```

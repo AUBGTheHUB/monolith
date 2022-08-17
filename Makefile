@@ -13,3 +13,7 @@ run-api:
 .PHONY: lint
 lint:
 	cd ./packages/web/ && ./node_modules/.bin/eslint . --fix
+
+.PHONY: install-hooks
+install-hooks:
+	cd ./.githooks && ./install_hooks.sh
