@@ -82,7 +82,7 @@ git push --set-upstream origin #11-Optimizations
 ### Important: 
 * If you encounter any issues setting up the project, ping either [@asynchroza](https://github.com/asynchroza) or [@nikolayninov](https://github.com/nikolayninov)
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
-* Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spanding countless hours debugging rendering issues 😁
+* Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
 ---
 ###### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
