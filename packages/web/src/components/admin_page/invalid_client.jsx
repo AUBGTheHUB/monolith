@@ -11,8 +11,7 @@ const InvalidClient = () => {
         <Button
           onClick={() => {
             history('/admin/');
-          }}
-        >
+          }}>
           Return to login page
         </Button>
       </div>

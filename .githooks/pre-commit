@@ -1,3 +1,4 @@
 #!/bin/bash
 echo "Running pre-commit linting"
 make lint
+make lint-fix
