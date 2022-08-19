@@ -4,7 +4,7 @@ import { Card, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {url} from "../../../Global";
+import { url } from "../../../Global";
 
 const MemberActions = () => {
   const location = useLocation();
@@ -35,7 +35,7 @@ const MemberActions = () => {
   const remove_member = () => {
     axios({
       method: "delete",
-      url: url + "/api/member/" + member_data['id'] + "/",
+      url: url + "/api/member/" + member_data["id"] + "/",
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
     })
       .then((res) => {

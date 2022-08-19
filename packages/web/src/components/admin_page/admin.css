@@ -1,112 +1,112 @@
 /* login form css */
-.login-page{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center !important;
-    height: 50vh;
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center !important;
+  height: 50vh;
 }
 
 /* login form css */
 .login-page h3 {
-    padding-bottom: 2rem;
+  padding-bottom: 2rem;
 }
 
 /* client not validated response css */
-.client-not-validated{
-    display: flex;
-    height: 50vh;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+.client-not-validated {
+  display: flex;
+  height: 50vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 /* dashboard */
-.dash{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+.dash {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
 
 .dash-box {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
-.card-dash{
-    margin: 1rem
+.card-dash {
+  margin: 1rem;
 }
 
 /* members page */
-.members-div{
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+.members-div {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* outside div for the whole render_members.jsx component */
 /* whole purpose of this div is to add the button for adding new members */
-.members-box-add-button{
-    display: flex;
-    flex-direction: column;
+.members-box-add-button {
+  display: flex;
+  flex-direction: column;
 }
 
 /* box where members get rendered in */
-.members-box{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: 80vw;
-    margin-left: 10vw;
+.members-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 80vw;
+  margin-left: 10vw;
 }
 
-.member-card{
-    margin: 0.5rem;
+.member-card {
+  margin: 0.5rem;
 }
 
-.linkedin-button{
-    margin-right: 0.25rem;
+.linkedin-button {
+  margin-right: 0.25rem;
 }
 
 /* box which holds the card of a member */
-.single-member-box{
-    display: column;
-    flex-direction: column;
-    justify-content: center;
+.single-member-box {
+  display: column;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* main box for holding the card of a member and the corresponding edit form */
-.actions-single-member{
-    padding-top: 2rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+.actions-single-member {
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 /* box which holds the form for editing */
-.member-form-edit{
-    padding-top: 2rem;
-    margin-left: 4rem;
+.member-form-edit {
+  padding-top: 2rem;
+  margin-left: 4rem;
 }
 
-.add-member-main-div{
-    padding-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.add-member-main-div {
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* add padding to the bottom of the images in the dashboard cards */
-.dashboard-card-images-padding{
-    padding-bottom: 1rem;
+.dashboard-card-images-padding {
+  padding-bottom: 1rem;
 }

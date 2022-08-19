@@ -3,11 +3,11 @@ import { Form, Button } from "react-bootstrap";
 import "./admin.css";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
-import {url} from "../../Global";
+import { useNavigate } from "react-router-dom";
+import { url } from "../../Global";
 
 const LandingAdminPage = () => {
-  const history = useNavigate() 
+  const history = useNavigate();
 
   const [formState, setFormState] = useState({
     username: "",
@@ -29,17 +29,17 @@ const LandingAdminPage = () => {
     axios({
       method: "post",
       url: url + "/api/login",
-      headers:{},
-      data:{...formState}
+      headers: {},
+      data: { ...formState },
     })
-    .then((res) => {
-      localStorage.setItem('auth_token', res.data.data.auth_token)
-      console.log("Logged in!");
-      history('/admin/dashboard')
-    })
-    .catch((err) => {
-      console.log("Error logging in")
-    })
+      .then((res) => {
+        localStorage.setItem("auth_token", res.data.data.auth_token);
+        console.log("Logged in!");
+        history("/admin/dashboard");
+      })
+      .catch((err) => {
+        console.log("Error logging in");
+      });
   };
 
   return (
@@ -67,7 +67,7 @@ const LandingAdminPage = () => {
           variant="primary"
           type="button"
           onClick={() => {
-            handleSubmit()
+            handleSubmit();
           }}
         >
           Submit

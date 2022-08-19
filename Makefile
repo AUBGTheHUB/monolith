@@ -12,7 +12,8 @@ run-api:
 
 .PHONY: lint
 lint:
-	cd ./packages/web/ && ./node_modules/.bin/eslint . --fix
+	cd ./packages/web/ && npm run lint . --fix \
+	&& npm run lint:fix && npm run format
 
 .PHONY: install-hooks
 install-hooks:

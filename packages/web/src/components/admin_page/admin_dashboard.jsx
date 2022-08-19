@@ -10,11 +10,9 @@ import Validate from "../../Global";
 
 const Dashboard = () => {
   if (Validate()) {
-    return <Dash/>;
+    return <Dash />;
   } else {
-    return (
-      <InvalidClient/>
-    );
+    return <InvalidClient />;
   }
 };
 
