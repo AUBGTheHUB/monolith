@@ -27,7 +27,8 @@ echo "NO PRECOMMIT" > $PWD/files_for_commit.txt
 
 git commit --amend --no-edit
 
-echo -e "${green}All is and done, ready for a push... :)${end}"
+echo -e "\n\n\n"
+echo -e "${green}All is set and done, ready for a push... :)${end}"
 
 exit 0
 
