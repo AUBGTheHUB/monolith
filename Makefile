@@ -17,7 +17,6 @@ lint:
 .PHONY: lint-fix
 lint-fix: 
 	cd ./packages/web/ && npm run lint:fix \
-	&& npm run format
 
 .PHONY: install-hooks
 install-hooks:
