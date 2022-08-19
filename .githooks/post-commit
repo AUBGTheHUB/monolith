@@ -13,8 +13,8 @@ files=$(cat $PWD/files_for_commit.txt)
 
 if [[ $files == "" ]]
 then
-    echo "${red}files_for_commit is empty${end}"
-    echo -e "${yellow}No files to commit${end}"
+    echo -e "${yellow}No more files to commit${end}"
+    echo -e "${yellow}Ready for pushing..! :)${end}"
     exit 0
 fi
 
@@ -30,7 +30,7 @@ git status
 
 git commit --amend --no-edit
 
-echo -e "${green}Done!${end}"
+echo -e "${green}Amended!${end}"
 
 exit 0
 

@@ -17,7 +17,6 @@
 make run-api
 ```
 
-
 ### Frontend 
 * Installation: 
 ```shell
@@ -34,7 +33,6 @@ make run-web
 ```shell
 make lint  # makes your code more readable 🥰
 ```
-This is a script which will run everytime you make a commit and it will clean up your code
 
 ### Git hooks
 
@@ -42,7 +40,11 @@ This is a script which will run everytime you make a commit and it will clean up
 ```shell 
 make install-hooks  # GitBash, WSL, UNIX/Linux -> anything that can run bash scripts
 ```
-This is going to execute a script which will generate a symbolic link for the pre-commit
+Do not install the hooks if you are going to be using `Powershell`
+
+This is going to execute a script which will <em>install</em> git commit hooks.  
+The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.  
+The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!   
 
 --- 
 ## Directory structure
