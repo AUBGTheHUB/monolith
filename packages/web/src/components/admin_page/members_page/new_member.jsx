@@ -115,7 +115,8 @@ const AddMember = () => {
             type="button"
             onClick={() => {
               addNewMember();
-            }}>
+            }}
+          >
             Add new member
           </Button>
         </Form>

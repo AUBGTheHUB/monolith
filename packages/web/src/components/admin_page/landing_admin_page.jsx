@@ -64,7 +64,8 @@ const LandingAdminPage = () => {
           type="button"
           onClick={() => {
             handleSubmit();
-          }}>
+          }}
+        >
           Submit
         </Button>
       </Form>

@@ -46,7 +46,8 @@ const Members = () => {
           <Button
             onClick={() => {
               history('/admin/');
-            }}>
+            }}
+          >
             Return to login page
           </Button>
         </div>

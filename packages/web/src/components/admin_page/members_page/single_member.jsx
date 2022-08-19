@@ -77,14 +77,16 @@ const MemberActions = () => {
               onClick={() => {
                 window.open(member_data['sociallink']);
               }}
-              className="linkedin-button">
+              className="linkedin-button"
+            >
               LinkedIn
             </Button>
             <Button
               variant="primary"
               onClick={() => {
                 remove_member();
-              }}>
+              }}
+            >
               Remove
             </Button>
           </Card.Body>
@@ -157,7 +159,8 @@ const MemberActions = () => {
             type="button"
             onClick={() => {
               edit_member();
-            }}>
+            }}
+          >
             Edit member
           </Button>
         </Form>

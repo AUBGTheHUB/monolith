@@ -22,7 +22,8 @@ const Dash = () => {
                   history('/admin/dashboard/members', {
                     state: {}
                   });
-                }}>
+                }}
+              >
                 See current members
               </Button>
             </Card.Body>
