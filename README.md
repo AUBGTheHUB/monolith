@@ -78,6 +78,7 @@ git commit -m "#11 Added new feature"
 git push --set-upstream origin #11-Optimizations
 ```
 5. Contribute 😎 (Open a Pull Request towards the main branch)
+- Reference the issue in the title
 - Write a brief discription of what you have worked on  
 
 #### If nobody has reviewed the Pull Request by the end of the day, ping [@asynchroza](https://github.com/asynchroza)
