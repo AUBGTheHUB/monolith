@@ -13,10 +13,7 @@ run-api:
 .PHONY: lint
 lint:
 	cd ./packages/web/ && npm run lint \
-
-.PHONY: lint-fix
-lint-fix: 
-	cd ./packages/web/ && npm run lint:fix \
+	&& npm run lint:fix
 
 .PHONY: install-hooks
 install-hooks:
