@@ -5,13 +5,13 @@ open_file=$(cat $PWD/files_for_commit.txt)
 green='\033[0;32m'
 blue='\033[0;34m'
 end='\033[0m'
-red='\033[0;31m'
+lightpurple='\033[1;35m'
 
 echo -e "${blue}COMMIT ?= ${open_file}${end}"
 
 if [[ $open_file == "NO PRECOMMIT" ]]
 then
-    echo "${red}SKIP PRE_COMMIT${end}"
+    echo -e "${lightpurple}SKIP PRE_COMMIT${end}"
     echo "" > $PWD/files_for_commit.txt
     exit 0
 fi

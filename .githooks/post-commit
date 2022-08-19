@@ -3,7 +3,7 @@
 green='\033[0;32m'
 yellow='\033[0;33m'
 end='\033[0m'
-red='\033[0;31m'
+brightblue='\033[1;34m'
 
 echo -e "${green}Adding linted files to commit${end}"
 
@@ -13,8 +13,7 @@ files=$(cat $PWD/files_for_commit.txt)
 
 if [[ $files == "" ]]
 then
-    echo -e "${yellow}No more files to commit${end}"
-    echo -e "${yellow}Ready for pushing..! :)${end}"
+    echo -e "${brightblue}No more files to commit${end}"
     exit 0
 fi
 
@@ -26,11 +25,9 @@ done
 
 echo "NO PRECOMMIT" > $PWD/files_for_commit.txt
 
-git status
-
 git commit --amend --no-edit
 
-echo -e "${green}Amended!${end}"
+echo -e "${green}All is and done, ready for a push... :)${end}"
 
 exit 0
 
