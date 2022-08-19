@@ -1,12 +1,22 @@
 #!/bin/bash
 
 green='\033[0;32m'
+yellow='\033[0;33m'
 end='\033[0m'
 
-echo '${green}Adding linted files to commit${end}'
+echo -e "${green}Adding linted files to commit${end}"
 
-cat files_for_commit.txt | xargs git add
-git commit --amend --no-edit
+files=$(cat $PWD/files_for_commit.txt)
 
-echo '${green}Done!${end}'
+for file in $files
+do  
+    echo -e "${yellow}Adding file: ${file}${end}"
+    git add $file
+done
+
+# git add `cat $PWD/files_for_commit.txt`
+
+# git commit --amend --no-edit
+
+echo -e '${green}Done!${end}'
 
