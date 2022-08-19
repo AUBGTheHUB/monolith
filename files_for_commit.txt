@@ -1,1 +1,0 @@
-.githooks/post-commit .githooks/pre-commit files_for_commit.txt packages/web/src/components/admin_page/invalid_client.jsx
