@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import RenderMembers from "./render_members";
-import { useState } from "react";
-import { url } from "../../../Global";
-import Validate from "../../../Global";
+import React, { useEffect } from 'react';
+import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
+import RenderMembers from './render_members';
+import { useState } from 'react';
+import { url } from '../../../Global';
+import Validate from '../../../Global';
 
 const Members = () => {
   const history = useNavigate();
@@ -16,8 +16,8 @@ const Members = () => {
 
   const getMembers = () => {
     axios({
-      method: "get",
-      url: url + "/api/members",
+      method: 'get',
+      url: url + '/api/members'
     })
       .then((res) => {
         setMembers(res.data.data.data);
@@ -45,7 +45,7 @@ const Members = () => {
           <h3>Client is not validated</h3>
           <Button
             onClick={() => {
-              history("/admin/");
+              history('/admin/');
             }}
           >
             Return to login page

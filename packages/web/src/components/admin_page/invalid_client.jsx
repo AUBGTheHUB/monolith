@@ -1,6 +1,6 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 const InvalidClient = () => {
   const history = useNavigate();
@@ -10,7 +10,7 @@ const InvalidClient = () => {
         <h3>Client is not validated</h3>
         <Button
           onClick={() => {
-            history("/admin/");
+            history('/admin/');
           }}
         >
           Return to login page
