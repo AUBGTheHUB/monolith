@@ -1,11 +1,12 @@
 # @AUBGTheHUB's Single-Page Application
 
 ## How to run the project
----
-<em>Commands should be run in the root directory of the project</em>
+`make` <em>commands should be run in the `root` directory of the project</em>  
+`npm run` <em>commands should be run in the `web` directory</em>   
+##### *** Recommended Text Editor: *** `VSCode`
 
 ### Backend
-* Installation: 
+* Installation from `root`: 
 ```shell
 # 1. install go - https://go.dev/doc/install
 # 2. git clone the repo in go/src
@@ -18,21 +19,24 @@ make run-api
 ```
 
 ### Frontend 
-* Installation: 
+* Installation from `root`: 
 ```shell
 # update node to 16.16.0
 make install-web
 ```
 
-* Run:
+* Run from `root`:
 ```shell
 make run-web
 ```
 
-* Lint:
+** For installing, running, cleaning and building from `web` - take a look at the `scripts` in `web/package.json`
+
+* Lint (part of the hooks):
 ```shell
 make lint  # makes your code more readable 🥰
 ```
+
 
 ### Git hooks
 
