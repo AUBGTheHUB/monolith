@@ -3,3 +3,5 @@
 .vscode/configurationCache.log
 
 .vscode/dryrun.log
+
+files_for_commit.txt
