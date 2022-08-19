@@ -23,8 +23,6 @@ const Dash = () => {
                     state: {}
                   });
                 }}>
-
-
                 See current members
               </Button>
             </Card.Body>
