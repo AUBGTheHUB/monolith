@@ -16,7 +16,7 @@ done
 
 # git add `cat $PWD/files_for_commit.txt`
 
-# git commit --amend --no-edit
+git commit --amend --no-edit
 
 echo -e '${green}Done!${end}'
 

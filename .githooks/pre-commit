@@ -3,23 +3,17 @@
 green='\033[0;32m'
 end='\033[0m'
 
-
 echo -e "${green}Running pre-commit linting${end}"
 
 committedFiles=$(git diff --name-only --cached)
 files=$(echo $committedFiles | tr ";" "\\n")
 
-# make lint
+make lint
 
 echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
 
-echo $files >> "files_for_commit.txt"
+echo $files > "files_for_commit.txt"
 
-# for file in $files
-# do
-#     git add $file
-# done
-# git commit --amend --no-edit
-# exit 0
+exit 0
 
 

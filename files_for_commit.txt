@@ -1,1 +1,1 @@
-.githooks/post-commit .githooks/pre-commit files_for_commit.txt
+files_for_commit.txt
