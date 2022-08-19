@@ -1,0 +1,12 @@
+#!/bin/bash
+
+green='\033[0;32m'
+end='\033[0m'
+
+echo '${green}Adding linted files to commit${end}'
+
+cat files_for_commit.txt | xargs git add
+git commit --amend --no-edit
+
+echo '${green}Done!${end}'
+
