@@ -34,6 +34,7 @@ make run-web
 ```shell
 make lint  # makes your code more readable 🥰
 ```
+This is a script which will run everytime you make a commit and it will clean up your code
 
 ### Git hooks
 
@@ -41,6 +42,7 @@ make lint  # makes your code more readable 🥰
 ```shell 
 make install-hooks  # GitBash, WSL, UNIX/Linux -> anything that can run bash scripts
 ```
+This is going to execute a script which will generate a symbolic link for the pre-commit
 
 --- 
 ## Directory structure
