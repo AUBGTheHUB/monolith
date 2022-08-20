@@ -38,6 +38,7 @@ func CreateJob(c *fiber.Ctx) error {
 	}
 
 	newJob := models.Job{
+		Logo:        job.Logo,
 		Position:    job.Position,
 		Company:     job.Company,
 		Description: job.Description,
@@ -136,6 +137,10 @@ func EditJob(c *fiber.Ctx) error {
 
 	if job.Company != "" {
 		job_map["company"] = job.Company
+	}
+
+	if job.Logo != "" {
+		job_map["logo"] = job.Logo
 	}
 
 	if job.Description != "" {

@@ -15,11 +15,14 @@
     ],
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "eslint.alwaysShowStatus": true,
-    "[typescriptreact]": {
+    "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "makefile.extensionOutputFolder": "./.vscode"
+    "makefile.extensionOutputFolder": "./.vscode",
+    "[go]": {
+        "editor.defaultFormatter": "golang.go"
+    }
 }
