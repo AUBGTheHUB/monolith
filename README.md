@@ -94,4 +94,5 @@ git push --set-upstream origin #11-Optimizations
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
 ---
-###### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
+#### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
+After you are done working on a feature, you may add yourself to the `CODEOWNERS` file. 

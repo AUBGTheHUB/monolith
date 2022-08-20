@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# If you encounter any issues trying to commit
+# Do not hesitate to ping me @asynchroza so I can help you :)
+
 green='\033[0;32m'
 yellow='\033[0;33m'
 end='\033[0m'
@@ -29,6 +32,7 @@ git commit --amend --no-edit
 
 echo -e "\n\n\n"
 echo -e "${green}All is set and done, ready for a push... :)${end}"
+echo -e "${brightblue}If you encounter any issues, ping ${yellow}@asynchroza${end}"
 
 exit 0
 
