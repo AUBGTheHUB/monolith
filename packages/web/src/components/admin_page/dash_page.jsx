@@ -45,7 +45,15 @@ const Dash = () => {
             <Card.Body>
               <Card.Title>Jobs</Card.Title>
               <Card.Text>Add or remove job positions provided by our sponsors.</Card.Text>
-              <Button variant="primary">See current job positions</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history('/admin/dashboard/jobs', {
+                    state: {}
+                  });
+                }}>
+                See current job positions
+              </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: '18rem' }} className="card-dash">
