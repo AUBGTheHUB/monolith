@@ -38,14 +38,16 @@ const RenderJobs = () => {
           onClick={() => {
             history('/admin/dashboard/jobs/add', {});
           }}>
-          Add Member
+          Add Job
         </Button>
         <div className="members-box">
           {jobs.map((job, index) => (
             <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={job['logo']} />
               <Card.Body>
                 <Card.Title>{job['position']}</Card.Title>
-                <Card.Text>{'Company: ' + job['company']}</Card.Text>
+                <Card.Text>{job['company']}</Card.Text>
+                <Card.Text>{job['description']}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => {
