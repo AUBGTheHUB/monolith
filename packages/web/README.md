@@ -1,3 +1,8 @@
+### Development:
+If you get an error `unused var`:  
+Put `// eslint-disable-next-line no-unused-vars` above the line or `// eslint-disable-line no-unused-vars` at the end of the line.
+
+
 ### Routes:
 
 `/admin` - login screen for management panel
