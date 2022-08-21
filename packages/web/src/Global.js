@@ -11,7 +11,8 @@ const Validate = () => {
       url: url + '/api/validate',
       headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
     })
-      .then((res) => {
+      // eslint-disable-next-line no-unused-vars
+      .then((res) => { 
         console.log('Client is validated');
         setValidated(true);
       })

@@ -37,6 +37,7 @@ const LandingAdminPage = () => {
         console.log('Logged in!');
         history('/admin/dashboard');
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((err) => {
         console.log('Error logging in');
       });
@@ -64,7 +65,8 @@ const LandingAdminPage = () => {
           type="button"
           onClick={() => {
             handleSubmit();
-          }}>
+          }}
+        >
           Submit
         </Button>
       </Form>

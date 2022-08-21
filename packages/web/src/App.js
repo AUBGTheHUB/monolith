@@ -18,6 +18,7 @@ function App() {
       <Route path="/admin/dashboard/members/actions" element={<MemberActions />} />
       <Route path="/admin/dashboard/members/add" element={<AddMember />} />
       <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
+      <Route path="/admin/dashboard/jobs/actions" element={<RenderJobs />} />
     </Routes>
   );
 }

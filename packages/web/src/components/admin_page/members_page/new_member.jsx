@@ -1,23 +1,21 @@
-import React from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import Validate, { url } from '../../../Global';
-import InvalidClient from '../invalid_client';
+import React from "react";
+import { Form, Button } from "react-bootstrap";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Validate, { url } from "../../../Global";
+import InvalidClient from "../invalid_client";
 
 const AddMember = () => {
   const history = useNavigate();
-  const location = useLocation();
 
   const [formState, setFormState] = useState({
-    firstname: '',
-    lastname: '',
-    department: '',
-    position: '',
-    sociallink: '',
-    profilepicture: ''
+    firstname: "",
+    lastname: "",
+    department: "",
+    position: "",
+    sociallink: "",
+    profilepicture: "",
   });
 
   const handleInputChange = (e) => {
@@ -27,19 +25,20 @@ const AddMember = () => {
 
     setFormState({
       ...formState,
-      [name]: value
+      [name]: value,
     });
   };
 
   const addNewMember = () => {
     axios({
-      method: 'post',
-      url: url + '/api/member/',
-      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-      data: { ...formState }
+      method: "post",
+      url: url + "/api/member/",
+      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
+      data: { ...formState },
     })
+      // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log('New member was added');
+        console.log("New member was added");
         history(-1);
       })
       .catch((err) => {
@@ -115,7 +114,8 @@ const AddMember = () => {
             type="button"
             onClick={() => {
               addNewMember();
-            }}>
+            }}
+          >
             Add new member
           </Button>
         </Form>

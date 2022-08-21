@@ -18,7 +18,8 @@ const RenderMembers = (members) => {
                 // we do not need it anymore -- id is generated in mongo automatically
               }
             });
-          }}>
+          }}
+        >
           Add Member
         </Button>
         <div className="members-box">
@@ -34,7 +35,8 @@ const RenderMembers = (members) => {
                   onClick={() => {
                     window.open(person['sociallink']);
                   }}
-                  className="linkedin-button">
+                  className="linkedin-button"
+                >
                   LinkedIn
                 </Button>
                 <Button
@@ -46,7 +48,8 @@ const RenderMembers = (members) => {
                       }
                     });
                     console.log(person['id']);
-                  }}>
+                  }}
+                >
                   Actions
                 </Button>
               </Card.Body>

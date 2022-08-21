@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import RenderMembers from './render_members';
 import { useState } from 'react';
@@ -9,7 +9,6 @@ import Validate from '../../../Global';
 
 const Members = () => {
   const history = useNavigate();
-  const location = useLocation();
 
   const [loading, setLoading] = useState(true);
   const [members, setMembers] = useState([{}]);
@@ -46,7 +45,8 @@ const Members = () => {
           <Button
             onClick={() => {
               history('/admin/');
-            }}>
+            }}
+          >
             Return to login page
           </Button>
         </div>
