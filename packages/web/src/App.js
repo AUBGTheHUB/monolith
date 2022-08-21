@@ -8,6 +8,7 @@ import MemberActions from './components/admin_page/members_page/single_member';
 import AddMember from './components/admin_page/members_page/new_member';
 import RenderJobs from './components/admin_page/jobs_page/render_jobs';
 import JobActions from './components/admin_page/jobs_page/actions_jobs';
+import AddJobs from './components/admin_page/jobs_page/add_jobs';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/admin/dashboard/members/add" element={<AddMember />} />
       <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
       <Route path="/admin/dashboard/jobs/actions" element={<JobActions/>} />
+      <Route path="/admin/dashboard/jobs/add" element={<AddJobs/>} />
     </Routes>
   );
 }
