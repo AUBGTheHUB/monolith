@@ -12,6 +12,16 @@
   padding-bottom: 2rem;
 }
 
+/* loading when checking if authenticated css*/
+.loading-page {
+  display: flex;
+  background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 /* client not validated response css */
 .client-not-validated {
   display: flex;
