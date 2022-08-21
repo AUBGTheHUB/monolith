@@ -1,4 +1,7 @@
 ### Development:
+If you get a `white screen` and nothing is loading:
+Check the browser's console - most probably there is a rendering issue with some component
+
 If you get an error `unused var`:  
 Put `// eslint-disable-next-line no-unused-vars` above the line or `// eslint-disable-line no-unused-vars` at the end of the line.
 
@@ -14,6 +17,8 @@ When trying to access restricted routes, the client sends the token and validate
 `Create, Update and Delete` should receive the token in a `BEARER_TOKEN` header.
 
 ## How to use the management panel
+
+`url links` should always be added with their `https://` or `http://`.
 
 ### Members
 
