@@ -51,7 +51,17 @@ func CreateJob(c *fiber.Ctx) error {
 	type_of_v := v.Type()
 
 	// this will only work if all struct fields are string
+
 	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).Kind() == 17 {
+			// We check the type of the field, if it is a string, we check if it is empty
+			// But code breaks if we have a field that is not a string
+			// In the model we have a primitive.ObjectID field
+			// So we need to break the loop when we reach the ObjectID field
+			// Do not ask me why it is 17, I don't know either
+
+			break
+		}
 
 		empty_body_check := EmptyStringBody(v.Field(i).Interface().(string))
 		if empty_body_check {
