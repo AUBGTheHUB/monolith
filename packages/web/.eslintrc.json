@@ -15,12 +15,12 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": { // enable additional rules
+  "rules": { 
     "prettier/prettier": 0,
     "react/jsx-filename-extension": [
       "error",
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".tsx", ".ts"]
       }
     ],
     "react/prop-types": 0,
@@ -30,12 +30,12 @@
     "react/jsx-wrap-multilines": 0,
     "react/jsx-curly-brace-presence": 0,
     "react/jsx-fragments": 0,
-    "react/jsx-no-duplicate-props": 0,
-    "react/jsx-no-undef": 0,
+    "react/jsx-no-duplicate-props": "error",
+    "react/jsx-no-undef": "error",
     "react/jsx-no-bind": 0,
     "react/jsx-no-script-url": 0,
     "react/jsx-sort-props": 0,
-    "react/jsx-uses-react": "error",
+    "react/jsx-uses-react": "error", 
     "react/jsx-uses-vars": "error",
     "react/jsx-no-useless-fragment": 0,
     "react/jsx-no-comment-textnodes": 0,
