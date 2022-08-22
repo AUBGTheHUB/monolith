@@ -34,7 +34,14 @@ const Dash = () => {
               <Card.Text>
                 Add, edit or remove old and upcoming events.
               </Card.Text>
-              <Button variant="primary">See current events</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history("/admin/dashboard/events");
+                }}
+              >
+                See current events
+              </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">

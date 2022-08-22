@@ -93,6 +93,9 @@ git push --set-upstream origin #11-Optimizations
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
+### Tips & Tricks:
+* If you suspend either the react app job or the api job by mistake and cannot kill the job for some reason, use this to unbind the port `lsof -ti:PortNumberGoesHere | xargs kill -9`
+
 ---
 #### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
 After you are done working on a feature, you may add yourself to the `CODEOWNERS` file. 
