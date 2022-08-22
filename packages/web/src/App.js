@@ -9,7 +9,7 @@ import AddMember from './components/admin_page/members_page/new_member';
 import RenderJobs from './components/admin_page/jobs_page/render_jobs';
 import JobActions from './components/admin_page/jobs_page/actions_jobs';
 import AddJobs from './components/admin_page/jobs_page/add_jobs';
-import RenderEvents from './components/admin_page/events_page/rendeer_events';
+import RenderEvents from './components/admin_page/events_page/render_events';
 
 function App() {
   return (
