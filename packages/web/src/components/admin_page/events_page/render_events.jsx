@@ -92,7 +92,7 @@ const RenderEvents = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/jobs/add", {});
+            history("/admin/dashboard/events/add", {});
           }}
         >
           Add Event

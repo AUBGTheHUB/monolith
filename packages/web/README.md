@@ -47,4 +47,8 @@ Is a panel where you can either update or delete a document (e.g. Remove an old 
 
 * `Marketing`, `Design`, `Public Relations`, `Development`, `Logistics`
 
+### Start Date, End Date:
+
+* Should be UTC format
+
 ###### In order to be able to do filtering by department in the future
