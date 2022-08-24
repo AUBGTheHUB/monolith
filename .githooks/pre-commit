@@ -1,6 +1,6 @@
 #!/bin/bash
 
-open_file=$(cat $PWD/files_for_commit.txt)
+open_file=$(cat $PWD/.files_for_commit.txt)
 
 green='\033[0;32m'
 blue='\033[0;34m'
@@ -12,7 +12,7 @@ echo -e "${blue}COMMIT ?= ${open_file}${end}"
 if [[ $open_file == "NO PRECOMMIT" ]]
 then
     echo -e "${lightpurple}SKIP PRE_COMMIT${end}"
-    echo "" > $PWD/files_for_commit.txt
+    echo "" > $PWD/.files_for_commit.txt
     exit 0
 fi
 
@@ -27,7 +27,7 @@ make lint
 
 echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
 
-echo $files > "files_for_commit.txt"
+echo $files > ".files_for_commit.txt"
 
 exit 0
 

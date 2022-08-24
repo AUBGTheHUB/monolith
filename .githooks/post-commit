@@ -10,7 +10,7 @@ brightblue='\033[1;34m'
 
 echo -e "${green}Adding linted files to commit${end}"
 
-files=$(cat $PWD/files_for_commit.txt)
+files=$(cat $PWD/.files_for_commit.txt)
 
 
 
@@ -26,7 +26,7 @@ do
     git add $file
 done
 
-echo "NO PRECOMMIT" > $PWD/files_for_commit.txt
+echo "NO PRECOMMIT" > $PWD/.files_for_commit.txt
 
 git commit --amend --no-edit
 
