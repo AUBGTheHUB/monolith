@@ -120,3 +120,8 @@
 .dashboard-card-images-padding {
   padding-bottom: 1rem;
 }
+
+/* add padding to the top of the actions button in RenderEvents */
+.padding-top-button-render-events {
+  margin-top: 0.25rem !important;
+}

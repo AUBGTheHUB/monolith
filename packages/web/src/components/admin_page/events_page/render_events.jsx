@@ -129,6 +129,7 @@ const RenderEvents = () => {
                 </Button>
                 <Button
                   variant="primary"
+                  className="padding-top-button-render-events"
                   onClick={() => {
                     history("/admin/dashboard/events/actions", {
                       state: {
