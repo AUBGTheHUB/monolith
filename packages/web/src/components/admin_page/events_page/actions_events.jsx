@@ -94,6 +94,7 @@ const EventsActions = () => {
               </Button>
               <Button
                 variant="primary"
+                className="padding-top-button-render-events"
                 onClick={() => {
                   remove_event();
                 }}
