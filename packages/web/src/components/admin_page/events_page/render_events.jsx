@@ -8,6 +8,59 @@ import { useEffect } from "react";
 import InvalidClient from "../invalid_client";
 import { url } from "../../../Global";
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const getPos = (string, subString, index) => {
+  return string.split(subString, index).join(subString).length;
+};
+
+const formatDate = (start, end) => {
+  if (start == undefined) {
+    return null;
+  }
+
+  let startDatetime = new Date(start);
+
+  let endDatetime = new Date(end);
+
+  let formatStartDate =
+    startDatetime.getDay() +
+    " " +
+    months[startDatetime.getMonth()] +
+    " at " +
+    startDatetime.getHours() +
+    ":" +
+    startDatetime.getMinutes();
+
+  let formatEndDate =
+    formatStartDate.slice(0, getPos(formatStartDate, " ", 2)) ==
+    endDatetime.getDay() + " " + months[endDatetime.getMonth()]
+      ? endDatetime.getHours() + ":" + endDatetime.getMinutes()
+      : endDatetime.getDay() +
+        " " +
+        months[endDatetime.getMonth()] +
+        " at " +
+        endDatetime.getHours() +
+        ":" +
+        endDatetime.getMinutes();
+
+  console.log(formatStartDate);
+  return <Card.Text>{formatStartDate + " until " + formatEndDate}</Card.Text>;
+};
+
 const RenderEvents = () => {
   const history = useNavigate();
   const [events, setEvents] = useState([{}]);
@@ -32,59 +85,6 @@ const RenderEvents = () => {
   }, []);
 
   // eslint-disable-next-line no-unused-vars
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const getPos = (string, subString, index) => {
-    return string.split(subString, index).join(subString).length;
-  };
-
-  const formatDate = (start, end) => {
-    if (start == undefined) {
-      return null;
-    }
-
-    let startDatetime = new Date(start);
-
-    let endDatetime = new Date(end);
-
-    let formatStartDate =
-      startDatetime.getDay() +
-      " " +
-      months[startDatetime.getMonth()] +
-      " at " +
-      startDatetime.getHours() +
-      ":" +
-      startDatetime.getMinutes();
-
-    let formatEndDate =
-      formatStartDate.slice(0, getPos(formatStartDate, " ", 2)) ==
-      endDatetime.getDay() + " " + months[endDatetime.getMonth()]
-        ? endDatetime.getHours() + ":" + endDatetime.getMinutes()
-        : endDatetime.getDay() +
-          " " +
-          months[endDatetime.getMonth()] +
-          " at " +
-          endDatetime.getHours() +
-          ":" +
-          endDatetime.getMinutes();
-
-    console.log(formatStartDate);
-    return <Card.Text>{formatStartDate + " until " + formatEndDate}</Card.Text>;
-  };
 
   if (Validate()) {
     return (
@@ -130,7 +130,7 @@ const RenderEvents = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/jobs/actions", {
+                    history("/admin/dashboard/events/actions", {
                       state: {
                         event_data: event,
                       },
@@ -151,4 +151,5 @@ const RenderEvents = () => {
   }
 };
 
+export { formatDate };
 export default RenderEvents;
