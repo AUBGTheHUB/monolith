@@ -12,6 +12,9 @@ import AddJobs from './components/admin_page/jobs_page/add_jobs';
 import RenderEvents from './components/admin_page/events_page/render_events';
 import AddEvent from './components/admin_page/events_page/add_event';
 import EventActions from './components/admin_page/events_page/actions_events';
+import RenderArticles from './components/admin_page/articles_page/render_articles';
+import AddArticle from './components/admin_page/articles_page/add_article';
+import ArticleActions from './components/admin_page/articles_page/actions_articles';
 
 function App() {
   return (
@@ -27,9 +30,12 @@ function App() {
       <Route path="/admin/dashboard/jobs/add" element={<AddJobs/>} />
       <Route path="/admin/dashboard/events" element={<RenderEvents/>} />
       <Route path="/admin/dashboard/events/add" element={<AddEvent/>} />
-      <Route path="/admin/dashboard/events/actions" element={<EventActions/>}/>
+      <Route path="/admin/dashboard/events/actions" element={<EventActions/>} />
+      <Route path="/admin/dashboard/articles" element={<RenderArticles/>} />
+      <Route path="/admin/dashboard/articles/add" element={<AddArticle/>} />
+      <Route path="/admin/dashboard/articles/actions" element={<ArticleActions/> } />
     </Routes>
-  );
+    );
 }
 
 export default App;

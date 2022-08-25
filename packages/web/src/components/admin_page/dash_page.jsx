@@ -50,7 +50,12 @@ const Dash = () => {
               <Card.Text>
                 Upload articles written by members of the club.{" "}
               </Card.Text>
-              <Button variant="primary">See current articles</Button>
+              <Button
+                variant="primary"
+                onClick={() => history("/admin/dashboard/articles")}
+              >
+                See current articles
+              </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
