@@ -15,6 +15,9 @@ import EventActions from './components/admin_page/events_page/actions_events';
 import RenderArticles from './components/admin_page/articles_page/render_articles';
 import AddArticle from './components/admin_page/articles_page/add_article';
 import ArticleActions from './components/admin_page/articles_page/actions_articles';
+import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/render_mentors';
+import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors';
+import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors';
 
 function App() {
   return (
@@ -34,6 +37,9 @@ function App() {
       <Route path="/admin/dashboard/articles" element={<RenderArticles/>} />
       <Route path="/admin/dashboard/articles/add" element={<AddArticle/>} />
       <Route path="/admin/dashboard/articles/actions" element={<ArticleActions/> } />
+      <Route path="/admin/dashboard/mentors" element={<RenderMentors/>} />
+      <Route path="/admin/dashboard/mentors/add" element={<AddMentors/>} />
+      <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions/>} />
     </Routes>
     );
 }
