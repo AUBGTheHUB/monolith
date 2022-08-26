@@ -42,7 +42,7 @@ const AddMentors = () => {
         history(-1);
       })
       .catch((err) => {
-        alert(err["request"]["response"]);
+        alert(err["response"]["data"]["data"]["data"]);
         console.log(err);
       });
   };

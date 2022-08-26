@@ -41,6 +41,7 @@ const AddJobs = () => {
         history(-1);
       })
       .catch((err) => {
+        alert(err["response"]["data"]["message"]);
         console.log(err);
       });
   };
@@ -95,7 +96,7 @@ const AddJobs = () => {
               addNewJob();
             }}
           >
-            Add new member
+            Add new job
           </Button>
         </Form>
       </div>

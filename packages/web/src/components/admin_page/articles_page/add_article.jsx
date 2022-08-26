@@ -44,6 +44,7 @@ const AddArticle = () => {
         history(-1);
       })
       .catch((err) => {
+        alert(err["response"]["data"]["data"]["data"]);
         console.log(err);
       });
   };
