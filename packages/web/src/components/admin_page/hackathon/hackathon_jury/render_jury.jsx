@@ -1,52 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, Button } from "react-bootstrap";
-import Validate from "../../../Global";
 import { useNavigate } from "react-router-dom";
-import InvalidClient from "../invalid_client";
 import axios from "axios";
-import { url } from "../../../Global";
+import { useState } from "react";
+import { useEffect } from "react";
+import { url } from "../../../../Global";
+import Validate from "../../../../Global";
+import InvalidClient from "../../invalid_client";
 
-const RenderMembers = () => {
+const RenderJury = () => {
   const history = useNavigate();
-  const [members, setMembers] = useState([]);
+  const [jury, setJury] = useState([{}]);
 
-  const getMembers = () => {
+  const getJury = () => {
     axios({
       method: "get",
-      url: url + "/api/members",
+      url: url + "/api/jury",
     })
       .then((res) => {
-        setMembers(res.data.data.data);
+        setJury(res.data.data.data);
       })
-      // eslint-disable-next-line no-unused-vars
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  useEffect(() => {
-    getMembers();
-  }, []);
-
   const renderMap = () => {
-    if (members) {
+    if (jury) {
       return (
         <div className="members-box">
-          {members.map((person, index) => (
+          {jury.map((jury, index) => (
             <Card
               style={{ width: "18rem" }}
               key={index}
               className="member-card"
             >
-              <Card.Img variant="top" src={person["profilepicture"]} />
+              <Card.Img variant="top" src={jury["profilepicture"]} />
               <Card.Body>
                 <Card.Title>
-                  {person["firstname"] + " " + person["lastname"]}
+                  {jury["firstname"] + " " + jury["lastname"]}
                 </Card.Title>
-                <Card.Text>{"Position: " + person["position"]}</Card.Text>
-                <Card.Text>{"Department: " + person["department"]}</Card.Text>
+                <Card.Text>{jury["position"]}</Card.Text>
+                <Card.Text>{jury["company"]}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(person["sociallink"]);
+                    window.open(jury["sociallink"]);
                   }}
                   className="linkedin-button"
                 >
@@ -55,12 +54,12 @@ const RenderMembers = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/members/actions", {
+                    history("/admin/dashboard/jury/actions", {
                       state: {
-                        member_data: person,
+                        jury_data: jury,
                       },
                     });
-                    console.log(person["id"]);
+                    console.log(jury["id"]);
                   }}
                 >
                   Actions
@@ -73,16 +72,20 @@ const RenderMembers = () => {
     }
   };
 
+  useEffect(() => {
+    getJury();
+  }, []);
+
   if (Validate()) {
     return (
       <div className="members-box-add-button">
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/members/add", {});
+            history("/admin/dashboard/jury/add", {});
           }}
         >
-          Add Member
+          Add Jury
         </Button>
         {renderMap()}
       </div>
@@ -92,4 +95,4 @@ const RenderMembers = () => {
   }
 };
 
-export default RenderMembers;
+export default RenderJury;

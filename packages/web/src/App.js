@@ -18,6 +18,9 @@ import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/r
 import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors';
 import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors';
 import RenderMembers from './components/admin_page/members_page/render_members';
+import RenderJury from './components/admin_page/hackathon/hackathon_jury/render_jury';
+import AddJury from './components/admin_page/hackathon/hackathon_jury/add_jury';
+import JuryActions from './components/admin_page/hackathon/hackathon_jury/actions_mentors';
 
 function App() {
   return (
@@ -40,6 +43,9 @@ function App() {
       <Route path="/admin/dashboard/mentors" element={<RenderMentors/>} />
       <Route path="/admin/dashboard/mentors/add" element={<AddMentors/>} />
       <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions/>} />
+      <Route path="/admin/dashboard/jury" element={<RenderJury/>} />
+      <Route path="/admin/dashboard/jury/add" element={<AddJury/>} />
+      <Route path="/admin/dashboard/jury/actions" element={<JuryActions/>} />
     </Routes>
     );
 }

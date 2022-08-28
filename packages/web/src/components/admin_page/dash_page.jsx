@@ -94,7 +94,14 @@ const Dash = () => {
             <Card.Body>
               <Card.Title>Hackathon Jury</Card.Title>
               <Card.Text>Add or remove jury for the hackathon.</Card.Text>
-              <Button variant="primary">See current job positions</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history("/admin/dashboard/jury");
+                }}
+              >
+                See current job positions
+              </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
