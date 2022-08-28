@@ -1,29 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button } from "react-bootstrap";
 import Validate from "../../../Global";
 import { useNavigate } from "react-router-dom";
 import InvalidClient from "../invalid_client";
+import axios from "axios";
+import { url } from "../../../Global";
 
-const RenderMembers = (members) => {
+const RenderMembers = () => {
   const history = useNavigate();
+  // eslint-disable-next-line no-unused-vars
+  const [members, setMembers] = useState([]);
 
-  if (Validate()) {
-    return (
-      <div className="members-box-add-button">
-        <Button
-          variant="primary"
-          onClick={() => {
-            history("/admin/dashboard/members/add", {
-              state: {
-                // we do not need it anymore -- id is generated in mongo automatically
-              },
-            });
-          }}
-        >
-          Add Member
-        </Button>
+  const getMembers = () => {
+    axios({
+      method: "get",
+      url: url + "/api/members",
+    })
+      .then((res) => {
+        setMembers(res.data.data.data);
+        console.log(res.data.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getMembers();
+  }, []);
+
+  const renderMap = () => {
+    if (members) {
+      return (
         <div className="members-box">
-          {members.members.map((person, index) => (
+          {members.map((person, index) => (
             <Card
               style={{ width: "18rem" }}
               key={index}
@@ -62,6 +72,22 @@ const RenderMembers = (members) => {
             </Card>
           ))}
         </div>
+      );
+    }
+  };
+
+  if (Validate()) {
+    return (
+      <div className="members-box-add-button">
+        <Button
+          variant="primary"
+          onClick={() => {
+            history("/admin/dashboard/members/add", {});
+          }}
+        >
+          Add Member
+        </Button>
+        {renderMap()}
       </div>
     );
   } else {

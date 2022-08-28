@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/landing_home_page';
 import LandingAdminPage from './components/admin_page/landing_admin_page';
 import Dashboard from './components/admin_page/admin_dashboard';
-import Members from './components/admin_page/members_page/members';
 import MemberActions from './components/admin_page/members_page/single_member';
 import AddMember from './components/admin_page/members_page/new_member';
 import RenderJobs from './components/admin_page/jobs_page/render_jobs';
@@ -18,6 +17,7 @@ import ArticleActions from './components/admin_page/articles_page/actions_articl
 import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/render_mentors';
 import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors';
 import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors';
+import RenderMembers from './components/admin_page/members_page/render_members';
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
       <Route path="/" element={<LandingHome />} />
       <Route path="/admin" element={<LandingAdminPage />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
-      <Route path="/admin/dashboard/members" element={<Members />} />
+      <Route path="/admin/dashboard/members" element={<RenderMembers/>} />
       <Route path="/admin/dashboard/members/actions" element={<MemberActions />} />
       <Route path="/admin/dashboard/members/add" element={<AddMember />} />
       <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
