@@ -30,17 +30,9 @@ const RenderJobs = () => {
     getJobs();
   }, []);
 
-  if (Validate()) {
-    return (
-      <div className="members-box-add-button">
-        <Button
-          variant="primary"
-          onClick={() => {
-            history("/admin/dashboard/jobs/add", {});
-          }}
-        >
-          Add Job
-        </Button>
+  const renderMap = () => {
+    if (jobs) {
+      return (
         <div className="members-box">
           {jobs.map((job, index) => (
             <Card
@@ -79,6 +71,22 @@ const RenderJobs = () => {
             </Card>
           ))}
         </div>
+      );
+    }
+  };
+
+  if (Validate()) {
+    return (
+      <div className="members-box-add-button">
+        <Button
+          variant="primary"
+          onClick={() => {
+            history("/admin/dashboard/jobs/add", {});
+          }}
+        >
+          Add Job
+        </Button>
+        {renderMap()}
       </div>
     );
   } else {
