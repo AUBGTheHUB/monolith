@@ -30,17 +30,9 @@ const RenderArticles = () => {
     getArticles();
   }, []);
 
-  if (Validate()) {
-    return (
-      <div className="members-box-add-button">
-        <Button
-          variant="primary"
-          onClick={() => {
-            history("/admin/dashboard/articles/add", {});
-          }}
-        >
-          Add Article
-        </Button>
+  const renderMap = () => {
+    if (articles)
+      return (
         <div className="members-box">
           {articles.map((article, index) => (
             <Card
@@ -78,6 +70,21 @@ const RenderArticles = () => {
             </Card>
           ))}
         </div>
+      );
+  };
+
+  if (Validate()) {
+    return (
+      <div className="members-box-add-button">
+        <Button
+          variant="primary"
+          onClick={() => {
+            history("/admin/dashboard/articles/add", {});
+          }}
+        >
+          Add Article
+        </Button>
+        {renderMap()}
       </div>
     );
   } else {
