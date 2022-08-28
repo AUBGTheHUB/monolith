@@ -76,7 +76,7 @@ const RenderEvents = () => {
       })
       // eslint-disable-next-line no-unused-vars
       .catch((err) => {
-        // console.log(err);
+        // maybe should be handled?
       });
   };
 
@@ -84,19 +84,9 @@ const RenderEvents = () => {
     getJobs();
   }, []);
 
-  // eslint-disable-next-line no-unused-vars
-
-  if (Validate()) {
-    return (
-      <div className="members-box-add-button">
-        <Button
-          variant="primary"
-          onClick={() => {
-            history("/admin/dashboard/events/add", {});
-          }}
-        >
-          Add Event
-        </Button>
+  const renderMap = () => {
+    if (events) {
+      return (
         <div className="members-box">
           {events.map((event, index) => (
             <Card
@@ -145,6 +135,24 @@ const RenderEvents = () => {
             </Card>
           ))}
         </div>
+      );
+    }
+  };
+
+  // eslint-disable-next-line no-unused-vars
+
+  if (Validate()) {
+    return (
+      <div className="members-box-add-button">
+        <Button
+          variant="primary"
+          onClick={() => {
+            history("/admin/dashboard/events/add", {});
+          }}
+        >
+          Add Event
+        </Button>
+        {renderMap()}
       </div>
     );
   } else {
