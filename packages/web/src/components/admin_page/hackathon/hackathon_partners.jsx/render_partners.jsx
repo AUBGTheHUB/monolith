@@ -55,7 +55,6 @@ const RenderPartners = () => {
                         partner_data: partner,
                       },
                     });
-                    console.log(partner["id"]);
                   }}
                 >
                   Actions

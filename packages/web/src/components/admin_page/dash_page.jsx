@@ -79,56 +79,56 @@ const Dash = () => {
           <Card style={{ width: "18rem" }} className="card-dash">
             <Card.Body>
               <Card.Title>Hackathon Mentors</Card.Title>
-              <Card.Text>Add or remove mentors for the hackathon.</Card.Text>
+              <Card.Text>Add or remove hackathon mentors.</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
                   history("/admin/dashboard/mentors");
                 }}
               >
-                See current job positions
+                See hackathon mentors
               </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
             <Card.Body>
               <Card.Title>Hackathon Jury</Card.Title>
-              <Card.Text>Add or remove jury for the hackathon.</Card.Text>
+              <Card.Text>Add or remove current hackathon jury.</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
                   history("/admin/dashboard/jury");
                 }}
               >
-                See current job positions
+                See current hackathon jury
               </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
             <Card.Body>
               <Card.Title>Hackathon Sponsors</Card.Title>
-              <Card.Text>Add or remove sponsors for the hackathon.</Card.Text>
+              <Card.Text>Add or remove hackathon sponsors.</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
                   history("/admin/dashboard/sponsors");
                 }}
               >
-                See current Sponsors
+                See current sponsors
               </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
             <Card.Body>
               <Card.Title>Hackathon Partners</Card.Title>
-              <Card.Text>Add or remove partners for the hackathon.</Card.Text>
+              <Card.Text>Add or remove hackathon partners.</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
                   history("/admin/dashboard/partners");
                 }}
               >
-                See current job positions
+                See current partners
               </Button>
             </Card.Body>
           </Card>

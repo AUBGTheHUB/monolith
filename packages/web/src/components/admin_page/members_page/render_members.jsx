@@ -60,7 +60,6 @@ const RenderMembers = () => {
                         member_data: person,
                       },
                     });
-                    console.log(person["id"]);
                   }}
                 >
                   Actions

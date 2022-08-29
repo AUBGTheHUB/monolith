@@ -55,7 +55,6 @@ const RenderSponsors = () => {
                         sponsor_data: sponsor,
                       },
                     });
-                    console.log(sponsor["id"]);
                   }}
                 >
                   Actions

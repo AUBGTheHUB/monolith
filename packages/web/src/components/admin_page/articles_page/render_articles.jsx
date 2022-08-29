@@ -61,7 +61,6 @@ const RenderArticles = () => {
                         article_data: article,
                       },
                     });
-                    console.log(article["id"]);
                   }}
                 >
                   Actions

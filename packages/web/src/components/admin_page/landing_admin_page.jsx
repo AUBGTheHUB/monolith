@@ -48,7 +48,7 @@ const LandingAdminPage = () => {
   if (Validate()) {
     setTimeout(() => {
       history("/admin/dashboard");
-    }, 2000);
+    }, 500);
     return <LoadingPage />;
   } else {
     return (

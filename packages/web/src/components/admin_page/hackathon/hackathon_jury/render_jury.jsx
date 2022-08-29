@@ -59,7 +59,6 @@ const RenderJury = () => {
                         jury_data: jury,
                       },
                     });
-                    console.log(jury["id"]);
                   }}
                 >
                   Actions

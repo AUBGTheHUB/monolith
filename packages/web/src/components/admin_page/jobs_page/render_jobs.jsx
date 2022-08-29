@@ -62,7 +62,6 @@ const RenderJobs = () => {
                         job_data: job,
                       },
                     });
-                    console.log(job["id"]);
                   }}
                 >
                   Actions

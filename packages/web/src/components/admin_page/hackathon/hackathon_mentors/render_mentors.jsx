@@ -85,7 +85,7 @@ const RenderMentors = () => {
             history("/admin/dashboard/mentors/add", {});
           }}
         >
-          Add Job
+          Add Mentor
         </Button>
         {renderMap()}
       </div>

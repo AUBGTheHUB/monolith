@@ -126,7 +126,6 @@ const RenderEvents = () => {
                         event_data: event,
                       },
                     });
-                    console.log(event["id"]);
                   }}
                 >
                   Actions
