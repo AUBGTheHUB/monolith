@@ -24,6 +24,9 @@ import JuryActions from './components/admin_page/hackathon/hackathon_jury/action
 import RenderSponsors from './components/admin_page/hackathon/hackathon_sponsors/render_sponsors';
 import AddSponsors from './components/admin_page/hackathon/hackathon_sponsors/add_sponsors';
 import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsors/actions_sponsors';
+import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners';
+import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
+import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 
 function App() {
   return (
@@ -52,6 +55,9 @@ function App() {
       <Route path="/admin/dashboard/sponsors" element={<RenderSponsors/>} />
       <Route path="/admin/dashboard/sponsors/add" element={<AddSponsors/>} />
       <Route path="/admin/dashboard/sponsors/actions" element={<SponsorsActions/>} />
+      <Route path="/admin/dashboard/partners" element={<RenderPartners/>} />
+      <Route path="/admin/dashboard/partners/add" element={<AddPartners/>} />
+      <Route path="/admin/dashboard/partners/actions" element={<PartnersActions/>} />
     </Routes>
     );
 }

@@ -122,7 +122,14 @@ const Dash = () => {
             <Card.Body>
               <Card.Title>Hackathon Partners</Card.Title>
               <Card.Text>Add or remove partners for the hackathon.</Card.Text>
-              <Button variant="primary">See current job positions</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history("/admin/dashboard/partners");
+                }}
+              >
+                See current job positions
+              </Button>
             </Card.Body>
           </Card>
         </div>

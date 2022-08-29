@@ -5,10 +5,10 @@ import { Card, Form, Button } from "react-bootstrap";
 import InvalidClient from "../../invalid_client";
 import Validate, { url } from "../../../../Global";
 
-const SponsorsActions = () => {
+const PartnersActions = () => {
   const location = useLocation();
   const history = useNavigate();
-  const sponsor_data = location.state.sponsor_data;
+  const sponsor_data = location.state.partner_data;
 
   const [formState, setFormState] = useState({
     profilepicture: "",
@@ -30,12 +30,12 @@ const SponsorsActions = () => {
   const remove_sponsor = () => {
     axios({
       method: "delete",
-      url: url + "/api/sponsors/" + sponsor_data["id"] + "/",
+      url: url + "/api/partners/" + sponsor_data["id"] + "/",
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Sponsor has been deleted");
+        console.log("Partner has been deleted");
         history(-1);
       })
       .catch((err) => {
@@ -46,13 +46,13 @@ const SponsorsActions = () => {
   const edit_sponsor = () => {
     axios({
       method: "put",
-      url: url + "/api/sponsors/" + sponsor_data["id"],
+      url: url + "/api/partners/" + sponsor_data["id"],
       headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
       data: { ...formState },
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Mentor info has been edited");
+        console.log("Partner info has been edited");
         history(-1);
       })
       .catch((err) => {
@@ -127,7 +127,7 @@ const SponsorsActions = () => {
                 edit_sponsor();
               }}
             >
-              Edit Sponsor
+              Edit Partner
             </Button>
           </Form>
         </div>
@@ -138,4 +138,4 @@ const SponsorsActions = () => {
   }
 };
 
-export default SponsorsActions;
+export default PartnersActions;
