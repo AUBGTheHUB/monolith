@@ -19,7 +19,6 @@ const RenderArticles = () => {
     })
       .then((res) => {
         setArticles(res.data.data.data);
-        console.log(res.data.data.data);
       })
       .catch((err) => {
         console.log(err);

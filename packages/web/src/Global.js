@@ -13,11 +13,10 @@ const Validate = () => {
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => { 
-        console.log('Client is validated');
         setValidated(true);
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((err) => {
-        console.log('Client is not validated: ', err);
         setValidated(false);
       });
   }, []);
