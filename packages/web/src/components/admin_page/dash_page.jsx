@@ -108,7 +108,14 @@ const Dash = () => {
             <Card.Body>
               <Card.Title>Hackathon Sponsors</Card.Title>
               <Card.Text>Add or remove sponsors for the hackathon.</Card.Text>
-              <Button variant="primary">See current job positions</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  history("/admin/dashboard/sponsors");
+                }}
+              >
+                See current Sponsors
+              </Button>
             </Card.Body>
           </Card>
           <Card style={{ width: "18rem" }} className="card-dash">
