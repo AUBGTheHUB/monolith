@@ -43,7 +43,6 @@ const AddMember = () => {
       })
       .catch((err) => {
         alert(err["response"]["data"]["data"]["data"]);
-        console.log(err);
       });
   };
 
