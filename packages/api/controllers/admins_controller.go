@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"hub-backend/configs"
 	"hub-backend/models"
 	"hub-backend/responses"
@@ -38,7 +37,7 @@ func LoginAdmin(c *fiber.Ctx) error {
 	}
 
 	auth_token := configs.ReturnAuthToken()
-	fmt.Println(auth_token)
+
 	if auth_token == "" {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
