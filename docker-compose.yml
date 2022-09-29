@@ -23,5 +23,4 @@ services:
       - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
       - server
-    # missing parameter from initial dockerfile
     command: nginx -g 'daemon off';
