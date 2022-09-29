@@ -50,6 +50,12 @@ This is going to execute a script which will <em>install</em> git commit hooks.
 The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.  
 The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!   
 
+### Docker
+
+```shell
+docker-compose up --build 
+```
+
 --- 
 ## Directory structure
 ```
