@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# In case we decide not to use the Make phony
 current_directory=${PWD##*/} 
 if [[ $current_directory != "spa-website-2022" ]]
 then
