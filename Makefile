@@ -18,4 +18,4 @@ lint:
 
 .PHONY: install-hooks
 install-hooks:
-	cd ./.githooks && ./install_hooks.sh
+	./.githooks/install_hooks.sh
