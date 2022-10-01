@@ -35,5 +35,5 @@ else
 	make install-hooks 
 	make install-web
 
-	echo "alias spa = \"cd ${PWD}\"" >> $HOME/.zshrc
+	echo "alias spa=\"cd ${PWD}\"" >> $HOME/.zshrc
 fi
