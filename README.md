@@ -7,13 +7,15 @@
 
 ### OSX installation
 
+* Default location of GO is `/usr/local/go`, therefore in order to work on the project you might need to run everything with elevated rights - `sudo <command>`
+
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | sudo bash
 ```
 
 And then run:
 ```shell
-cd /usr/local/go/src/spa-website-2022 && make post-osx
+cd /usr/local/go/src/spa-website-2022 && sudo make post-osx
 ```
 
 ### Backend
