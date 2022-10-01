@@ -5,6 +5,12 @@
 `npm run` <em>commands should be run in the `web` directory</em>   
 ##### *** Recommended Text Editor: *** `VSCode`
 
+### OSX installation
+
+```shell
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash && make post-osx
+```
+
 ### Backend
 * Installation from `root`: 
 ```shell
