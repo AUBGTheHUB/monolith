@@ -1,21 +1,40 @@
-#/bin/sh
+#!/bin/sh
+ 
+if [ "$1" != "--post" ]; then
+ 
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ 
+	brew install nvm
+ 
+	brew install wget
+ 
+	cd $HOME/Downloads
+ 
+	if [[ $(uname -m) == 'arm64' ]]
+	then
+	    wget -O go.pkg https://go.dev/dl/go1.19.1.darwin-arm64.pkg 
+	else
+	    wget -O go.pkg https://go.dev/dl/go1.19.1.darwin-amd64.pkg
+	fi
+ 
+	sudo installer -verbose -pkg $HOME/Downloads/go.pkg -target $HOME
+    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
 
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    cd /usr/local/go/src
+    
+	git clone git@github.com:AUBGTheHUB/spa-website-2022.git
 
-brew install nvm
+    cd spa-website-2022
 
-cd ~/Downloads
-
-if [[ $(uname -m) == 'arm64' ]]
-then
-    curl https://go.dev/dl/go1.19.1.darwin-arm64.pkg
-    installer -pkg go1.19.1.darwin-arm64.pkg -target $HOME
+    exec $SHELL
+ 
 else
-    curl https://go.dev/dl/go1.19.1.darwin-amd64.pkg
-    installer -pkg go1.19.1.darwin-amd64.pkg -target $HOME
+	nvm install --lts
+
+	cd /usr/local/go/src/spa-website-2022
+
+	make install-hooks 
+	make install-web
+
+	echo "alias spa = \"cd ${PWD}\"" >> $HOME/.zshrc
 fi
-
-nvm install --lts
-
-echo "export PATH=$PATH:$HOME/go/bin" >> ~/.zshrc
-

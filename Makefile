@@ -19,3 +19,11 @@ lint:
 .PHONY: install-hooks
 install-hooks:
 	./.githooks/install_hooks.sh
+
+.PHONY: install-osx
+install-osx:
+	./install_osx.sh
+
+.PHONY: post-osx
+post-osx:
+	./install_osx.sh --post
