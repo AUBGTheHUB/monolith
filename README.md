@@ -8,7 +8,12 @@
 ### OSX installation
 
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash && make post-osx
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
+```
+
+And then run:
+```shell
+cd /usr/local/go/src/spa-website-2022 && make post-osx
 ```
 
 ### Backend
