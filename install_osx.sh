@@ -18,19 +18,21 @@ if [ "$1" != "--post" ]; then
 	fi
  
 	sudo installer -verbose -pkg $HOME/Downloads/go.pkg -target $HOME
-    	echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
+    echo "export PATH=$PATH:$HOME/go/bin" >> ~/.zshrc
 
-    	cd /usr/local/go/src
+	cd /usr/local/go/src
     
 	git clone git@github.com:AUBGTheHUB/spa-website-2022.git
 
-    	cd spa-website-2022
+    sudo rm -rf $HOME/go
+	sudo mv /usr/local/go $HOME
+	sudo chmod -R 777 $HOME/go/src/spa-website-2022
 
-    	exec $SHELL
+	exec $SHELL
  
 else
-    	nvm install --lts
-	cd /usr/local/go/src/spa-website-2022
+	nvm install --lts
+	cd $HOME/go/src/spa-website-2022
 
 	make install-hooks 
 	make install-web
