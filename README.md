@@ -145,6 +145,19 @@ git push --set-upstream origin #11-Optimizations
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
+### Possible problems:
+
+MONGO DNS issue:
+```bash 
+make run-api
+cd ./packages/api/ && go run main.go
+2022/10/03 01:57:24 error parsing uri: lookup thehubwebsite.h9aqj.mongodb.net on 192.168.68.1:53: cannot unmarshal DNS message
+exit status 1
+make: *** [Makefile:11: run-api] Error 1
+```
+
+--> resolve by [doing this](https://stackoverflow.com/a/60560041)
+
 ### Tips & Tricks:
 * If you suspend either the react app job or the api job by mistake and cannot kill the job for some reason, use this to unbind the port `lsof -ti:PortNumberGoesHere | xargs kill -9`
 
