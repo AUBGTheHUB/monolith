@@ -22,11 +22,15 @@ if [ "$1" != "--post" ]; then
 
 	cd /usr/local/go/src
     
-	git clone git@github.com:AUBGTheHUB/spa-website-2022.git
-
     sudo rm -rf $HOME/go
 	sudo mv /usr/local/go $HOME
-	sudo chmod -R 777 $HOME/go/src/spa-website-2022
+	sudo chmod -R 777 $HOME/go
+    
+    cd $HOME/go/src
+
+	git clone git@github.com:AUBGTheHUB/spa-website-2022.git
+
+    cd spa-website-2022
 
 	exec $SHELL
  
