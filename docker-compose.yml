@@ -5,6 +5,7 @@ services:
 # API
   server:
     build: ./packages/api
+    container_name: api
     expose: 
       - ${APP_SERVER_PORT}
     environment:
@@ -17,6 +18,7 @@ services:
 # WEB
   client:
     build: ./packages/web
+    container_name: web
     expose:
       - ${REACT_APP_PORT}
     ports:
