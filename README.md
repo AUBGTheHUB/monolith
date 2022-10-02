@@ -3,22 +3,25 @@
 ## How to run the project
 `make` <em>commands should be run in the `root` directory of the project</em>  
 `npm run` <em>commands should be run in the `web` directory</em>   
-##### *** Recommended Text Editor: *** `VSCode`
+##### Recommended Text Editor: `VSCode`
 
-### Adding your SSH key to the ssh-agent
-This step is both for your convinience so that you don't need to enter the passphrase every time you use the key, and for the scripts below to be able to run properly.
+### Adding your SSH key to the ssh-agent and GitHub
+⚠️ This step is a prerequisite for the installation scripts
+
 Here is the guide:
-https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+* [Generate SSH key and add it to agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+
+* [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
 ### OSX installation
 
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | sudo bash
 ```
 
 And then run:
 ```bash
-cd ~/go/src/spa-website-2022 && sudo make post-osx
+cd ~/go/src/spa-website-2022 && make post-osx
 ```
 
 ### WSL installation
