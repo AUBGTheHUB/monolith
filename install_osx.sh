@@ -32,9 +32,16 @@ if [ "$1" != "--post" ]; then
 
     cd spa-website-2022
 
-	exec $SHELL
+	chsh -s /bin/zsh # set zsh as default
+
+    exec $SHELL 
  
 else
+    echo "IF are getting the following error: nvm command not found"
+    echo "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh"
+    echo "The first step of the project intialization has already set up a new login shell"
+
+	source $HOME/.nvm/nvm.sh
 	nvm install --lts
 	cd $HOME/go/src/spa-website-2022
 
