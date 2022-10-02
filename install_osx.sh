@@ -10,7 +10,6 @@ if [ "$1" != "--post" ]; then
     export "[ -s \"/usr/local/opt/nvm/nvm.sh\" ] && \. \"/usr/local/opt/nvm/nvm.sh\"" >> ~/.zshrc
     export "[ -s \"/usr/local/opt/nvm/etc/bash_completion.d/nvm\" && \. \"/usr/local/opt/nvm/etc/bash_completion.d/nvm\" ]" >> ~/.zshrc
 
- 
 	brew install wget
  
 	cd $HOME/Downloads

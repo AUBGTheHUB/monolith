@@ -7,15 +7,13 @@
 
 ### OSX installation
 
-* Default location of GO is `/usr/local/go`, therefore working with the project requires elevated rights - `sudo <command>` (to be fixed in #37)
-
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | sudo bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
 ```
 
 And then run:
 ```bash
-cd /usr/local/go/src/spa-website-2022 && sudo make post-osx
+cd ~/go/src/spa-website-2022 && sudo make post-osx
 ```
 
 ### WSL installation
@@ -27,6 +25,12 @@ curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/instal
 And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-wsl
+```
+
+### Easy access to repo
+
+```bash
+spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc
 ```
 
 ### Backend
