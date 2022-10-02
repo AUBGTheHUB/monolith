@@ -2,8 +2,6 @@
  
 if [ "$1" != "--post" ]; then
  
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
 	brew install nvm
 
     echo -e 'export NVM_DIR="$HOME/.nvm"

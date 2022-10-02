@@ -15,14 +15,22 @@ Here is the guide:
 
 ### OSX installation
 
+Install brew and follow the instructions (sometimes it asks you to run some additional commands):
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | sudo bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+```shell
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
 ```
 
 And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-osx
 ```
+
+⚠️  If you are getting the following error: `nvm command not found`, you have to log out of your current user and log in again.
+
 
 ### WSL installation
 * For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
