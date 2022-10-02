@@ -7,7 +7,7 @@
 
 ### OSX installation
 
-* Default location of GO is `/usr/local/go`, therefore in order to work on the project you might need to run everything with elevated rights - `sudo <command>`
+* Default location of GO is `/usr/local/go`, therefore working with the project requires elevated rights - `sudo <command>` (to be fixed in #37)
 
 ```shell
 curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | sudo bash
@@ -30,10 +30,10 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 
 ### Backend
 * Installation from `root`: 
-```shell
-# 1. install go - https://go.dev/doc/install
-# 2. git clone the repo in go/src
-# 3. download the .env file from Google Drive and place it in root/packages/api
+```markdown
+1. install go - https://go.dev/doc/install
+2. git clone the repo in go/src
+3. download the .env file from Google Drive and place it in root/packages/api
 ```
 
 * Run:
