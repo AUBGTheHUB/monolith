@@ -19,6 +19,7 @@ cd /usr/local/go/src/spa-website-2022 && sudo make post-osx
 ```
 
 ### WSL installation
+* For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
 ```bash
 curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_wsl.sh | bash
 ```
@@ -29,7 +30,7 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 ```
 
 ### Backend
-* Installation from `root`: 
+* Installation from `root` (not needed if you've run one of the above mentioned installations): 
 ```markdown
 1. install go - https://go.dev/doc/install
 2. git clone the repo in go/src
@@ -42,7 +43,7 @@ make run-api
 ```
 
 ### Frontend 
-* Installation from `root`: 
+* Installation from `root` (needed when there are new packages added to `package.json`): 
 ```shell
 # update node to 16.16.0
 make install-web
@@ -65,7 +66,7 @@ make lint  # makes your code more readable 🥰
 
 * Install pre-commit hook:
 ```shell 
-make install-hooks  # GitBash, WSL, UNIX/Linux -> anything that can run bash scripts
+make install-hooks  # POSIX compliant shells only
 ```
 Do not install the hooks if you are going to be using `Powershell`
 
