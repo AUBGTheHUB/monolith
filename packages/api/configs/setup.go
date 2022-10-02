@@ -13,7 +13,7 @@ func ConnectDB() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI(EnvMongoURI()))
 
 	if err != nil {
-		log.Fatal("Can't connect to DB")
+		log.Fatal(err)
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
