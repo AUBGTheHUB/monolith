@@ -1,5 +1,7 @@
 # @AUBGTheHUB's Single-Page Application
 
+[![Actions Status](https://github.com/AUBGTheHub/spa-website-2022/workflows/build-compose/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions)
+
 ## How to run the project
 `make` <em>commands should be run in the `root` directory of the project</em>  
 `npm run` <em>commands should be run in the `web` directory</em>   

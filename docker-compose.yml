@@ -24,5 +24,5 @@ services:
     ports:
       - ${REACT_APP_PORT}:${REACT_APP_PORT}
     links:
-      - server
+      - "server"
     command: nginx -g 'daemon off';
