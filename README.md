@@ -14,8 +14,18 @@ curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/instal
 ```
 
 And then run:
-```shell
+```bash
 cd /usr/local/go/src/spa-website-2022 && sudo make post-osx
+```
+
+### WSL installation
+```bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_wsl.sh | bash
+```
+
+And then run:
+```bash
+cd ~/go/src/spa-website-2022 && make post-wsl
 ```
 
 ### Backend
