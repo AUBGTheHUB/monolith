@@ -3,12 +3,12 @@
 if [ "$1" != "--post" ]; then
  
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
- 
+
 	brew install nvm
 
-    echo "export NVM_DIR=\$HOME/.nvm" >> ~/.zshrc
-    export "[ -s \"/usr/local/opt/nvm/nvm.sh\" ] && \. \"/usr/local/opt/nvm/nvm.sh\"" >> ~/.zshrc
-    export "[ -s \"/usr/local/opt/nvm/etc/bash_completion.d/nvm\" && \. \"/usr/local/opt/nvm/etc/bash_completion.d/nvm\" ]" >> ~/.zshrc
+    echo -e 'export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
 
 	brew install wget
  
