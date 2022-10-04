@@ -1,7 +1,18 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-const url = 'http://127.0.0.1:8000';
+// eslint-disable-next-line no-undef
+const env = process.env.NODE_ENV;
+
+// url points towards the api
+let url = null;
+
+if(env == "production") {
+  url = 'http://test.thehub-aubg.com:8000'
+} else {
+  url = 'http://127.0.0.1:8000';
+}
+
 
 const Validate = () => {
   const [validated, setValidated] = useState(false);
