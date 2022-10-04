@@ -4,8 +4,8 @@ if [ "$1" != "--post" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 
     echo "NVM_DIR=\"$HOME/.nvm\"" >> ~/.bashrc
-    echo "[ -s \"/$NVM_DIR/nvm.sh/\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> ~/.bashrc
-    echo "[ -s \"/$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> ~/.bashrc
+    echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> ~/.bashrc
+    echo "[ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> ~/.bashrc
 
     wget -O go.tar.gz https://go.dev/dl/go1.19.1.linux-amd64.tar.gz
 
