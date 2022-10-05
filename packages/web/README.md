@@ -42,15 +42,15 @@ Is a panel where you can either update or delete a document (e.g. Remove an old 
 
 ### Links:
 
-- LinkedIn: Copy paste the member's LinkedIn url link in the form field.
-- Other links: urls should always be added with their transfer protocols ( `https://` or `http://` ).
+-   LinkedIn: Copy paste the member's LinkedIn url link in the form field.
+-   Other links: urls should always be added with their transfer protocols ( `https://` or `http://` ).
 
 ### Department:
 
-- `Marketing`, `Design`, `Public Relations`, `Development`, `Logistics`
+-   `Marketing`, `Design`, `Public Relations`, `Development`, `Logistics`
 
 ### Start Date, End Date:
 
-- Should be UTC format
+-   Should be UTC format
 
 ###### In order to be able to do filtering by department in the future

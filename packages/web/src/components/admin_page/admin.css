@@ -1,127 +1,127 @@
 /* login form css */
 .login-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center !important;
-  height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center !important;
+    height: 50vh;
 }
 
 /* login form css */
 .login-page h3 {
-  padding-bottom: 2rem;
+    padding-bottom: 2rem;
 }
 
 /* loading when checking if authenticated css*/
 .loading-page {
-  display: flex;
-  background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    display: flex;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 /* client not validated response css */
 .client-not-validated {
-  display: flex;
-  height: 50vh;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+    display: flex;
+    height: 50vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 /* dashboard */
 .dash {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
 
 .dash-box {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .card-dash {
-  margin: 1rem;
+    margin: 1rem;
 }
 
 /* members page */
 .members-div {
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 /* outside div for the whole render_members.jsx component */
 /* whole purpose of this div is to add the button for adding new members */
 .members-box-add-button {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 /* box where members get rendered in */
 .members-box {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  width: 80vw;
-  margin-left: 10vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 80vw;
+    margin-left: 10vw;
 }
 
 .member-card {
-  margin: 0.5rem;
+    margin: 0.5rem;
 }
 
 .linkedin-button {
-  margin-right: 0.25rem;
+    margin-right: 0.25rem;
 }
 
 /* box which holds the card of a member */
 .single-member-box {
-  display: column;
-  flex-direction: column;
-  justify-content: center;
+    display: column;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* main box for holding the card of a member and the corresponding edit form */
 .actions-single-member {
-  padding-top: 2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 /* box which holds the form for editing */
 .member-form-edit {
-  padding-top: 2rem;
-  margin-left: 4rem;
+    padding-top: 2rem;
+    margin-left: 4rem;
 }
 
 .add-member-main-div {
-  padding-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* add padding to the bottom of the images in the dashboard cards */
 .dashboard-card-images-padding {
-  padding-bottom: 1rem;
+    padding-bottom: 1rem;
 }
 
 /* add margin to the top of the actions button in RenderEvents */
 .padding-top-button-render-events {
-  margin-top: 0.25rem !important;
+    margin-top: 0.25rem !important;
 }
