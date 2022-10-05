@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { url } from "../../../../Global";
-import Validate from "../../../../Global";
-import InvalidClient from "../../invalid_client";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderJury = () => {
   const history = useNavigate();
@@ -14,8 +14,8 @@ const RenderJury = () => {
 
   const getJury = () => {
     axios({
-      method: "get",
-      url: url + "/api/jury",
+      method: 'get',
+      url: url + '/api/jury'
     })
       .then((res) => {
         setJury(res.data.data.data);
@@ -30,22 +30,16 @@ const RenderJury = () => {
       return (
         <div className="members-box">
           {jury.map((jury, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={jury["profilepicture"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={jury['profilepicture']} />
               <Card.Body>
-                <Card.Title>
-                  {jury["firstname"] + " " + jury["lastname"]}
-                </Card.Title>
-                <Card.Text>{jury["position"]}</Card.Text>
-                <Card.Text>{jury["company"]}</Card.Text>
+                <Card.Title>{jury['firstname'] + ' ' + jury['lastname']}</Card.Title>
+                <Card.Text>{jury['position']}</Card.Text>
+                <Card.Text>{jury['company']}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(jury["sociallink"]);
+                    window.open(jury['sociallink']);
                   }}
                   className="linkedin-button"
                 >
@@ -54,10 +48,10 @@ const RenderJury = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/jury/actions", {
+                    history('/admin/dashboard/jury/actions', {
                       state: {
-                        jury_data: jury,
-                      },
+                        jury_data: jury
+                      }
                     });
                   }}
                 >
@@ -81,7 +75,7 @@ const RenderJury = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/jury/add", {});
+            history('/admin/dashboard/jury/add', {});
           }}
         >
           Add Jury

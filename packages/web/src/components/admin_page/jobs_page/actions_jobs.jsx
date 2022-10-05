@@ -1,9 +1,9 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { React, useState } from "react";
-import axios from "axios";
-import Validate, { url } from "../../../Global";
-import { Card, Form, Button } from "react-bootstrap";
-import InvalidClient from "../invalid_client";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import axios from 'axios';
+import Validate, { url } from '../../../Global';
+import { Card, Form, Button } from 'react-bootstrap';
+import InvalidClient from '../invalid_client';
 
 const JobActions = () => {
   const location = useLocation();
@@ -11,11 +11,11 @@ const JobActions = () => {
   const job_data = location.state.job_data;
 
   const [formState, setFormState] = useState({
-    logo: "",
-    company: "",
-    position: "",
-    link: "",
-    description: "",
+    logo: '',
+    company: '',
+    position: '',
+    link: '',
+    description: ''
   });
 
   const handleInputChange = (e) => {
@@ -25,19 +25,19 @@ const JobActions = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
   const remove_job = () => {
     axios({
-      method: "delete",
-      url: url + "/api/job/" + job_data["id"] + "/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
+      method: 'delete',
+      url: url + '/api/job/' + job_data['id'] + '/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Job was deleted");
+        console.log('Job was deleted');
         history(-1);
       })
       .catch((err) => {
@@ -47,14 +47,14 @@ const JobActions = () => {
 
   const edit_job = () => {
     axios({
-      method: "put",
-      url: url + "/api/job/" + job_data["id"],
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'put',
+      url: url + '/api/job/' + job_data['id'],
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Job info was edited");
+        console.log('Job info was edited');
         history(-1);
       })
       .catch((err) => {
@@ -66,16 +66,16 @@ const JobActions = () => {
     return (
       <div className="actions-single-member">
         <div className="single-member-box">
-          <Card style={{ width: "18rem" }} className="member-card">
-            <Card.Img variant="top" src={job_data["logo"]} />
+          <Card style={{ width: '18rem' }} className="member-card">
+            <Card.Img variant="top" src={job_data['logo']} />
             <Card.Body>
-              <Card.Title>{job_data["position"]}</Card.Title>
-              <Card.Text>{"Company: " + job_data["company"]}</Card.Text>
-              <Card.Text>{job_data["description"]}</Card.Text>
+              <Card.Title>{job_data['position']}</Card.Title>
+              <Card.Text>{'Company: ' + job_data['company']}</Card.Text>
+              <Card.Text>{job_data['description']}</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
-                  window.open(job_data["link"]);
+                  window.open(job_data['link']);
                 }}
                 className="linkedin-button"
               >

@@ -1,9 +1,9 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { React, useState } from "react";
-import axios from "axios";
-import Validate, { url } from "../../../Global";
-import { Card, Form, Button } from "react-bootstrap";
-import InvalidClient from "../invalid_client";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import axios from 'axios';
+import Validate, { url } from '../../../Global';
+import { Card, Form, Button } from 'react-bootstrap';
+import InvalidClient from '../invalid_client';
 
 const ArticleActions = () => {
   const location = useLocation();
@@ -11,11 +11,11 @@ const ArticleActions = () => {
   const article_data = location.state.article_data;
 
   const [formState, setFormState] = useState({
-    logo: "",
-    company: "",
-    position: "",
-    link: "",
-    description: "",
+    logo: '',
+    company: '',
+    position: '',
+    link: '',
+    description: ''
   });
 
   const handleInputChange = (e) => {
@@ -25,19 +25,19 @@ const ArticleActions = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
   const remove_article = () => {
     axios({
-      method: "delete",
-      url: url + "/api/article/" + article_data["id"] + "/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
+      method: 'delete',
+      url: url + '/api/article/' + article_data['id'] + '/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Job was deleted");
+        console.log('Job was deleted');
         history(-1);
       })
       .catch((err) => {
@@ -47,14 +47,14 @@ const ArticleActions = () => {
 
   const edit_article = () => {
     axios({
-      method: "put",
-      url: url + "/api/article/" + article_data["id"],
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'put',
+      url: url + '/api/article/' + article_data['id'],
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Job info was edited");
+        console.log('Job info was edited');
         history(-1);
       })
       .catch((err) => {
@@ -66,15 +66,15 @@ const ArticleActions = () => {
     return (
       <div className="actions-single-member">
         <div className="single-member-box">
-          <Card style={{ width: "18rem" }} className="member-card">
-            <Card.Img variant="top" src={article_data["banner"]} />
+          <Card style={{ width: '18rem' }} className="member-card">
+            <Card.Img variant="top" src={article_data['banner']} />
             <Card.Body>
-              <Card.Title>{article_data["title"]}</Card.Title>
-              <Card.Text>{"Written by: " + article_data["author"]}</Card.Text>
+              <Card.Title>{article_data['title']}</Card.Title>
+              <Card.Text>{'Written by: ' + article_data['author']}</Card.Text>
               <Button
                 variant="primary"
                 onClick={() => {
-                  window.open(article_data["mediumLink"]);
+                  window.open(article_data['mediumLink']);
                 }}
                 className="linkedin-button"
               >

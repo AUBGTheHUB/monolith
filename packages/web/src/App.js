@@ -34,32 +34,32 @@ function App() {
       <Route path="/" element={<LandingHome />} />
       <Route path="/admin" element={<LandingAdminPage />} />
       <Route path="/admin/dashboard" element={<Dashboard />} />
-      <Route path="/admin/dashboard/members" element={<RenderMembers/>} />
+      <Route path="/admin/dashboard/members" element={<RenderMembers />} />
       <Route path="/admin/dashboard/members/actions" element={<MemberActions />} />
       <Route path="/admin/dashboard/members/add" element={<AddMember />} />
       <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
-      <Route path="/admin/dashboard/jobs/actions" element={<JobActions/>} />
-      <Route path="/admin/dashboard/jobs/add" element={<AddJobs/>} />
-      <Route path="/admin/dashboard/events" element={<RenderEvents/>} />
-      <Route path="/admin/dashboard/events/add" element={<AddEvent/>} />
-      <Route path="/admin/dashboard/events/actions" element={<EventActions/>} />
-      <Route path="/admin/dashboard/articles" element={<RenderArticles/>} />
-      <Route path="/admin/dashboard/articles/add" element={<AddArticle/>} />
-      <Route path="/admin/dashboard/articles/actions" element={<ArticleActions/> } />
-      <Route path="/admin/dashboard/mentors" element={<RenderMentors/>} />
-      <Route path="/admin/dashboard/mentors/add" element={<AddMentors/>} />
-      <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions/>} />
-      <Route path="/admin/dashboard/jury" element={<RenderJury/>} />
-      <Route path="/admin/dashboard/jury/add" element={<AddJury/>} />
-      <Route path="/admin/dashboard/jury/actions" element={<JuryActions/>} />
-      <Route path="/admin/dashboard/sponsors" element={<RenderSponsors/>} />
-      <Route path="/admin/dashboard/sponsors/add" element={<AddSponsors/>} />
-      <Route path="/admin/dashboard/sponsors/actions" element={<SponsorsActions/>} />
-      <Route path="/admin/dashboard/partners" element={<RenderPartners/>} />
-      <Route path="/admin/dashboard/partners/add" element={<AddPartners/>} />
-      <Route path="/admin/dashboard/partners/actions" element={<PartnersActions/>} />
+      <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
+      <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
+      <Route path="/admin/dashboard/events" element={<RenderEvents />} />
+      <Route path="/admin/dashboard/events/add" element={<AddEvent />} />
+      <Route path="/admin/dashboard/events/actions" element={<EventActions />} />
+      <Route path="/admin/dashboard/articles" element={<RenderArticles />} />
+      <Route path="/admin/dashboard/articles/add" element={<AddArticle />} />
+      <Route path="/admin/dashboard/articles/actions" element={<ArticleActions />} />
+      <Route path="/admin/dashboard/mentors" element={<RenderMentors />} />
+      <Route path="/admin/dashboard/mentors/add" element={<AddMentors />} />
+      <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions />} />
+      <Route path="/admin/dashboard/jury" element={<RenderJury />} />
+      <Route path="/admin/dashboard/jury/add" element={<AddJury />} />
+      <Route path="/admin/dashboard/jury/actions" element={<JuryActions />} />
+      <Route path="/admin/dashboard/sponsors" element={<RenderSponsors />} />
+      <Route path="/admin/dashboard/sponsors/add" element={<AddSponsors />} />
+      <Route path="/admin/dashboard/sponsors/actions" element={<SponsorsActions />} />
+      <Route path="/admin/dashboard/partners" element={<RenderPartners />} />
+      <Route path="/admin/dashboard/partners/add" element={<AddPartners />} />
+      <Route path="/admin/dashboard/partners/actions" element={<PartnersActions />} />
     </Routes>
-    );
+  );
 }
 
 export default App;

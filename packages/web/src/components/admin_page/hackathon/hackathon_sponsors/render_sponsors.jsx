@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { url } from "../../../../Global";
-import Validate from "../../../../Global";
-import InvalidClient from "../../invalid_client";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderSponsors = () => {
   const history = useNavigate();
@@ -14,8 +14,8 @@ const RenderSponsors = () => {
 
   const getJobs = () => {
     axios({
-      method: "get",
-      url: url + "/api/sponsors",
+      method: 'get',
+      url: url + '/api/sponsors'
     })
       .then((res) => {
         setSponsors(res.data.data.data);
@@ -30,18 +30,14 @@ const RenderSponsors = () => {
       return (
         <div className="members-box">
           {sponsors.map((sponsor, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={sponsor["profilepicture"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={sponsor['profilepicture']} />
               <Card.Body>
-                <Card.Title>{sponsor["company"]}</Card.Title>
+                <Card.Title>{sponsor['company']}</Card.Title>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(sponsor["sociallink"]);
+                    window.open(sponsor['sociallink']);
                   }}
                   className="linkedin-button"
                 >
@@ -50,10 +46,10 @@ const RenderSponsors = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/sponsors/actions", {
+                    history('/admin/dashboard/sponsors/actions', {
                       state: {
-                        sponsor_data: sponsor,
-                      },
+                        sponsor_data: sponsor
+                      }
                     });
                   }}
                 >
@@ -77,7 +73,7 @@ const RenderSponsors = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/sponsors/add", {});
+            history('/admin/dashboard/sponsors/add', {});
           }}
         >
           Add Sponsor

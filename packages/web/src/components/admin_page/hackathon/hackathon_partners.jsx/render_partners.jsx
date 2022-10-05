@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { url } from "../../../../Global";
-import Validate from "../../../../Global";
-import InvalidClient from "../../invalid_client";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderPartners = () => {
   const history = useNavigate();
@@ -14,8 +14,8 @@ const RenderPartners = () => {
 
   const getPartners = () => {
     axios({
-      method: "get",
-      url: url + "/api/partners",
+      method: 'get',
+      url: url + '/api/partners'
     })
       .then((res) => {
         setPartners(res.data.data.data);
@@ -30,18 +30,14 @@ const RenderPartners = () => {
       return (
         <div className="members-box">
           {partners.map((partner, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={partner["profilepicture"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={partner['profilepicture']} />
               <Card.Body>
-                <Card.Title>{partner["company"]}</Card.Title>
+                <Card.Title>{partner['company']}</Card.Title>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(partner["sociallink"]);
+                    window.open(partner['sociallink']);
                   }}
                   className="linkedin-button"
                 >
@@ -50,10 +46,10 @@ const RenderPartners = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/partners/actions", {
+                    history('/admin/dashboard/partners/actions', {
                       state: {
-                        partner_data: partner,
-                      },
+                        partner_data: partner
+                      }
                     });
                   }}
                 >
@@ -77,7 +73,7 @@ const RenderPartners = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/partners/add", {});
+            history('/admin/dashboard/partners/add', {});
           }}
         >
           Add Partners

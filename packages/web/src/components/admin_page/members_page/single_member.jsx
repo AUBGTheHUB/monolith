@@ -1,22 +1,22 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import { Card, Button, Form } from "react-bootstrap";
-import axios from "axios";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { url } from "../../../Global";
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Card, Button, Form } from 'react-bootstrap';
+import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { url } from '../../../Global';
 
 const MemberActions = () => {
   const location = useLocation();
   const history = useNavigate();
   const member_data = location.state.member_data;
   const [formState, setFormState] = useState({
-    firstname: "",
-    lastname: "",
-    department: "",
-    position: "",
-    sociallink: "",
-    profilepicture: "",
+    firstname: '',
+    lastname: '',
+    department: '',
+    position: '',
+    sociallink: '',
+    profilepicture: ''
   });
 
   const handleInputChange = (e) => {
@@ -26,7 +26,7 @@ const MemberActions = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -34,13 +34,13 @@ const MemberActions = () => {
 
   const remove_member = () => {
     axios({
-      method: "delete",
-      url: url + "/api/member/" + member_data["id"] + "/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
+      method: 'delete',
+      url: url + '/api/member/' + member_data['id'] + '/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Member was deleted");
+        console.log('Member was deleted');
         history(-1);
       })
       .catch((err) => {
@@ -50,14 +50,14 @@ const MemberActions = () => {
 
   const edit_member = () => {
     axios({
-      method: "put",
-      url: url + "/api/member/" + member_data["id"],
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'put',
+      url: url + '/api/member/' + member_data['id'],
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Member info was edited");
+        console.log('Member info was edited');
         history(-1);
       })
       .catch((err) => {
@@ -68,18 +68,16 @@ const MemberActions = () => {
   return (
     <div className="actions-single-member">
       <div className="single-member-box">
-        <Card style={{ width: "18rem" }} className="member-card">
-          <Card.Img variant="top" src={member_data["profilepicture"]} />
+        <Card style={{ width: '18rem' }} className="member-card">
+          <Card.Img variant="top" src={member_data['profilepicture']} />
           <Card.Body>
-            <Card.Title>
-              {member_data["firstname"] + " " + member_data["lastname"]}
-            </Card.Title>
-            <Card.Text>{"Position: " + member_data["position"]}</Card.Text>
-            <Card.Text>{"Department: " + member_data["department"]}</Card.Text>
+            <Card.Title>{member_data['firstname'] + ' ' + member_data['lastname']}</Card.Title>
+            <Card.Text>{'Position: ' + member_data['position']}</Card.Text>
+            <Card.Text>{'Department: ' + member_data['department']}</Card.Text>
             <Button
               variant="primary"
               onClick={() => {
-                window.open(member_data["sociallink"]);
+                window.open(member_data['sociallink']);
               }}
               className="linkedin-button"
             >

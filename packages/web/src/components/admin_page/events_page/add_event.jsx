@@ -1,25 +1,25 @@
-import React from "react";
+import React from 'react';
 
-import Validate from "../../../Global";
-import InvalidClient from "../invalid_client";
-import { url } from "../../../Global";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import Validate from '../../../Global';
+import InvalidClient from '../invalid_client';
+import { url } from '../../../Global';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 
 const AddEvent = () => {
   const history = useNavigate();
 
   const [formState, setFormState] = useState({
-    title: "",
-    startdate: "",
-    enddate: "",
-    description: "",
-    location: "",
-    locationlink: "",
-    banner: "",
-    facebooklink: "",
+    title: '',
+    startdate: '',
+    enddate: '',
+    description: '',
+    location: '',
+    locationlink: '',
+    banner: '',
+    facebooklink: ''
   });
 
   const handleInputChange = (e) => {
@@ -29,7 +29,7 @@ const AddEvent = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
@@ -37,18 +37,18 @@ const AddEvent = () => {
 
   const addNewEvent = () => {
     axios({
-      method: "post",
-      url: url + "/api/event/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'post',
+      url: url + '/api/event/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("New job was added");
+        console.log('New job was added');
         history(-1);
       })
       .catch((err) => {
-        alert(err["response"]["data"]["data"]["data"]);
+        alert(err['response']['data']['data']['data']);
       });
   };
 

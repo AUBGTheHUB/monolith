@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { url } from "../../../../Global";
-import Validate from "../../../../Global";
-import InvalidClient from "../../invalid_client";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderMentors = () => {
   const history = useNavigate();
@@ -14,8 +14,8 @@ const RenderMentors = () => {
 
   const getJobs = () => {
     axios({
-      method: "get",
-      url: url + "/api/mentors",
+      method: 'get',
+      url: url + '/api/mentors'
     })
       .then((res) => {
         setMentors(res.data.data.data);
@@ -30,22 +30,16 @@ const RenderMentors = () => {
       return (
         <div className="members-box">
           {mentors.map((mentor, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={mentor["profilepicture"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={mentor['profilepicture']} />
               <Card.Body>
-                <Card.Title>
-                  {mentor["firstname"] + " " + mentor["lastname"]}
-                </Card.Title>
-                <Card.Text>{mentor["position"]}</Card.Text>
-                <Card.Text>{mentor["company"]}</Card.Text>
+                <Card.Title>{mentor['firstname'] + ' ' + mentor['lastname']}</Card.Title>
+                <Card.Text>{mentor['position']}</Card.Text>
+                <Card.Text>{mentor['company']}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(mentor["sociallink"]);
+                    window.open(mentor['sociallink']);
                   }}
                   className="linkedin-button"
                 >
@@ -54,12 +48,12 @@ const RenderMentors = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/mentors/actions", {
+                    history('/admin/dashboard/mentors/actions', {
                       state: {
-                        mentor_data: mentor,
-                      },
+                        mentor_data: mentor
+                      }
                     });
-                    console.log(mentor["id"]);
+                    console.log(mentor['id']);
                   }}
                 >
                   Actions
@@ -82,7 +76,7 @@ const RenderMentors = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/mentors/add", {});
+            history('/admin/dashboard/mentors/add', {});
           }}
         >
           Add Mentor

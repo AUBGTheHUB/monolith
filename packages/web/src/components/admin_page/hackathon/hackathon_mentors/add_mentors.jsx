@@ -1,21 +1,21 @@
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { React, useState } from "react";
-import { Form, Button } from "react-bootstrap";
-import Validate from "../../../../Global";
-import { url } from "../../../../Global";
-import InvalidClient from "../../invalid_client";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
+import Validate from '../../../../Global';
+import { url } from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const AddMentors = () => {
   const history = useNavigate();
 
   const [formState, setFormState] = useState({
-    firstname: "",
-    company: "",
-    position: "",
-    sociallink: "",
-    lastname: "",
-    profilepicture: "",
+    firstname: '',
+    company: '',
+    position: '',
+    sociallink: '',
+    lastname: '',
+    profilepicture: ''
   });
 
   const handleInputChange = (e) => {
@@ -25,24 +25,24 @@ const AddMentors = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
   const addNewJob = () => {
     axios({
-      method: "post",
-      url: url + "/api/mentors/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'post',
+      url: url + '/api/mentors/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("New Mentor has been added");
+        console.log('New Mentor has been added');
         history(-1);
       })
       .catch((err) => {
-        alert(err["response"]["data"]["data"]["data"]);
+        alert(err['response']['data']['data']['data']);
       });
   };
 

@@ -1,12 +1,12 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import Validate from "../../../Global";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { url } from "../../../Global";
-import InvalidClient from "../invalid_client";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../Global';
+import InvalidClient from '../invalid_client';
 
 const RenderArticles = () => {
   const history = useNavigate();
@@ -14,8 +14,8 @@ const RenderArticles = () => {
 
   const getArticles = () => {
     axios({
-      method: "get",
-      url: url + "/api/article",
+      method: 'get',
+      url: url + '/api/article'
     })
       .then((res) => {
         setArticles(res.data.data.data);
@@ -34,19 +34,15 @@ const RenderArticles = () => {
       return (
         <div className="members-box">
           {articles.map((article, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={article["banner"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={article['banner']} />
               <Card.Body>
-                <Card.Title>{article["title"]}</Card.Title>
-                <Card.Text>{"Written by: " + article["author"]}</Card.Text>
+                <Card.Title>{article['title']}</Card.Title>
+                <Card.Text>{'Written by: ' + article['author']}</Card.Text>
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(article["mediumLink"]);
+                    window.open(article['mediumLink']);
                   }}
                   className="linkedin-button"
                 >
@@ -55,10 +51,10 @@ const RenderArticles = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    history("/admin/dashboard/articles/actions", {
+                    history('/admin/dashboard/articles/actions', {
                       state: {
-                        article_data: article,
-                      },
+                        article_data: article
+                      }
                     });
                   }}
                 >
@@ -77,7 +73,7 @@ const RenderArticles = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/articles/add", {});
+            history('/admin/dashboard/articles/add', {});
           }}
         >
           Add Article

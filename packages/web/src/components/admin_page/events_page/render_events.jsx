@@ -1,26 +1,26 @@
-import React from "react";
-import { Card, Button } from "react-bootstrap";
-import Validate from "../../../Global";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import InvalidClient from "../invalid_client";
-import { url } from "../../../Global";
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import InvalidClient from '../invalid_client';
+import { url } from '../../../Global';
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
 ];
 
 const getPos = (string, subString, index) => {
@@ -38,27 +38,27 @@ const formatDate = (start, end) => {
 
   let formatStartDate =
     startDatetime.getDay() +
-    " " +
+    ' ' +
     months[startDatetime.getMonth()] +
-    " at " +
+    ' at ' +
     startDatetime.getHours() +
-    ":" +
+    ':' +
     startDatetime.getMinutes();
 
   let formatEndDate =
-    formatStartDate.slice(0, getPos(formatStartDate, " ", 2)) ==
-    endDatetime.getDay() + " " + months[endDatetime.getMonth()]
-      ? endDatetime.getHours() + ":" + endDatetime.getMinutes()
+    formatStartDate.slice(0, getPos(formatStartDate, ' ', 2)) ==
+    endDatetime.getDay() + ' ' + months[endDatetime.getMonth()]
+      ? endDatetime.getHours() + ':' + endDatetime.getMinutes()
       : endDatetime.getDay() +
-        " " +
+        ' ' +
         months[endDatetime.getMonth()] +
-        " at " +
+        ' at ' +
         endDatetime.getHours() +
-        ":" +
+        ':' +
         endDatetime.getMinutes();
 
   console.log(formatStartDate);
-  return <Card.Text>{formatStartDate + " until " + formatEndDate}</Card.Text>;
+  return <Card.Text>{formatStartDate + ' until ' + formatEndDate}</Card.Text>;
 };
 
 const RenderEvents = () => {
@@ -67,8 +67,8 @@ const RenderEvents = () => {
 
   const getJobs = () => {
     axios({
-      method: "get",
-      url: url + "/api/event",
+      method: 'get',
+      url: url + '/api/event'
     })
       .then((res) => {
         setEvents(res.data.data.events);
@@ -89,21 +89,17 @@ const RenderEvents = () => {
       return (
         <div className="members-box">
           {events.map((event, index) => (
-            <Card
-              style={{ width: "18rem" }}
-              key={index}
-              className="member-card"
-            >
-              <Card.Img variant="top" src={event["banner"]} />
+            <Card style={{ width: '18rem' }} key={index} className="member-card">
+              <Card.Img variant="top" src={event['banner']} />
               <Card.Body>
-                <Card.Title>{event["title"]}</Card.Title>
-                <Card.Text>{event["description"]}</Card.Text>
-                <Card.Text>{event["location"]}</Card.Text>
-                {formatDate(event["startdate"], event["enddate"])}
+                <Card.Title>{event['title']}</Card.Title>
+                <Card.Text>{event['description']}</Card.Text>
+                <Card.Text>{event['location']}</Card.Text>
+                {formatDate(event['startdate'], event['enddate'])}
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(event["facebooklink"]);
+                    window.open(event['facebooklink']);
                   }}
                   className="linkedin-button"
                 >
@@ -112,7 +108,7 @@ const RenderEvents = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    window.open(event["locationlink"]);
+                    window.open(event['locationlink']);
                   }}
                 >
                   Location
@@ -121,10 +117,10 @@ const RenderEvents = () => {
                   variant="primary"
                   className="padding-top-button-render-events"
                   onClick={() => {
-                    history("/admin/dashboard/events/actions", {
+                    history('/admin/dashboard/events/actions', {
                       state: {
-                        event_data: event,
-                      },
+                        event_data: event
+                      }
                     });
                   }}
                 >
@@ -146,7 +142,7 @@ const RenderEvents = () => {
         <Button
           variant="primary"
           onClick={() => {
-            history("/admin/dashboard/events/add", {});
+            history('/admin/dashboard/events/add', {});
           }}
         >
           Add Event

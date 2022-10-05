@@ -1,9 +1,9 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { React, useState } from "react";
-import axios from "axios";
-import { Card, Form, Button } from "react-bootstrap";
-import InvalidClient from "../../invalid_client";
-import Validate, { url } from "../../../../Global";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import axios from 'axios';
+import { Card, Form, Button } from 'react-bootstrap';
+import InvalidClient from '../../invalid_client';
+import Validate, { url } from '../../../../Global';
 
 const PartnersActions = () => {
   const location = useLocation();
@@ -11,9 +11,9 @@ const PartnersActions = () => {
   const sponsor_data = location.state.partner_data;
 
   const [formState, setFormState] = useState({
-    profilepicture: "",
-    company: "",
-    sociallink: "",
+    profilepicture: '',
+    company: '',
+    sociallink: ''
   });
 
   const handleInputChange = (e) => {
@@ -23,40 +23,40 @@ const PartnersActions = () => {
 
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value
     });
   };
 
   const remove_sponsor = () => {
     axios({
-      method: "delete",
-      url: url + "/api/partners/" + sponsor_data["id"] + "/",
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
+      method: 'delete',
+      url: url + '/api/partners/' + sponsor_data['id'] + '/',
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Partner has been deleted");
+        console.log('Partner has been deleted');
         history(-1);
       })
       .catch((err) => {
-        alert(err["request"]["response"]["data"]);
+        alert(err['request']['response']['data']);
       });
   };
 
   const edit_sponsor = () => {
     axios({
-      method: "put",
-      url: url + "/api/partners/" + sponsor_data["id"],
-      headers: { BEARER_TOKEN: localStorage.getItem("auth_token") },
-      data: { ...formState },
+      method: 'put',
+      url: url + '/api/partners/' + sponsor_data['id'],
+      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+      data: { ...formState }
     })
       // eslint-disable-next-line no-unused-vars
       .then((res) => {
-        console.log("Partner info has been edited");
+        console.log('Partner info has been edited');
         history(-1);
       })
       .catch((err) => {
-        alert(err["response"]["data"]["data"]["data"]);
+        alert(err['response']['data']['data']['data']);
       });
   };
 
@@ -64,14 +64,14 @@ const PartnersActions = () => {
     return (
       <div className="actions-single-member">
         <div className="single-member-box">
-          <Card style={{ width: "18rem" }} className="member-card">
-            <Card.Img variant="top" src={sponsor_data["profilepicture"]} />
+          <Card style={{ width: '18rem' }} className="member-card">
+            <Card.Img variant="top" src={sponsor_data['profilepicture']} />
             <Card.Body>
-              <Card.Title>{sponsor_data["company"]}</Card.Title>
+              <Card.Title>{sponsor_data['company']}</Card.Title>
               <Button
                 variant="primary"
                 onClick={() => {
-                  window.open(sponsor_data["sociallink"]);
+                  window.open(sponsor_data['sociallink']);
                 }}
                 className="linkedin-button"
               >

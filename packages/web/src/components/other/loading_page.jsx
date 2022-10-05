@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
 const LoadingPage = () => {
   return (
     <div className="loading-page">
-      <img src={"/pika_rotate.gif"} alt="loading" />
+      <img src={'/pika_rotate.gif'} alt="loading" />
     </div>
   );
 };
