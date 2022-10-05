@@ -7,32 +7,31 @@ const env = process.env.NODE_ENV;
 // url points towards the api
 let url = null;
 
-if(env == "production") {
-  url = 'http://test.thehub-aubg.com:8000'
+if (env == 'production') {
+    url = 'https://dev.thehub-aubg.com:8000';
 } else {
-  url = 'http://127.0.0.1:8000';
+    url = 'http://127.0.0.1:8000';
 }
 
-
 const Validate = () => {
-  const [validated, setValidated] = useState(false);
-  useEffect(() => {
-    axios({
-      method: 'post',
-      url: url + '/api/validate',
-      headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
-    })
-      // eslint-disable-next-line no-unused-vars
-      .then((res) => { 
-        setValidated(true);
-      })
-      // eslint-disable-next-line no-unused-vars
-      .catch((err) => {
-        setValidated(false);
-      });
-  }, []);
+    const [validated, setValidated] = useState(false);
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: url + '/api/validate',
+            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
+        })
+            // eslint-disable-next-line no-unused-vars
+            .then((res) => {
+                setValidated(true);
+            })
+            // eslint-disable-next-line no-unused-vars
+            .catch((err) => {
+                setValidated(false);
+            });
+    }, []);
 
-  return validated;
+    return validated;
 };
 export { url };
 export default Validate;
