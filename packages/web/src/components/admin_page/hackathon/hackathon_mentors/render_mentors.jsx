@@ -1,29 +1,29 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { url } from '../../../../Global'
-import Validate from '../../../../Global'
-import InvalidClient from '../../invalid_client'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderMentors = () => {
-    const history = useNavigate()
-    const [mentors, setMentors] = useState([{}])
+    const history = useNavigate();
+    const [mentors, setMentors] = useState([{}]);
 
     const getJobs = () => {
         axios({
             method: 'get',
-            url: url + '/api/mentors',
+            url: url + '/api/mentors'
         })
             .then((res) => {
-                setMentors(res.data.data.data)
+                setMentors(res.data.data.data);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const renderMap = () => {
         if (mentors) {
@@ -50,7 +50,7 @@ const RenderMentors = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(mentor['sociallink'])
+                                        window.open(mentor['sociallink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -63,11 +63,11 @@ const RenderMentors = () => {
                                             '/admin/dashboard/mentors/actions',
                                             {
                                                 state: {
-                                                    mentor_data: mentor,
-                                                },
+                                                    mentor_data: mentor
+                                                }
                                             }
-                                        )
-                                        console.log(mentor['id'])
+                                        );
+                                        console.log(mentor['id']);
                                     }}
                                 >
                                     Actions
@@ -76,13 +76,13 @@ const RenderMentors = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     useEffect(() => {
-        getJobs()
-    }, [])
+        getJobs();
+    }, []);
 
     if (Validate()) {
         return (
@@ -90,17 +90,17 @@ const RenderMentors = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/mentors/add', {})
+                        history('/admin/dashboard/mentors/add', {});
                     }}
                 >
                     Add Mentor
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderMentors
+export default RenderMentors;

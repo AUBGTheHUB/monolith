@@ -1,40 +1,40 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line no-undef
-const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV;
 
 // url points towards the api
-let url = null
+let url = null;
 
 if (env == 'production') {
-    url = 'https://dev.thehub-aubg.com:8000'
+    url = 'https://dev.thehub-aubg.com:8000';
 } else {
-    url = 'http://127.0.0.1:8000'
+    url = 'http://127.0.0.1:8000';
 }
 
 const Validate = () => {
-    const [validated, setValidated] = useState(false)
+    const [validated, setValidated] = useState(false);
     useEffect(() => {
         axios({
             method: 'post',
             url: url + '/api/validate',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                setValidated(true)
+                setValidated(true);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
-                setValidated(false)
-            })
-    }, [])
+                setValidated(false);
+            });
+    }, []);
 
-    return validated
-}
-export { url }
-export default Validate
+    return validated;
+};
+export { url };
+export default Validate;
 
 /*
 

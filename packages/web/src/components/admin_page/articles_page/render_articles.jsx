@@ -1,33 +1,33 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import Validate from '../../../Global'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { url } from '../../../Global'
-import InvalidClient from '../invalid_client'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../Global';
+import InvalidClient from '../invalid_client';
 
 const RenderArticles = () => {
-    const history = useNavigate()
-    const [articles, setArticles] = useState([{}])
+    const history = useNavigate();
+    const [articles, setArticles] = useState([{}]);
 
     const getArticles = () => {
         axios({
             method: 'get',
-            url: url + '/api/article',
+            url: url + '/api/article'
         })
             .then((res) => {
-                setArticles(res.data.data.data)
+                setArticles(res.data.data.data);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     useEffect(() => {
-        getArticles()
-    }, [])
+        getArticles();
+    }, []);
 
     const renderMap = () => {
         if (articles)
@@ -48,7 +48,7 @@ const RenderArticles = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(article['mediumLink'])
+                                        window.open(article['mediumLink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -61,10 +61,10 @@ const RenderArticles = () => {
                                             '/admin/dashboard/articles/actions',
                                             {
                                                 state: {
-                                                    article_data: article,
-                                                },
+                                                    article_data: article
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -73,8 +73,8 @@ const RenderArticles = () => {
                         </Card>
                     ))}
                 </div>
-            )
-    }
+            );
+    };
 
     if (Validate()) {
         return (
@@ -82,17 +82,17 @@ const RenderArticles = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/articles/add', {})
+                        history('/admin/dashboard/articles/add', {});
                     }}
                 >
                     Add Article
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderArticles
+export default RenderArticles;

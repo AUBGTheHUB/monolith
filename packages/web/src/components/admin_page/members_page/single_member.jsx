@@ -1,34 +1,34 @@
-import React from 'react'
-import { useLocation } from 'react-router-dom'
-import { Card, Button, Form } from 'react-bootstrap'
-import axios from 'axios'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { url } from '../../../Global'
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { Card, Button, Form } from 'react-bootstrap';
+import axios from 'axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { url } from '../../../Global';
 
 const MemberActions = () => {
-    const location = useLocation()
-    const history = useNavigate()
-    const member_data = location.state.member_data
+    const location = useLocation();
+    const history = useNavigate();
+    const member_data = location.state.member_data;
     const [formState, setFormState] = useState({
         firstname: '',
         lastname: '',
         department: '',
         position: '',
         sociallink: '',
-        profilepicture: '',
-    })
+        profilepicture: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     // pushing useNavigate -1 otherwise the previously passed state does not get saved (hence auth token)
 
@@ -36,34 +36,34 @@ const MemberActions = () => {
         axios({
             method: 'delete',
             url: url + '/api/member/' + member_data['id'] + '/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Member was deleted')
-                history(-1)
+                console.log('Member was deleted');
+                history(-1);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const edit_member = () => {
         axios({
             method: 'put',
             url: url + '/api/member/' + member_data['id'],
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Member info was edited')
-                history(-1)
+                console.log('Member info was edited');
+                history(-1);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     return (
         <div className="actions-single-member">
@@ -88,7 +88,7 @@ const MemberActions = () => {
                         <Button
                             variant="primary"
                             onClick={() => {
-                                window.open(member_data['sociallink'])
+                                window.open(member_data['sociallink']);
                             }}
                             className="linkedin-button"
                         >
@@ -97,7 +97,7 @@ const MemberActions = () => {
                         <Button
                             variant="primary"
                             onClick={() => {
-                                remove_member()
+                                remove_member();
                             }}
                         >
                             Remove
@@ -171,7 +171,7 @@ const MemberActions = () => {
                         variant="primary"
                         type="button"
                         onClick={() => {
-                            edit_member()
+                            edit_member();
                         }}
                     >
                         Edit member
@@ -179,7 +179,7 @@ const MemberActions = () => {
                 </Form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default MemberActions
+export default MemberActions;

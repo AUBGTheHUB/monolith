@@ -1,66 +1,66 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { React, useState } from 'react'
-import axios from 'axios'
-import Validate, { url } from '../../../Global'
-import { Card, Form, Button } from 'react-bootstrap'
-import InvalidClient from '../invalid_client'
+import { useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import axios from 'axios';
+import Validate, { url } from '../../../Global';
+import { Card, Form, Button } from 'react-bootstrap';
+import InvalidClient from '../invalid_client';
 
 const JobActions = () => {
-    const location = useLocation()
-    const history = useNavigate()
-    const job_data = location.state.job_data
+    const location = useLocation();
+    const history = useNavigate();
+    const job_data = location.state.job_data;
 
     const [formState, setFormState] = useState({
         logo: '',
         company: '',
         position: '',
         link: '',
-        description: '',
-    })
+        description: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     const remove_job = () => {
         axios({
             method: 'delete',
             url: url + '/api/job/' + job_data['id'] + '/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Job was deleted')
-                history(-1)
+                console.log('Job was deleted');
+                history(-1);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const edit_job = () => {
         axios({
             method: 'put',
             url: url + '/api/job/' + job_data['id'],
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Job info was edited')
-                history(-1)
+                console.log('Job info was edited');
+                history(-1);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     if (Validate()) {
         return (
@@ -77,7 +77,7 @@ const JobActions = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    window.open(job_data['link'])
+                                    window.open(job_data['link']);
                                 }}
                                 className="linkedin-button"
                             >
@@ -86,7 +86,7 @@ const JobActions = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    remove_job()
+                                    remove_job();
                                 }}
                             >
                                 Remove
@@ -150,7 +150,7 @@ const JobActions = () => {
                             variant="primary"
                             type="button"
                             onClick={() => {
-                                edit_job()
+                                edit_job();
                             }}
                         >
                             Edit job
@@ -158,10 +158,10 @@ const JobActions = () => {
                     </Form>
                 </div>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default JobActions
+export default JobActions;

@@ -1,13 +1,13 @@
-import React from 'react'
-import { Form, Button } from 'react-bootstrap'
-import { useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import Validate, { url } from '../../../Global'
-import InvalidClient from '../invalid_client'
+import React from 'react';
+import { Form, Button } from 'react-bootstrap';
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Validate, { url } from '../../../Global';
+import InvalidClient from '../invalid_client';
 
 const AddMember = () => {
-    const history = useNavigate()
+    const history = useNavigate();
 
     const [formState, setFormState] = useState({
         firstname: '',
@@ -15,36 +15,36 @@ const AddMember = () => {
         department: '',
         position: '',
         sociallink: '',
-        profilepicture: '',
-    })
+        profilepicture: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     const addNewMember = () => {
         axios({
             method: 'post',
             url: url + '/api/member/',
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('New member was added')
-                history(-1)
+                console.log('New member was added');
+                history(-1);
             })
             .catch((err) => {
-                alert(err['response']['data']['data']['data'])
-            })
-    }
+                alert(err['response']['data']['data']['data']);
+            });
+    };
 
     if (Validate()) {
         return (
@@ -113,17 +113,17 @@ const AddMember = () => {
                         variant="primary"
                         type="button"
                         onClick={() => {
-                            addNewMember()
+                            addNewMember();
                         }}
                     >
                         Add new member
                     </Button>
                 </Form>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default AddMember
+export default AddMember;

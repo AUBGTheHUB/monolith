@@ -1,55 +1,55 @@
-import React from 'react'
-import { Form, Button } from 'react-bootstrap'
-import './admin.css'
-import { useState } from 'react'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { url } from '../../Global'
-import Validate from '../../Global'
-import LoadingPage from '../other/loading_page'
+import React from 'react';
+import { Form, Button } from 'react-bootstrap';
+import './admin.css';
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { url } from '../../Global';
+import Validate from '../../Global';
+import LoadingPage from '../other/loading_page';
 
 const LandingAdminPage = () => {
-    const history = useNavigate()
+    const history = useNavigate();
 
     const [formState, setFormState] = useState({
         username: '',
-        password: '',
-    })
+        password: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     const handleSubmit = () => {
         axios({
             method: 'post',
             url: url + '/api/login',
             headers: {},
-            data: { ...formState },
+            data: { ...formState }
         })
             .then((res) => {
-                localStorage.setItem('auth_token', res.data.data.auth_token)
-                console.log('Logged in!')
-                history('/admin/dashboard')
+                localStorage.setItem('auth_token', res.data.data.auth_token);
+                console.log('Logged in!');
+                history('/admin/dashboard');
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
-                console.log('Error logging in')
-            })
-    }
+                console.log('Error logging in');
+            });
+    };
 
     if (Validate()) {
         setTimeout(() => {
-            history('/admin/dashboard')
-        }, 500)
-        return <LoadingPage />
+            history('/admin/dashboard');
+        }, 500);
+        return <LoadingPage />;
     } else {
         return (
             <div className="login-page">
@@ -76,15 +76,15 @@ const LandingAdminPage = () => {
                         variant="primary"
                         type="button"
                         onClick={() => {
-                            handleSubmit()
+                            handleSubmit();
                         }}
                     >
                         Submit
                     </Button>
                 </Form>
             </div>
-        )
+        );
     }
-}
+};
 
-export default LandingAdminPage
+export default LandingAdminPage;

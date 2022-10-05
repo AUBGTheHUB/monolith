@@ -1,34 +1,34 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import Validate from '../../../Global'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { url } from '../../../Global'
-import InvalidClient from '../invalid_client'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../Global';
+import InvalidClient from '../invalid_client';
 
 const RenderJobs = () => {
-    const history = useNavigate()
-    const [jobs, setJobs] = useState([{}])
+    const history = useNavigate();
+    const [jobs, setJobs] = useState([{}]);
 
     const getJobs = () => {
         axios({
             method: 'get',
-            url: url + '/api/job',
+            url: url + '/api/job'
         })
             .then((res) => {
-                setJobs(res.data.data.data)
-                console.log(res.data.data.data)
+                setJobs(res.data.data.data);
+                console.log(res.data.data.data);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     useEffect(() => {
-        getJobs()
-    }, [])
+        getJobs();
+    }, []);
 
     const renderMap = () => {
         if (jobs) {
@@ -48,7 +48,7 @@ const RenderJobs = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(job['link'])
+                                        window.open(job['link']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -61,10 +61,10 @@ const RenderJobs = () => {
                                             '/admin/dashboard/jobs/actions',
                                             {
                                                 state: {
-                                                    job_data: job,
-                                                },
+                                                    job_data: job
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -73,9 +73,9 @@ const RenderJobs = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     if (Validate()) {
         return (
@@ -83,17 +83,17 @@ const RenderJobs = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/jobs/add', {})
+                        history('/admin/dashboard/jobs/add', {});
                     }}
                 >
                     Add Job
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderJobs
+export default RenderJobs;

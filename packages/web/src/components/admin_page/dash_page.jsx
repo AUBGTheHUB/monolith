@@ -1,12 +1,12 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import InvalidClient from './invalid_client'
-import Validate from '../../Global'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import InvalidClient from './invalid_client';
+import Validate from '../../Global';
 const Dash = () => {
-    const history = useNavigate()
+    const history = useNavigate();
 
-    console.log('Dashboard!')
+    console.log('Dashboard!');
 
     if (Validate()) {
         return (
@@ -22,8 +22,8 @@ const Dash = () => {
                                 variant="primary"
                                 onClick={() => {
                                     history('/admin/dashboard/members', {
-                                        state: {},
-                                    })
+                                        state: {}
+                                    });
                                 }}
                             >
                                 See current members
@@ -39,7 +39,7 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/events')
+                                    history('/admin/dashboard/events');
                                 }}
                             >
                                 See current events
@@ -73,8 +73,8 @@ const Dash = () => {
                                 variant="primary"
                                 onClick={() => {
                                     history('/admin/dashboard/jobs', {
-                                        state: {},
-                                    })
+                                        state: {}
+                                    });
                                 }}
                             >
                                 See current job positions
@@ -90,7 +90,7 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/mentors')
+                                    history('/admin/dashboard/mentors');
                                 }}
                             >
                                 See hackathon mentors
@@ -106,7 +106,7 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/jury')
+                                    history('/admin/dashboard/jury');
                                 }}
                             >
                                 See current hackathon jury
@@ -122,7 +122,7 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/sponsors')
+                                    history('/admin/dashboard/sponsors');
                                 }}
                             >
                                 See current sponsors
@@ -138,7 +138,7 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/partners')
+                                    history('/admin/dashboard/partners');
                                 }}
                             >
                                 See current partners
@@ -147,10 +147,10 @@ const Dash = () => {
                     </Card>
                 </div>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default Dash
+export default Dash;

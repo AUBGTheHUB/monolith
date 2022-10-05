@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 
-import Validate from '../../../Global'
-import InvalidClient from '../invalid_client'
-import { url } from '../../../Global'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import Validate from '../../../Global';
+import InvalidClient from '../invalid_client';
+import { url } from '../../../Global';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 
 const AddEvent = () => {
-    const history = useNavigate()
+    const history = useNavigate();
 
     const [formState, setFormState] = useState({
         title: '',
@@ -19,19 +19,19 @@ const AddEvent = () => {
         location: '',
         locationlink: '',
         banner: '',
-        facebooklink: '',
-    })
+        facebooklink: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     // if page does not redirect, this means bad request
 
@@ -40,17 +40,17 @@ const AddEvent = () => {
             method: 'post',
             url: url + '/api/event/',
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('New job was added')
-                history(-1)
+                console.log('New job was added');
+                history(-1);
             })
             .catch((err) => {
-                alert(err['response']['data']['data']['data'])
-            })
-    }
+                alert(err['response']['data']['data']['data']);
+            });
+    };
 
     if (Validate()) {
         return (
@@ -140,17 +140,17 @@ const AddEvent = () => {
                         variant="primary"
                         type="button"
                         onClick={() => {
-                            addNewEvent()
+                            addNewEvent();
                         }}
                     >
                         Add new Event
                     </Button>
                 </Form>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default AddEvent
+export default AddEvent;

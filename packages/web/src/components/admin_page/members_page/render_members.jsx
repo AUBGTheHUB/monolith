@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { Card, Button } from 'react-bootstrap'
-import Validate from '../../../Global'
-import { useNavigate } from 'react-router-dom'
-import InvalidClient from '../invalid_client'
-import axios from 'axios'
-import { url } from '../../../Global'
+import React, { useEffect, useState } from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import InvalidClient from '../invalid_client';
+import axios from 'axios';
+import { url } from '../../../Global';
 
 const RenderMembers = () => {
-    const history = useNavigate()
-    const [members, setMembers] = useState([])
+    const history = useNavigate();
+    const [members, setMembers] = useState([]);
 
     const getMembers = () => {
         axios({
             method: 'get',
-            url: url + '/api/members',
+            url: url + '/api/members'
         })
             .then((res) => {
-                setMembers(res.data.data.data)
+                setMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {})
-    }
+            .catch((err) => {});
+    };
 
     useEffect(() => {
-        getMembers()
-    }, [])
+        getMembers();
+    }, []);
 
     const renderMap = () => {
         if (members) {
@@ -55,7 +55,7 @@ const RenderMembers = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(person['sociallink'])
+                                        window.open(person['sociallink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -68,10 +68,10 @@ const RenderMembers = () => {
                                             '/admin/dashboard/members/actions',
                                             {
                                                 state: {
-                                                    member_data: person,
-                                                },
+                                                    member_data: person
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -80,9 +80,9 @@ const RenderMembers = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     if (Validate()) {
         return (
@@ -90,17 +90,17 @@ const RenderMembers = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/members/add', {})
+                        history('/admin/dashboard/members/add', {});
                     }}
                 >
                     Add Member
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderMembers
+export default RenderMembers;

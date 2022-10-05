@@ -1,29 +1,29 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { url } from '../../../../Global'
-import Validate from '../../../../Global'
-import InvalidClient from '../../invalid_client'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderPartners = () => {
-    const history = useNavigate()
-    const [partners, setPartners] = useState([{}])
+    const history = useNavigate();
+    const [partners, setPartners] = useState([{}]);
 
     const getPartners = () => {
         axios({
             method: 'get',
-            url: url + '/api/partners',
+            url: url + '/api/partners'
         })
             .then((res) => {
-                setPartners(res.data.data.data)
+                setPartners(res.data.data.data);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const renderMap = () => {
         if (partners) {
@@ -44,7 +44,7 @@ const RenderPartners = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(partner['sociallink'])
+                                        window.open(partner['sociallink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -57,10 +57,10 @@ const RenderPartners = () => {
                                             '/admin/dashboard/partners/actions',
                                             {
                                                 state: {
-                                                    partner_data: partner,
-                                                },
+                                                    partner_data: partner
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -69,13 +69,13 @@ const RenderPartners = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     useEffect(() => {
-        getPartners()
-    }, [])
+        getPartners();
+    }, []);
 
     if (Validate()) {
         return (
@@ -83,17 +83,17 @@ const RenderPartners = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/partners/add', {})
+                        history('/admin/dashboard/partners/add', {});
                     }}
                 >
                     Add Partners
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderPartners
+export default RenderPartners;

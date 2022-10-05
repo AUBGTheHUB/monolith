@@ -1,49 +1,49 @@
-import Validate from '../../../Global'
-import InvalidClient from '../invalid_client'
-import { url } from '../../../Global'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { React, useState } from 'react'
-import { Form, Button } from 'react-bootstrap'
+import Validate from '../../../Global';
+import InvalidClient from '../invalid_client';
+import { url } from '../../../Global';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 
 const AddJobs = () => {
-    const history = useNavigate()
+    const history = useNavigate();
 
     const [formState, setFormState] = useState({
         logo: '',
         company: '',
         position: '',
         link: '',
-        description: '',
-    })
+        description: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     const addNewJob = () => {
         axios({
             method: 'post',
             url: url + '/api/job/',
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('New job was added')
-                history(-1)
+                console.log('New job was added');
+                history(-1);
             })
             .catch((err) => {
-                alert(err['response']['data']['message'])
-            })
-    }
+                alert(err['response']['data']['message']);
+            });
+    };
 
     if (Validate()) {
         return (
@@ -92,17 +92,17 @@ const AddJobs = () => {
                         variant="primary"
                         type="button"
                         onClick={() => {
-                            addNewJob()
+                            addNewJob();
                         }}
                     >
                         Add new job
                     </Button>
                 </Form>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default AddJobs
+export default AddJobs;

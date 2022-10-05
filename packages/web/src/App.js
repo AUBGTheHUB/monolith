@@ -1,32 +1,32 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import LandingHome from './components/spa/landing_home_page'
-import LandingAdminPage from './components/admin_page/landing_admin_page'
-import Dashboard from './components/admin_page/admin_dashboard'
-import MemberActions from './components/admin_page/members_page/single_member'
-import AddMember from './components/admin_page/members_page/new_member'
-import RenderJobs from './components/admin_page/jobs_page/render_jobs'
-import JobActions from './components/admin_page/jobs_page/actions_jobs'
-import AddJobs from './components/admin_page/jobs_page/add_jobs'
-import RenderEvents from './components/admin_page/events_page/render_events'
-import AddEvent from './components/admin_page/events_page/add_event'
-import EventActions from './components/admin_page/events_page/actions_events'
-import RenderArticles from './components/admin_page/articles_page/render_articles'
-import AddArticle from './components/admin_page/articles_page/add_article'
-import ArticleActions from './components/admin_page/articles_page/actions_articles'
-import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/render_mentors'
-import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors'
-import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors'
-import RenderMembers from './components/admin_page/members_page/render_members'
-import RenderJury from './components/admin_page/hackathon/hackathon_jury/render_jury'
-import AddJury from './components/admin_page/hackathon/hackathon_jury/add_jury'
-import JuryActions from './components/admin_page/hackathon/hackathon_jury/actions_mentors'
-import RenderSponsors from './components/admin_page/hackathon/hackathon_sponsors/render_sponsors'
-import AddSponsors from './components/admin_page/hackathon/hackathon_sponsors/add_sponsors'
-import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsors/actions_sponsors'
-import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners'
-import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners'
-import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import LandingHome from './components/spa/landing_home_page';
+import LandingAdminPage from './components/admin_page/landing_admin_page';
+import Dashboard from './components/admin_page/admin_dashboard';
+import MemberActions from './components/admin_page/members_page/single_member';
+import AddMember from './components/admin_page/members_page/new_member';
+import RenderJobs from './components/admin_page/jobs_page/render_jobs';
+import JobActions from './components/admin_page/jobs_page/actions_jobs';
+import AddJobs from './components/admin_page/jobs_page/add_jobs';
+import RenderEvents from './components/admin_page/events_page/render_events';
+import AddEvent from './components/admin_page/events_page/add_event';
+import EventActions from './components/admin_page/events_page/actions_events';
+import RenderArticles from './components/admin_page/articles_page/render_articles';
+import AddArticle from './components/admin_page/articles_page/add_article';
+import ArticleActions from './components/admin_page/articles_page/actions_articles';
+import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/render_mentors';
+import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors';
+import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors';
+import RenderMembers from './components/admin_page/members_page/render_members';
+import RenderJury from './components/admin_page/hackathon/hackathon_jury/render_jury';
+import AddJury from './components/admin_page/hackathon/hackathon_jury/add_jury';
+import JuryActions from './components/admin_page/hackathon/hackathon_jury/actions_mentors';
+import RenderSponsors from './components/admin_page/hackathon/hackathon_sponsors/render_sponsors';
+import AddSponsors from './components/admin_page/hackathon/hackathon_sponsors/add_sponsors';
+import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsors/actions_sponsors';
+import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners';
+import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
+import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 
 function App() {
     return (
@@ -113,7 +113,7 @@ function App() {
                 element={<PartnersActions />}
             />
         </Routes>
-    )
+    );
 }
 
-export default App
+export default App;

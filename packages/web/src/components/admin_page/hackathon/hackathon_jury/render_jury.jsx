@@ -1,29 +1,29 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import { url } from '../../../../Global'
-import Validate from '../../../../Global'
-import InvalidClient from '../../invalid_client'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import Validate from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
 const RenderJury = () => {
-    const history = useNavigate()
-    const [jury, setJury] = useState([{}])
+    const history = useNavigate();
+    const [jury, setJury] = useState([{}]);
 
     const getJury = () => {
         axios({
             method: 'get',
-            url: url + '/api/jury',
+            url: url + '/api/jury'
         })
             .then((res) => {
-                setJury(res.data.data.data)
+                setJury(res.data.data.data);
             })
             .catch((err) => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const renderMap = () => {
         if (jury) {
@@ -48,7 +48,7 @@ const RenderJury = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(jury['sociallink'])
+                                        window.open(jury['sociallink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -61,10 +61,10 @@ const RenderJury = () => {
                                             '/admin/dashboard/jury/actions',
                                             {
                                                 state: {
-                                                    jury_data: jury,
-                                                },
+                                                    jury_data: jury
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -73,13 +73,13 @@ const RenderJury = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     useEffect(() => {
-        getJury()
-    }, [])
+        getJury();
+    }, []);
 
     if (Validate()) {
         return (
@@ -87,17 +87,17 @@ const RenderJury = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/jury/add', {})
+                        history('/admin/dashboard/jury/add', {});
                     }}
                 >
                     Add Jury
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export default RenderJury
+export default RenderJury;

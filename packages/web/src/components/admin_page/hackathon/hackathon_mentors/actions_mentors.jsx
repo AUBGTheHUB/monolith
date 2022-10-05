@@ -1,14 +1,14 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { React, useState } from 'react'
-import axios from 'axios'
-import { Card, Form, Button } from 'react-bootstrap'
-import InvalidClient from '../../invalid_client'
-import Validate, { url } from '../../../../Global'
+import { useLocation, useNavigate } from 'react-router-dom';
+import { React, useState } from 'react';
+import axios from 'axios';
+import { Card, Form, Button } from 'react-bootstrap';
+import InvalidClient from '../../invalid_client';
+import Validate, { url } from '../../../../Global';
 
 const MentorsActions = () => {
-    const location = useLocation()
-    const history = useNavigate()
-    const mentor_data = location.state.mentor_data
+    const location = useLocation();
+    const history = useNavigate();
+    const mentor_data = location.state.mentor_data;
 
     const [formState, setFormState] = useState({
         profilepicture: '',
@@ -16,52 +16,52 @@ const MentorsActions = () => {
         lastname: '',
         company: '',
         position: '',
-        sociallink: '',
-    })
+        sociallink: ''
+    });
 
     const handleInputChange = (e) => {
-        const target = e.target
-        const value = target.value
-        const name = target.name
+        const target = e.target;
+        const value = target.value;
+        const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value,
-        })
-    }
+            [name]: value
+        });
+    };
 
     const remove_job = () => {
         axios({
             method: 'delete',
             url: url + '/api/mentors/' + mentor_data['id'] + '/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Mentor has been deleted')
-                history(-1)
+                console.log('Mentor has been deleted');
+                history(-1);
             })
             .catch((err) => {
-                alert(err['request']['response']['data'])
-            })
-    }
+                alert(err['request']['response']['data']);
+            });
+    };
 
     const edit_mentor = () => {
         axios({
             method: 'put',
             url: url + '/api/mentors/' + mentor_data['id'],
             headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
-            data: { ...formState },
+            data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Mentor info has been edited')
-                history(-1)
+                console.log('Mentor info has been edited');
+                history(-1);
             })
             .catch((err) => {
-                alert(err['response']['data']['data']['data'])
-            })
-    }
+                alert(err['response']['data']['data']['data']);
+            });
+    };
 
     if (Validate()) {
         return (
@@ -83,7 +83,7 @@ const MentorsActions = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    window.open(mentor_data['sociallink'])
+                                    window.open(mentor_data['sociallink']);
                                 }}
                                 className="linkedin-button"
                             >
@@ -92,7 +92,7 @@ const MentorsActions = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    remove_job()
+                                    remove_job();
                                 }}
                             >
                                 Remove
@@ -166,7 +166,7 @@ const MentorsActions = () => {
                             variant="primary"
                             type="button"
                             onClick={() => {
-                                edit_mentor()
+                                edit_mentor();
                             }}
                         >
                             Edit Mentor
@@ -174,10 +174,10 @@ const MentorsActions = () => {
                     </Form>
                 </div>
             </div>
-        )
+        );
     } else {
-        return <InvalidClient />
+        return <InvalidClient />;
     }
-}
+};
 
-export default MentorsActions
+export default MentorsActions;

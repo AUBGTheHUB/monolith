@@ -1,12 +1,12 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap'
-import Validate from '../../../Global'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { useState } from 'react'
-import { useEffect } from 'react'
-import InvalidClient from '../invalid_client'
-import { url } from '../../../Global'
+import React from 'react';
+import { Card, Button } from 'react-bootstrap';
+import Validate from '../../../Global';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import InvalidClient from '../invalid_client';
+import { url } from '../../../Global';
 
 const months = [
     'January',
@@ -20,21 +20,21 @@ const months = [
     'September',
     'October',
     'November',
-    'December',
-]
+    'December'
+];
 
 const getPos = (string, subString, index) => {
-    return string.split(subString, index).join(subString).length
-}
+    return string.split(subString, index).join(subString).length;
+};
 
 const formatDate = (start, end) => {
     if (start == undefined) {
-        return null
+        return null;
     }
 
-    let startDatetime = new Date(start)
+    let startDatetime = new Date(start);
 
-    let endDatetime = new Date(end)
+    let endDatetime = new Date(end);
 
     let formatStartDate =
         startDatetime.getDay() +
@@ -43,7 +43,7 @@ const formatDate = (start, end) => {
         ' at ' +
         startDatetime.getHours() +
         ':' +
-        startDatetime.getMinutes()
+        startDatetime.getMinutes();
 
     let formatEndDate =
         formatStartDate.slice(0, getPos(formatStartDate, ' ', 2)) ==
@@ -55,34 +55,34 @@ const formatDate = (start, end) => {
               ' at ' +
               endDatetime.getHours() +
               ':' +
-              endDatetime.getMinutes()
+              endDatetime.getMinutes();
 
-    console.log(formatStartDate)
-    return <Card.Text>{formatStartDate + ' until ' + formatEndDate}</Card.Text>
-}
+    console.log(formatStartDate);
+    return <Card.Text>{formatStartDate + ' until ' + formatEndDate}</Card.Text>;
+};
 
 const RenderEvents = () => {
-    const history = useNavigate()
-    const [events, setEvents] = useState([{}])
+    const history = useNavigate();
+    const [events, setEvents] = useState([{}]);
 
     const getJobs = () => {
         axios({
             method: 'get',
-            url: url + '/api/event',
+            url: url + '/api/event'
         })
             .then((res) => {
-                setEvents(res.data.data.events)
+                setEvents(res.data.data.events);
                 // console.log(res.data.data.events);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
                 // maybe should be handled?
-            })
-    }
+            });
+    };
 
     useEffect(() => {
-        getJobs()
-    }, [])
+        getJobs();
+    }, []);
 
     const renderMap = () => {
         if (events) {
@@ -106,7 +106,7 @@ const RenderEvents = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(event['facebooklink'])
+                                        window.open(event['facebooklink']);
                                     }}
                                     className="linkedin-button"
                                 >
@@ -115,7 +115,7 @@ const RenderEvents = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        window.open(event['locationlink'])
+                                        window.open(event['locationlink']);
                                     }}
                                 >
                                     Location
@@ -128,10 +128,10 @@ const RenderEvents = () => {
                                             '/admin/dashboard/events/actions',
                                             {
                                                 state: {
-                                                    event_data: event,
-                                                },
+                                                    event_data: event
+                                                }
                                             }
-                                        )
+                                        );
                                     }}
                                 >
                                     Actions
@@ -140,9 +140,9 @@ const RenderEvents = () => {
                         </Card>
                     ))}
                 </div>
-            )
+            );
         }
-    }
+    };
 
     // eslint-disable-next-line no-unused-vars
 
@@ -152,18 +152,18 @@ const RenderEvents = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history('/admin/dashboard/events/add', {})
+                        history('/admin/dashboard/events/add', {});
                     }}
                 >
                     Add Event
                 </Button>
                 {renderMap()}
             </div>
-        )
+        );
     } else {
-        ;<InvalidClient />
+        <InvalidClient />;
     }
-}
+};
 
-export { formatDate }
-export default RenderEvents
+export { formatDate };
+export default RenderEvents;
