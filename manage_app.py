@@ -6,9 +6,9 @@ import os
 import smtplib as smtp, ssl, os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import typing
 
 BUILD_RUNNING = False
-
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -28,6 +28,8 @@ def send_mail(msg):
     server.login(email, password)
     server.sendmail(email, email, msg.as_string())
     server.close()
+
+    print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
 
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
@@ -106,4 +108,31 @@ def stop_docker_compose():
     if dc_stop.returncode == 0:
         BUILD_RUNNING = False
 
-start_docker_compose()
+def check_web_up(url: str):
+
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = 'WEBSITE IS DOWN!'
+    
+    web_request = None
+
+    try:
+        web_request = requests.get(url)
+    except Exception as e:
+        msg.attach(MIMEText('<h3> GET Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
+        send_mail(msg)
+        print(bcolors.RED_IN + "WEB IS DOWN - {}".format(str(url)) + bcolors.CEND)
+        return 
+
+    if web_request.status_code != 200:
+        # send email that the website is down
+        msg.attach(MIMEText('<h3> GET Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
+        send_mail(msg)
+        print(bcolors.RED_IN + "WEB IS DOWN - {}".format(str(url)) + bcolors.CEND)
+        return
+
+    print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+
+# def check_api_up(url: str) 
+# checks whether the api responds as expected
+    
+check_web_up("http://127.0.0.1:3000")
