@@ -26,7 +26,7 @@ def send_mail(msg):
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port)
     server.login(email, password)
-    server.sendmail(email, email, msg.as_string())
+    server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -108,32 +108,71 @@ def stop_docker_compose():
     if dc_stop.returncode == 0:
         BUILD_RUNNING = False
 
-def check_web_up(url: str):
+def check_service_up(url: str, service: str):
 
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = 'WEBSITE IS DOWN!'
+    msg['Subject'] = '{} - SERVICE IS DOWN!'.format(service)
     
     web_request = None
 
-    try:
-        web_request = requests.get(url)
-    except Exception as e:
-        msg.attach(MIMEText('<h3> GET Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
-        send_mail(msg)
-        print(bcolors.RED_IN + "WEB IS DOWN - {}".format(str(url)) + bcolors.CEND)
-        return 
+    """
 
-    if web_request.status_code != 200:
-        # send email that the website is down
-        msg.attach(MIMEText('<h3> GET Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
-        send_mail(msg)
-        print(bcolors.RED_IN + "WEB IS DOWN - {}".format(str(url)) + bcolors.CEND)
-        return
+    This could be heavily restructured if there are more services to be checked
+    As of now, the replicated code is not an issue - it's easy to read
+
+    """
+
+    print(bcolors.YELLOW_IN + "CHECKING SERVICE {} ".format(service) + bcolors.CEND)
+    
+    if service == "WEB":
+        try:
+            web_request = requests.get(url)
+        except Exception as e:
+            msg.attach(MIMEText('<h3> GET Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
+            send_mail(msg)
+            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            return 
+
+        if web_request.status_code != 200:
+            # send email that the website is down
+            msg.attach(MIMEText('<h3> GET Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
+            send_mail(msg)
+            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            return
+    
+    elif service == "API":
+        
+        BEARER_TOKEN = None
+        try: 
+            api_env_file = open("./packages/api/.env", "r")
+        except Exception as e:
+            print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
+
+        for line in api_env_file.readlines():
+            if "AUTH_TOKEN" in line:
+                BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
+
+        if not BEARER_TOKEN:
+            print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
+            return
+
+        try:
+            web_request = requests.post(url=url, headers={"BEARER_TOKEN": BEARER_TOKEN})
+        except Exception as e:
+            msg.attach(MIMEText('<h3> POST Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
+            send_mail(msg)
+            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            return 
+
+        if web_request.status_code != 200:
+            # send email that the website is down
+            msg.attach(MIMEText('<h3> POST Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
+            send_mail(msg)
+            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            return
+
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
-
-# def check_api_up(url: str) 
-# checks whether the api responds as expected
 
 """
     TO DO:
@@ -144,3 +183,6 @@ def check_web_up(url: str):
 if locals are down -> redeploy app
 
 """
+
+check_service_up("http://127.0.0.1:3000", "WEB")
+check_service_up("http://127.0.0.1:8000/api/validate", "API")
