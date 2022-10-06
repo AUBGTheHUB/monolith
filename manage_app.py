@@ -134,5 +134,13 @@ def check_web_up(url: str):
 
 # def check_api_up(url: str) 
 # checks whether the api responds as expected
-    
-check_web_up("http://127.0.0.1:3000")
+
+"""
+    TO DO:
+
+5 minutes CRON job checking check_web_up(local), check_web_up(dev) and check_web_up(prod)
+5 minutes CRON job checking check_api_up(local) and check_api_up(dev)
+
+if locals are down -> redeploy app
+
+"""
