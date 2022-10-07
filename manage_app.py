@@ -7,6 +7,7 @@ import smtplib as smtp, ssl, os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import typing
+import threading, schedule
 
 BUILD_RUNNING = False
 
@@ -24,7 +25,7 @@ def send_mail(msg):
     email = os.environ['HUB_MAIL_USERNAME']
     password = os.environ['HUB_MAIL_PASSWORD']
 
-    server = smtp.SMTP_SSL('smtp.gmail.com', port)
+    server = smtp.SMTP_SSL('smtp.gmail.com', port) 
     server.login(email, password)
     server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
     server.close()
@@ -174,15 +175,52 @@ def check_service_up(url: str, service: str):
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
-"""
-    TO DO:
 
-5 minutes CRON job checking check_web_up(local), check_web_up(dev) and check_web_up(prod)
-5 minutes CRON job checking check_api_up(local) and check_api_up(dev)
+""" definitions of cron jobs """
+def cron_local_test():
+    check_service_up("http://127.0.0.1:3000", "WEB")
+    check_service_up("http://127.0.0.1:8000/api/validate", "API")
 
-if locals are down -> redeploy app
+def cron_prod_test():
+    check_service_up("https://thehub-aubg.com", "WEB")
+    check_service_up("https://thehub-aubg.com/api/validate", "API")
 
-"""
+def cron_git_check_for_updates():
+    # only >= 3.7
+    remote_update = subprocess.run(['git', 'remote', 'update'], capture_output=True, text=True)
+    if remote_update.returncode != 0:
+        print(remote_update.stdout)
+        return
 
-check_service_up("http://127.0.0.1:3000", "WEB")
-check_service_up("http://127.0.0.1:8000/api/validate", "API")
+    print(remote_update.stdout)
+    
+    # only >= 3.7
+    status_uno = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
+    if status_uno.returncode != 0:
+        print(status_uno.stdout)
+        return 
+
+    if "Your branch is behind" in status_uno.stdout:
+        stop_docker_compose()
+        pull_remote = subprocess.run(['git', 'pull'])
+        if pull_remote != 0:
+            return "GIT ERROR"
+        start_docker_compose()
+
+
+""" threading for cron jobs """
+def run_thread(job):
+    print("STARTING CRON JOB - {}".format(job.__name__))
+    thread =threading.Thread(target=job)
+    thread.start()
+
+schedule.every(30).seconds.do(run_thread, cron_local_test)
+
+schedule.every(5).seconds.do(run_thread, cron_git_check_for_updates)
+
+start_docker_compose()
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+
