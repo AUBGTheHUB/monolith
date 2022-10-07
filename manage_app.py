@@ -10,6 +10,7 @@ import typing
 import threading, schedule
 
 BUILD_RUNNING = threading.Event() 
+CURRENTLY_BUILDING = threading.Event()
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -37,6 +38,11 @@ def start_docker_compose():
     # therefore check up should be done with requests
 
     msg = MIMEMultipart('alternative')
+    
+    if CURRENTLY_BUILDING.is_set():
+        return
+
+    CURRENTLY_BUILDING.set()
     
     errors = {}
 
@@ -69,7 +75,8 @@ def start_docker_compose():
             msg['Subject'] = 'SPA BUILD SUCCESSFUL'
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
-
+            
+            CURRENTLY_BUILDING.clear()
             return
 
         else:
@@ -83,7 +90,8 @@ def start_docker_compose():
     msg['Subject'] = 'SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
-    # send email that build failed
+
+    CURRENTLY_BUILDING.clear()
 
 def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
@@ -194,7 +202,7 @@ def cron_git_check_for_updates():
 
 def cron_self_healing():
     print("BUILD IS RUNNING: {}".format(str(BUILD_RUNNING.is_set())))
-    if not BUILD_RUNNING.is_set():
+    if not BUILD_RUNNING.is_set() and not CURRENTLY_BUILDING.is_set():
         print(bcolors.RED_IN + "WILL TRY TO RECOVER BUILD!" + bcolors.CEND)
         start_docker_compose()
 
