@@ -27,7 +27,7 @@ def send_mail(msg):
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port) 
     server.login(email, password)
-    server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
+    server.sendmail(email, "mihailbozhilovjr@gmail.com", msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -66,7 +66,7 @@ def start_docker_compose():
         
         # "connection reset by peer"
         print()
-        time.sleep(3) 
+        time.sleep(10) 
         
         ###### API ######
         print(bcolors.CYAN_IN+ "API HEALTH CHECK:" + bcolors.CEND)
@@ -214,9 +214,9 @@ def run_thread(job):
     thread =threading.Thread(target=job)
     thread.start()
 
-schedule.every(30).seconds.do(run_thread, cron_local_test)
+schedule.every(120).seconds.do(run_thread, cron_local_test)
 
-schedule.every(5).seconds.do(run_thread, cron_git_check_for_updates)
+schedule.every(15).seconds.do(run_thread, cron_git_check_for_updates)
 
 start_docker_compose()
 
