@@ -189,22 +189,23 @@ def cron_git_check_for_updates():
     # only >= 3.7
     remote_update = subprocess.run(['git', 'remote', 'update'], capture_output=True, text=True)
     if remote_update.returncode != 0:
-        print(remote_update.stdout)
+        print("GIT REMOTE UPDATE FAILED: \n{}".format(remote_update.stdout))
         return
 
     print(remote_update.stdout)
     
     # only >= 3.7
-    status_uno = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
+    status_uno = subprocess.run(['git', 'status'], capture_output=True, text=True)
     if status_uno.returncode != 0:
-        print(status_uno.stdout)
+        print("GIT STATE FAILED: \n{}".format(status_uno.stdout))
         return 
 
     if "Your branch is behind" in status_uno.stdout:
+        print("BRANCH IS BEHIND!")
         stop_docker_compose()
         pull_remote = subprocess.run(['git', 'pull'])
         if pull_remote != 0:
-            return "GIT ERROR"
+            return "GIT PULL ERROR"
         start_docker_compose()
 
 
