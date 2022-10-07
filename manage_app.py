@@ -177,7 +177,7 @@ def check_service_up(url: str, service: str):
 
 """ definitions of cron jobs """
 def cron_local_test():
-    check_service_up("http://127.0.0.1:3000", "WEB")
+    check_service_up("http://127.0.0.1:80", "WEB")
     check_service_up("http://127.0.0.1:8000/api/validate", "API")
 
 def cron_prod_test():
