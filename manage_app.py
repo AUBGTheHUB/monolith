@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 import requests
-import time
+import time 
 import os
 import smtplib as smtp, ssl, os
 from email.mime.multipart import MIMEMultipart
@@ -217,3 +217,12 @@ while True:
     schedule.run_pending()
     time.sleep(1)
 
+"""
+ BUILD IS GOING TO SELF HEAL ONLY IF THERE IS A CASE OF UNREACHABLE LOCAL SERVICES!
+
+ e.g. If either WEB or API return something different than 200 when checked within the check_service_up
+      function, a rebuild is going to be triggered:
+
+      1. cron_local_test checks the services and if one of them is down, it changes the state of the shared variable BUILD_RUNNING
+      2. cron_self_healing checks if BUILD_RUNNING is False and if it is, it invokes the docker_compose steps defined in the functions
+"""
