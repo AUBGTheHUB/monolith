@@ -48,42 +48,22 @@ def start_docker_compose():
     dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
     if dc_start.returncode == 0:
         print()    
+        
+
+        print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
-        print(bcolors.CYAN_IN + "WEB HEALTH CHECK:" + bcolors.CEND)
+        get_web = check_service_up("http://127.0.0.1:80", "WEB")
 
-        get_web = None
-
-        try:
-            get_web = requests.get("http://127.0.0.1:80")
-            print(bcolors.YELLOW_IN + str(get_web) + bcolors.CEND)
-        except Exception as e:
-            
-            errors.append(e)
-            print(bcolors.RED_IN + str(e) + bcolors.CEND)
-
-
-        
         # "connection reset by peer"
         print()
-        time.sleep(10) 
-        
+        time.sleep(6) 
+    
         ###### API ######
-        print(bcolors.CYAN_IN+ "API HEALTH CHECK:" + bcolors.CEND)
+        get_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
         
-        get_api = None
-
-        try:
-            get_api = requests.post("http://127.0.0.1:8000/api/validate")
-            print(bcolors.YELLOW_IN + str(get_api) + bcolors.CEND)
-        except Exception as e:
-
-            errors.append(e)
-            print(bcolors.RED_IN + str(e) + bcolors.CEND)
-
-
-        
-        if(not errors and get_web and get_web.status_code == 200 and get_api.status_code == 400):
+        print()
+        if(get_web == 200 and get_api == 200):
             print(bcolors.OKGREEN + "BUILD SUCCESSFUL" + bcolors.CEND)
             BUILD_RUNNING = True
 
@@ -116,14 +96,11 @@ def check_service_up(url: str, service: str):
     web_request = None
 
     """
-
     This could be heavily restructured if there are more services to be checked
     As of now, the replicated code is not an issue - it's easy to read
-
     """
-
+    print()
     print(bcolors.YELLOW_IN + "CHECKING SERVICE {} ".format(service) + bcolors.CEND)
-    
     if service == "WEB":
         try:
             web_request = requests.get(url)
@@ -171,8 +148,9 @@ def check_service_up(url: str, service: str):
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
             return
 
-
+    
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+    return 200
 
 
 """ definitions of cron jobs """
@@ -210,13 +188,14 @@ def cron_git_check_for_updates():
 
 """ threading for cron jobs """
 def run_thread(job):
-    print("STARTING CRON JOB - {}".format(job.__name__))
+    print("\nSTARTING CRON JOB - {}".format(job.__name__))
     thread =threading.Thread(target=job)
     thread.start()
 
-schedule.every(120).seconds.do(run_thread, cron_local_test)
+schedule.every(5).minutes.do(run_thread, cron_local_test)
+schedule.every(5).minutes.do(run_thread, cron_prod_test)
 
-schedule.every(15).seconds.do(run_thread, cron_git_check_for_updates)
+schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
 start_docker_compose()
 
