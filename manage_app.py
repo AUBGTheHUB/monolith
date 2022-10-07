@@ -106,8 +106,7 @@ def start_docker_compose():
 
 def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
-    if dc_stop.returncode == 0:
-        BUILD_RUNNING = False
+    BUILD_RUNNING = False
 
 def check_service_up(url: str, service: str):
 
@@ -203,9 +202,9 @@ def cron_git_check_for_updates():
     if "Your branch is behind" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
         stop_docker_compose()
-        pull_remote = subprocess.run(['git', 'pull'])
-        if pull_remote != 0:
-            return "GIT PULL ERROR"
+        pull_remote = subprocess.run(['git', 'pull'], capture_output=True, text=True)
+        
+        print("STARTING BUILD")
         start_docker_compose()
 
 
