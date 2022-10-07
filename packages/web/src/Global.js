@@ -8,7 +8,7 @@ const env = process.env.NODE_ENV;
 let url = null;
 
 if (env == 'production') {
-    url = 'https://dev.thehub-aubg.com:8000';
+    url = 'http://dev.thehub-aubg.com:8000';
 } else {
     url = 'http://127.0.0.1:8000';
 }

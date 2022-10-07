@@ -9,7 +9,9 @@ from email.mime.text import MIMEText
 import typing
 import threading, schedule
 
-BUILD_RUNNING = threading.Event() class bcolors:
+BUILD_RUNNING = threading.Event() 
+
+class bcolors:
     YELLOW_IN = '\033[33m'
     YELLOW_OUT = '\033[43m' 
     RED_IN = '\033[31m'
