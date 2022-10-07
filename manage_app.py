@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 import typing
 import threading, schedule
 
-BUILD_RUNNING = False
+BUILD_RUNNING = threading.Event()
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -35,15 +35,14 @@ def send_mail(msg):
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
     # therefore check up should be done with requests
-    global BUILD_RUNNING
 
     msg = MIMEMultipart('alternative')
     
-    errors = []
+    errors = {}
 
-    if BUILD_RUNNING:
+    if BUILD_RUNNING.is_set():
         stop_docker_compose()
-        BUILD_RUNNING = False
+        BUILD_RUNNING.clear()
 
     dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
     if dc_start.returncode == 0:
@@ -65,7 +64,7 @@ def start_docker_compose():
         print()
         if(get_web == 200 and get_api == 200):
             print(bcolors.OKGREEN + "BUILD SUCCESSFUL" + bcolors.CEND)
-            BUILD_RUNNING = True
+            BUILD_RUNNING.set()
 
             msg['Subject'] = 'SPA BUILD SUCCESSFUL'
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
@@ -76,7 +75,9 @@ def start_docker_compose():
         else:
             # docker-compose keeps running when there is a failed container
             stop_docker_compose()
-    
+            errors['WEB'] = get_web
+            errors['API'] = get_api
+
     
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
     msg['Subject'] = 'SPA BUILD FAILED'
@@ -86,7 +87,7 @@ def start_docker_compose():
 
 def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
-    BUILD_RUNNING = False
+    BUILD_RUNNING.clear()
 
 def check_service_up(url: str, service: str):
 
@@ -108,14 +109,14 @@ def check_service_up(url: str, service: str):
             msg.attach(MIMEText('<h3> GET Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
-            return 
+            return e
 
         if web_request.status_code != 200:
             # send email that the website is down
             msg.attach(MIMEText('<h3> GET Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
-            return
+            return web_request.status_code
     
     elif service == "API":
         
@@ -139,14 +140,14 @@ def check_service_up(url: str, service: str):
             msg.attach(MIMEText('<h3> POST Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
-            return 
+            return e
 
         if web_request.status_code != 200:
             # send email that the website is down
             msg.attach(MIMEText('<h3> POST Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
-            return
+            return web_request.status_code
 
     
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
@@ -155,8 +156,13 @@ def check_service_up(url: str, service: str):
 
 """ definitions of cron jobs """
 def cron_local_test():
-    check_service_up("http://127.0.0.1:80", "WEB")
-    check_service_up("http://127.0.0.1:8000/api/validate", "API")
+
+    local_web = check_service_up("http://127.0.0.1:80", "WEB")
+    local_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
+    
+    # force rebuild
+    if local_web != 200 or local_api != 200:
+        BUILD_RUNNING.clear()
 
 def cron_prod_test():
     check_service_up("https://thehub-aubg.com", "WEB")
@@ -185,15 +191,23 @@ def cron_git_check_for_updates():
         print("STARTING BUILD")
         start_docker_compose()
 
+def cron_self_healing():
+    print("BUILD IS RUNNING: {}".format(str(BUILD_RUNNING.is_set())))
+    if not BUILD_RUNNING.is_set():
+        print(bcolors.RED_IN + "WILL TRY TO RECOVER BUILD!" + bcolors.CEND)
+        start_docker_compose()
+
 
 """ threading for cron jobs """
 def run_thread(job):
     print("\nSTARTING CRON JOB - {}".format(job.__name__))
-    thread =threading.Thread(target=job)
+    thread=threading.Thread(target=job)
     thread.start()
 
-schedule.every(5).minutes.do(run_thread, cron_local_test)
+schedule.every(20).seconds.do(run_thread, cron_local_test)
 schedule.every(5).minutes.do(run_thread, cron_prod_test)
+
+schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
 schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
