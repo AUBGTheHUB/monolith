@@ -31,7 +31,10 @@ And then run:
 cd ~/go/src/spa-website-2022 && make post-osx
 ```
 
-⚠️  If you are getting the following error: `nvm command not found`, you have to log out of your current user and log in again.
+⚠️  If you are getting the following exceptions:
+
+* `nvm command not found` - you have to log out of your current user and log in again.
+* golang packages not found - run the make scripts with `sudo`
 
 
 ### WSL installation
