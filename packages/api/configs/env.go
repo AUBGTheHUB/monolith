@@ -31,6 +31,10 @@ func ReturnAuthToken() string {
 	return token
 }
 
+func SetToken() {
+	token = GenerateToken(32)
+}
+
 func EnvMongoURI() string {
 	err := godotenv.Load()
 	if err != nil {
