@@ -7,7 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	// fmt, encoding/json, strconv
+	//fmt, encoding/json, strconv
 )
 
 func main() {
@@ -24,5 +24,6 @@ func main() {
 	routes.MentorsRoute(app)
 	routes.SponsorsRoute(app)
 	routes.PartnersRoute(app)
+	configs.RunCronJobs()
 	log.Fatal(app.Listen(":8000"))
 }
