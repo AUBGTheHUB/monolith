@@ -25,4 +25,5 @@ func main() {
 	routes.SponsorsRoute(app)
 	routes.PartnersRoute(app)
 	log.Fatal(app.Listen(":8000"))
+	configs.GenerateToken(32)
 }
