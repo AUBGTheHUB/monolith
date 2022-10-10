@@ -11,24 +11,20 @@ import (
 
 var token string = GenerateToken(32)
 
-func GenerateToken(n int) string {
+/*
+Generates a random string with fixed length
+*/
+func GenerateToken(lengthOfToken int) string {
+
 	rand.Seed(time.Now().UnixNano())
 
-	random_string := "TOKEN"
-	// implement logic for generating a rand 20 char string
-
-	var chars = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321")
-	str := make([]rune, n)
+	var chars = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321!@#$%^&*()_+-=~?><:{}[]|")
+	str := make([]rune, lengthOfToken)
 	for i := range str {
 		str[i] = chars[rand.Intn(len(chars))]
 	}
 
-	random_string = string(str)
-	return random_string
-}
-
-func SetToken() {
-	token = GenerateToken(32)
+	return string(str)
 }
 
 func ReturnAuthToken() string {
