@@ -12,8 +12,11 @@ import (
 var token string = GenerateToken(32)
 
 /*
-Generates a random string with fixed length
+	Generates a random string with fixed length,
+	which is then sent to the client to be used as a BEARER TOKEN
+	when making API calls
 */
+
 func GenerateToken(lengthOfToken int) string {
 
 	rand.Seed(time.Now().UnixNano())

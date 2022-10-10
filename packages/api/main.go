@@ -24,7 +24,6 @@ func main() {
 	routes.MentorsRoute(app)
 	routes.SponsorsRoute(app)
 	routes.PartnersRoute(app)
-	log.Fatal(app.Listen(":8000"))
 	configs.RunCronJobs()
-
+	log.Fatal(app.Listen(":8000"))
 }
