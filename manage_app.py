@@ -28,7 +28,7 @@ def send_mail(msg):
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port) 
     server.login(email, password)
-    server.sendmail(email, "mihailbozhilovjr@gmail.com", msg.as_string())
+    server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -160,6 +160,11 @@ def check_service_up(url: str, service: str):
 
     
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+
+    # this is to be fixed
+    # make sure it returns the correct response codes
+    # and if web is 200 and api is 400 
+    # continue as normal
     return 200
 
 
@@ -213,8 +218,8 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
-schedule.every(20).seconds.do(run_thread, cron_local_test)
-schedule.every(5).minutes.do(run_thread, cron_prod_test)
+schedule.every(5).minutes.do(run_thread, cron_local_test)
+#schedule.every(5).minutes.do(run_thread, cron_prod_test)
 
 schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
