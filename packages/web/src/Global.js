@@ -7,9 +7,16 @@ const env = process.env.NODE_ENV;
 // url points towards the api
 let url = null;
 
-if (env == 'production') {
+// eslint-disable-next-line no-undef
+if (process.env.REACT_APP_DEV_URL) {
+    // DEV ENVIRONMENT
+    // eslint-disable-next-line no-undef
+    url = process.env.REACT_APP_DEV_URL;
+} else if (env == 'production') {
+    // PROD ENVIRONMENT
     url = 'http://dev.thehub-aubg.com:8000';
 } else {
+    // LOCAL ENVIRONMENT
     url = 'http://127.0.0.1:8000';
 }
 
