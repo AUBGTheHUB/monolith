@@ -128,30 +128,30 @@ def check_service_up(url: str, service: str):
     
     elif service == "API":
         
-        BEARER_TOKEN = None
-        try: 
-            api_env_file = open("./packages/api/.env", "r")
-        except Exception as e:
-            print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
-            return e
+        # BEARER_TOKEN = None
+        # try: 
+            # api_env_file = open("./packages/api/.env", "r")
+        # except Exception as e:
+            # print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
+            # return e
 
-        for line in api_env_file.readlines():
-            if "AUTH_TOKEN" in line:
-                BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
+        # for line in api_env_file.readlines():
+            # if "AUTH_TOKEN" in line:
+                # BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
 
-        if not BEARER_TOKEN:
-            print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
-            return
+        # if not BEARER_TOKEN:
+            # print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
+            # return
 
         try:
-            web_request = requests.post(url=url, headers={"BEARER_TOKEN": BEARER_TOKEN})
+            web_request = requests.post(url=url)
         except Exception as e:
             msg.attach(MIMEText('<h3> POST Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
             return e
 
-        if web_request.status_code != 200:
+        if web_request.status_code != 400:
             # send email that the website is down
             msg.attach(MIMEText('<h3> POST Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
