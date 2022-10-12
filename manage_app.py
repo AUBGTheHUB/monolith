@@ -201,6 +201,7 @@ def cron_git_check_for_updates():
         print("BRANCH IS BEHIND!")
         # stop_docker_compose()
         pull_remote = subprocess.run(['git', 'pull'], capture_output=True, text=True)
+        reset_local = subprocess.run(['git', 'reset', '--hard', 'origin/master'])
         
         print("STARTING BUILD")
         start_docker_compose()
