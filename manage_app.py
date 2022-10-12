@@ -199,7 +199,7 @@ def cron_git_check_for_updates():
 
     if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
-        stop_docker_compose()
+        # stop_docker_compose()
         pull_remote = subprocess.run(['git', 'pull'], capture_output=True, text=True)
         
         print("STARTING BUILD")
