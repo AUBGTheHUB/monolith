@@ -52,9 +52,9 @@ def start_docker_compose():
 
     dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
     if dc_start.returncode == 0:
-        print()    
+        print()     
         
-
+        time.sleep(10)
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
@@ -62,7 +62,7 @@ def start_docker_compose():
 
         # "connection reset by peer"
         print()
-        time.sleep(6) 
+        time.sleep(10) 
     
         ###### API ######
         get_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
