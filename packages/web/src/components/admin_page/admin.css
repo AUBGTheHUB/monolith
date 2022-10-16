@@ -15,7 +15,7 @@
 /* loading when checking if authenticated css*/
 .loading-page {
     display: flex;
-    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -39,17 +39,36 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
 }
 
 .dash-box {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    width: 89.7%;
+    justify-content: center;
+}
+
+.card-dash-landing {
+    margin: 1rem;
+    width: 18rem;
+    border: 1px solid #000 !important;
+}
+.card-dash-landing .card-body {
+    background-color: #000 !important;
+    color: #fff;
+}
+.container-cards {
+    content: center;
+    align-self: center;
+    margin-left: 30vw;
+    margin-right: 30vw;
 }
 
 .card-dash {
     margin: 1rem;
+    width: 18rem;
 }
 
 /* members page */
@@ -65,6 +84,8 @@
 .members-box-add-button {
     display: flex;
     flex-direction: column;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
+    height: 100vh;
 }
 
 /* box where members get rendered in */
@@ -80,12 +101,16 @@
 
 .member-card {
     margin: 0.5rem;
+    border: 1px solid #000 !important;
 }
 
 .linkedin-button {
     margin-right: 0.25rem;
 }
-
+.member-card .card-body {
+    background-color: #000;
+    color: #fff;
+}
 /* box which holds the card of a member */
 .single-member-box {
     display: column;
@@ -124,4 +149,16 @@
 /* add margin to the top of the actions button in RenderEvents */
 .padding-top-button-render-events {
     margin-top: 0.25rem !important;
+}
+
+@media only screen and (max-width: 414px) {
+    .dash {
+        height: 100%;
+    }
+    .members-box {
+        padding-top: 5px;
+    }
+    .members-box-add-button {
+        height: 100%;
+    }
 }
