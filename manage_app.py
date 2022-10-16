@@ -28,7 +28,7 @@ def send_mail(msg):
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port) 
     server.login(email, password)
-    server.sendmail(email, "mihailbozhilovjr@gmail.com", msg.as_string())
+    server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -52,9 +52,9 @@ def start_docker_compose():
 
     dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
     if dc_start.returncode == 0:
-        print()    
+        print()     
         
-
+        time.sleep(10)
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
@@ -62,7 +62,7 @@ def start_docker_compose():
 
         # "connection reset by peer"
         print()
-        time.sleep(6) 
+        time.sleep(10) 
     
         ###### API ######
         get_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
@@ -128,30 +128,30 @@ def check_service_up(url: str, service: str):
     
     elif service == "API":
         
-        BEARER_TOKEN = None
-        try: 
-            api_env_file = open("./packages/api/.env", "r")
-        except Exception as e:
-            print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
-            return e
+        # BEARER_TOKEN = None
+        # try: 
+            # api_env_file = open("./packages/api/.env", "r")
+        # except Exception as e:
+            # print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
+            # return e
 
-        for line in api_env_file.readlines():
-            if "AUTH_TOKEN" in line:
-                BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
+        # for line in api_env_file.readlines():
+            # if "AUTH_TOKEN" in line:
+                # BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
 
-        if not BEARER_TOKEN:
-            print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
-            return
+        # if not BEARER_TOKEN:
+            # print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
+            # return
 
         try:
-            web_request = requests.post(url=url, headers={"BEARER_TOKEN": BEARER_TOKEN})
+            web_request = requests.post(url=url)
         except Exception as e:
             msg.attach(MIMEText('<h3> POST Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
             return e
 
-        if web_request.status_code != 200:
+        if web_request.status_code != 400:
             # send email that the website is down
             msg.attach(MIMEText('<h3> POST Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
@@ -160,6 +160,11 @@ def check_service_up(url: str, service: str):
 
     
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+
+    # this is to be fixed
+    # make sure it returns the correct response codes
+    # and if web is 200 and api is 400 
+    # continue as normal
     return 200
 
 
@@ -192,10 +197,11 @@ def cron_git_check_for_updates():
         print("GIT STATE FAILED: \n{}".format(status_uno.stdout))
         return 
 
-    if "Your branch is behind" in status_uno.stdout:
+    if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
-        stop_docker_compose()
+        # stop_docker_compose()
         pull_remote = subprocess.run(['git', 'pull'], capture_output=True, text=True)
+        reset_local = subprocess.run(['git', 'reset', '--hard', 'origin/master'])
         
         print("STARTING BUILD")
         start_docker_compose()
@@ -213,8 +219,8 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
-schedule.every(20).seconds.do(run_thread, cron_local_test)
-schedule.every(5).minutes.do(run_thread, cron_prod_test)
+schedule.every(5).minutes.do(run_thread, cron_local_test)
+#schedule.every(5).minutes.do(run_thread, cron_prod_test)
 
 schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
