@@ -12,7 +12,7 @@ const Dash = () => {
         return (
             <div className="dash">
                 <div className="dash-box">
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Members</Card.Title>
                             <Card.Text>
@@ -30,7 +30,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Events</Card.Title>
                             <Card.Text>
@@ -46,7 +46,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Articles</Card.Title>
                             <Card.Text>
@@ -62,7 +62,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Jobs</Card.Title>
                             <Card.Text>
@@ -81,7 +81,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Hackathon Mentors</Card.Title>
                             <Card.Text>
@@ -97,7 +97,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Hackathon Jury</Card.Title>
                             <Card.Text>
@@ -113,7 +113,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Hackathon Sponsors</Card.Title>
                             <Card.Text>
@@ -129,7 +129,7 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
-                    <Card style={{ width: '18rem' }} className="card-dash">
+                    <Card className="card-dash-landing">
                         <Card.Body>
                             <Card.Title>Hackathon Partners</Card.Title>
                             <Card.Text>
