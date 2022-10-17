@@ -9,7 +9,14 @@
     color: #fff;
     height: 100vh;
 }
-
+.login-page form input {
+    background-color: #000;
+}
+.login-page form input::placeholder {
+    font-weight: bold;
+    opacity: 0.5;
+    color: red;
+}
 /* login form css */
 .login-page h3 {
     padding-bottom: 2rem;
