@@ -10,12 +10,17 @@
     height: 100vh;
 }
 .login-page form input {
-    background-color: #000;
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
 }
 .login-page form input::placeholder {
-    font-weight: bold;
-    opacity: 0.5;
-    color: red;
+    color: #fff;
+    opacity: 1;
+}
+.login-page form input:focus {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
 }
 /* login form css */
 .login-page h3 {
