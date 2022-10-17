@@ -12,6 +12,7 @@
 .login-page form input {
     background-color: #4a4f51;
     border: 1px solid #7a7979;
+    color: #fff;
 }
 .login-page form input::placeholder {
     color: #fff;
