@@ -5,8 +5,24 @@
     justify-content: center;
     align-items: center !important;
     height: 50vh;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
+    color: #fff;
+    height: 100vh;
 }
-
+.login-page form input {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
+.login-page form input::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.login-page form input:focus {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
 /* login form css */
 .login-page h3 {
     padding-bottom: 2rem;
@@ -53,10 +69,10 @@
 .card-dash-landing {
     margin: 1rem;
     width: 18rem;
-    border: 1px solid #000 !important;
+    border: 1px solid #181a1b !important;
 }
 .card-dash-landing .card-body {
-    background-color: #000 !important;
+    background-color: #181a1b !important;
     color: #fff;
 }
 .container-cards {
@@ -101,14 +117,14 @@
 
 .member-card {
     margin: 0.5rem;
-    border: 1px solid #000 !important;
+    border: 1px solid #181a1b !important;
 }
 
 .linkedin-button {
     margin-right: 0.25rem;
 }
 .member-card .card-body {
-    background-color: #000;
+    background-color: #181a1b;
     color: #fff;
 }
 /* box which holds the card of a member */
@@ -134,13 +150,30 @@
 }
 
 .add-member-main-div {
+    color: #fff;
+    height: 100vh;
     padding-top: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
 }
 
+.add-member-main-div form input {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
+.add-member-main-div form input::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.add-member-main-div form input:focus {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
 /* add padding to the bottom of the images in the dashboard cards */
 .dashboard-card-images-padding {
     padding-bottom: 1rem;
@@ -151,6 +184,7 @@
     margin-top: 0.25rem !important;
 }
 
+/* respnsive */
 @media only screen and (max-width: 414px) {
     .dash {
         height: 100%;
@@ -159,6 +193,13 @@
         padding-top: 5px;
     }
     .members-box-add-button {
+        height: 100vh;
+    }
+}
+
+@media only screen and (max-height: 750px) {
+    .add-member-main-div {
         height: 100%;
+        padding-bottom: 25px;
     }
 }
