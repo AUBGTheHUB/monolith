@@ -12,6 +12,15 @@ import threading, schedule
 BUILD_RUNNING = threading.Event() 
 CURRENTLY_BUILDING = threading.Event()
 
+"""
+env vars:
+HUB_MAIL_USERNAME
+HUB_MAIL_PASSWORD
+DOCK_ENV
+"""
+
+ENV = os.environ["DOCK_ENV"]
+
 class bcolors:
     YELLOW_IN = '\033[33m'
     YELLOW_OUT = '\033[43m' 
@@ -39,6 +48,8 @@ def start_docker_compose():
 
     msg = MIMEMultipart('alternative')
     
+    # STOP NEW BUILDS FROM STARTING
+    # IF THERE IS A BUILD WHICH IS CURRENTLY STARTED
     if CURRENTLY_BUILDING.is_set():
         return
 
@@ -46,9 +57,9 @@ def start_docker_compose():
     
     errors = {}
 
-    if BUILD_RUNNING.is_set():
-        stop_docker_compose()
-        BUILD_RUNNING.clear()
+    # if BUILD_RUNNING.is_set():
+        # stop_docker_compose()
+        # BUILD_RUNNING.clear()
 
     dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
     if dc_start.returncode == 0:
@@ -68,15 +79,19 @@ def start_docker_compose():
         get_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
         
         print()
-        if(get_web == 200 and get_api == 200):
-            print(bcolors.OKGREEN + "BUILD SUCCESSFUL" + bcolors.CEND)
+        if(get_web == 200 and get_api == 400):
+            print(bcolors.OKGREEN + f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND)
             BUILD_RUNNING.set()
 
-            msg['Subject'] = 'SPA BUILD SUCCESSFUL'
+            msg['Subject'] = '{ENV}:SPA BUILD SUCCESSFUL'
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
             
+            # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
             CURRENTLY_BUILDING.clear()
+
+            # THIS INDICATES THAT THE BUILD HAS BEEN SUCCESSFUL
+            BUILD_RUNNING.set()
             return
 
         else:
@@ -100,7 +115,7 @@ def stop_docker_compose():
 def check_service_up(url: str, service: str):
 
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = '{} - SERVICE IS DOWN!'.format(service)
+    msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
     
     web_request = None
 
@@ -109,21 +124,21 @@ def check_service_up(url: str, service: str):
     As of now, the replicated code is not an issue - it's easy to read
     """
     print()
-    print(bcolors.YELLOW_IN + "CHECKING SERVICE {} ".format(service) + bcolors.CEND)
+    print(bcolors.YELLOW_IN + "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND)
     if service == "WEB":
         try:
             web_request = requests.get(url)
         except Exception as e:
-            msg.attach(MIMEText('<h3> GET Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
+            msg.attach(MIMEText('<h3>{}: GET Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
             send_mail(msg)
-            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
             return e
 
         if web_request.status_code != 200:
             # send email that the website is down
-            msg.attach(MIMEText('<h3> GET Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
+            msg.attach(MIMEText('<h3>{}: GET Request to {} failed with status code {}'.format(ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
-            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
             return web_request.status_code
     
     elif service == "API":
@@ -146,16 +161,16 @@ def check_service_up(url: str, service: str):
         try:
             web_request = requests.post(url=url)
         except Exception as e:
-            msg.attach(MIMEText('<h3> POST Request to {} failed with the following exception: </h3> </p> {}'.format(url, str(e)) + '</p>', 'html'))
+            msg.attach(MIMEText('<h3>{}: POST Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
             send_mail(msg)
-            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
             return e
 
         if web_request.status_code != 400:
             # send email that the website is down
-            msg.attach(MIMEText('<h3> POST Request to {} failed with status code {}'.format(url, str(web_request.status_code)) + '</h3>', 'html'))
+            msg.attach(MIMEText('<h3>{}: POST Request to {} failed with status code {}'.format(ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
-            print(bcolors.RED_IN + "{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
             return web_request.status_code
 
     
@@ -165,7 +180,8 @@ def check_service_up(url: str, service: str):
     # make sure it returns the correct response codes
     # and if web is 200 and api is 400 
     # continue as normal
-    return 200
+
+    return web_request.status_code
 
 
 """ definitions of cron jobs """
@@ -175,7 +191,7 @@ def cron_local_test():
     local_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
     
     # force rebuild
-    if local_web != 200 or local_api != 200:
+    if local_web != 200 or local_api != 400:
         BUILD_RUNNING.clear()
 
 def cron_prod_test():
