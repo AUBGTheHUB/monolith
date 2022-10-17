@@ -5,6 +5,9 @@
     justify-content: center;
     align-items: center !important;
     height: 50vh;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
+    color: #fff;
+    height: 100vh;
 }
 
 /* login form css */
