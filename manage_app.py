@@ -83,7 +83,7 @@ def start_docker_compose():
             print(bcolors.OKGREEN + f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND)
             BUILD_RUNNING.set()
 
-            msg['Subject'] = '{ENV}:SPA BUILD SUCCESSFUL'
+            msg['Subject'] = f'{ENV}:SPA BUILD SUCCESSFUL'
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
             
@@ -102,7 +102,7 @@ def start_docker_compose():
 
     
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
-    msg['Subject'] = 'SPA BUILD FAILED'
+    msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
 
