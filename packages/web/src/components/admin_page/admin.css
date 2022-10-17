@@ -69,10 +69,10 @@
 .card-dash-landing {
     margin: 1rem;
     width: 18rem;
-    border: 1px solid #000 !important;
+    border: 1px solid #181a1b !important;
 }
 .card-dash-landing .card-body {
-    background-color: #000 !important;
+    background-color: #181a1b !important;
     color: #fff;
 }
 .container-cards {
@@ -117,14 +117,14 @@
 
 .member-card {
     margin: 0.5rem;
-    border: 1px solid #000 !important;
+    border: 1px solid #181a1b !important;
 }
 
 .linkedin-button {
     margin-right: 0.25rem;
 }
 .member-card .card-body {
-    background-color: #000;
+    background-color: #181a1b;
     color: #fff;
 }
 /* box which holds the card of a member */
