@@ -150,13 +150,30 @@
 }
 
 .add-member-main-div {
+    color: #fff;
+    height: 100vh;
     padding-top: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
 }
 
+.add-member-main-div form input {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
+.add-member-main-div form input::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.add-member-main-div form input:focus {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
 /* add padding to the bottom of the images in the dashboard cards */
 .dashboard-card-images-padding {
     padding-bottom: 1rem;
@@ -167,6 +184,7 @@
     margin-top: 0.25rem !important;
 }
 
+/* respnsive dashboard */
 @media only screen and (max-width: 414px) {
     .dash {
         height: 100%;
