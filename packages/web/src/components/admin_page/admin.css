@@ -184,7 +184,7 @@
     margin-top: 0.25rem !important;
 }
 
-/* respnsive dashboard */
+/* respnsive */
 @media only screen and (max-width: 414px) {
     .dash {
         height: 100%;
@@ -194,5 +194,12 @@
     }
     .members-box-add-button {
         height: 100vh;
+    }
+}
+
+@media only screen and (max-height: 750px) {
+    .add-member-main-div {
+        height: 100%;
+        padding-bottom: 25px;
     }
 }
