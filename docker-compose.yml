@@ -14,18 +14,26 @@ services:
     ports:
       - 8000:8000
     command: /api
+    networks:
+      - front-back
 
 # WEB
   client:
     build: ./packages/web
     container_name: web
     expose:
-      - 80 443
+      - 443
     ports:
       - 80:80
       - 443:443
     links:
       - "server"
     command: nginx -g 'daemon off';
-    volumes:
+    volumes: 
       - ./data/certs:/etc/nginx/certs
+    networks:
+      - front-back
+
+networks:
+  front-back:
+    driver: bridge

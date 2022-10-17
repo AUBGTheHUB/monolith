@@ -8,7 +8,7 @@ const env = process.env.NODE_ENV;
 let url = null;
 
 // eslint-disable-next-line no-undef
-if (process.env.REACT_APP_DEV_URL) {
+if (process.env.REACT_APP_DEV_URL != null) {
     // DEV ENVIRONMENT
     // eslint-disable-next-line no-undef
     url = process.env.REACT_APP_DEV_URL;
