@@ -26,7 +26,7 @@ const Validate = () => {
         axios({
             method: 'post',
             url: url + '/api/validate',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
