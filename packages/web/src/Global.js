@@ -14,7 +14,7 @@ if (process.env.REACT_APP_DEV_URL) {
     url = process.env.REACT_APP_DEV_URL;
 } else if (env == 'production') {
     // PROD ENVIRONMENT
-    url = 'http://dev.thehub-aubg.com:8000';
+    url = 'https://prod.thehub-aubg.com:8000';
 } else {
     // LOCAL ENVIRONMENT
     url = 'http://127.0.0.1:8000';
