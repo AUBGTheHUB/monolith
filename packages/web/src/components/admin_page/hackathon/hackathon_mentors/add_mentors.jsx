@@ -33,7 +33,7 @@ const AddMentors = () => {
         axios({
             method: 'post',
             url: url + '/api/mentors/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
             data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
