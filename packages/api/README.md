@@ -6,11 +6,11 @@
 ---
 ### Endpoint structure:
 
-<p><strong>NB:</strong> bearer_token is not passed in an Authorization header but in a custom basic one - "BEARER_TOKEN" </p>
+<p><strong>NB:</strong> bearer_token is not passed in an Authorization header but in a custom basic one - "BEARER-TOKEN" </p>
 <p><strong>Admins (used for authorization): </p></strong>
 <p>Requests: </p> 
 <li> Post request on /api/login (login) - accepts username and password as body, and returns bearer token on success </li>
-<li> Post request on /api/validate (BEARER_TOKEN validation) - accepts header with BEARER_TOKEN </li>
+<li> Post request on /api/validate (BEARER-TOKEN validation) - accepts header with BEARER-TOKEN </li>
 <hr/>
 <p><strong>Members (used for managing club members):</p></strong>
 <p>Requests:</p>

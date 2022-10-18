@@ -16,7 +16,7 @@ On login, if the API validates the client, the client gets a token which is stor
 
 When trying to access restricted routes, the client sends the token and validates itself once again.
 
-`Create, Update and Delete` requests should pass the token in a `BEARER_TOKEN` header.
+`Create, Update and Delete` requests should pass the token in a `"BEARER-TOKEN"` header.
 
 ---
 

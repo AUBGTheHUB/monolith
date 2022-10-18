@@ -19,7 +19,7 @@ var articlesCollection *mongo.Collection = configs.GetCollection(configs.DB, "ar
 func CreateArticle(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var article models.Article
 	defer cancel()
@@ -87,7 +87,7 @@ func EditArticle(c *fiber.Ctx) error {
 	key := c.Params("key", "key was not provided")
 	var article models.ArticleUpdate
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
 	if bearer_token != configs.ReturnAuthToken() {
@@ -156,7 +156,7 @@ func GetArticle(c *fiber.Ctx) error {
 func DeleteArticle(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	key := c.Params("key", "key was not provided")
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {

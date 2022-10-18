@@ -34,7 +34,7 @@ const EventsActions = () => {
         axios({
             method: 'delete',
             url: url + '/api/event/' + event_data['id'] + '/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
@@ -51,7 +51,7 @@ const EventsActions = () => {
         axios({
             method: 'put',
             url: url + '/api/event/' + event_data['id'],
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
             data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars

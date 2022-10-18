@@ -8,13 +8,13 @@ const env = process.env.NODE_ENV;
 let url = null;
 
 // eslint-disable-next-line no-undef
-if (process.env.REACT_APP_DEV_URL) {
+if (process.env.REACT_APP_DEV_URL != null) {
     // DEV ENVIRONMENT
     // eslint-disable-next-line no-undef
     url = process.env.REACT_APP_DEV_URL;
 } else if (env == 'production') {
     // PROD ENVIRONMENT
-    url = 'http://dev.thehub-aubg.com:8000';
+    url = 'https://prod.thehub-aubg.com:8000';
 } else {
     // LOCAL ENVIRONMENT
     url = 'http://127.0.0.1:8000';
@@ -26,7 +26,7 @@ const Validate = () => {
         axios({
             method: 'post',
             url: url + '/api/validate',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {

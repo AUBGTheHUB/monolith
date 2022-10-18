@@ -20,7 +20,7 @@ var jobsCollection *mongo.Collection = configs.GetCollection(configs.DB, "jobs")
 func CreateJob(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var job models.Job
 	defer cancel()
@@ -126,7 +126,7 @@ func EditJob(c *fiber.Ctx) error {
 	job_key := c.Params("key", "key was not provided")
 	var job models.Job
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {
@@ -187,7 +187,7 @@ func EditJob(c *fiber.Ctx) error {
 func DeleteJob(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	job_key := c.Params("key", "key was not provided")
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {

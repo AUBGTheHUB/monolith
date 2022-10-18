@@ -21,7 +21,7 @@ var mentorsCollection *mongo.Collection = configs.GetCollection(configs.DB, "men
 func CreateMentor(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var jury models.Jury
 	defer cancel()
@@ -51,7 +51,7 @@ func EditMentor(c *fiber.Ctx) error {
 	key := c.Params("key", "key was not provided")
 	var jury models.Jury
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
 	if bearer_token != configs.ReturnAuthToken() {
@@ -126,7 +126,7 @@ func EditMentor(c *fiber.Ctx) error {
 func DeleteMentor(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {

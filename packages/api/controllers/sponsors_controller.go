@@ -21,7 +21,7 @@ var sponsorsCollection *mongo.Collection = configs.GetCollection(configs.DB, "sp
 func CreateSponsor(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var sponsor models.Sponsors
 	defer cancel()
@@ -51,7 +51,7 @@ func EditSponsor(c *fiber.Ctx) error {
 	key := c.Params("key", "key was not provided")
 	var sponsor models.Sponsors
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
 	if bearer_token != configs.ReturnAuthToken() {
@@ -111,7 +111,7 @@ func EditSponsor(c *fiber.Ctx) error {
 func DeleteSponsor(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {

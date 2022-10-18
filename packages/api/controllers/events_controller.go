@@ -30,7 +30,7 @@ func isEmptyException(c *fiber.Ctx, data string) error {
 func CreateEvent(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var event models.Event
 	defer cancel()
@@ -151,7 +151,7 @@ func EditEvent(c *fiber.Ctx) error {
 	eventid := c.Params("key", "key was not provided")
 	var event models.Event
 
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
 	if bearer_token != configs.ReturnAuthToken() {
@@ -221,7 +221,7 @@ func EditEvent(c *fiber.Ctx) error {
 func DeleteEvent(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	event_key := c.Params("key", "key was not provided")
-	bearer_token := c.Get("BEARER_TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {

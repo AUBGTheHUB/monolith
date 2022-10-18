@@ -35,7 +35,7 @@ const AddArticle = () => {
         axios({
             method: 'post',
             url: url + '/api/article/',
-            headers: { BEARER_TOKEN: localStorage.getItem('auth_token') },
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
             data: { ...formState }
         })
             // eslint-disable-next-line no-unused-vars
