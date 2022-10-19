@@ -147,6 +147,7 @@
     background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
     height: 100vh;
     color: #fff;
+    width: 18rem;
 }
 
 .actions-single-member form input {
@@ -212,7 +213,19 @@
         padding-top: 5px;
     }
     .members-box-add-button {
-        height: 100vh;
+        height: 100%;
+    }
+    .actions-single-member {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+    .actions-single-member .member-card {
+        width: 96% !important;
+    }
+    .member-form-edit {
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
 }
 
