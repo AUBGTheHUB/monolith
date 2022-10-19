@@ -2,6 +2,16 @@
 
 [![Actions Status](https://github.com/AUBGTheHub/spa-website-2022/workflows/build-compose/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions)
 
+## For local development:
+Run this command:
+```shell
+echo REACT_APP_DEV_URL=127.0.0.1:8000 > $ROOT_DIRECTORY_SPA/packages/web/.env
+
+# where ROOT_DIRECTORY_SPA is the root of the project
+# for most of you, this will be $HOME/go/src/spa-website-2022
+
+```
+
 ## How to run the project
 `make` <em>commands should be run in the `root` directory of the project</em>  
 `npm run` <em>commands should be run in the `web` directory</em>   
