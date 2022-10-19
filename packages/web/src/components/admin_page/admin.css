@@ -244,5 +244,6 @@
 @media only screen and (max-height: 1368px) and (max-width: 1368px) {
     .actions-single-member {
         width: 100% !important;
+        padding-bottom: 25px;
     }
 }
