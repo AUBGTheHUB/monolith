@@ -147,7 +147,6 @@
     background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
     height: 100vh;
     color: #fff;
-    width: 18rem;
 }
 
 .actions-single-member form input {
@@ -217,21 +216,33 @@
     }
     .actions-single-member {
         display: block;
-        height: 100%;
+        height: 100vh;
         width: 100%;
     }
     .actions-single-member .member-card {
         width: 96% !important;
+    }
+    .actions-single-member {
+        padding-bottom: 10px;
     }
     .member-form-edit {
         margin-left: 1rem;
         margin-right: 1rem;
     }
 }
-
-@media only screen and (max-height: 750px) {
+@media only screen and (max-height: 745px) {
+    .actions-single-member {
+        height: 100%;
+    }
+}
+@media only screen and (max-height: 1000px) {
     .add-member-main-div {
         height: 100%;
         padding-bottom: 25px;
+    }
+}
+@media only screen and (max-height: 1368px) and (max-width: 1368px) {
+    .actions-single-member {
+        width: 100% !important;
     }
 }
