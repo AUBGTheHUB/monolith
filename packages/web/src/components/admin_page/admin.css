@@ -216,7 +216,7 @@
     }
     .actions-single-member {
         display: block;
-        height: 100vh;
+        height: 100%;
         width: 100%;
     }
     .actions-single-member .member-card {
@@ -229,18 +229,12 @@
         margin-left: 1rem;
         margin-right: 1rem;
     }
-}
-@media only screen and (max-height: 745px) {
-    .actions-single-member {
-        height: 100%;
-    }
-}
-@media only screen and (max-height: 1000px) {
     .add-member-main-div {
         height: 100%;
         padding-bottom: 25px;
     }
 }
+
 @media only screen and (max-height: 1368px) and (max-width: 1368px) {
     .actions-single-member {
         width: 100% !important;
