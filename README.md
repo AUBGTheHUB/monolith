@@ -11,7 +11,6 @@ Remove any `.env` files persistent in the web directory
 echo REACT_APP_DEV_URL=$URL > $ROOT_DIRECTORY_SPA/packages/web/.env
 
 # where ROOT_DIRECTORY_SPA is the root of the project
-# for most of you, this will be $HOME/go/src/spa-website-2022
 ```
 
 * Set API:
