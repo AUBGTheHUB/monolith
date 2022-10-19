@@ -66,7 +66,7 @@ const ArticleActions = () => {
         return (
             <div className="actions-single-member">
                 <div className="single-member-box">
-                    <Card style={{ width: '18rem' }} className="member-card">
+                    <Card className="member-card">
                         <Card.Img variant="top" src={article_data['banner']} />
                         <Card.Body>
                             <Card.Title>{article_data['title']}</Card.Title>
