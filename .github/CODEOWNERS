@@ -2,6 +2,6 @@
 
 /packages/api/** @asynchroza
 
-/packages/web/src/components/admin_page/** @asynchroza
+/packages/web/src/components/admin_page/** @asynchroza @Aleks1908
 
 .githooks/** @asynchroza
