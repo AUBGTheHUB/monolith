@@ -46,6 +46,9 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+    color: #fff;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
+    height: 100vh;
 }
 
 /* dashboard */
@@ -141,8 +144,25 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
+    height: 100vh;
+    color: #fff;
 }
 
+.actions-single-member form input {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
+.actions-single-member form input::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+.actions-single-memberform input:focus {
+    background-color: #4a4f51;
+    border: 1px solid #7a7979;
+    color: #fff;
+}
 /* box which holds the form for editing */
 .member-form-edit {
     padding-top: 2rem;
@@ -183,7 +203,6 @@
 .padding-top-button-render-events {
     margin-top: 0.25rem !important;
 }
-
 /* respnsive */
 @media only screen and (max-width: 414px) {
     .dash {
@@ -193,13 +212,32 @@
         padding-top: 5px;
     }
     .members-box-add-button {
-        height: 100vh;
+        height: 100%;
+    }
+    .actions-single-member {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+    .actions-single-member .member-card {
+        width: 96% !important;
+    }
+    .actions-single-member {
+        padding-bottom: 10px;
+    }
+    .member-form-edit {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+    .add-member-main-div {
+        height: 100%;
+        padding-bottom: 25px;
     }
 }
 
-@media only screen and (max-height: 750px) {
-    .add-member-main-div {
-        height: 100%;
+@media only screen and (max-height: 1368px) and (max-width: 1368px) {
+    .actions-single-member {
+        width: 100% !important;
         padding-bottom: 25px;
     }
 }

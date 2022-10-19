@@ -2,6 +2,21 @@
 
 [![Actions Status](https://github.com/AUBGTheHub/spa-website-2022/workflows/build-compose/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions)
 
+### For local development:
+Remove any `.env` files persistent in the web directory
+
+### For deployment:
+* Set WEB:
+```shell
+echo REACT_APP_DEV_URL=$URL > $ROOT_DIRECTORY_SPA/packages/web/.env
+
+# where ROOT_DIRECTORY_SPA is the root of the project
+# for most of you, this will be $HOME/go/src/spa-website-2022
+```
+
+* Set API:
+Check NOSYNCDEV for `echo` command
+
 ## How to run the project
 `make` <em>commands should be run in the `root` directory of the project</em>  
 `npm run` <em>commands should be run in the `web` directory</em>   
