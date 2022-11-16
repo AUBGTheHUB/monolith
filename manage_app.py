@@ -19,6 +19,16 @@ HUB_MAIL_PASSWORD
 DOCK_ENV - DEV, PROD
 """
 
+"""
+IMPORTANT NOTES!
+
+API URL:
+
+Since the API is accepting only https requests when certs are being passed to the docker build
+(which we do everytime we build through this script), we need to prepend all of the api urls
+with https
+"""
+
 ENV = os.environ["DOCK_ENV"]
 
 class bcolors:
@@ -76,7 +86,7 @@ def start_docker_compose():
         time.sleep(10) 
     
         ###### API ######
-        get_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
+        get_api = check_service_up("https://127.0.0.1:8000/api/validate", "API")
         
         print()
         if(get_web == 200 and get_api == 400):
@@ -188,7 +198,7 @@ def check_service_up(url: str, service: str):
 def cron_local_test():
 
     local_web = check_service_up("http://127.0.0.1:80", "WEB")
-    local_api = check_service_up("http://127.0.0.1:8000/api/validate", "API")
+    local_api = check_service_up("https://127.0.0.1:8000/api/validate", "API")
     
     # force rebuild
     if local_web != 200 or local_api != 400:
