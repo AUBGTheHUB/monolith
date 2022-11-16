@@ -16,7 +16,7 @@ CURRENTLY_BUILDING = threading.Event()
 env vars:
 HUB_MAIL_USERNAME
 HUB_MAIL_PASSWORD
-DOCK_ENV
+DOCK_ENV - DEV, PROD
 """
 
 ENV = os.environ["DOCK_ENV"]
@@ -163,7 +163,7 @@ def check_service_up(url: str, service: str):
         except Exception as e:
             msg.attach(MIMEText('<h3>{}: POST Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
             send_mail(msg)
-            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(service, str(url)) + bcolors.CEND)
+            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
             return e
 
         if web_request.status_code != 400:

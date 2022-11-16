@@ -11,6 +11,7 @@ Remove any `.env` files persistent in the web directory
 echo REACT_APP_DEV_URL=$URL > $ROOT_DIRECTORY_SPA/packages/web/.env
 
 # where ROOT_DIRECTORY_SPA is the root of the project
+# and $URL is either dev.thehub-aubg.com, prod.thehub-aubg.com or thehub-aubg.com
 ```
 
 * Set API:
