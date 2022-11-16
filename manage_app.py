@@ -19,17 +19,9 @@ HUB_MAIL_PASSWORD
 DOCK_ENV - DEV, PROD
 """
 
-"""
-IMPORTANT NOTES!
-
-API URL:
-
-Since the API is accepting only https requests when certs are being passed to the docker build
-(which we do everytime we build through this script), we need to prepend all of the api urls
-with https
-"""
-
 ENV = os.environ["DOCK_ENV"]
+API_URL = os.environ["HUB_API_URL"] # $API_URL/api/validate
+WEB_URL = os.environ["HUB_WEB_URL"]
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -79,14 +71,14 @@ def start_docker_compose():
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
-        get_web = check_service_up("http://127.0.0.1:80", "WEB")
+        get_web = check_service_up(WEB_URL, "WEB")
 
         # "connection reset by peer"
         print()
         time.sleep(10) 
     
         ###### API ######
-        get_api = check_service_up("https://127.0.0.1:8000/api/validate", "API")
+        get_api = check_service_up(API_URL, "API")
         
         print()
         if(get_web == 200 and get_api == 400):
@@ -197,16 +189,12 @@ def check_service_up(url: str, service: str):
 """ definitions of cron jobs """
 def cron_local_test():
 
-    local_web = check_service_up("http://127.0.0.1:80", "WEB")
-    local_api = check_service_up("https://127.0.0.1:8000/api/validate", "API")
+    local_web = check_service_up(WEB_URL, "WEB")
+    local_api = check_service_up(API_URL, "API")
     
     # force rebuild
     if local_web != 200 or local_api != 400:
         BUILD_RUNNING.clear()
-
-def cron_prod_test():
-    check_service_up("https://thehub-aubg.com", "WEB")
-    check_service_up("https://thehub-aubg.com/api/validate", "API")
 
 def cron_git_check_for_updates():
     # only >= 3.7
@@ -246,7 +234,6 @@ def run_thread(job):
     thread.start()
 
 schedule.every(5).minutes.do(run_thread, cron_local_test)
-#schedule.every(5).minutes.do(run_thread, cron_prod_test)
 
 schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
