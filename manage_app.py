@@ -41,7 +41,7 @@ def send_mail(msg):
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port) 
     server.login(email, password)
-    server.sendmail(email, "thehubaubg@gmail.com", msg.as_string())
+    server.sendmail(email, os.environ['HUB_MAIL_RECEIVER'], msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
