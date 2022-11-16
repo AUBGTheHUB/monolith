@@ -11,6 +11,8 @@ import threading, schedule
 
 BUILD_RUNNING = threading.Event() 
 CURRENTLY_BUILDING = threading.Event()
+lock = threading.Lock()
+BUILD_TRY = 0
 
 """
 env vars:
@@ -47,7 +49,7 @@ def send_mail(msg):
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
     # therefore check up should be done with requests
-
+    global BUILD_TRY
     msg = MIMEMultipart('alternative')
     
     # STOP NEW BUILDS FROM STARTING
@@ -56,6 +58,9 @@ def start_docker_compose():
         return
 
     CURRENTLY_BUILDING.set()
+    with lock:
+        BUILD_TRY = BUILD_TRY + 1
+
     
     errors = {}
 
@@ -94,6 +99,9 @@ def start_docker_compose():
 
             # THIS INDICATES THAT THE BUILD HAS BEEN SUCCESSFUL
             BUILD_RUNNING.set()
+
+            with lock:
+                BUILD_TRY = 0
             return
 
         else:
@@ -109,6 +117,10 @@ def start_docker_compose():
     send_mail(msg)
 
     CURRENTLY_BUILDING.clear()
+
+    with lock:
+        if BUILD_TRY >= 2:
+            os._exit(1)
 
 def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
@@ -233,7 +245,7 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
-schedule.every(5).minutes.do(run_thread, cron_local_test)
+schedule.every(1).minutes.do(run_thread, cron_local_test)
 
 schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
