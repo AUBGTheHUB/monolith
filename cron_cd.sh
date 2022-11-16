@@ -1,5 +1,5 @@
 #!/bin/bash
- cd $HOME/hub-conf-signup
+ cd $HOME/spa-website-2022
  git reset --hard origin/master
  git fetch
 
