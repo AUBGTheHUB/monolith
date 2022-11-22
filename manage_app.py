@@ -24,6 +24,7 @@ DOCK_ENV - DEV, PROD
 ENV = os.environ["DOCK_ENV"]
 API_URL = os.environ["HUB_API_URL"] # $API_URL/api/validate
 WEB_URL = os.environ["HUB_WEB_URL"]
+CERT_DOMAIN = os.environ["HUB_DOMAIN"] # dev.thehub-aubg.com --> used for cert renewal
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -52,8 +53,8 @@ def start_docker_compose():
     global BUILD_TRY
     msg = MIMEMultipart('alternative')
     
-    # STOP NEW BUILDS FROM STARTING
-    # IF THERE IS A BUILD WHICH IS CURRENTLY STARTED
+    # Do not allow new builds to start
+    # if a building process is currently running
     if CURRENTLY_BUILDING.is_set():
         return
 
@@ -61,7 +62,6 @@ def start_docker_compose():
     with lock:
         BUILD_TRY = BUILD_TRY + 1
 
-    
     errors = {}
 
     # if BUILD_RUNNING.is_set():
@@ -180,8 +180,7 @@ def check_service_up(url: str, service: str):
             print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
             return e
 
-        if web_request.status_code != 400:
-            # send email that the website is down
+        if web_request.status_code != 400: # send email that the website is down
             msg.attach(MIMEText('<h3>{}: POST Request to {} failed with status code {}'.format(ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
             send_mail(msg)
             print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV, service, str(url)) + bcolors.CEND)
@@ -189,11 +188,6 @@ def check_service_up(url: str, service: str):
 
     
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
-
-    # this is to be fixed
-    # make sure it returns the correct response codes
-    # and if web is 200 and api is 400 
-    # continue as normal
 
     return web_request.status_code
 
@@ -238,6 +232,17 @@ def cron_self_healing():
         print(bcolors.RED_IN + "WILL TRY TO RECOVER BUILD!" + bcolors.CEND)
         start_docker_compose()
 
+def cron_restart_with_new_certs():
+    print(bcolors.YELLOW_IN + "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND)
+    # BUILD_RUNNING.clear()
+    
+    stop_docker_compose()
+    # DOWNTIME !!! 
+    time.sleep(10)
+    subprocess.run(['ln', '-s','/etc/letsencrypt/live/' + HUB_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
+    subprocess.run(['ln', '-s','/etc/letsencrypt/live/' + HUB_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
+    subprocess.run(['certbot','renew','--force-renewal'])
+    start_docker_compose()
 
 """ threading for cron jobs """
 def run_thread(job):
@@ -250,6 +255,9 @@ schedule.every(1).minutes.do(run_thread, cron_local_test)
 schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
 schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
+
+# schedule.every(75).days.do(run_thread, cron_restart_with_new_certs)
+schedule.every(1).minutes.do(run_thread, cron_restart_with_new_certs)
 
 start_docker_compose()
 
