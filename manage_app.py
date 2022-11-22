@@ -268,7 +268,7 @@ def cron_start_with_new_certs():
         subprocess.run(['mv' ,'-f', pwd + 'devenv_old.key', pwd + 'devenv.key'])
         return
     
-    CURRENTLY_BUILDING.unset()
+    CURRENTLY_BUILDING.clear()
     start_docker_compose()
     
     #TODO: remove 
