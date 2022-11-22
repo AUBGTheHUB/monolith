@@ -267,9 +267,6 @@ def cron_start_with_new_certs():
     
     CURRENTLY_BUILDING.clear()
     start_docker_compose()
-    
-    #TODO: remove 
-    time.sleep(1000)
 
 """ threading for cron jobs """
 def run_thread(job):
@@ -277,14 +274,13 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
-# schedule.every(1).minutes.do(run_thread, cron_local_test)
+schedule.every(1).minutes.do(run_thread, cron_local_test)
 
-# schedule.every(30).seconds.do(run_thread, cron_self_healing)
+schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
-# schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
+schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
-# schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
-schedule.every(1).minutes.do(run_thread, cron_start_with_new_certs)
+schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
 
 # start_docker_compose()
 cron_start_with_new_certs()
