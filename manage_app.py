@@ -232,7 +232,7 @@ def cron_self_healing():
         print(bcolors.RED_IN + "WILL TRY TO RECOVER BUILD!" + bcolors.CEND)
         start_docker_compose()
 
-def cron_restart_with_new_certs():
+def cron_start_with_new_certs():
     print(bcolors.YELLOW_IN + "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND)
     # BUILD_RUNNING.clear()
     
@@ -240,9 +240,13 @@ def cron_restart_with_new_certs():
     
     # MAKE SURE NEW CERTS ARE INSTALLED
     # Could be done with symbolic links
-    subprocess.run(['rm' ,'-f', '$PWD/data/certs/devenv.*'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
+    pwd = subprocess.check_output(['pwd'])
+    pwd = pwd.decode('utf-8').replace('\n', '')
+    pwd += '/data/certs/'
+    print(bcolors.RED_IN + pwd_out + bcolors.CEND)
+    subprocess.run(['rm' ,'-f', pwd + 'devenv.*'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
 
     # DOWNTIME !!! 
     stop_docker_compose()
@@ -265,10 +269,11 @@ schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
 schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
-# schedule.every(75).days.do(run_thread, cron_restart_with_new_certs)
-schedule.every(1).minutes.do(run_thread, cron_restart_with_new_certs)
+# schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
+schedule.every(1).minutes.do(run_thread, cron_start_with_new_certs)
 
-start_docker_compose()
+# start_docker_compose()
+cron_start_with_new_certs()
 
 while True:
     schedule.run_pending()

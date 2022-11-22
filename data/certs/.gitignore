@@ -1,1 +1,3 @@
-devenv.*
+*.pem
+*.crt
+*.key
