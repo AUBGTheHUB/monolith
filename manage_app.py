@@ -241,8 +241,8 @@ def cron_restart_with_new_certs():
     # MAKE SURE NEW CERTS ARE INSTALLED
     # Could be done with symbolic links
     subprocess.run(['rm' ,'-f', '$PWD/data/certs/devenv.*'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + HUB_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + HUB_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
 
     # DOWNTIME !!! 
     stop_docker_compose()
