@@ -243,15 +243,32 @@ def cron_start_with_new_certs():
     pwd = subprocess.check_output(['pwd'])
     pwd = pwd.decode('utf-8').replace('\n', '')
     pwd += '/data/certs/'
-    print(bcolors.RED_IN + pwd_out + bcolors.CEND)
-    subprocess.run(['rm' ,'-f', pwd + 'devenv.*'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
-    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
 
-    # DOWNTIME !!! 
-    stop_docker_compose()
+    print(bcolors.RED_IN + pwd + bcolors.CEND)
 
-    subprocess.run(['certbot','renew','--force-renewal'])
+    subprocess.run(['mv' ,'-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'])
+    subprocess.run(['mv' ,'-f', pwd + 'devenv.key', pwd + 'devenv_old.key'])
+    
+    try:
+        # we need to unbind the port 
+        stop_docker_compose()
+        CURRENTLY_BUILDING.set()
+        subprocess.run(['certbot','renew','--force-renewal'])
+
+        subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
+        subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
+
+        # DOWNTIME !!! 
+
+    except e:
+        print(e)
+
+        # Recover old certificates
+        subprocess.run(['mv' ,'-f', pwd + 'devenv_old.crt', pwd + 'devenv.crt'])
+        subprocess.run(['mv' ,'-f', pwd + 'devenv_old.key', pwd + 'devenv.key'])
+        return
+    
+    CURRENTLY_BUILDING.unset()
     start_docker_compose()
     
     #TODO: remove 
@@ -263,11 +280,11 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
-schedule.every(1).minutes.do(run_thread, cron_local_test)
+# schedule.every(1).minutes.do(run_thread, cron_local_test)
 
-schedule.every(30).seconds.do(run_thread, cron_self_healing)
+# schedule.every(30).seconds.do(run_thread, cron_self_healing)
 
-schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
+# schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
 # schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
 schedule.every(1).minutes.do(run_thread, cron_start_with_new_certs)
