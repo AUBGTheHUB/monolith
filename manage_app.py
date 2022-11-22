@@ -24,7 +24,7 @@ DOCK_ENV - DEV, PROD
 ENV = os.environ["DOCK_ENV"]
 API_URL = os.environ["HUB_API_URL"] # $API_URL/api/validate
 WEB_URL = os.environ["HUB_WEB_URL"]
-CERT_DOMAIN = os.environ["HUB_DOMAIN"] # dev.thehub-aubg.com --> used for cert renewal
+CERT_DOMAIN = os.environ["HUB_DOMAIN"] # dev.thehub-aubg.com (without http) --> used for cert renewal
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -236,11 +236,17 @@ def cron_restart_with_new_certs():
     print(bcolors.YELLOW_IN + "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND)
     # BUILD_RUNNING.clear()
     
-    stop_docker_compose()
-    # DOWNTIME !!! 
     time.sleep(10)
-    subprocess.run(['ln', '-s','/etc/letsencrypt/live/' + HUB_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
-    subprocess.run(['ln', '-s','/etc/letsencrypt/live/' + HUB_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
+    
+    # MAKE SURE NEW CERTS ARE INSTALLED
+    # Could be done with symbolic links
+    subprocess.run(['rm' ,'-f', '$PWD/data/certs/devenv.*'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + HUB_DOMAIN + "/fullchain.pem", '$PWD/data/certs/devenv.crt'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + HUB_DOMAIN + "/privkey.pem", '$PWD/data/certs/devenv.key'])
+
+    # DOWNTIME !!! 
+    stop_docker_compose()
+
     subprocess.run(['certbot','renew','--force-renewal'])
     start_docker_compose()
 
