@@ -248,22 +248,13 @@ def cron_start_with_new_certs():
     subprocess.run(['mv' ,'-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'])
     subprocess.run(['mv' ,'-f', pwd + 'devenv.key', pwd + 'devenv_old.key'])
     
-    try:
-        # we need to unbind the port 
-        stop_docker_compose()
-        CURRENTLY_BUILDING.set()
-        subprocess.run(['certbot','renew','--force-renewal'])
+    # we need to unbind the port 
+    stop_docker_compose()
+    CURRENTLY_BUILDING.set()
+    subprocess.run(['certbot','renew','--force-renewal'])
 
-        subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
-        subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
-
-    except e:
-        print(e)
-
-        # Recover old certificates
-        subprocess.run(['mv' ,'-f', pwd + 'devenv_old.crt', pwd + 'devenv.crt'])
-        subprocess.run(['mv' ,'-f', pwd + 'devenv_old.key', pwd + 'devenv.key'])
-        return
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
+    subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
     
     CURRENTLY_BUILDING.clear()
     start_docker_compose()
