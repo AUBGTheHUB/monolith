@@ -19,6 +19,7 @@ env vars:
 HUB_MAIL_USERNAME
 HUB_MAIL_PASSWORD
 DOCK_ENV - DEV, PROD
+CERT_DOMAIN - dev.thehub-aubg.com
 """
 
 ENV = os.environ["DOCK_ENV"]
@@ -236,8 +237,6 @@ def cron_start_with_new_certs():
     print(bcolors.YELLOW_IN + "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND)
     # BUILD_RUNNING.clear()
     
-    time.sleep(10)
-    
     # MAKE SURE NEW CERTS ARE INSTALLED
     # Could be done with symbolic links
     pwd = subprocess.check_output(['pwd'])
@@ -257,8 +256,6 @@ def cron_start_with_new_certs():
 
         subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
         subprocess.run(['cp' ,'/etc/letsencrypt/live/' + CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
-
-        # DOWNTIME !!! 
 
     except e:
         print(e)
