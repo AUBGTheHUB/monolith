@@ -249,6 +249,9 @@ def cron_restart_with_new_certs():
 
     subprocess.run(['certbot','renew','--force-renewal'])
     start_docker_compose()
+    
+    #TODO: remove 
+    time.sleep(1000)
 
 """ threading for cron jobs """
 def run_thread(job):
