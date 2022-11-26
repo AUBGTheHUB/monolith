@@ -10,6 +10,7 @@
     justify-content: space-around;
     align-items: center;
     font-family: 'Poppins';
+    font-weight: 500;
 
     -webkit-user-select: none;
     /* Safari */
@@ -92,5 +93,5 @@ a:hover {
 }
 
 .hackaubg-btn:hover {
-    background-color: #0083b7;
+    background-color: #ffffff;
 }

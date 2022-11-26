@@ -2,14 +2,18 @@ import { Button } from './Button';
 import React from 'react';
 import './style.css';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { AiOutlineClose } from 'react-icons/ai';
+import { IoIosClose } from 'react-icons/io';
 import { useState } from 'react';
-
 export const NavMobile = () => {
     const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
     const [closeButton, setCloseButton] = useState(
         'navmobile-button-close not-displayed'
     );
+
+    const closeMenu = () => {
+        setMenuClass('navmobile-menu-backwards');
+    };
+
     return (
         <>
             <div className="navmobile-container">
@@ -34,16 +38,52 @@ export const NavMobile = () => {
                     props={{
                         css: 'navmobile-button',
                         icon: (
-                            <AiOutlineClose
+                            <IoIosClose
                                 className={closeButton}
                                 onClick={() => {
                                     setMenuClass('navmobile-menu-backwards');
-                                    console.log(menuClass);
                                 }}
                             />
                         )
                     }}
                 />
+
+                {/* Anchors are clickable / selectable */}
+
+                <div className="navmobile-anchors-container">
+                    <ul>
+                        <li>
+                            <a href="#about" onClick={closeMenu}>
+                                About
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#events" onClick={closeMenu}>
+                                Events
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#articles" onClick={closeMenu}>
+                                Articles
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#team" onClick={closeMenu}>
+                                Team
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#jobs" onClick={closeMenu}>
+                                Jobs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#hackaubg" onClick={closeMenu}>
+                                HackAUBG
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </>
     );
