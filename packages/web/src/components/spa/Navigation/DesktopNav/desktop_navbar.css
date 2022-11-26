@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 .navdesktop-container {
     background-color: black;
@@ -11,23 +11,20 @@
     align-items: center;
     font-family: 'Poppins';
 
-    -webkit-user-select: none; /* Safari */        
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
 }
 
 .navdesktop-logo {
     width: 53%;
     display: flex;
     align-items: center;
-}
-
-@media only screen and (max-width: 768px) {
-  /* For mobile phones: */
-  [class*="col-"] {
-    width: 100%;
-  }
 }
 
 .navdesktop-logo p {
@@ -37,24 +34,31 @@
 }
 
 .navdesktop-logo-image {
-    width: 5%;
+    width: 6%;
     margin-right: 1%;
 }
 
+@media only screen and (min-width: 1000px) {
+    .navdesktop-logo-image {
+        width: 7%;
+    }
+}
+
 /*Buttons*/
-.navdesktop-buttons, .hackaubg-btn{
+.navdesktop-buttons,
+.hackaubg-btn {
     width: 40%;
     color: white;
     align-items: center;
     display: flex;
     justify-content: space-around;
-    text-decoration: none;  
+    text-decoration: none;
     font-size: 1rem;
 }
 
 a:link {
     text-decoration: none;
-    color: #02B0E5;
+    color: #02b0e5;
 }
 
 a:visited {
@@ -63,22 +67,30 @@ a:visited {
 }
 
 a:hover {
-    color: #02B0E5 !important;
+    color: #02b0e5 !important;
 }
 
-  /* Hack AUBG Button */
-  
+/* Hack AUBG Button */
+
 .hackaubg-btn {
-  height: 6vh;
-  width: 8vw;
-  cursor: pointer;
-  border: none;
-  font-weight: bold;
-  border-radius: 5px;
-  background-color: #02B0E5;
-  color: black;
+    height: 6vh;
+    width: 27.5%;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #02b0e5;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hackaubg-btn p {
+    padding: 0;
+    margin: 0;
 }
 
 .hackaubg-btn:hover {
-  background-color: #0083B7;
+    background-color: #0083b7;
 }

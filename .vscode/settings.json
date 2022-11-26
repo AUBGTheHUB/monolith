@@ -16,7 +16,7 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "eslint.alwaysShowStatus": true,
     "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[css]": {
     "editor.defaultFormatter": "vscode.css-language-features"
