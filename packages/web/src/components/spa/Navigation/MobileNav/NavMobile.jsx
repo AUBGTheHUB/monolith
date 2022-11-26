@@ -1,10 +1,54 @@
-import Button from './Button';
+import { Button } from './Button';
+import React from 'react';
+import './style.css';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { AiOutlineClose } from 'react-icons/ai';
+import { useState } from 'react';
 
 export const NavMobile = () => {
+    const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
+    const [closeButton, setCloseButton] = useState(
+        'navmobile-button-close not-displayed'
+    );
     return (
-        <div>
-            <h1>Mobile</h1>
-            <Button />
-        </div>
+        <>
+            <div className="navmobile-container">
+                <Button
+                    props={{
+                        css: 'navmobile-button',
+                        icon: (
+                            <GiHamburgerMenu
+                                className="navmobile-button icon"
+                                onClick={() => {
+                                    setMenuClass('navmobile-menu');
+                                    setCloseButton('navmobile-button-close');
+                                }}
+                            />
+                        )
+                    }}
+                />
+            </div>
+
+            <div className={menuClass}>
+                <Button
+                    props={{
+                        css: 'navmobile-button',
+                        icon: (
+                            <AiOutlineClose
+                                className={closeButton}
+                                onClick={() => {
+                                    setCloseButton(
+                                        'navmobile-button-close not-displayed'
+                                    );
+                                    setMenuClass(
+                                        'navmobile-menu not-displayed'
+                                    );
+                                }}
+                            />
+                        )
+                    }}
+                />
+            </div>
+        </>
     );
 };

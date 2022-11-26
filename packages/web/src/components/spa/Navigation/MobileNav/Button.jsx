@@ -1,10 +1,5 @@
 import React from 'react';
 
-const Button = () => {
-    return (
-        <div className="testBtn">
-            <button>Test</button>
-        </div>
-    );
+export const Button = ({ props }) => {
+    return <div className={props.css}>{props.icon}</div>;
 };
-export default Button;

@@ -19,7 +19,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.css-language-features"
     },
     "makefile.extensionOutputFolder": "./.vscode",
     "[go]": {
