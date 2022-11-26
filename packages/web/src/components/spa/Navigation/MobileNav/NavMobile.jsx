@@ -20,7 +20,7 @@ export const NavMobile = () => {
                             <GiHamburgerMenu
                                 className="navmobile-button icon"
                                 onClick={() => {
-                                    setMenuClass('navmobile-menu');
+                                    setMenuClass('navmobile-menu forwards');
                                     setCloseButton('navmobile-button-close');
                                 }}
                             />
@@ -37,12 +37,12 @@ export const NavMobile = () => {
                             <AiOutlineClose
                                 className={closeButton}
                                 onClick={() => {
-                                    setCloseButton(
-                                        'navmobile-button-close not-displayed'
-                                    );
-                                    setMenuClass(
-                                        'navmobile-menu not-displayed'
-                                    );
+                                    console.log('XXX');
+                                    // setCloseButton(
+                                    //     'navmobile-button-close not-displayed'
+                                    // );
+                                    setMenuClass('navmobile-menu backwards');
+                                    console.log(menuClass);
                                 }}
                             />
                         )

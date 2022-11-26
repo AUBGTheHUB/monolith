@@ -15,12 +15,26 @@
     width: 100vw;
     left: 0;
     background-color: blue;
+}
+
+.navmobile-menu.forwards {
     animation-name: menu-animation;
     animation-duration: 0.75s;
 }
 
+.navmobile-menu.backwards {
+    animation-name: menu-animation-backwards;
+    animation-duration: 0.75s forwards;
+}
+
 @keyframes menu-animation {
     0% {
+        left: -100vw;
+    }
+}
+
+@keyframes menu-animaton-backwards {
+    100% {
         left: -100vw;
     }
 }
