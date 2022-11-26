@@ -15,7 +15,13 @@ export const NavMobile = () => {
     };
 
     return (
-        <>
+        <div className="navmobile-body">
+            <div className="navmobile-logo">
+                <img src="hublogo.png"></img>
+            </div>
+            <div className="navmobile-title">
+                <p>The Hub</p>
+            </div>
             <div className="navmobile-container">
                 <Button
                     props={{
@@ -85,6 +91,6 @@ export const NavMobile = () => {
                     </ul>
                 </div>
             </div>
-        </>
+        </div>
     );
 };

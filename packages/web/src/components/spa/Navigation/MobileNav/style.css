@@ -6,6 +6,7 @@
     height: 10vh;
     right: 0;
     top: 0;
+    color: white !important;
 }
 
 .navmobile-menu.not-displayed {
@@ -53,11 +54,6 @@
     }
 }
 
-/* .navmobile-button-close.not-displayed {
-    animation-name: menu-animation2;
-    animation-duration: 0.75s;
-} */
-
 .navmobile-button-close {
     position: absolute;
     width: 10vw;
@@ -82,6 +78,7 @@
     list-style: none;
     padding-left: 0rem !important;
 }
+
 .navmobile-anchors-container a {
     color: white;
 }
@@ -90,5 +87,20 @@
     position: absolute;
     left: 0;
     top: 0;
-    color: black;
+}
+
+.navmobile-logo img {
+    width: 50px;
+}
+
+.navmobile-logo p {
+    display: inline;
+    color: white;
+}
+
+.navmobile-title {
+    position: absolute;
+    right: 50%;
+    transform: translate(50%, 50%);
+    color: white;
 }
