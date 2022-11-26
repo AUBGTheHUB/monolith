@@ -10,15 +10,30 @@
     justify-content: space-around;
     align-items: center;
     font-family: 'Poppins';
-    /* font-style: 400; */
+
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 .navdesktop-logo {
     width: 53%;
     display: flex;
     align-items: center;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
+}
+
+.navdesktop-logo p {
     font-family: 'Poppins';
     font-size: 1.5rem;
+    margin: 0;
 }
 
 .navdesktop-logo-image {
@@ -27,69 +42,43 @@
 }
 
 /*Buttons*/
-.navdesktop-buttons{
+.navdesktop-buttons, .hackaubg-btn{
     width: 40%;
     color: white;
     align-items: center;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     text-decoration: none;  
     font-size: 1rem;
 }
-.navdesktop-buttons a{
-    
-}
 
- a:link {
-      text-decoration: none;
-      color: inherit;
+a:link {
+    text-decoration: none;
+    color: #02B0E5;
 }
 
 a:visited {
-      text-decoration: none;
-      color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 a:hover {
-      
-      color: #02B0E5;
+    color: #02B0E5 !important;
 }
-
-a:active {
-      text-decoration: none;
-      color: inherit;
-}
-
 
   /* Hack AUBG Button */
   
-.button {
-  height: 45px;
-  width: 18%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.hackaubg-btn {
+  height: 6vh;
+  width: 8vw;
   cursor: pointer;
   border: none;
-
+  font-weight: bold;
   border-radius: 5px;
-  /* -moz-transition: all .4s ease-in-out;
-  -o-transition: all .4s ease-in-out;
-  -webkit-transition: all .4s ease-in-out;
-  transition: all .4s ease-in-out; */
   background-color: #02B0E5;
-  
-}
-
-.button:hover {
-  /* background-position: 100% 0;
-  -moz-transition: all .4s ease-in-out;
-  -o-transition: all .4s ease-in-out;
-  -webkit-transition: all .4s ease-in-out;
-  transition: all .4s ease-in-out; */
   color: black;
 }
 
-.button:focus {
-  outline: none;
+.hackaubg-btn:hover {
+  background-color: #0083B7;
 }

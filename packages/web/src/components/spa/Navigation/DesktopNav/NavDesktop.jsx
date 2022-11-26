@@ -6,7 +6,7 @@ export const NavDesktop = () => {
         <div className="navdesktop-container">
             <div className="navdesktop-logo">
                 <img src="hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
-                <p>The HUB</p>
+                <p>The Hub</p>
             </div>
             <div className="navdesktop-buttons">
                 <a href= "#about">About</a>
@@ -14,9 +14,8 @@ export const NavDesktop = () => {
                 <a href= "#articles">Articles</a>
                 <a href= "#team">Team</a>
                 <a href= "#jobs">Jobs</a>
-                {/* <div>Link for the hackathon</div> */}
-                <button className="button" type="button" onClick={() => {
-                                }} >Hack AUBG</button>
+                <button className="hackaubg-btn" type="button" onClick={() => {
+                                }} >HackAUBG</button>
             </div>
         </div>
         
