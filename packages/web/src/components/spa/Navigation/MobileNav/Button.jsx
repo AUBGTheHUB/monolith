@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Button =() =>{
+const Button = () => {
     return (
-        <div className=""> 
-            
+        <div className="testBtn">
+            <button>Test</button>
         </div>
-    )
-}
+    );
+};
 export default Button;
