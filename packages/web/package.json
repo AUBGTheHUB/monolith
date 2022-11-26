@@ -16,9 +16,10 @@
         "react-responsive": "^9.0.0",
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
+        "styled-components": "^5.3.6",
         "web-vitals": "^2.1.4"
     },
-     "scripts": {
+    "scripts": {
         "start": "react-scripts start",
         "local": "HOST=0.0.0.0 npm run start",
         "build": "react-scripts build",
