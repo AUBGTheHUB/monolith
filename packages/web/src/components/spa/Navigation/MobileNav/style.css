@@ -17,14 +17,19 @@
     background-color: blue;
 }
 
-.navmobile-menu.forwards {
-    animation-name: menu-animation;
+.navmobile-menu-backwards {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    left: -100vw;
+    background-color: blue;
+    animation-name: toni-montana;
     animation-duration: 0.75s;
 }
 
-.navmobile-menu.backwards {
-    animation-name: menu-animation-backwards;
-    animation-duration: 0.75s forwards;
+.navmobile-menu.forwards {
+    animation-name: menu-animation;
+    animation-duration: 0.75s;
 }
 
 @keyframes menu-animation {
@@ -33,9 +38,9 @@
     }
 }
 
-@keyframes menu-animaton-backwards {
-    100% {
-        left: -100vw;
+@keyframes toni-montana {
+    0% {
+        left: 0%;
     }
 }
 

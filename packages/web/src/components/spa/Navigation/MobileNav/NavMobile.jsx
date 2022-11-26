@@ -41,7 +41,7 @@ export const NavMobile = () => {
                                     // setCloseButton(
                                     //     'navmobile-button-close not-displayed'
                                     // );
-                                    setMenuClass('navmobile-menu backwards');
+                                    setMenuClass('navmobile-menu-backwards');
                                     console.log(menuClass);
                                 }}
                             />
