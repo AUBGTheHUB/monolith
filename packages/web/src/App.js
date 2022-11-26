@@ -27,6 +27,7 @@ import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsor
 import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners';
 import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
+import './App.css';
 
 function App() {
     return (

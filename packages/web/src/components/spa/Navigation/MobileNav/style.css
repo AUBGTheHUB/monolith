@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+.navmobile-button {
+    position: absolute;
+    width: 10vw;
+    height: 10vh;
+    right: 0;
+    top: 0;
+    color: white !important;
+}
+
+.navmobile-menu.not-displayed {
+    display: none;
+}
+
+.navmobile-menu {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    left: 0;
+    background-color: #050328;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navmobile-menu-backwards {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    left: -100vw;
+    background-color: #050328;
+    animation-name: toni-montana;
+    animation-duration: 0.75s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navmobile-menu.forwards {
+    animation-name: menu-animation;
+    animation-duration: 0.75s;
+}
+
+@keyframes menu-animation {
+    0% {
+        left: -100vw;
+    }
+}
+
+@keyframes toni-montana {
+    0% {
+        left: 0%;
+    }
+}
+
+.navmobile-button-close {
+    position: absolute;
+    width: 10vw;
+    height: 10vh;
+    right: 0;
+    color: white !important;
+    animation-name: menu-animation;
+    animation-duration: 1s;
+}
+
+.navmobile-anchors-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.navmobile-anchors-container ul {
+    color: white;
+    font-size: xx-large;
+    list-style: none;
+    padding-left: 0rem !important;
+}
+
+.navmobile-anchors-container a {
+    color: white;
+}
+
+.navmobile-logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.navmobile-logo img {
+    width: 50px;
+}
+
+.navmobile-logo p {
+    display: inline;
+    color: white;
+}
+
+.navmobile-title {
+    position: absolute;
+    right: 50%;
+    transform: translate(50%, 50%);
+    color: white;
+}

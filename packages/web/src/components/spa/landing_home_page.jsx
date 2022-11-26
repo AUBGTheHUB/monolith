@@ -1,9 +1,11 @@
 import React from 'react';
+import { NavBar } from './Navigation/NavBar';
+import './main.css';
 
 const LandingHome = () => {
     return (
-        <div>
-            <h1>HOME PAGE</h1>
+        <div className="bbb">
+            <NavBar />
         </div>
     );
 };
