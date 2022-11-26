@@ -1,5 +1,5 @@
-import React from "react";
-//import "../desktop_navbar.css";
+// import React from "react";
+// import "../desktop_navbar.css";
 
 export const NavDesktop = () => {
     return (
@@ -8,10 +8,8 @@ export const NavDesktop = () => {
             <div className="title-logo-container">
                 <img src="hublogo.png" alt="Hub logo" />
             </div>
-            <div className="nav-buttons">
-
-            </div>
+            <div className="nav-buttons"></div>
         </div>
         
     );
-}
+};
