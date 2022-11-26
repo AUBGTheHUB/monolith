@@ -37,10 +37,6 @@ export const NavMobile = () => {
                             <AiOutlineClose
                                 className={closeButton}
                                 onClick={() => {
-                                    console.log('XXX');
-                                    // setCloseButton(
-                                    //     'navmobile-button-close not-displayed'
-                                    // );
                                     setMenuClass('navmobile-menu-backwards');
                                     console.log(menuClass);
                                 }}
