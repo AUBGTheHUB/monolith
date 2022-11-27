@@ -4,8 +4,8 @@
     position: absolute;
     width: 50px;
     height: auto;
-    right: 0;
-    top: 0;
+    right: 1px;
+    top: 1.5px;
     color: white !important;
 }
 
@@ -56,8 +56,8 @@
 
 .navmobile-button-close {
     position: absolute;
-    width: 10vw;
-    height: 10vh;
+    width: 50px;
+    height: auto;
     right: 0;
     color: white !important;
     animation-name: menu-animation;
@@ -91,6 +91,9 @@
 
 .navmobile-logo img {
     width: 50px;
+    position: absolute;
+    left: 2px;
+    top: 3px;
 }
 
 .navmobile-logo p {

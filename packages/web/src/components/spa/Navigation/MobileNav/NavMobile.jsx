@@ -2,8 +2,9 @@ import { Button } from './Button';
 import React from 'react';
 import './style.css';
 // import { GiHamburgerMenu } from 'react-icons/gi';
-import { IoIosClose } from 'react-icons/io';
+// import { IoIosClose } from 'react-icons/io';
 import { CgMenu } from 'react-icons/cg';
+import { MdOutlineClose } from 'react-icons/md';
 
 import { useState } from 'react';
 export const NavMobile = () => {
@@ -46,7 +47,7 @@ export const NavMobile = () => {
                     props={{
                         css: 'navmobile-button',
                         icon: (
-                            <IoIosClose
+                            <MdOutlineClose
                                 className={closeButton}
                                 onClick={() => {
                                     setMenuClass('navmobile-menu-backwards');
