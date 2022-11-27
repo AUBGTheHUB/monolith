@@ -5,3 +5,5 @@
 /packages/web/src/components/admin_page/** @asynchroza @Aleks1908
 
 .githooks/** @asynchroza
+
+/packages/web/src/components/Navigation/** @asynchroza @Aleks1908 @IvanObreshkov @DemonHashira @annakukova
