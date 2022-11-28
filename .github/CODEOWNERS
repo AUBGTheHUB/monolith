@@ -8,4 +8,9 @@
 
 /packages/web/src/components/Navigation/** @asynchroza @Aleks1908 @IvanObreshkov @DemonHashira @annakukova
 
-/packages/web/nginx.conf @IvanObreshkov
+/packages/web/nginx.conf @IvanObreshkov @asynchroza
+
+/packages/api/configs/cron.go @IvanObreshkov @asynchroza
+
+/packages/api/configs/env.go @IvanObreshkov @asynchroza
+
