@@ -6,7 +6,7 @@
 
 .githooks/** @asynchroza
 
-/packages/web/src/components/Navigation/** @asynchroza @Aleks1908 @IvanObreshkov @DemonHashira @annakukova
+/packages/web/src/components/Navigation/** @asynchroza @Aleks1908 @IvanObreshkov @DemonHashira @annakukova @peti-krl
 
 /packages/web/nginx.conf @IvanObreshkov @asynchroza
 
