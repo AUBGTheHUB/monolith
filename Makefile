@@ -28,3 +28,10 @@ post-osx:
 .PHONY: post-wsl
 post-wsl:
 	./install_wsl.sh --post
+
+.PHONY: install-code-plugins
+install-code-plugins:
+	code --install-extension aaron-bond.better-comments \ 
+	code --install-extension dbaeumer.vscode-eslint \
+	code --install-extension esbenp.prettier-vscode
+
