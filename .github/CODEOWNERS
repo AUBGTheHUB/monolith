@@ -1,16 +1,16 @@
-* @AUBGTheHUB/nosyncdev
+* @asynchroza
 
 /packages/api/** @asynchroza
 
-/packages/web/src/components/admin_page/** @asynchroza @Aleks1908
+/packages/web/src/components/admin_page/** @Aleks1908
 
 .githooks/** @asynchroza
 
-/packages/web/src/components/Navigation/** @asynchroza @Aleks1908 @IvanObreshkov @DemonHashira @annakukova @peti-krl
+/packages/web/src/components/Navigation/** @Aleks1908 @IvanObreshkov @DemonHashira @annakukova @peti-krl
 
-/packages/web/nginx.conf @IvanObreshkov @asynchroza
+/packages/web/nginx.conf @IvanObreshkov
 
-/packages/api/configs/cron.go @IvanObreshkov @asynchroza
+/packages/api/configs/cron.go @IvanObreshkov
 
-/packages/api/configs/env.go @IvanObreshkov @asynchroza
+/packages/api/configs/env.go @IvanObreshkov
 
