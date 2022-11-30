@@ -23,9 +23,23 @@ echo -e "${green}Running pre-commit linting${end}"
 committedFiles=$(git diff --name-only --cached)
 files=$(echo $committedFiles | tr ";" "\\n")
 
-make lint
+# check file extensions , if not .js, .jsx, .ts, .tsx in files
+# skip make lint
+# and think of a way to skip, the post hook as well
+# skip post hook as well
+# ? HOW
+# echo > in files_for_commit.txt a line saying NO_POST_HOOK
+# in post-commit if NO_POST_HOOK, exit 0
 
-echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
+for file in $files
+do
+    echo $file
+    if [[ "$file" == *".js"  ]]
+    then
+        echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
+        make lint
+    fi
+done
 
 echo $files > ".files_for_commit.txt"
 
