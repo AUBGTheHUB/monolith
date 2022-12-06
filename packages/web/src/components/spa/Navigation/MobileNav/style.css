@@ -9,12 +9,6 @@
     color: white !important;
 }
 
-.navmobile-button-ham p {
-    padding: 0;
-    margin: 0;
-    font-size: xx-large;
-}
-
 .navmobile-button-ham {
     width: 200px;
     font-size: 16px;
@@ -27,9 +21,7 @@
     border: none;
     background-size: 300% 100%;
     border-radius: 40px;
-}
-
-.navmobile-button-ham {
+    font-size: xx-large;
     background-image: linear-gradient(to right, #25aae1, #4481eb, #04befe, #3f86ed);
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
 }

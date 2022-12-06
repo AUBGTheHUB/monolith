@@ -96,7 +96,7 @@ export const NavMobile = () => {
                         </li>
                         <div className='navmobile-anchors-container'>
                                 <button className="navmobile-button-ham" type="button" onClick={navigateToHackAUBG} >
-                                    <p>HackAUBG</p>
+                                    HackAUBG
                                 </button>
                         </div>
                     </ul>
