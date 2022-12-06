@@ -17,15 +17,20 @@ then
 fi
 
 
-
 echo -e "${green}Running pre-commit linting${end}"
 
 committedFiles=$(git diff --name-only --cached)
 files=$(echo $committedFiles | tr ";" "\\n")
 
-make lint
 
-echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
+for file in $files
+do
+    if [[ "$file" == *".js" || "$file" == *".jsx" || "$file" == *".ts" || "$file" == *".tsx" ]]
+    then
+        make lint
+        echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
+    fi
+done
 
 echo $files > ".files_for_commit.txt"
 
