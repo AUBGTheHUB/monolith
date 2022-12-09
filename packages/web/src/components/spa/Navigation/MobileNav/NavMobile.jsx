@@ -5,9 +5,16 @@ import './style.css';
 // import { IoIosClose } from 'react-icons/io';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 export const NavMobile = () => {
+    const navigate = useNavigate();
+
+    const navigateToHackAUBG = () => {
+        navigate('/hackaubg');
+    };
+
     const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
     const [closeButton, setCloseButton] = useState(
         'navmobile-button-close not-displayed'
@@ -86,11 +93,14 @@ export const NavMobile = () => {
                                 Jobs
                             </a>
                         </li>
-                        <li>
-                            <a href="#hackaubg" onClick={closeMenu}>
+                        <div>
+                            <div
+                                className="navmobile-button-ham"
+                                onClick={navigateToHackAUBG}
+                            >
                                 HackAUBG
-                            </a>
-                        </li>
+                            </div>
+                        </div>
                     </ul>
                 </div>
             </div>
