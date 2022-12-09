@@ -6,7 +6,6 @@
     height: auto;
     right: 1.5%;
     top: 0.5%;
-
     color: white !important;
 }
 
@@ -80,7 +79,7 @@
 
 .navmobile-button-close {
     position: absolute;
-    width: 50px;
+    width: 35%;
     height: auto;
     right: 0;
     color: white !important;
@@ -128,11 +127,10 @@
 }
 
 .navmobile-title {
-        position: absolute;
+    position: absolute;
     right: 50%;
     transform: translate(50%, 35%);
     color: white;
-
 }
 .navmobile-title p {
     font-size: 25px;
