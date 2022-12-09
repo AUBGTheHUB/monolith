@@ -2,11 +2,35 @@
 
 .navmobile-button {
     position: absolute;
-    width: 50px;
+    width: 32%;
     height: auto;
-    right: 1px;
-    top: 1.5px;
+    right: 1.5%;
+    top: 0.5%;
+
     color: white !important;
+}
+
+.navmobile-button-ham {
+    width: 200px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    height: 55px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 40px;
+    font-size: xx-large;
+    background-image: linear-gradient(
+        to right,
+        #25aae1,
+        #4481eb,
+        #04befe,
+        #3f86ed
+    );
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
 }
 
 .navmobile-menu.not-displayed {
@@ -85,12 +109,14 @@
 
 .navmobile-logo {
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 0.5%;
+    width: 10%;
+    top: 0.2%;
 }
 
 .navmobile-logo img {
-    width: 50px;
+    width: 100%;
+    height: auto;
     position: absolute;
     left: 2px;
     top: 3px;
@@ -102,8 +128,12 @@
 }
 
 .navmobile-title {
-    position: absolute;
+        position: absolute;
     right: 50%;
-    transform: translate(50%, 50%);
+    transform: translate(50%, 35%);
     color: white;
+
+}
+.navmobile-title p {
+    font-size: 25px;
 }
