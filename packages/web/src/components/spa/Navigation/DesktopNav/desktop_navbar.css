@@ -7,6 +7,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    padding-left: 10%;
+    padding-right: 10%;
     align-items: center;
     font-family: 'Poppins';
     font-weight: 500;
