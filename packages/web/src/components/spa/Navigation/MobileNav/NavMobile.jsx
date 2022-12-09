@@ -30,7 +30,7 @@ export const NavMobile = () => {
                 <img src="hublogo.png"></img>
             </div>
             <div className="navmobile-title">
-                <p>The Hub</p>
+                <h2>The Hub</h2>
             </div>
             <div className="navmobile-container">
                 <Button
