@@ -77,15 +77,20 @@ a:hover {
 .hackaubg-btn {
     height: 6vh;
     width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     border: none;
     font-weight: bold;
     border-radius: 5px;
-    background-color: #02b0e5;
-    color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-size: 300% 100%;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    background-image: linear-gradient(to right, #32baf4, #467edd, #3f86ed, #47acdf, #24cc8e);
+    box-shadow: 0 2px 10px 0 rgb(70, 126, 221);
 }
 
 .hackaubg-btn p {
@@ -94,5 +99,21 @@ a:hover {
 }
 
 .hackaubg-btn:hover {
-    background-color: #ffffff;
+    background-position: 100% 0;
+    -moz-transition: all .3s ease-in-out;
+    -o-transition: all .3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+}
+
+@keyframes hackaubg-btn {
+  0% {
+    background-position: 0% 10%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  1000% {
+    background-position: 0% 50%;
+  }
 }
