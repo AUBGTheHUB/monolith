@@ -24,7 +24,7 @@
 }
 
 .navdesktop-logo {
-    width: 50%;
+    width: 40%;
     display: flex;
     align-items: center;
 }
@@ -40,16 +40,16 @@
     margin-right: 1%;
 }
 
-@media only screen and (min-width: 900px) {
+@media only screen and (max-width: 1600px) {
     .navdesktop-logo-image {
-        width: 7%;
+        width: 10%;
     }
 }
 
 /*Buttons*/
 .navdesktop-buttons,
 .hackaubg-btn {
-    width: 43%;
+    width: 58%;
     color: white;
     align-items: center;
     display: flex;
@@ -76,10 +76,10 @@ a:hover {
 
 .hackaubg-btn {
     height: 6vh;
-    width: 25%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* width: auto; */
+    padding-left: 3%;
+    padding-right: 3%;
+    width: fit-content;
     cursor: pointer;
     border: none;
     font-weight: bold;
@@ -111,6 +111,7 @@ a:hover {
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+    
 }
 
 @keyframes hackaubg-btn {
