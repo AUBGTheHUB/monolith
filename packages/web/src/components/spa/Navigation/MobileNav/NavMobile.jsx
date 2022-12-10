@@ -1,6 +1,6 @@
 import { Button } from './Button';
 import React from 'react';
-import './style.css';
+import './mobile-navbar.css';
 // import { GiHamburgerMenu } from 'react-icons/gi';
 // import { IoIosClose } from 'react-icons/io';
 import { CgMenu } from 'react-icons/cg';
