@@ -8,7 +8,7 @@ export const Welcome = () => {
                 <h1>Welcome to the Hub!</h1>
             </div>
             <div className="hubzzie-image">
-                <p>Hubbzie</p>
+                <p>Hubbzie image</p>
             </div>
         </div>
     );
