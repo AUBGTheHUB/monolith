@@ -4,7 +4,7 @@ import './main.css';
 
 const LandingHome = () => {
     return (
-        <div className="bbb">
+        <div className="main">
             <NavBar />
         </div>
     );

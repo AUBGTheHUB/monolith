@@ -21,7 +21,9 @@ export const NavDesktop = () => {
                 <button
                     className="hackaubg-btn"
                     type="button"
-                    onClick={() => {}}
+                    onClick={() => {
+                        location.href = '/hackaubg';
+                    }}
                 >
                     <p>HackAUBG</p>
                 </button>
