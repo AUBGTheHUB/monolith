@@ -127,11 +127,10 @@
 }
 
 .navmobile-title {
-        position: absolute;
+    position: absolute;
     right: 50%;
     transform: translate(50%, 35%);
     color: white;
-
 }
 .navmobile-title p {
     font-size: 25px;
