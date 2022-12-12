@@ -27,9 +27,7 @@ export const NavMobile = () => {
     return (
         <div className="navmobile-body">
             <div className="navmobile-container">
-                <div className="navmobile-logo">
-                    <img src="hublogo.png"></img>
-                </div>
+                <img src="hublogo.png" className="navmobile-logo"></img>
                 <h2 className="navmobile-title">The Hub</h2>
                 <Button
                     props={{
@@ -50,7 +48,7 @@ export const NavMobile = () => {
             <div className={menuClass}>
                 <Button
                     props={{
-                        css: 'navmobile-button',
+                        css: 'navmobile-button-close',
                         icon: (
                             <MdOutlineClose
                                 className={closeButton}
