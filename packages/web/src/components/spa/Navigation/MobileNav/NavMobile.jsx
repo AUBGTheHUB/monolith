@@ -26,13 +26,11 @@ export const NavMobile = () => {
 
     return (
         <div className="navmobile-body">
-            <div className="navmobile-logo">
-                <img src="hublogo.png"></img>
-            </div>
-            <div className="navmobile-title">
-                <h2>The Hub</h2>
-            </div>
             <div className="navmobile-container">
+                <div className="navmobile-logo">
+                    <img src="hublogo.png"></img>
+                </div>
+                <h2 className="navmobile-title">The Hub</h2>
                 <Button
                     props={{
                         css: 'navmobile-button',

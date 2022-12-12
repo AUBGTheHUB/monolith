@@ -125,15 +125,20 @@
     top: 3px;
 }
 
+.navmobile-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .navmobile-logo p {
     display: inline;
     color: white;
 }
 
 .navmobile-title {
-    position: absolute;
-    right: 50%;
-    transform: translate(50%, 35%);
     color: white;
 }
 .navmobile-title p {
