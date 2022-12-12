@@ -96,3 +96,32 @@
         margin-left: 10%;
     }
 }
+
+.welcome-text h1 {
+    /* color: white;
+    overflow: hidden;
+    white-space: nowrap; /* Keeps the content on a single line */
+    /* margin: 0 auto; Gives that scrolling effect as the typing happens */
+    /*letter-spacing: .10em; /* Adjust as needed */
+    /* animation: typing 1s forwards; */
+    /* animation: 
+        typing 3s steps(20, end),
+        blink-caret .5s step-end infinite; */
+
+    overflow: hidden;
+    border-right: .15em solid white;
+    white-space: nowrap;
+    animation: 
+        typing 3s forwards,
+        blink-caret .5s step-end;
+}
+
+@keyframes typing {
+	from { width: 0 }
+    to { width: 66.5% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: white }
+}
