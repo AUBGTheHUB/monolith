@@ -25,7 +25,7 @@ files=$(echo $committedFiles | tr ";" "\\n")
 
 for file in $files
 do
-    if [[ "$file" == *".js" || "$file" == *".jsx" || "$file" == *".ts" || "$file" == *".tsx" ]]
+    if [[ "$file" == *".js" || "$file" == *".jsx" || "$file" == *".ts" || "$file" == *".tsx" || "$file" == *".css" ]]
     then
         make lint
         echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
