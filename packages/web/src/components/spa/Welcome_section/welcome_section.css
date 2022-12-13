@@ -110,19 +110,26 @@
         blink-caret .5s step-end infinite; */
 
     overflow: hidden;
-    border-right: .15em solid white;
+    border-right: 0.15em solid white;
     white-space: nowrap;
-    animation: 
-        typing 2.5s forwards,
-        blink-caret .4s step-end;
+    animation: typing 2.5s forwards, blink-caret 0.4s step-end;
 }
 
 @keyframes typing {
-	from { width: 0 }
-    to { width: 66.5% }
+    from {
+        width: 0;
+    }
+    to {
+        width: 66.5%;
+    }
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: white }
+    from,
+    to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: white;
+    }
 }
