@@ -2,6 +2,14 @@
 
 .navmobile-body {
     height: 10vh;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
 }
 
 .navmobile-button {
@@ -19,6 +27,7 @@
     margin: 20px;
     height: 55px;
     text-align: center;
+    line-height: 50px;
     border: none;
     background-size: 300% 100%;
     border-radius: 40px;
