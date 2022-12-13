@@ -85,7 +85,8 @@
         justify-content: center;
         flex-direction: column-reverse;
     }
-    .hubzzie, .welcome-text{
+    .hubzzie,
+    .welcome-text {
         margin: 0;
         margin-top: 10%;
     }
