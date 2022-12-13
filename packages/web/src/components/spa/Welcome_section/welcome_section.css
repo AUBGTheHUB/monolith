@@ -99,20 +99,23 @@
 }
 
 .welcome-text h1 {
-    /* color: white;
-    overflow: hidden;
-    white-space: nowrap; /* Keeps the content on a single line */
-    /* margin: 0 auto; Gives that scrolling effect as the typing happens */
     /*letter-spacing: .10em; /* Adjust as needed */
-    /* animation: typing 1s forwards; */
-    /* animation: 
-        typing 3s steps(20, end),
-        blink-caret .5s step-end infinite; */
+    /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
 
     overflow: hidden;
     border-right: 0.15em solid white;
-    white-space: nowrap;
-    animation: typing 2.5s forwards, blink-caret 0.4s step-end;
+    white-space: nowrap; /* Keeps the content on a single line */
+    animation: typing 2s forwards;
+    /* blink-caret 0.4s step-end infinite; --> Do not delete: Used for typewriting effect */
+}
+
+.welcome-text p,
+.aboutUs-btn,
+.aboutUs-btn:hover,
+.hubzzie-image {
+    overflow: hidden;
+    white-space: nowrap; /* Keeps the content on a single line */
+    animation: appearing 1.8s backwards 1.8s;
 }
 
 @keyframes typing {
@@ -121,15 +124,27 @@
     }
     to {
         width: 66.5%;
+        border-color: transparent;
     }
 }
 
-@keyframes blink-caret {
+/* Commented lines below: To be used for typewriting effect */
+
+/* @keyframes blink-caret {
     from,
     to {
         border-color: transparent;
     }
     50% {
         border-color: white;
+    }
+} */
+
+@keyframes appearing {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
     }
 }
