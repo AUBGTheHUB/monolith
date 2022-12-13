@@ -113,8 +113,8 @@
     border-right: .15em solid white;
     white-space: nowrap;
     animation: 
-        typing 3s forwards,
-        blink-caret .5s step-end;
+        typing 2.5s forwards,
+        blink-caret .4s step-end;
 }
 
 @keyframes typing {
