@@ -1,0 +1,9 @@
+.members-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+}
+
+.members-card {
+}
