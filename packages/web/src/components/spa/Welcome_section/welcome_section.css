@@ -105,7 +105,7 @@
     overflow: hidden;
     border-right: 0.15em solid white;
     white-space: nowrap; /* Keeps the content on a single line */
-    animation: typing 2s forwards;
+    animation: typing 2.5s forwards;
     /* blink-caret 0.4s step-end infinite; --> Do not delete: Used for typewriting effect */
 }
 
@@ -115,7 +115,7 @@
 .hubzzie-image {
     overflow: hidden;
     white-space: nowrap; /* Keeps the content on a single line */
-    animation: appearing 1.8s backwards 1.8s;
+    animation: appearing 2s backwards 2s;
 }
 
 @keyframes typing {
