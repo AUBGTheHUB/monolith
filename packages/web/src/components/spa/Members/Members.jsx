@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './members.css';
 import axios from 'axios';
-import { url } from '../../../Global';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
@@ -9,7 +8,7 @@ export const Members = () => {
     const getMembers = () => {
         axios({
             method: 'get',
-            url: url + '/api/members'
+            url: '/api/members'
         })
             .then((res) => {
                 setMembers(res.data.data.data);
