@@ -3,7 +3,22 @@
     justify-content: space-around;
     align-items: center;
     flex-direction: row;
+    position: relative;
 }
 
 .members-card {
+}
+
+.members-card-pfp {
+    width: 40vh;
+}
+
+.hidden {
+    display: none;
+}
+
+.members-card-hover-overlay {
+    top: 50%;
+    position: absolute;
+    z-index: 1;
 }

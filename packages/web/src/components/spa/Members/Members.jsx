@@ -5,7 +5,7 @@ import { url } from '../../../Global';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
-    const [hoverOverlay, setHoverOverlay] = useState('hidden');
+    // const [hoverOverlay, setHoverOverlay] = useState('hidden');
 
     const getMembers = () => {
         axios({
@@ -16,7 +16,9 @@ export const Members = () => {
                 setMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
@@ -27,18 +29,14 @@ export const Members = () => {
         return (
             <div className="members-container">
                 {members.map((member, index) => (
-                    <div
-                        className="members-card"
-                        key={index}
-                        onPointerEnter={() => {
-                            setHoverOverlay('members-card-hover-overlay');
-                        }}
-                        onPointerLeave={() => {
-                            setHoverOverlay('hidden');
-                        }}
-                    >
-                        <div className={hoverOverlay} />
-                        <img src={member.profilePicture} />
+                    <div className="members-card" key={index}>
+                        <div>
+                            <h3>{member.firstname + ' ' + member.lastname}</h3>
+                        </div>
+                        <img
+                            className="members-card-pfp"
+                            src={member.profilepicture}
+                        />
                     </div>
                 ))}
             </div>
