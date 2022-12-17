@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './members.css';
 import axios from 'axios';
 import { url } from '../../../Global';
+import { MemberCard } from './MemberCard';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
@@ -29,15 +30,7 @@ export const Members = () => {
         return (
             <div className="members-container">
                 {members.map((member, index) => (
-                    <div className="members-card" key={index}>
-                        <div>
-                            <h3>{member.firstname + ' ' + member.lastname}</h3>
-                        </div>
-                        <img
-                            className="members-card-pfp"
-                            src={member.profilepicture}
-                        />
-                    </div>
+                    <MemberCard props={member} key={index} />
                 ))}
             </div>
         );

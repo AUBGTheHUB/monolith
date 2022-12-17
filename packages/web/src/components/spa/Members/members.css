@@ -1,16 +1,17 @@
 .members-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     flex-direction: row;
-    position: relative;
 }
 
 .members-card {
+    position: relative;
+    width: 20vw;
 }
 
 .members-card-pfp {
-    width: 40vh;
+    width: inherit;
 }
 
 .hidden {
@@ -18,7 +19,20 @@
 }
 
 .members-card-hover-overlay {
-    top: 50%;
     position: absolute;
-    z-index: 1;
+    width: 100%;
+    height: 100%;
+    animation-name: in-hover-lay;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes in-hover-lay {
+    to {
+        background-color: black;
+        color: white;
+    }
 }
