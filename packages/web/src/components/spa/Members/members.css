@@ -80,9 +80,6 @@
 }
 
 @keyframes slide-left-from-right {
-    from {
-        transform: translate(60vw);
-    }
     to {
         transform: translate(-60vw);
     }

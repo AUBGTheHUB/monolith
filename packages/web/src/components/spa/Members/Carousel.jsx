@@ -5,50 +5,71 @@ import { FaBeer } from 'react-icons/fa';
 import { useState } from 'react';
 
 export const Carousel = ({ props }) => {
-    // props is a list of 6 items
-    // first three are shown
-    // second three are cached
+    if (props && props.length != 0) {
+        const [sliceIndex, setSliceIndex] = useState(0);
 
-    const [firstSlide, setFirstSlide] = useState('carousel-container-slider');
+        console.log(`Props len ${props.length}`);
 
-    const [secondSlide, setSecondSlide] = useState(
-        'carousel-container-slider-hidden'
-    );
+        const [firstSlide, setFirstSlide] = useState(
+            'carousel-container-slider'
+        );
 
-    console.log(props);
+        const [secondSlide, setSecondSlide] = useState(
+            'carousel-container-slider-hidden'
+        );
 
-    // if props empty don't load component
+        const [firstMap, setFirstMap] = useState(
+            props.slice(sliceIndex, sliceIndex + 3)
+        );
+        console.log(
+            '🚀 ~ file: Carousel.jsx:24 ~ Carousel ~ firstMap',
+            firstMap
+        );
 
-    const changeClassName = (className) => {
-        if (className === 'carousel-container-slider') {
-            return 'carousel-container-slider left';
-        } else if (className === 'carousel-container-slider-hidden') {
-            return 'carousel-container-slider animate';
-        }
-    };
+        const [secondMap, setSecondMap] = useState(
+            props.slice(sliceIndex + 3, sliceIndex + 6)
+        );
 
-    return (
-        <div className="carousel-container">
-            <FaBeer
-                className="carousel-arrow-left"
-                onClick={() => {
-                    setFirstSlide(changeClassName(firstSlide));
-                    setSecondSlide(changeClassName(secondSlide));
-                }}
-            />
-            <div className="carousel-container-slider-holder">
-                <div className={firstSlide}>
-                    <MemberCard props={props[0]} />
-                    <MemberCard props={props[0]} />
-                    <MemberCard props={props[0]} />
+        console.log(
+            '🚀 ~ file: Carousel.jsx:29 ~ Carousel ~ secondMap',
+            secondMap
+        );
+
+        const slide = (className) => {
+            setFirstSlide('carousel-container-slider left');
+            setSecondSlide('carousel-container-slider animate');
+
+            setTimeout(() => {
+                try {
+                    setSliceIndex(sliceIndex + 3);
+                    setFirstMap(props.slice(sliceIndex + 3, sliceIndex + 6));
+                    setSecondMap(props.slice(sliceIndex + 6, sliceIndex + 9));
+                    setFirstSlide('carousel-container-slider');
+                    setSecondSlide('carousel-container-slider-hidden');
+                    console.log('HERE');
+                } catch (error) {
+                    console.log(error);
+                }
+            }, 1000);
+        };
+
+        return (
+            <div className="carousel-container">
+                <FaBeer className="carousel-arrow-left" onClick={slide} />
+                <div className="carousel-container-slider-holder">
+                    <div className={firstSlide}>
+                        {firstMap.map((member, index) => (
+                            <MemberCard props={member} key={index} />
+                        ))}
+                    </div>
+                    <div className={secondSlide}>
+                        {secondMap.map((member, index) => (
+                            <MemberCard props={member} key={index} />
+                        ))}
+                    </div>
                 </div>
-                <div className={secondSlide}>
-                    <MemberCard props={props[1]} />
-                    <MemberCard props={props[1]} />
-                    <MemberCard props={props[1]} />
-                </div>
+                <FaBeer className="carousel-arrow-right" onClick={() => {}} />
             </div>
-            <FaBeer className="carousel-arrow-right" onClick={() => {}} />
-        </div>
-    );
+        );
+    }
 };
