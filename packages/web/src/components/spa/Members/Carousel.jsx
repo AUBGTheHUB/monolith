@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export const Carousel = ({ props }) => {
     if (props && props.length != 0) {
-        const [sliceIndex, setSliceIndex] = useState(0);
+        const [sliceIndex, setSliceIndex] = useState(3);
 
         const [firstSlide, setFirstSlide] = useState(
             'carousel-container-slider'
@@ -17,22 +17,22 @@ export const Carousel = ({ props }) => {
         );
 
         const [firstMap, setFirstMap] = useState(
+            props.slice(sliceIndex - 3, sliceIndex)
+        );
+
+        console.log(
+            '🚀 ~ file: Carousel.jsx:24 ~ Carousel ~ firstMap',
+            firstMap
+        );
+
+        const [secondMap, setSecondMap] = useState(
             props.slice(sliceIndex, sliceIndex + 3)
         );
 
-        // console.log(
-        //     '🚀 ~ file: Carousel.jsx:24 ~ Carousel ~ firstMap',
-        //     firstMap
-        // );
-
-        const [secondMap, setSecondMap] = useState(
-            props.slice(sliceIndex + 3, sliceIndex + 6)
+        console.log(
+            '🚀 ~ file: Carousel.jsx:29 ~ Carousel ~ secondMap',
+            secondMap
         );
-
-        // console.log(
-        //     '🚀 ~ file: Carousel.jsx:29 ~ Carousel ~ secondMap',
-        //     secondMap
-        // );
 
         const increaseSlice = (currentPosIndex, setter) => {
             console.log(
@@ -40,26 +40,26 @@ export const Carousel = ({ props }) => {
                 currentPosIndex
             );
 
-            if (currentPosIndex + 6 === props.length) {
-                setter(
-                    props
-                        .slice(currentPosIndex + 3, currentPosIndex + 5)
-                        .append(props[0])
-                );
-                return 1;
-            } else if (currentPosIndex + 5 === props.length) {
-                setter(
-                    props
-                        .slice(currentPosIndex + 3, currentPosIndex + 4)
-                        .concat(props.slice(0, 2))
-                );
-                return 2;
-            } else if (currentPosIndex + 4 === props.length) {
+            if (currentPosIndex === props.length) {
                 setter(props.slice(0, 3));
                 return 3;
+            } else if (currentPosIndex + 1 === props.length) {
+                setter([props[currentPosIndex]].concat(props.slice(0, 2)));
+                return 2;
+            } else if (currentPosIndex + 2 === props.length) {
+                setter(
+                    props
+                        .slice(currentPosIndex, currentPosIndex + 1)
+                        .concat([props[0]])
+                );
+                return 1;
+            } else if (currentPosIndex + 3 === props.length) {
+                setter(props.slice(currentPosIndex, currentPosIndex + 2));
+                return 0;
             } else {
-                setter(props.slice(currentPosIndex + 3, currentPosIndex + 6));
-                return currentPosIndex + 6;
+                console.log('IM HERE');
+                setter(props.slice(currentPosIndex, currentPosIndex + 3));
+                return currentPosIndex + 3;
             }
         };
 
@@ -68,19 +68,12 @@ export const Carousel = ({ props }) => {
             setSecondSlide('carousel-container-slider animate');
 
             setTimeout(() => {
-                try {
-                    setSliceIndex(
-                        increaseSlice(
-                            increaseSlice(sliceIndex, setFirstMap),
-                            setSecondMap
-                        )
-                    );
+                var index = increaseSlice(sliceIndex, setFirstMap);
+                index = increaseSlice(index, setSecondMap);
+                setSliceIndex(index);
 
-                    setFirstSlide('carousel-container-slider');
-                    setSecondSlide('carousel-container-slider-hidden');
-                } catch (error) {
-                    console.log(error);
-                }
+                setFirstSlide('carousel-container-slider');
+                setSecondSlide('carousel-container-slider-hidden');
             }, 1000);
         };
 
