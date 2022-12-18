@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './members.css';
 import axios from 'axios';
 import { url } from '../../../Global';
-import { MemberCard } from './MemberCard';
+import { Carousel } from './Carousel';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
@@ -29,9 +29,7 @@ export const Members = () => {
     if (members) {
         return (
             <div className="members-container">
-                {members.map((member, index) => (
-                    <MemberCard props={member} key={index} />
-                ))}
+                <Carousel props={members} />
             </div>
         );
     }
