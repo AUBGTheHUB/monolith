@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useInsertionEffect } from 'react';
 import { MemberCard } from './MemberCard';
-import { FaBeer } from 'react-icons/fa';
+import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
 import { useState } from 'react';
 import { useRef } from 'react';
 
@@ -61,7 +61,7 @@ export const Carousel = ({ props }) => {
 
         const runningSlicing = useRef(false);
 
-        const slide = (className) => {
+        const slide = () => {
             if (!runningSlicing.current) {
                 runningSlicing.current = true;
 
@@ -88,7 +88,7 @@ export const Carousel = ({ props }) => {
 
         return (
             <div className="carousel-container">
-                <FaBeer className="carousel-arrow-left" onClick={slide} />
+                <ArrowIcon className="carousel-arrow-left" onClick={slide} />
                 <div className="carousel-container-slider-holder">
                     <div className={firstSlide}>
                         {firstMap.map((member, index) => (
@@ -101,7 +101,7 @@ export const Carousel = ({ props }) => {
                         ))}
                     </div>
                 </div>
-                <FaBeer className="carousel-arrow-right" onClick={() => {}} />
+                <ArrowIcon className="carousel-arrow-right" onClick={slide} />
             </div>
         );
     }

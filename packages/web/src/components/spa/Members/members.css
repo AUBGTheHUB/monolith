@@ -28,6 +28,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 @keyframes in-hover-lay {
@@ -42,7 +43,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: transparent;
     margin-bottom: 20rem;
 }
 
@@ -94,11 +95,12 @@
 .carousel-arrow-right {
     width: 5vw;
     height: 5vh;
-    color: red;
+    color: black;
 }
 
 .carousel-arrow-left {
     height: 5vh;
     width: 5vw;
-    color: red;
+    color: black;
+    transform: rotate(180deg);
 }

@@ -15,6 +15,8 @@ export const MemberCard = ({ props }) => {
             >
                 <div className={hoverOverlay}>
                     <h3>{props.firstname + ' ' + props.lastname}</h3>
+                    <p>{props.position}</p>
+                    <p>{props.department}</p>
                 </div>
                 <img className="members-card-pfp" src={props.profilepicture} />
             </div>
