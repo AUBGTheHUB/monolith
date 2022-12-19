@@ -28,7 +28,7 @@ export const Members = () => {
     }, []);
 
     if (members) {
-        if (isMobile) {
+        if (!isMobile) {
             return (
                 <div className="members-container">
                     <Carousel props={members} />

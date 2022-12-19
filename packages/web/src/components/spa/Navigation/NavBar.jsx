@@ -5,7 +5,7 @@ import { useMediaQuery } from 'react-responsive';
 export const NavBar = () => {
     const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
 
-    if (isMobile) {
+    if (!isMobile) {
         return <NavDesktop />;
     } else {
         return <NavMobile />;
