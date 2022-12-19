@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useInsertionEffect } from 'react';
+import React from 'react';
 import { MemberCard } from './MemberCard';
 import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
 import { useState } from 'react';

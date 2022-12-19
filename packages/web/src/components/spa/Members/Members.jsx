@@ -4,6 +4,7 @@ import axios from 'axios';
 import { url } from '../../../Global';
 import { Carousel } from './Carousel';
 import { useMediaQuery } from 'react-responsive';
+import { MobileCarousel } from './MobileCarousel';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
@@ -32,6 +33,12 @@ export const Members = () => {
             return (
                 <div className="members-container">
                     <Carousel props={members} />
+                </div>
+            );
+        } else {
+            return (
+                <div className="members-container">
+                    <MobileCarousel props={members} />
                 </div>
             );
         }
