@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 export const MemberCard = ({ props }) => {
     const [hoverOverlay, setHoverOverlay] = useState('hidden');
+    const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
+
     if (props) {
         return (
             <div
-                className="members-card"
+                className={isMobile ? 'members-card mobile' : 'members-card'}
                 onMouseEnter={() => {
                     setHoverOverlay('members-card-hover-overlay');
                 }}

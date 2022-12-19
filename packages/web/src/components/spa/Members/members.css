@@ -3,11 +3,16 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    padding-bottom: 2rem;
 }
 
 .members-card {
     position: relative;
     width: 20vw;
+}
+
+.members-card.mobile {
+    width: 60vw;
 }
 
 .members-card-pfp {
@@ -103,4 +108,23 @@
     width: 5vw;
     color: black;
     transform: rotate(180deg);
+}
+
+.mobile-carousel-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-arrow-left.mobile {
+    height: 10vh;
+    width: 10vw;
+    color: white;
+}
+
+.carousel-arrow-right.mobile {
+    height: 10vh;
+    width: 10vw;
+    color: white;
 }
