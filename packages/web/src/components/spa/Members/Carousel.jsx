@@ -8,7 +8,6 @@ import { useRef } from 'react';
 export const Carousel = ({ props }) => {
     if (props && props.length != 0) {
         const [sliceIndex, setSliceIndex] = useState(3);
-        console.log(`slideIndex is ${sliceIndex}`);
 
         const [firstSlide, setFirstSlide] = useState(
             'carousel-container-slider'
@@ -35,17 +34,27 @@ export const Carousel = ({ props }) => {
                     props.slice(0, 2)
                 );
                 setter(slicedList);
-                console.log(slicedList);
                 return -1;
+            } else if (currentPosIndex + 2 === props.length) {
+                let slicedList = props
+                    .slice(props.length - 2, props.length)
+                    .concat(props[0]);
+                setter(slicedList);
+                return -2;
             } else if (currentPosIndex === -4) {
                 let slicedList = [props[props.length - 1]].concat(
                     props.slice(0, 2)
                 );
                 setter(slicedList);
                 return 2;
+            } else if (currentPosIndex === -5) {
+                let slicedList = props
+                    .slice(props.length - 2, props.length)
+                    .concat(props[0]);
+                setter(slicedList);
+                return 1;
             } else {
                 setter(props.slice(currentPosIndex, currentPosIndex + 3));
-                console.log(`RETURNING ${currentPosIndex + 3}`);
                 return currentPosIndex + 3;
             }
         };
