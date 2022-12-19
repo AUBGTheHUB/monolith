@@ -7,6 +7,7 @@ import { useState } from 'react';
 export const Carousel = ({ props }) => {
     if (props && props.length != 0) {
         const [sliceIndex, setSliceIndex] = useState(3);
+        console.log(`slideIndex is ${sliceIndex}`);
 
         const [firstSlide, setFirstSlide] = useState(
             'carousel-container-slider'
@@ -27,9 +28,11 @@ export const Carousel = ({ props }) => {
         const increaseSlice = (currentPosIndex, setter) => {
             if (currentPosIndex === props.length) {
                 setter(props.slice(0, 3));
+                console.log('RETURNING 0');
                 return 0;
             } else {
                 setter(props.slice(currentPosIndex, currentPosIndex + 3));
+                console.log(`RETURNING ${currentPosIndex + 3}`);
                 return currentPosIndex + 3;
             }
         };
@@ -41,7 +44,7 @@ export const Carousel = ({ props }) => {
             setTimeout(() => {
                 var index = increaseSlice(sliceIndex, setFirstMap);
                 index = increaseSlice(index, setSecondMap);
-                setSliceIndex(index);
+                setSliceIndex(index <= 0 ? 0 : index - 3);
 
                 setFirstSlide('carousel-container-slider');
                 setSecondSlide('carousel-container-slider-hidden');
