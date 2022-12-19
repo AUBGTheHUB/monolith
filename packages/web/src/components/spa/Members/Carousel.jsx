@@ -20,44 +20,15 @@ export const Carousel = ({ props }) => {
             props.slice(sliceIndex - 3, sliceIndex)
         );
 
-        console.log(
-            '🚀 ~ file: Carousel.jsx:24 ~ Carousel ~ firstMap',
-            firstMap
-        );
-
         const [secondMap, setSecondMap] = useState(
             props.slice(sliceIndex, sliceIndex + 3)
         );
 
-        console.log(
-            '🚀 ~ file: Carousel.jsx:29 ~ Carousel ~ secondMap',
-            secondMap
-        );
-
         const increaseSlice = (currentPosIndex, setter) => {
-            console.log(
-                '🚀 ~ file: Carousel.jsx:40 ~ increaseSlice ~ currentPosIndex',
-                currentPosIndex
-            );
-
             if (currentPosIndex === props.length) {
                 setter(props.slice(0, 3));
-                return 3;
-            } else if (currentPosIndex + 1 === props.length) {
-                setter([props[currentPosIndex]].concat(props.slice(0, 2)));
-                return 2;
-            } else if (currentPosIndex + 2 === props.length) {
-                setter(
-                    props
-                        .slice(currentPosIndex, currentPosIndex + 1)
-                        .concat([props[0]])
-                );
-                return 1;
-            } else if (currentPosIndex + 3 === props.length) {
-                setter(props.slice(currentPosIndex, currentPosIndex + 2));
                 return 0;
             } else {
-                console.log('IM HERE');
                 setter(props.slice(currentPosIndex, currentPosIndex + 3));
                 return currentPosIndex + 3;
             }
