@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './members.css';
 import axios from 'axios';
 import { url } from '../../../Global';
+import { Carousel } from './Carousel';
+import { useMediaQuery } from 'react-responsive';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
+    const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
 
     const getMembers = () => {
         axios({
@@ -15,7 +18,9 @@ export const Members = () => {
                 setMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
@@ -23,14 +28,14 @@ export const Members = () => {
     }, []);
 
     if (members) {
-        return (
-            <div className="members-container">
-                {members.map((member, index) => (
-                    <div className="members-card" key={index}>
-                        <h1>{member.firstname + ' ' + member.lastname}</h1>
-                    </div>
-                ))}
-            </div>
-        );
+        if (!isMobile) {
+            return (
+                <div className="members-container">
+                    <Carousel props={members} />
+                </div>
+            );
+        }
+        // else render Mobile version
+        // TBA
     }
 };
