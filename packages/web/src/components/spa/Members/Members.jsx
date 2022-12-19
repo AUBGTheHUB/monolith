@@ -3,10 +3,11 @@ import './members.css';
 import axios from 'axios';
 import { url } from '../../../Global';
 import { Carousel } from './Carousel';
+import { useMediaQuery } from 'react-responsive';
 
 export const Members = () => {
     const [members, setMembers] = useState([]);
-    // const [hoverOverlay, setHoverOverlay] = useState('hidden');
+    const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
 
     const getMembers = () => {
         axios({
@@ -27,10 +28,14 @@ export const Members = () => {
     }, []);
 
     if (members) {
-        return (
-            <div className="members-container">
-                <Carousel props={members} />
-            </div>
-        );
+        if (isMobile) {
+            return (
+                <div className="members-container">
+                    <Carousel props={members} />
+                </div>
+            );
+        }
+        // else render Mobile version
+        // TBA
     }
 };
