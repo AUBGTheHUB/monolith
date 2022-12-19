@@ -3,6 +3,7 @@ import React from 'react';
 import { MemberCard } from './MemberCard';
 import { FaBeer } from 'react-icons/fa';
 import { useState } from 'react';
+import { useRef } from 'react';
 
 export const Carousel = ({ props }) => {
     if (props && props.length != 0) {
@@ -37,18 +38,26 @@ export const Carousel = ({ props }) => {
             }
         };
 
+        const runningSlicing = useRef(false);
+
         const slide = (className) => {
-            setFirstSlide('carousel-container-slider left');
-            setSecondSlide('carousel-container-slider animate');
+            if (!runningSlicing.current) {
+                runningSlicing.current = true;
 
-            setTimeout(() => {
-                var index = increaseSlice(sliceIndex, setFirstMap);
-                index = increaseSlice(index, setSecondMap);
-                setSliceIndex(index <= 0 ? 0 : index - 3);
+                setFirstSlide('carousel-container-slider left');
+                setSecondSlide('carousel-container-slider animate');
 
-                setFirstSlide('carousel-container-slider');
-                setSecondSlide('carousel-container-slider-hidden');
-            }, 1000);
+                setTimeout(() => {
+                    var index = increaseSlice(sliceIndex, setFirstMap);
+                    index = increaseSlice(index, setSecondMap);
+                    setSliceIndex(index <= 0 ? 0 : index - 3);
+
+                    setFirstSlide('carousel-container-slider');
+                    setSecondSlide('carousel-container-slider-hidden');
+
+                    runningSlicing.current = false;
+                }, 1000);
+            }
         };
 
         return (
