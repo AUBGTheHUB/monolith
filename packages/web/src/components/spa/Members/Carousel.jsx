@@ -29,8 +29,20 @@ export const Carousel = ({ props }) => {
         const increaseSlice = (currentPosIndex, setter) => {
             if (currentPosIndex === props.length) {
                 setter(props.slice(0, 3));
-                console.log('RETURNING 0');
                 return 0;
+            } else if (currentPosIndex + 1 === props.length) {
+                let slicedList = [props[props.length - 1]].concat(
+                    props.slice(0, 2)
+                );
+                setter(slicedList);
+                console.log(slicedList);
+                return -1;
+            } else if (currentPosIndex === -4) {
+                let slicedList = [props[props.length - 1]].concat(
+                    props.slice(0, 2)
+                );
+                setter(slicedList);
+                return 2;
             } else {
                 setter(props.slice(currentPosIndex, currentPosIndex + 3));
                 console.log(`RETURNING ${currentPosIndex + 3}`);
@@ -50,7 +62,12 @@ export const Carousel = ({ props }) => {
                 setTimeout(() => {
                     var index = increaseSlice(sliceIndex, setFirstMap);
                     index = increaseSlice(index, setSecondMap);
-                    setSliceIndex(index <= 0 ? 0 : index - 3);
+
+                    if (index == 0) {
+                        setSliceIndex(0);
+                    } else {
+                        setSliceIndex(index - 3);
+                    }
 
                     setFirstSlide('carousel-container-slider');
                     setSecondSlide('carousel-container-slider-hidden');
