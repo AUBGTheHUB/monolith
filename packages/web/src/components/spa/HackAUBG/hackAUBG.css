@@ -1,22 +1,24 @@
 @import 'https://fonts.googleapis.com/css?family=Roboto+Mono:100';
-html,
-body {
-    font-family: 'Roboto Mono', monospace;
-    background: #212121;
-    height: 100%;
-}
-.container {
+
+/* never work with body and html  */
+/* because the changes you make here will be global */
+/* and might break other implementations dependant  */
+/* on the current state of the body element */
+
+/* .container {
     height: 100%;
     width: 100%;
     justify-content: center;
     align-items: center;
     display: flex;
-}
-.text {
+} */
+
+/* .text {
     font-weight: 100;
     font-size: 28px;
     color: #fafafa;
-}
-.dud {
+} */
+
+/* .dud {
     color: #757575;
-}
+} */

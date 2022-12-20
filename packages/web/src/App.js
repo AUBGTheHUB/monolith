@@ -28,6 +28,7 @@ import RenderPartners from './components/admin_page/hackathon/hackathon_partners
 import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 import './App.css';
+import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 
 function App() {
     return (
@@ -113,6 +114,7 @@ function App() {
                 path="/admin/dashboard/partners/actions"
                 element={<PartnersActions />}
             />
+            <Route path="/hackaubg" element={<HackAUBG />} />
         </Routes>
     );
 }
