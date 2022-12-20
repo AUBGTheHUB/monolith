@@ -1,8 +1,6 @@
 import { Button } from './Button';
 import React from 'react';
-import './mobile-navbar.css';
-// import { GiHamburgerMenu } from 'react-icons/gi';
-// import { IoIosClose } from 'react-icons/io';
+import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
