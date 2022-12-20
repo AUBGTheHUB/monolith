@@ -6,7 +6,7 @@ import { Carousel } from './Carousel';
 import { useMediaQuery } from 'react-responsive';
 import { MobileCarousel } from './MobileCarousel';
 
-export const Members = () => {
+export const MembersSection = () => {
     const [members, setMembers] = useState([]);
     const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
 
