@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import React from 'react';
 import { MemberCard } from './MemberCard';
 import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
