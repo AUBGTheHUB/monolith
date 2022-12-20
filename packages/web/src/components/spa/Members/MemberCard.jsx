@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
-export const MemberCard = ({ props }) => {
+export const MemberCard = ({ props, animationClassname = 'hidden' }) => {
     const [hoverOverlay, setHoverOverlay] = useState('hidden');
     const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
+
+    // members-card-hover-overlay is the default css value for the overlay which
+    // shows up onMouseEnter
 
     if (props) {
         return (
             <div
                 className={isMobile ? 'members-card mobile' : 'members-card'}
                 onMouseEnter={() => {
-                    setHoverOverlay('members-card-hover-overlay');
+                    // setHoverOverlay('members-card-hover-overlay');
+                    setHoverOverlay(animationClassname);
                 }}
                 onMouseLeave={() => {
                     setHoverOverlay('hidden');
