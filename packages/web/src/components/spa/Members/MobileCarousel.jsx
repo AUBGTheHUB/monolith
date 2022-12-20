@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
 import { useState } from 'react';
 import { MemberCard } from './MemberCard';
 import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
@@ -7,7 +5,7 @@ import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
 export const MobileCarousel = ({ props }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const getLeftMember = (current) => {
+    const getLeftMember = () => {
         if (currentIndex - 1 < 0) {
             setCurrentIndex(props.length - 1);
         } else {
