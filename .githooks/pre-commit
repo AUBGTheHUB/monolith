@@ -29,6 +29,8 @@ do
     then
         make lint
         echo -e "${green}Fixed all issues automatically. Committing..! :)${end}"
+        # otherwise it lints on each file matching the conditional statement
+        break
     fi
 done
 
