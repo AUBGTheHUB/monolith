@@ -17,7 +17,7 @@ export const NavDesktop = () => {
                 <a href="#events">Events</a>
                 <a href="#articles">Articles</a>
                 <a href="#team">Team</a>
-                <a href="#jobs">Jobs</a>
+                <a href="/jobs">Jobs</a>
                 <button
                     className="hackaubg-btn"
                     type="button"

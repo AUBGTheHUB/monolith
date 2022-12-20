@@ -85,7 +85,7 @@ export const NavMobile = () => {
                             </a>
                         </li>
                         <li>
-                            <a href="#jobs" onClick={closeMenu}>
+                            <a href="/jobs" onClick={closeMenu}>
                                 Jobs
                             </a>
                         </li>
