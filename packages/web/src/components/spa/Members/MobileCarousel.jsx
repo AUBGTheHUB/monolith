@@ -30,7 +30,10 @@ export const MobileCarousel = ({ props }) => {
                 onClick={getLeftMember}
             />
             <div className="mobile-carousel-container-moving">
-                <MemberCard props={props[currentIndex]} />
+                <MemberCard
+                    props={props[currentIndex]}
+                    animationClassname={'members-card-hover-overlay'}
+                />
             </div>
             <ArrowIcon
                 className="carousel-arrow-right mobile"

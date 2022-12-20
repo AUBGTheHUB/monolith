@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React from 'react';
 import { MemberCard } from './MemberCard';
 import { BsChevronDoubleRight as ArrowIcon } from 'react-icons/bs';
@@ -10,6 +12,10 @@ export const Carousel = ({ props }) => {
 
         const [firstSlide, setFirstSlide] = useState(
             'carousel-container-slider'
+        );
+
+        const [hoverEffectEnabled, setHoverEffect] = useState(
+            'members-card-hover-overlay'
         );
 
         const [secondSlide, setSecondSlide] = useState(
@@ -61,8 +67,11 @@ export const Carousel = ({ props }) => {
         const runningSlicing = useRef(false);
 
         const slide = () => {
+            console.log('HELLO WORLD');
             if (!runningSlicing.current) {
                 runningSlicing.current = true;
+
+                setHoverEffect('hidden');
 
                 setFirstSlide('carousel-container-slider left');
                 setSecondSlide('carousel-container-slider animate');
@@ -81,6 +90,7 @@ export const Carousel = ({ props }) => {
                     setSecondSlide('carousel-container-slider-hidden');
 
                     runningSlicing.current = false;
+                    setHoverEffect('members-card-hover-overlay');
                 }, 1000);
             }
         };
@@ -91,12 +101,20 @@ export const Carousel = ({ props }) => {
                 <div className="carousel-container-slider-holder">
                     <div className={firstSlide}>
                         {firstMap.map((member, index) => (
-                            <MemberCard props={member} key={index} />
+                            <MemberCard
+                                props={member}
+                                key={index}
+                                animationClassname={hoverEffectEnabled}
+                            />
                         ))}
                     </div>
                     <div className={secondSlide}>
                         {secondMap.map((member, index) => (
-                            <MemberCard props={member} key={index} />
+                            <MemberCard
+                                props={member}
+                                key={index}
+                                animationClassname={hoverEffectEnabled}
+                            />
                         ))}
                     </div>
                 </div>
