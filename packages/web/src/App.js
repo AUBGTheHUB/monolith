@@ -28,7 +28,7 @@ import RenderPartners from './components/admin_page/hackathon/hackathon_partners
 import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 import './App.css';
-import { JobsSection } from './components/spa/Jobs/JobsSection';
+import { JobsSection } from './components/spa/JobsSection/JobsSection';
 
 function App() {
     return (
