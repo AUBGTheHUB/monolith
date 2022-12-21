@@ -1,7 +1,22 @@
 import React from 'react';
 import './desktop_navbar.css';
 
-export const NavDesktop = () => {
+export const NavDesktop = ({ props }) => {
+    const renderHackButton = () => {
+        if (props.hasHackButton) {
+            return (
+                <button
+                    className="hackaubg-btn"
+                    type="button"
+                    onClick={() => {
+                        location.href = '/hackaubg';
+                    }}
+                >
+                    <p>HackAUBG</p>
+                </button>
+            );
+        }
+    };
     return (
         <div className="navdesktop-container">
             <div className="navdesktop-logo">
@@ -13,20 +28,12 @@ export const NavDesktop = () => {
                 <p>The Hub</p>
             </div>
             <div className="navdesktop-buttons">
-                <a href="#about">About</a>
-                <a href="#events">Events</a>
-                <a href="#articles">Articles</a>
-                <a href="#team">Team</a>
-                <a href="/jobs">Jobs</a>
-                <button
-                    className="hackaubg-btn"
-                    type="button"
-                    onClick={() => {
-                        location.href = '/hackaubg';
-                    }}
-                >
-                    <p>HackAUBG</p>
-                </button>
+                {props.anchorList.map((anchor, index) => (
+                    <a href={anchor.endpoint} key={index}>
+                        {anchor.name}
+                    </a>
+                ))}
+                {renderHackButton()}
             </div>
         </div>
     );

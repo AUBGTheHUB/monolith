@@ -1,15 +1,26 @@
 import { Button } from './Button';
 import React from 'react';
-import './mobile-navbar.css';
-// import { GiHamburgerMenu } from 'react-icons/gi';
-// import { IoIosClose } from 'react-icons/io';
+import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const NavMobile = () => {
+export const NavMobile = ({ props }) => {
     const navigate = useNavigate();
+
+    const renderHackButton = () => {
+        if (props.hasHackButton) {
+            return (
+                <div
+                    className="navmobile-button-ham"
+                    onClick={navigateToHackAUBG}
+                >
+                    HackAUBG
+                </div>
+            );
+        }
+    };
 
     const navigateToHackAUBG = () => {
         navigate('/hackaubg');
@@ -38,6 +49,8 @@ export const NavMobile = () => {
                                 onClick={() => {
                                     setMenuClass('navmobile-menu forwards');
                                     setCloseButton('navmobile-button-close');
+                                    document.body.style.position = 'fixed';
+                                    document.body.style.overflow = 'scroll';
                                 }}
                             />
                         )
@@ -54,50 +67,29 @@ export const NavMobile = () => {
                                 className={closeButton}
                                 onClick={() => {
                                     setMenuClass('navmobile-menu-backwards');
+                                    document.body.style.position = 'static';
+                                    document.body.style.overflow = 'auto';
                                 }}
                             />
                         )
                     }}
                 />
 
-                {/* Anchors are clickable / selectable */}
-
                 <div className="navmobile-anchors-container">
                     <ul>
-                        <li>
-                            <a href="#about" onClick={closeMenu}>
-                                About
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#events" onClick={closeMenu}>
-                                Events
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#articles" onClick={closeMenu}>
-                                Articles
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#team" onClick={closeMenu}>
-                                Team
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/jobs" onClick={closeMenu}>
-                                Jobs
-                            </a>
-                        </li>
-                        <div>
-                            <div
-                                className="navmobile-button-ham"
-                                onClick={navigateToHackAUBG}
-                            >
-                                HackAUBG
-                            </div>
-                        </div>
+                        {props.anchorList.map((anchor, index) => (
+                            <li key={index}>
+                                <a
+                                    href={anchor.endpoint}
+                                    key={index}
+                                    onClick={closeMenu}
+                                >
+                                    {anchor.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
+                    {renderHackButton()}
                 </div>
             </div>
         </div>
