@@ -36,6 +36,8 @@ export const NavMobile = () => {
                                 onClick={() => {
                                     setMenuClass('navmobile-menu forwards');
                                     setCloseButton('navmobile-button-close');
+                                    document.body.style.position = 'fixed';
+                                    document.body.style.overflow = 'scroll';
                                 }}
                             />
                         )
@@ -52,6 +54,8 @@ export const NavMobile = () => {
                                 className={closeButton}
                                 onClick={() => {
                                     setMenuClass('navmobile-menu-backwards');
+                                    document.body.style.position = 'static';
+                                    document.body.style.overflow = 'auto';
                                 }}
                             />
                         )
