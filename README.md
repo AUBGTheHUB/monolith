@@ -91,7 +91,9 @@ make install-web
 
 * Run from `root`:
 ```shell
-make run-web
+make run-web # web is going to make requests towards a local instance of api (make run-api)
+
+make run-dev # web is going to make requests towards deployed instance of api (on https://dev.thehub-aubg.com)
 ```
 
 ** For installing, running, cleaning and building from `web` - take a look at the `scripts` in `web/package.json`
