@@ -62,22 +62,6 @@
     margin-right: 4%;
 }
 
-a:link {
-    text-decoration: none;
-    color: #02b0e5;
-}
-
-a:visited {
-    text-decoration: none;
-    color: inherit;
-}
-
-a:hover {
-    color: #02b0e5 !important;
-}
-
-/* Hack AUBG Button */
-
 .hackaubg-btn {
     height: 6vh;
     /* width: auto; */
@@ -144,9 +128,10 @@ a:hover {
     padding-right: 5px;
 }
 
-/* .navdesktop-navdivs a:hover {
-    color: #ab2370;
-} */
+.navdesktop-navdivs a:hover {
+    /* color: #32baf4; */
+    color: rgb(21, 76, 121);
+}
 
 .navdesktop-navdivs a:after {
     display: block;
@@ -175,6 +160,8 @@ a:hover {
 }
 
 .navdesktop-navtags {
+    color: white;
+    text-decoration: none;
     font-size: 22px;
     padding-right: 30px;
     display: flex;
