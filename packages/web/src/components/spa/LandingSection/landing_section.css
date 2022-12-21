@@ -98,15 +98,17 @@
     }
 }
 
+
 .welcome-text h1 {
     /*letter-spacing: .10em; /* Adjust as needed */
     /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
-
+    letter-spacing: 0.10rm;
     overflow: hidden;
     border-right: 0.15em solid white;
-    white-space: nowrap; /* Keeps the content on a single line */
-    animation: typing 2.5s forwards;
-    /* blink-caret 0.4s step-end infinite; --> Do not delete: Used for typewriting effect */
+    white-space: nowrap; 
+    /* animation: typing 2.5s forwards, blink-caret 0.4s step-end 9;   */
+    
+    animation: typing 3s forwards steps(20, end), blink-caret .5s step-end 8; /* --> blinking typewriting effect */
 }
 
 .welcome-text p,
@@ -128,9 +130,9 @@
     }
 }
 
-/* Commented lines below: To be used for typewriting effect */
+/* Typewriting effect */
 
-/* @keyframes blink-caret {
+@keyframes blink-caret {
     from,
     to {
         border-color: transparent;
@@ -138,7 +140,7 @@
     50% {
         border-color: white;
     }
-} */
+}
 
 @keyframes appearing {
     from {
