@@ -6,8 +6,21 @@ import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const NavMobile = () => {
+export const NavMobile = ({ props }) => {
     const navigate = useNavigate();
+
+    const renderHackButton = () => {
+        if (props.hasHackButton) {
+            return (
+                <div
+                    className="navmobile-button-ham"
+                    onClick={navigateToHackAUBG}
+                >
+                    HackAUBG
+                </div>
+            );
+        }
+    };
 
     const navigateToHackAUBG = () => {
         navigate('/hackaubg');
@@ -62,44 +75,21 @@ export const NavMobile = () => {
                     }}
                 />
 
-                {/* Anchors are clickable / selectable */}
-
                 <div className="navmobile-anchors-container">
                     <ul>
-                        <li>
-                            <a href="#about" onClick={closeMenu}>
-                                About
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#events" onClick={closeMenu}>
-                                Events
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#articles" onClick={closeMenu}>
-                                Articles
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#team" onClick={closeMenu}>
-                                Team
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#jobs" onClick={closeMenu}>
-                                Jobs
-                            </a>
-                        </li>
-                        <div>
-                            <div
-                                className="navmobile-button-ham"
-                                onClick={navigateToHackAUBG}
-                            >
-                                HackAUBG
-                            </div>
-                        </div>
+                        {props.anchorList.map((anchor, index) => (
+                            <li key={index}>
+                                <a
+                                    href={anchor.endpoint}
+                                    key={index}
+                                    onClick={closeMenu}
+                                >
+                                    {anchor.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
+                    {renderHackButton()}
                 </div>
             </div>
         </div>
