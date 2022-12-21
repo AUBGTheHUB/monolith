@@ -6,6 +6,10 @@ install-web:
 run-web:
 	cd ./packages/web/ && npm run start
 
+.PHONY: run-dev
+run-dev:
+	cd ./packages/web/ && npm run dev
+
 .PHONY: run-api
 run-api:
 	cd ./packages/api/ && go run main.go
