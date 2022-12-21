@@ -29,9 +29,15 @@ export const NavDesktop = ({ props }) => {
             </div>
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
-                    <a href={anchor.endpoint} key={index}>
-                        {anchor.name}
-                    </a>
+                    <div className="navdesktop-navdivs" key={index}>
+                        <a
+                            href={anchor.endpoint}
+                            key={index}
+                            className="navdesktop-navtags"
+                        >
+                            {anchor.name}
+                        </a>
+                    </div>
                 ))}
                 {renderHackButton()}
             </div>
