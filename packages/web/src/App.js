@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LandingHome from './components/spa/landing_home_page';
+import LandingHome from './components/spa/MainPage';
 import LandingAdminPage from './components/admin_page/landing_admin_page';
 import Dashboard from './components/admin_page/admin_dashboard';
 import MemberActions from './components/admin_page/members_page/single_member';
@@ -28,6 +28,7 @@ import RenderPartners from './components/admin_page/hackathon/hackathon_partners
 import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 import './App.css';
+import { JobsSection } from './components/spa/JobsSection/JobsSection';
 
 function App() {
     return (
@@ -113,6 +114,7 @@ function App() {
                 path="/admin/dashboard/partners/actions"
                 element={<PartnersActions />}
             />
+            <Route path="/jobs" element={<JobsSection />} />
         </Routes>
     );
 }

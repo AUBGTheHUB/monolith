@@ -2,29 +2,34 @@
 
 .navmobile-body {
     height: 10vh;
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
 }
 
 .navmobile-button {
-    position: absolute;
-    width: 32%;
-    height: auto;
-    right: 1.5%;
-    top: 0.5%;
+    height: 7.5vh;
+    width: 7.5vh;
     color: white !important;
 }
 
 .navmobile-button-ham {
     width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 16px;
     font-weight: 600;
     color: #fff;
-    cursor: pointer;
     margin: 20px;
     height: 55px;
-    text-align: center;
-    border: none;
     background-size: 300% 100%;
-    border-radius: 40px;
+    border-radius: 100px;
     font-size: xx-large;
     background-image: linear-gradient(
         to right,
@@ -33,7 +38,6 @@
         #04befe,
         #3f86ed
     );
-    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
 }
 
 .navmobile-menu.not-displayed {
@@ -45,6 +49,7 @@
     height: 100vh;
     width: 100vw;
     left: 0;
+    top: 0;
     background-color: #050328;
     display: flex;
     justify-content: center;
@@ -52,6 +57,7 @@
 }
 
 .navmobile-menu-backwards {
+    top: 0;
     position: absolute;
     height: 100vh;
     width: 100vw;
@@ -83,9 +89,10 @@
 
 .navmobile-button-close {
     position: absolute;
-    width: 35%;
+    width: 7.5vh;
     height: auto;
-    right: 0;
+    top: 0.75rem;
+    right: 0.75rem;
     color: white !important;
     animation-name: menu-animation;
     animation-duration: 1s;
@@ -111,18 +118,18 @@
 }
 
 .navmobile-logo {
-    position: absolute;
-    left: 0.5%;
-    width: 10%;
-    top: 0.2%;
-}
-
-.navmobile-logo img {
-    width: 100%;
-    height: auto;
-    position: absolute;
+    height: 7.5vh;
     left: 2px;
     top: 3px;
+}
+
+.navmobile-container {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
 }
 
 .navmobile-logo p {
@@ -131,9 +138,6 @@
 }
 
 .navmobile-title {
-    position: absolute;
-    right: 50%;
-    transform: translate(50%, 35%);
     color: white;
 }
 .navmobile-title p {

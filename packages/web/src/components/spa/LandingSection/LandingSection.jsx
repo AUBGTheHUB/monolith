@@ -1,7 +1,7 @@
 import React from 'react';
-import './welcome_section.css';
+import './landing_section.css';
 
-export const Welcome = () => {
+export const LandingSection = () => {
     return (
         <div className="welcome-container">
             <div className="welcome-text">

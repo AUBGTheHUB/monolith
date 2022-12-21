@@ -1,0 +1,130 @@
+.members-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    padding-bottom: 2rem;
+}
+
+.members-card {
+    position: relative;
+    width: 20vw;
+}
+
+.members-card.mobile {
+    width: 60vw;
+}
+
+.members-card-pfp {
+    width: inherit;
+}
+
+.hidden {
+    display: none;
+}
+
+.members-card-hover-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation-name: in-hover-lay;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+@keyframes in-hover-lay {
+    to {
+        background-color: black;
+        color: white;
+    }
+}
+
+.carousel-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    margin-bottom: 20rem;
+}
+
+.carousel-container-slider-holder {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    width: 60vw;
+    overflow: hidden;
+}
+
+.carousel-container-slider {
+    width: 100%;
+    background-color: orange;
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel-container-slider.left {
+    animation-duration: 1s;
+    animation-name: slide-left-from-center;
+    animation-fill-mode: forwards;
+}
+
+.carousel-container-slider-hidden {
+    background-color: green;
+    display: flex;
+    flex-direction: row;
+}
+
+.carousel-container-slider.animate {
+    animation-duration: 1s;
+    animation-name: slide-left-from-right;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slide-left-from-right {
+    to {
+        transform: translate(-60vw);
+    }
+}
+
+@keyframes slide-left-from-center {
+    to {
+        transform: translateX(-60vw);
+    }
+}
+
+.carousel-arrow-right {
+    width: 5vw;
+    height: 5vh;
+    color: black;
+}
+
+.carousel-arrow-left {
+    height: 5vh;
+    width: 5vw;
+    color: black;
+    transform: rotate(180deg);
+}
+
+.mobile-carousel-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-arrow-left.mobile {
+    height: 10vh;
+    width: 10vw;
+    color: white;
+}
+
+.carousel-arrow-right.mobile {
+    height: 10vh;
+    width: 10vw;
+    color: white;
+}
