@@ -53,7 +53,7 @@
 
 /* dashboard */
 .dash {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -104,7 +104,7 @@
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(rgb(21, 76, 121), rgb(57, 95, 105));
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /* box where members get rendered in */
@@ -171,7 +171,7 @@
 
 .add-member-main-div {
     color: #fff;
-    height: 100vh;
+    min-height: 100vh;
     padding-top: 2rem;
     display: flex;
     flex-direction: column;
@@ -204,39 +204,18 @@
     margin-top: 0.25rem !important;
 }
 /* respnsive */
-@media only screen and (max-width: 414px) {
-    .dash {
-        height: 100%;
-    }
-    .members-box {
-        padding-top: 5px;
-    }
-    .members-box-add-button {
-        height: 100%;
-    }
+@media only screen and (max-width: 900px) {
     .actions-single-member {
         display: block;
         height: 100%;
         width: 100%;
+        padding-bottom: 10px;
     }
     .actions-single-member .member-card {
         width: 96% !important;
     }
-    .actions-single-member {
-        padding-bottom: 10px;
-    }
     .member-form-edit {
         margin-left: 1rem;
         margin-right: 1rem;
-    }
-    .add-member-main-div {
-        padding-bottom: 25px;
-    }
-}
-
-@media only screen and (max-height: 1368px) and (max-width: 1368px) {
-    .actions-single-member {
-        width: 100% !important;
-        padding-bottom: 25px;
     }
 }
