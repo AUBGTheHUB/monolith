@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-// eslint-disable-next-line no-undef
 let url =
-    process.env.REACT_APP_API_URL !== undefined
-        ? process.env.REACT_APP_API_URL
+    process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
+        ? process.env.REACT_APP_API_URL // eslint-disable-line
         : location.origin.replace(':3000', '') + ':8000';
 
 const Validate = () => {
