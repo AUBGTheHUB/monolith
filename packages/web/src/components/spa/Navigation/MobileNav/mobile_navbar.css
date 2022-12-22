@@ -107,7 +107,6 @@
 }
 
 .navmobile-anchors-container ul {
-    color: white;
     font-size: xx-large;
     list-style: none;
     padding-left: 0rem !important;
@@ -115,6 +114,7 @@
 
 .navmobile-anchors-container a {
     color: white;
+    text-decoration: none;
 }
 
 .navmobile-logo {
@@ -139,9 +139,6 @@
 
 .navmobile-title {
     color: white;
-}
-.navmobile-title p {
-    font-size: 25px;
 }
 .navmobile-title p {
     font-size: 25px;
