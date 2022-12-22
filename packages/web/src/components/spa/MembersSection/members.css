@@ -61,14 +61,14 @@
 .carousel-container-slider-holder {
     display: flex;
     flex-direction: row;
-    background-color: black;
+    background-color: transparent;
     width: 60vw;
     overflow: hidden;
 }
 
 .carousel-container-slider {
     width: 100%;
-    background-color: orange;
+    background-color: transparent;
     display: flex;
     flex-direction: row;
 }
@@ -80,7 +80,7 @@
 }
 
 .carousel-container-slider-hidden {
-    background-color: green;
+    background-color: transparent;
     display: flex;
     flex-direction: row;
 }
