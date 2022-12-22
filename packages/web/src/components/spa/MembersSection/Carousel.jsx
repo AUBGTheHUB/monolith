@@ -65,7 +65,6 @@ export const Carousel = ({ props }) => {
         const runningSlicing = useRef(false);
 
         const slide = () => {
-            console.log('HELLO WORLD');
             if (!runningSlicing.current) {
                 runningSlicing.current = true;
 

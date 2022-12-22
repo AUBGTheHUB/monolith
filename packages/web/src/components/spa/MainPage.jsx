@@ -4,6 +4,7 @@ import { MembersSection } from './MembersSection/MembersSection';
 import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
+import { ArticlesSection } from './ArticlesSection/ArticlesSection';
 
 const LandingHome = () => {
     const anchorList = [
@@ -18,6 +19,7 @@ const LandingHome = () => {
         <div className="main">
             <NavBar props={new Props(anchorList, true)} />
             <LandingSection />
+            <ArticlesSection />
             <MembersSection />
         </div>
     );
