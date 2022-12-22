@@ -24,6 +24,8 @@
 }
 
 .welcome-text {
+    justify-content: center;
+    align-items: center;
     width: 55%;
     color: white;
     align-content: space-between;
@@ -103,8 +105,7 @@
     /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
     overflow: hidden;
     border-right: 0.15em solid white;
-    /* white-space: nowrap;  */
-    white-space: normal;
+    white-space: nowrap; 
 
     /* letter-spacing: 0.05rem; /* Letter spacing */
     animation: typing 2.5s forwards steps(20, end), blink-caret .4s step-end 10; /* --> blinking typewriting effect */
@@ -119,29 +120,15 @@
     animation: appearing 1.6s backwards 2.2s;
 }
 
-@media only screen and (min-width: 900px) {
     @keyframes typing {
     from {
         width: 0;
     }
     to {
-        width: 66.5%;
+        width: 100%;
         border-color: transparent;
     }
     }
-} 
-
-@media only screen and (max-width: 900px) {
-    @keyframes typing {
-    from {
-        width: 0;
-    }
-    to {
-        width: 70%;
-        border-color: transparent;
-    }
-    }
-} 
 
 /* Typewriting effect */
 
