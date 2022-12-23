@@ -100,25 +100,30 @@
     }
 }
 
+.welcome-text p,
+.aboutUs-btn,
+.aboutUs-btn:hover {
+    overflow: hidden;
+    animation: appearing 1.3s backwards 2s;
+}
+
+@media only screen and (min-width: 900px) {
+    .hubzzie-image {
+        overflow: hidden;
+        animation: appearing 1.3s backwards 2s;
+    }
+}
+
 .welcome-text h1 {
     /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
     overflow: hidden;
     border-right: 0.15em solid white;
     white-space: nowrap;
-    /* width: fit-content; */
-
-    /* letter-spacing: 0.05rem; /* Letter spacing */
-    animation: typing 2.5s forwards steps(22, end), blink-caret 0.4s step-end 10; /* --> blinking typewriting effect */
+    animation: typing ease-in-out 3s forwards;
+    /*  blink-caret 0.4s step-end 8; /* --> blinking sliding effect */
 }
 
-.welcome-text p,
-.aboutUs-btn,
-.aboutUs-btn:hover,
-.hubzzie-image {
-    overflow: hidden;
-    /* white-space: pre-wrap; */
-    animation: appearing 1.6s backwards 2.2s;
-}
+/* Sliding effect */
 
 @keyframes typing {
     from {
@@ -126,12 +131,10 @@
     }
     to {
         width: 100%;
-        max-width: fit-content;
+        /* max-width: fit-content; */
         border-color: transparent;
     }
 }
-
-/* Typewriting effect */
 
 @keyframes blink-caret {
     from,
