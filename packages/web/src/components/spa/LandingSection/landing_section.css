@@ -24,6 +24,8 @@
 }
 
 .welcome-text {
+    justify-content: center;
+    align-items: center;
     width: 55%;
     color: white;
     align-content: space-between;
@@ -95,5 +97,60 @@
         justify-content: center;
         align-items: center;
         margin-left: 10%;
+    }
+}
+
+.welcome-text p,
+.aboutUs-btn,
+.aboutUs-btn:hover {
+    overflow: hidden;
+    animation: appearing 1.3s backwards 2s;
+}
+
+@media only screen and (min-width: 900px) {
+    .hubzzie-image {
+        overflow: hidden;
+        animation: appearing 1.3s backwards 2s;
+    }
+}
+
+.welcome-text h1 {
+    /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
+    overflow: hidden;
+    border-right: 0.15em solid white;
+    white-space: nowrap;
+    animation: typing ease-in-out 3s forwards;
+    /*  blink-caret 0.4s step-end 8; /* --> blinking sliding effect */
+}
+
+/* Sliding effect */
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+        /* max-width: fit-content; */
+        border-color: transparent;
+    }
+}
+
+@keyframes blink-caret {
+    from,
+    to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: white;
+    }
+}
+
+@keyframes appearing {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
     }
 }
