@@ -53,7 +53,7 @@
     display: flex;
     justify-content: space-around;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .navdesktop-buttons a {
@@ -112,7 +112,7 @@
 }
 
 .navdesktop-navdivs {
-    padding: 20px;
+    padding-right: 8%;
     display: inline-flex;
     color: white;
     font-weight: bold;
@@ -122,8 +122,8 @@
     position: relative;
     z-index: 1;
     transition: 0.35s;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-left: 6%;
+    padding-right: 6%;
 }
 
 .navdesktop-navdivs a:hover {
@@ -160,8 +160,8 @@
 .navdesktop-navtags {
     color: white;
     text-decoration: none;
-    font-size: 22px;
-    padding-right: 30px;
+    font-size: 1.2rem;
+    /* padding-right: 30px; */
     display: flex;
     justify-content: center;
     align-items: center;
