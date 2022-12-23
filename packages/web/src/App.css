@@ -1,14 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
 body {
-    /* position: relative; */
     width: 100vw !important;
     overflow-x: hidden !important;
-    /* -ms-overflow-style: none;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: none; */
+    scroll-behavior: smooth;
 }
-
-/* body::-webkit-scrollbar {
-    -webkit-appearance: none !important;
-    width: 0px !important;
-    background: transparent !important;
-} */

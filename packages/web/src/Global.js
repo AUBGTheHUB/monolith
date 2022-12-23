@@ -1,24 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-// eslint-disable-next-line no-undef
-const env = process.env.NODE_ENV;
-
-// url points towards the api
-let url = null;
-
-// eslint-disable-next-line no-undef
-if (process.env.REACT_APP_DEV_URL != null) {
-    // DEV ENVIRONMENT
-    // eslint-disable-next-line no-undef
-    url = process.env.REACT_APP_DEV_URL;
-} else if (env == 'production') {
-    // PROD ENVIRONMENT
-    url = 'https://thehub-aubg.com:8000';
-} else {
-    // LOCAL ENVIRONMENT
-    url = 'http://127.0.0.1:8000';
-}
+let url =
+    process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
+        ? process.env.REACT_APP_API_URL // eslint-disable-line
+        : location.origin.replace(':3000', '') + ':8000';
 
 const Validate = () => {
     const [validated, setValidated] = useState(false);
