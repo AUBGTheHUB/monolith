@@ -100,15 +100,15 @@
     }
 }
 
-
 .welcome-text h1 {
     /* animation: typing 3s steps(20, end), blink-caret .5s step-end infinite; */
     overflow: hidden;
     border-right: 0.15em solid white;
-    white-space: nowrap; 
+    white-space: nowrap;
+    /* width: fit-content; */
 
     /* letter-spacing: 0.05rem; /* Letter spacing */
-    animation: typing 2.5s forwards steps(20, end), blink-caret .4s step-end 10; /* --> blinking typewriting effect */
+    animation: typing 2.5s forwards steps(22, end), blink-caret 0.4s step-end 10; /* --> blinking typewriting effect */
 }
 
 .welcome-text p,
@@ -120,15 +120,16 @@
     animation: appearing 1.6s backwards 2.2s;
 }
 
-    @keyframes typing {
+@keyframes typing {
     from {
         width: 0;
     }
     to {
         width: 100%;
+        max-width: fit-content;
         border-color: transparent;
     }
-    }
+}
 
 /* Typewriting effect */
 
