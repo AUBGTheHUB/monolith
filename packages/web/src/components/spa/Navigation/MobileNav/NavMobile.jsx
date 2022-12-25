@@ -22,6 +22,11 @@ export const NavMobile = ({ props }) => {
         }
     };
 
+    const makeBodyScrollable = () => {
+        document.body.style.position = 'static';
+        document.body.style.overflow = 'auto';
+    };
+
     const navigateToHackAUBG = () => {
         navigate('/hackaubg');
     };
@@ -67,8 +72,7 @@ export const NavMobile = ({ props }) => {
                                 className={closeButton}
                                 onClick={() => {
                                     setMenuClass('navmobile-menu-backwards');
-                                    document.body.style.position = 'static';
-                                    document.body.style.overflow = 'auto';
+                                    makeBodyScrollable();
                                 }}
                             />
                         )
@@ -82,7 +86,11 @@ export const NavMobile = ({ props }) => {
                                 <a
                                     href={anchor.endpoint}
                                     key={index}
-                                    onClick={closeMenu}
+                                    onClick={() => {
+                                        closeMenu();
+                                        makeBodyScrollable();
+                                    }}
+                                    className=""
                                 >
                                     {anchor.name}
                                 </a>

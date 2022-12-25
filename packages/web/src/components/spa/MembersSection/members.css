@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .members-container {
     display: flex;
     justify-content: center;
@@ -34,6 +36,10 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 @keyframes in-hover-lay {
@@ -55,14 +61,14 @@
 .carousel-container-slider-holder {
     display: flex;
     flex-direction: row;
-    background-color: black;
+    background-color: transparent;
     width: 60vw;
     overflow: hidden;
 }
 
 .carousel-container-slider {
     width: 100%;
-    background-color: orange;
+    background-color: transparent;
     display: flex;
     flex-direction: row;
 }
@@ -74,7 +80,7 @@
 }
 
 .carousel-container-slider-hidden {
-    background-color: green;
+    background-color: transparent;
     display: flex;
     flex-direction: row;
 }
@@ -127,4 +133,55 @@
     height: 10vh;
     width: 10vw;
     color: white;
+}
+
+.members-card-overlay-text {
+    font-family: Poppins;
+    text-align: center;
+}
+
+.members-card-overlay-text.name {
+    font-size: xlarge;
+}
+
+.members-card-overlay-text.position {
+    font-size: larger;
+    font-weight: 500;
+}
+
+/* .members-card-overlay-text.department {
+    font-size: large;
+} */
+
+.members-card-overlay-text.linkedin-icon {
+    width: 5vw;
+    height: 5vh;
+}
+
+.members-card-overlay-text.linkedin-icon:hover {
+    color: lightblue;
+}
+
+.NOSYNCDEV {
+    font-family: 'Press Start 2P', cursive;
+    color: greenyellow;
+}
+
+@media only screen and (max-width: 1000px) {
+    .members-card-overlay-text.name {
+        font-size: large;
+    }
+
+    .members-card-overlay-text.position {
+        font-size: medium;
+    }
+
+    /* .members-card-overlay-text.department {
+        font-size: medium;
+    } */
+
+    .members-card-overlay-text.linkedin-icon {
+        width: 10vw;
+        height: 10vh;
+    }
 }
