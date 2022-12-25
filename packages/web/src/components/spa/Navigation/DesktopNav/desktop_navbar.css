@@ -22,7 +22,7 @@
 }
 
 .navdesktop-logo {
-    width: 45%;
+    width: 30%;
     display: flex;
     align-items: center;
 }
@@ -33,38 +33,35 @@
     margin: 0;
 }
 
-.navdesktop-logo-image {
-    width: 6%;
-    margin-right: 1%;
-}
-
 @media only screen and (max-width: 1600px) {
     .navdesktop-logo-image {
-        width: 10%;
+        width: 16.5%;
+        margin-right: 2%;
     }
 }
 
 /*Buttons*/
 .navdesktop-buttons,
 .hackaubg-btn {
-    width: 50%;
+    width: 80%;
     color: white;
     align-items: center;
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
+    justify-content: space-evenly;
     text-decoration: none;
     font-size: 1.1rem;
 }
 
-.navdesktop-buttons a {
-    margin-right: 4%;
-}
+/* .navdesktop-buttons a {
+    margin-right: 3%;
+} */
 
 .hackaubg-btn {
     height: 6vh;
     /* width: auto; */
-    padding-left: 3%;
-    padding-right: 3%;
+    padding-left: 2%;
+    padding-right: 2%;
     width: fit-content;
     cursor: pointer;
     border: none;
@@ -112,18 +109,10 @@
 }
 
 .navdesktop-navdivs {
-    padding-right: 8%;
+    /* padding-right: 5%; */
     display: inline-flex;
     color: white;
     font-weight: bold;
-}
-
-.navdesktop-navdivs a {
-    position: relative;
-    z-index: 1;
-    transition: 0.35s;
-    padding-left: 6%;
-    padding-right: 6%;
 }
 
 .navdesktop-navdivs a:hover {
@@ -157,11 +146,15 @@
     height: 100%;
 }
 
-.navdesktop-navtags {
+.navdesktop-navdivs a {
+    position: relative;
+    z-index: 1;
+    transition: 0.35s;
+    padding-left: 5%;
+    padding-right: 5%;
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
-    /* padding-right: 30px; */
     display: flex;
     justify-content: center;
     align-items: center;
