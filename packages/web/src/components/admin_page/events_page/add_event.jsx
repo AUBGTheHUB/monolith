@@ -69,7 +69,7 @@ const AddEvent = () => {
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="datetime-local"
                             placeholder="startdate"
                             name="startdate"
                             onChange={handleInputChange}
@@ -79,7 +79,7 @@ const AddEvent = () => {
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>End Date</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="datetime-local"
                             placeholder="enddate"
                             name="enddate"
                             onChange={handleInputChange}
