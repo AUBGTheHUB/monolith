@@ -28,9 +28,11 @@ const AddEvent = () => {
         const name = target.name;
 
         if (name === 'startdate' || name === 'enddate') {
-            value += ':00Z00:00';
+            let date = new Date(value);
+            console.log(date);
+            date = date.toISOString;
+            value = date;
         }
-
         setFormState({
             ...formState,
             [name]: value
