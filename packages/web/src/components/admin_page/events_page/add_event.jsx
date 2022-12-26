@@ -24,8 +24,12 @@ const AddEvent = () => {
 
     const handleInputChange = (e) => {
         const target = e.target;
-        const value = target.value;
+        let value = target.value;
         const name = target.name;
+
+        if (name === 'startdate' || name === 'enddate') {
+            value += ':00Z00:00';
+        }
 
         setFormState({
             ...formState,
