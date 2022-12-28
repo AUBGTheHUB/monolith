@@ -1,5 +1,5 @@
 import React from 'react';
-import "./pageNotFound.css";
+import './pageNotFound.css';
 import { NavBar } from '../spa/Navigation/NavBar';
 import { Anchor, Props } from '../spa/Navigation/NavFactory';
 
@@ -11,8 +11,7 @@ const anchorList = [
     new Anchor('Jobs', '/jobs')
 ];
 
-const PageNotFound = () => 
-{
+const PageNotFound = () => {
     return (
         <div className="background">
             <NavBar props={new Props(anchorList, true)} />
@@ -25,6 +24,6 @@ const PageNotFound = () =>
             </div>
         </div>
     );
-}
+};
 
 export default PageNotFound;
