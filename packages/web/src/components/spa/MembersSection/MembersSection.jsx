@@ -31,13 +31,13 @@ export const MembersSection = () => {
     if (members) {
         if (!isMobile) {
             return (
-                <div className="members-container">
+                <div id="team" className="members-container">
                     <Carousel props={members} />
                 </div>
             );
         } else {
             return (
-                <div className="members-container">
+                <div id="team" className="members-container">
                     <MobileCarousel props={members} />
                 </div>
             );
