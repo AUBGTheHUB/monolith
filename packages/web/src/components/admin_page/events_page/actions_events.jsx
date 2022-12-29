@@ -21,8 +21,28 @@ const EventsActions = () => {
 
     const handleInputChange = (e) => {
         const target = e.target;
-        const value = target.value;
+        let value = target.value;
         const name = target.name;
+
+        if (name === 'startdate' || name === 'enddate') {
+            let date = new Date(value);
+            date = date.toISOString();
+            value = date;
+            if (name === 'startdate' && formState.enddate != '') {
+                if (new Date(formState.enddate) < new Date(value)) {
+                    alert('End date is earlier than start date');
+                    target.value = '';
+                    return;
+                    // break-out, don't change state
+                }
+            } else if (name === 'enddate' && formState.startdate != '') {
+                if (new Date(formState.startdate) > new Date(value)) {
+                    alert('End date is earlier than start date');
+                    target.value = '';
+                    return;
+                }
+            }
+        }
 
         setFormState({
             ...formState,
