@@ -21,7 +21,7 @@ export const NavDesktop = ({ props }) => {
         <div className="navdesktop-container">
             <div className="navdesktop-logo">
                 <img
-                    src="hublogo.png"
+                    src="/hublogo.png"
                     className="navdesktop-logo-image"
                     alt="The Hub AUBG"
                 />

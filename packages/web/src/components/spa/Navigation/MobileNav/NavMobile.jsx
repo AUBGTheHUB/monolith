@@ -43,7 +43,7 @@ export const NavMobile = ({ props }) => {
     return (
         <div className="navmobile-body">
             <div className="navmobile-container">
-                <img src="hublogo.png" className="navmobile-logo"></img>
+                <img src="/hublogo.png" className="navmobile-logo"></img>
                 <h2 className="navmobile-title">The Hub</h2>
                 <Button
                     props={{

@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
-.background {
+.background-not-found {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
     height: 100vh;
     width: 100vw;

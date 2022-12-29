@@ -13,13 +13,13 @@ const anchorList = [
 
 const NotFound = () => {
     return (
-        <div className="background">
+        <div className="background-not-found">
             <NavBar props={new Props(anchorList, true)} />
             <div className="hubzie-404-image">
                 <img
-                    src="hubzzie.png"
+                    src="/hubzzie.png"
                     className="hubzie-404-image"
-                    alt="Hubzie-404-not-found"
+                    alt="HubzieNotFound"
                 />
             </div>
         </div>
