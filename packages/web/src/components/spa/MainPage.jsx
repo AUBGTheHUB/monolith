@@ -6,7 +6,6 @@ import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
 import { ArticlesSection } from './ArticlesSection/ArticlesSection';
 import { useEffect } from 'react';
-// import $ from 'jquery';
 
 const LandingHome = () => {
     const anchorList = [
