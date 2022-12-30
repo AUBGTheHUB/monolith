@@ -33,11 +33,18 @@ const EventsActions = () => {
                     alert('End date is earlier than start date');
                     target.value = '';
                     return;
-                    // break-out, don't change state
+                } else if (formState.startdate == value) {
+                    alert('The start and end date are the same');
+                    target.value = '';
+                    return;
                 }
             } else if (name === 'enddate' && formState.startdate != '') {
                 if (new Date(formState.startdate) > new Date(value)) {
                     alert('End date is earlier than start date');
+                    target.value = '';
+                    return;
+                } else if (formState.startdate == value) {
+                    alert('The start and end date are the same');
                     target.value = '';
                     return;
                 }
