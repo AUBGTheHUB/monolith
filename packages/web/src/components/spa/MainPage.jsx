@@ -5,6 +5,7 @@ import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
 import { ArticlesSection } from './ArticlesSection/ArticlesSection';
+import { Footer } from './Footer/Footer';
 
 const LandingHome = () => {
     const anchorList = [
@@ -21,6 +22,7 @@ const LandingHome = () => {
             <LandingSection />
             <ArticlesSection />
             <MembersSection />
+            <Footer />
         </div>
     );
 };
