@@ -93,7 +93,7 @@ export const Carousel = ({ props }) => {
         };
 
         return (
-            <div className="carousel-container">
+            <div className="members-carousel-container">
                 <ArrowIcon className="carousel-arrow-left" onClick={slide} />
                 <div className="carousel-container-slider-holder">
                     <div className={firstSlide}>

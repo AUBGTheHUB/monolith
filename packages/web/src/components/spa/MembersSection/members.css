@@ -49,13 +49,14 @@
     }
 }
 
-.carousel-container {
+.members-carousel-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     background-color: transparent;
     margin-bottom: 20rem;
+    transform: scale(0.75);
 }
 
 .carousel-container-slider-holder {
