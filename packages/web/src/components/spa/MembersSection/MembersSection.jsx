@@ -42,7 +42,5 @@ export const MembersSection = () => {
                 </div>
             );
         }
-        // else render Mobile version
-        // TBA
     }
 };
