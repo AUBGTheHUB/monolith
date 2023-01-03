@@ -39,3 +39,7 @@ install-code-plugins:
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode
 
+.PHONY: install-gum
+install-gum:
+	go install github.com/charmbracelet/gum@latest
+
