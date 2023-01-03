@@ -142,11 +142,11 @@
 }
 
 .members-card-overlay-text.name {
-    font-size: xlarge;
+    font-size: xxx-large;
 }
 
 .members-card-overlay-text.position {
-    font-size: larger;
+    font-size: xx-large;
     font-weight: 500;
 }
 
@@ -166,6 +166,7 @@
 .NOSYNCDEV {
     font-family: 'Press Start 2P', cursive;
     color: greenyellow;
+    font-size: x-large;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -184,5 +185,9 @@
     .members-card-overlay-text.linkedin-icon {
         width: 10vw;
         height: 10vh;
+    }
+
+    .NOSYNCDEV {
+        font-size: small;
     }
 }

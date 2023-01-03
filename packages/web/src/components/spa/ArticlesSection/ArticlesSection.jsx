@@ -43,7 +43,7 @@ export const ArticlesSection = () => {
     if (!!articles) {
         return (
             <div className="articles-container">
-                <Carousel cards={articles} scale={1.5} />
+                <Carousel cards={articles} scale={2} />
             </div>
         );
     }
