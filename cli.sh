@@ -35,5 +35,18 @@ if [ $ACTIONS == $START ]; then
     fi
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
-    echo $(gum style --foreground 212 "NOT SUPPORTED, YET!")
+    LOGIN_IN_VM="SSH into a Virtual Machine"
+    DEPLOY_SPA="Deploy SPA on a Virtual Machine"
+
+    ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$LOGIN_IN_VM" "$DEPLOY_SPA")
+
+    if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
+    echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
+    read USER 
+
+    echo "What's the ip of the $(gum style --foreground 212 "Virtual Machine")":
+    read IP 
+
+    ssh "$USER@$IP";
+    fi
 fi
