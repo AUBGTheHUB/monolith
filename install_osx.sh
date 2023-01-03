@@ -39,7 +39,7 @@ if [ "$1" != "--post" ]; then
     exec $SHELL 
  
 else
-    echo "IF are getting the following error: nvm command not found"
+    echo "If you are getting the following error: nvm command not found"
     echo "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh"
     echo "The first step of the project intialization has already set up a new login shell"
 
