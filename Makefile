@@ -43,3 +43,7 @@ install-code-plugins:
 install-gum:
 	go install github.com/charmbracelet/gum@latest
 
+.SILENT: gum 
+gum:
+	bash ./cli.sh || (echo "Probably you don't have GUM installed. Run 'make install-gum'.")
+
