@@ -43,7 +43,8 @@ export const ArticlesSection = () => {
     if (!!articles) {
         return (
             <div className="articles-container">
-                <Carousel cards={articles} scale={2} />
+                {/* reload on resize bug for apple devices should be fixed in a future version of the package */}
+                <Carousel cards={articles} scale={2} reloadOnResize={false} />
             </div>
         );
     }
