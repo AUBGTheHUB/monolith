@@ -44,7 +44,7 @@ export const MembersSection = () => {
             <div
                 className="members-section-container"
                 style={{
-                    transform: `scale(${isMobile && !isFoldRes ? 1.25 : 1})`
+                    transform: `scale(${isMobile && !isFoldRes ? 1.18 : 1})`
                 }}
             >
                 <h1 className="header-for-container">Hubbers</h1>

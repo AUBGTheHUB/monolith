@@ -1,16 +1,1 @@
-* @asynchroza
-
-/packages/api/** @asynchroza
-
-/packages/web/src/components/admin_page/** @Aleks1908
-
-.githooks/** @asynchroza
-
-/packages/web/src/components/Navigation/** @Aleks1908 @IvanObreshkov @DemonHashira @annakukova @peti-krl
-
-/packages/web/nginx.conf @IvanObreshkov
-
-/packages/api/configs/cron.go @IvanObreshkov
-
-/packages/api/configs/env.go @IvanObreshkov
-
+* @SuelaCark @nikolayninov

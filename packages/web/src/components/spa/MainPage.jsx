@@ -9,15 +9,16 @@ import { ArticlesSection } from './ArticlesSection/ArticlesSection';
 const LandingHome = () => {
     const anchorList = [
         new Anchor('About', '#about'),
-        new Anchor('Events', '#events'),
-        new Anchor('Articles', '#articles'),
+        // new Anchor('Events', '#events'),
+        // new Anchor('Articles', '#articles'),
         new Anchor('Team', '#team'),
         new Anchor('Jobs', 'jobs')
     ];
 
     return (
         <div className="main">
-            <NavBar props={new Props(anchorList, false)} />
+            {/* spacing of buttons should be fixed -- page overflow is disabled in main.css */}
+            <NavBar props={new Props(anchorList, true)} />
             <LandingSection />
             <ArticlesSection />
             <MembersSection />
