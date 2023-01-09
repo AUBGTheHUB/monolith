@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import './members.css';
 import axios from 'axios';
 import { url } from '../../../Global';
-import { Carousel } from './Carousel';
-import { useMediaQuery } from 'react-responsive';
-import { MobileCarousel } from './MobileCarousel';
+import { Carousel, Custom } from 'react-hovering-cards-carousel';
+import { MembersCard } from './MembersCard';
+import '../ArticlesSection/articles_section.css';
 
 export const MembersSection = () => {
     const [members, setMembers] = useState([]);
-    const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
 
     const getMembers = () => {
         axios({
@@ -16,7 +14,16 @@ export const MembersSection = () => {
             url: url + '/api/members'
         })
             .then((res) => {
-                setMembers(res.data.data.data);
+                let localMembers = [];
+                res.data.data.data.map((member) => {
+                    localMembers.push(
+                        new Custom(
+                            member.profilepicture,
+                            <MembersCard prop={member} />
+                        )
+                    );
+                });
+                setMembers(localMembers);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
@@ -28,19 +35,12 @@ export const MembersSection = () => {
         getMembers();
     }, []);
 
-    if (members) {
-        if (!isMobile) {
-            return (
-                <div className="members-container">
-                    <Carousel props={members} />
-                </div>
-            );
-        } else {
-            return (
-                <div className="members-container">
-                    <MobileCarousel props={members} />
-                </div>
-            );
-        }
-    }
+    return (
+        <>
+            <div className="members-section-container">
+                <h1 className="header-for-container">Hubbers</h1>
+                <Carousel cards={members} scale={1} />
+            </div>
+        </>
+    );
 };

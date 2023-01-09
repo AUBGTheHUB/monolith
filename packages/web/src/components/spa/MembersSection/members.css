@@ -20,11 +20,11 @@
 .members-card-pfp {
     width: inherit;
 }
-
-.hidden {
-    display: none;
+.NOSYNCDEV {
+    font-family: 'Press Start 2P', cursive;
+    color: greenyellow;
+    font-size: x-large;
 }
-
 .members-card-hover-overlay {
     position: absolute;
     width: 100%;

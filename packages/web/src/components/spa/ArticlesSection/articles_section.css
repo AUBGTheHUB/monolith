@@ -1,5 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .articles-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    padding: 3rem;
+    align-items: center;
+    padding: 7.5rem;
+}
+
+.members-section-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 7.5rem;
+}
+
+.header-for-container {
+    color: white;
+    font-size: x-large;
+    font-family: 'Press Start 2P', cursive;
+}
+
+/* 1500px reflects the scaling factor of the carousel */
+@media only screen and (min-width: 1500px) {
+    .header-for-container {
+        padding-bottom: 2.5rem;
+    }
 }
