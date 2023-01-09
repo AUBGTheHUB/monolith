@@ -40,12 +40,14 @@ export const ArticlesSection = () => {
     }, []);
 
     //eslint-disable-next-line
-    return (
-        <>
-            <div className="articles-container">
-                <h1 className="header-for-container">Articles</h1>
-                <Carousel cards={articles} scale={1} />
-            </div>
-        </>
-    );
+    if (!!articles) {
+        return (
+            <>
+                <div className="articles-container" style={{ display: 'none' }}>
+                    <h1 className="header-for-container">Articles</h1>
+                    <Carousel cards={articles} scale={1.35} />
+                </div>
+            </>
+        );
+    }
 };

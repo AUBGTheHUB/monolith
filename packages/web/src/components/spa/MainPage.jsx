@@ -17,7 +17,7 @@ const LandingHome = () => {
 
     return (
         <div className="main">
-            <NavBar props={new Props(anchorList, true)} />
+            <NavBar props={new Props(anchorList, false)} />
             <LandingSection />
             <ArticlesSection />
             <MembersSection />
