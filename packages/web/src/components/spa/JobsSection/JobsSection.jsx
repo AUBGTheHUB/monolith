@@ -14,7 +14,11 @@ export const JobsSection = () => {
     return (
         <div className="jobs-container">
             <NavBar props={new Props(anchorList, true)} />
-            <h1>WORKING</h1>
+            <div className='searchBar'>
+                <div className='box'>
+                <input type="text" placeholder='Search...'/>
+                </div>
+            </div>
         </div>
     );
 };
