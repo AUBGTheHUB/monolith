@@ -1,10 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+    --main-color: #32baf4;
+    --shadow-color: #467edd;
+    --background-color: #f7f7f7;
+    --font-family: 'Poppins';
+    --text-color: #333;
+    --placeholder-color: white;
+}
+
 .jobs-container {
-    height: 100vh;
+    height: 120vh;
     width: 100vw;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
 .searchBar {
-    color: white;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -15,7 +25,7 @@
 }
 
 .box {
-    height: 45px;
+    height: 43px;
     display: flex;
     cursor: pointer;
     padding: 10px 20px;
@@ -44,7 +54,203 @@
     font-weight: 500;
     transition: 0.8s;
     background: transparent;
+    font-family: var(--font-family);
 }
+
+
+
+::placeholder{
+    color: var(--placeholder-color);
+}
+
+.jobs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2%;
+    padding-left: 11%;
+    padding-right: 11%;
+}
+
+
+.job-box {
+    height: 24rem;
+    width: 80%;
+    box-shadow: 0 10px 25px var(--shadow-color);
+    border-radius: 30px;
+    transition: all 0.3s;
+    position: relative;
+    margin: 10px;
+    background-color: var(--background-color);
+}
+
+.job-box:hover {
+    transform: translateY(-10px) rotate(3deg);
+    box-shadow: 0 20px 50px #467edd;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.job-box::before{
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 30px;
+    background-color: rgba(255,255,255,0.1);
+    z-index: -1;
+    transform: scale(1.05);
+    transition: all 0.3s;
+}
+
+.job-box:hover::before{
+    transform: scale(1.1);
+}
+
+.photo img {
+    width: 100px;
+    height: 100px;
+    padding-left: 20px;
+    padding-top: 20px;
+    border-radius: 50%;
+}
+
+.text, .text-2 {
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-right: 15px;
+    font-family: var(--font-family);
+}
+
+.text span {
+    font-family: var(--font-family);
+    font-size: 15px; 
+    color: var(--text-color); 
+    font-weight: 1000;
+}
+
+.text-2 span {
+    font-family: var(--font-family);
+    font-size: 14px; 
+    color: grey; 
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    align-items: center;
+}
+
+.button-container span {
+    height: 2rem;
+    width: 6rem;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    margin-top: 3%;
+    padding-top: 1.5%;
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+    transition: all 0.3s ease-in-out;
+    border-radius: 10%;
+    background-image: linear-gradient(
+        to right,
+        #32baf4,
+        #467edd,
+        #3f86ed,
+        #47acdf,
+        #24cc8e
+    );
+}
+
+.button-container span:hover {
+    transform: translateY(-2px); 
+    background-color: #fff; 
+    text-shadow: 1px 1px #4481eb; 
+    border-radius: 10%;
+    box-shadow: 0 6px 20px 0 rgba(65, 132, 234, 0.95);
+    transition: all 0.3s ease-in-out;
+}
+
+button {
+    width: 140px;
+    height: 55px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    font-size: 20px;
+    background-image: linear-gradient(
+        to right,
+        #32baf4,
+        #467edd,
+        #3f86ed,
+        #47acdf,
+        #24cc8e
+    );
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background-position: right; 
+    box-shadow: 0 6px 20px 0 rgba(65, 132, 234, 0.95); 
+    transform: translateY(-2px); 
+    background-color: #fff; 
+    text-shadow: 1px 1px #4481eb; 
+    border-radius: 10%;
+}
+
+@media only screen and (max-width: 1380px) {
+    .jobs-container {
+    height: 205vh;
+    width: 100vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+
+    .jobs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2%;
+    padding-left: 11%;
+    padding-right: 11%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .jobs-container {
+    height: 290vh;
+    width: 100vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .jobs-container {
+    height: 330vh;
+    width: 100vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+
+    .job-box {
+        height: 90vw;
+        margin: 20px 0px;
+        width: 80vw;
+    }
+}
+
 
 @media only screen and (max-width: 600px) {
 .box {
@@ -59,6 +265,64 @@
   }
 }
 
-::placeholder{
-    color: white;
+@media only screen and (max-width: 400px) {
+    .jobs-container {
+    height: 295vh;
+    width: 100vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+
+    .jobs {
+        flex-direction: column;
+        align-items: center;
+    }
+    .job-box {
+        margin: 20px 0;
+    }
 }
+
+@media only screen and (max-width: 320px) {
+    .jobs-container {
+    height: 280vh;
+    width: 100vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+
+    .job-box {
+        height: auto;
+    }
+    .text, .text-2 {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 280px) {
+    .jobs-container {
+    height: 250vh;
+    width: 160vw;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    }
+
+    .photo img {
+        width: 70px;
+        height: 70px;
+    }
+    .text, .text-2 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    button {
+        width: 120px;
+        height: 45px;
+        font-size: 16px;
+    }
+}
+
+
+
+
+
+
+
+
+
