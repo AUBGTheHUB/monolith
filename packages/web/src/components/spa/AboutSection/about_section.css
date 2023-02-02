@@ -1,17 +1,23 @@
 .about-container {
+    height: 900vh;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding-left: 11%;
+    padding-right: 11%;
 }
 .about-container img {
-    width: 60%;
+    width: 100%;
     height: auto;
-    margin-left: 15%;
     border-radius: 15px;
 }
 .about-information {
-    width: 50%;
+    width: 55%;
     color: white;
 }
-.about_image {
-    width: 50%;
+.about-information .about-content,
+.about-container .about-title {
+    margin-bottom: 30px;
+}
+.about-image {
+    width: 40%;
 }

@@ -8,7 +8,25 @@ export const AboutSection = () => {
                 <img src="../../../../aboutus.jpg" alt="" />
             </div>
             <div className="about-information">
-                <h1>About us</h1>
+                <h1 className="about-title">About us</h1>
+                <p className="about-content">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Eligendi veritatis provident illo beatae saepe quis eos
+                    autem dolore. Sunt labore commodi inventore id aut fugiat
+                    sed accusamus hic, neque iure?
+                </p>
+                <p className="about-content">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Eligendi veritatis provident illo beatae saepe quis eos
+                    autem dolore. Sunt labore commodi inventore id aut fugiat
+                    sed accusamus hic, neque iure?
+                </p>
+                <p className="about-content">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Eligendi veritatis provident illo beatae saepe quis eos
+                    autem dolore. Sunt labore commodi inventore id aut fugiat
+                    sed accusamus hic, neque iure?
+                </p>
             </div>
         </div>
     );
