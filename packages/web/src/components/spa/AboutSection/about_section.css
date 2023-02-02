@@ -11,7 +11,7 @@
     border-radius: 15px;
 }
 .about-text {
-    width: 55%;
+    width: 47%;
     color: white;
 }
 .about-text .about-content,
@@ -19,7 +19,7 @@
     margin-bottom: 30px;
 }
 .about-image {
-    width: 40%;
+    width: 48%;
 }
 @media only screen and (max-width: 900px) {
     .about-container {
