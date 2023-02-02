@@ -10,14 +10,29 @@
     height: auto;
     border-radius: 15px;
 }
-.about-information {
+.about-text {
     width: 55%;
     color: white;
 }
-.about-information .about-content,
+.about-text .about-content,
 .about-container .about-title {
     margin-bottom: 30px;
 }
 .about-image {
     width: 40%;
+}
+@media only screen and (max-width: 900px) {
+    .about-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        height: initial;
+    }
+    .about-image {
+        width: 100%;
+        margin-bottom: 50px;
+    }
+    .about-text {
+        width: 100%;
+    }
 }

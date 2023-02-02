@@ -7,7 +7,7 @@ export const AboutSection = () => {
             <div className="about-image">
                 <img src="../../../../aboutus.jpg" alt="" />
             </div>
-            <div className="about-information">
+            <div className="about-text">
                 <h1 className="about-title">About us</h1>
                 <p className="about-content">
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit.
