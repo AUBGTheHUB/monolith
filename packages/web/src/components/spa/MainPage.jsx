@@ -1,10 +1,10 @@
 import React from 'react';
 import './main.css';
-import { MembersSection } from './MembersSection/MembersSection';
+// import { MembersSection } from './MembersSection/MembersSection';
 import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
-import { ArticlesSection } from './ArticlesSection/ArticlesSection';
+// import { ArticlesSection } from './ArticlesSection/ArticlesSection';
 import { AboutSection } from './AboutSection/AboutSection';
 
 const LandingHome = () => {
@@ -21,8 +21,10 @@ const LandingHome = () => {
             {/* spacing of buttons should be fixed -- page overflow is disabled in main.css */}
             <NavBar props={new Props(anchorList, true)} />
             <LandingSection />
-            <ArticlesSection />
-            <MembersSection />
+            <AboutSection />
+            {/* <ArticlesSection /> */}
+            {/* Uncomment the members section after fixing issue */}
+            {/* <MembersSection /> */}
         </div>
     );
 };
