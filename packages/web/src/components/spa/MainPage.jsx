@@ -5,6 +5,7 @@ import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
 import { ArticlesSection } from './ArticlesSection/ArticlesSection';
+import { AboutSection } from './AboutSection/AboutSection';
 
 const LandingHome = () => {
     const anchorList = [
