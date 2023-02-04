@@ -14,12 +14,6 @@
     width: 47%;
     color: white;
     text-align: justify;
-<<<<<<< HEAD
-}
-.about-text .about-content,
-.about-container .about-title {
-    margin-bottom: 8%;
-=======
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,7 +23,6 @@
     align-items: center;
     margin-bottom: 6%;
     display: flex;
->>>>>>> #169-text-animation-is-sometimes-visible-when-opening-the-hamburger-menu-and-then-disappears
 }
 .about-image {
     width: 48%;
