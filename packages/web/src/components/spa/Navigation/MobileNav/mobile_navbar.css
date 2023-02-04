@@ -73,6 +73,7 @@
 .navmobile-menu.forwards {
     animation-name: menu-animation;
     animation-duration: 0.75s;
+    z-index: 1000;
 }
 
 @keyframes menu-animation {
