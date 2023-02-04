@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './articles_section.css';
 import axios from 'axios';
 import { url } from '../../../Global';
+import { Article, Carousel } from 'react-hovering-cards-carousel';
+import '../../../../node_modules/react-hovering-cards-carousel/dist/style.css';
 
 export const ArticlesSection = () => {
     const [articles, setArticles] = useState([]);
@@ -9,11 +11,24 @@ export const ArticlesSection = () => {
     const getArticles = () => {
         axios({
             method: 'get',
-            url: url + '/api/members'
+            url: url + '/api/article'
         })
             .then((res) => {
-                setArticles(res.data.data.data);
+                let data = [];
+                res.data.data.data.forEach((element) => {
+                    data.push(
+                        new Article(
+                            element.title,
+                            element.author,
+                            element.mediumlink,
+                            element.banner
+                        )
+                    );
+                });
+
+                setArticles(data);
             })
+
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
                 console.log(err);
@@ -24,7 +39,15 @@ export const ArticlesSection = () => {
         getArticles();
     }, []);
 
-    if (articles) {
-        return <div className="articles-container"></div>;
+    //eslint-disable-next-line
+    if (!!articles) {
+        return (
+            <>
+                <div className="articles-container" style={{ display: 'none' }}>
+                    <h1 className="header-for-container">Articles</h1>
+                    <Carousel cards={articles} scale={1.35} />
+                </div>
+            </>
+        );
     }
 };

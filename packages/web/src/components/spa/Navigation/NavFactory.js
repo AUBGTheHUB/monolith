@@ -1,7 +1,8 @@
 class Props {
-    constructor(anchorList, hasHackButton) {
+    constructor(anchorList, hasHackButton, bgColor) {
         this.anchorList = anchorList;
         this.hasHackButton = hasHackButton;
+        this.bgColor = bgColor;
     }
 }
 
