@@ -9,6 +9,7 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
+import FaqSection from './FaqSection/FaqSection';
 
 export const HackAUBG = () => {
     const anchorList = [
@@ -26,6 +27,7 @@ export const HackAUBG = () => {
             <VideoSection />
             <MentorsSection />
             <JudgesSection />
+            <FaqSection />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );

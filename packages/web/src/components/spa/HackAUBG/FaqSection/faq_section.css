@@ -1,0 +1,23 @@
+.faq-container {
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2% 0;
+}
+
+.faq {
+    font-size: 2rem;
+    padding: 2% 0;
+}
+
+.faq-header,
+.faq-text {
+    width: 60%;
+    text-align: left;
+}
+
+.faq-header {
+    font-size: 1.2rem;
+}
