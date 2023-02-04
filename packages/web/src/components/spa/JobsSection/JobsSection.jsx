@@ -1,9 +1,12 @@
 import { NavBar } from '../Navigation/NavBar';
 import './jobs_section.css';
 import { Anchor, Props } from '../Navigation/NavFactory';
-import img1 from '../JobsSection/images/Vergil_4.jpeg';
-import img2 from '../JobsSection/images/Vergil_5.jpg';
-import img3 from '../JobsSection/images/Vergil_6.jpg';
+import img1 from '../JobsSection/images/amplify.png';
+import img2 from '../JobsSection/images/droxic.png';
+import img3 from '../JobsSection/images/paysafe.png';
+import img4 from '../JobsSection/images/progress.png';
+import img5 from '../JobsSection/images/vmware.png';
+import img6 from '../JobsSection/images/uber_gold.png';
 // import {HiOutlineSearch} from 'react-icons/hi';
 
 const anchorList = [
@@ -27,7 +30,9 @@ export const JobsSection = () => {
             <div className='jobs'>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img1} alt="" />
+                        <a href="https://amplifyanalytix.com/" target="_blank">
+                        <img src={img1} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>UI/ UX Designer</span>
@@ -51,7 +56,9 @@ export const JobsSection = () => {
                 </div>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img2} alt="" />
+                        <a href="https://droxic.com/en/" target="_blank">
+                        <img src={img2} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>Sr. Product Designer</span>
@@ -74,7 +81,9 @@ export const JobsSection = () => {
                 </div>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img3} alt="" />
+                        <a href="https://www.paysafe.com/eu-en/" target="_blank">
+                        <img src={img3} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>User Experience Designer</span>
@@ -99,7 +108,9 @@ export const JobsSection = () => {
             <div className='jobs'>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img1} alt="" />
+                        <a href="https://www.progress.com/" target="_blank">
+                        <img src={img4} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>Product Designer</span>
@@ -122,7 +133,9 @@ export const JobsSection = () => {
                 </div>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img2} alt="" />
+                        <a href="https://www.vmware.com//" target="_blank">
+                        <img src={img5} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>UX Designer</span>
@@ -145,7 +158,9 @@ export const JobsSection = () => {
                 </div>
                 <div className='job-box'>
                     <div className='photo'>
-                        <img src={img3} alt="" />
+                        <a href="https://www.uber.com/ro/en/" target="_blank">
+                        <img src={img6} alt=""  />
+                        </a>
                     </div>
                     <div className='text'>
                         <span>UI/ UX Designer</span>

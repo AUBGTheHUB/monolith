@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
-/* 
-    To be fixed: 
-        1. Fix the cards to be all in the same row, one-after-the-other during mobile/tablet responsiveness
-        2. Fix vertical distance between cards during resposiveness 'mode'
-        3. Add more space between inside elements and the border of the job card box
-*/
-
-
 :root {
     --main-color: #32baf4;
     --shadow-color: #467edd;
@@ -18,7 +10,7 @@
 }
 
 .jobs-container {
-    height: 116vh;
+    height: 125vh;
     width: 100vw;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
@@ -84,18 +76,17 @@
     align-items: center;
     padding-top: 2%;
     justify-content: space-evenly;
-    margin-left: 8%;
+    margin-left: 6%;
     margin-right: 8%;
 }
 
 .job-box {
-    height: 47vh;
+    height: 51vh;
     width: 21vw;
     box-shadow: 0% 1% 2.5% var(--shadow-color);
     border-radius: 11.5%;
     transition: all 0.3s;
     position: relative;
-    /* margin-left: 10%; */
     background-color: var(--background-color);
 }
 
@@ -125,11 +116,10 @@
 }
 
 .photo img {
-    width: 6vw;
-    height: 12vh;
-    padding-left: 4%;
-    padding-top: 4%;
-    border-radius: 70%;
+  width: 20vw;
+  height: 15vh;
+  object-fit: cover;
+  padding: 4% 4%;
 }
 
 .text, .text-2 {
@@ -137,6 +127,7 @@
     padding-top: 5%;
     padding-right: 5%;
     font-family: var(--font-family);
+    text-align: justify;
 }
 
 .text span {
@@ -160,6 +151,7 @@ border-radius: 4vh;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    justify-items: end;
     padding-top: 5%;
     padding-left: 5%;
     padding-right: 5%;
@@ -221,106 +213,222 @@ button:hover {
     text-shadow: 1% 1% #4481eb; 
 }
 
-@media only screen and (max-width: 1380px) {
+@media only screen and (min-width: 1000px) and (max-width: 1389px) {
     .jobs-container {
-    height: 235vh;
-    width: 100vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-    }
-
-    .jobs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    padding-top: 2%;
-    margin-left: 11%;
-    margin-right: 11%;
-    }
-}
-
-@media only screen and (max-width: 900px) {
-    .jobs-container {
-    height: 290vh;
-    width: 100vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .jobs-container {
-    height: 330vh;
-    width: 100vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+        height: 118vh;
+        width: 101vw;
     }
 
     .job-box {
-        height: 90vw;
-        margin: 20% 0%;
-        width: 80vw;
+        height: 50vh;
+        width: 26vw;
+    }
+
+    button {
+        width: 100vw;
+        height: 7vh;
+        font-size: 1.4em !important;
+    }
+
+    .button-container span {
+        height: 4.5vh;
+        width: 7vw;  
+        font-size: 0.8em !important;
+        font-weight: 500;
+    }
+
+    .photo img {
+        width: 24vw;
+        height: 12vh;
     }
 }
 
-@media only screen and (max-width: 600px) {
-.box {
-    width: 80%;
-  }
+@media only screen and (min-width: 1000px) and (max-width: 1035px) {
+    .jobs-container {
+        height: 100vh;
+        width: 101vw;
+    }
 
-.searchBar {
-    flex-direction: column;
-    align-items: center;
-    padding-left: 0;
-    padding-right: 0;
-  }
+    .job-box {
+        width: 26vw;
+        height: 40vh;
+    }
+
+    .text, .text-2 {
+        font-size: 0.8em;
+        text-align: justify;
+    }
+
+    .button-container span {
+        font-size: 0.7em !important;
+        height: 3.5vh;
+    }
+
+    button {
+        font-size: 1.3em !important; 
+    }
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (min-width: 600px) and (max-width: 999px) {
     .jobs-container {
-    height: 295vh;
-    width: 100vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+        height: 405vh;
+        width: 101vw;
     }
 
     .jobs {
         flex-direction: column;
         align-items: center;
     }
-    .job-box {
-        margin: 20% 0%;
-    }
-}
-
-@media only screen and (max-width: 320px) {
-    .jobs-container {
-    height: 280vh;
-    width: 100vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-    }
 
     .job-box {
-        height: auto;
-    }
-    .text, .text-2 {
-        font-size: 1em;
-    }
-}
-
-@media only screen and (max-width: 280px) {
-    .jobs-container {
-    height: 250vh;
-    width: 160vw;
-    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+        width: 47vw;
+        height: 55vh;
+        margin-top: 10%;
     }
 
     .photo img {
-        width: 70vw;
-        height: 70vh;
+        width: 35vw;
+        height: 14vh;
     }
+
     .text, .text-2 {
-        padding-left: 10%;
-        padding-right: 10%;
+        font-size: 1.2em;
+        text-align: justify;
     }
+
+    .button-container span {
+        font-size: 1.2em !important;
+        height: 5.5vh;
+        width: 13vw;
+    }
+
     button {
-        width: 120vw;
-        height: 45vh;
-        font-size: 1em;
+        width: 100vw;
+        height: 7vh;
+        font-size: 1.4em !important;
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 783px) {
+    .jobs-container {
+        height: 395vh;
+    }
+
+    .job-box {
+        width: 58vw;
+        height: 56vh;
+    }
+
+    .photo img {
+        width: 45vw;
+        height: 14vh;
+    }
+
+    .button-container span {
+        font-size: 1.1em !important;
+        height: 5vh;
+        width: 14vw;  
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 671px) {
+    .jobs-container {
+        height: 405vh;
+    }
+
+    .job-box {
+        height: 58vh;
+    }
+
+    .button-container span {
+        font-size: 1em !important;
+    }
+
+    .photo img {
+        width: 55vw;
+        height: 16vh;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .jobs-container {
+        height: 408vh;
+        width: 100vw;
+    }
+
+    .jobs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .job-box {
+        margin-top: 12%;
+        height: 58vh;
+        width: 85vw;
+    }
+
+    .photo img {
+        width: 77vw;
+        height: 18vh;
+    }
+
+    button {
+        width: 200vw;
+        height: 7vh;
+        font-size: 1.5em !important;
+    }
+
+    .button-container span {
+        height: 5vh;
+        width: 23vw;
+        font-size: 1.4em !important;  
+    }
+}
+
+@media only screen and (min-width: 400px) and (max-width: 500px) {
+    .jobs-container {
+        height: 370vh;
+    }
+
+    .job-box {
+        height: 53vh;
+    }
+
+    .photo img {
+        height: 15vh;
+        width: 82vw;
+    }
+
+    .button-container span {
+        font-size: 1em !important;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .jobs-container {
+        height: 421vh;
+        width: 101vw;
+    }
+
+    .job-box {
+        height: 62vh;
+        width: 90vw;
+    }
+
+    .photo img {
+        width: 90vw;
+        height: 16vh;
+    }
+
+    button {
+        width: 200vw;
+        height: 9vh;
+        font-size: 1.4em !important;
+    }
+
+    .button-container span {
+        height: 5vh;
+        width: 25vw;  
+        font-size: 0.9em !important;
     }
 }
