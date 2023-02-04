@@ -30,11 +30,7 @@ export const NavDesktop = ({ props }) => {
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
                     <div className="navdesktop-navdivs" key={index}>
-                        <a
-                            href={anchor.endpoint}
-                            key={index}
-                            className="navdesktop-navtags"
-                        >
+                        <a href={anchor.endpoint} key={index}>
                             {anchor.name}
                         </a>
                     </div>
