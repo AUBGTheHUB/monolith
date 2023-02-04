@@ -17,7 +17,7 @@ export const LandingSection = () => {
                         location.href = '#about';
                     }}
                 >
-                    About Us
+                    Meet the team
                 </button>
             </div>
             <div className="hubzzie">
