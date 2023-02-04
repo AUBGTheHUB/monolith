@@ -15,7 +15,8 @@ import './page_not_found.css';
 const NotFound = () => {
     return (
         <div className="background-not-found">
-            {   <div className="navdesktop-container">
+            {
+                <div className="navdesktop-container">
                     <div className="navdesktop-logo">
                         <img
                             src="/hublogo.png"
@@ -47,7 +48,6 @@ const NotFound = () => {
                 <div className="hubzie-UFO-image">
                     <img
                         src="/hubzieUFOimage.png"
-                        className="hubzie-UFO-image"
                         alt="Hubzie being abducted by a UFO"
                     />
                 </div>

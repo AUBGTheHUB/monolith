@@ -4,7 +4,7 @@ import { url } from '../../../Global';
 import { Carousel, Custom } from 'react-hovering-cards-carousel';
 import { MembersCard } from './MembersCard';
 import { useMediaQuery } from 'react-responsive';
-import '../ArticlesSection/articles_section.css';git add .
+import '../ArticlesSection/articles_section.css';
 
 export const MembersSection = () => {
     const [members, setMembers] = useState([]);
