@@ -13,6 +13,7 @@
         "react": "^18.2.0",
         "react-bootstrap": "^2.4.0",
         "react-dom": "^18.2.0",
+        "react-hovering-cards-carousel": "^0.9.66",
         "react-icons": "^4.6.0",
         "react-responsive": "^9.0.0",
         "react-router-dom": "^6.3.0",

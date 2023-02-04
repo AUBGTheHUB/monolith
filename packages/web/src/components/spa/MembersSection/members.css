@@ -20,11 +20,11 @@
 .members-card-pfp {
     width: inherit;
 }
-
-.hidden {
-    display: none;
+.NOSYNCDEV {
+    font-family: 'Press Start 2P', cursive;
+    color: greenyellow;
+    font-size: x-large;
 }
-
 .members-card-hover-overlay {
     position: absolute;
     width: 100%;
@@ -49,13 +49,14 @@
     }
 }
 
-.carousel-container {
+.members-carousel-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     background-color: transparent;
     margin-bottom: 20rem;
+    transform: scale(0.75);
 }
 
 .carousel-container-slider-holder {
@@ -141,11 +142,11 @@
 }
 
 .members-card-overlay-text.name {
-    font-size: xlarge;
+    font-size: xxx-large;
 }
 
 .members-card-overlay-text.position {
-    font-size: larger;
+    font-size: xx-large;
     font-weight: 500;
 }
 
@@ -165,6 +166,7 @@
 .NOSYNCDEV {
     font-family: 'Press Start 2P', cursive;
     color: greenyellow;
+    font-size: x-large;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -183,5 +185,9 @@
     .members-card-overlay-text.linkedin-icon {
         width: 10vw;
         height: 10vh;
+    }
+
+    .NOSYNCDEV {
+        font-size: small;
     }
 }
