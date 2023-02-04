@@ -1,0 +1,75 @@
+.journey-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 11%;
+    padding-right: 11%;
+    margin-top: 5%;
+}
+.journey-title {
+    margin-bottom: 5%;
+}
+.journey-section h1 {
+    font-weight: bold;
+}
+
+.journey-content {
+    display: flex;
+    text-align: justify;
+}
+
+.vertical-line {
+    border-radius: 4px;
+    overflow: visible;
+    border: 5px solid white;
+    justify-items: center;
+    align-items: center;
+}
+
+.left {
+    margin-right: 50px;
+    width: 500px;
+}
+
+.right {
+    margin-left: 50px;
+    width: 500px;
+}
+
+.right p {
+    width: 500px;
+}
+
+.left .top {
+    margin-bottom: 70%;
+}
+
+.right .top {
+    margin-top: 55%;
+}
+
+.right .bottom {
+    margin-top: 70%;
+}
+
+.left-dot {
+    background-color: white;
+    height: 45px;
+    width: 45px;
+    position: relative;
+    top: 130px;
+    /* 45px */
+    left: 532.5px;
+    border-radius: 50%;
+}
+
+.right-dot {
+    background-color: white;
+    height: 45px;
+    width: 45px;
+    position: relative;
+    top: 130px;
+    left: -77px;
+    border-radius: 50%;
+}
