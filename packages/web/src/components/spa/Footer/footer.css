@@ -1,11 +1,12 @@
 .footer-container {
-    background-color: aqua;
+    background-color: #154c79;
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 6vh;
 }
 .footer-container p {
+    color: white;
     margin-bottom: 0;
 }
 .footer-container .social-media a {
@@ -19,7 +20,8 @@
     height: 2.5em;
     width: 2.5em;
     padding: 5px;
-    background-color: red;
+    background-color: transparent;
+    color: white;
     border-radius: 5px;
 }
 
