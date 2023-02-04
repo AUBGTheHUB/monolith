@@ -1,0 +1,39 @@
+.about-container {
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 11%;
+    padding-right: 11%;
+    padding-top: 15vh;
+}
+.about-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+}
+.about-text {
+    width: 47%;
+    color: white;
+}
+.about-text .about-content,
+.about-container .about-title {
+    margin-bottom: 30px;
+}
+.about-image {
+    width: 48%;
+}
+@media only screen and (max-width: 900px) {
+    .about-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        height: initial;
+    }
+    .about-image {
+        width: 100%;
+        margin-bottom: 50px;
+    }
+    .about-text {
+        width: 100%;
+    }
+}

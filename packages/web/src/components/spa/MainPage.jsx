@@ -5,6 +5,7 @@ import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
 import { ArticlesSection } from './ArticlesSection/ArticlesSection';
+import { AboutSection } from './AboutSection/AboutSection';
 
 const LandingHome = () => {
     const anchorList = [
@@ -20,6 +21,7 @@ const LandingHome = () => {
             {/* spacing of buttons should be fixed -- page overflow is disabled in main.css */}
             <NavBar props={new Props(anchorList, true)} />
             <LandingSection />
+            <AboutSection />
             <ArticlesSection />
             <MembersSection />
         </div>
