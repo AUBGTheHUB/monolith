@@ -3,6 +3,7 @@
     height: 100vh;
     width: 100vw;
     font-family: 'Poppins';
+    overflow: hidden;
 }
 .page-not-found-logo {
     display: flex;
@@ -79,7 +80,7 @@
 @media only screen and (max-width: 900px) {
     .background-not-found {
         margin-top: 0;
-        height: 90vh;
+        height: 80vh;
         display: flex;
         justify-content: center;
         align-items: center;
