@@ -29,7 +29,12 @@
     margin: 0;
 }
 
-@media only screen and (max-width: 1600px) {
+.navdesktop-logo-image {
+    width: 6%;
+    margin-right: 1%;
+}
+
+@media only screen and (max-width: 4000px) {
     .navdesktop-logo-image {
         width: 15%;
         margin-right: 2%;
@@ -52,8 +57,8 @@
     position: relative;
     z-index: 1;
     transition: 0.35s;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 5px;
+    padding-right: 5px;
     display: flex;
     color: white;
     text-decoration: none;
@@ -78,6 +83,7 @@
     height: 1px;
     content: '.';
     color: transparent;
+    border-radius: 3px;
     background: #fff;
     visibility: none;
     opacity: 0;

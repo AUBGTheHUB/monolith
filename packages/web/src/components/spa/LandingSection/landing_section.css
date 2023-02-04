@@ -2,7 +2,7 @@
 
 .welcome-container {
     width: 100vw;
-    height: 90vh;
+    height: 61vh;
     color: white;
     display: flex;
     flex-direction: row;
@@ -98,6 +98,7 @@
 .aboutUs-btn,
 .aboutUs-btn:hover {
     overflow: hidden;
+    z-index: 0;
     animation: appearing 1.3s backwards 2s;
 }
 
