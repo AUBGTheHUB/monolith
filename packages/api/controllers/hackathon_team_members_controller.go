@@ -7,6 +7,7 @@ import (
 	"hub-backend/responses"
 	"net/http"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -23,13 +24,13 @@ var validateTeamMembers = validator.New()
 func CreateHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	// bearer_token := c.Get("BEARER-TOKEN")
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	var member models.TeamMember
 	defer cancel()
-	// if bearer_token != configs.ReturnAuthToken() {
-	// 	return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
-	// }
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
 
 	// validate request body
 	if err := c.BodyParser(&member); err != nil {
@@ -85,10 +86,19 @@ func GetHackathonMember(c *fiber.Ctx) error {
 }
 
 func EditHackathonMember(c *fiber.Ctx) error {
+	//TODO: Add logic if memeber with same email exist not to be added to DB. 
+	//FIXME: Fix message for empty body
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
 	var member models.EditTeamMember
 
+	var member_map models.EditTeamMember
+	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+	err1 := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member_map)
+
+	if err1 != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "No such memb"})
+	}
 	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
@@ -104,13 +114,29 @@ func EditHackathonMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Body is not compatible"})
 	}
 
-	member_map := models.EditTeamMember{}
-
 	if member.FullName != "" {
 		member_map.FullName = member.FullName
 	}
 	if member.TeamNoTeam {
 		member_map.TeamNoTeam = member.TeamNoTeam
+	}
+	if member.TeamName != "" {
+		member_map.TeamName = member.TeamName
+	}
+	if member.Email != "" {
+		member_map.Email = member.Email
+	}
+	if member.School != "" {
+		member_map.School = member.School
+	}
+	if member.Age != 0 {
+		member_map.Age = member.Age
+	}
+	if member.Location != "" {
+		member_map.Location = member.Location
+	}
+	if member.ShirtSize != "" {
+		member_map.ShirtSize = member.ShirtSize
 	}
 
 	update := bson.M{}
@@ -118,10 +144,8 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
-		update[typeOfS.Field(i).Name] = v.Field(i).Interface()
+		update[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 	}
-
-	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
 
 	result, err := teamMembersCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": update})
 
