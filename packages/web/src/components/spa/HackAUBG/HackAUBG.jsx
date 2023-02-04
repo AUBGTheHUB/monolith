@@ -2,8 +2,8 @@ import React from 'react';
 import './hackAUBG.css';
 
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
-import { Anchor, Props } from './Navigation/NavFactory.js';
-import { NavBar } from './Navigation/NavBar';
+import { Anchor, Props } from '../Navigation/NavFactory.js';
+import { NavBar } from '../Navigation/NavBar';
 
 export const HackAUBG = () => {
     const anchorList = [
@@ -17,7 +17,7 @@ export const HackAUBG = () => {
 
     return (
         <div className="hackaubg-container">
-            <NavBar props={new Props(anchorList, true)} />
+            <NavBar props={new Props(anchorList, false, 'rgba(0,0,0,.5)')} />
             <MatrixWindow />
         </div>
     );
