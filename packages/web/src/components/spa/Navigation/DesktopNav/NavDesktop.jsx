@@ -18,6 +18,10 @@ export const NavDesktop = ({ props }) => {
         }
     };
 
+    const openHome = () => {
+        window.location.href = '/';
+    };
+
     const stickyProps = () => {
         if (props.isSticky) {
             return {
@@ -35,7 +39,7 @@ export const NavDesktop = ({ props }) => {
 
     return (
         <div className="navdesktop-container" style={stickyProps()}>
-            <div className="navdesktop-logo">
+            <div className="navdesktop-logo" onClick={openHome}>
                 <img
                     src="hublogo.png"
                     className="navdesktop-logo-image"
