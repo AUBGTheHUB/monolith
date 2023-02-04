@@ -25,7 +25,7 @@ const LandingHome = () => {
             <AboutSection />
             <ArticlesSection />
             <MembersSection />
-            <Footer />
+            <Footer colour={'rgb(21, 76, 121)'} />
         </div>
     );
 };
