@@ -42,10 +42,12 @@ export const ArticlesSection = () => {
     //eslint-disable-next-line
     if (!!articles) {
         return (
-            <div className="articles-container">
-                {/* reload on resize bug for apple devices should be fixed in a future version of the package */}
-                <Carousel cards={articles} scale={2} reloadOnResize={false} />
-            </div>
+            <>
+                <div className="articles-container" style={{ display: 'none' }}>
+                    <h1 className="header-for-container">Articles</h1>
+                    <Carousel cards={articles} scale={1.35} />
+                </div>
+            </>
         );
     }
 };

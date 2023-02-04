@@ -18,7 +18,10 @@ export const NavDesktop = ({ props }) => {
         }
     };
     return (
-        <div className="navdesktop-container">
+        <div
+            className="navdesktop-container"
+            style={{ backgroundColor: props.bgColor }}
+        >
             <div className="navdesktop-logo">
                 <img
                     src="hublogo.png"
@@ -30,11 +33,7 @@ export const NavDesktop = ({ props }) => {
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
                     <div className="navdesktop-navdivs" key={index}>
-                        <a
-                            href={anchor.endpoint}
-                            key={index}
-                            className="navdesktop-navtags"
-                        >
+                        <a href={anchor.endpoint} key={index}>
                             {anchor.name}
                         </a>
                     </div>

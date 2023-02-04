@@ -1,5 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 .articles-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    padding: 3rem;
+    align-items: center;
+    padding: 7.5rem;
 }
+
+.members-section-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 7.5rem;
+}
+
+.header-for-container {
+    color: whitesmoke;
+    font-size: xxx-large;
+    font-family: 'Poppins';
+    font-weight: 600;
+}
+
+.description-for-container {
+    color: white;
+    font-size: large;
+    text-align: center;
+    margin-left: 20rem;
+    margin-right: 20rem;
+    margin-bottom: 3rem;
+    font-weight: 500;
+}
+
+/* 1500px reflects the scaling factor of the carousel */
+@media only screen and (min-width: 1500px) {
+    .header-for-container {
+        padding-bottom: 2.5rem;
+    }
+}
+
+/* @media only screen and (max-width: 1600px) {
+    .description-for-container {
+        margin-left: 10rem;
+        margin-right: 10rem;
+        font-size: x-large;
+        font-weight: 400;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    .description-for-container {
+        margin-left: 5rem;
+        margin-right: 5rem;
+        font-size: medium;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .description-for-container {
+        margin: 0;
+    }
+} */

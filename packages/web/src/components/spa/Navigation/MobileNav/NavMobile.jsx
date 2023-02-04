@@ -7,6 +7,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const NavMobile = ({ props }) => {
+    const [bodyHeight, setBodyHeight] = useState(0);
+    let currentBodyHeight = document.documentElement.scrollHeight;
+
+    if (currentBodyHeight !== bodyHeight) {
+        setBodyHeight(currentBodyHeight);
+    }
     const navigate = useNavigate();
 
     const renderHackButton = () => {
@@ -63,10 +69,11 @@ export const NavMobile = ({ props }) => {
                 />
             </div>
 
-            <div className={menuClass}>
+            <div className={menuClass} style={{ height: bodyHeight }}>
                 <Button
                     props={{
                         css: 'navmobile-button-close',
+
                         icon: (
                             <MdOutlineClose
                                 className={closeButton}
