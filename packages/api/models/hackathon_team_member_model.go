@@ -5,6 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type TeamMember struct {
 	ID             primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	FullName      string             `json:"fullname, omitempty" validate:"required"`
+	TeamNoTeam     bool          `json:"teamnoteam, omitempty"`
 	TeamName     string             `json:"teamname, omitempty" validate:"required"`
 	Email       string             `json:"email, omitempty" validate:"required"`
 	School     string             `json:"school, omitempty"`
@@ -26,6 +27,7 @@ type TeamMember struct {
 
 type EditTeamMember struct {
 	FullName      string `json:"fullname"`
+	TeamNoTeam     bool `json: "teamnoteam"`
 	TeamName     string `json:"teamname"`
 	Email       string `json:"email"`
 	School     string `json:"school"`
