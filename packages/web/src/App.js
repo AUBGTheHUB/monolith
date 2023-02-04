@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import LandingHome from './components/spa/landing_home_page';
+import LandingHome from './components/spa/MainPage';
 import LandingAdminPage from './components/admin_page/landing_admin_page';
 import Dashboard from './components/admin_page/admin_dashboard';
 import MemberActions from './components/admin_page/members_page/single_member';
@@ -29,6 +29,7 @@ import AddPartners from './components/admin_page/hackathon/hackathon_partners.js
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
 import './App.css';
 import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
+import { JobsSection } from './components/spa/JobsSection/JobsSection';
 
 function App() {
     return (
@@ -115,6 +116,7 @@ function App() {
                 element={<PartnersActions />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
+            <Route path="/jobs" element={<JobsSection />} />
         </Routes>
     );
 }

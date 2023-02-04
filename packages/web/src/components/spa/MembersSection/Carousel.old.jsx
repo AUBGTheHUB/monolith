@@ -65,7 +65,6 @@ export const Carousel = ({ props }) => {
         const runningSlicing = useRef(false);
 
         const slide = () => {
-            console.log('HELLO WORLD');
             if (!runningSlicing.current) {
                 runningSlicing.current = true;
 
@@ -94,7 +93,7 @@ export const Carousel = ({ props }) => {
         };
 
         return (
-            <div className="carousel-container">
+            <div className="members-carousel-container">
                 <ArrowIcon className="carousel-arrow-left" onClick={slide} />
                 <div className="carousel-container-slider-holder">
                     <div className={firstSlide}>

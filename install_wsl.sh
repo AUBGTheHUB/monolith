@@ -2,6 +2,7 @@
 
 if [ "$1" != "--post" ]; then
     sudo apt install curl
+    sudo apt install make
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 
     echo "NVM_DIR=\"$HOME/.nvm\"" >> ~/.bashrc

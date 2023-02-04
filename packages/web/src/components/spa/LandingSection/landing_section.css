@@ -24,6 +24,8 @@
 }
 
 .welcome-text {
+    justify-content: center;
+    align-items: center;
     width: 55%;
     color: white;
     align-content: space-between;
@@ -46,15 +48,10 @@
     display: flex;
     border-radius: 50px;
     border: none;
-    justify-content: space-around;
-    text-decoration: none;
     font-size: 1rem;
     font-weight: bold;
     background-color: #02b0e5;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    padding: 1% 5% 1% 5%;
 }
 
 .aboutUs-btn:hover {
@@ -87,13 +84,55 @@
     }
     .hubzzie,
     .welcome-text {
-        margin: 0;
-        margin-top: 10%;
+        margin: 11% 0 0 0;
     }
     .welcome-text {
         width: fit-content;
         justify-content: center;
         align-items: center;
-        margin-left: 10%;
+        margin-left: 3%;
+    }
+}
+
+.welcome-text p,
+.aboutUs-btn,
+.aboutUs-btn:hover {
+    overflow: hidden;
+    animation: appearing 1.3s backwards 2s;
+}
+
+@media only screen and (min-width: 900px) {
+    .hubzzie-image {
+        overflow: hidden;
+        animation: appearing 1.3s backwards 2s;
+    }
+}
+
+.welcome-text h1 {
+    overflow: hidden;
+    border-right: 0.15em solid white;
+    white-space: nowrap;
+    animation: typing ease-in-out 3s forwards;
+}
+
+/* Sliding and appearing animations */
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+        /* max-width: fit-content; */
+        border-color: transparent;
+    }
+}
+
+@keyframes appearing {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100%;
     }
 }

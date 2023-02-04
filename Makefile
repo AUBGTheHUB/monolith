@@ -6,6 +6,10 @@ install-web:
 run-web:
 	cd ./packages/web/ && npm run start
 
+.PHONY: run-dev
+run-dev:
+	cd ./packages/web/ && npm run dev
+
 .PHONY: run-api
 run-api:
 	cd ./packages/api/ && go run main.go
@@ -34,4 +38,12 @@ install-code-plugins:
 	code --install-extension aaron-bond.better-comments \ 
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode
+
+.PHONY: install-gum
+install-gum:
+	go install github.com/charmbracelet/gum@latest
+
+.SILENT: gum 
+gum:
+	bash ./cli.sh || (echo "Probably you don't have GUM installed. Run 'make install-gum'.")
 
