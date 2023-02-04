@@ -18,11 +18,16 @@
 }
 
 .jobs-container {
-    height: 122vh;
+    height: 116vh;
     width: 100vw;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
-.searchBar {
+
+/*
+    Code for a search bar. May be implemented in the future. 
+*/
+
+/* .searchBar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -33,11 +38,11 @@
 }
 
 .box {
-    height: 3.3em;
+    height: 6vh;
     display: flex;
     cursor: pointer;
-    padding: 1em 1.5em;
-    border-radius: 2em;
+    padding: 1% 1.5%;
+    border-radius: 100%;
     align-items: center;
     box-shadow: 0em 1em 2.5em rgba(0,0,0,0.3);
     background-image: linear-gradient(
@@ -51,7 +56,7 @@
 }
 
 .box:hover input {
-    width: 25em;
+    width: 25vw;
 }
 
 .box input {
@@ -67,33 +72,36 @@
 
 ::placeholder{
     color: var(--placeholder-color);
-}
+} */
+
+/*
+    Code for a search bar. May be implemented in the future. ^^
+*/
 
 .jobs {
-    display: grid;
-    /* The following line is not allowing the job cards to show in the same row */
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); 
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
     padding-top: 2%;
-    padding-left: 11%;
-    padding-right: 11%;
+    justify-content: space-evenly;
+    margin-left: 8%;
+    margin-right: 8%;
 }
 
 .job-box {
-    height: 24rem;
-    width: 80%;
-    box-shadow: 0 1em 2.5em var(--shadow-color);
-    border-radius: 2.3em;
+    height: 47vh;
+    width: 21vw;
+    box-shadow: 0% 1% 2.5% var(--shadow-color);
+    border-radius: 11.5%;
     transition: all 0.3s;
     position: relative;
-    margin: 0.5em;
+    /* margin-left: 10%; */
     background-color: var(--background-color);
 }
 
 .job-box:hover {
-    transform: translateY(-10px) rotate(3deg);
-    box-shadow: 0 1.5em 4em #467edd;
+    transform: translateY(-3%) rotate(3deg);
+    box-shadow: 0 1.5% 3% #467edd;
     cursor: pointer;
     z-index: 1;
 }
@@ -105,7 +113,7 @@
     height: 100%;
     top: 0;
     left: 0;
-    border-radius: 3em;
+    border-radius: 10%;
     background-color: rgba(255,255,255,0.1);
     z-index: -1;
     transform: scale(1.05);
@@ -117,35 +125,35 @@
 }
 
 .photo img {
-    width: 6.4em;
-    height: 6.4em;
-    padding-left: 1em;
-    padding-top: 1em;
-    border-radius: 5em;
+    width: 6vw;
+    height: 12vh;
+    padding-left: 4%;
+    padding-top: 4%;
+    border-radius: 70%;
 }
 
 .text, .text-2 {
-    padding-left: 20px;
-    padding-top: 15px;
-    padding-right: 15px;
+    padding-left: 5%;
+    padding-top: 5%;
+    padding-right: 5%;
     font-family: var(--font-family);
 }
 
 .text span {
     font-family: var(--font-family);
-    font-size: 15px; 
+    font-size: 1em; 
     color: var(--text-color); 
     font-weight: 1000;
 }
 
 .text-2 span {
     font-family: var(--font-family);
-    font-size: 14px; 
+    font-size: 1em; 
     color: grey; 
 }
 
 .button-container button{
-    border-radius: 6px;
+border-radius: 4vh;
 }
 
 .button-container {
@@ -159,41 +167,40 @@
 }
 
 .button-container span {
-    height: 2rem;
-    width: 6rem;
-    font-size: 14px;
+    height: 3.9vh;
+    width: 6vw;
+    font-size: 0.9em;
     font-weight: 400;
     color: black;
     text-align: center;
     margin-top: 3%;
     padding-top: 1.5%;
-    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+    box-shadow: 0 4vh 15vh 0 rgba(65, 132, 234, 0.75);
     transition: all 0.3s ease-in-out;
-    border-radius: 6px;
+    border-radius: 6%;
     background-image: rgb(215, 215, 217);
     
 }
 
 .button-container span:hover {
-    transform: translateY(-2px); 
+    transform: translateY(-1vh); 
     background-color: #fff; 
-    text-shadow: 1px 1px #4481eb; 
+    text-shadow: 1% 1% #4481eb; 
     border-radius: 10%;
-    box-shadow: 0 6px 20px 0 rgba(65, 132, 234, 0.95);
+    box-shadow: 0 6vh 10vh 0 rgba(65, 132, 234, 0.95);
     transition: all 0.3s ease-in-out;
 }
 
 button {
-    width: 140px;
-    height: 55px;
+    width: 20vw;
+    height: 6vh;
     font-weight: 600;
     color: #fff;
     cursor: pointer;
-    margin: 20px;
     text-align: center;
     border: none;
     background-size: 300% 100%;
-    font-size: 20px;
+    font-size: 1em;
     background-image: linear-gradient(
         to right,
         #32baf4,
@@ -202,16 +209,16 @@ button {
         #47acdf,
         #24cc8e
     );
-    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+    box-shadow: 0 2% 1% 0 rgba(65, 132, 234, 0.75);
     transition: all 0.3s ease-in-out;
 }
 
 button:hover {
     background-position: right; 
-    box-shadow: 0 6px 20px 0 rgba(65, 132, 234, 0.95); 
-    transform: translateY(-2px); 
+    box-shadow: 0 6% 20% 0 rgba(65, 132, 234, 0.95); 
+    transform: translateY(-2%); 
     background-color: #fff; 
-    text-shadow: 1px 1px #4481eb; 
+    text-shadow: 1% 1% #4481eb; 
 }
 
 @media only screen and (max-width: 1380px) {
@@ -225,8 +232,8 @@ button:hover {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
     padding-top: 2%;
-    padding-left: 11%;
-    padding-right: 11%;
+    margin-left: 11%;
+    margin-right: 11%;
     }
 }
 
@@ -247,7 +254,7 @@ button:hover {
 
     .job-box {
         height: 90vw;
-        margin: 20px 0px;
+        margin: 20% 0%;
         width: 80vw;
     }
 }
@@ -277,7 +284,7 @@ button:hover {
         align-items: center;
     }
     .job-box {
-        margin: 20px 0;
+        margin: 20% 0%;
     }
 }
 
@@ -292,7 +299,7 @@ button:hover {
         height: auto;
     }
     .text, .text-2 {
-        font-size: 14px;
+        font-size: 1em;
     }
 }
 
@@ -304,16 +311,16 @@ button:hover {
     }
 
     .photo img {
-        width: 70px;
-        height: 70px;
+        width: 70vw;
+        height: 70vh;
     }
     .text, .text-2 {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 10%;
+        padding-right: 10%;
     }
     button {
-        width: 120px;
-        height: 45px;
-        font-size: 16px;
+        width: 120vw;
+        height: 45vh;
+        font-size: 1em;
     }
 }

@@ -4,11 +4,12 @@ import { Anchor, Props } from '../Navigation/NavFactory';
 import img1 from '../JobsSection/images/Vergil_4.jpeg';
 import img2 from '../JobsSection/images/Vergil_5.jpg';
 import img3 from '../JobsSection/images/Vergil_6.jpg';
+// import {HiOutlineSearch} from 'react-icons/hi';
 
 const anchorList = [
     new Anchor('About', '/#about'),
-    new Anchor('Events', '/#events'),
-    new Anchor('Articles', '/#articles'),
+    // new Anchor('Events', '/#events'),
+    // new Anchor('Articles', '/#articles'),
     new Anchor('Team', '/#team'),
     new Anchor('Jobs', '/jobs')
 ];
@@ -17,11 +18,12 @@ export const JobsSection = () => {
     return (
         <div className="jobs-container">
             <NavBar props={new Props(anchorList, true)} />
-            <div className='searchBar'>
+            {/* <div className='searchBar'>
                 <div className='box'>
+                    <HiOutlineSearch/>
                 <input type="text" placeholder='Search...'/>
                 </div>
-            </div>
+            </div> */}
             <div className='jobs'>
                 <div className='job-box'>
                     <div className='photo'>
@@ -38,13 +40,13 @@ export const JobsSection = () => {
                              </span>
                     </div>
                     <div className='button-container'>
-                        <span>Full Time</span>
+                        <span>Internship</span>
                         <span>Min. 1 Year</span>
-                        <span>Senior Level</span>                       
+                        <span>Junior Level</span>                       
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>                       
+                        {/* <button>Message</button>                        */}
                     </div>
                 </div>
                 <div className='job-box'>
@@ -61,13 +63,13 @@ export const JobsSection = () => {
                              </span>
                     </div>
                     <div className='button-container'>
-                        <span>Full Time</span>
-                        <span>Min. 1 Year</span>
-                        <span>Senior Level</span>                       
+                        <span>Part-Time</span>
+                        <span>Min. 2 Year</span>
+                        <span>Mid Level</span>                       
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>    
+                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className='job-box'>
@@ -85,12 +87,12 @@ export const JobsSection = () => {
                     </div>
                     <div className='button-container'>
                         <span>Full Time</span>
-                        <span>Min. 1 Year</span>
+                        <span>Min. 3 Year</span>
                         <span>Senior Level</span>                       
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>    
+                        {/* <button>Message</button>     */}
                     </div>
                 </div>
             </div>
@@ -115,7 +117,7 @@ export const JobsSection = () => {
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>    
+                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className='job-box'>
@@ -138,7 +140,7 @@ export const JobsSection = () => {
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>    
+                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className='job-box'>
@@ -161,7 +163,7 @@ export const JobsSection = () => {
                     </div>
                     <div className='button-container'>
                         <button>Apply Now</button>
-                        <button>Message</button>    
+                        {/* <button>Message</button>     */}
                     </div>
                 </div>
             </div>
