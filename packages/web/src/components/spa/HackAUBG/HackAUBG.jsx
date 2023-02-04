@@ -8,6 +8,7 @@ import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
+import VideoSection from './VideoSection/VideoSection';
 
 export const HackAUBG = () => {
     const anchorList = [
@@ -22,6 +23,7 @@ export const HackAUBG = () => {
             <NavBar props={new Props(anchorList, false, 'rgba(0,0,0,.5)')} />
             <MatrixWindow />
             <AboutHackathon />
+            <VideoSection />
             <MentorsSection />
             <JudgesSection />
             <Footer colour={'rgb(25, 183, 0)'} />
