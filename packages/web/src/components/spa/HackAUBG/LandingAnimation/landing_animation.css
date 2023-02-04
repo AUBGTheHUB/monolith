@@ -27,3 +27,25 @@
 /* canvas {
     display: block;
 } */
+
+.Reg-btn {
+    width: fit-content;
+    color: #19b700;
+    align-items: center;
+    display: flex;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: white;
+    padding: 3% 6% 3% 6%;
+}
+
+.Reg-btn:hover {
+    background-color: #19b700;
+    color: white;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}

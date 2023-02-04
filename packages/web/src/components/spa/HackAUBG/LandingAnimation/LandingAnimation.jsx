@@ -11,7 +11,7 @@ export const MatrixWindow = () => {
                     <h1>HackAUBG</h1>
                     <p>31st March - 2nd April, AUBG - Blagoevgrad</p>
                 </div>
-                <button>Go to Registration</button>
+                <button className="Reg-btn">Go to Registration</button>
             </div>
             {/* <canvas>
                 <InvokeAnimation/>
