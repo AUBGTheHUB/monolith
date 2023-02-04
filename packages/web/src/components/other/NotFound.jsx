@@ -14,21 +14,17 @@ import './page_not_found.css';
 
 const NotFound = () => {
     return (
-        <div className="background-not-found">
-            {
-                <div className="navdesktop-container">
-                    <div className="navdesktop-logo">
-                        <img
-                            src="/hublogo.png"
-                            className="navdesktop-logo-image"
-                            alt="The Hub AUBG"
-                        />
-                        <p>The Hub</p>
-                    </div>
-                </div>
-            }
-            <div className="container-text-404">
-                <div>
+        <div className="page-not-found">
+            <div className="page-not-found-logo">
+                <img
+                    src="/hublogo.png"
+                    className="page-not-found-logo-image"
+                    alt="The Hub AUBG"
+                />
+                <p>The Hub</p>
+            </div>
+            <div className="background-not-found">
+                <div className="page-not-found-text">
                     <h1 className="heading-text-404">404</h1>
                     <h2 className="mid-heading-404">Page not found</h2>
                     <p className="paragraph-404">
