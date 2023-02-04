@@ -1,0 +1,29 @@
+/* * {
+    margin: 0; padding: 0
+} */
+
+.animation-container {
+    height: 30vw;
+    background: #000;
+    /* background-image: url(https://j.gifs.com/Q1xW4q@large.gif?download=true); */
+    /* background-image: url(https://img.gs/czjpqfbdkz/full/https://raw.githubusercontent.com/mov-rax-rbx/rsmatrix/3a5a42c5dd585c707637d9f62f7c93f95405d7f7/gif/preview2.gif); */
+    background-image: url('/public/gif.gif');
+    background-size: cover;
+    background: fit-content;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.landing-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+}
+
+/* canvas {
+    display: block;
+} */
