@@ -14,10 +14,11 @@
 .about-text {
     width: 47%;
     color: white;
+    text-align: justify;
 }
 .about-text .about-content,
 .about-container .about-title {
-    margin-bottom: 30px;
+    margin-bottom: 8%;
 }
 .about-image {
     width: 48%;
@@ -31,7 +32,7 @@
     }
     .about-image {
         width: 100%;
-        margin-bottom: 50px;
+        margin-bottom: 10%;
     }
     .about-text {
         width: 100%;

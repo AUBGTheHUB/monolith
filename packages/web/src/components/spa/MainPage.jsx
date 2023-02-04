@@ -9,7 +9,7 @@ import { AboutSection } from './AboutSection/AboutSection';
 
 const LandingHome = () => {
     const anchorList = [
-        new Anchor('About', '#about'),
+        new Anchor('About', '#AboutSection'),
         // new Anchor('Events', '#events'),
         // new Anchor('Articles', '#articles'),
         new Anchor('Team', '#team'),
