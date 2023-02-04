@@ -39,9 +39,9 @@
 /*Buttons*/
 
 .navdesktop-buttons {
-    min-width: 55%;
-    width: 60%;
-    max-width: 65%;
+    min-width: 40%;
+    width: 45%;
+    max-width: 50%;
     align-items: center;
     display: inline-flex;
     justify-content: space-between;
