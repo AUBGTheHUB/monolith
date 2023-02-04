@@ -7,6 +7,7 @@ import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
+import JudgesSection from './JudgesSection/JudgesSection';
 
 export const HackAUBG = () => {
     const anchorList = [
@@ -22,6 +23,7 @@ export const HackAUBG = () => {
             <MatrixWindow />
             <AboutHackathon />
             <MentorsSection />
+            <JudgesSection />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );

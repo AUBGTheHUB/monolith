@@ -37,7 +37,7 @@
     border-radius: 10px;
 }
 
-.gallery::after {
+.mentors-picture::after {
     content: '';
     width: 350px;
 }
