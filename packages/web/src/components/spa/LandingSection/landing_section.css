@@ -98,6 +98,7 @@
 .aboutUs-btn,
 .aboutUs-btn:hover {
     overflow: hidden;
+    z-index: 0;
     animation: appearing 1.3s backwards 2s;
 }
 
