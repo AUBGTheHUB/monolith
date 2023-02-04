@@ -19,7 +19,9 @@ export const HackAUBG = () => {
 
     return (
         <div className="hackaubg-container">
-            <NavBar props={new Props(anchorList, false, 'rgba(0,0,0,.5)')} />
+            <NavBar
+                props={new Props(anchorList, false, 'rgba(0,0,0,.5)', true)}
+            />
             <MatrixWindow />
             <AboutHackathon />
             <Footer colour={'rgb(25, 183, 0)'} />
