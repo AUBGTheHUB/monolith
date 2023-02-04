@@ -1,6 +1,6 @@
 import React from 'react';
 import './hackAUBG.css';
-import { MatrixWindow } from './MatrixAnimation';
+import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 
 export const HackAUBG = () => {
     return (
