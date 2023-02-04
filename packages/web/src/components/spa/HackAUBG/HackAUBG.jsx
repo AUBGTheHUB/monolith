@@ -20,7 +20,16 @@ export const HackAUBG = () => {
     return (
         <div className="hackaubg-container">
             <NavBar
-                props={new Props(anchorList, false, 'rgba(0,0,0,.5)', true)}
+                props={
+                    new Props(
+                        anchorList,
+                        false,
+                        'rgba(0,0,0,.5)',
+                        true,
+                        '#222222',
+                        'red'
+                    )
+                }
             />
             <MatrixWindow />
             <AboutHackathon />
