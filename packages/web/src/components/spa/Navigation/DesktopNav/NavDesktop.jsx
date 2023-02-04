@@ -18,7 +18,10 @@ export const NavDesktop = ({ props }) => {
         }
     };
     return (
-        <div className="navdesktop-container">
+        <div
+            className="navdesktop-container"
+            style={{ backgroundColor: props.bgColor }}
+        >
             <div className="navdesktop-logo">
                 <img
                     src="hublogo.png"
