@@ -88,9 +88,33 @@ func GetHackathonMember(c *fiber.Ctx) error {
 
 // }
 
-// func DeleteHackathonMember(c *fiber.Ctx) error {
+func DeleteHackathonMember(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	member_key := c.Params("key", "key was not provided")
+	bearer_token := c.Get("BEARER-TOKEN")
+	defer cancel()
 
-// }
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
+
+	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+
+	result, err := teamMembersCollection.DeleteOne(ctx, bson.M{"_id": key_from_hex})
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": member_key}})
+	}
+
+	if result.DeletedCount < 1 {
+		return c.Status(http.StatusNotFound).JSON(
+			responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "User with specified ID not found!"}},
+		)
+	}
+
+	return c.Status(http.StatusOK).JSON(
+		responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": "User successfully deleted!"}},
+	)
+ }
 
 func GetHackathonMembersCount(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
