@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700&display=swap');
+
+.about-container-hack-aubg {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    font-weight: 400;
+    background-color: #222222;
+    align-items: center;
+    font-family: 'Roboto';
+}
+
+.about-title-hack-aubg {
+    padding: 5% 0% 0% 0%;
+    color: #19b700;
+    font-family: 'Roboto';
+    font-weight: 900;
+    font-size: 2em;
+}
+
+.about-text-container-hack-aubg {
+    width: 70vw;
+    margin: 0.5% 20% 5% 20%;
+    display: flex;
+    color: white;
+    align-items: center;
+}
+
+.about-text-hack-aubg {
+    text-align: justify;
+    padding: 4%;
+    margin: 0%;
+}
