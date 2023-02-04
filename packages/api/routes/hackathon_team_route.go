@@ -11,5 +11,5 @@ func HackathonTeamsRoutes(app *fiber.App) {
 	app.Get("/api/hackathon/teams", controllers.GetHackathonTeams)
 	app.Get("/api/hackathon/teams/:key", controllers.GetAHackathonTeam)
 	app.Put("/api/hackathon/teams/:key", controllers.EditHackathonTeams)
-	// app.Delete("/api/hackathon/teams/:key", controllers.DeleteHackathonTeams)
+	app.Delete("/api/hackathon/teams/:key", controllers.DeleteHackathonTeams)
 }
