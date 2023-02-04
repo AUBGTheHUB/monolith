@@ -20,56 +20,56 @@ var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, 
 var validateTeamMembers = validator.New()
 
 func CreateHackathonMember(c *fiber.Ctx) error {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	
-		bearer_token := c.Get("BEARER-TOKEN")
-	
-		var member models.TeamMember
-		defer cancel()
-		if bearer_token != configs.ReturnAuthToken() {
-			return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
-		}
-	
-		// validate request body
-		if err := c.BodyParser(&member); err != nil {
-			return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
-		}
-	
-		if validationErr := validateTeamMembers.Struct(&member); validationErr != nil {
-			return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
-		}
-	
-		newHackathonTeamMember := models.TeamMember{
-			ID:                    member.ID,
-			FullName:              member.FullName,
-			TeamNoTeam:            member.TeamNoTeam,
-			TeamName:              member.TeamName,
-			Email:                 member.Email,
-			School:                member.School,
-			Age:                   member.Age,
-			Location:              member.Location,
-			HeardAboutUs:          member.HeardAboutUs,
-			PreviousParticipation: member.PreviousParticipation,
-			PartDetails:           member.PartDetails,
-			Experience:            member.Experience,
-			ProgrammingLevel:      member.ProgrammingLevel,
-			StrongSides:           member.StrongSides,
-			ShirtSize:             member.ShirtSize,
-			Internship:            member.Internship,
-			JobInterests:          member.JobInterests,
-			SponsorShare:          member.SponsorShare,
-			NewsLetter:            member.NewsLetter}
-	
-		result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
-	
-		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
-		}
-	
-		return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success", Data: &fiber.Map{"data": result}})
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	bearer_token := c.Get("BEARER-TOKEN")
+
+	var member models.TeamMember
+	defer cancel()
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
- func GetHackathonMember(c *fiber.Ctx) error {
+	// validate request body
+	if err := c.BodyParser(&member); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	if validationErr := validateTeamMembers.Struct(&member); validationErr != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
+	}
+
+	newHackathonTeamMember := models.TeamMember{
+		ID:                    member.ID,
+		FullName:              member.FullName,
+		TeamNoTeam:            member.TeamNoTeam,
+		TeamName:              member.TeamName,
+		Email:                 member.Email,
+		School:                member.School,
+		Age:                   member.Age,
+		Location:              member.Location,
+		HeardAboutUs:          member.HeardAboutUs,
+		PreviousParticipation: member.PreviousParticipation,
+		PartDetails:           member.PartDetails,
+		Experience:            member.Experience,
+		ProgrammingLevel:      member.ProgrammingLevel,
+		StrongSides:           member.StrongSides,
+		ShirtSize:             member.ShirtSize,
+		Internship:            member.Internship,
+		JobInterests:          member.JobInterests,
+		SponsorShare:          member.SponsorShare,
+		NewsLetter:            member.NewsLetter}
+
+	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success", Data: &fiber.Map{"data": result}})
+}
+
+func GetHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
 
@@ -77,10 +77,11 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 	defer cancel()
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
-	err := membersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
+	err := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
 	if err != nil {
- }
- return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
+	}
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": member}})
 }
 
 // func EditHackathonMember(c *fiber.Ctx) error {
