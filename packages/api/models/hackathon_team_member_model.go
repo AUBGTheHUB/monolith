@@ -4,24 +4,24 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type TeamMember struct {
 	ID                    primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	FullName              string             `json:"fullname, omitempty" validate:"required"`
-	TeamNoTeam            bool               `json:"teamnoteam, omitempty" validate:"required"`
-	TeamName              string             `json:"teamname, omitempty" validate:"required"`
+	FullName              string             `json:"fullname" validate:"required"`
+	TeamNoTeam            *bool              `json:"teamnoteam" validate:"required"`
+	TeamName              string             `json:"teamname" validate:"required"`
 	Email                 string             `json:"email" validate:"required"`
-	School                string             `json:"school, omitempty" validate:"required"`
-	Age                   int                `json:"age, omitempty" validate:"required"`
-	Location              string             `json:"location, omitempty" validate:"required"`
-	HeardAboutUs          string             `json:"aboutus, omitempty" validate:"required"`
-	PreviousParticipation bool               `json:"previouspart, omitempty" validate:"required"`
+	School                string             `json:"school" validate:"required"`
+	Age                   int                `json:"age" validate:"required"`
+	Location              string             `json:"location" validate:"required"`
+	HeardAboutUs          string             `json:"aboutus" validate:"required"`
+	PreviousParticipation *bool              `json:"previouspart" validate:"required"`
 	PartDetails           string             `json:"partdetails" validate:"required"`
-	Experience            bool               `json:"experience, omitempty" validate:"required"`
+	Experience            *bool              `json:"experience" validate:"required"`
 	ProgrammingLevel      string             `json:"level" validate:"required"`
 	StrongSides           string             `json:"strength" validate:"required"`
-	ShirtSize             string             `json:"size, omitempty" validate:"required"`
-	Internship            bool               `json:"internship" validate:"required"`
+	ShirtSize             string             `json:"size" validate:"required"`
+	Internship            *bool              `json:"internship" validate:"required"`
 	JobInterests          string             `json:"jobinterests" validate:"required"`
-	SponsorShare          bool               `json:"sponsorshare, omitempty" validate:"required"`
-	NewsLetter            bool               `json:"location, omitempty" validate:"required"`
+	SponsorShare          *bool              `json:"sponsorshare" validate:"required"`
+	NewsLetter            *bool              `json:"newsletter" validate:"required"`
 }
 
 type EditTeamMember struct {

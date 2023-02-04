@@ -6,6 +6,7 @@ import (
 	"hub-backend/models"
 	"hub-backend/responses"
 	"net/http"
+	"reflect"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -15,20 +16,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathon_members")
+var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
 
 var validateTeamMembers = validator.New()
 
 func CreateHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER-TOKEN")
+	// bearer_token := c.Get("BEARER-TOKEN")
 
 	var member models.TeamMember
 	defer cancel()
-	if bearer_token != configs.ReturnAuthToken() {
-		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
-	}
+	// if bearer_token != configs.ReturnAuthToken() {
+	// 	return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	// }
 
 	// validate request body
 	if err := c.BodyParser(&member); err != nil {
@@ -40,7 +41,6 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 	}
 
 	newHackathonTeamMember := models.TeamMember{
-		ID:                    member.ID,
 		FullName:              member.FullName,
 		TeamNoTeam:            member.TeamNoTeam,
 		TeamName:              member.TeamName,
@@ -84,9 +84,58 @@ func GetHackathonMember(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": member}})
 }
 
-// func EditHackathonMember(c *fiber.Ctx) error {
+func EditHackathonMember(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	member_key := c.Params("key", "key was not provided")
+	var member models.EditTeamMember
 
-// }
+	bearer_token := c.Get("BEARER-TOKEN")
+
+	defer cancel()
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
+
+	if err := c.BodyParser(&member); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Empty Body"})
+	}
+
+	if validationErr := validateTeamMembers.Struct(&member); validationErr != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Body is not compatible"})
+	}
+
+	member_map := models.EditTeamMember{}
+
+	if member.FullName != "" {
+		member_map.FullName = member.FullName
+	}
+	if member.TeamNoTeam {
+		member_map.TeamNoTeam = member.TeamNoTeam
+	}
+
+	update := bson.M{}
+	v := reflect.ValueOf(member_map)
+	typeOfS := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		update[typeOfS.Field(i).Name] = v.Field(i).Interface()
+	}
+
+	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+
+	result, err := teamMembersCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": update})
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: err.Error()})
+	}
+
+	if result.MatchedCount != 1 {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Document not found"})
+	}
+
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "User was updated"})
+
+}
 
 func DeleteHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -114,7 +163,7 @@ func DeleteHackathonMember(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(
 		responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": "User successfully deleted!"}},
 	)
- }
+}
 
 func GetHackathonMembersCount(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
