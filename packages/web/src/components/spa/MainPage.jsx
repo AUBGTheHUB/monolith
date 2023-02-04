@@ -20,7 +20,7 @@ const LandingHome = () => {
     return (
         <div className="main">
             {/* spacing of buttons should be fixed -- page overflow is disabled in main.css */}
-            <NavBar props={new Props(anchorList, true)} />
+            <NavBar props={new Props(anchorList, true, 'transparent')} />
             <LandingSection />
             <AboutSection />
             <ArticlesSection />

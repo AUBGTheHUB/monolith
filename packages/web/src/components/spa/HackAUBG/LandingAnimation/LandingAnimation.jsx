@@ -15,7 +15,7 @@ export const MatrixWindow = () => {
 
     return (
         <div className="animation-container">
-            <h1>WORKING</h1>
+            <h1></h1>
         </div>
     );
 };
