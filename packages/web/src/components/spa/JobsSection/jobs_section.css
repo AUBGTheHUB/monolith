@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
+/* 
+    To be fixed: 
+        1. Fix the cards to be all in the same row, one-after-the-other during mobile/tablet responsiveness
+        2. Fix vertical distance between cards during resposiveness 'mode'
+        3. Add more space between inside elements and the border of the job card box
+*/
+
+
 :root {
     --main-color: #32baf4;
     --shadow-color: #467edd;
@@ -10,7 +18,7 @@
 }
 
 .jobs-container {
-    height: 120vh;
+    height: 122vh;
     width: 100vw;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
 }
@@ -25,13 +33,13 @@
 }
 
 .box {
-    height: 43px;
+    height: 3.3em;
     display: flex;
     cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 30px;
+    padding: 1em 1.5em;
+    border-radius: 2em;
     align-items: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    box-shadow: 0em 1em 2.5em rgba(0,0,0,0.3);
     background-image: linear-gradient(
         to right,
         #32baf4,
@@ -43,7 +51,7 @@
 }
 
 .box:hover input {
-    width: 400px;
+    width: 25em;
 }
 
 .box input {
@@ -57,15 +65,14 @@
     font-family: var(--font-family);
 }
 
-
-
 ::placeholder{
     color: var(--placeholder-color);
 }
 
 .jobs {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    /* The following line is not allowing the job cards to show in the same row */
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); 
     align-items: center;
     justify-content: space-between;
     padding-top: 2%;
@@ -73,21 +80,20 @@
     padding-right: 11%;
 }
 
-
 .job-box {
     height: 24rem;
     width: 80%;
-    box-shadow: 0 10px 25px var(--shadow-color);
-    border-radius: 30px;
+    box-shadow: 0 1em 2.5em var(--shadow-color);
+    border-radius: 2.3em;
     transition: all 0.3s;
     position: relative;
-    margin: 10px;
+    margin: 0.5em;
     background-color: var(--background-color);
 }
 
 .job-box:hover {
     transform: translateY(-10px) rotate(3deg);
-    box-shadow: 0 20px 50px #467edd;
+    box-shadow: 0 1.5em 4em #467edd;
     cursor: pointer;
     z-index: 1;
 }
@@ -99,7 +105,7 @@
     height: 100%;
     top: 0;
     left: 0;
-    border-radius: 30px;
+    border-radius: 3em;
     background-color: rgba(255,255,255,0.1);
     z-index: -1;
     transform: scale(1.05);
@@ -111,11 +117,11 @@
 }
 
 .photo img {
-    width: 100px;
-    height: 100px;
-    padding-left: 20px;
-    padding-top: 20px;
-    border-radius: 50%;
+    width: 6.4em;
+    height: 6.4em;
+    padding-left: 1em;
+    padding-top: 1em;
+    border-radius: 5em;
 }
 
 .text, .text-2 {
@@ -138,6 +144,10 @@
     color: grey; 
 }
 
+.button-container button{
+    border-radius: 6px;
+}
+
 .button-container {
     display: flex;
     flex-direction: row;
@@ -153,21 +163,15 @@
     width: 6rem;
     font-size: 14px;
     font-weight: 400;
-    color: #fff;
+    color: black;
     text-align: center;
     margin-top: 3%;
     padding-top: 1.5%;
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
     transition: all 0.3s ease-in-out;
-    border-radius: 10%;
-    background-image: linear-gradient(
-        to right,
-        #32baf4,
-        #467edd,
-        #3f86ed,
-        #47acdf,
-        #24cc8e
-    );
+    border-radius: 6px;
+    background-image: rgb(215, 215, 217);
+    
 }
 
 .button-container span:hover {
@@ -208,12 +212,11 @@ button:hover {
     transform: translateY(-2px); 
     background-color: #fff; 
     text-shadow: 1px 1px #4481eb; 
-    border-radius: 10%;
 }
 
 @media only screen and (max-width: 1380px) {
     .jobs-container {
-    height: 205vh;
+    height: 235vh;
     width: 100vw;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
     }
@@ -221,8 +224,6 @@ button:hover {
     .jobs {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    align-items: center;
-    justify-content: space-between;
     padding-top: 2%;
     padding-left: 11%;
     padding-right: 11%;
@@ -250,7 +251,6 @@ button:hover {
         width: 80vw;
     }
 }
-
 
 @media only screen and (max-width: 600px) {
 .box {
@@ -317,12 +317,3 @@ button:hover {
         font-size: 16px;
     }
 }
-
-
-
-
-
-
-
-
-
