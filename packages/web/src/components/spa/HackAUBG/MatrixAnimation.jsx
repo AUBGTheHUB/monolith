@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const MatrixWindow = () => {
     // use this component as the one which is going to be rendering the
     // matrix animation
