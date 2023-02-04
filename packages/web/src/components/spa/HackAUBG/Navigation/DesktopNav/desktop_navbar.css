@@ -10,11 +10,12 @@
     align-items: center;
     font-family: 'Poppins';
     font-weight: 500;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
 
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
 }
 
 .navdesktop-logo {

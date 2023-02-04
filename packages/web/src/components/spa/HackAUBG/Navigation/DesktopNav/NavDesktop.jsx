@@ -3,19 +3,7 @@ import './desktop_navbar.css';
 
 export const NavDesktop = ({ props }) => {
     const renderHackButton = () => {
-        if (props.hasHackButton) {
-            return (
-                <button
-                    className="hackaubg-btn"
-                    type="button"
-                    onClick={() => {
-                        location.href = '/hackaubg';
-                    }}
-                >
-                    <p>HackAUBG</p>
-                </button>
-            );
-        }
+       
     };
     return (
         <div className="navdesktop-container">
