@@ -31,6 +31,7 @@ func GenerateToken(lengthOfToken int) string {
 }
 
 func ReturnAuthToken() string {
+	println(token)
 	return token
 }
 
