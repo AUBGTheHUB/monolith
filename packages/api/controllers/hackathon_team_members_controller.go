@@ -11,6 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -68,9 +69,19 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success", Data: &fiber.Map{"data": result}})
 	}
 
-// func GetHackathonMember(c *fiber.Ctx) error {
+ func GetHackathonMember(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	member_key := c.Params("key", "key was not provided")
 
-// }
+	var member models.TeamMember
+	defer cancel()
+
+	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+	err := membersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
+	if err != nil {
+ }
+ return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
+}
 
 // func EditHackathonMember(c *fiber.Ctx) error {
 
