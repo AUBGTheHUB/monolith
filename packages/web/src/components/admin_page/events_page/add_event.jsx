@@ -24,9 +24,35 @@ const AddEvent = () => {
 
     const handleInputChange = (e) => {
         const target = e.target;
-        const value = target.value;
+        let value = target.value;
         const name = target.name;
 
+        if (name === 'startdate' || name === 'enddate') {
+            let date = new Date(value);
+            date = date.toISOString();
+            value = date;
+            if (name === 'startdate' && formState.enddate != '') {
+                if (new Date(formState.enddate) < new Date(value)) {
+                    alert('End date is earlier than start date');
+                    target.value = '';
+                    return;
+                } else if (formState.startdate == value) {
+                    alert('The start and end date are the same');
+                    target.value = '';
+                    return;
+                }
+            } else if (name === 'enddate' && formState.startdate != '') {
+                if (new Date(formState.startdate) > new Date(value)) {
+                    alert('End date is earlier than start date');
+                    target.value = '';
+                    return;
+                } else if (formState.startdate == value) {
+                    alert('The start and end date are the same');
+                    target.value = '';
+                    return;
+                }
+            }
+        }
         setFormState({
             ...formState,
             [name]: value
@@ -69,7 +95,7 @@ const AddEvent = () => {
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="datetime-local"
                             placeholder="startdate"
                             name="startdate"
                             onChange={handleInputChange}
@@ -79,7 +105,7 @@ const AddEvent = () => {
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>End Date</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="datetime-local"
                             placeholder="enddate"
                             name="enddate"
                             onChange={handleInputChange}
