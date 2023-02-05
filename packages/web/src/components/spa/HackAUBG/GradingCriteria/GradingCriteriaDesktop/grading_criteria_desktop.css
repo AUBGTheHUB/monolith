@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700,900&display=swap');
+
+.grading-criteria-table-container-desktop {
+    display: flex;
+    justify-content: center;
+    background-color: #222222;
+    padding: 0.5% 20% 5% 20%;
+    color: white;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 1.2em;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grading-criteria-header-desktop {
+    color: #19b700;
+    font-weight: 900;
+    padding: 6% 0% 6% 0%;
+}
+
+.grading-criteria-table-desktop {
+    table-layout: fixed;
+    width: 80vw;
+    border: none;
+    border-collapse: collapse;
+}
+
+.grading-criteria-table-desktop td {
+    padding: 2% 0% 0% 2%;
+    border-left: 3px solid #19b700;
+    border-right: 3px solid #19b700;
+}
+
+.grading-criteria-table-desktop th {
+    font-weight: 900;
+    font-size: larger;
+    color: #19b700;
+    padding: 3% 2% 1% 2%;
+    border-left: 3px solid #19b700;
+    border-right: 3px solid #19b700;
+    border-top: 3px solid #19b700;
+}
+
+.grading-criteria-table-desktop tr.border-bottom td {
+    padding-bottom: 3%;
+    border-bottom: 3px solid #19b700;
+}
