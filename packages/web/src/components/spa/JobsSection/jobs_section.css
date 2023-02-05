@@ -90,36 +90,11 @@
     background-color: var(--background-color);
 }
 
-.job-box:hover {
-    transform: translateY(-3%) rotate(3deg);
-    box-shadow: 0 1.5% 3% #467edd;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.job-box::before{
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: 10%;
-    background-color: rgba(255,255,255,0.1);
-    z-index: -1;
-    transform: scale(1.05);
-    transition: all 0.3s;
-}
-
-.job-box:hover::before{
-    transform: scale(1.1);
-}
-
 .photo img {
-  width: 20vw;
-  height: 15vh;
-  object-fit: cover;
-  padding: 4% 4%;
+    width: 20vw;
+    height: 15vh;
+    object-fit: cover;
+    padding: 4% 4%;
 }
 
 .text, .text-2 {
@@ -144,7 +119,7 @@
 }
 
 .button-container button{
-border-radius: 4vh;
+    border-radius: 4vh;
 }
 
 .button-container {
@@ -174,15 +149,6 @@ border-radius: 4vh;
     
 }
 
-.button-container span:hover {
-    transform: translateY(-1vh); 
-    background-color: #fff; 
-    text-shadow: 1% 1% #4481eb; 
-    border-radius: 10%;
-    box-shadow: 0 6vh 10vh 0 rgba(65, 132, 234, 0.95);
-    transition: all 0.3s ease-in-out;
-}
-
 button {
     width: 20vw;
     height: 6vh;
@@ -205,23 +171,44 @@ button {
     transition: all 0.3s ease-in-out;
 }
 
-button:hover {
-    background-position: right; 
-    box-shadow: 0 6% 20% 0 rgba(65, 132, 234, 0.95); 
-    transform: translateY(-2%); 
-    background-color: #fff; 
-    text-shadow: 1% 1% #4481eb; 
+@media only screen and (min-width: 1389px) {
+    .jobs-container {
+        height: 122vh;
+        width: 103vw;
+    }
+
+    .jobs {
+        justify-content: space-between;
+    }
+
+    .job-box {
+        width: 24vw;
+        height: 50vh;
+    }
+
+    .photo img {
+        width: 24.5vw;
+    }
+
+    button {
+        width: 50vw;
+    }
 }
 
 @media only screen and (min-width: 1000px) and (max-width: 1389px) {
     .jobs-container {
-        height: 118vh;
+        height: 133vh;
         width: 101vw;
     }
 
+    .jobs {
+        justify-content: space-between;
+        margin: 5%;
+    }
+
     .job-box {
-        height: 50vh;
-        width: 26vw;
+        height: 49vh;
+        width: 29.5vw;
     }
 
     button {
@@ -238,20 +225,25 @@ button:hover {
     }
 
     .photo img {
-        width: 24vw;
-        height: 12vh;
+        width: 30vw;
+        height: 13.5vh;
     }
 }
 
 @media only screen and (min-width: 1000px) and (max-width: 1035px) {
     .jobs-container {
-        height: 100vh;
-        width: 101vw;
+        height: 113vh;
+        width: 102vw;
+    }
+
+    .jobs {
+        justify-content: space-between;
+        margin: 3%;
     }
 
     .job-box {
-        width: 26vw;
-        height: 40vh;
+        width: 30.5vw;
+        height: 43vh;
     }
 
     .text, .text-2 {
@@ -267,12 +259,16 @@ button:hover {
     button {
         font-size: 1.3em !important; 
     }
+
+    .photo img {
+        width: 31vw;;
+    }
 }
 
 @media only screen and (min-width: 600px) and (max-width: 999px) {
     .jobs-container {
         height: 405vh;
-        width: 101vw;
+        width: 103vw;
     }
 
     .jobs {
@@ -282,12 +278,12 @@ button:hover {
 
     .job-box {
         width: 47vw;
-        height: 55vh;
+        height: 57vh;
         margin-top: 10%;
     }
 
     .photo img {
-        width: 35vw;
+        width: 39vw;
         height: 14vh;
     }
 
@@ -320,7 +316,7 @@ button:hover {
     }
 
     .photo img {
-        width: 45vw;
+        width: 49vw;
         height: 14vh;
     }
 
@@ -334,6 +330,7 @@ button:hover {
 @media only screen and (min-width: 600px) and (max-width: 671px) {
     .jobs-container {
         height: 405vh;
+        width: 102vw;
     }
 
     .job-box {
@@ -341,18 +338,18 @@ button:hover {
     }
 
     .button-container span {
-        font-size: 1em !important;
+        font-size: 0.9em !important;
     }
 
     .photo img {
-        width: 55vw;
+        width: 58vw;
         height: 16vh;
     }
 }
 
 @media only screen and (max-width: 600px) {
     .jobs-container {
-        height: 408vh;
+        height: 394vh !important;
         width: 100vw;
     }
 
@@ -363,7 +360,7 @@ button:hover {
 
     .job-box {
         margin-top: 12%;
-        height: 58vh;
+        height: 56vh !important;
         width: 85vw;
     }
 
@@ -387,11 +384,11 @@ button:hover {
 
 @media only screen and (min-width: 400px) and (max-width: 500px) {
     .jobs-container {
-        height: 370vh;
+        height: 376vh !important;
     }
 
     .job-box {
-        height: 53vh;
+        height: 54.5vh !important;
     }
 
     .photo img {
@@ -406,18 +403,18 @@ button:hover {
 
 @media only screen and (max-width: 400px) {
     .jobs-container {
-        height: 421vh;
+        height: 442vh !important;
         width: 101vw;
     }
 
     .job-box {
-        height: 62vh;
-        width: 90vw;
+        height: 65vh !important;
+        width: 95vw;
     }
 
     .photo img {
         width: 90vw;
-        height: 16vh;
+        height: 17.8vh;
     }
 
     button {
@@ -431,4 +428,49 @@ button:hover {
         width: 25vw;  
         font-size: 0.9em !important;
     }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .job-box:hover {
+        transform: translateY(-3%) rotate(3deg);
+        box-shadow: 0 1.5% 3% #467edd;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .job-box::before{
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        border-radius: 10%;
+        background-color: rgba(255,255,255,0.1);
+        z-index: -1;
+        transform: scale(1.05);
+        transition: all 0.3s;
+    }
+
+    .job-box:hover::before{
+        transform: scale(1.1);
+    }
+
+    .button-container span:hover {
+    transform: translateY(-1vh); 
+    background-color: #fff; 
+    text-shadow: 1% 1% #4481eb; 
+    border-radius: 10%;
+    box-shadow: 0 6vh 10vh 0 rgba(65, 132, 234, 0.95);
+    transition: all 0.3s ease-in-out;
+}
+
+    button:hover {
+    background-position: right; 
+    box-shadow: 0 6% 20% 0 rgba(65, 132, 234, 0.95); 
+    transform: translateY(-2%); 
+    background-color: #fff; 
+    text-shadow: 1% 1% #4481eb; 
+    }
+
 }
