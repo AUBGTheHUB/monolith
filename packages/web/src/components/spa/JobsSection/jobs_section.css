@@ -97,7 +97,8 @@
     padding: 4% 4%;
 }
 
-.text, .text-2 {
+.text,
+.text-2 {
     padding-left: 5%;
     padding-top: 5%;
     padding-right: 5%;
@@ -107,15 +108,15 @@
 
 .text span {
     font-family: var(--font-family);
-    font-size: 1em; 
-    color: var(--text-color); 
+    font-size: 1em;
+    color: var(--text-color);
     font-weight: 1000;
 }
 
 .text-2 span {
     font-family: var(--font-family);
-    font-size: 1em; 
-    color: grey; 
+    font-size: 1em;
+    color: grey;
 }
 
 .button-container button{
@@ -146,7 +147,6 @@
     transition: all 0.3s ease-in-out;
     border-radius: 6%;
     background-image: rgb(215, 215, 217);
-    
 }
 
 button {
@@ -219,7 +219,7 @@ button {
 
     .button-container span {
         height: 4.5vh;
-        width: 7vw;  
+        width: 7vw;
         font-size: 0.8em !important;
         font-weight: 500;
     }
@@ -246,7 +246,8 @@ button {
         height: 43vh;
     }
 
-    .text, .text-2 {
+    .text,
+    .text-2 {
         font-size: 0.8em;
         text-align: justify;
     }
@@ -257,7 +258,7 @@ button {
     }
 
     button {
-        font-size: 1.3em !important; 
+        font-size: 1.3em !important;
     }
 
     .photo img {
@@ -287,7 +288,8 @@ button {
         height: 14vh;
     }
 
-    .text, .text-2 {
+    .text,
+    .text-2 {
         font-size: 1.2em;
         text-align: justify;
     }
@@ -323,7 +325,7 @@ button {
     .button-container span {
         font-size: 1.1em !important;
         height: 5vh;
-        width: 14vw;  
+        width: 14vw;
     }
 }
 
@@ -378,7 +380,7 @@ button {
     .button-container span {
         height: 5vh;
         width: 23vw;
-        font-size: 1.4em !important;  
+        font-size: 1.4em !important;
     }
 }
 
@@ -425,7 +427,7 @@ button {
 
     .button-container span {
         height: 5vh;
-        width: 25vw;  
+        width: 25vw;
         font-size: 0.9em !important;
     }
 }
@@ -472,5 +474,4 @@ button {
     background-color: #fff; 
     text-shadow: 1% 1% #4481eb; 
     }
-
 }

@@ -1,6 +1,8 @@
 # @AUBGTheHUB's Single-Page Application
 
-[![Actions Status](https://github.com/AUBGTheHub/spa-website-2022/workflows/build-compose/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions)
+[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
+
+[![CodeQL](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/codeql.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/codeql.yml)
 
 ### For local development:
 Remove any `.env` files persistent in the web directory
