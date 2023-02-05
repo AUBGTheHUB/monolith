@@ -13,7 +13,7 @@ const anchorList = [
 export const JobsSection = () => {
     return (
         <div className="jobs-container">
-            <NavBar props={new Props(anchorList, true, "transparent")} />
+            <NavBar props={new Props(anchorList, true, 'transparent', false)} />
             <h1>WORKING</h1>
         </div>
     );

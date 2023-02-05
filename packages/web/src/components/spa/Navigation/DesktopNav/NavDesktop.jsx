@@ -17,12 +17,29 @@ export const NavDesktop = ({ props }) => {
             );
         }
     };
+
+    const openHome = () => {
+        window.location.href = '/';
+    };
+
+    const stickyProps = () => {
+        if (props.isSticky) {
+            return {
+                backgroundColor: props.bgColor,
+                position: 'fixed',
+                top: 0,
+                width: '100vw'
+            };
+        }
+
+        return {
+            backgroundColor: props.bgColor
+        };
+    };
+
     return (
-        <div
-            className="navdesktop-container"
-            style={{ backgroundColor: props.bgColor }}
-        >
-            <div className="navdesktop-logo">
+        <div className="navdesktop-container" style={stickyProps()}>
+            <div className="navdesktop-logo" onClick={openHome}>
                 <img
                     src="/hublogo.png"
                     className="navdesktop-logo-image"

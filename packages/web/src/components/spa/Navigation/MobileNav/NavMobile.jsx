@@ -46,11 +46,28 @@ export const NavMobile = ({ props }) => {
         setMenuClass('navmobile-menu-backwards');
     };
 
+    const openHome = () => {
+        window.location.href = '/';
+    };
+
     return (
         <div className="navmobile-body">
-            <div className="navmobile-container">
-                <img src="/hublogo.png" className="navmobile-logo"></img>
-                <h2 className="navmobile-title">The Hub</h2>
+            <div
+                className="navmobile-container"
+                style={{
+                    backgroundColor: props.mobileBgColor
+                        ? props.mobileHeader
+                        : 'transparent'
+                }}
+            >
+                <img
+                    src="hublogo.png"
+                    className="navmobile-logo"
+                    onClick={openHome}
+                ></img>
+                <h2 className="navmobile-title" onClick={openHome}>
+                    The Hub
+                </h2>
                 <Button
                     props={{
                         css: 'navmobile-button',
@@ -69,7 +86,13 @@ export const NavMobile = ({ props }) => {
                 />
             </div>
 
-            <div className={menuClass} style={{ height: bodyHeight }}>
+            <div
+                className={menuClass}
+                style={{
+                    height: bodyHeight,
+                    backgroundColor: props.mobileBgColor
+                }}
+            >
                 <Button
                     props={{
                         css: 'navmobile-button-close',

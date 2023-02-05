@@ -4,9 +4,9 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { GrInstagram } from 'react-icons/gr';
 import { AiFillYoutube } from 'react-icons/ai';
 
-export const Footer = () => {
+export const Footer = ({ colour }) => {
     return (
-        <div className="footer-container">
+        <div className="footer-container" style={{ backgroundColor: colour }}>
             <div className="copyright">
                 <p>© 2022 The Hub AUBG. All rights reserved</p>
             </div>
