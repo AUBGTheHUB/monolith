@@ -1,4 +1,4 @@
-.journey-section {
+.journey-desktop-section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,14 +7,14 @@
     padding-right: 11%;
     margin-top: 5%;
 }
-.journey-title {
+.journey-desktop-title {
     margin-bottom: 5%;
 }
-.journey-section h1 {
+.journey-desktop-section h1 {
     font-weight: bold;
 }
 
-.journey-content {
+.journey-desktop-content {
     display: flex;
     text-align: justify;
 }

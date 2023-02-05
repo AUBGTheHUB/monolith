@@ -6,12 +6,12 @@ export const JourneyDesktop = () => {
     };
 
     return (
-        <div className="journey-section">
-            <div className="journey-title">
+        <div className="journey-desktop-section">
+            <div className="journey-desktop-title">
                 <h1>The HackAUBG Journey</h1>
             </div>
-            <div className="journey-content">
-                <div className="journey-column left">
+            <div className="journey-desktop-content">
+                <div className="journey-desktop-column left">
                     <div className="step top" style={{}}>
                         <div className="left-dot"></div>
                         <h2>Gather a team and register</h2>
@@ -50,7 +50,7 @@ export const JourneyDesktop = () => {
                         width: 10
                     }}
                 />
-                <div className="journey-column right">
+                <div className="journey-desktop-column right">
                     <div className="step top">
                         <div className="right-dot"></div>
                         <div>
