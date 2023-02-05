@@ -1,16 +1,6 @@
 import React from 'react';
 import './page_not_found.css';
-//import './desktop_navbar.css';
-//import { NavBar } from '../spa/Navigation/NavBar';
-// import { Anchor, Props } from '../spa/Navigation/NavFactory';
 
-// const anchorList = [
-//     new Anchor('About', '/#about'),
-//     new Anchor('Events', '/#events'),
-//     new Anchor('Articles', '/#articles'),
-//     new Anchor('Team', '/#team'),
-//     new Anchor('Jobs', '/jobs')
-// ];
 
 const NotFound = () => {
     return (
