@@ -3,8 +3,8 @@ import { GradingCriteriaMobile } from './GradingCriteriaMobile/GradingCriteriaMo
 import { useMediaQuery } from 'react-responsive';
 
 export const GradingCriteria = () => {
-    const isMobile = useMediaQuery({ query: '(max-width: 900px)' });
-    console.log(isMobile);
+    const isMobile = useMediaQuery({ query: '(max-width: 1000px)' });
+
     if (!isMobile) {
         return <GradingCriteriaDesktop />;
     } else {
