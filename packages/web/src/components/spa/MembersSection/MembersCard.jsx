@@ -3,7 +3,7 @@ import './members.css';
 
 export const MembersCard = ({ prop }) => {
     return (
-        <div className="container">
+        <div>
             <h1 className="members-card-overlay-text name">{prop.firstname}</h1>
             <h2 className="members-card-overlay-text position">
                 {prop.position}
