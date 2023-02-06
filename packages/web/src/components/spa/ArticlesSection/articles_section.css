@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-.articles-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 7.5rem;
-}
-
 .members-section-container {
     display: flex;
     flex-direction: column;
@@ -31,6 +23,14 @@
     margin-right: 20rem;
     margin-bottom: 3rem;
     font-weight: 500;
+}
+
+.articles-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 7.5rem;
 }
 
 /* 1500px reflects the scaling factor of the carousel */
