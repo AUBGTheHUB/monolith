@@ -6,7 +6,6 @@ import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
-import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 
 export const HackAUBG = () => {
     const anchorList = [
@@ -34,7 +33,6 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
-            <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );
