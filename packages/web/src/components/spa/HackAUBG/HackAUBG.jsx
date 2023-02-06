@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
