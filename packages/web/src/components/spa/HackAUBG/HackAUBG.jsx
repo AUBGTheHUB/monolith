@@ -7,14 +7,14 @@ import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
+import MentorsSection from './MentorsSection/MentorsSection';
+import JudgesSection from './JudgesSection/JudgesSection';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
 
     const anchorList = [
         new Anchor('About', '#AboutSection'),
-        // new Anchor('Events', '#events'),
-        // new Anchor('Articles', '#articles'),
         new Anchor('Schedule', '#team'),
         new Anchor('Grading criteria', 'jobs'),
         new Anchor('FAQ', 'jobs')
@@ -37,6 +37,8 @@ export const HackAUBG = () => {
             <MatrixWindow />
             <AboutHackathon />
             <GradingCriteria />
+            <MentorsSection />
+            <JudgesSection />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );
