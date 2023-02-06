@@ -1,9 +1,17 @@
 #!/bin/bash
+
 current_directory=${PWD##*/} 
+
 if [[ $current_directory != "spa-website-2022" ]]
 then
-    echo "Run this script from the $(gum style --foreground 212 "ROOT DIRECTORY") of the SPA project"
+    echo "Run this script from the root of the SPA project"
     exit 1
+fi
+
+if ! hash gum &> /dev/null
+then
+    echo "GUM could not be found, running installation script"
+    make install-gum
 fi
 
 gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Hello, there! Welcome to The Hub's $(gum style --foreground 212 'SPA project')."
