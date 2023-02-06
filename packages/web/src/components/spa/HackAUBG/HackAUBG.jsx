@@ -1,13 +1,16 @@
 import React from 'react';
-import './hackAUBG.css';
 
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
+import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 
 export const HackAUBG = () => {
+    makeBodyScrollable();
+
     const anchorList = [
         new Anchor('About', '#AboutSection'),
         // new Anchor('Events', '#events'),
@@ -33,6 +36,7 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
+            <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );
