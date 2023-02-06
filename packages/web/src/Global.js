@@ -27,21 +27,18 @@ const Validate = () => {
     return validated;
 };
 
-
-const checkHashAndScroll = () =>{
-    useEffect(() => {
-        let hasHash = !!location.hash;
-        if (hasHash) {
-            setTimeout(() => {
-                document
-                    .getElementById(location.hash.replace('#', ''))
-                    .scrollIntoView();
-            }, 600);
-        }
-    }, []);
+const checkHashAndScroll = () => {
+    let hasHash = !!location.hash;
+    if (hasHash) {
+        setTimeout(() => {
+            document
+                .getElementById(location.hash.replace('#', ''))
+                .scrollIntoView();
+        }, 600);
+    }
 }
 
-export { url, checkHashAndScroll };
+export { url, checkHashAndScroll};
 export default Validate;
 /*
 

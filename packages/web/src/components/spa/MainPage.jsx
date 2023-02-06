@@ -17,7 +17,7 @@ const LandingHome = () => {
         new Anchor('Jobs', 'jobs')
     ];
 
-    useEffect(checkHashAndScroll(), []);
+    useEffect(checkHashAndScroll, []);
 
     return (
         <div className="main">
