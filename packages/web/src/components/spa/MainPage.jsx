@@ -8,6 +8,7 @@ import { Footer } from './Footer/Footer';
 import { AboutSection } from './AboutSection/AboutSection';
 import '../../../node_modules/react-hovering-cards-carousel/dist/style.css';
 import { useEffect } from 'react';
+import { checkHashAndScroll } from '../../Global';
 
 const LandingHome = () => {
     const anchorList = [
@@ -16,16 +17,7 @@ const LandingHome = () => {
         new Anchor('Jobs', 'jobs')
     ];
 
-    useEffect(() => {
-        let hasHash = !!location.hash;
-        if (hasHash) {
-            setTimeout(() => {
-                document
-                    .getElementById(location.hash.replace('#', ''))
-                    .scrollIntoView();
-            }, 600);
-        }
-    }, []);
+    useEffect(checkHashAndScroll(), []);
 
     return (
         <div className="main">
