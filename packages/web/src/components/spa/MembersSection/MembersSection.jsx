@@ -10,7 +10,7 @@ export const MembersSection = () => {
     const [members, setMembers] = useState([]);
 
     const isMobile = useMediaQuery({ query: '(max-width: 1000px)' });
-    const isFoldRes = useMediaQuery({ query: '(max-width: 500px' });
+    const isFoldRes = useMediaQuery({ query: '(max-width: 350px)' });
 
     const getMembers = () => {
         axios({
@@ -44,22 +44,15 @@ export const MembersSection = () => {
             <div
                 className="members-section-container"
                 style={{
-                    transform: `scale(${isMobile && !isFoldRes ? 1.18 : 1})`
+                    transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`
                 }}
             >
                 <h1 className="header-for-container">Hubbers</h1>
-                {/* <p className="description-for-container">
-                    Get ready to meet the dream team behind the University IT
-                    Club! Our developers are constantly engaged with carrying
-                    out both internal and external projects, while our PR
-                    department is dedicated to effectively promoting our brand.
-                    Our marketing professionals know how to craft compelling
-                    messaging, and our logistics team ensures that everything
-                    runs smoothly. Together, there&lsquo;s no challenge we
-                    can&lsquo;t tackle. Let&lsquo;s make some amazing things
-                    happen!
-                </p> */}
-                <Carousel cards={members} scale={1.5} buttonSpacing={40} />
+                <Carousel
+                    cards={members}
+                    scale={1.25}
+                    buttonSpacing={isMobile ? (isFoldRes ? 10 : 30) : 40}
+                />
             </div>
         </>
     );
