@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
 .about-container {
     display: flex;
     justify-content: space-between;
     padding-left: 11%;
     padding-right: 11%;
     padding-top: 7vh;
+    font-family: 'Poppins';
 }
 .about-container img {
     width: 100%;
