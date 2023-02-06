@@ -41,7 +41,7 @@ export const NavDesktop = ({ props }) => {
         <div className="navdesktop-container" style={stickyProps()}>
             <div className="navdesktop-logo" onClick={openHome}>
                 <img
-                    src="/hublogo.png"
+                    src="hublogo.png"
                     className="navdesktop-logo-image"
                     alt="The Hub AUBG"
                 />
