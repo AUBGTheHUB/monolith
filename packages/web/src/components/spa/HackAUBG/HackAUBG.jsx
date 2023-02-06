@@ -1,5 +1,4 @@
 import React from 'react';
-import './hackAUBG.css';
 
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
@@ -9,8 +8,12 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
+import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 
 export const HackAUBG = () => {
+    makeBodyScrollable();
+
     const anchorList = [
         new Anchor('About', '#AboutSection'),
         new Anchor('Schedule', '#team'),
@@ -20,12 +23,24 @@ export const HackAUBG = () => {
 
     return (
         <div className="hackaubg-container">
-            <NavBar props={new Props(anchorList, false, 'rgba(0,0,0,.5)')} />
+            <NavBar
+                props={
+                    new Props(
+                        anchorList,
+                        false,
+                        'rgba(0,0,0,.5)',
+                        true,
+                        '#222222',
+                        'red'
+                    )
+                }
+            />
             <MatrixWindow />
             <AboutHackathon />
             <VideoSection />
             <MentorsSection />
             <JudgesSection />
+            <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );
