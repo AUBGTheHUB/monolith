@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 
 const LandingHome = () => {
     const anchorList = [
-        new Anchor('About', '#about'),
+        new Anchor('About', '#AboutSection'),
         new Anchor('Team', '#team'),
         new Anchor('Jobs', 'jobs')
     ];
