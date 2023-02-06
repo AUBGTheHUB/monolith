@@ -46,8 +46,9 @@ export const MembersSection = () => {
                 style={{
                     transform: `scale(${isMobile && !isFoldRes ? 1.18 : 1})`
                 }}
+                id="team"
             >
-                <h1 className="header-for-container">Hubbers</h1>
+                <h1 className="header-for-container">Meet the team</h1>
                 {/* <p className="description-for-container">
                     Get ready to meet the dream team behind the University IT
                     Club! Our developers are constantly engaged with carrying
