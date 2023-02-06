@@ -17,7 +17,6 @@ export const JourneyStep = (props) => {
                 onClick={() => {
                     setStepContent('container-content-displayed');
                     setStepTitle('container-title-not-displayed');
-                    console.log(stepContent);
                 }}
             >
                 {props.title}
@@ -28,7 +27,6 @@ export const JourneyStep = (props) => {
                 onClick={() => {
                     setStepContent('container-content-not-displayed');
                     setStepTitle('container-title-displayed');
-                    console.log(stepContent);
                 }}
             >
                 {props.title}
