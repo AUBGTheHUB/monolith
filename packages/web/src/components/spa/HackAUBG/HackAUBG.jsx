@@ -6,8 +6,11 @@ import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 
 export const HackAUBG = () => {
+    makeBodyScrollable();
+
     const anchorList = [
         new Anchor('About', '#AboutSection'),
         // new Anchor('Events', '#events'),
