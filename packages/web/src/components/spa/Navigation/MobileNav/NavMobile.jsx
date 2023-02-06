@@ -6,6 +6,11 @@ import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const makeBodyScrollable = () => {
+    document.body.style.position = 'static';
+    document.body.style.overflow = 'auto';
+};
+
 export const NavMobile = ({ props }) => {
     const [bodyHeight, setBodyHeight] = useState(0);
     let currentBodyHeight = document.documentElement.scrollHeight;
@@ -26,11 +31,6 @@ export const NavMobile = ({ props }) => {
                 </div>
             );
         }
-    };
-
-    const makeBodyScrollable = () => {
-        document.body.style.position = 'static';
-        document.body.style.overflow = 'auto';
     };
 
     const navigateToHackAUBG = () => {
@@ -133,3 +133,5 @@ export const NavMobile = ({ props }) => {
         </div>
     );
 };
+
+export { makeBodyScrollable };
