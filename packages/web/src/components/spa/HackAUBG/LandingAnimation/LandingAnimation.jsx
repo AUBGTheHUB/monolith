@@ -1,7 +1,5 @@
 import React from 'react';
 import './landing_animation.css';
-// import { InvokeAnimation } from './InvokeAnimation';
-// import './matrix.gif';
 
 export const MatrixWindow = () => {
     return (
@@ -13,14 +11,6 @@ export const MatrixWindow = () => {
                 </div>
                 <button className="Reg-btn">Go to Registration</button>
             </div>
-            {/* <canvas>
-                <InvokeAnimation/>
-            </canvas> */}
-            {/* <img
-                    src="gif.gif"
-                    className="matrix-image"
-                    alt="Matrix animation"
-                /> */}
         </div>
     );
 };

@@ -1,18 +1,25 @@
-/* * {
-    margin: 0; padding: 0
-} */
+/* 
+    To fix:
+    1. Font responsiveness for h1 title!
+    2. Center paragraph text in the middle 
+    3. Height change for resposnsiveness (critical: 800-1000px)
+    
+*/
 
 .animation-container {
     height: 30vw;
     background: #000;
-    /* background-image: url(https://j.gifs.com/Q1xW4q@large.gif?download=true); */
-    /* background-image: url(https://img.gs/czjpqfbdkz/full/https://raw.githubusercontent.com/mov-rax-rbx/rsmatrix/3a5a42c5dd585c707637d9f62f7c93f95405d7f7/gif/preview2.gif); */
     background-image: url('/public/gif.gif');
     background-size: cover;
     background: fit-content;
     align-items: center;
     justify-content: center;
     display: flex;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .landing-content {
@@ -22,14 +29,18 @@
     flex-direction: column;
     text-align: center;
     color: white;
+    margin-top: 3%;
 }
+
 .landing-content h1 {
     font-size: 4em;
+    /* font-size: 400%; */
 }
+
 .landing-content p {
     font-size: 1em;
     padding: 5% 0 5% 0;
-    width: 90%;
+    width: 50%;
 }
 
 @media only screen and (max-width: 900px) {
@@ -50,9 +61,7 @@
     }
 }
 
-/* canvas {
-    display: block;
-} */
+/* Rergister button */
 
 .Reg-btn {
     width: fit-content;
