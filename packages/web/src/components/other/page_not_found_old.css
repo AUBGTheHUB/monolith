@@ -1,0 +1,197 @@
+.background-not-found {
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    height: 100vh;
+    width: 100vw;
+    flex-direction: row;
+}
+/*Logo and Hub*/
+.navdesktop-container {
+    width: 100%;
+    height: 10vh;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-left: 10%;
+    padding-right: 10%;
+    align-items: center;
+    font-family: 'Poppins';
+    font-weight: 500;
+
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+}
+
+.navdesktop-logo {
+    /* width: 100%;
+    height: 100%; */
+    display: flex;
+    align-items: left;
+    padding-left: 5vw;
+}
+
+.navdesktop-logo p {
+    font-family: 'Poppins';
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.navdesktop-logo-image {
+    width: 10%;
+    margin-right: 1%;
+}
+
+.hubzie-UFO-image img {
+    width: 30vw;
+    height: auto;
+    display: table;
+    /* margin: 0 auto; */
+}
+
+.container-text-404 {
+    width: 100vw;
+    height: 90vh;
+    padding-top: 5%;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    padding-left: 11%;
+    padding-right: 11%;
+    align-items: center;
+    align-content: space-between;
+    font-family: 'Poppins';
+    font-weight: 500;
+
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+}
+.heading-text-404 {
+    justify-content: center;
+    margin-top: -18%;
+    align-items: center;
+    width: 55%;
+    color: white;
+    /* align-content: space-between; */
+    margin-right: 5%;
+    text-justify: center;
+    font-size: 7em;
+}
+
+.mid-heading-404 {
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    color: white;
+    margin-right: 5%;
+    margin-top: -6%;
+    text-justify: center;
+    font-size: 2.2em;
+}
+
+.paragraph-404 {
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    color: white;
+    margin-right: 5%;
+    text-justify: center;
+    font-size: 0.9em;
+}
+
+.button-404 {
+    width: fit-content;
+    color: white;
+    align-items: center;
+    display: flex;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #02b0e5;
+    padding: 1% 5% 1% 5%;
+}
+
+/* @media only screen and (max-width: 1600px) {
+    .navdesktop-logo-image {
+        width: 5%;
+    }
+    .navdesktop-logo p {
+    font-size: 1rem;
+    }
+    .hubzie-UFO-image {
+    width: 10vw;
+    height: 60vh;
+    display: table;}
+    .background-not-found {
+        height: 100vh;
+    }
+
+}
+
+@media only screen and (max-width: 1000px){
+    .container-text-404{
+        flex-direction:row;
+    }
+    .hubzie-UFO-image {
+    width: 10vw;
+    height: 40vh;
+    display: table;}
+
+
+} */
+
+/* @media only screen and (min-width: 250px) {
+} */
+
+/* @media only screen and (min-width: 100px) {
+    .hubzie-UFO-image {
+        width: 100%;
+        flex-direction:row;
+    }
+} */
+
+/* @media only screen and (min-width: 900px) {
+    .hubzie-UFO-image {
+        overflow: hidden;
+    }
+} */
+
+@media only screen and (max-width: 900px) {
+    .container-text-404 {
+        display: flex;
+        justify-content: center;
+        flex-direction: column-reverse;
+    }
+
+    .heading-text-404,
+    .mid-heading-404,
+    .paragraph-404,
+    .button-404,
+    .hubzie-UFO-image {
+        width: fit-content;
+        justify-content: center;
+        align-items: center;
+        /* margin: 0 11% 0 11%; */
+    }
+
+    .hubzie-UFO-image {
+        width: 80%;
+        /* display: table; */
+        width: auto;
+        align-self: center;
+    }
+
+}
