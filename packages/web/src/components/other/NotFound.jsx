@@ -1,7 +1,6 @@
 import React from 'react';
 import './page_not_found.css';
 
-
 const NotFound = () => {
     return (
         <div className="page-not-found">
