@@ -12,8 +12,6 @@ import { useEffect } from 'react';
 const LandingHome = () => {
     const anchorList = [
         new Anchor('About', '#about'),
-        new Anchor('Events', '#events'),
-        new Anchor('Articles', '#articles'),
         new Anchor('Team', '#team'),
         new Anchor('Jobs', 'jobs')
     ];
@@ -44,7 +42,7 @@ const LandingHome = () => {
 
     return (
         <div className="main">
-            <NavBar props={new Props(anchorList, true, 'transparent', false)} />{' '}
+            <NavBar props={new Props(anchorList, true, 'transparent', false)} />
             <LandingSection />
             <AboutSection />
             <MembersSection />
