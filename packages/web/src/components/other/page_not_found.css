@@ -22,13 +22,11 @@
     width: 4%;
 }
 .background-not-found {
+    display: flex;
+    justify-content: center;
     margin-top: 6%;
     padding-left: 11%;
     padding-right: 11%;
-}
-.background-not-found {
-    display: flex;
-    justify-content: center;
 }
 .hubzie-UFO-image {
     display: flex;
