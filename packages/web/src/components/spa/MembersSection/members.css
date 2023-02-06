@@ -20,7 +20,6 @@
 .members-card-pfp {
     width: inherit;
 }
-
 .NOSYNCDEV {
     font-family: 'Press Start 2P', cursive;
     color: greenyellow;
@@ -143,11 +142,11 @@
 }
 
 .members-card-overlay-text.name {
-    font-size: xx-large;
+    font-size: xxx-large;
 }
 
 .members-card-overlay-text.position {
-    font-size: large;
+    font-size: xx-large;
     font-weight: 500;
 }
 
@@ -158,12 +157,10 @@
 .members-card-overlay-text.linkedin-icon {
     width: 5vw;
     height: 5vh;
-    transition: all 0.05s ease-in-out;
 }
 
 .members-card-overlay-text.linkedin-icon:hover {
     color: lightblue;
-    transform: scale(1.1);
 }
 
 .NOSYNCDEV {
