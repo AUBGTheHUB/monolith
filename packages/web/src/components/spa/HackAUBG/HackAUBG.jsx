@@ -10,6 +10,7 @@ import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
+import VideoSection from './VideoSection/VideoSection';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -37,10 +38,11 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
-            <GradingCriteria />
             <MentorsSection />
-            <JudgesSection />
             <ScheduleHackathon />
+            <VideoSection />
+            <JudgesSection />
+            <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );
