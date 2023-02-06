@@ -69,7 +69,8 @@ def start_docker_compose():
         # stop_docker_compose()
         # BUILD_RUNNING.clear()
 
-    dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
+    dc_start = subprocess.Popen(["sudo", "docker-compose", "up", "--build", "-d" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
     if dc_start.returncode == 0:
         print()     
         
@@ -107,16 +108,23 @@ def start_docker_compose():
 
         else:
             # docker-compose keeps running when there is a failed container
-            stop_docker_compose()
+
             errors['WEB'] = get_web
             errors['API'] = get_api
 
+    else:
+        # log build fail
+        _, error = dc_start.communicate()
+        errors['BUILD'] = error
     
+
+    stop_docker_compose()
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
     msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
 
+    BUILD_RUNNING.clear()
     CURRENTLY_BUILDING.clear()
 
     with lock:
