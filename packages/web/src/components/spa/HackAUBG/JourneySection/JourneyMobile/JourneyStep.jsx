@@ -11,8 +11,12 @@ export const JourneyStep = (props) => {
     const [arrowDown, setArrowDown] = useState('journey-arrow-displayed');
     const [arrowUp, setArrowUp] = useState('journey-arrow-not-displayed');
     const getHeight = () => {
-        const divElement = document.getElementById('test').scrollHeight;
-        return divElement;
+        const divElement = document.getElementById('test');
+        if (divElement) {
+            return divElement.scrollHeight;
+        } else {
+            return;
+        }
     };
 
     const setMenuClass = () => {
@@ -29,7 +33,7 @@ export const JourneyStep = (props) => {
 
     return (
         <div
-            // style={{ '--elem-Height': getHeight() + 15 + 'px' }} kogato se renderne i se mahne komentara raboti
+            style={{ '--elem-Height': getHeight() + 15 + 'px' }}
             className="mobile-step-container"
             onClick={() => {
                 setMenuClass();
