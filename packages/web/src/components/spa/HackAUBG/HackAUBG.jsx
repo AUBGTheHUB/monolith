@@ -1,7 +1,7 @@
 import React from 'react';
-
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
+import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
@@ -37,9 +37,13 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
+<<<<<<< HEAD
             <VideoSection />
             <MentorsSection />
             <JudgesSection />
+=======
+            <ScheduleHackathon />
+>>>>>>> master
             <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
