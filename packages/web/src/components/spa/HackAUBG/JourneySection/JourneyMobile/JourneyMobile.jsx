@@ -9,6 +9,7 @@ export const JourneyMobile = () => {
     //     'container-content-not-displayed'
     // );
 
+    
     return (
         <div className="journey-mobile-section">
             <div className="journey-mobile-title">

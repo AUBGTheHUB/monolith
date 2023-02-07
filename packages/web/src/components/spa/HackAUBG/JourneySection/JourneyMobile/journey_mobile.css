@@ -49,14 +49,14 @@
 }
 
 .container-content-not-displayed {
+    height: 0;
+    overflow: hidden;
     animation-name: slideout;
     animation-duration: 0.5s;
-    display: none;
 }
 .container-content-displayed {
-    height: 100%;
-    animation-duration: 0.5s;
     animation-name: slidein;
+    animation-duration: 0.5s;
 }
 .journey-arrow-displayed {
     display: flex;
@@ -72,19 +72,25 @@
 
 @keyframes slidein {
     0% {
+        visibility: hidden;
         height: 0px;
     }
 
     100% {
-        height: 200px;
+        visibility: visible;
+        overflow: hidden;
+        height: var(--elem-Height);
     }
 }
-/* @keyframes slideout {
-    from {
-        height: 200px;
+@keyframes slideout {
+    0% {
+        visibility: hidden;
+        height: var(--elem-Height);
     }
 
-    to {
-        height: -200px;
+    100% {
+        visibility: visible;
+        overflow: hidden;
+        height: 0px;
     }
-} */
+}

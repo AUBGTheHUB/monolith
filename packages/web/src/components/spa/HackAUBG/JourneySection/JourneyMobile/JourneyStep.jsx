@@ -10,6 +10,10 @@ export const JourneyStep = (props) => {
     );
     const [arrowDown, setArrowDown] = useState('journey-arrow-displayed');
     const [arrowUp, setArrowUp] = useState('journey-arrow-not-displayed');
+    const getHeight = () => {
+        const divElement = document.getElementById('test').scrollHeight;
+        return divElement;
+    };
 
     const setMenuClass = () => {
         if (stepContent == 'container-content-displayed') {
@@ -25,9 +29,11 @@ export const JourneyStep = (props) => {
 
     return (
         <div
+            // style={{ '--elem-Height': getHeight() + 15 + 'px' }} kogato se renderne i se mahne komentara raboti
             className="mobile-step-container"
             onClick={() => {
                 setMenuClass();
+                getHeight();
             }}
         >
             <div className="smth">
@@ -40,7 +46,9 @@ export const JourneyStep = (props) => {
                 </div>
             </div>
 
-            <div className={stepContent}>{props.text}</div>
+            <div className={stepContent}>
+                <div id="test">{props.text}</div>
+            </div>
         </div>
     );
 };
