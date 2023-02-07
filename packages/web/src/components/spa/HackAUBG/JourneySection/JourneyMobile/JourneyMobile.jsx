@@ -33,7 +33,7 @@ export const JourneyMobile = () => {
                 <JourneyStep
                     title={
                         <h2>
-                            STEP 2:<br></br> Gather a team and register
+                            STEP 2:<br></br> Meet the Hub and prepare
                         </h2>
                     }
                     text={
@@ -52,7 +52,7 @@ export const JourneyMobile = () => {
                 <JourneyStep
                     title={
                         <h2>
-                            STEP 3:<br></br> Gather a team and register
+                            STEP 3:<br></br> Get Hackathoning
                         </h2>
                     }
                     text={
@@ -71,7 +71,7 @@ export const JourneyMobile = () => {
                 <JourneyStep
                     title={
                         <h2>
-                            STEP 4:<br></br> Gather a team and register
+                            STEP 4:<br></br> Present and win
                         </h2>
                     }
                     text={

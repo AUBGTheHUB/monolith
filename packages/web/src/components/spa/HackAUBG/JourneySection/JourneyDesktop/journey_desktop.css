@@ -18,6 +18,7 @@
 .journey-desktop-content {
     display: flex;
     text-align: justify;
+    margin-bottom: 5%;
 }
 
 .vertical-line {

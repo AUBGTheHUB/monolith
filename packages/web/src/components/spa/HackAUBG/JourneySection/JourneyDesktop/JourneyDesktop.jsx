@@ -14,7 +14,9 @@ export const JourneyDesktop = () => {
                 <div className="journey-desktop-column left">
                     <div className="step top" style={{}}>
                         <div className="left-dot"></div>
-                        <h2>Gather a team and register</h2>
+                        <h2>
+                            STEP 1:<br></br> Gather a team and register
+                        </h2>
                         <p>
                             Get together with some fellow enthusiasts and
                             register in the form below! Teams must be between 3
@@ -28,8 +30,9 @@ export const JourneyDesktop = () => {
                     </div>
                     <div className="step bottom">
                         <div className="left-dot"></div>
-
-                        <h2>Gather a team and register</h2>
+                        <h2>
+                            STEP 3:<br></br> Get Hackathoning
+                        </h2>
                         <p>
                             Get together with some fellow enthusiasts and
                             register in the form below! Teams must be between 3
@@ -54,7 +57,9 @@ export const JourneyDesktop = () => {
                     <div className="step top">
                         <div className="right-dot"></div>
                         <div>
-                            <h2>Gather a team and register</h2>
+                            <h2>
+                                STEP 2:<br></br> Meet the Hub and prepare
+                            </h2>
                             <p>
                                 Get together with some fellow enthusiasts and
                                 register in the form below! Teams must be
@@ -69,7 +74,9 @@ export const JourneyDesktop = () => {
                     </div>
                     <div className="step bottom">
                         <div className="right-dot"></div>
-                        <h2>Gather a team and register</h2>
+                        <h2>
+                            STEP 4:<br></br> Present and win
+                        </h2>
                         <p>
                             Get together with some fellow enthusiasts and
                             register in the form below! Teams must be between 3
