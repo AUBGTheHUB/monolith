@@ -13,8 +13,6 @@ export const HackAUBG = () => {
 
     const anchorList = [
         new Anchor('About', '#AboutSection'),
-        // new Anchor('Events', '#events'),
-        // new Anchor('Articles', '#articles'),
         new Anchor('Schedule', '#team'),
         new Anchor('Grading criteria', 'jobs'),
         new Anchor('FAQ', 'jobs')
