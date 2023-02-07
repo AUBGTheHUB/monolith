@@ -36,9 +36,9 @@ const checkHashAndScroll = () => {
                 .scrollIntoView();
         }, 600);
     }
-}
+};
 
-export { url, checkHashAndScroll};
+export { url, checkHashAndScroll };
 export default Validate;
 /*
 
