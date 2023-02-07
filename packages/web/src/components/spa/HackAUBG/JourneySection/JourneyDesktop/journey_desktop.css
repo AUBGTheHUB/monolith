@@ -19,6 +19,7 @@
     display: flex;
     text-align: justify;
     margin-bottom: 5%;
+    line-height: 1.5;
 }
 
 .vertical-line {
@@ -77,6 +78,7 @@
 }
 .journey-desktop-column h2 {
     color: #19b700;
+    margin-bottom: 3%;
 }
 
 .journey-desktop-column p {
