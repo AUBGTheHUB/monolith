@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700,900&display=swap');
+
+.schedule-section-container-hack-aubg {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    font-weight: 400;
+    background-color: #fff;
+    align-items: center;
+    font-family: 'Roboto';
+}
+
+.schedule-section-title-hack-aubg {
+    padding: 10% 0% 0% 0%;
+    color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+}
+
+.schedule-container-hack-aubg {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-top: 1vh;
+}
+
+.schedule-table-container-hack-aubg {
+    padding: 0% 0% 5% 0%;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    font-weight: 400;
+}
+
+.schedule-table-title-hack-aubg {
+    padding: 5% 0% 10% 0%;
+    color: #19b700;
+    font-weight: 900;
+    font-size: 1.2em;
+}
+
+.schedule-table-row-hack-aubg {
+    display: flex;
+    flex-direction: row;
+}
+
+.schedule-time-hack-aubg {
+    color: #19b700;
+    font-weight: 900;
+    font-size: 1em;
+    padding-right: 30px;
+}
+
+.schedule-event-title-hack-aubg {
+    font-size: 0.9em;
+    width: 220px;
+}
+
+@media only screen and (max-width: 350px) {
+    .schedule-container-hack-aubg {
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+    .schedule-table-title-hack-aubg {
+        padding-left: 10%;
+        font-size: 5vw;
+    }
+
+    .schedule-time-hack-aubg {
+        padding-left: 10%;
+        font-size: 4vw;
+    }
+
+    .schedule-event-title-hack-aubg {
+        font-size: 3.5vw;
+    }
+}
