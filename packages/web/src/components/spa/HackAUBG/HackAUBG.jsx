@@ -25,12 +25,14 @@ export const HackAUBG = () => {
             <NavBar
                 props={
                     new Props(
-                        anchorList,
-                        false,
-                        'rgba(0,0,0,.5)',
-                        true,
-                        '#222222',
-                        'red'
+                        anchorList, // list of anchors
+                        false, // hackAUBG button
+                        'rgba(0,0,0,.5)', // backgroundColor of desktop nav
+                        true, // fixed desktop nav
+                        '#222222', // mobile nav background when not opened (default transparent)
+                        'gray', // mobile nav backgroundColor
+                        'white', // anchor color
+                        'green' // anchor hover color
                     )
                 }
             />

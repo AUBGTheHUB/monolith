@@ -5,7 +5,9 @@ class Props {
         bgColor,
         isSticky,
         mobileHeader = false,
-        mobileBgColor = '#050328'
+        mobileBgColor = '#050328',
+        anchorColor = 'white',
+        anchorHoverColor = 'rgb(21, 76, 121)'
     ) {
         this.anchorList = anchorList;
         this.hasHackButton = hasHackButton;
@@ -13,6 +15,8 @@ class Props {
         this.isSticky = isSticky;
         this.mobileHeader = mobileHeader;
         this.mobileBgColor = mobileBgColor;
+        this.anchorColor = anchorColor;
+        this.anchorHoverColor = anchorHoverColor;
     }
 }
 

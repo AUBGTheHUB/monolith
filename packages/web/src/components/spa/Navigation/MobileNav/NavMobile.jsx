@@ -120,7 +120,6 @@ export const NavMobile = ({ props }) => {
                                         closeMenu();
                                         makeBodyScrollable();
                                     }}
-                                    className=""
                                 >
                                     {anchor.name}
                                 </a>
