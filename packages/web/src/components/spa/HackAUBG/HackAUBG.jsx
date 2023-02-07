@@ -29,7 +29,8 @@ export const HackAUBG = () => {
                         'rgba(0,0,0,.5)',
                         true,
                         '#222222',
-                        'red'
+                        'red',
+                        1
                     )
                 }
             />
