@@ -30,6 +30,27 @@ export const FaqSection = () => {
                 team
             </p>
             <h2 className="faq-header">Is there a theme for this hackathon?</h2>
+            <p className="faq-text">
+                Yes! However, the HackAUBG format requires that the theme is
+                kept a secret until the Opening Ceremony on Friday.
+            </p>
+            <h2 className="faq-header">
+                Will there be a communication board where I can ask questions
+                during the event?
+            </h2>
+            <p className="faq-text">
+                Yes, indeed! It will be in the form of a private Facebook group
+                for all the registered participants. We will send you a link
+                with your registration confirmation email.
+            </p>
+            <h2 className="faq-header">
+                Is there a specific technology I need to use for my project?
+            </h2>
+            <p className="faq-text">
+                None at all. Although, the judges do reward the projects with
+                more modern tech-stacks a bit higher usually. But, most
+                importantly, remember to focus on the execution!
+            </p>
         </div>
     );
 };

@@ -5,11 +5,13 @@
     justify-content: center;
     flex-direction: column;
     padding: 2% 0;
+    font-family: 'Roboto';
 }
 
 .faq {
     font-size: 2rem;
     padding: 2% 0;
+    color: #19b700;
 }
 
 .faq-header,
@@ -20,4 +22,10 @@
 
 .faq-header {
     font-size: 1.2rem;
+    color: #19b700;
+    font-weight: bold;
+}
+
+.faq-text {
+    text-align: justify;
 }
