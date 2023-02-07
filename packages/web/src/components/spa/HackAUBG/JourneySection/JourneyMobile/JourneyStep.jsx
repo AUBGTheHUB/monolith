@@ -5,7 +5,6 @@ import { AiOutlineArrowUp } from 'react-icons/ai';
 import './journey_mobile.css';
 
 export const JourneyStep = (props) => {
-    // const [stepTitle, setStepTitle] = useState('container-title-not-displayed');
     const [stepContent, setStepContent] = useState(
         'container-content-not-displayed'
     );
@@ -17,13 +16,10 @@ export const JourneyStep = (props) => {
             setStepContent('container-content-not-displayed');
             setArrowDown('journey-arrow-displayed');
             setArrowUp('journey-arrow-not-displayed');
-
-            console.log('not');
         } else {
             setStepContent('container-content-displayed');
             setArrowDown('journey-arrow-not-displayed');
             setArrowUp('journey-arrow-displayed');
-            console.log('disp');
         }
     };
 

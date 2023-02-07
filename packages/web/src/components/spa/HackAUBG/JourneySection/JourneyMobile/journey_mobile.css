@@ -1,10 +1,11 @@
 .journey-mobile-section {
     background-color: #222222;
 }
-.journey-mobile-title {
-    display: flex;
-    justify-content: center;
+.journey-mobile-title h1 {
     color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+    text-align: center;
 }
 .mobile-step-container {
     background-color: #fff;
@@ -12,25 +13,25 @@
     flex-direction: column;
     justify-content: center;
     border-radius: 5px;
-    width: 90%;
     margin-bottom: 5%;
 }
 .mobile-step-container h2 {
+    color: #19b700;
     padding-top: 3%;
     padding-bottom: 3%;
-    font-size: 1em;
-    width: 90%;
+    font-size: 0.9em;
+    width: 91%;
     display: flex;
     align-items: center;
     margin-bottom: 0;
-    padding-left: 2%;
+    padding-left: 5%;
 }
 .mobile-step-container p {
     color: #000;
     font-size: 0.8em;
     text-align: justify;
-    padding-left: 2%;
-    padding-right: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 .journey-mobile-content {
     justify-content: center;
@@ -42,16 +43,21 @@
 .mobile-step-container {
     display: inline-block;
     font-size: 1.15em;
-    color: #19b700;
     margin-top: 0%;
     margin-bottom: 5%;
-    width: 92.5%;
+    width: 85%;
 }
 
 .container-content-not-displayed {
+    animation-name: slideout;
+    animation-duration: 0.5s;
     display: none;
 }
-
+.container-content-displayed {
+    height: 100%;
+    animation-duration: 0.5s;
+    animation-name: slidein;
+}
 .journey-arrow-displayed {
     display: flex;
     align-items: center;
@@ -63,3 +69,22 @@
     display: flex;
     width: 100%;
 }
+
+@keyframes slidein {
+    0% {
+        height: 0px;
+    }
+
+    100% {
+        height: 200px;
+    }
+}
+/* @keyframes slideout {
+    from {
+        height: 200px;
+    }
+
+    to {
+        height: -200px;
+    }
+} */
