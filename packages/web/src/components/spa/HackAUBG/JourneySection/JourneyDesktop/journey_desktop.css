@@ -80,6 +80,11 @@
     color: #19b700;
     margin-bottom: 3%;
 }
+.left h2 {
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: right;
+}
 
 .journey-desktop-column p {
     color: #fff;
