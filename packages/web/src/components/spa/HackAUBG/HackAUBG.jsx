@@ -37,13 +37,10 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
-<<<<<<< HEAD
             <VideoSection />
             <MentorsSection />
             <JudgesSection />
-=======
             <ScheduleHackathon />
->>>>>>> master
             <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
