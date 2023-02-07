@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); */
 
 .members-container {
     display: flex;
@@ -192,5 +192,27 @@
 
     .NOSYNCDEV {
         font-size: small;
+    }
+}
+
+.members-section-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 7.5rem;
+}
+
+.header-for-container {
+    color: whitesmoke;
+    font-size: xxx-large;
+    font-family: 'Poppins';
+    font-weight: 600;
+}
+
+/* 1500px reflects the scaling factor of the carousel */
+@media only screen and (min-width: 1500px) {
+    .header-for-container {
+        padding-bottom: 2.5rem;
     }
 }

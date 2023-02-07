@@ -6,6 +6,9 @@ import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
 import { Footer } from './Footer/Footer';
 import { AboutSection } from './AboutSection/AboutSection';
+import '../../../node_modules/react-hovering-cards-carousel/dist/style.css';
+import { useEffect } from 'react';
+import { checkHashAndScroll } from '../../Global';
 
 const LandingHome = () => {
     const anchorList = [
@@ -13,6 +16,8 @@ const LandingHome = () => {
         new Anchor('Team', '#team'),
         new Anchor('Jobs', 'jobs')
     ];
+
+    useEffect(checkHashAndScroll, []);
 
     return (
         <div className="main">

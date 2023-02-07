@@ -4,10 +4,10 @@ import { url } from '../../../Global';
 import { Carousel, Custom } from 'react-hovering-cards-carousel';
 import { MembersCard } from './MembersCard';
 import { useMediaQuery } from 'react-responsive';
-import '../ArticlesSection/articles_section.css';
+import './members.css';
 
 export const MembersSection = () => {
-    const [members, setMembers] = useState(null);
+    const [members, setMembers] = useState([]);
 
     const isMobile = useMediaQuery({ query: '(max-width: 1000px)' });
     const isFoldRes = useMediaQuery({ query: '(max-width: 350px)' });
@@ -31,7 +31,7 @@ export const MembersSection = () => {
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
-                console.log("Couldn't fetch Hubbers!");
+                console.log(err);
             });
     };
 
@@ -39,26 +39,22 @@ export const MembersSection = () => {
         getMembers();
     }, []);
 
-    if (members) {
-        return (
-            <>
-                <div
-                    className="members-section-container"
-                    style={{
-                        transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`
-                    }}
-                    id="team"
-                >
-                    <h1 className="header-for-container">Hubbers</h1>
-                    <Carousel
-                        cards={members}
-                        scale={1.25}
-                        buttonSpacing={isMobile ? (isFoldRes ? 10 : 30) : 40}
-                    />
-                </div>
-            </>
-        );
-    }
-
-    return null;
+    return (
+        <>
+            <div
+                className="members-section-container"
+                style={{
+                    transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`
+                }}
+                id="team"
+            >
+                <h1 className="header-for-container">Meet the Team</h1>
+                <Carousel
+                    cards={members}
+                    scale={1.25}
+                    buttonSpacing={isMobile ? (isFoldRes ? 10 : 30) : 40}
+                />
+            </div>
+        </>
+    );
 };
