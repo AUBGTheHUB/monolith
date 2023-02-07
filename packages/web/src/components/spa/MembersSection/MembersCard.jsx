@@ -1,12 +1,13 @@
 import { BsLinkedin } from 'react-icons/bs';
+import './members.css';
 
 export const MembersCard = ({ prop }) => {
     return (
         <div className="container">
             <h1 className="members-card-overlay-text name">{prop.firstname}</h1>
-            <p className="members-card-overlay-text position">
+            <h2 className="members-card-overlay-text position">
                 {prop.position}
-            </p>
+            </h2>
             <BsLinkedin
                 className="members-card-overlay-text linkedin-icon"
                 onClick={() => window.open(prop.sociallink)}
