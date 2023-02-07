@@ -14,8 +14,6 @@ export const JourneyStep = (props) => {
         const divElement = document.getElementById('test');
         if (divElement) {
             return divElement.scrollHeight;
-        } else {
-            return;
         }
     };
 
