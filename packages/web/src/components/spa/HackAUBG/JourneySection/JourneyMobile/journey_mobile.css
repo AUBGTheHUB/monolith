@@ -1,5 +1,9 @@
 .journey-mobile-section {
     background-color: #222222;
+    overflow: hidden;
+}
+.journey-mobile-title {
+    margin-bottom: 5%;
 }
 .journey-mobile-title h1 {
     color: #19b700;
@@ -17,14 +21,15 @@
 }
 .mobile-step-container h2 {
     color: #19b700;
-    padding-top: 3%;
-    padding-bottom: 3%;
+
     font-size: 0.9em;
     width: 91%;
     display: flex;
     align-items: center;
     margin-bottom: 0;
     padding-left: 5%;
+    padding-top: 5%;
+    padding-bottom: 5%;
 }
 .mobile-step-container p {
     color: #000;
@@ -44,7 +49,7 @@
     display: inline-block;
     font-size: 1.15em;
     margin-top: 0%;
-    margin-bottom: 5%;
+    margin-bottom: 8%;
     width: 85%;
 }
 
@@ -61,6 +66,7 @@
 .journey-arrow-displayed {
     display: flex;
     align-items: center;
+    width: 15%;
 }
 .journey-arrow-not-displayed {
     display: none;
@@ -68,29 +74,24 @@
 .smth {
     display: flex;
     width: 100%;
+    justify-content: center;
 }
 
 @keyframes slidein {
     0% {
-        visibility: hidden;
         height: 0px;
     }
 
     100% {
-        visibility: visible;
-        overflow: hidden;
         height: var(--elem-Height);
     }
 }
 @keyframes slideout {
     0% {
-        visibility: hidden;
         height: var(--elem-Height);
     }
 
     100% {
-        visibility: visible;
-        overflow: hidden;
         height: 0px;
     }
 }

@@ -1,23 +1,22 @@
 import React from 'react';
 import './journey_mobile.css';
 import { JourneyStep } from './JourneyStep';
-// import { useState } from 'react';
 
 export const JourneyMobile = () => {
-    // const [stepTitle, setStepTitle] = useState('container-title-displayed');
-    // const [stepContent, setStepContent] = useState(
-    //     'container-content-not-displayed'
-    // );
-
-    
     return (
         <div className="journey-mobile-section">
             <div className="journey-mobile-title">
-                <h1>The HackAUBG Journey</h1>
+                <h1>
+                    The HackAUBG<br></br> Journey
+                </h1>
             </div>
             <div className="journey-mobile-content">
                 <JourneyStep
-                    title={<h2>STEP 1: Gather a team and register</h2>}
+                    title={
+                        <h2>
+                            STEP 1:<br></br> Gather a team and register
+                        </h2>
+                    }
                     text={
                         <p>
                             Get together with some fellow enthusiasts and
@@ -32,7 +31,11 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
-                    title={<h2>STEP 2: Gather a team and register</h2>}
+                    title={
+                        <h2>
+                            STEP 2:<br></br> Gather a team and register
+                        </h2>
+                    }
                     text={
                         <p>
                             Get together with some fellow enthusiasts and
@@ -47,7 +50,11 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
-                    title={<h2>STEP 3: Gather a team and register</h2>}
+                    title={
+                        <h2>
+                            STEP 3:<br></br> Gather a team and register
+                        </h2>
+                    }
                     text={
                         <p>
                             Get together with some fellow enthusiasts and
@@ -62,7 +69,11 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
-                    title={<h2>STEP 4: Gather a team and register</h2>}
+                    title={
+                        <h2>
+                            STEP 4:<br></br> Gather a team and register
+                        </h2>
+                    }
                     text={
                         <p>
                             Get together with some fellow enthusiasts and
