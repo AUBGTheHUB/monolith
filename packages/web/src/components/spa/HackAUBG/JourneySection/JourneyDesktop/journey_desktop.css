@@ -8,7 +8,7 @@
     background-color: #222222;
 }
 .journey-desktop-title {
-    margin-bottom: 5%;
+    margin-bottom: 3%;
 }
 .journey-desktop-title h1 {
     font-weight: bold;
@@ -18,16 +18,17 @@
 .journey-desktop-content {
     display: flex;
     text-align: justify;
-    margin-bottom: 5%;
+    margin-bottom: 1%;
     line-height: 1.5;
 }
 
 .vertical-line {
     border-radius: 4px;
     overflow: visible;
-    border: 5px solid white;
+    border: 5px solid #fff;
     justify-items: center;
     align-items: center;
+    background-color: #fff;
 }
 
 .left {
@@ -45,7 +46,7 @@
 }
 
 .left .top {
-    margin-bottom: 70%;
+    margin-bottom: 54%;
 }
 
 .right .top {
@@ -53,7 +54,7 @@
 }
 
 .right .bottom {
-    margin-top: 70%;
+    margin-top: 54%;
 }
 
 .left-dot {
@@ -61,8 +62,7 @@
     height: 45px;
     width: 45px;
     position: relative;
-    top: 130px;
-    /* 45px */
+    top: 65px;
     left: 532.5px;
     border-radius: 50%;
 }
@@ -72,7 +72,7 @@
     height: 45px;
     width: 45px;
     position: relative;
-    top: 130px;
+    top: 65px;
     left: -77px;
     border-radius: 50%;
 }
