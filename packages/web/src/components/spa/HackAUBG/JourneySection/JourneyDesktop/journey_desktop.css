@@ -6,12 +6,14 @@
     padding-left: 11%;
     padding-right: 11%;
     margin-top: 5%;
+    background-color: #222222;
 }
 .journey-desktop-title {
     margin-bottom: 5%;
 }
-.journey-desktop-section h1 {
+.journey-desktop-title h1 {
     font-weight: bold;
+    color: #19b700;
 }
 
 .journey-desktop-content {
@@ -72,4 +74,11 @@
     top: 130px;
     left: -77px;
     border-radius: 50%;
+}
+.journey-desktop-column h2 {
+    color: #19b700;
+}
+
+.journey-desktop-column p {
+    color: #fff;
 }

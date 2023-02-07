@@ -1,5 +1,4 @@
 import React from 'react';
-import './hackAUBG.css';
 import { JourneySection } from './JourneySection/JourneySection';
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
@@ -35,8 +34,8 @@ export const HackAUBG = () => {
                 }
             />
             <MatrixWindow />
-            <JourneySection />
             <AboutHackathon />
+            <JourneySection />
             <ScheduleHackathon />
             <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
