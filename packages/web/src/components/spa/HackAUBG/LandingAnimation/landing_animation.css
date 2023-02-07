@@ -1,11 +1,3 @@
-/* 
-    To fix:
-    1. Font responsiveness for h1 title!
-    2. Center paragraph text in the middle 
-    3. Height change for resposnsiveness (critical: 800-1000px)
-    
-*/
-
 .animation-container {
     height: 30vw;
     background: #000;
@@ -33,29 +25,65 @@
 }
 
 .landing-content h1 {
-    font-size: 4em;
+    font-size: 4rem;
 }
 
 .landing-content p {
-    font-size: 1em;
+    font-size: 1rem;
     margin: 4% 0 6% 0;
     width: 90%;
     align-items: center;
     justify-content: center;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1300px) {
     .landing-content h1 {
-        font-size: 1.5em;
+        font-size: 3rem;
     }
     .landing-content p {
-        font-size: 0.9em;
+        font-size: 0.9rem;
         padding: 2% 0 2% 0;
         text-overflow: clip;
     }
-    .Reg-btn {
-        font-size: 0.5rem;
-        padding: 1% 3% 1% 3%;
+    .animation-container {
+        height: 30vw;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .landing-content h1 {
+        font-size: 2rem;
+    }
+    .animation-container {
+        height: 40vw;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .landing-content h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .landing-content h1 {
+        font-size: 1.5rem;
+    }
+    .animation-container {
+        height: 45vw;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .animation-container {
+        height: 55vw;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .landing-content p {
+        font-size: 0.7rem;
+        padding: 2% 0 2% 0;
     }
     .animation-container {
         height: 70vw;
