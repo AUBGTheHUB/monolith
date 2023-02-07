@@ -51,7 +51,10 @@ export const NavMobile = ({ props }) => {
     };
 
     return (
-        <div className="navmobile-body">
+        <div
+            className="navmobile-body"
+            style={{ '--anchorHoverColor': props.mobileAnchorHoverColor }}
+        >
             <div
                 className="navmobile-container"
                 style={{

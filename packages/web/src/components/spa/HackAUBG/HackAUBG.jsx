@@ -27,12 +27,13 @@ export const HackAUBG = () => {
                     new Props(
                         anchorList, // list of anchors
                         false, // hackAUBG button
-                        'rgba(0,0,0,.5)', // backgroundColor of desktop nav
-                        true, // fixed desktop nav
-                        '#222222', // mobile nav background when not opened (default transparent)
-                        'gray', // mobile nav backgroundColor
+                        'rgba(0,0,0,.5)', // desktop background color nav
+                        true, // sticky desktop nav
+                        '#222222', // mobile nav background color when not opened (default transparent)
+                        'gray', // mobile background color nav when opened
                         'white', // anchor color
-                        'green' // anchor hover color
+                        'green', // desktop anchor hover color
+                        'dark gray' // mobile anchor hover color
                     )
                 }
             />
