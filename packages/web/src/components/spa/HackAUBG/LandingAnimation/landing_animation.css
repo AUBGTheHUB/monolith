@@ -1,7 +1,7 @@
 .animation-container {
     height: 30vw;
     background: #000;
-    background-image: url('/public/gif.gif');
+    background-image: url('/public/animation_background.gif');
     background-size: cover;
     background: fit-content;
     align-items: center;
