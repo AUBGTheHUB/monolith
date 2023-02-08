@@ -5,6 +5,7 @@ import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
+import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 
@@ -37,6 +38,7 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
+            <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
             <Footer colour={'rgb(25, 183, 0)'} />
