@@ -31,13 +31,7 @@
     background-size: 300% 100%;
     border-radius: 100px;
     font-size: xx-large;
-    background-image: linear-gradient(
-        to right,
-        #25aae1,
-        #4481eb,
-        #04befe,
-        #3f86ed
-    );
+    background-image: linear-gradient(to right, #25aae1 0%, #24cc8e 24%);
 }
 
 .navmobile-menu.not-displayed {
@@ -73,6 +67,7 @@
 .navmobile-menu.forwards {
     animation-name: menu-animation;
     animation-duration: 0.75s;
+    z-index: 1000;
 }
 
 @keyframes menu-animation {
@@ -115,6 +110,10 @@
 .navmobile-anchors-container a {
     color: white;
     text-decoration: none;
+}
+
+.navmobile-anchors-container a:hover {
+    color: var(--anchorHoverColor);
 }
 
 .navmobile-logo {

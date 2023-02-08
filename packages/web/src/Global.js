@@ -26,9 +26,20 @@ const Validate = () => {
 
     return validated;
 };
-export { url };
-export default Validate;
 
+const checkHashAndScroll = () => {
+    let hasHash = !!location.hash;
+    if (hasHash) {
+        setTimeout(() => {
+            document
+                .getElementById(location.hash.replace('#', ''))
+                .scrollIntoView();
+        }, 600);
+    }
+};
+
+export { url, checkHashAndScroll };
+export default Validate;
 /*
 
     this is how you should handle the validation of the client
