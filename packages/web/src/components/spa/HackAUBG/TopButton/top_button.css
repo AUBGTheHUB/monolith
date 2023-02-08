@@ -1,0 +1,26 @@
+/* export const Button = styled.div`
+   position: fixed; 
+   width: 100%;
+   left: 50%;
+   bottom: 40px;
+   height: 20px;
+   font-size: 3rem;
+   z-index: 1;
+   cursor: pointer;
+   color: green; */
+
+.hackaubg-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 25px;
+    z-index: 99;
+    font-size: 1.3em;
+    background-color: #19b700;
+    border: 1px solid #222222;
+    color: #222222;
+    cursor: pointer;
+    padding: 12px 19px;
+    text-align: center;
+    border-radius: 50px;
+    transition: 0.2s;
+}

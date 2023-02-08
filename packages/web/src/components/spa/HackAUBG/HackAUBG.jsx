@@ -7,6 +7,7 @@ import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
+import { TopButton } from './TopButton/TopButton';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -34,6 +35,7 @@ export const HackAUBG = () => {
                     )
                 }
             />
+            <TopButton />
             <MatrixWindow />
             <AboutHackathon />
             <ScheduleHackathon />
