@@ -30,7 +30,7 @@ export const TopButton = () => {
                 onClick={scrollToTop}
                 style={{ display: visible ? 'inline' : 'none' }}
             >
-                ⮝
+                🡅
             </div>
         </a>
     );
