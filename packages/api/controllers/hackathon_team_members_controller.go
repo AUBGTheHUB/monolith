@@ -22,6 +22,7 @@ var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, 
 var validateTeamMembers = validator.New()
 
 func CreateHackathonMember(c *fiber.Ctx) error {
+	
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	bearer_token := c.Get("BEARER-TOKEN")
@@ -61,6 +62,18 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		SponsorShare:          member.SponsorShare,
 		NewsLetter:            member.NewsLetter}
 
+	cursor, err := teamMembersCollection.Find(
+		ctx,
+		bson.D{{"email", newHackathonTeamMember.Email}},
+	)
+	var results []models.TeamMember
+	if err = cursor.All(ctx, &results); err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+	if len(results) > 1 {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}
+
 	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
 
 	if err != nil {
@@ -68,6 +81,7 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success", Data: &fiber.Map{"data": result}})
+
 }
 
 func GetHackathonMember(c *fiber.Ctx) error {
@@ -86,8 +100,8 @@ func GetHackathonMember(c *fiber.Ctx) error {
 }
 
 func EditHackathonMember(c *fiber.Ctx) error {
-	//TODO: Add logic if memeber with same email exist not to be added to DB. 
-	//FIXME: Fix message for empty body
+
+	//TODO: Maybe change message if body is only of non-existings fields
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
 	var member models.EditTeamMember
