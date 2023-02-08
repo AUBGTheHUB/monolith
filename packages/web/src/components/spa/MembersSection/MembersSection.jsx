@@ -48,7 +48,7 @@ export const MembersSection = () => {
                 }}
                 id="team"
             >
-                <h1 className="header-for-container">Meet the Team</h1>
+                <h1 className="header-for-container">Hubbers</h1>
                 <Carousel
                     cards={members}
                     scale={1.25}
