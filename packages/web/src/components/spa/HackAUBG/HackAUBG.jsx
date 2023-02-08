@@ -7,6 +7,7 @@ import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
+import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -38,6 +39,7 @@ export const HackAUBG = () => {
             <AboutHackathon />
             <ScheduleHackathon />
             <GradingCriteria />
+            <AwardsSection />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>
     );

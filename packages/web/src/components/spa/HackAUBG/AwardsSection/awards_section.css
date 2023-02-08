@@ -1,0 +1,74 @@
+.awards-section-hack-aubg-container {
+    padding-bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    background-color: #222222;
+    align-items: center;
+}
+
+.awards-section-title {
+    color: #19b700;
+    font-family: 'Roboto';
+    font-size: 2em;
+    font-weight: 900;
+    padding-top: 4%;
+}
+
+.awards-section-images-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42vw;
+    height: 42vh;
+    margin-bottom: 4%;
+    padding-top: 7%;
+}
+
+.award-pic-text {
+    width: 30vw;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#silver-img {
+    max-width: 100%;
+    padding: 14%;
+}
+
+#gold-img {
+    max-width: 100%;
+}
+
+#bronze-img {
+    max-width: 100%;
+    padding: 18%;
+}
+
+#award-money {
+    text-align: center;
+    color: #19b700;
+    margin: 10% 0% 40% 0%;
+    font-family: 'Roboto';
+    font-weight: 900;
+    font-size: large;
+}
+
+#awards-info-text {
+    color: white;
+    font-family: 'Roboto';
+    font-weight: 400;
+}
+@media only screen and (max-width: 900px) {
+    .awards-section-images-container {
+        width: 100%;
+        height: 40%;
+        padding: 4% 5% 4% 5%;
+    }
+    #awards-info-text {
+        padding: 6%;
+    }
+    #award-money {
+        font-size: medium;
+    }
+}
