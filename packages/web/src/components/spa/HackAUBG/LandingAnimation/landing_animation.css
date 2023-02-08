@@ -1,0 +1,115 @@
+.animation-container {
+    height: 30vw;
+    background: #000;
+    background-image: url('/public/animation_background.gif');
+    background-size: cover;
+    background: fit-content;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.landing-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+    margin-top: 4%;
+}
+
+.landing-content h1 {
+    font-size: 4rem;
+}
+
+.landing-content p {
+    font-size: 1rem;
+    margin: 4% 0 6% 0;
+    width: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 1300px) {
+    .landing-content h1 {
+        font-size: 3rem;
+    }
+    .landing-content p {
+        font-size: 0.9rem;
+        padding: 2% 0 2% 0;
+        text-overflow: clip;
+    }
+    .animation-container {
+        height: 30vw;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .landing-content h1 {
+        font-size: 2rem;
+    }
+    .animation-container {
+        height: 40vw;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .landing-content h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .landing-content h1 {
+        font-size: 1.5rem;
+    }
+    .animation-container {
+        height: 45vw;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .animation-container {
+        height: 55vw;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .landing-content p {
+        font-size: 0.7rem;
+        padding: 2% 0 2% 0;
+    }
+    .animation-container {
+        height: 70vw;
+    }
+}
+
+/* Register button */
+
+.Reg-btn {
+    width: fit-content;
+    color: #19b700;
+    align-items: center;
+    display: flex;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: white;
+    padding: 3% 6% 3% 6%;
+}
+
+.Reg-btn:hover {
+    background-color: #19b700;
+    color: white;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}

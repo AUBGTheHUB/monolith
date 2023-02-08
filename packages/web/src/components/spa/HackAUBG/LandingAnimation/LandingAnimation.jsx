@@ -4,7 +4,11 @@ import './landing_animation.css';
 export const MatrixWindow = () => {
     return (
         <div className="animation-container">
-            <div className="landing-content"></div>
+            <div className="landing-content">
+                <h1>HackAUBG 5.0</h1>
+                <p>31st March - 2nd April, AUBG - Blagoevgrad</p>
+                <button className="Reg-btn">Go to Registration</button>
+            </div>
         </div>
     );
 };

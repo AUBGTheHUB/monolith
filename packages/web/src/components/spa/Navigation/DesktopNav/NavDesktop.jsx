@@ -37,6 +37,10 @@ export const NavDesktop = ({ props }) => {
         };
     };
 
+    const changeAnchorColor = (e, color) => {
+        e.target.style.color = color;
+    };
+
     return (
         <div className="navdesktop-container" style={stickyProps()}>
             <div className="navdesktop-logo" onClick={openHome}>
@@ -50,7 +54,17 @@ export const NavDesktop = ({ props }) => {
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
                     <div className="navdesktop-navdivs" key={index}>
-                        <a href={anchor.endpoint} key={index}>
+                        <a
+                            href={anchor.endpoint}
+                            key={index}
+                            onMouseEnter={(e) => {
+                                changeAnchorColor(e, props.anchorHoverColor);
+                            }}
+                            onMouseLeave={(e) => {
+                                changeAnchorColor(e, props.anchorColor);
+                            }}
+                            style={{ color: props.anchorColor }}
+                        >
                             {anchor.name}
                         </a>
                     </div>
