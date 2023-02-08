@@ -14,7 +14,7 @@ export const LandingSection = () => {
                     className="aboutUs-btn"
                     type="button"
                     onClick={() => {
-                        location.href = '#about';
+                        window.location.href = '#team';
                     }}
                 >
                     Meet the team

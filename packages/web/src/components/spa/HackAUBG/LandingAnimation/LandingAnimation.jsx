@@ -1,21 +1,14 @@
 import React from 'react';
+import './landing_animation.css';
 
 export const MatrixWindow = () => {
-    // use this component as the one which is going to be rendering the
-    // matrix animation
-
-    // I see that you are trying to implement vanilla js in react
-    // this is going to be a huge pain in the ass ...
-    // trust me
-    // better use an npm library
-    // e.g.
-    // https://www.npmjs.com/package/cmatrix
-    // https://www.npmjs.com/package/matrix-rain
-    // https://www.npmjs.com/package/react-matrix-effect
-
     return (
         <div className="animation-container">
-            <h1></h1>
+            <div className="landing-content">
+                <h1>HackAUBG 5.0</h1>
+                <p>31st March - 2nd April, AUBG - Blagoevgrad</p>
+                <button className="Reg-btn">Go to Registration</button>
+            </div>
         </div>
     );
 };

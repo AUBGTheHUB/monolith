@@ -46,6 +46,7 @@ export const MembersSection = () => {
                 style={{
                     transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`
                 }}
+                id="team"
             >
                 <h1 className="header-for-container">Hubbers</h1>
                 <Carousel
