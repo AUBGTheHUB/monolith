@@ -8,18 +8,24 @@ export const Footer = ({ colour }) => {
     return (
         <div className="footer-container" style={{ backgroundColor: colour }}>
             <div className="copyright">
-                <p>© 2022 The Hub AUBG. All rights reserved</p>
+                <p>© 2023 The Hub AUBG. All rights reserved</p>
             </div>
             <div className="social-media">
-                <a href="https://www.facebook.com/TheHubAUBG">
-                    <FaFacebookSquare />
-                </a>
-                <a href="https://www.instagram.com/thehubaubg/">
-                    <GrInstagram />
-                </a>
-                <a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug">
-                    <AiFillYoutube />
-                </a>
+                <div className="links">
+                    <a href="https://www.facebook.com/TheHubAUBG">
+                        <FaFacebookSquare />
+                    </a>
+                </div>
+                <div className="links">
+                    <a href="https://www.instagram.com/thehubaubg/">
+                        <GrInstagram />
+                    </a>
+                </div>
+                <div className="links">
+                    <a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug">
+                        <AiFillYoutube />
+                    </a>
+                </div>
             </div>
         </div>
     );

@@ -13,6 +13,8 @@
     color: black;
     margin-right: 10px;
     margin-left: 10px;
+    display: flex;
+    height: 100%;
 }
 .footer-container .social-media a svg {
     width: 100%;
@@ -22,7 +24,14 @@
     padding: 5px;
     background-color: transparent;
     color: white;
-    border-radius: 5px;
+    border-radius: 50%;
+    border: 2px solid red;
+    background-color: green;
+    padding: 5px;
+    overflow: visible;
+}
+.social-media {
+    display: flex;
 }
 
 @media only screen and (max-width: 900px) {
