@@ -1,0 +1,130 @@
+.page-not-found {
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Poppins';
+}
+.page-not-found-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-right: 2px;
+}
+.page-not-found-logo p {
+    margin-bottom: 0px !important;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 500;
+    margin-left: 0.5%;
+}
+.page-not-found-logo img {
+    width: 4%;
+}
+.background-not-found {
+    display: flex;
+    justify-content: center;
+    margin-top: 6%;
+    padding-left: 11%;
+    padding-right: 11%;
+}
+.hubzie-UFO-image {
+    display: flex;
+    justify-content: center;
+    width: 55%;
+    justify-content: end;
+}
+.hubzie-UFO-image img {
+    width: 70%;
+    height: auto;
+}
+.page-not-found-text {
+    margin-top: -5%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    margin-right: -5%;
+}
+
+.button-404 {
+    width: fit-content;
+    color: white;
+    align-items: center;
+    display: flex;
+    border-radius: 50px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background-color: #02b0e5;
+    padding: 2% 8% 2% 8%;
+}
+.heading-text-404 {
+    color: white;
+    margin-right: 5%;
+    font-size: 10em;
+}
+.paragraph-404 {
+    width: 80%;
+    color: white;
+    font-size: 1.2em;
+}
+.mid-heading-404 {
+    margin-top: -2rem;
+    color: white;
+    font-size: 2.8em;
+}
+
+@media only screen and (max-width: 900px) {
+    .page-not-found {
+        overflow: hidden;
+        position: fixed;
+    }
+    .background-not-found {
+        margin-top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 78vh;
+        flex-direction: column-reverse;
+    }
+    .hubzie-UFO-image {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 12%;
+    }
+    .page-not-found-text {
+        width: 100%;
+        justify-content: center;
+    }
+    .heading-text-404 {
+        margin-right: 0;
+        font-size: 7em;
+        justify-content: center;
+        display: flex;
+    }
+    .mid-heading-404 {
+        font-size: 1.6em;
+        justify-content: center;
+        display: flex;
+    }
+    .paragraph-404 {
+        font-size: 1em;
+        align-self: center;
+        display: flex;
+        text-align: -webkit-center;
+    }
+    .button-404 {
+        display: flex;
+        align-self: center;
+    }
+    .page-not-found-logo {
+        padding-top: 3%;
+        height: 10vh;
+    }
+    .page-not-found-logo img {
+        width: 10%;
+    }
+    .page-not-found-logo p {
+        font-size: 1rem;
+    }
+}

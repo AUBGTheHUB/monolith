@@ -6,6 +6,11 @@ import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const makeBodyScrollable = () => {
+    document.body.style.position = 'static';
+    document.body.style.overflow = 'auto';
+};
+
 export const NavMobile = ({ props }) => {
     const [bodyHeight, setBodyHeight] = useState(0);
     let currentBodyHeight = document.documentElement.scrollHeight;
@@ -28,11 +33,6 @@ export const NavMobile = ({ props }) => {
         }
     };
 
-    const makeBodyScrollable = () => {
-        document.body.style.position = 'static';
-        document.body.style.overflow = 'auto';
-    };
-
     const navigateToHackAUBG = () => {
         navigate('/hackaubg');
     };
@@ -46,11 +46,31 @@ export const NavMobile = ({ props }) => {
         setMenuClass('navmobile-menu-backwards');
     };
 
+    const openHome = () => {
+        window.location.href = '/';
+    };
+
     return (
-        <div className="navmobile-body">
-            <div className="navmobile-container">
-                <img src="hublogo.png" className="navmobile-logo"></img>
-                <h2 className="navmobile-title">The Hub</h2>
+        <div
+            className="navmobile-body"
+            style={{ '--anchorHoverColor': props.mobileAnchorHoverColor }}
+        >
+            <div
+                className="navmobile-container"
+                style={{
+                    backgroundColor: props.mobileBgColor
+                        ? props.mobileHeader
+                        : 'transparent'
+                }}
+            >
+                <img
+                    src="hublogo.png"
+                    className="navmobile-logo"
+                    onClick={openHome}
+                ></img>
+                <h2 className="navmobile-title" onClick={openHome}>
+                    The Hub
+                </h2>
                 <Button
                     props={{
                         css: 'navmobile-button',
@@ -69,7 +89,13 @@ export const NavMobile = ({ props }) => {
                 />
             </div>
 
-            <div className={menuClass} style={{ height: bodyHeight }}>
+            <div
+                className={menuClass}
+                style={{
+                    height: bodyHeight,
+                    backgroundColor: props.mobileBgColor
+                }}
+            >
                 <Button
                     props={{
                         css: 'navmobile-button-close',
@@ -97,7 +123,6 @@ export const NavMobile = ({ props }) => {
                                         closeMenu();
                                         makeBodyScrollable();
                                     }}
-                                    className=""
                                 >
                                     {anchor.name}
                                 </a>
@@ -110,3 +135,5 @@ export const NavMobile = ({ props }) => {
         </div>
     );
 };
+
+export { makeBodyScrollable };
