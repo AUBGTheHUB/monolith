@@ -14,8 +14,6 @@ export const HackAUBG = () => {
 
     const anchorList = [
         new Anchor('About', '#AboutSection'),
-        // new Anchor('Events', '#events'),
-        // new Anchor('Articles', '#articles'),
         new Anchor('Schedule', '#team'),
         new Anchor('Grading criteria', 'jobs'),
         new Anchor('FAQ', 'jobs')
@@ -26,12 +24,15 @@ export const HackAUBG = () => {
             <NavBar
                 props={
                     new Props(
-                        anchorList,
-                        false,
-                        'rgba(0,0,0,.5)',
-                        true,
-                        '#222222',
-                        'red'
+                        anchorList, // list of anchors
+                        false, // hackAUBG button
+                        'rgba(0,0,0,.5)', // desktop background color nav
+                        true, // sticky desktop nav
+                        '#222222', // mobile nav background color when not opened (default transparent)
+                        'gray', // mobile background color nav when opened
+                        'white', // anchor color
+                        'green', // desktop anchor hover color
+                        'dark gray' // mobile anchor hover color
                     )
                 }
             />
