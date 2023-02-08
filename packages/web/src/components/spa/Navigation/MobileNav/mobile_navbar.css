@@ -112,6 +112,10 @@
     text-decoration: none;
 }
 
+.navmobile-anchors-container a:hover {
+    color: var(--anchorHoverColor);
+}
+
 .navmobile-logo {
     height: 7.5vh;
     left: 2px;
