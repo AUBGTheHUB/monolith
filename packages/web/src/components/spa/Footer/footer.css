@@ -23,8 +23,7 @@
     background-color: transparent;
     color: white;
     border-radius: 50%;
-    border: 2px solid red;
-    background-color: green; /*change colors!!*/
+    border: 2px solid transparent;
     overflow: visible;
 }
 .social-media {

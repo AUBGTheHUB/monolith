@@ -41,7 +41,10 @@ export const HackAUBG = () => {
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
-            <Footer colour={'rgb(25, 183, 0)'} />
+            <Footer
+                colour={'rgb(25, 183, 0)'}
+                iconcolor={'rgb(162, 164, 166)'}
+            />
         </div>
     );
 };
