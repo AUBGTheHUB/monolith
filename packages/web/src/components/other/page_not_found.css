@@ -19,7 +19,7 @@
     margin-left: 0.5%;
 }
 .page-not-found-logo img {
-    width: 4%;
+    width: 4vh;
 }
 .background-not-found {
     display: flex;
@@ -127,6 +127,6 @@
         height: auto;
     }
     .page-not-found-logo p {
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 }
