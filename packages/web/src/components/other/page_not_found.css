@@ -90,7 +90,7 @@
     .hubzie-UFO-image {
         width: 100%;
         justify-content: center;
-        margin-bottom: 12%;
+        margin-bottom: 3%;
     }
     .page-not-found-text {
         width: 100%;
@@ -123,10 +123,16 @@
     }
 
     .hubzie-UFO-image img {
-        width: 40vh;
-        height: auto;
+        width: auto;
+        height: 40vh;
     }
     .page-not-found-logo p {
         font-size: 1.5rem;
+    }
+}
+@media only screen and (max-width: 300px) {
+    .hubzie-UFO-image img {
+        width: 60vw;
+        height: auto;
     }
 }
