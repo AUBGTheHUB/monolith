@@ -12,19 +12,28 @@ export const Footer = ({ colour, iconcolor }) => {
             </div>
             <div className="social-media">
                 <div className="links">
-                    <a href="https://www.facebook.com/TheHubAUBG">
+                    <a
+                        href="https://www.facebook.com/TheHubAUBG"
+                        target="_blank"
+                    >
                         <FaFacebookSquare
                             style={{ backgroundColor: iconcolor }}
                         />
                     </a>
                 </div>
                 <div className="links">
-                    <a href="https://www.instagram.com/thehubaubg/">
+                    <a
+                        href="https://www.instagram.com/thehubaubg/"
+                        target="_blank"
+                    >
                         <GrInstagram style={{ backgroundColor: iconcolor }} />
                     </a>
                 </div>
                 <div className="links">
-                    <a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug">
+                    <a
+                        href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug"
+                        target="_blank"
+                    >
                         <AiFillYoutube style={{ backgroundColor: iconcolor }} />
                     </a>
                 </div>
