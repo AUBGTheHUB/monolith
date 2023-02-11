@@ -215,15 +215,15 @@
 // };
 
 import React from 'react';
-import { Card, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { url } from '../../../Global';
+import { JobsCard } from './JobsCard';
 
 export const JobsSection = () => {
-    const history = useNavigate();
+    // const history = useNavigate();
     const [jobs, setJobs] = useState([{}]);
 
     const getJobs = () => {
@@ -281,8 +281,13 @@ export const JobsSection = () => {
             // </div>
             <div className="jobssection">
                 {jobs.map((job, index) => (
-                    <div key={index}  className="jobs-card">
-                        {job['company']}
+                    <div key={index} className="jobs-info">
+                        <JobsCard
+                            company={job['company']}
+                            position={job['position']}
+                            description={job['description']}
+                            logo={job['logo']}
+                        />
                     </div>
                 ))}
             </div>
