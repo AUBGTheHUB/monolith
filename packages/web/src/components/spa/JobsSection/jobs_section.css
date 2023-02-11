@@ -137,7 +137,68 @@
 }
 .job-position {
     height: 27%;
+    width: 75%;
 }
 .job-company h2 {
     text-align: center;
+}
+@media only screen and (max-width: 900px) {
+    .card-info {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+    .general-info {
+        width: 100%;
+    }
+    .more-info {
+        width: 100%;
+        align-items: center;
+    }
+    .jobs-card {
+        height: 100%;
+        width: 78vw;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .job-logo {
+        margin: 0 !important;
+        width: 30%;
+        height: 10vh;
+    }
+    .job-company {
+        height: 40%;
+        margin: 0;
+    }
+    .job-button a {
+        width: 35vw;
+    }
+    .job-position h3 {
+        text-align: center;
+    }
+    .job-description p {
+        font-size: 0.9em;
+    }
+    .job-position h3 {
+        font-size: 1.1em;
+    }
+    .job-button {
+        margin-bottom: 5%;
+    }
+    .job-description {
+        height: 100px;
+    }
+}
+@media only screen and (max-width: 300px) {
+    .job-description {
+        height: 18vh;
+    }
+}
+@media only screen and (min-width: 1000px) and (max-width: 1100px) {
+    .jobs-card {
+        width: 50vw;
+        height: 40vh;
+    }
+    .job-button {
+        margin-top: 2%;
+    }
 }

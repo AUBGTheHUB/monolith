@@ -12,7 +12,7 @@ export const JobsCard = (props) => {
                     <img src={props.logo} />
                 </div>
                 <div className="job-company">
-                    <h2>{props.company}</h2>
+                    <h3>{props.company}</h3>
                 </div>
             </div>
             <div className="more-info">
