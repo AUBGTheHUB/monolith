@@ -381,3 +381,52 @@
     text-shadow: 1% 1% #4481eb; 
     }
 }
+@media only screen and (max-width: 1000px) {
+    .card-info {
+ 
+    }
+    .general-info {
+    }
+    .more-info {
+    }
+    .jobs-card {
+        height: 100%;
+        width: 78vw;
+        
+    }
+    .job-logo {
+ 
+    }
+    .job-company {
+        height: 40%;
+        margin: 0;
+    }
+    .job-button a {
+    }
+    .job-position h3 {
+    }
+    .job-description p {
+    }
+    .job-position h3 {
+    }
+    .job-button {
+    }
+    .job-description {
+    }
+}
+
+@media only screen and (min-width: 1000px) and (max-width: 1050px) {
+    .jobs-card {
+        width: 50vw;
+        height: 50vh;
+    }
+    .job-button {
+        margin-top: 2%;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .job-description {
+        height: 18vh;
+    }
+}

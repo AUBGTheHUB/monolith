@@ -11,9 +11,6 @@ export const JobsCard = (props) => {
                 <div className="job-logo">
                     <img src={props.logo} />
                 </div>
-                <div className="job-company">
-                    <h3>{props.company}</h3>
-                </div>
             </div>
             <div className="more-info">
                 <div className="job-position">
