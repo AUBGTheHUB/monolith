@@ -15,7 +15,6 @@ export const JudgesSection = () => {
             url: url + '/api/jury'
         })
             .then((res) => {
-                console.log(res.data.data.data);
                 setJury(res.data.data.data);
             })
             .catch((err) => {
@@ -24,16 +23,17 @@ export const JudgesSection = () => {
     };
 
     const renderMap = () => {
-        console.log('I am inside the renderMap');
         if (jury) {
             return (
                 <div className="judges-container">
                     <h1 className="judges-header">Judges</h1>
-                    {jury.map((judge, index) => (
-                        <div key={index} className="judge-div">
-                            <JudgesCard Judge={judge} />
-                        </div>
-                    ))}
+                    <div className="judges-picture">
+                        {jury.map((judge, index) => (
+                            <div key={index} className="judge-div">
+                                <JudgesCard Judge={judge} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         }

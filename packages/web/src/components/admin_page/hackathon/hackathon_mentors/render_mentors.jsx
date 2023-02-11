@@ -12,7 +12,7 @@ const RenderMentors = () => {
     const history = useNavigate();
     const [mentors, setMentors] = useState([{}]);
 
-    const getJobs = () => {
+    const getMentors = () => {
         axios({
             method: 'get',
             url: url + '/api/mentors'
@@ -81,7 +81,7 @@ const RenderMentors = () => {
     };
 
     useEffect(() => {
-        getJobs();
+        getMentors();
     }, []);
 
     if (Validate()) {
