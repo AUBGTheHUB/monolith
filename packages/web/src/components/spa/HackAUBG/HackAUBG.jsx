@@ -9,6 +9,7 @@ import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
+import Sponsors from './SponsorsSection/SponsorsSection';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -42,6 +43,7 @@ export const HackAUBG = () => {
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
+            <Sponsors />
             <FaqSection />
             <Footer colour={'rgb(25, 183, 0)'} />
         </div>

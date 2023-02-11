@@ -1,0 +1,73 @@
+.sponsors-main {
+    width: 100%;
+    height: fit-content;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sponsors-containers {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sponsors-header {
+    margin-top: 3%;
+    color: #19b700;
+    font-family: 'Roboto';
+    font-size: 2em;
+}
+/* Optimize the following css by grouping all containers that use the same code */
+
+.platinum-container,
+.gold-container,
+.custom-container,
+.silver-container,
+.bronze-container {
+    width: 100%;
+    height: fit-content;
+    margin-top: 3%;
+    text-align: center;
+}
+
+.platinum-container {
+    background-color: #a5b2dc;
+    /* border: #A5B2DC; */
+    /* border-width: 50px; */
+}
+
+.gold-container {
+    background-color: #c9b037;
+    /* border-color: #C9B037; */
+    /* border-width: 50px; */
+}
+
+.custom-container {
+    background-color: #cdbaba;
+    /* border-color: #CDBABA; */
+    /* border-width: 50px; */
+}
+
+.silver-container {
+    flex-direction: column-reverse;
+    background-color: #b4b4b4;
+    /* border-color: #B4B4B4; */
+    /* border-width: 50px; */
+}
+
+.bronze-container {
+    background-color: lightgreen;
+    margin-top: 3%;
+    /* border-color: lightgreen; */
+    /* border-width: 50px; */
+}
+
+.platinum-container img {
+    width: 100px;
+    height: 100px;
+}
