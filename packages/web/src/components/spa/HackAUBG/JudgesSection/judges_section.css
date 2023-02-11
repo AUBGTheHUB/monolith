@@ -1,12 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700,900&display=swap');
-
-* {
-    box-sizing: border-box;
-}
-
 .judges-container {
+    box-sizing: border-box;
     margin: 0;
-    background: #f5f6f7;
     font-family: 'Roboto';
     padding: 3% 0%;
     background-color: #222222;
@@ -32,13 +26,8 @@
 
 .judges-picture img {
     width: 100%;
-    max-width: 300px;
-    height: 250px;
+    max-width: 370px;
+    height: 280px;
     object-fit: cover;
     border-radius: 10px;
-}
-
-.judges-picture::after {
-    content: '';
-    width: 350px;
 }

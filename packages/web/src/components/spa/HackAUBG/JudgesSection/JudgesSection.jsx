@@ -1,20 +1,47 @@
 import React from 'react';
+import axios from 'axios';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { url } from '../../../../Global';
+import { JudgesCard } from './JudgesCard';
 import './judges_section.css';
 
 export const JudgesSection = () => {
-    return (
-        <div className="judges-container">
-            <h1 className="judges-header">Judges</h1>
-            <div className="judges-picture">
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/1.jpg"></img>
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/2.jpg"></img>
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/3.jpg"></img>
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/4.jpg"></img>
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/5.jpg"></img>
-                <img src="https://cdn.freecodecamp.org/curriculum/css-photo-gallery/6.jpg"></img>
-            </div>
-        </div>
-    );
+    const [jury, setJury] = useState([{}]);
+
+    const getJury = () => {
+        axios({
+            method: 'get',
+            url: url + '/api/jury'
+        })
+            .then((res) => {
+                console.log(res.data.data.data);
+                setJury(res.data.data.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const renderMap = () => {
+        console.log('I am inside the renderMap');
+        if (jury) {
+            return (
+                <div className="judges-container">
+                    <h1 className="judges-header">Judges</h1>
+                    {jury.map((judge, index) => (
+                        <div key={index} className="judge-div">
+                            <JudgesCard Judge={judge} />
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+    };
+    useEffect(() => {
+        getJury();
+    }, []);
+    return <>{renderMap()}</>;
 };
 
 export default JudgesSection;
