@@ -1,8 +1,20 @@
-.jobs-section {
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+    --main-color: #32baf4;
+    --shadow-color: #467edd;
+    --background-color: #f7f7f7;
+    --font-family: 'Poppins';
+    --text-color: #333;
+    --placeholder-color: white;
+}
+.jobs-and-nav {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+}
+.jobs-section {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
 }
 .jobs-card {
     display: flex;
@@ -21,7 +33,7 @@
 }
 .job-logo {
     width: 50%;
-    height: 70%;
+    height: 75%;
 }
 .jobs-info {
     display: flex;
@@ -36,10 +48,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50%;
+    width: 40%;
 }
 .job-company {
-    height: 30%;
+    height: 20%;
 }
 .card-info {
     width: 100%;
@@ -51,10 +63,81 @@
     height: 100%;
 }
 .more-info {
-    width: 50%;
+    width: 60%;
+    margin-top: 2.5%;
+    display: flex;
+    flex-direction: column;
 }
 .jobs-section {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+}
+.job-company {
+    margin-top: -5%;
+}
+.job-logo {
+    margin-top: -5%;
+}
+.job-description p {
+    font-size: 1.1em;
+    text-align: justify;
+    margin: 0;
+}
+.job-description {
+    width: 92%;
+    margin-top: 1%;
+    height: 45%;
+}
+
+.job-button a {
+    border-radius: 4vh;
+}
+
+.job-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-items: end;
+
+    align-items: center;
+}
+.job-button a {
+    width: 36%;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    text-decoration: none;
+    height: 43px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    font-size: 1em;
+    background-image: linear-gradient(
+        to right,
+        #32baf4,
+        #467edd,
+        #3f86ed,
+        #47acdf,
+        #24cc8e
+    );
+    transition: all 0.3s ease-in-out;
+}
+
+.job-button :hover {
+    background-position: right;
+    box-shadow: 0 6% 20% 0 rgba(65, 132, 234, 0.95);
+    background-color: #fff;
+    text-shadow: 1% 1% #4481eb;
+    color: #fff;
+}
+.job-position {
+    height: 27%;
+}
+.job-company h2 {
+    text-align: center;
 }

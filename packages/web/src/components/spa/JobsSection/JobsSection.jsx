@@ -1,18 +1,18 @@
 import React from 'react';
-// import { NavBar } from '../Navigation/NavBar';
+import { NavBar } from '../Navigation/NavBar';
 import axios from 'axios';
 import { useState } from 'react';
-// import { Anchor, Props } from '../Navigation/NavFactory';
+import { Anchor, Props } from '../Navigation/NavFactory';
 import { useEffect } from 'react';
 import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
 import './jobs_section.css';
 
-// const anchorList = [
-//     new Anchor('About', '/#about'),
-//     new Anchor('Team', '/#team'),
-//     new Anchor('Jobs', '/jobs')
-// ];
+const anchorList = [
+    new Anchor('About', '/#about'),
+    new Anchor('Team', '/#team'),
+    new Anchor('Jobs', '/jobs')
+];
 
 export const JobsSection = () => {
     const [jobs, setJobs] = useState([{}]);
@@ -36,8 +36,8 @@ export const JobsSection = () => {
     }, []);
     if (jobs) {
         return (
-            <div>
-                {/* <NavBar props={new Props(anchorList, true)} /> */}
+            <div className="jobs-and-nav">
+                <NavBar props={new Props(anchorList, true)} />
 
                 <div className="jobs-section">
                     <div className="test">

@@ -12,12 +12,12 @@ export const JobsCard = (props) => {
                     <img src={props.logo} />
                 </div>
                 <div className="job-company">
-                    <p>{props.company}</p>
+                    <h2>{props.company}</h2>
                 </div>
             </div>
             <div className="more-info">
                 <div className="job-position">
-                    <p>{props.position}</p>
+                    <h3>{props.position}</h3>
                 </div>
                 <div className="job-description">
                     <p>{props.description}</p>
