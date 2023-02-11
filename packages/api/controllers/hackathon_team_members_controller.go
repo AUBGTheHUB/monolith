@@ -22,7 +22,7 @@ var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, 
 var validateTeamMembers = validator.New()
 
 func CreateHackathonMember(c *fiber.Ctx) error {
-	
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	bearer_token := c.Get("BEARER-TOKEN")
@@ -88,8 +88,14 @@ func GetHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
 
+	bearer_token := c.Get("BEARER-TOKEN")
+
 	var member models.TeamMember
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
 	err := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
@@ -105,7 +111,7 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	member_key := c.Params("key", "key was not provided")
 	var member models.EditTeamMember
-
+	defer cancel()
 	var member_map models.EditTeamMember
 	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
 	err1 := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member_map)
@@ -206,8 +212,13 @@ func DeleteHackathonMember(c *fiber.Ctx) error {
 func GetHackathonMembersCount(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var countOfMembers int = 0
+	bearer_token := c.Get("BEARER-TOKEN")
 
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
 
 	results, err := teamMembersCollection.CountDocuments(ctx, bson.M{})
 

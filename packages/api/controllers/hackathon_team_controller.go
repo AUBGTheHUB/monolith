@@ -48,8 +48,14 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 func GetHackathonTeams(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
+	bearer_token := c.Get("BEARER-TOKEN")
+
 	var teams []models.Team
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"data": "Unauthorized"}})
+	}
 
 	results, err := hackathonTeamCollection.Find(ctx, bson.M{})
 
@@ -75,9 +81,16 @@ func GetHackathonTeams(c *fiber.Ctx) error {
 
 func GetAHackathonTeam(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	bearer_token := c.Get("BEARER-TOKEN")
+
 	hackathon_team_key := c.Params("key", "key was not provided")
 	var team models.Team
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"data": "Unauthorized"}})
+	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
 
@@ -143,14 +156,14 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 
 }
 
-func DeleteHackathonTeams(c *fiber.Ctx) error{
+func DeleteHackathonTeams(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	hackathon_team_key := c.Params("key", "key was not provided")
 	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
-	if bearer_token != configs.ReturnAuthToken(){
-		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed!"} })
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed!"}})
 	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
@@ -161,7 +174,7 @@ func DeleteHackathonTeams(c *fiber.Ctx) error{
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
-	if result.DeletedCount < 1{
+	if result.DeletedCount < 1 {
 		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"Reason": "Team not found!"}})
 	}
 
