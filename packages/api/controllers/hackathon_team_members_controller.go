@@ -29,6 +29,7 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 
 	var member models.TeamMember
 	defer cancel()
+	
 	if bearer_token != configs.ReturnAuthToken() {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
@@ -62,19 +63,17 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		SponsorShare:          member.SponsorShare,
 		NewsLetter:            member.NewsLetter}
 
-	cursor, err := teamMembersCollection.Find(
+	cursor, _ := teamMembersCollection.Find(
 		ctx,
 		bson.D{{"email", newHackathonTeamMember.Email}},
 	)
 	var results []models.TeamMember
 
-	if len(results) >= 1 {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
-	}
+	_ = cursor.All(ctx, &results)
 
-	if err = cursor.All(ctx, &results); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
-	}
+	if len(results) > 0 {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}	
 
 	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
 
