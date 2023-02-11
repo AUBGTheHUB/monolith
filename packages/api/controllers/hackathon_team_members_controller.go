@@ -20,7 +20,6 @@ import (
 var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
 
 var validateTeamMembers = validator.New()
-
 func CreateHackathonMember(c *fiber.Ctx) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
