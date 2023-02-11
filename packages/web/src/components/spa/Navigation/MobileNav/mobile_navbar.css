@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 .navmobile-body {
+    position: absolute;
     height: 10vh;
     -webkit-user-select: none;
     /* Safari */
@@ -10,6 +11,7 @@
     /* IE10+/Edge */
     user-select: none;
     /* Standard */
+    z-index: 1000;
 }
 
 .navmobile-button {
