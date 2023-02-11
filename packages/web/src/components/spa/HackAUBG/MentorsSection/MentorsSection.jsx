@@ -22,6 +22,12 @@ export const MentorsSection = () => {
             });
     };
 
+    const handleClick = (event) => {
+        return () => {
+            window.open(event, '_blank', 'thehubaubg');
+        };
+    };
+
     const renderMap = () => {
         if (mentor) {
             return (
@@ -30,7 +36,10 @@ export const MentorsSection = () => {
                     <div className="mentors-picture">
                         {mentor.map((mentor, index) => (
                             <div key={index} className="mentors-div">
-                                <MentorsCard Mentor={mentor} />
+                                <MentorsCard
+                                    Mentor={mentor}
+                                    handleClick={handleClick(mentor.sociallink)}
+                                />
                             </div>
                         ))}
                     </div>

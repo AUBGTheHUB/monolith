@@ -22,6 +22,12 @@ export const JudgesSection = () => {
             });
     };
 
+    const handleClick = (event) => {
+        return () => {
+            window.open(event, '_blank', 'thehubaubg');
+        };
+    };
+
     const renderMap = () => {
         if (jury) {
             return (
@@ -30,7 +36,10 @@ export const JudgesSection = () => {
                     <div className="judges-picture">
                         {jury.map((judge, index) => (
                             <div key={index} className="judge-div">
-                                <JudgesCard Judge={judge} />
+                                <JudgesCard
+                                    Judge={judge}
+                                    handleClick={handleClick(judge.sociallink)}
+                                />
                             </div>
                         ))}
                     </div>
