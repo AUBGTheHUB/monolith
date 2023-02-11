@@ -24,7 +24,7 @@ export const JudgesSection = () => {
 
     const handleClick = (event) => {
         return () => {
-            window.open(event, '_blank', 'thehubaubg');
+            window.open(event, '_blank', 'noopener noreferrer');
         };
     };
 

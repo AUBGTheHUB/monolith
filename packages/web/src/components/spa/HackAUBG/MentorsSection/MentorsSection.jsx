@@ -24,7 +24,7 @@ export const MentorsSection = () => {
 
     const handleClick = (event) => {
         return () => {
-            window.open(event, '_blank', 'thehubaubg');
+            window.open(event, '_blank', 'noopener noreferrer');
         };
     };
 
