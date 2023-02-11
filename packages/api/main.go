@@ -26,8 +26,6 @@ func main() {
 	routes.MentorsRoute(app)
 	routes.SponsorsRoute(app)
 	routes.PartnersRoute(app)
-	routes.HackathonTeamMemberRoute(app)
-	routes.HackathonTeamsRoutes(app)
 	configs.RunCronJobs()
 
 	// ln -s ../../data/certs ./certs
