@@ -67,11 +67,13 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		bson.D{{"email", newHackathonTeamMember.Email}},
 	)
 	var results []models.TeamMember
+
+	if len(results) >= 1 {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}
+
 	if err = cursor.All(ctx, &results); err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
-	}
-	if len(results) > 1 {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
 
 	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
