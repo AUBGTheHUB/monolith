@@ -7,6 +7,7 @@ import (
 	"hub-backend/responses"
 	"net/http"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -137,7 +138,7 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
-		update[typeOfS.Field(i).Name] = v.Field(i).Interface()
+		update[strings.ToLower(typeOfS.Field(i).Name)] = v.Field(i).Interface()
 	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
@@ -149,7 +150,7 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 	}
 
 	if result.MatchedCount != 1 {
-		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "Job not found"}})
+		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "Team not found"}})
 	}
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Updated!"})
