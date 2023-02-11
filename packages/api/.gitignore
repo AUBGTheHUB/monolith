@@ -1,4 +1,5 @@
 .env
+.vscode
 # ignore executable
 bin
 certs
