@@ -87,7 +87,9 @@
 .job-description {
     width: 92%;
     margin-top: 5%;
-    height: 45%;
+    height: 55%;
+    display: flex;
+    align-items: center;
 }
 
 .job-button a {
@@ -136,13 +138,13 @@
     color: #fff;
 }
 .job-position {
-    height: 30%;
+    height: 20%;
     width: 75%;
 }
 .job-company h3 {
     text-align: center;
 }
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1000px) {
     .card-info {
         flex-direction: column;
         flex-wrap: nowrap;
@@ -188,11 +190,7 @@
         height: 100px;
     }
 }
-@media only screen and (max-width: 300px) {
-    .job-description {
-        height: 18vh;
-    }
-}
+
 @media only screen and (min-width: 1000px) and (max-width: 1050px) {
     .jobs-card {
         width: 50vw;
@@ -200,5 +198,11 @@
     }
     .job-button {
         margin-top: 2%;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .job-description {
+        height: 18vh;
     }
 }
