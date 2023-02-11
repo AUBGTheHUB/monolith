@@ -19,12 +19,12 @@
 .jobs-card {
     display: flex;
     background-color: #fff;
-    width: 70vh;
+    width: 37.5vw;
     margin-right: 3%;
     margin-left: 3%;
     border-radius: 5px;
     margin-bottom: 5%;
-    height: 30vh;
+    height: 44vh;
 }
 .jobs-card .job-logo img {
     width: 100%;
@@ -86,7 +86,7 @@
 }
 .job-description {
     width: 92%;
-    margin-top: 1%;
+    margin-top: 5%;
     height: 45%;
 }
 
@@ -136,10 +136,10 @@
     color: #fff;
 }
 .job-position {
-    height: 27%;
+    height: 30%;
     width: 75%;
 }
-.job-company h2 {
+.job-company h3 {
     text-align: center;
 }
 @media only screen and (max-width: 900px) {
