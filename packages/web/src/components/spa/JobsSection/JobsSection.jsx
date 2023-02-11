@@ -7,12 +7,9 @@ import img3 from '../JobsSection/images/paysafe.png';
 import img4 from '../JobsSection/images/progress.png';
 import img5 from '../JobsSection/images/vmware.png';
 import img6 from '../JobsSection/images/uber_gold.png';
-// import {HiOutlineSearch} from 'react-icons/hi';
 
 const anchorList = [
     new Anchor('About', '/#about'),
-    // new Anchor('Events', '/#events'),
-    // new Anchor('Articles', '/#articles'),
     new Anchor('Team', '/#team'),
     new Anchor('Jobs', '/jobs')
 ];
@@ -21,23 +18,17 @@ export const JobsSection = () => {
     return (
         <div className="jobs-container">
             <NavBar props={new Props(anchorList, true)} />
-            {/* <div className='searchBar'>
-                <div className='box'>
-                    <HiOutlineSearch/>
-                <input type="text" placeholder='Search...'/>
-                </div>
-            </div> */}
-            <div className="jobs">
+            <div className="jobs-box-container">
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a href="https://amplifyanalytix.com/" target="_blank">
                             <img src={img1} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>UI/ UX Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -45,26 +36,25 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Internship</span>
                         <span>Min. 1 Year</span>
                         <span>Junior Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>                        */}
                     </div>
                 </div>
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a href="https://droxic.com/en/" target="_blank">
                             <img src={img2} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>Sr. Product Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -72,18 +62,17 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Part-Time</span>
                         <span>Min. 2 Year</span>
                         <span>Mid Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a
                             href="https://www.paysafe.com/eu-en/"
                             target="_blank"
@@ -91,10 +80,10 @@ export const JobsSection = () => {
                             <img src={img3} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>User Experience Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -102,28 +91,27 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Full Time</span>
                         <span>Min. 3 Year</span>
                         <span>Senior Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>     */}
                     </div>
                 </div>
             </div>
-            <div className="jobs">
+            <div className="jobs-box-container">
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a href="https://www.progress.com/" target="_blank">
                             <img src={img4} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>Product Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -131,26 +119,25 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Full Time</span>
                         <span>Min. 1 Year</span>
                         <span>Senior Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a href="https://www.vmware.com//" target="_blank">
                             <img src={img5} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>UX Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -158,26 +145,25 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Full Time</span>
                         <span>Min. 1 Year</span>
                         <span>Senior Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>     */}
                     </div>
                 </div>
                 <div className="job-box">
-                    <div className="photo">
+                    <div className="jobs-photo-container">
                         <a href="https://www.uber.com/ro/en/" target="_blank">
                             <img src={img6} alt="" />
                         </a>
                     </div>
-                    <div className="text">
+                    <div className="jobs-text-description-1">
                         <span>UI/ UX Designer</span>
                     </div>
-                    <div className="text-2">
+                    <div className="jobs-text-description-2">
                         <span>
                             {' '}
                             The User Experience Designer position exists to
@@ -185,14 +171,13 @@ export const JobsSection = () => {
                             experiences through design...
                         </span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <span>Full Time</span>
                         <span>Min. 1 Year</span>
                         <span>Senior Level</span>
                     </div>
-                    <div className="button-container">
+                    <div className="jobs-button-container">
                         <button>Apply Now</button>
-                        {/* <button>Message</button>     */}
                     </div>
                 </div>
             </div>
