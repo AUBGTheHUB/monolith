@@ -31,7 +31,8 @@
 
 @media only screen and (max-width: 900px) {
     .video-header {
-        text-size: 0.5rem;
+        font-size: 32px;
+        font-weight: 900;
         text-align: justify;
     }
     .video {

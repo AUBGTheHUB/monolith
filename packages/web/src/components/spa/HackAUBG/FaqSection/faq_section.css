@@ -9,7 +9,8 @@
 }
 
 .faq {
-    font-size: 2rem;
+    font-size: 32px;
+    font-weight: 900;
     padding: 2% 0;
     color: #19b700;
 }
