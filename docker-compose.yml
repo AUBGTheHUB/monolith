@@ -6,6 +6,8 @@ services:
   server:
     build: ./packages/api
     container_name: api
+    depends_on: 
+      - client
     expose: 
       - 8000
     environment:
@@ -28,8 +30,6 @@ services:
     ports:
       - 80:80
       - 443:443
-    links:
-      - "server"
     command: nginx -g 'daemon off';
     volumes: 
       - ./data/certs:/etc/nginx/certs

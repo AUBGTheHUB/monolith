@@ -45,5 +45,5 @@ install-gum:
 
 .SILENT: gum 
 gum:
-	bash ./cli.sh || (echo "Probably you don't have GUM installed. Run 'make install-gum'.")
+	bash ./cli.sh
 
