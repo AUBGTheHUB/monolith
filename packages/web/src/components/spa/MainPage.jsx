@@ -27,7 +27,7 @@ const LandingHome = () => {
             <MembersSection />
             <Footer
                 colour={'rgb(21, 76, 121)'}
-                iconcolor={'rgb(162, 164, 166)'}
+                iconcolor={'rgb(120, 120, 120)'}
             />
         </div>
     );

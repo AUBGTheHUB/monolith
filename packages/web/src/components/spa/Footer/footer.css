@@ -15,12 +15,9 @@
     height: 100%;
 }
 .footer-container .social-media a svg {
-    width: 100%;
-    height: 100%;
-    height: 2.5em;
-    width: 2.5em;
+    height: 2em;
+    width: 2em;
     padding: 6px;
-    background-color: transparent;
     color: white;
     border-radius: 50%;
     border: 2px solid transparent;
