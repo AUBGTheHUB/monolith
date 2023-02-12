@@ -6,6 +6,7 @@ import { Anchor, Props } from '../Navigation/NavFactory';
 import { useEffect } from 'react';
 import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
+import { Footer } from '../Footer/Footer';
 import './jobs_section.css';
 
 const anchorList = [
@@ -52,6 +53,7 @@ export const JobsSection = () => {
                         </div>
                     ))}
                 </div>
+                <Footer />
             </div>
         );
     }
