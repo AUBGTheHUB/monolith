@@ -40,7 +40,7 @@ export const JobsSection = () => {
                 <NavBar props={new Props(anchorList, true)} />
 
                 <div className="jobs-section">
-                    <div className="test">
+                    <div className="card-render">
                         {jobs.map((job, index) => (
                             <div key={index} className="jobs-card">
                                 <JobsCard
