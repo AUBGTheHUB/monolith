@@ -60,6 +60,7 @@
     animation-duration: 0.5s;
 }
 .container-content-displayed {
+    overflow: hidden;
     animation-name: slidein;
     animation-duration: 0.5s;
 }
@@ -71,7 +72,7 @@
 .journey-arrow-not-displayed {
     display: none;
 }
-.smth {
+.step-title {
     display: flex;
     width: 100%;
     justify-content: center;

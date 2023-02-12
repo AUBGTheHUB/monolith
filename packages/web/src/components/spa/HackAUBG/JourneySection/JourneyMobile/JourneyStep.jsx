@@ -11,7 +11,7 @@ export const JourneyStep = (props) => {
     const [arrowDown, setArrowDown] = useState('journey-arrow-displayed');
     const [arrowUp, setArrowUp] = useState('journey-arrow-not-displayed');
     const getHeight = () => {
-        const divElement = document.getElementById('test');
+        const divElement = document.getElementById('step-height');
         if (divElement) {
             return divElement.scrollHeight;
         }
@@ -38,7 +38,7 @@ export const JourneyStep = (props) => {
                 getHeight();
             }}
         >
-            <div className="smth">
+            <div className="step-title">
                 {props.title}
                 <div className={arrowUp}>
                     <AiOutlineArrowUp />
@@ -49,7 +49,7 @@ export const JourneyStep = (props) => {
             </div>
 
             <div className={stepContent}>
-                <div id="test">{props.text}</div>
+                <div id="step-height">{props.text}</div>
             </div>
         </div>
     );
