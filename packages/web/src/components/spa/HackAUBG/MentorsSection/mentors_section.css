@@ -27,8 +27,8 @@
 
 .mentors-picture img {
     width: 100%;
-    max-width: 300px;
-    height: 250px;
+    max-width: 360px;
+    height: 280px;
     object-fit: cover;
     border-radius: 10px;
     cursor: pointer;
