@@ -36,23 +36,21 @@ export const JobsSection = () => {
     }, []);
     if (jobs) {
         return (
-            <div className="jobs-and-nav">
+            <div className="jobs-page">
                 <NavBar props={new Props(anchorList, true)} />
 
-                <div className="jobs-section">
-                    <div className="card-render">
-                        {jobs.map((job, index) => (
-                            <div key={index} className="jobs-card">
-                                <JobsCard
-                                    company={job['company']}
-                                    position={job['position']}
-                                    description={job['description']}
-                                    logo={job['logo']}
-                                    link={job['link']}
-                                />
-                            </div>
-                        ))}
-                    </div>
+                <div className="card-section">
+                    {jobs.map((job, index) => (
+                        <div key={index} className="jobs-card">
+                            <JobsCard
+                                company={job['company']}
+                                position={job['position']}
+                                description={job['description']}
+                                logo={job['logo']}
+                                link={job['link']}
+                            />
+                        </div>
+                    ))}
                 </div>
             </div>
         );
