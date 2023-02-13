@@ -14,17 +14,9 @@ CURRENTLY_BUILDING = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
 
-"""
-env vars:
-HUB_MAIL_USERNAME
-HUB_MAIL_PASSWORD
-DOCK_ENV - DEV, PROD
-CERT_DOMAIN - dev.thehub-aubg.com
-"""
-
-ENV = os.environ["DOCK_ENV"]
-API_URL = os.environ["HUB_API_URL"] # $API_URL/api/validate
-WEB_URL = os.environ["HUB_WEB_URL"]
+ENV = os.environ["DOCK_ENV"] # DEV, PROD, STAGING - this is the identifier of the environment in the emails
+API_URL = os.environ["HUB_API_URL"] # e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
+WEB_URL = os.environ["HUB_WEB_URL"] # e.g. dev.thehub-aubg.com or localhost:3000
 CERT_DOMAIN = os.environ["HUB_DOMAIN"] # dev.thehub-aubg.com (without http) --> used for cert renewal
 
 class bcolors:
@@ -51,6 +43,7 @@ def send_mail(msg):
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
     # therefore check up should be done with requests
+
     global BUILD_TRY
     msg = MIMEMultipart('alternative')
     
@@ -65,11 +58,7 @@ def start_docker_compose():
 
     errors = {}
 
-    # if BUILD_RUNNING.is_set():
-        # stop_docker_compose()
-        # BUILD_RUNNING.clear()
-
-    dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ])
+    dc_start = subprocess.run(["sudo", "docker-compose", "up", "--build", "-d" ], stderr=subprocess.PIPE)
     if dc_start.returncode == 0:
         print()     
         
@@ -111,6 +100,7 @@ def start_docker_compose():
             errors['WEB'] = get_web
             errors['API'] = get_api
 
+    errors['BUILD'] = dc_start.stderr.decode('utf-8')
     
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
     msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
@@ -158,21 +148,6 @@ def check_service_up(url: str, service: str):
     
     elif service == "API":
         
-        # BEARER_TOKEN = None
-        # try: 
-            # api_env_file = open("./packages/api/.env", "r")
-        # except Exception as e:
-            # print(bcolors.RED_IN + "Problem reading .env!" + bcolors.CEND)
-            # return e
-
-        # for line in api_env_file.readlines():
-            # if "AUTH_TOKEN" in line:
-                # BEARER_TOKEN = line.replace("AUTH_TOKEN=", "").replace("\n", "").replace("\"", "")
-
-        # if not BEARER_TOKEN:
-            # print(bcolors.RED_IN + "BEARER IS NOT SET!" + bcolors.CEND)
-            # return
-
         try:
             web_request = requests.post(url=url)
         except Exception as e:
@@ -265,27 +240,17 @@ def run_thread(job):
     thread=threading.Thread(target=job)
     thread.start()
 
+
+cron_start_with_new_certs()
+
 schedule.every(1).minutes.do(run_thread, cron_local_test)
 
-schedule.every(30).seconds.do(run_thread, cron_self_healing)
+schedule.every(200).seconds.do(run_thread, cron_self_healing)
 
 schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
 
 schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
 
-# start_docker_compose()
-cron_start_with_new_certs()
-
 while True:
     schedule.run_pending()
     time.sleep(1)
-
-"""
- BUILD IS GOING TO SELF HEAL ONLY IF THERE IS A CASE OF UNREACHABLE LOCAL SERVICES!
-
- e.g. If either WEB or API return something different than 200 when checked within the check_service_up
-      function, a rebuild is going to be triggered:
-
-      1. cron_local_test checks the services and if one of them is down, it changes the state of the shared variable BUILD_RUNNING
-      2. cron_self_healing checks if BUILD_RUNNING is False and if it is, it invokes the docker_compose steps defined in the functions
-"""
