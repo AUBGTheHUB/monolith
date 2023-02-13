@@ -31,7 +31,8 @@
 }
 .job-logo {
     margin-top: 5%;
-    width: 91%;
+    width: 100%;
+    margin-bottom: 5%;
     height: 24vh;
 }
 .jobs-card .job-logo img {
