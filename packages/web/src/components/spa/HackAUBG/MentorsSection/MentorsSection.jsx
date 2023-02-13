@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { url } from '../../../../Global';
+import { url, openNewTab } from '../../../../Global';
 import { MentorsCard } from './MentorsCard';
 import './mentors_section.css';
 
@@ -22,13 +22,7 @@ export const MentorsSection = () => {
             });
     };
 
-    const handleClick = (event) => {
-        return () => {
-            window.open(event, '_blank', 'noopener noreferrer');
-        };
-    };
-
-    const renderMap = () => {
+    const renderMentors = () => {
         if (mentor) {
             return (
                 <div className="mentors-container">
@@ -38,7 +32,7 @@ export const MentorsSection = () => {
                             <div key={index} className="mentors-div">
                                 <MentorsCard
                                     Mentor={mentor}
-                                    handleClick={handleClick(mentor.sociallink)}
+                                    openNewTab={openNewTab(mentor.sociallink)}
                                 />
                             </div>
                         ))}
@@ -50,7 +44,7 @@ export const MentorsSection = () => {
     useEffect(() => {
         getMentors();
     }, []);
-    return <>{renderMap()}</>;
+    return <>{renderMentors()}</>;
 };
 
 export default MentorsSection;

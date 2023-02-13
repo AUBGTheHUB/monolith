@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { url } from '../../../../Global';
+import { url, openNewTab } from '../../../../Global';
 import { JudgesCard } from './JudgesCard';
 import './judges_section.css';
 
@@ -22,13 +22,7 @@ export const JudgesSection = () => {
             });
     };
 
-    const handleClick = (event) => {
-        return () => {
-            window.open(event, '_blank', 'noopener noreferrer');
-        };
-    };
-
-    const renderMap = () => {
+    const renderJudges = () => {
         if (jury) {
             return (
                 <div className="judges-container">
@@ -38,7 +32,7 @@ export const JudgesSection = () => {
                             <div key={index} className="judge-div">
                                 <JudgesCard
                                     Judge={judge}
-                                    handleClick={handleClick(judge.sociallink)}
+                                    openNewTab={openNewTab(judge.sociallink)}
                                 />
                             </div>
                         ))}
@@ -50,7 +44,7 @@ export const JudgesSection = () => {
     useEffect(() => {
         getJury();
     }, []);
-    return <>{renderMap()}</>;
+    return <>{renderJudges()}</>;
 };
 
 export default JudgesSection;
