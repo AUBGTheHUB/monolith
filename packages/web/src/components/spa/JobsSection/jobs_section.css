@@ -19,7 +19,7 @@
     justify-content: center;
 }
 .jobs-card {
-    width: 400px;
+    width: 380px;
     background-color: #fff;
     height: 100%;
     margin-left: 2.5%;
@@ -43,18 +43,15 @@
 .card-content {
     display: flex;
     flex-direction: column;
+    margin-left: 5.5%;
+    margin-right: 5.5%;
 }
 .job-logo {
     align-self: center;
 }
-.job-position {
-    margin-left: 4.5%;
-    margin-right: 4.5%;
-}
 .job-description {
     height: 17vh;
-    margin-left: 4.5%;
-    margin-right: 4.5%;
+
     display: flex;
     flex-wrap: wrap;
     align-content: center;
@@ -69,7 +66,7 @@
 }
 
 .job-button {
-    width: 91%;
+    width: 100%;
     justify-items: end;
     margin-bottom: 5%;
 
