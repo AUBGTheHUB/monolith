@@ -25,13 +25,10 @@ export const JobsSection = () => {
         })
             .then((res) => {
                 setJobs(res.data.data.data);
-                console.log(res.data.data.data);
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            // eslint-disable-next-line no-unused-vars
+            .catch((err) => {});
     };
-
     useEffect(() => {
         getJobs();
     }, []);
@@ -53,6 +50,14 @@ export const JobsSection = () => {
                         </div>
                     ))}
                 </div>
+                <Footer />
+            </div>
+        );
+    } else {
+        return (
+            <div className="jobs-page-error">
+                <NavBar props={new Props(anchorList, true)} />
+                <h1>No jobs available</h1>
                 <Footer />
             </div>
         );

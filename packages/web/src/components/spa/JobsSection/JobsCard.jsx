@@ -3,10 +3,6 @@ import React from 'react';
 export const JobsCard = (props) => {
     return (
         <div className="card-content">
-            {/* <p>{props.company}</p>
-            <p>{props.position}</p>
-            <p>{props.description}</p>
-            <img src={props.logo} alt="" /> */}
             <div className="job-logo">
                 <img src={props.logo} />
             </div>

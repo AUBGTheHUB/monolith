@@ -8,8 +8,12 @@
     --text-color: #333;
     --placeholder-color: white;
 }
-.jobs-page {
+.jobs-page,
+.jobs-page-error {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+}
+.jobs-page-error {
+    height: 100vh;
 }
 .card-section {
     display: flex;
