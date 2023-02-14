@@ -1,5 +1,5 @@
 .awards-section-hack-aubg-container {
-    padding-bottom: 5%;
+    margin-bottom: 5%;
     display: flex;
     flex-direction: column;
     background-color: #222222;
@@ -12,8 +12,8 @@
     font-family: 'Roboto';
     font-size: 2em;
     font-weight: 900;
-    padding-top: 4%;
-    margin-bottom: 2%;
+    margin-top: 2%;
+    margin-bottom: 1%;
 }
 
 .awards-section-images-container {
@@ -21,8 +21,7 @@
     align-items: flex-end;
     width: 500px;
     height: 250px;
-    margin-bottom: 2%;
-    padding-top: 2%;
+    margin: 2% 0%;
     font-family: 'Roboto';
 }
 
@@ -67,22 +66,37 @@
     font-family: 'Roboto';
     font-weight: 400;
     font-size: large;
+    margin-bottom: 15%;
 }
 
 @media only screen and (max-width: 900px) {
     .awards-section-images-container {
         width: 100%;
         height: 40%;
-        padding: 9% 11% 0% 11%;
+        margin: 9% 15% 0% 15%;
+    }
+
+    .awards-section-images-container {
+        margin: 15% 10% 0% 10%;
     }
 
     #awards-info-text {
-        padding: 4% 11% 4% 14%;
+        margin: 15% 11% 20% 11%;
         font-size: small;
     }
 
     .award-money {
         font-size: medium;
         text-align: center;
+    }
+
+    #silver-img {
+        margin-left: 8%;
+    }
+
+    #bronze-img {
+        max-width: 70%;
+        margin-left: 17%;
+        margin-bottom: 4%;
     }
 }
