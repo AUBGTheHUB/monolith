@@ -16,6 +16,13 @@ const anchorList = [
 ];
 
 export const JobsSection = () => {
+    const [bodyHeight, setBodyHeight] = useState(0);
+    let currentBodyHeight = document.documentElement.scrollHeight;
+
+    if (currentBodyHeight !== bodyHeight) {
+        setBodyHeight(currentBodyHeight);
+    }
+    console.log();
     const [jobs, setJobs] = useState([{}]);
 
     const getJobs = () => {
@@ -37,7 +44,12 @@ export const JobsSection = () => {
             <div className="jobs-page">
                 <NavBar props={new Props(anchorList, true)} />
 
-                <div className="card-section">
+                <div
+                    className="card-section"
+                    style={{
+                        minHeight: currentBodyHeight - 0.2 * currentBodyHeight
+                    }}
+                >
                     {jobs.map((job, index) => (
                         <div key={index} className="jobs-card">
                             <JobsCard
