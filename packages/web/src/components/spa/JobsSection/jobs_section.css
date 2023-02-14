@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
 :root {
     --main-color: #32baf4;
     --shadow-color: #467edd;
@@ -11,11 +9,18 @@
 .jobs-page,
 .jobs-page-error {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    position: relative;
+    min-height: 100vh;
 }
-.jobs-page-error {
-    height: 100vh;
+
+.jobs-page .footer-container,
+.jobs-page-error .footer-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 .card-section {
+    /* height: 87vh; */
     display: flex;
     flex-wrap: wrap;
     margin-left: 6%;
@@ -23,7 +28,7 @@
     justify-content: center;
 }
 .jobs-card {
-    width: 46vh;
+    width: 400px;
     background-color: #fff;
     height: 100%;
     margin-left: 2.5%;
