@@ -46,7 +46,7 @@
     object-fit: contain;
 }
 
-.card-content {
+.job-card-content {
     display: flex;
     flex-direction: column;
     margin-left: 5.5%;

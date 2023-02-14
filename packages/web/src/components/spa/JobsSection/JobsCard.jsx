@@ -2,7 +2,7 @@ import React from 'react';
 
 export const JobsCard = (props) => {
     return (
-        <div className="card-content">
+        <div className="job-card-content">
             <div className="job-logo">
                 <img src={props.logo} />
             </div>
