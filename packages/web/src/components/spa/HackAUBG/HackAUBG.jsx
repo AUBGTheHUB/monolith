@@ -1,4 +1,5 @@
 import React from 'react';
+import { JourneySection } from './JourneySection/JourneySection';
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
@@ -15,10 +16,10 @@ export const HackAUBG = () => {
     makeBodyScrollable();
 
     const anchorList = [
-        new Anchor('About', '#AboutSection'),
-        new Anchor('Schedule', '#team'),
-        new Anchor('Grading criteria', 'jobs'),
-        new Anchor('FAQ', 'jobs')
+        new Anchor('About', '#about'),
+        new Anchor('Schedule', '#schedule'),
+        new Anchor('Grading Criteria', '#grading'),
+        new Anchor('FAQ', '#faq')
     ];
 
     return (
@@ -40,6 +41,7 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
+            <JourneySection />
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
