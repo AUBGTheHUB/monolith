@@ -9,18 +9,16 @@
 .jobs-page,
 .jobs-page-error {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-    position: relative;
     min-height: 100vh;
 }
 
-.jobs-page .footer-container,
 .jobs-page-error .footer-container {
-    position: absolute;
     bottom: 0;
     width: 100%;
+    position: fixed;
 }
 .card-section {
-    /* height: 87vh; */
+    min-height: 84vh;
     display: flex;
     flex-wrap: wrap;
     margin-left: 6%;
