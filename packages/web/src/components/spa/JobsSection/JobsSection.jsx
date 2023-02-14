@@ -45,12 +45,12 @@ export const JobsSection = () => {
                 <NavBar props={new Props(anchorList, true)} />
 
                 <div
-                    className="card-section"
+                    className="jobs-card-section"
                     style={{
                         minHeight: currentBodyHeight - 0.2 * currentBodyHeight
                     }}
                 >
-                    <div className="jobs-card">
+                    <div className="jobs-section-body">
                         {jobs.map((job, index) => (
                             <JobsCard
                                 key={index}
