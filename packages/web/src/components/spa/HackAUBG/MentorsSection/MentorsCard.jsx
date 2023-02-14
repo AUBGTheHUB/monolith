@@ -1,7 +1,6 @@
 import React from 'react';
-import { openNewTab } from '../../../../Global';
 
-export const MentorsCard = ({ Mentor }) => {
+export const MentorsCard = ({ Mentor, openNewTab }) => {
     return (
         <div className="mentor-card">
             <div className="mentor-image">
