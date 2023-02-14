@@ -11,7 +11,8 @@
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
     min-height: 100vh;
 }
-.jobs-page .footer-container {
+.jobs-page .footer-container,
+.jobs-page-error .footer-container {
     margin-top: 4vh;
 }
 .card-section {

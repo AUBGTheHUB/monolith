@@ -69,7 +69,13 @@ export const JobsSection = () => {
         return (
             <div className="jobs-page-error">
                 <NavBar props={new Props(anchorList, true)} />
-                <h1>No jobs available</h1>
+                <div
+                    style={{
+                        minHeight: currentBodyHeight - 0.2 * currentBodyHeight
+                    }}
+                >
+                    <h1>No jobs available</h1>
+                </div>
                 <Footer />
             </div>
         );
