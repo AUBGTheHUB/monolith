@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderSponsors = () => {
     const history = useNavigate();
-    const [sponsors, setSponsors] = useState([{}]);
+    const [sponsors, setSponsors] = useState();
 
     const getJobs = () => {
         axios({

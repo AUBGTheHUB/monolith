@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderJury = () => {
     const history = useNavigate();
-    const [jury, setJury] = useState([{}]);
+    const [jury, setJury] = useState();
 
     const getJury = () => {
         axios({
