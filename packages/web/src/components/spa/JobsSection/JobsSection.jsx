@@ -33,43 +33,38 @@ export const JobsSection = () => {
         getJobs();
     }, []);
 
-    // eslint-disable-nextline no-extra-boolean-cost
-    if (jobs) {
-        return (
-            <>
-                <div className="jobs-page">
-                    <NavBar props={new Props(anchorList, true)} />
-
-                    <div className="jobs-card-section">
-                        <div className="jobs-section-body">
-                            {jobs.map((job, index) => (
-                                <JobsCard
-                                    key={index}
-                                    company={job['company']}
-                                    position={job['position']}
-                                    description={job['description']}
-                                    logo={job['logo']}
-                                    link={job['link']}
-                                />
-                            ))}
-                        </div>
+    const DisplayJobs = () => {
+        if (jobs) {
+            return (
+                <div className="jobs-card-section">
+                    <div className="jobs-section-body">
+                        {jobs.map((job, index) => (
+                            <JobsCard
+                                key={index}
+                                company={job['company']}
+                                position={job['position']}
+                                description={job['description']}
+                                logo={job['logo']}
+                                link={job['link']}
+                            />
+                        ))}
                     </div>
                 </div>
-                <Footer
-                    colour={'rgb(21, 76, 121)'}
-                    iconcolor={'rgb(120, 120, 120)'}
-                />
-            </>
+            );
+        }
+
+        return (
+            <div>
+                <h1>No jobs available</h1>
+            </div>
         );
-    }
+    };
 
     return (
         <>
-            <div className="jobs-page-error">
+            <div className="jobs-page">
                 <NavBar props={new Props(anchorList, true)} />
-                <div>
-                    <h1>No jobs available</h1>
-                </div>
+                {DisplayJobs()}
             </div>
             <Footer
                 colour={'rgb(21, 76, 121)'}
