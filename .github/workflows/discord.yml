@@ -2,11 +2,11 @@ on:
   pull_request:
 jobs:
   send_notification:
-  runs_on: ubuntu-latest
-  steps:
-  - name: Discord notification
-    env:
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-    uses: Ilshidur/action-discord@master
-    with:
-      args: '{{ EVENT_PAYLOAD.pull_request.id }} has been opened'
+    runs_on: ubuntu-latest
+    steps:
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: '{{ EVENT_PAYLOAD.pull_request.id }} has been opened'
