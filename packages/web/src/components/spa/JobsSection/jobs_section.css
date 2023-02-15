@@ -9,8 +9,9 @@
 .jobs-page,
 .jobs-page-error {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
-    min-height: 100vh;
+    min-height: 94vh;
 }
+
 .jobs-page .footer-container,
 .jobs-page-error .footer-container {
     margin-top: 4vh;

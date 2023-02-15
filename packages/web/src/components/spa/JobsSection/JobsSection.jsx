@@ -16,13 +16,6 @@ const anchorList = [
 ];
 
 export const JobsSection = () => {
-    const [bodyHeight, setBodyHeight] = useState(0);
-    let currentBodyHeight = document.documentElement.scrollHeight;
-
-    if (currentBodyHeight !== bodyHeight) {
-        setBodyHeight(currentBodyHeight);
-    }
-    console.log();
     const [jobs, setJobs] = useState([{}]);
 
     const getJobs = () => {
@@ -39,49 +32,45 @@ export const JobsSection = () => {
     useEffect(() => {
         getJobs();
     }, []);
+
     if (jobs) {
         return (
-            <div className="jobs-page">
-                <NavBar props={new Props(anchorList, true)} />
+            <>
+                <div className="jobs-page">
+                    <NavBar props={new Props(anchorList, true)} />
 
-                <div
-                    className="jobs-card-section"
-                    style={{
-                        minHeight: currentBodyHeight - 0.2 * currentBodyHeight
-                    }}
-                >
-                    <div className="jobs-section-body">
-                        {jobs.map((job, index) => (
-                            <JobsCard
-                                key={index}
-                                company={job['company']}
-                                position={job['position']}
-                                description={job['description']}
-                                logo={job['logo']}
-                                link={job['link']}
-                            />
-                        ))}
+                    <div className="jobs-card-section">
+                        <div className="jobs-section-body">
+                            {jobs.map((job, index) => (
+                                <JobsCard
+                                    key={index}
+                                    company={job['company']}
+                                    position={job['position']}
+                                    description={job['description']}
+                                    logo={job['logo']}
+                                    link={job['link']}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
                 <Footer
                     colour={'rgb(21, 76, 121)'}
                     iconcolor={'rgb(120, 120, 120)'}
                 />
-            </div>
+            </>
         );
     } else {
         return (
-            <div className="jobs-page-error">
-                <NavBar props={new Props(anchorList, true)} />
-                <div
-                    style={{
-                        minHeight: currentBodyHeight - 0.2 * currentBodyHeight
-                    }}
-                >
-                    <h1>No jobs available</h1>
+            <>
+                <div className="jobs-page-error">
+                    <NavBar props={new Props(anchorList, true)} />
+                    <div>
+                        <h1>No jobs available</h1>
+                    </div>
                 </div>
                 <Footer />
-            </div>
+            </>
         );
     }
 };
