@@ -63,7 +63,10 @@ export const JobsSection = () => {
                         ))}
                     </div>
                 </div>
-                <Footer />
+                <Footer
+                    colour={'rgb(21, 76, 121)'}
+                    iconcolor={'rgb(120, 120, 120)'}
+                />
             </div>
         );
     } else {
