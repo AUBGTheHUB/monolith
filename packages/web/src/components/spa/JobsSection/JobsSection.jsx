@@ -50,18 +50,17 @@ export const JobsSection = () => {
                         minHeight: currentBodyHeight - 0.2 * currentBodyHeight
                     }}
                 >
-                    <div className="jobs-section-body">
-                        {jobs.map((job, index) => (
+                    {jobs.map((job, index) => (
+                        <div className="jobs-section-body" key={index}>
                             <JobsCard
-                                key={index}
                                 company={job['company']}
                                 position={job['position']}
                                 description={job['description']}
                                 logo={job['logo']}
                                 link={job['link']}
                             />
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
                 <Footer
                     colour={'rgb(21, 76, 121)'}
