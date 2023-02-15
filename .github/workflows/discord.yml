@@ -1,0 +1,10 @@
+on:
+  pull_request:
+jobs:
+  send_notification:
+  - name: Discord notification
+    env:
+    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+    uses: Ilshidur/action-discord@master
+    with:
+    args: '{{ EVENT_PAYLOAD.pull_request.id }} has been opened'
