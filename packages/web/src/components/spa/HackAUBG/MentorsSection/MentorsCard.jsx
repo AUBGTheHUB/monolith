@@ -1,13 +1,16 @@
 import React from 'react';
+import { openNewTab } from '../../../../Global';
 
-export const MentorsCard = ({ Mentor, openNewTab }) => {
+export const MentorsCard = ({ mentor }) => {
     return (
         <div className="mentor-card">
             <div className="mentor-image">
-                <img src={Mentor.profilepicture} onClick={openNewTab} />
-            </div>
-            <div className="mentor-link">
-                <a href={Mentor.sociallink}></a>
+                <img
+                    src={mentor.profilepicture}
+                    onClick={() => {
+                        openNewTab(mentor.sociallink);
+                    }}
+                />
             </div>
         </div>
     );

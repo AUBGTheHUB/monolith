@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { url, openNewTab } from '../../../../Global';
+import { url } from '../../../../Global';
 import { MentorsCard } from './MentorsCard';
 import './mentors_section.css';
 
@@ -30,10 +30,7 @@ export const MentorsSection = () => {
                     <div className="mentors-picture">
                         {mentor.map((mentor, index) => (
                             <div key={index} className="mentors-div">
-                                <MentorsCard
-                                    Mentor={mentor}
-                                    openNewTab={openNewTab(mentor.sociallink)}
-                                />
+                                <MentorsCard mentor={mentor} />
                             </div>
                         ))}
                     </div>

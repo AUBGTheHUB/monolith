@@ -39,9 +39,7 @@ const checkHashAndScroll = () => {
 };
 
 export const openNewTab = (url) => {
-    return () => {
-        window.open(url, '_blank', 'noopener noreferrer');
-    };
+    window.open(url, '_blank');
 };
 
 export { url, checkHashAndScroll };
