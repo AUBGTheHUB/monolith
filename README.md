@@ -67,6 +67,16 @@ spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc
 make run-api
 ```
 
+* Debug:
+1. Put breakpoints:
+<img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
+
+2. Go to `main.go`, open `Run and Debug` and choose the `Debug API` task:
+<img src="https://i.ibb.co/K0GnCY9/image.png" border="0">  
+
+3. Click the green arrow icon:
+<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">
+
 ### Frontend 
 * Installation from `root` (needed when there are new packages added to `package.json`): 
 ```shell
