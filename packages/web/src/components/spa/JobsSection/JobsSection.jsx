@@ -61,17 +61,17 @@ export const JobsSection = () => {
                 />
             </>
         );
-    } else {
-        return (
-            <>
-                <div className="jobs-page-error">
-                    <NavBar props={new Props(anchorList, true)} />
-                    <div>
-                        <h1>No jobs available</h1>
-                    </div>
-                </div>
-                <Footer />
-            </>
-        );
     }
+
+    return (
+        <>
+            <div className="jobs-page-error">
+                <NavBar props={new Props(anchorList, true)} />
+                <div>
+                    <h1>No jobs available</h1>
+                </div>
+            </div>
+            <Footer />
+        </>
+    );
 };
