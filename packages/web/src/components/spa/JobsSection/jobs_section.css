@@ -16,6 +16,7 @@
 .jobs-page-error .footer-container {
     margin-top: 4vh;
 }
+
 .jobs-card-section {
     display: flex;
     margin-left: 6%;
@@ -23,6 +24,7 @@
     justify-content: center;
     align-items: center;
 }
+
 .jobs-section-body {
     justify-content: center;
     width: 100%;
@@ -32,6 +34,7 @@
     margin-top: 2.5%;
     margin-bottom: 2.5%;
 }
+
 .job-logo {
     margin-top: 5%;
     width: 90%;
@@ -40,6 +43,7 @@
     margin-left: 5.5%;
     margin-right: 5.5%;
 }
+
 .jobs-section-body .job-logo img {
     width: 100%;
     height: 100%;
@@ -69,13 +73,16 @@
     flex-wrap: wrap;
     align-content: center;
 }
+
 .job-position {
     align-self: center;
     width: 90%;
 }
+
 .job-position h3 {
     font-size: 1.3em;
 }
+
 .job-description p {
     text-align: justify;
     margin: 0;
@@ -89,6 +96,7 @@
 
     align-self: center;
 }
+
 .job-button a {
     width: 100%;
     justify-content: center;
@@ -132,6 +140,7 @@
         margin-right: 3.5%;
     }
 }
+
 @media only screen and (max-width: 300px) {
     .job-description {
         height: 25vh;
