@@ -6,21 +6,18 @@
     --text-color: #333;
     --placeholder-color: white;
 }
-.jobs-page,
-.jobs-page-error {
+.jobs-page {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
     min-height: 94vh;
 }
 
 @media only screen and (max-width: 900px) {
-    .jobs-page,
-    .jobs-page-error {
+    .jobs-page {
         min-height: 90vh;
     }
 }
 
-.jobs-page .footer-container,
-.jobs-page-error .footer-container {
+.jobs-page .footer-container {
     margin-top: 4vh;
 }
 
