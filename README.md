@@ -2,10 +2,11 @@
 
 [![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
 
-## How to run the project
-`make` <em>commands should be run in the `root` directory of the project</em>  
-`npm run` <em>commands should be run in the `web` directory</em>   
+## How to set up the project
+
+Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
 ##### Recommended Text Editor: `VSCode`
+---
 
 ### Adding your SSH key to the ssh-agent and GitHub
 ⚠️ This step is a prerequisite for the installation scripts
@@ -15,6 +16,7 @@ Here is the guide:
 
 * [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
+---
 ### OSX installation
 
 Install brew and follow the instructions (sometimes it asks you to run some additional commands):
@@ -36,7 +38,7 @@ cd ~/go/src/spa-website-2022 && make post-osx
 * `nvm command not found` - you have to log out of your current user and log in again.
 * golang packages not found - run the make scripts with `sudo`
 
-
+---
 ### WSL installation
 * For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
 ```bash
@@ -51,9 +53,9 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 ### Easy access to repo
 
 ```bash
-spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc
+spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
 ```
-
+---
 ### Backend
 * Installation from `root` (not needed if you've run one of the above mentioned installations): 
 ```markdown
@@ -62,12 +64,12 @@ spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc
 3. download the .env file from Google Drive and place it in root/packages/api
 ```
 
-* Run:
+* __Run__:
 ```shell
 make run-api
 ```
 
-* Debug:
+* ### __Debug__:
 1. Put breakpoints:
 <img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
 
@@ -75,8 +77,21 @@ make run-api
 <img src="https://i.ibb.co/K0GnCY9/image.png" border="0">  
 
 3. Click the green arrow icon:
-<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">
+<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">  
 
+
+
+
+* ### __How to resolve `could not import module ...`__:
+<img src="https://i.ibb.co/KmHqm1q/image.png" alt="image" border="0">
+
+
+* Open `/packages/api` as a Workspace folder:
+    <img src="https://i.ibb.co/tbTs4Wg/image.png" alt="image" border="0">
+
+* Open VSCode directly from within `packages/api` (e.g. `spa && cd packages/api && code .`)
+
+---
 ### Frontend 
 * Installation from `root` (needed when there are new packages added to `package.json`): 
 ```shell
@@ -97,7 +112,7 @@ make run-dev # web is going to make requests towards a deployed instance of the 
 ```shell
 make lint  # makes your code more readable 🥰
 ```
-
+---
 
 ### Git hooks
 
@@ -111,6 +126,7 @@ This is going to execute a script which will <em>install</em> git commit hooks.
 The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.  
 The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!   
 
+---
 ### VSCode plugins
 * Install needed plugins by running the following phony:
 ```
