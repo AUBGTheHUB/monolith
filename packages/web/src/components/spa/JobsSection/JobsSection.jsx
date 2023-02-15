@@ -16,7 +16,7 @@ const anchorList = [
 ];
 
 export const JobsSection = () => {
-    const [jobs, setJobs] = useState([{}]);
+    const [jobs, setJobs] = useState([]);
 
     const getJobs = () => {
         axios({
@@ -33,6 +33,7 @@ export const JobsSection = () => {
         getJobs();
     }, []);
 
+    // eslint-disable-nextline no-extra-boolean-cost
     if (jobs) {
         return (
             <>
