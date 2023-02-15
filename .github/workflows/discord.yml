@@ -2,7 +2,7 @@ on:
   pull_request:
 jobs:
   send_notification:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Discord notification
       env:
