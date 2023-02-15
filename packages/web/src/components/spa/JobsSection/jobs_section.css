@@ -12,6 +12,13 @@
     min-height: 94vh;
 }
 
+@media only screen and (max-width: 900px) {
+    .jobs-page,
+    .jobs-page-error {
+        min-height: 90vh;
+    }
+}
+
 .jobs-page .footer-container,
 .jobs-page-error .footer-container {
     margin-top: 4vh;

@@ -16,7 +16,7 @@ const anchorList = [
 ];
 
 export const JobsSection = () => {
-    const [jobs, setJobs] = useState([]);
+    const [jobs, setJobs] = useState();
 
     const getJobs = () => {
         axios({
@@ -71,7 +71,10 @@ export const JobsSection = () => {
                     <h1>No jobs available</h1>
                 </div>
             </div>
-            <Footer />
+            <Footer
+                colour={'rgb(21, 76, 121)'}
+                iconcolor={'rgb(120, 120, 120)'}
+            />
         </>
     );
 };
