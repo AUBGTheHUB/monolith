@@ -9,4 +9,4 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: '{{ EVENT_PAYLOAD.pull_request.id }} has been opened'
+        args: "```css\nPR-{{ EVENT_PAYLOAD.pull_request.number }}: '{{ EVENT_PAYLOAD.pull_request.title }}' has been opened by {{ EVENT_PAYLOAD.pull_request.user.login }}\n``` \n [Go To PR:]({{ EVENT_PAYLOAD.pull_request.html_url }})"
