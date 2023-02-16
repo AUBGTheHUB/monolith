@@ -26,7 +26,7 @@ type TeamMember struct {
 
 type EditTeamMember struct {
 	FullName              string `json:"fullname"`
-	TeamNoTeam            bool   `json: "teamnoteam"`
+	TeamNoTeam            bool   `json:"teamnoteam"`
 	TeamName              string `json:"teamname"`
 	Email                 string `json:"email"`
 	School                string `json:"school"`

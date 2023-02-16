@@ -41,6 +41,7 @@ const RenderPartners = () => {
                             />
                             <Card.Body>
                                 <Card.Title>{partner['company']}</Card.Title>
+                                <Card.Text>{partner['category']}</Card.Text>
                                 <Button
                                     variant="primary"
                                     onClick={() => {

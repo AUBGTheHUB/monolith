@@ -13,7 +13,8 @@ const SponsorsActions = () => {
     const [formState, setFormState] = useState({
         profilepicture: '',
         company: '',
-        sociallink: ''
+        sociallink: '',
+        category: ''
     });
 
     const handleInputChange = (e) => {
@@ -52,7 +53,7 @@ const SponsorsActions = () => {
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('Mentor info has been edited');
+                console.log('Sponsor info has been edited');
                 history(-1);
             })
             .catch((err) => {
@@ -71,6 +72,7 @@ const SponsorsActions = () => {
                         />
                         <Card.Body>
                             <Card.Title>{sponsor_data['company']}</Card.Title>
+                            <Card.Text>{sponsor_data['category']}</Card.Text>
                             <Button
                                 variant="primary"
                                 onClick={() => {
@@ -123,6 +125,22 @@ const SponsorsActions = () => {
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="formBasicText">
+                            <Form.Label>Category</Form.Label>
+                            <Form.Select
+                                type="text"
+                                name="category"
+                                onChange={handleInputChange}
+                            >
+                                <option value="">None</option>
+                                <option value="gold">Gold</option>
+                                <option value="silver">Silver</option>
+                                <option value="bronze">Bronze</option>
+                                <option value="custom">Custom</option>
+                            </Form.Select>
+                        </Form.Group>
+
                         <Button
                             variant="primary"
                             type="button"
