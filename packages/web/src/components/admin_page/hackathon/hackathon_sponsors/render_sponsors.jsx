@@ -41,6 +41,7 @@ const RenderSponsors = () => {
                             />
                             <Card.Body>
                                 <Card.Title>{sponsor['company']}</Card.Title>
+                                <Card.Text>{sponsor['category']}</Card.Text>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
