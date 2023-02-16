@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderPartners = () => {
     const history = useNavigate();
-    const [partners, setPartners] = useState([{}]);
+    const [partners, setPartners] = useState();
 
     const getPartners = () => {
         axios({
