@@ -157,7 +157,7 @@
 
 @media (hover: hover) and (pointer: fine) {
     .job-card-content:hover {
-        transform: translateY(-2%) rotate(2deg);
+        transform: translateY(-2%) rotate(0deg);
         box-shadow: 0 1.5% 2% #467edd;
         cursor: pointer;
         z-index: 1;
