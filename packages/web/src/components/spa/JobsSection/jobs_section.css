@@ -76,6 +76,8 @@
     display: flex;
     flex-wrap: wrap;
     align-content: center;
+    margin-top: 2.5%;
+    margin-bottom: 4.5%;
 }
 
 .job-position {
@@ -88,9 +90,11 @@
 }
 
 .job-description p {
+    height: 100%;
     text-align: justify;
     margin: 0;
     font-size: 0.9em;
+    overflow-y: scroll;
 }
 
 .job-button {
