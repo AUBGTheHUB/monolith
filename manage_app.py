@@ -97,10 +97,16 @@ def start_docker_compose():
             send_mail(msg)
 
             current_commit = subprocess.run(
-                ["git", "log", "-1", "--pretty=%B", "|", "sed", "'1q'"], capture_output=True, text=True)
+                ["git", "log", "-1", "--pretty=%B"], check=True, capture_output=True)
+
+            current_commit = subprocess.run(
+                ["sed", "1q"], input=current_commit.stdout, capture_output=True)
+
+            current_commit = current_commit.stdout.decode('utf-8').strip()
+
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"DEPLOYMENT: {current_commit.stdout}"
+                "content": f"🔔: {current_commit}\n ✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
