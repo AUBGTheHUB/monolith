@@ -27,6 +27,8 @@ WEB_URL = os.environ["HUB_WEB_URL"]
 CERT_DOMAIN = os.environ["HUB_DOMAIN"]
 DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
 
+REPO_URL = "https://github.com/AUBGTheHUB/spa-website-2022"  # remove last backlash
+
 
 class bcolors:
     YELLOW_IN = '\033[33m'
@@ -78,6 +80,12 @@ def start_docker_compose():
 
         return current_commit.stdout.decode('utf-8').strip()
 
+    def get_commit_url():
+
+        hash = subprocess.run(['git', 'rev-parse', 'HEAD'],
+                              capture_output=True, text=True)
+        return f"{REPO_URL}/commit/{hash.stdout}"
+
     dc_start = subprocess.run(
         ["sudo", "docker-compose", "up", "--build", "-d"], stderr=subprocess.PIPE)
     if dc_start.returncode == 0:
@@ -107,7 +115,7 @@ def start_docker_compose():
 
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: {get_current_commit()}\n ✅: Successfully Deployed "
+                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n ✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
@@ -139,7 +147,7 @@ def start_docker_compose():
         if BUILD_TRY >= 2:
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: {get_current_commit()}\n ❌: Build Failed"
+                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n ❌: Build Failed"
             })
             os._exit(1)
 
