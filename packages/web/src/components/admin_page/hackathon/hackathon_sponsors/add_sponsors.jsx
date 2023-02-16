@@ -86,6 +86,7 @@ const AddSponsors = () => {
                             onChange={handleInputChange}
                         >
                             <option value="">None</option>
+                            <option value="platinum">Platinum</option>
                             <option value="gold">Gold</option>
                             <option value="silver">Silver</option>
                             <option value="bronze">Bronze</option>
@@ -100,7 +101,7 @@ const AddSponsors = () => {
                             addNewJob();
                         }}
                     >
-                        Add new mentor
+                        Add sponsor
                     </Button>
                 </Form>
             </div>
