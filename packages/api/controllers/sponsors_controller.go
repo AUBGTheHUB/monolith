@@ -21,13 +21,13 @@ var sponsorsCollection *mongo.Collection = configs.GetCollection(configs.DB, "sp
 func CreateSponsor(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
-	bearer_token := c.Get("BEARER-TOKEN")
+	// bearer_token := c.Get("BEARER-TOKEN")
 
 	var sponsor models.Sponsors
 	defer cancel()
-	if bearer_token != configs.ReturnAuthToken() {
-		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
-	}
+	// if bearer_token != configs.ReturnAuthToken() {
+	// 	return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	// }
 
 	if err := c.BodyParser(&sponsor); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -81,6 +81,11 @@ func EditSponsor(c *fiber.Ctx) error {
 	}
 	if newSponsor.ProfilePicture != "" {
 		jury_map["profilepicture"] = newSponsor.ProfilePicture
+		flag = true
+	}
+
+	if newSponsor.Category != "" {
+		jury_map["category"] = newSponsor.Category
 		flag = true
 	}
 
