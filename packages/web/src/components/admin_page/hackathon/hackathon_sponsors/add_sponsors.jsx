@@ -12,7 +12,8 @@ const AddSponsors = () => {
     const [formState, setFormState] = useState({
         profilepicture: '',
         company: '',
-        sociallink: ''
+        sociallink: '',
+        category: ''
     });
 
     const handleInputChange = (e) => {
@@ -75,6 +76,21 @@ const AddSponsors = () => {
                             name="sociallink"
                             onChange={handleInputChange}
                         />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Category</Form.Label>
+                        <Form.Select
+                            type="text"
+                            name="category"
+                            onChange={handleInputChange}
+                        >
+                            <option value="">None</option>
+                            <option value="gold">Gold</option>
+                            <option value="silver">Silver</option>
+                            <option value="bronze">Bronze</option>
+                            <option value="custom">Custom</option>
+                        </Form.Select>
                     </Form.Group>
 
                     <Button
