@@ -69,6 +69,15 @@ def start_docker_compose():
 
     errors = {}
 
+    def get_current_commit():
+        current_commit = subprocess.run(
+            ["git", "log", "-1", "--pretty=%B"], check=True, capture_output=True)
+
+        current_commit = subprocess.run(
+            ["sed", "1q"], input=current_commit.stdout, capture_output=True)
+
+        return current_commit.stdout.decode('utf-8').strip()
+
     dc_start = subprocess.run(
         ["sudo", "docker-compose", "up", "--build", "-d"], stderr=subprocess.PIPE)
     if dc_start.returncode == 0:
@@ -96,17 +105,9 @@ def start_docker_compose():
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
 
-            current_commit = subprocess.run(
-                ["git", "log", "-1", "--pretty=%B"], check=True, capture_output=True)
-
-            current_commit = subprocess.run(
-                ["sed", "1q"], input=current_commit.stdout, capture_output=True)
-
-            current_commit = current_commit.stdout.decode('utf-8').strip()
-
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: {current_commit}\n ✅: Successfully Deployed "
+                "content": f"🔔: {get_current_commit()}\n ✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
@@ -136,6 +137,10 @@ def start_docker_compose():
 
     with lock:
         if BUILD_TRY >= 2:
+            requests.post(DISCORD_WH, headers={
+                          "Content-Type": "application/x-www-form-urlencoded"}, data={
+                "content": f"🔔: {get_current_commit()}\n ❌: Build Failed"
+            })
             os._exit(1)
 
 
