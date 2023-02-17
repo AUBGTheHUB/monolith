@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderMentors = () => {
     const history = useNavigate();
-    const [mentors, setMentors] = useState([{}]);
+    const [mentors, setMentors] = useState();
 
     const getJobs = () => {
         axios({
