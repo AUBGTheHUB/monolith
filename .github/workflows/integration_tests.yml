@@ -1,0 +1,13 @@
+name: Integration Tests
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+env:
+  CON_STR: '${{ secrets.CON_STR }}'
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Integration Tests
+        run: cd ./packages/api && docker build . --target test --build-arg CON_STR=$CON_STR
