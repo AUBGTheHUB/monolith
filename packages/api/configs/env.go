@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var token string = GenerateToken(32)
+var token string = SetToken()
 
 /*
 	Generates a random string with fixed length,
@@ -34,12 +34,23 @@ func ReturnAuthToken() string {
 	return token
 }
 
-func SetToken() {
-	token = GenerateToken(32)
+func SetToken() string {
+	godotenv.Load()
+
+	var token string
+
+	if os.Getenv("IS_TEST") == "true" {
+		token = "TEST_TOKEN"
+	} else {
+		token = GenerateToken(32)
+	}
+
+	return token
 }
 
 func EnvMongoURI() string {
 	err := godotenv.Load()
+
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
