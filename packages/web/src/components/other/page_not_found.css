@@ -14,12 +14,12 @@
 .page-not-found-logo p {
     margin-bottom: 0px !important;
     color: #fff;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 500;
     margin-left: 0.5%;
 }
 .page-not-found-logo img {
-    width: 4vh;
+    width: 8vh;
 }
 .background-not-found {
     display: flex;
