@@ -33,7 +33,3 @@ FROM build as final
 EXPOSE 8000
 
 CMD [ "/api"]
-
-
-
-
