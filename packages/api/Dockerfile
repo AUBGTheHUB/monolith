@@ -25,8 +25,7 @@ ENV CON_STR=${CON_STR}
 
 RUN echo -e "IS_TEST=true\nMONGOURI=${CON_STR}" > tests/.env
 
-RUN go test ./tests -v
-
+RUN export CGO_ENABLED=0 && go test ./tests -v
 
 
 FROM build as final
