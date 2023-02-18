@@ -1,5 +1,7 @@
 # @AUBGTheHUB's Single-Page Application
 
+[![Integration Tests](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml)
+
 [![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
 
 ## How to set up the project
