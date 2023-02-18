@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { url } from '../../../Global';
+import { checkBrowserValid, url } from '../../../Global';
 import { Carousel, Custom } from 'react-hovering-cards-carousel';
 import { MembersCard } from './MembersCard';
 import { useMediaQuery } from 'react-responsive';
@@ -8,7 +8,9 @@ import './members.css';
 
 export const MembersSection = () => {
     const [members, setMembers] = useState();
+    // eslint-disable-next-line
 
+    const isVisible = checkBrowserValid();
     const isMobile = useMediaQuery({ query: '(max-width: 1000px)' });
     const isFoldRes = useMediaQuery({ query: '(max-width: 350px)' });
 
@@ -37,7 +39,7 @@ export const MembersSection = () => {
         getMembers();
     }, []);
 
-    if (members) {
+    if (members && isVisible) {
         return (
             <>
                 <div
