@@ -9,10 +9,9 @@
 .jobs-page {
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
     min-height: 94vh;
-    animation: createBox 1s;
 }
 
-@keyframes createBox {
+@keyframes jobsFadeIn {
     from {
         opacity: 0;
     }
@@ -37,6 +36,7 @@
     margin-right: 6%;
     justify-content: center;
     align-items: center;
+    animation: jobsFadeIn 1s;
 }
 
 .jobs-section-body {

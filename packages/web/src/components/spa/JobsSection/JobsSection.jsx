@@ -29,6 +29,12 @@ export const JobsSection = () => {
                 setTimeout(() => {
                     setIsFetching(false);
                 }, 500);
+
+                // force earlier download
+                res.data.data.data.forEach((element) => {
+                    let img = new Image();
+                    img.src = element.logo;
+                });
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {
