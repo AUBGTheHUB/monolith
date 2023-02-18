@@ -31,6 +31,7 @@
 }
 
 .jobs-card-section {
+    /* display: none !important; */
     display: flex;
     margin-left: 6%;
     margin-right: 6%;
@@ -67,6 +68,7 @@
 }
 
 .job-card-content {
+    /* display: none !important; */
     width: 400px;
     height: 487px;
     background-color: #fff;
@@ -153,6 +155,9 @@
         margin-left: 3.5%;
         margin-right: 3.5%;
     }
+    .jobs-loader {
+        height: 80vh;
+    }
 }
 
 @media only screen and (max-width: 300px) {
@@ -175,8 +180,7 @@
         position: absolute;
         width: 400px;
         height: 487px;
-        /* top: 0;
-        left: 0; */
+
         border-radius: 10%;
         background-color: rgba(255, 255, 255, 0.1);
         z-index: -1;
@@ -198,10 +202,12 @@
 }
 
 .lds-ellipsis {
-    top: 30vh;
     position: relative;
     width: 160px;
     height: 160px;
+    align-self: center;
+    display: flex;
+    align-items: center;
 }
 .lds-ellipsis div {
     position: absolute;
@@ -254,6 +260,7 @@
 
 .jobs-loader {
     display: flex;
+    height: 84vh;
     justify-content: center;
     align-items: center;
 }
