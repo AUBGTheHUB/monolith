@@ -11,6 +11,15 @@
     min-height: 94vh;
 }
 
+@keyframes jobsFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 @media only screen and (max-width: 900px) {
     .jobs-page {
         min-height: 90vh;
@@ -22,11 +31,13 @@
 }
 
 .jobs-card-section {
+    /* display: none !important; */
     display: flex;
     margin-left: 6%;
     margin-right: 6%;
     justify-content: center;
     align-items: center;
+    animation: jobsFadeIn 1s;
 }
 
 .jobs-section-body {
@@ -46,16 +57,20 @@
     height: 24vh;
     margin-left: 5.5%;
     margin-right: 5.5%;
+    align-self: center;
+    display: flex;
 }
 
 .jobs-section-body .job-logo img {
-    width: 100%;
+    object-fit: scale-down;
+    max-width: 100%;
     height: 100%;
-    object-fit: contain;
 }
 
 .job-card-content {
+    /* display: none !important; */
     width: 400px;
+    height: 487px;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -65,9 +80,6 @@
     margin-bottom: 2.5%;
     transition: all 0.3s;
     border-radius: 5vh;
-}
-.job-logo {
-    align-self: center;
 }
 .job-description {
     height: 17vh;
@@ -143,6 +155,9 @@
         margin-left: 3.5%;
         margin-right: 3.5%;
     }
+    .jobs-loader {
+        height: 80vh;
+    }
 }
 
 @media only screen and (max-width: 300px) {
@@ -163,10 +178,9 @@
     .job-card-content::before {
         content: '';
         position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
+        width: 400px;
+        height: 487px;
+
         border-radius: 10%;
         background-color: rgba(255, 255, 255, 0.1);
         z-index: -1;
@@ -185,4 +199,68 @@
         background-color: #fff;
         text-shadow: 1% 1% #4481eb;
     }
+}
+
+.lds-ellipsis {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    align-self: center;
+    display: flex;
+    align-items: center;
+}
+.lds-ellipsis div {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+    left: 16px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+    left: 16px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+    left: 64px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+    left: 112px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(48px, 0);
+    }
+}
+
+.jobs-loader {
+    display: flex;
+    height: 84vh;
+    justify-content: center;
+    align-items: center;
 }
