@@ -1,6 +1,8 @@
 package main
 
-import "hub-backend/app"
+import (
+	"hub-backend/app"
+)
 
 func main() {
 	app.StartApp()

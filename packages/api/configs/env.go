@@ -34,9 +34,13 @@ func ReturnAuthToken() string {
 	return token
 }
 
+func IsTestENV() bool {
+	godotenv.Load()
+	return os.Getenv("IS_TEST") == "true"
+}
+
 func SetToken() string {
 	godotenv.Load()
-
 	var token string
 
 	if os.Getenv("IS_TEST") == "true" {
@@ -49,10 +53,10 @@ func SetToken() string {
 }
 
 func EnvMongoURI() string {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Panic("No .env file found!")
 	}
 
 	return os.Getenv("MONGOURI")
