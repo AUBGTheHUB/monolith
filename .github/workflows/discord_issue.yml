@@ -1,4 +1,4 @@
-name: Notify Discord
+name: Notify Discord - New Issue
 on:
   issues:
     types: [opened]
