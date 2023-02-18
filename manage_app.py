@@ -87,7 +87,7 @@ def start_docker_compose():
         return f"{REPO_URL}/commit/{hash.stdout}"
 
     dc_start = subprocess.run(
-        ["sudo", "docker-compose", "up", "--build", "-d"], stderr=subprocess.PIPE)
+        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"], stderr=subprocess.PIPE)
     if dc_start.returncode == 0:
         print()
 
