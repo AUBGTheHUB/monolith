@@ -35,7 +35,7 @@ var DB *mongo.Client = ConnectDB()
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	if IsTestENV() {
-		collectionName = "integration_tests"
+		collectionName = "_tests"
 	}
 
 	collection := client.Database("TheHubDB").Collection(collectionName)
