@@ -63,11 +63,12 @@
 .jobs-section-body .job-logo img {
     object-fit: scale-down;
     max-width: 100%;
-    height: auto;
+    height: 100%;
 }
 
 .job-card-content {
     width: 400px;
+    height: 487px;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -172,8 +173,8 @@
     .job-card-content::before {
         content: '';
         position: absolute;
-        width: 100%;
-        height: 100%;
+        width: 400px;
+        height: 487px;
         /* top: 0;
         left: 0; */
         border-radius: 10%;
