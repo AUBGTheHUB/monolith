@@ -20,7 +20,7 @@ func SetHeaders(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 }
 
-func TestCreateTeam(t *testing.T) {
+func TestTeamEndpoint(t *testing.T) {
 	// Set up
 	go app.StartApp()
 
@@ -51,9 +51,29 @@ func TestCreateTeam(t *testing.T) {
 
 	assert.Equal(t, float64(201), res["status"])
 
-	// Clean Up
 	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
 
+	// Verify
+	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
+
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
+	var uTD models.Team
+	json.NewDecoder(bytes.NewBuffer(teamData)).Decode(&uTD)
+
+	assert.Equal(t, data.TeamName, uTD.TeamName)
+	assert.Equal(t, data.TeamMembers, uTD.TeamMembers)
+
+	// Clean Up
 	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
 
 	SetHeaders(req)
