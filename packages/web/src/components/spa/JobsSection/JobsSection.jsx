@@ -19,6 +19,8 @@ export const JobsSection = () => {
     const [jobs, setJobs] = useState();
     const [isFetching, setIsFetching] = useState(true);
 
+    let images = [];
+
     const getJobs = () => {
         axios({
             method: 'get',
@@ -30,10 +32,11 @@ export const JobsSection = () => {
                     setIsFetching(false);
                 }, 500);
 
-                // force earlier download
+                // // force earlier download
                 res.data.data.data.forEach((element) => {
                     let img = new Image();
                     img.src = element.logo;
+                    images.push(img);
                 });
             })
             // eslint-disable-next-line no-unused-vars
