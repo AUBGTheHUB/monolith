@@ -2,8 +2,6 @@ name: Integration Tests
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
-    paths: 
-      - 'packages/api/**'
 
 env:
   CON_STR: '${{ secrets.CON_STR }}'
