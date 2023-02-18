@@ -4,6 +4,9 @@
 
 [![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
 
+[![Notify Discord - New Issue](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml)
+
+[![Notify Discord - New PR](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_pr.yml)
 ## How to set up the project
 
 Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
