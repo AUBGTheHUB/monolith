@@ -2,6 +2,7 @@ name: Build Frontend
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
+    paths: ['packages/web']
 jobs:
   build_frontend:
     runs-on: ubuntu-latest
