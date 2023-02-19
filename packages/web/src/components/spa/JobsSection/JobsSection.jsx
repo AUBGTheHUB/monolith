@@ -59,8 +59,8 @@ export const JobsSection = () => {
             </div>
         );
     };
-
     return (
+        
         <>
             <div className="jobs-page">
                 <NavBar props={new Props(anchorList, true)} />

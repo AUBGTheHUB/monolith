@@ -94,7 +94,7 @@
     text-align: justify;
     margin: 0;
     font-size: 0.9em;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .job-button {
