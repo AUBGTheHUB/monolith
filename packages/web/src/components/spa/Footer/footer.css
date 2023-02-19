@@ -13,15 +13,21 @@
     margin-left: 10px;
     display: flex;
     height: 100%;
+    overflow: visible;
+    border-radius: 50%;
 }
 .footer-container .social-media a svg {
-    height: 2em;
-    width: 2em;
-    padding: 6px;
+    padding: 5px;
     color: white;
-    border-radius: 50%;
     border: 2px solid transparent;
     overflow: visible;
+}
+.icon-footer {
+    background: transparent;
+    border-radius: 50%;
+    background-color: red;
+    width: 100px;
+    height: 100px;
 }
 .social-media {
     display: flex;
@@ -37,8 +43,8 @@
     }
 
     .footer-container .social-media a svg {
-        height: 4vh;
-        width: auto;
+        height: 30px;
+        width: 30px;
     }
 }
 

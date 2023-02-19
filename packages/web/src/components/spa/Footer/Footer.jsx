@@ -12,30 +12,37 @@ export const Footer = ({ colour, iconcolor }) => {
             </div>
             <div className="social-media">
                 <div className="links">
-                    <a
-                        href="https://www.facebook.com/TheHubAUBG"
-                        target="_blank"
-                    >
-                        <FaFacebookSquare
+                    <span className="icon-footer">
+                        <a
+                            href="https://www.facebook.com/TheHubAUBG"
+                            target="_blank"
                             style={{ backgroundColor: iconcolor }}
-                        />
-                    </a>
+                        >
+                            <FaFacebookSquare />
+                        </a>
+                    </span>
                 </div>
                 <div className="links">
-                    <a
-                        href="https://www.instagram.com/thehubaubg/"
-                        target="_blank"
-                    >
-                        <GrInstagram style={{ backgroundColor: iconcolor }} />
-                    </a>
+                    <span className="icon-footer">
+                        <a
+                            href="https://www.facebook.com/TheHubAUBG"
+                            target="_blank"
+                            style={{ backgroundColor: iconcolor }}
+                        >
+                            <GrInstagram />
+                        </a>
+                    </span>
                 </div>
                 <div className="links">
-                    <a
-                        href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug"
-                        target="_blank"
-                    >
-                        <AiFillYoutube style={{ backgroundColor: iconcolor }} />
-                    </a>
+                    <span className="icon-footer">
+                        <a
+                            href="https://www.facebook.com/TheHubAUBG"
+                            target="_blank"
+                            style={{ backgroundColor: iconcolor }}
+                        >
+                            <AiFillYoutube />
+                        </a>
+                    </span>
                 </div>
             </div>
         </div>
