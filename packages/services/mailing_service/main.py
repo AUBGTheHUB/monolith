@@ -2,16 +2,20 @@ import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import functions_framework
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 import smtplib as smtp
+from os import environ
 
-config = dotenv_values('.env')
+load_dotenv()
 
 
 def send_mail(receiver, subject, html):
     port = 465  # SSL
-    email = config['HUB_MAIL']
-    password = config['HUB_PSW']
+    email = environ.get('HUB_MAIL')
+    password = environ.get('HUB_PSW')
+
+    if not email or not password:
+        return json.dumps({"message": "Missing environment variables"}), 500
 
     mime_msg = MIMEMultipart('alternative')
 
@@ -31,7 +35,7 @@ def send_mail(receiver, subject, html):
 
 
 @functions_framework.http
-def handler(request):
+def mailer(request):
     if request.form:
         data = request.form
     else:
