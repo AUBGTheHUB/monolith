@@ -147,7 +147,7 @@ def start_docker_compose():
         if BUILD_TRY >= 2:
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n ❌: Build Failed"
+                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{errors}```"
             })
             os._exit(1)
 
