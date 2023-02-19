@@ -36,6 +36,10 @@ def send_mail(receiver, subject, html):
 
 @functions_framework.http
 def mailer(request):
+
+    if request.headers.get("Authorization") != environ.get("BEARER"):
+        return json.dumps({"message": "Wrong or missing Bearer token"}), 401
+
     if request.form:
         data = request.form
     else:
