@@ -1,5 +1,4 @@
-.awards-section-hack-aubg-container {
-    margin-bottom: 5%;
+.awards-section-container {
     display: flex;
     flex-direction: column;
     background-color: #222222;
