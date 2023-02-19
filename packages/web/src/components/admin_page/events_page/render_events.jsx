@@ -63,7 +63,7 @@ const formatDate = (start, end) => {
 
 const RenderEvents = () => {
     const history = useNavigate();
-    const [events, setEvents] = useState([{}]);
+    const [events, setEvents] = useState();
 
     const getJobs = () => {
         axios({

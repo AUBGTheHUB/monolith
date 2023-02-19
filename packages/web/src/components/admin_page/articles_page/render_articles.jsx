@@ -10,7 +10,7 @@ import InvalidClient from '../invalid_client';
 
 const RenderArticles = () => {
     const history = useNavigate();
-    const [articles, setArticles] = useState([{}]);
+    const [articles, setArticles] = useState();
 
     const getArticles = () => {
         axios({

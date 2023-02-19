@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderPartners = () => {
     const history = useNavigate();
-    const [partners, setPartners] = useState([{}]);
+    const [partners, setPartners] = useState();
 
     const getPartners = () => {
         axios({
@@ -41,6 +41,7 @@ const RenderPartners = () => {
                             />
                             <Card.Body>
                                 <Card.Title>{partner['company']}</Card.Title>
+                                <Card.Text>{partner['category']}</Card.Text>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
