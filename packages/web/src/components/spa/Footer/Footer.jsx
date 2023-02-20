@@ -17,7 +17,7 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                         className="footer-icon"
                         style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
-                            openNewTab('https://facebook.com');
+                            openNewTab('https://www.facebook.com/TheHubAUBG');
                         }}
                     >
                         <FaFacebookSquare style={{ color: iconColor }} />
@@ -28,7 +28,7 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                         className="footer-icon"
                         style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
-                            openNewTab('https://facebook.com');
+                            openNewTab('https://www.instagram.com/thehubaubg/');
                         }}
                     >
                         <GrInstagram style={{ color: iconColor }} />
@@ -39,7 +39,7 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                         className="footer-icon"
                         style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
-                            openNewTab('https://facebook.com');
+                            openNewTab('https://www.facebook.com/TheHubAUBG');
                         }}
                     >
                         <AiFillYoutube style={{ color: iconColor }} />
