@@ -1,13 +1,16 @@
 import React from 'react';
+import { openNewTab } from '../../../../Global';
 
-export const JudgesCard = ({ Judge, openNewTab }) => {
+export const JudgesCard = ({ Judge }) => {
     return (
         <div className="judge-card background-color">
             <div className="judge-image">
-                <img src={Judge.profilepicture} onClick={openNewTab} />
-            </div>
-            <div className="judge-link">
-                <a href={Judge.sociallink}></a>
+                <img
+                    src={Judge.profilepicture}
+                    onClick={() => {
+                        openNewTab(Judge.sociallink);
+                    }}
+                />
             </div>
         </div>
     );

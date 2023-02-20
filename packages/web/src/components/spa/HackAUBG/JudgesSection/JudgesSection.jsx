@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { url, openNewTab } from '../../../../Global';
+import { url } from '../../../../Global';
 import { JudgesCard } from './JudgesCard';
 import './judges_section.css';
 
@@ -13,13 +13,9 @@ export const JudgesSection = () => {
         axios({
             method: 'get',
             url: url + '/api/jury'
-        })
-            .then((res) => {
-                setJury(res.data.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        }).then((res) => {
+            setJury(res.data.data.data);
+        });
     };
 
     const renderJudges = () => {
@@ -30,10 +26,7 @@ export const JudgesSection = () => {
                     <div className="judges-picture">
                         {jury.map((judge, index) => (
                             <div key={index} className="judge-div">
-                                <JudgesCard
-                                    Judge={judge}
-                                    openNewTab={openNewTab(judge.sociallink)}
-                                />
+                                <JudgesCard Judge={judge} />
                             </div>
                         ))}
                     </div>

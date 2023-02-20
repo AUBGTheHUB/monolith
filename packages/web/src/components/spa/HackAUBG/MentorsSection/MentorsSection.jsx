@@ -13,13 +13,9 @@ export const MentorsSection = () => {
         axios({
             method: 'get',
             url: url + '/api/mentors'
-        })
-            .then((res) => {
-                setMentors(res.data.data.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        }).then((res) => {
+            setMentors(res.data.data.data);
+        });
     };
 
     const renderMentors = () => {
