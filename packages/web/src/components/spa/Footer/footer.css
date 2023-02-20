@@ -8,17 +8,10 @@
     color: white;
     margin-bottom: 0;
 }
-/* .footer-container .social-media .a {
-    margin-right: 10px;
-    margin-left: 10px;
-    display: flex;
-    height: 100%;
-}
-
-} */
 .social-media {
     display: flex;
 }
+
 .footer-container .social-media svg {
     height: 2em;
     width: 2em;
@@ -29,6 +22,8 @@
     overflow: visible;
 }
 .footer-icon {
+    margin-right: 10px;
+    margin-left: 10px;
     border-radius: 50%;
 }
 @media only screen and (max-width: 900px) {
