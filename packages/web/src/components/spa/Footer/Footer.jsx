@@ -4,7 +4,7 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { GrInstagram } from 'react-icons/gr';
 import { AiFillYoutube } from 'react-icons/ai';
 
-export const Footer = ({ color, iconColor }) => {
+export const Footer = ({ color, iconColor, iconBgColor }) => {
     return (
         <div className="footer-container" style={{ backgroundColor: color }}>
             <div className="copyright">
@@ -16,9 +16,9 @@ export const Footer = ({ color, iconColor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconColor }}
+                            style={{ backgroundColor: iconBgColor }}
                         >
-                            <FaFacebookSquare />
+                            <FaFacebookSquare style={{ color: iconColor }} />
                         </a>
                     </span>
                 </div>
@@ -27,9 +27,9 @@ export const Footer = ({ color, iconColor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconColor }}
+                            style={{ backgroundColor: iconBgColor }}
                         >
-                            <GrInstagram />
+                            <GrInstagram style={{ color: iconColor }} />
                         </a>
                     </span>
                 </div>
@@ -38,9 +38,9 @@ export const Footer = ({ color, iconColor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconColor }}
+                            style={{ backgroundColor: iconBgColor }}
                         >
-                            <AiFillYoutube />
+                            <AiFillYoutube style={{ color: iconColor }} />
                         </a>
                     </span>
                 </div>
