@@ -3,6 +3,7 @@ import './footer.css';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { GrInstagram } from 'react-icons/gr';
 import { AiFillYoutube } from 'react-icons/ai';
+import { openNewTab } from '../../../Global';
 
 export const Footer = ({ color, iconColor, iconBgColor }) => {
     return (
@@ -12,38 +13,37 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
             </div>
             <div className="social-media">
                 <div className="links">
-                    <span onClick={()=>{openNewTab("https://facebook.com")}}>
-                        {/* <a
-                            href="https://www.facebook.com/TheHubAUBG"
-                            target="_blank"
-                            style={{ backgroundColor: iconBgColor }}
-                        > */}
-                        
-                            <FaFacebookSquare style={{ color: iconColor }} />
-                        
-                    </span>
+                    <div
+                        className="footer-icon"
+                        style={{ backgroundColor: iconBgColor }}
+                        onClick={() => {
+                            openNewTab('https://facebook.com');
+                        }}
+                    >
+                        <FaFacebookSquare style={{ color: iconColor }} />
+                    </div>
                 </div>
                 <div className="links">
-                    <span className="icon-footer">
-                        <a
-                            href="https://www.facebook.com/TheHubAUBG"
-                            target="_blank"
-                            style={{ backgroundColor: iconBgColor }}
-                        >
-                            <GrInstagram style={{ color: iconColor }} />
-                        </a>
-                    </span>
+                    <div
+                        className="footer-icon"
+                        style={{ backgroundColor: iconBgColor }}
+                        onClick={() => {
+                            openNewTab('https://facebook.com');
+                        }}
+                    >
+                        <GrInstagram style={{ color: iconColor }} />
+                    </div>
                 </div>
                 <div className="links">
-                    <span className="icon-footer">
-                        <a
-                            href="https://www.facebook.com/TheHubAUBG"
-                            target="_blank"
-                            style={{ backgroundColor: iconBgColor }}
-                        >
-                            <AiFillYoutube style={{ color: iconColor }} />
-                        </a>
-                    </span>
+                    <div
+                        className="footer-icon"
+                        style={{ backgroundColor: iconBgColor }}
+                        onClick={() => {
+                            openNewTab('https://facebook.com');
+                        }}
+                    >
+                        <AiFillYoutube style={{ color: iconColor }} />
+                    </div>
                 </div>
             </div>
         </div>
