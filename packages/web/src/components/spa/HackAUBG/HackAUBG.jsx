@@ -48,8 +48,8 @@ export const HackAUBG = () => {
             <AwardsSection />
             <FaqSection />
             <Footer
-                colour={'rgb(25, 183, 0)'}
-                iconcolor={'rgb(120, 120, 120)'}
+                color={'rgb(25, 183, 0)'}
+                iconColor={'rgb(120, 120, 120)'}
             />
         </div>
     );

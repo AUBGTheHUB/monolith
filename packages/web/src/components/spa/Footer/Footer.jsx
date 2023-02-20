@@ -4,9 +4,9 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { GrInstagram } from 'react-icons/gr';
 import { AiFillYoutube } from 'react-icons/ai';
 
-export const Footer = ({ colour, iconcolor }) => {
+export const Footer = ({ color, iconColor }) => {
     return (
-        <div className="footer-container" style={{ backgroundColor: colour }}>
+        <div className="footer-container" style={{ backgroundColor: color }}>
             <div className="copyright">
                 <p>© 2023 The Hub AUBG. All rights reserved</p>
             </div>
@@ -16,7 +16,7 @@ export const Footer = ({ colour, iconcolor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconcolor }}
+                            style={{ backgroundColor: iconColor }}
                         >
                             <FaFacebookSquare />
                         </a>
@@ -27,7 +27,7 @@ export const Footer = ({ colour, iconcolor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconcolor }}
+                            style={{ backgroundColor: iconColor }}
                         >
                             <GrInstagram />
                         </a>
@@ -38,7 +38,7 @@ export const Footer = ({ colour, iconcolor }) => {
                         <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
-                            style={{ backgroundColor: iconcolor }}
+                            style={{ backgroundColor: iconColor }}
                         >
                             <AiFillYoutube />
                         </a>
