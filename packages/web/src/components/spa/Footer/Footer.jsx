@@ -12,14 +12,15 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
             </div>
             <div className="social-media">
                 <div className="links">
-                    <span className="icon-footer">
-                        <a
+                    <span onClick={()=>{openNewTab("https://facebook.com")}}>
+                        {/* <a
                             href="https://www.facebook.com/TheHubAUBG"
                             target="_blank"
                             style={{ backgroundColor: iconBgColor }}
-                        >
+                        > */}
+                        
                             <FaFacebookSquare style={{ color: iconColor }} />
-                        </a>
+                        
                     </span>
                 </div>
                 <div className="links">

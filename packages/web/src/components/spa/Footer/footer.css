@@ -8,7 +8,7 @@
     color: white;
     margin-bottom: 0;
 }
-.footer-container .social-media a {
+.footer-container .social-media {
     margin-right: 10px;
     margin-left: 10px;
     display: flex;
@@ -17,7 +17,7 @@
     overflow: visible;
     border-radius: 50%;
 }
-.footer-container .social-media a svg {
+.footer-container .social-media svg {
     padding: 8px;
     width: 100%;
     height: 100%;
