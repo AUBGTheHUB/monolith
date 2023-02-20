@@ -5,7 +5,6 @@ export const MentorsCard = ({ mentor }) => {
     return (
         <div className="mentor-card">
             <div>
-                {' '}
                 {/* mentor-image */}
                 <img
                     src={mentor.profilepicture}
