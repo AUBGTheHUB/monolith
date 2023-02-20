@@ -4,7 +4,9 @@ import { openNewTab } from '../../../../Global';
 export const JudgesCard = ({ Judge }) => {
     return (
         <div className="judge-card background-color">
-            <div className="judge-image">
+            <div>
+                {' '}
+                {/* judge-image */}
                 <img
                     src={Judge.profilepicture}
                     onClick={() => {

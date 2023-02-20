@@ -7,7 +7,7 @@ import { MentorsCard } from './MentorsCard';
 import './mentors_section.css';
 
 export const MentorsSection = () => {
-    const [mentor, setMentors] = useState([{}]);
+    const [mentor, setMentors] = useState();
 
     const getMentors = () => {
         axios({
@@ -25,9 +25,7 @@ export const MentorsSection = () => {
                     <h1 className="mentors-header">Mentors</h1>
                     <div className="mentors-picture">
                         {mentor.map((mentor, index) => (
-                            <div key={index} className="mentors-div">
-                                <MentorsCard mentor={mentor} />
-                            </div>
+                            <MentorsCard mentor={mentor} key={index} />
                         ))}
                     </div>
                 </div>
