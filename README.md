@@ -2,7 +2,7 @@
 
 [![Integration Tests](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml)
 
-[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
+[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml)
 
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml)
 
@@ -74,7 +74,7 @@ spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
 make run-api
 ```
 
-* ### __Debug__:
+* #### __Debug__:
 1. Put breakpoints:
 <img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
 
@@ -87,7 +87,7 @@ make run-api
 
 
 
-* ### __How to resolve `could not import module ...`__:
+* #### __How to resolve `could not import module ...`__:
 <img src="https://i.ibb.co/KmHqm1q/image.png" alt="image" border="0">
 
 

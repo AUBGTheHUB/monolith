@@ -1,1 +1,23 @@
-* @AUBGTheHUB/NOSYNCDEV
+.githooks @asynchroza @SuelaCark
+
+.github/workflows @asynchroza
+
+.vscode @asynchroza
+
+data @asynchroza
+
+packages/web @SuelaCark @Aleks1908
+
+packages/api @nikolayninov @IvanObreshkov
+
+**/Dockerfile @asynchroza
+
+**/*.yml @asynchroza
+
+manage_app.py @asynchroza
+
+**/*.sh @asynchroza @SuelaCark
+
+Makefile @asynchroza
+
+**/*.conf @asynchroza
