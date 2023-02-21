@@ -37,7 +37,7 @@ export const AwardsSection = () => {
                     </p>
                 </div>
             </div>
-            
+
             <div className="awards-section-info-text">
                 <p id="awards-info-text">
                     And much more!
