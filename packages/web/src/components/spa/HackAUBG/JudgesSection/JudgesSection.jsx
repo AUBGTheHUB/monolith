@@ -25,7 +25,7 @@ export const JudgesSection = () => {
                     <h1>Judges</h1>
                     <div className="judge-container">
                         {jury.map((judge, index) => (
-                            <JudgesCard Judge={judge} key={index} />
+                            <JudgesCard judge={judge} key={index} />
                         ))}
                     </div>
                 </div>
