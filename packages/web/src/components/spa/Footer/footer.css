@@ -8,13 +8,11 @@
     color: white;
     margin-bottom: 0;
 }
-.footer-container .social-media a {
-    margin-right: 10px;
-    margin-left: 10px;
+.social-media {
     display: flex;
-    height: 100%;
 }
-.footer-container .social-media a svg {
+
+.footer-container .social-media svg {
     height: 2em;
     width: 2em;
     padding: 6px;
@@ -23,10 +21,12 @@
     border: 2px solid transparent;
     overflow: visible;
 }
-.social-media {
-    display: flex;
+.footer-icon {
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 50%;
+    cursor: pointer;
 }
-
 @media only screen and (max-width: 900px) {
     .footer-container {
         flex-direction: column;
