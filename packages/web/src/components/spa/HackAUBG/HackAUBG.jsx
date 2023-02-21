@@ -10,6 +10,7 @@ import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 
@@ -48,8 +49,12 @@ export const HackAUBG = () => {
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
+            <AwardsSection />
             <FaqSection />
-            <Footer colour={'rgb(25, 183, 0)'} />
+            <Footer
+                colour={'rgb(25, 183, 0)'}
+                iconcolor={'rgb(120, 120, 120)'}
+            />
         </div>
     );
 };

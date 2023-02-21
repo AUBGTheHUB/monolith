@@ -6,6 +6,29 @@ let url =
         ? process.env.REACT_APP_API_URL // eslint-disable-line
         : location.origin.replace(':3000', '') + ':8000';
 
+const checkBrowserValid = () => {
+    const browsers = [
+        'Opera',
+        'OPR',
+        'Edg',
+        'Chrome',
+        'Safari',
+        'Firefox',
+        'Chromium'
+        // No IE
+    ];
+
+    let isValid = false;
+
+    browsers.forEach((x) => {
+        if (navigator.userAgent.indexOf(x) != -1) {
+            isValid = true;
+        }
+    });
+
+    return isValid;
+};
+
 const Validate = () => {
     const [validated, setValidated] = useState(false);
     useEffect(() => {
@@ -42,7 +65,7 @@ export const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
-export { url, checkHashAndScroll };
+export { url, checkHashAndScroll, checkBrowserValid };
 export default Validate;
 /*
 

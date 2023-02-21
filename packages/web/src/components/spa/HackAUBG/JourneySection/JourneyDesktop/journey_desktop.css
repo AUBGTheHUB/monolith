@@ -31,33 +31,33 @@
     background-color: #fff;
 }
 
-.left {
+.journey-desktop-section .left {
     margin-right: 50px;
     width: 500px;
 }
 
-.right {
+.journey-desktop-section .right {
     margin-left: 50px;
     width: 500px;
 }
 
-.right p {
+.journey-desktop-section .right p {
     width: 500px;
 }
 
-.left .top {
+.journey-desktop-section .left .top {
     margin-bottom: 54%;
 }
 
-.right .top {
+.journey-desktop-section .right .top {
     margin-top: 55%;
 }
 
-.right .bottom {
+.journey-desktop-section .right .bottom {
     margin-top: 54%;
 }
 
-.left-dot {
+.journey-desktop-section .left-dot {
     background-color: white;
     height: 45px;
     width: 45px;
@@ -67,7 +67,7 @@
     border-radius: 50%;
 }
 
-.right-dot {
+.journey-desktop-section .right-dot {
     background-color: white;
     height: 45px;
     width: 45px;
@@ -76,16 +76,16 @@
     left: -77px;
     border-radius: 50%;
 }
-.journey-desktop-column h2 {
+.journey-desktop-section .journey-desktop-column h2 {
     color: #19b700;
     margin-bottom: 3%;
 }
-.left h2 {
+.journey-desktop-section .left h2 {
     display: flex;
     flex-direction: row-reverse;
     text-align: right;
 }
 
-.journey-desktop-column p {
+.journey-desktop-section .journey-desktop-column p {
     color: #fff;
 }

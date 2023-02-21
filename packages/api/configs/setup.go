@@ -25,7 +25,6 @@ func ConnectDB() *mongo.Client {
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		println("HELLO")
 		log.Fatal(err)
 	}
 
@@ -35,6 +34,10 @@ func ConnectDB() *mongo.Client {
 var DB *mongo.Client = ConnectDB()
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+	if IsTestENV() {
+		collectionName = "_tests"
+	}
+
 	collection := client.Database("TheHubDB").Collection(collectionName)
 	return collection
 }
