@@ -21,9 +21,9 @@ export const MentorsSection = () => {
     const renderMentors = () => {
         if (mentor) {
             return (
-                <div className="mentors-container">
-                    <h1 className="mentors-header">Mentors</h1>
-                    <div className="mentors-picture">
+                <div className="mentors-section-container">
+                    <h1>Mentors</h1>
+                    <div className="mentor-container">
                         {mentor.map((mentor, index) => (
                             <MentorsCard mentor={mentor} key={index} />
                         ))}

@@ -1,4 +1,4 @@
-.judges-container {
+.judges-section-container {
     box-sizing: border-box;
     margin: 0;
     font-family: 'Roboto';
@@ -6,13 +6,13 @@
     background-color: #222222;
 }
 
-.judges-header {
+.judges-section-container h1 {
     text-align: center;
     color: #19b700;
     padding: 1% 0;
 }
 
-.judges-picture {
+.judge-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -24,10 +24,7 @@
     padding: 20px 10px;
 }
 
-.judges-picture img {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+.judge-container img {
     width: 100%;
     max-width: 300px;
     height: 250px;

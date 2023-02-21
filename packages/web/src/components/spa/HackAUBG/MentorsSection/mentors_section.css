@@ -1,4 +1,4 @@
-.mentors-container {
+.mentors-section-container {
     box-sizing: border-box;
     margin: 0;
     font-family: 'Roboto';
@@ -7,13 +7,13 @@
     /* background: linear-gradient(#57efc2, #222222); */
 }
 
-.mentors-header {
+.mentors-section-container h1 {
     text-align: center;
     color: #19b700;
     padding: 1% 0;
 }
 
-.mentors-picture {
+.mentor-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -25,16 +25,11 @@
     padding: 20px 10px;
 }
 
-.mentors-picture img {
+.mentor-container img {
     width: 100%;
     max-width: 300px;
     height: 250px;
     object-fit: cover;
     border-radius: 10px;
     cursor: pointer;
-}
-
-.mentors-picture::after {
-    content: '';
-    width: 350px;
 }

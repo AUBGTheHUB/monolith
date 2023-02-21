@@ -21,9 +21,9 @@ export const JudgesSection = () => {
     const renderJudges = () => {
         if (jury) {
             return (
-                <div className="judges-container">
-                    <h1 className="judges-header">Judges</h1>
-                    <div className="judges-picture">
+                <div className="judges-section-container">
+                    <h1>Judges</h1>
+                    <div className="judge-container">
                         {jury.map((judge, index) => (
                             <JudgesCard Judge={judge} key={index} />
                         ))}
