@@ -29,3 +29,11 @@ make func-debug  # calls to be made towards http://127.0.0.1:8080
 ```python
 make func-deploy
 ```
+
+## Full Example (using POSTMAN):
+
+### Sender:
+<img src="https://i.ibb.co/cxt81Dq/image.png" alt="image" border="0">
+
+### Receiver:
+<img src="https://i.ibb.co/5h01Ybj/image.png" alt="image" border="0">

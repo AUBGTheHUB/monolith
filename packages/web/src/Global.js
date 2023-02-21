@@ -61,6 +61,10 @@ const checkHashAndScroll = () => {
     }
 };
 
+export const openNewTab = (url) => {
+    window.open(url, '_blank');
+};
+
 export { url, checkHashAndScroll, checkBrowserValid };
 export default Validate;
 /*
