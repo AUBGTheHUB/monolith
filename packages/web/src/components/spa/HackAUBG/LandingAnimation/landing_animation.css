@@ -1,5 +1,5 @@
 .animation-container {
-    height: 30vw;
+    height: 65vh;
     background: #000;
     background-image: url('/public/animation_background.gif');
     background-size: cover;
@@ -46,7 +46,7 @@
         text-overflow: clip;
     }
     .animation-container {
-        height: 30vw;
+        height: 60vh;
     }
 }
 
@@ -55,7 +55,8 @@
         font-size: 2rem;
     }
     .animation-container {
-        height: 40vw;
+        padding-top: 6vh;
+        height: 45vh;
     }
 }
 
@@ -70,13 +71,15 @@
         font-size: 1.5rem;
     }
     .animation-container {
-        height: 45vw;
+        padding-top: 7vh;
+        height: 45vh;
     }
 }
 
 @media only screen and (max-width: 500px) {
     .animation-container {
-        height: 55vw;
+        padding-top: 7vh;
+        height: 40vh;
     }
 }
 
@@ -86,7 +89,8 @@
         padding: 2% 0 2% 0;
     }
     .animation-container {
-        height: 70vw;
+        padding-top: 7vh;
+        height: 45vh;
     }
 }
 
