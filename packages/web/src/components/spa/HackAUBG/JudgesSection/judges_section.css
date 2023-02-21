@@ -26,7 +26,7 @@
 
 .judge-container img {
     width: 100%;
-    max-width: 300px;
+    max-width: 250px;
     height: 250px;
     object-fit: cover;
     border-radius: 10px;
