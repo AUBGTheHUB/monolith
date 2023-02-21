@@ -13,9 +13,14 @@ export const MentorsSection = () => {
         axios({
             method: 'get',
             url: url + '/api/mentors'
-        }).then((res) => {
-            setMentors(res.data.data.data);
-        });
+        })
+            .then((res) => {
+                setMentors(res.data.data.data);
+            })
+            // eslint-disable-next-line
+            .catch((err) => {
+                // do nothing
+            });
     };
 
     const renderMentors = () => {

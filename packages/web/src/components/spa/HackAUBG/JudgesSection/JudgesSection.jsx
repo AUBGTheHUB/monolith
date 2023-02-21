@@ -13,9 +13,14 @@ export const JudgesSection = () => {
         axios({
             method: 'get',
             url: url + '/api/jury'
-        }).then((res) => {
-            setJury(res.data.data.data);
-        });
+        })
+            .then((res) => {
+                setJury(res.data.data.data);
+            })
+            // eslint-disable-next-line
+            .catch((err) => {
+                // do nothing
+            });
     };
 
     const renderJudges = () => {
