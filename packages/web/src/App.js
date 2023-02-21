@@ -25,9 +25,9 @@ import JuryActions from './components/admin_page/hackathon/hackathon_jury/action
 import RenderSponsors from './components/admin_page/hackathon/hackathon_sponsors/render_sponsors';
 import AddSponsors from './components/admin_page/hackathon/hackathon_sponsors/add_sponsors';
 import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsors/actions_sponsors';
-import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners';
-import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
-import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
+import RenderPartners from './components/admin_page/hackathon/hackathon_partners/render_partners';
+import AddPartners from './components/admin_page/hackathon/hackathon_partners/add_partners';
+import PartnersActions from './components/admin_page/hackathon/hackathon_partners/actions_partners';
 import './App.css';
 import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';

@@ -1,5 +1,4 @@
 .footer-container {
-    background-color: #154c79;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -9,36 +8,42 @@
     color: white;
     margin-bottom: 0;
 }
-.footer-container .social-media a {
-    color: black;
-    margin-right: 10px;
-    margin-left: 10px;
-}
-.footer-container .social-media a svg {
-    width: 100%;
-    height: 100%;
-    height: 2.5em;
-    width: 2.5em;
-    padding: 5px;
-    background-color: transparent;
-    color: white;
-    border-radius: 5px;
+.social-media {
+    display: flex;
 }
 
+.footer-container .social-media svg {
+    height: 2em;
+    width: 2em;
+    padding: 6px;
+    color: white;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    overflow: visible;
+}
+.footer-icon {
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
 @media only screen and (max-width: 900px) {
     .footer-container {
         flex-direction: column;
         height: 10vh;
     }
     .footer-container p {
-        font-size: 15px;
+        font-size: 0.9em;
     }
-    .footer-container .social-media a {
-        margin-right: 10px;
-        margin-left: 10px;
-    }
+
     .footer-container .social-media a svg {
-        height: 1.75em;
-        width: 1.75em;
+        height: 4vh;
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .footer-container {
+        font-size: 0.8em;
     }
 }

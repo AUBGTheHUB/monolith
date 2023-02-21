@@ -1,0 +1,35 @@
+.mentors-section-container {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Roboto';
+    padding: 3% 0%;
+    background-color: #222222;
+    /* background: linear-gradient(#57efc2, #222222); */
+}
+
+.mentors-section-container h1 {
+    text-align: center;
+    color: #19b700;
+    padding: 1% 0;
+}
+
+.mentor-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 10px;
+}
+
+.mentor-container img {
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+}
