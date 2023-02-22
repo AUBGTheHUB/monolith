@@ -8,7 +8,7 @@ import { url } from '../../../Global';
 
 const RenderMembers = () => {
     const history = useNavigate();
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState();
 
     const getMembers = () => {
         axios({

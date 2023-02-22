@@ -1,12 +1,16 @@
 import React from 'react';
+import { JourneySection } from './JourneySection/JourneySection';
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
+import MentorsSection from './MentorsSection/MentorsSection';
+import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
@@ -15,10 +19,10 @@ export const HackAUBG = () => {
     makeBodyScrollable();
 
     const anchorList = [
-        new Anchor('About', '#AboutSection'),
-        new Anchor('Schedule', '#team'),
-        new Anchor('Grading criteria', 'jobs'),
-        new Anchor('FAQ', 'jobs')
+        new Anchor('About', '#about'),
+        new Anchor('Schedule', '#schedule'),
+        new Anchor('Grading Criteria', '#grading'),
+        new Anchor('FAQ', '#faq')
     ];
 
     return (
@@ -40,12 +44,20 @@ export const HackAUBG = () => {
             />
             <MatrixWindow />
             <AboutHackathon />
+            <JourneySection />
+            <MentorsSection />
+            <JudgesSection />
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
             <Sponsors />
+            <AwardsSection />
             <FaqSection />
-            <Footer colour={'rgb(25, 183, 0)'} />
+            <Footer
+                color={'rgb(25, 183, 0)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
+            />
         </div>
     );
 };

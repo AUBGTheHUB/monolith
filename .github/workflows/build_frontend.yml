@@ -2,8 +2,9 @@ name: Build Frontend
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
+    paths: ['packages/web/**']
 jobs:
-  test:
+  build_frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
