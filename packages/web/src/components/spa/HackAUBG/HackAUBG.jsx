@@ -9,6 +9,7 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
+import RegistrationForm from './RegistrationForm/RegistrationForm';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
@@ -44,6 +45,7 @@ export const HackAUBG = () => {
             <MatrixWindow />
             <AboutHackathon />
             <JourneySection />
+            <RegistrationForm />
             <MentorsSection />
             <JudgesSection />
             <VideoSection />

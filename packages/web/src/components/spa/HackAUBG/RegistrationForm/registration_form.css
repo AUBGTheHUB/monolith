@@ -1,0 +1,33 @@
+.registration-main {
+    height: fit-content;
+    background-color: #222222;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 6%;
+    padding-bottom: 5%;
+}
+
+.registration-main h1 {
+    color: #19b700;
+    margin-bottom: 4%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.registration-column-left {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.registration-column-right {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
