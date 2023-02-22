@@ -10,6 +10,7 @@
 
 .sponsors-containers {
     width: 80%;
+    color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -20,7 +21,7 @@
     margin-top: 3%;
     color: #19b700;
     font-family: 'Roboto';
-    font-size: 2em;
+    /* font-size: 2em; */
 }
 /* Optimize the following css by grouping all containers that use the same code */
 
@@ -35,55 +36,70 @@
     text-align: center;
     z-index: 0;
     border: none;
+    padding-top: 1%;
 }
 
-.platinum-box {
+.platinum-box,
+.gold-box,
+.silver-box,
+.custom-box,
+.bronze-box {
     width: 100%;
     height: fit-content;
     border-style: solid;
-    border-color: #00b79a;
-    border-width: 10px;
+    border-width: 8px;
     /* display: flex; */
     /* flex-direction: column; */
     justify-content: center;
     align-items: center;
 }
 
-.platinum-box img {
+.platinum-container {
+    background-color: #00b79a;
+}
+
+.platinum-box {
+    border-color: #00b79a;
+}
+
+.gold-container {
+    background-color: #c9b037;
+}
+
+.gold-box {
+    border-color: #c9b037;
+}
+
+.custom-container {
+    background-color: #cdbaba;
+}
+
+.custom-box {
+    border-color: #cdbaba;
+}
+
+.silver-container {
+    background-color: #b4b4b4;
+}
+
+.silver-box {
+    border-color: #b4b4b4;
+}
+
+.bronze-container {
+    background-color: lightgreen;
+    margin-top: 3%;
+}
+
+.bronze-box {
+    border-color: lightgreen;
+}
+
+.sponsors-main img {
     /* width: 30%; */
     width: 100%;
     max-width: 230px;
     height: auto;
     /* max-height: 250px; */
     margin: 4% 2%;
-}
-
-.platinum-container {
-    background-color: #00b79a;
-}
-
-.gold-container {
-    background-color: #c9b037;
-    /* border-color: #C9B037; */
-    /* border-width: 50px; */
-}
-
-.custom-container {
-    background-color: #cdbaba;
-    /* border-color: #CDBABA; */
-    /* border-width: 50px; */
-}
-
-.silver-container {
-    /* flex-direction: column-reverse; */
-    background-color: #b4b4b4;
-    /* border-color: #B4B4B4; */
-    /* border-width: 50px; */
-}
-
-.bronze-container {
-    background-color: lightgreen;
-    margin-top: 3%;
-    /* border-color: lightgreen; */
-    /* border-width: 50px; */
 }
