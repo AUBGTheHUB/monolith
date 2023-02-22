@@ -9,7 +9,7 @@
 }
 
 .sponsors-containers {
-    width: 60%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,16 +29,37 @@
 .custom-container,
 .silver-container,
 .bronze-container {
-    width: 100%;
+    width: 30%;
     height: fit-content;
     margin-top: 3%;
     text-align: center;
+    z-index: 0;
+    border: none;
+}
+
+.platinum-box {
+    width: 100%;
+    height: fit-content;
+    border-style: solid;
+    border-color: #00b79a;
+    border-width: 10px;
+    /* display: flex; */
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+}
+
+.platinum-box img {
+    /* width: 30%; */
+    width: 100%;
+    max-width: 230px;
+    height: auto;
+    /* max-height: 250px; */
+    margin: 4% 2%;
 }
 
 .platinum-container {
-    background-color: #a5b2dc;
-    /* border: #A5B2DC; */
-    /* border-width: 50px; */
+    background-color: #00b79a;
 }
 
 .gold-container {
@@ -54,7 +75,7 @@
 }
 
 .silver-container {
-    flex-direction: column-reverse;
+    /* flex-direction: column-reverse; */
     background-color: #b4b4b4;
     /* border-color: #B4B4B4; */
     /* border-width: 50px; */
@@ -65,9 +86,4 @@
     margin-top: 3%;
     /* border-color: lightgreen; */
     /* border-width: 50px; */
-}
-
-.platinum-container img {
-    width: 100px;
-    height: 100px;
 }

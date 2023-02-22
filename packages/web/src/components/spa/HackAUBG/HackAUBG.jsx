@@ -50,8 +50,8 @@ export const HackAUBG = () => {
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
-            <Sponsors />
             <AwardsSection />
+            <Sponsors />
             <FaqSection />
             <Footer
                 color={'rgb(25, 183, 0)'}
