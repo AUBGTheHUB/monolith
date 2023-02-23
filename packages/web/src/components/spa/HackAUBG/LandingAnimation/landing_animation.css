@@ -1,5 +1,5 @@
 .animation-container {
-    height: 65vh;
+    height: 100vh;
     background: #000;
     background-image: url('/public/animation_background.gif');
     background-size: cover;
@@ -46,7 +46,7 @@
         text-overflow: clip;
     }
     .animation-container {
-        height: 60vh;
+        height: 100vh;
     }
 }
 
@@ -56,7 +56,7 @@
     }
     .animation-container {
         padding-top: 6vh;
-        height: 45vh;
+        height: 100vh;
     }
 }
 
@@ -72,14 +72,14 @@
     }
     .animation-container {
         padding-top: 7vh;
-        height: 45vh;
+        height: 100vh;
     }
 }
 
 @media only screen and (max-width: 500px) {
     .animation-container {
         padding-top: 7vh;
-        height: 40vh;
+        height: 100vh;
     }
 }
 
@@ -90,7 +90,7 @@
     }
     .animation-container {
         padding-top: 7vh;
-        height: 45vh;
+        height: 100vh;
     }
 }
 
