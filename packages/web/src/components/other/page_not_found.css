@@ -76,6 +76,9 @@
 }
 
 @media only screen and (max-width: 1000px) {
+    .page-not-found-logo img {
+        width: 5vh;
+    }
     .page-not-found {
         overflow: hidden;
         position: fixed;
@@ -85,7 +88,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 78vh;
+        height: 75vh;
         flex-direction: column-reverse;
     }
     .hubzie-UFO-image {
@@ -132,7 +135,7 @@
         height: 40vh;
     }
     .page-not-found-logo p {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 }
 
