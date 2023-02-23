@@ -5,6 +5,7 @@ from os import environ, path, getcwd, makedirs, listdir
 import boto3
 from botocore.exceptions import NoCredentialsError
 from werkzeug.utils import secure_filename
+import tempfile
 
 
 load_dotenv()
@@ -18,10 +19,11 @@ def upload_to_s3(file, file_name):
                       aws_secret_access_key=AWS_PRIV_KEY)   
     
     try:
-        file.save(path.join(getcwd(), secure_filename(file.filename)))
+        tmpdir = tempfile.gettempdir()
+        file.save(path.join(tmpdir, secure_filename(file.filename)))
 
         saved_file = file_name + "." + file.filename.rsplit('.')[1]
-        s3.upload_file(f'{getcwd()}/{file.filename}', AWS_BUCKET_NAME, saved_file)
+        s3.upload_file(f'{tmpdir}/{file.filename}', AWS_BUCKET_NAME, saved_file)
 
         location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)['LocationConstraint']
         url = "https://s3-%s.amazonaws.com/%s/%s" % (location, AWS_BUCKET_NAME, saved_file)
