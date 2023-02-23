@@ -21,14 +21,10 @@
     width: 2em;
     padding: 6px;
     color: white;
-    /* border-radius: 50%; */
     border: 2px solid transparent;
     overflow: visible;
 }
 .footer-icon {
-    /* margin-right: 10px;
-    margin-left: 10px; */
-    /* border-radius: 50%; */
     cursor: pointer;
 }
 @media only screen and (max-width: 900px) {
