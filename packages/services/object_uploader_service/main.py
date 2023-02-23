@@ -19,32 +19,44 @@ def upload_to_s3(file, file_name):
     
     try:
         file.save(path.join(getcwd(), secure_filename(file.filename)))
-        s3.upload_file(f'{getcwd()}/{file.filename}', AWS_BUCKET_NAME, file_name)
 
-        return json.dumps({"message":"Upload Successful"}), 200
+        saved_file = file_name + "." + file.filename.rsplit('.')[1]
+        s3.upload_file(f'{getcwd()}/{file.filename}', AWS_BUCKET_NAME, saved_file)
 
-    except FileNotFoundError:
-        return json.dumps({"message": "File upload failed"}), 500
+        location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)['LocationConstraint']
+        url = "https://s3-%s.amazonaws.com/%s/%s" % (location, AWS_BUCKET_NAME, saved_file)
+
+        return json.dumps({"message":"Upload Successful", "url": url}), 200
 
     except NoCredentialsError:
         return json.dumps({"message": "Process authentication failed"}), 500
+    
+    except FileNotFoundError:
+        return json.dumps({"message": "File upload failed"}), 500
+    
+    except Exception as e:
+        return json.dumps({"message": "Unexpected error", "exception": str(e)}), 500
 
 
 @functions_framework.http
 def object_uploader(request):
+
     if request.headers.get("Authorization") != environ.get("BEARER"):
         return json.dumps({"message": "Wrong or missing Bearer token"}), 401
 
     if not request.files:
         return json.dumps({"message": "No file has been transmitted"}), 400
     
-    if request.form:
-        data = request.form
-    else:
-        data = json.loads(request.data)
+    try:
+        if request.form:
+            data = request.form
+        else:
+            data = json.loads(request.data)
 
-    if not data and data["filename"]:
-        return json.dumps({"message": "filename was not passed"}), 400
+        filename=data["filename"]
+    except:
+        return json.dumps({"message": "filename not passed"}), 400
 
-    return upload_to_s3(request.files["file"], data["filename"])
+    return upload_to_s3(request.files["file"], filename)
+
 
