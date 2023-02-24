@@ -16,18 +16,32 @@
     justify-content: center;
 }
 
-.registration-column-left {
+.reg-form {
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
-.registration-column-right {
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.register-btn {
+    width: fit-content;
+    color: #19b700;
     align-items: center;
+    display: flex;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: white;
+    padding: 0.8% 6% 0.8% 6%;
+}
+
+.register-btn:hover {
+    background-color: #19b700;
+    color: white;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
