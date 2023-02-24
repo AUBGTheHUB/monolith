@@ -57,7 +57,11 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 
 		if len(results) > 0 {
 			AddHackathonMemberToTeam(newHackathonTeamMember.TeamName)
+		}else {
+			//TODO: Add new team and add current hackathon member to that team
 		}
+	}else{
+		//TODO: Add current hackathon memberto a list of members without teams
 	}
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success"})
 }
@@ -78,6 +82,7 @@ func AddHackathonMemberToTeam(teamName string) {
 		for _, result := range results {
 			res, _ := json.Marshal(result)
 			fmt.Println(string(res))
+			// TODO: Get only ObjectID in order to make a PUT request to add the hackathon member to the array of teammembers for the current team
 		}
 	}
 }
