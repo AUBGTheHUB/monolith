@@ -7,6 +7,7 @@ import (
 	"hub-backend/models"
 	"hub-backend/responses"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -56,7 +57,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		_ = cursor.All(ctx, &results)
 
 		if len(results) > 0 {
-			AddHackathonMemberToTeam(newHackathonTeamMember.TeamName)
+			AddHackathonMemberToTeam(newHackathonTeamMember.TeamName, newHackathonTeamMember.FullName)
 		}else {
 			//TODO: Add new team and add current hackathon member to that team
 		}
@@ -66,10 +67,10 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success"})
 }
 
-func AddHackathonMemberToTeam(teamName string) {
+func AddHackathonMemberToTeam(teamName string, fullname string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
+	var id string
 	var results []models.Team
 	// team_map := models.EditTeam{}
 
@@ -81,8 +82,13 @@ func AddHackathonMemberToTeam(teamName string) {
 	if len(results) > 0 {
 		for _, result := range results {
 			res, _ := json.Marshal(result)
-			fmt.Println(string(res))
-			// TODO: Get only ObjectID in order to make a PUT request to add the hackathon member to the array of teammembers for the current team
+			// TODO: Make a PUT request to add the hackathon member to the array of teammembers for the current team
+			var idSplit []string = strings.Split(string(res), ",");
+			var idRaw string = idSplit[0];
+			id = idRaw[7:len(idRaw)-1]
+
 		}
+
 	}
+
 }
