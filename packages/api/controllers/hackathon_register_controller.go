@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
 	"net/http"
@@ -15,17 +17,67 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var member models.TeamMember
 	defer cancel()
-	if *member.TeamNoTeam {
+
+	// validate request body
+	if err := c.BodyParser(&member); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	if validationErr := validateTeamMembers.Struct(&member); validationErr != nil {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
+	}
+
+	newHackathonTeamMember := models.TeamMember{
+		FullName:              member.FullName,
+		TeamNoTeam:            member.TeamNoTeam,
+		TeamName:              member.TeamName,
+		Email:                 member.Email,
+		School:                member.School,
+		Age:                   member.Age,
+		Location:              member.Location,
+		HeardAboutUs:          member.HeardAboutUs,
+		PreviousParticipation: member.PreviousParticipation,
+		PartDetails:           member.PartDetails,
+		Experience:            member.Experience,
+		ProgrammingLevel:      member.ProgrammingLevel,
+		StrongSides:           member.StrongSides,
+		ShirtSize:             member.ShirtSize,
+		Internship:            member.Internship,
+		JobInterests:          member.JobInterests,
+		SponsorShare:          member.SponsorShare,
+		NewsLetter:            member.NewsLetter}
+
+	if newHackathonTeamMember.TeamNoTeam {
 		cursor, _ := teamMembersCollection.Find(
-			ctx, bson.D{{"teamname", member.TeamName}},
+			ctx, bson.D{{"teamname", newHackathonTeamMember.TeamName}},
 		)
 		var results []models.TeamMember
 
 		_ = cursor.All(ctx, &results)
 
 		if len(results) > 0 {
-			println(results)
+			AddHackathonMemberToTeam(newHackathonTeamMember.TeamName)
 		}
 	}
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success"})
+}
+
+func AddHackathonMemberToTeam(teamName string) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var results []models.Team
+	// team_map := models.EditTeam{}
+
+	cursor, _ := hackathonTeamCollection.Find(
+		ctx,
+		bson.D{{"teamname", teamName}},
+	)
+	_ = cursor.All(ctx, &results)
+	if len(results) > 0 {
+		for _, result := range results {
+			res, _ := json.Marshal(result)
+			fmt.Println(string(res))
+		}
+	}
 }
