@@ -6,47 +6,55 @@ const RegistrationForm = () => {
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
             <form action="" className="reg-form">
-                <fieldset className="personal-info">
-                    <label htmlFor="" className="column-left">
-                        Full Name
-                        <input
-                            type="text"
-                            name="full-name"
-                            placeholder="Enter your name"
-                            required
-                        />
-                    </label>
-                    <label htmlFor="" className="column-right">
-                        Email
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            required
-                        />
-                    </label>
-                    <label htmlFor="" className="column-left">
-                        Age
-                        <input
-                            type="number"
-                            name="age"
-                            placeholder="Enter your age"
-                            min="15"
-                            max="30"
-                            required
-                        />
-                    </label>
-                    <label htmlFor="" className="column-right">
-                        Location
-                        <input
-                            type="text"
-                            name="location"
-                            placeholder="Enter the place where you currently live"
-                            required
-                        />
-                    </label>
+                <fieldset className="from-personal-info">
+                    <div className="send-info">
+                        <label htmlFor="">
+                            Full Name
+                            <input
+                                type="text"
+                                name="full-name"
+                                placeholder="Enter your name"
+                                required
+                            />
+                        </label>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
+                            Email
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </label>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
+                            Age
+                            <input
+                                type="number"
+                                name="age"
+                                placeholder="Enter your age"
+                                min="15"
+                                max="30"
+                                required
+                            />
+                        </label>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
+                            Location
+                            <input
+                                type="text"
+                                name="location"
+                                placeholder="Enter the place where you currently live"
+                                required
+                            />
+                        </label>
+                    </div>
                 </fieldset>
-                <fieldset className="university column-left">
+                {/* <fieldset className="university column-left">
                     <label className="column-left">
                         School/University
                         <select name="university" className="column-left">
@@ -178,7 +186,7 @@ const RegistrationForm = () => {
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                </fieldset>
+                </fieldset> */}
                 <button className="register-btn">Register</button>
             </form>
         </div>

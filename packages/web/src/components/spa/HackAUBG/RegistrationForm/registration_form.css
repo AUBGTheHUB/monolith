@@ -1,5 +1,4 @@
 .registration-main {
-    height: fit-content;
     background-color: #222222;
     display: flex;
     justify-content: center;
@@ -25,18 +24,6 @@
     justify-content: center;
 }
 
-.column-left {
-    align-items: left;
-    width: 50%;
-    flex-direction: column;
-    /* margin-right: 3%; */
-}
-
-.column-right {
-    align-items: right;
-    width: 50%;
-}
-
 /* .personal-info,
 .university, 
 .shirt-size, 
@@ -58,14 +45,14 @@
     display: block;
 } */
 
-.reg-form .register-btn {
+/* .reg-form .register-btn {
     margin-top: 5%;
 }
 
 .reg-form select {
     display: flex;
     flex-direction: row;
-}
+} */
 
 .register-btn {
     width: fit-content;
@@ -87,4 +74,24 @@
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+}
+
+.from-personal-info {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60%;
+}
+
+.send-info {
+    width: 40%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.send-info label {
+    display: flex;
+    flex-direction: column;
+}
+.send-info input {
+    height: 45px;
+    border-radius: 7.5px;
 }
