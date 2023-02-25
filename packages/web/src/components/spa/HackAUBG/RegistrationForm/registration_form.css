@@ -6,6 +6,7 @@
     flex-direction: column;
     padding-top: 6%;
     padding-bottom: 5%;
+    width: 100%;
 }
 
 .registration-main h1 {
@@ -22,6 +23,48 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.column-left {
+    align-items: left;
+    width: 50%;
+    flex-direction: column;
+    /* margin-right: 3%; */
+}
+
+.column-right {
+    align-items: right;
+    width: 50%;
+}
+
+/* .personal-info,
+.university, 
+.shirt-size, 
+.referrer,
+.skills,
+.job-interests,
+.programming-level,
+.team-section {
+    display: flex;
+    flex-direction: column;
+} */
+
+.reg-form button {
+    display: flex;
+    flex-direction: column;
+}
+
+/* .reg-form label {
+    display: block;
+} */
+
+.reg-form .register-btn {
+    margin-top: 5%;
+}
+
+.reg-form select {
+    display: flex;
+    flex-direction: row;
 }
 
 .register-btn {

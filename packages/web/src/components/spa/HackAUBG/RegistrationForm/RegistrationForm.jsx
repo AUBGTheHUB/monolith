@@ -7,7 +7,7 @@ const RegistrationForm = () => {
             <h1>Register for HackAUBG 5.0</h1>
             <form action="" className="reg-form">
                 <fieldset className="personal-info">
-                    <label htmlFor="">
+                    <label htmlFor="" className="column-left">
                         Full Name
                         <input
                             type="text"
@@ -16,7 +16,7 @@ const RegistrationForm = () => {
                             required
                         />
                     </label>
-                    <label htmlFor="">
+                    <label htmlFor="" className="column-right">
                         Email
                         <input
                             type="email"
@@ -25,7 +25,7 @@ const RegistrationForm = () => {
                             required
                         />
                     </label>
-                    <label htmlFor="">
+                    <label htmlFor="" className="column-left">
                         Age
                         <input
                             type="number"
@@ -36,7 +36,7 @@ const RegistrationForm = () => {
                             required
                         />
                     </label>
-                    <label htmlFor="">
+                    <label htmlFor="" className="column-right">
                         Location
                         <input
                             type="text"
@@ -46,10 +46,10 @@ const RegistrationForm = () => {
                         />
                     </label>
                 </fieldset>
-                <fieldset className="university">
-                    <label>
+                <fieldset className="university column-left">
+                    <label className="column-left">
                         School/University
-                        <select name="university">
+                        <select name="university" className="column-left">
                             <option value="">(Choose an institution)</option>
                             <option value="1">AUBG</option>
                             <option value="2">Sofia University</option>
@@ -61,10 +61,10 @@ const RegistrationForm = () => {
                         </select>
                     </label>
                 </fieldset>
-                <fieldset className="shirt-size">
-                    <label>
+                <fieldset className="shirt-size column-right">
+                    <label className="column-right">
                         T-shirt size
-                        <select name="shirt-size">
+                        <select name="shirt-size" className="column-right">
                             <option value="">(Choose a size)</option>
                             <option value="1">Small (S)</option>
                             <option value="2">Medium (M)</option>
@@ -73,10 +73,10 @@ const RegistrationForm = () => {
                         </select>
                     </label>
                 </fieldset>
-                <fieldset>
-                    <label>
+                <fieldset className="referrer column-left">
+                    <label className="column-left">
                         How did you find out about Hack AUBG?
-                        <select name="referrer">
+                        <select name="referrer" className="column-left">
                             <option value="">(Choose one or more)</option>
                             <option value="1">University</option>
                             <option value="2">Friends</option>
@@ -87,10 +87,10 @@ const RegistrationForm = () => {
                         </select>
                     </label>
                 </fieldset>
-                <fieldset className="skills">
-                    <label>
+                <fieldset className="skills column-right">
+                    <label className="column-right">
                         What are your strongest sides?
-                        <select name="skills">
+                        <select name="skills" className="column-right">
                             <option value="">(Choose one or more)</option>
                             <option value="1">Frontend Programming</option>
                             <option value="2">Backend Programming</option>
@@ -104,8 +104,8 @@ const RegistrationForm = () => {
                         </select>
                     </label>
                 </fieldset>
-                <fieldset className="job-interests">
-                    <label htmlFor="">
+                <fieldset className="job-interests column-left">
+                    <label htmlFor="" className="column-left">
                         What are your job interests?
                         <input
                             type="text"
@@ -115,10 +115,13 @@ const RegistrationForm = () => {
                         />
                     </label>
                 </fieldset>
-                <fieldset className="programming-level">
-                    <label>
+                <fieldset className="programming-level column-right">
+                    <label className="column-right">
                         What is your programming level?
-                        <select name="programming-level">
+                        <select
+                            name="programming-level"
+                            className="column-right"
+                        >
                             <option value="">(Choose one or more)</option>
                             <option value="1">University</option>
                             <option value="2">Friends</option>
@@ -129,13 +132,13 @@ const RegistrationForm = () => {
                         </select>
                     </label>
                 </fieldset>
-                <fieldset className="team-section">
-                    <label>
+                <fieldset className="team-section column-left">
+                    <label className="column-left">
                         Do you have a team?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label htmlFor="">
+                    <label htmlFor="" className="column-right">
                         What is the name of your team?
                         <input
                             type="text"
@@ -144,32 +147,32 @@ const RegistrationForm = () => {
                             required
                         />
                     </label>
-                    <label>
+                    <label className="column-left">
                         Have you participated in Hack AUBG before?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label>
+                    <label className="column-right">
                         Are you looking for an internship?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label>
+                    <label className="column-left">
                         Have you participated in other hackathons?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label>
+                    <label className="column-right">
                         Do you want to share you info with sponsors?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label>
+                    <label className="column-left">
                         Do you have previous coding experience?
                         <input type="radio" name="team" /> Yes
                         <input type="radio" name="team" /> No
                     </label>
-                    <label>
+                    <label className="column-right">
                         Do you want to receive our newsletter with potentila job
                         offerings?
                         <input type="radio" name="team" /> Yes
