@@ -37,6 +37,7 @@
 } */
 
 .reg-form button {
+    margin-top: 2%;
     display: flex;
     flex-direction: column;
 }
@@ -104,11 +105,12 @@
     padding-left: 1%;
 }
 .radio-btn {
+    width: fit-content;
     align-items: center;
     display: flex;
 }
 .radio-btn .radio-no {
-    margin-left: 8%;
+    margin-left: 40%;
 }
 .radio-btn input {
     margin-top: 0.78%;
@@ -125,12 +127,14 @@
         margin-bottom: 5%;
     }
     .radio-btn {
-        width: 30%;
+        width: 45%;
     }
     .radio-btn .radio-no {
         margin-left: 35%;
     }
     .from-personal-info {
+        display: flex;
+        flex-wrap: wrap;
         width: 80%;
     }
 }
