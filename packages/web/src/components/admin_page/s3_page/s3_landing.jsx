@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Validate, { gcpToken } from '../../../Global';
+import Validate, { gcpToken, objUploaderURL } from '../../../Global';
 // import { useNavigate } from 'react-router-dom';
 import InvalidClient from '../invalid_client';
 import { Button, Form } from 'react-bootstrap';
@@ -13,7 +13,7 @@ const S3Panel = () => {
     const addObject = () => {
         axios({
             method: 'post',
-            url: 'http://127.0.0.1:8080',
+            url: objUploaderURL,
             headers: {
                 Authorization: gcpToken
             },
@@ -24,7 +24,7 @@ const S3Panel = () => {
                 console.log('New object has been added');
             })
             .catch((err) => {
-                console.log(err['response']);
+                console.log(err['response']['data']['mes']);
                 alert(err);
             });
     };
