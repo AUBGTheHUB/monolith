@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import InvalidClient from '../invalid_client';
+import { ObjectCard } from './obj_card';
 
 export const RenderStorageObjects = () => {
     const [objects, setObjects] = useState();
@@ -29,9 +30,9 @@ export const RenderStorageObjects = () => {
     if (Validate()) {
         if (objects) {
             return (
-                <div>
+                <div className="s3-space-around">
                     {objects.map((url, index) => (
-                        <img src={url} key={index} />
+                        <ObjectCard url={url} key={index} />
                     ))}
                 </div>
             );

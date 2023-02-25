@@ -9,3 +9,24 @@
     display: flex;
     flex-direction: column;
 }
+
+.s3-object-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+}
+
+.s3-object-card img {
+    object-fit: cover;
+    width: 20vw;
+    height: 20vh;
+}
+
+.s3-space-around {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
