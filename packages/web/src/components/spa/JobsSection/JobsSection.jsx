@@ -17,6 +17,7 @@ const anchorList = [
 
 export const JobsSection = () => {
     const [jobs, setJobs] = useState();
+    const [isFetching, setIsFetching] = useState(true);
 
     const getJobs = () => {
         axios({
@@ -25,16 +26,28 @@ export const JobsSection = () => {
         })
             .then((res) => {
                 setJobs(res.data.data.data);
+                setTimeout(() => {
+                    setIsFetching(false);
+                }, 750);
+
+                // // force earlier download
+                res.data.data.data.forEach((element) => {
+                    let img = new Image();
+                    img.src = element.logo;
+                });
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch((err) => {
+                setIsFetching(false);
+            });
     };
     useEffect(() => {
         getJobs();
+        setIsFetching(true);
     }, []);
 
     const DisplayJobs = () => {
-        if (jobs) {
+        if (jobs && !isFetching) {
             return (
                 <div className="jobs-card-section">
                     <div className="jobs-section-body">
@@ -48,6 +61,17 @@ export const JobsSection = () => {
                                 link={job['link']}
                             />
                         ))}
+                    </div>
+                </div>
+            );
+        } else if (isFetching) {
+            return (
+                <div className="jobs-loader">
+                    <div className="lds-ellipsis">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                     </div>
                 </div>
             );

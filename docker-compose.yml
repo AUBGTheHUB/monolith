@@ -4,7 +4,9 @@ services:
 
 # API
   server:
-    build: ./packages/api
+    build: 
+      context: ./packages/api
+      target: final 
     container_name: api
     depends_on: 
       - client

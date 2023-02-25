@@ -1,4 +1,4 @@
-name: Notify Discord
+name: Notify Discord - New PR
 on:
   pull_request:
     types: [opened]
