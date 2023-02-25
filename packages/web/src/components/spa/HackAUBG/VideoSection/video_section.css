@@ -15,35 +15,28 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-
-    padding-bottom: 20px;
 }
 
 .video-header {
-    /* text-align: center; */
     width: 70%;
     color: #fff;
     justify-content: center;
     align-items: center;
     display: flex;
+    padding: 3% 0;
     padding: 3% 0%;
     text-align: justify;
 }
 
 @media only screen and (max-width: 900px) {
     .video-header {
-        font-size: 1.5em;
-        text-align: center;
+        font-size: 0.5rem;
+        text-align: justify;
     }
     .video {
         width: 80%;
         justify-content: center;
         align-items: center;
         display: flex;
-    }
-
-    .video iframe {
-        height: 49vh;
-        width: 100%;
     }
 }
