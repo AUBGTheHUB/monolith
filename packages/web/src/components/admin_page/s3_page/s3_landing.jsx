@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Validate, { gcpToken, objUploaderURL } from '../../../Global';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import InvalidClient from '../invalid_client';
 import { Button, Form } from 'react-bootstrap';
 import './s3.css';
 import axios from 'axios';
 
 const S3Panel = () => {
-    // const history = useNavigate();
+    const history = useNavigate();
     const [formState, setFormState] = useState({});
     const [file, setFile] = useState();
 
@@ -51,7 +51,14 @@ const S3Panel = () => {
     if (Validate()) {
         return (
             <div className="s3-panel-main">
-                <Button variant="primary">See All Objects</Button>
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        history('/admin/dashboard/s3/objects');
+                    }}
+                >
+                    See All Objects
+                </Button>
                 <div className="s3-upload-image">
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>File</Form.Label>
