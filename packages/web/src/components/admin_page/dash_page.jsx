@@ -146,16 +146,20 @@ const Dash = () => {
                         </Card.Body>
                     </Card>
                     <Card className="card-dash-landing">
-                        <Card.Title>Image Management</Card.Title>
-                        <Card.Text>Management window for S3 objects</Card.Text>
-                        <Button
-                            variant="primary"
-                            onClick={() => {
-                                history('/admin/dashboard/s3');
-                            }}
-                        >
-                            Manage
-                        </Button>
+                        <Card.Body>
+                            <Card.Title>Image Management</Card.Title>
+                            <Card.Text>
+                                Management window for S3 objects
+                            </Card.Text>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    history('/admin/dashboard/s3');
+                                }}
+                            >
+                                Manage
+                            </Button>
+                        </Card.Body>
                     </Card>
                 </div>
             </div>

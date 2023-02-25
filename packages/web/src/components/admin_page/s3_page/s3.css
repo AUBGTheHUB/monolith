@@ -1,0 +1,11 @@
+.s3-panel-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.s3-upload-image {
+    background-color: gray;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
