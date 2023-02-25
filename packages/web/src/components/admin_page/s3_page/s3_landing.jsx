@@ -9,23 +9,31 @@ import axios from 'axios';
 const S3Panel = () => {
     // const history = useNavigate();
     const [formState, setFormState] = useState({});
+    const [file, setFile] = useState();
+
+    const handleFileSelect = (event) => {
+        setFile(event.target.files[0]);
+    };
 
     const addObject = () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('filename', formState.filename);
+
         axios({
             method: 'post',
             url: objUploaderURL,
             headers: {
                 Authorization: gcpToken
             },
-            data: { ...formState }
+            data: formData
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log('New object has been added');
+                alert(res['data']['url']);
             })
             .catch((err) => {
-                console.log(err['response']['data']['mes']);
-                alert(err);
+                alert(err['response']['data']['message']);
             });
     };
 
@@ -51,7 +59,7 @@ const S3Panel = () => {
                             type="file"
                             placeholder="upload file"
                             name="file"
-                            onChange={handleInputChange}
+                            onChange={handleFileSelect}
                         />
                     </Form.Group>
 
