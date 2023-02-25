@@ -84,14 +84,53 @@
 
 .send-info {
     width: 40%;
+    height: 80px;
     margin-left: 5%;
     margin-right: 5%;
+    margin-bottom: 2%;
 }
 .send-info label {
     display: flex;
     flex-direction: column;
 }
-.send-info input {
+.send-info input,
+.send-info select {
     height: 45px;
+    width: 100%;
     border-radius: 7.5px;
+    margin-top: 2%;
+}
+.send-info input::placeholder {
+    padding-left: 1%;
+}
+.radio-btn {
+    align-items: center;
+    display: flex;
+}
+.radio-btn .radio-no {
+    margin-left: 8%;
+}
+.radio-btn input {
+    margin-top: 0.78%;
+}
+.radio-text {
+    height: 60%;
+}
+
+@media only screen and (max-width: 900px) {
+    .send-info {
+        width: 100%;
+        height: initial;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+    .radio-btn {
+        width: 30%;
+    }
+    .radio-btn .radio-no {
+        margin-left: 35%;
+    }
+    .from-personal-info {
+        width: 80%;
+    }
 }
