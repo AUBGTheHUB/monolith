@@ -119,6 +119,7 @@ function App() {
             <Route path="/hackaubg" element={<HackAUBG />} />
             <Route path="/jobs" element={<JobsSection />} />
             <Route path="/*" element={<NotFound />} />
+            <Route path="/admin/dashboard/s3" />
         </Routes>
     );
 }
