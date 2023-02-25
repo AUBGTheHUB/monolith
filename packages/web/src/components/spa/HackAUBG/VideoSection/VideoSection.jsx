@@ -7,7 +7,7 @@ export const VideoSection = () => {
             <h1 className="video-header">Watch the HackAUBG 4.0 recap!</h1>
             <div className="video">
                 <iframe
-                    width="853"
+                    width="1200"
                     height="480"
                     src={'https://www.youtube.com/embed/avP5xho4Yk0'}
                     frameBorder="0"
