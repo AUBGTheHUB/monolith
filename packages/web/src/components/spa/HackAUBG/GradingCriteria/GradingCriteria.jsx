@@ -8,39 +8,39 @@ export const GradingCriteria = () => {
             <div className="grading-criteria-table">
                 <div className="grading-criteria-column">
                     <h2>
-                        COMPLEXITY OF THE PROJECT<br></br> (20-points)
+                        COMPLEXITY OF THE PROJECT<br></br> (20 points)
                     </h2>
-                    <p>Scale (6-points)</p>
-                    <p>Project Interface Design (3-points)</p>
-                    <p>Relevance and Simplicity (8-points)</p>
-                    <p>Scalability (3-points)</p>
+                    <p>Scale (6 points)</p>
+                    <p>Project Interface Design (3 points)</p>
+                    <p>Relevance and Simplicity (8 points)</p>
+                    <p>Scalability (3 points)</p>
                 </div>
                 <div className="grading-criteria-column">
                     <h2>
-                        PROJECT REALIZATION<br></br> (10-points)
+                        PROJECT REALIZATION<br></br> (10 points)
                     </h2>
-                    <p>Scale (6-points)</p>
-                    <p>Project Interface Design (3-points)</p>
-                    <p>Relevance and Simplicity (8-points)</p>
-                    <p>Scalability (3-points)</p>
+                    <p>Scale (6 points)</p>
+                    <p>Project Interface Design (3 points)</p>
+                    <p>Relevance and Simplicity (8 points)</p>
+                    <p>Scalability (3 points)</p>
                 </div>
                 <div className="grading-criteria-column">
                     <h2>
-                        PROJECT IDEA<br></br> (10-points)
+                        PROJECT IDEA<br></br> (10 points)
                     </h2>
-                    <p>Scale (6-points)</p>
-                    <p>Project Interface Design (3-points)</p>
-                    <p>Relevance and Simplicity (8-points)</p>
-                    <p>Scalability (3-points)</p>
+                    <p>Scale (6 points)</p>
+                    <p>Project Interface Design (3 points)</p>
+                    <p>Relevance and Simplicity (8 points)</p>
+                    <p>Scalability (3 points)</p>
                 </div>
                 <div className="grading-criteria-column">
                     <h2>
-                        PRESENTATION<br></br> (10-points)
+                        PRESENTATION<br></br> (10 points)
                     </h2>
-                    <p>Scale (6-points)</p>
-                    <p>Project Interface Design (3-points)</p>
-                    <p>Relevance and Simplicity (8-points)</p>
-                    <p>Scalability (3-points)</p>
+                    <p>Scale (6 points)</p>
+                    <p>Project Interface Design (3 points)</p>
+                    <p>Relevance and Simplicity (8 points)</p>
+                    <p>Scalability (3 points)</p>
                 </div>
             </div>
         </div>

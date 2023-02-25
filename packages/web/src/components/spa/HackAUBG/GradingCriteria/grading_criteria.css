@@ -28,7 +28,7 @@
     border-bottom: 3px solid #19b700;
     margin: 10%;
     width: 800px;
-    height: 55vh;
+    height: 400px;
 }
 
 .grading-criteria-column {
@@ -83,5 +83,15 @@
 
     .grading-criteria-column:nth-child(even) {
         background-color: rgba(25, 183, 0, 0.25);
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .grading-criteria-column {
+        width: 20vw;
+    }
+
+    .grading-criteria-table {
+        width: 80vw;
     }
 }
