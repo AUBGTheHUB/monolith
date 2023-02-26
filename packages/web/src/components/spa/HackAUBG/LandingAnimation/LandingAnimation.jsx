@@ -6,7 +6,7 @@ export const MatrixWindow = () => {
     const animateLetters = () => {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let interval = null;
-        const h1 = document.querySelector('.toni-montana');
+        const h1 = document.querySelector('.hackaubg-moving-letters');
 
         let iteration = 0;
         clearInterval(interval);
@@ -38,7 +38,7 @@ export const MatrixWindow = () => {
             <div className="hackaubg-landing-content">
                 <h1
                     data-value="HACKAUBG 5.0"
-                    className="toni-montana"
+                    className="hackaubg-moving-letters"
                     onMouseEnter={animateLetters}
                 >
                     HACKAUBG 5.0
