@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&display=swap');
+
 .animation-container {
     height: 100vh;
     background: #000;
@@ -24,8 +26,10 @@
     margin-top: 4%;
 }
 
-.landing-content h1 {
-    font-size: 4rem;
+.animation-container h1 {
+    font-size: 5rem;
+    color: white;
+    font-family: 'Roboto Mono', monospace;
 }
 
 .landing-content p {
