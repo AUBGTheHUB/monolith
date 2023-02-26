@@ -43,6 +43,14 @@ install-code-plugins:
 install-gum:
 	go install github.com/charmbracelet/gum@latest
 
+.PHONY: install-air
+install-air:
+	go install github.com/cosmtrek/air@latest
+
+.PHONY: reload-api
+reload-api:
+	cd packages/api && bash ./reload.sh
+
 .SILENT: gum 
 gum:
 	bash ./cli.sh
