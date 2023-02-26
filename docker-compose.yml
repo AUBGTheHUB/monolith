@@ -12,9 +12,6 @@ services:
       - client
     expose: 
       - 8000
-    environment:
-      API_HOST: "https://dev.thehub-aubg.com"
-      APP_SERVER_PORT: 8000
     ports:
       - 8000:8000
     command: /api
