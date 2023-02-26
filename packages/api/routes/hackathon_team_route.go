@@ -9,7 +9,7 @@ import (
 func HackathonTeamsRoutes(app *fiber.App) {
 	app.Post("/api/hackathon/teams", controllers.CreateHackathonTeam)
 	app.Get("/api/hackathon/teams", controllers.GetHackathonTeams)
-	app.Get("/api/hackathon/teams/:key", controllers.GetAHackathonTeam)
+	app.Get("/api/hackathon/teams/:key", controllers.GetHackathonTeam)
 	app.Put("/api/hackathon/teams/:key", controllers.EditHackathonTeams)
 	app.Delete("/api/hackathon/teams/:key", controllers.DeleteHackathonTeams)
 }
