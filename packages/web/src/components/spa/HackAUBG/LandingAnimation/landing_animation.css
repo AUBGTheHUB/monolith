@@ -16,7 +16,7 @@
     user-select: none;
 }
 
-.landing-content {
+.hackaubg-landing-content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -32,7 +32,7 @@
     font-family: 'Roboto Mono', monospace;
 }
 
-.landing-content p {
+.hackaubg-landing-content p {
     font-size: 1rem;
     margin: 4% 0 6% 0;
     width: 90%;
@@ -41,10 +41,10 @@
 }
 
 @media only screen and (max-width: 1300px) {
-    .landing-content h1 {
+    .hackaubg-landing-content h1 {
         font-size: 3.8rem;
     }
-    .landing-content p {
+    .hackaubg-landing-content p {
         font-size: 0.9rem;
         padding: 2% 0 2% 0;
         text-overflow: clip;
@@ -55,7 +55,7 @@
 }
 
 @media only screen and (max-width: 1000px) {
-    .landing-content h1 {
+    .hackaubg-landing-content h1 {
         font-size: 2.8rem;
     }
     .hackaubg-landing-section-text-animation-container {
@@ -64,13 +64,13 @@
 }
 
 @media only screen and (max-width: 800px) {
-    .landing-content h1 {
+    .hackaubg-landing-content h1 {
         font-size: 2.4rem;
     }
 }
 
 @media only screen and (max-width: 650px) {
-    .landing-content h1 {
+    .hackaubg-landing-content h1 {
         font-size: 1.8rem;
     }
     .hackaubg-landing-section-text-animation-container {
@@ -79,7 +79,7 @@
 }
 
 @media only screen and (max-width: 400px) {
-    .landing-content p {
+    .hackaubg-landing-content p {
         font-size: 0.7rem;
         padding: 2% 0 2% 0;
     }

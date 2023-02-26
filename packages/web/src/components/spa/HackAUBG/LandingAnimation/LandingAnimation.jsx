@@ -35,7 +35,7 @@ export const MatrixWindow = () => {
 
     return (
         <div className="hackaubg-landing-section-text-animation-container">
-            <div className="landing-content">
+            <div className="hackaubg-landing-content">
                 <h1
                     data-value="HACKAUBG 5.0"
                     className="toni-montana"
