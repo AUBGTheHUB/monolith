@@ -21,12 +21,12 @@
     align-items: center;
     display: flex;
     padding: 3% 0%;
-    text-align: justify;
+    text-align: center;
 }
 
 @media only screen and (max-width: 900px) {
     .video-container {
-        height: 90vh;
+        height: 65vh;
     }
 
     .video-header {
@@ -34,10 +34,24 @@
         text-align: center;
     }
     .video {
+        padding-left: 10%;
+        padding-right: 10%;
         justify-content: center;
         align-items: center;
         display: flex;
         height: 49vh;
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    .video-header {
+        font-size: 2.5em;
+    }
+}
+
+@media only screen and (min-width: 1300px) {
+    .video {
+        width: 1200px;
     }
 }
