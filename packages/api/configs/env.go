@@ -45,6 +45,8 @@ func SetToken() string {
 
 	if os.Getenv("IS_TEST") == "true" {
 		token = "TEST_TOKEN"
+	} else if os.Getenv("IS_OFFLINE") == "true" {
+		token = "OFFLINE_TOKEN"
 	} else {
 		token = GenerateToken(32)
 	}
