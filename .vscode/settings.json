@@ -23,7 +23,8 @@
     },
     "makefile.extensionOutputFolder": "./.vscode",
     "[go]": {
-        "editor.defaultFormatter": "golang.go"
+        "editor.defaultFormatter": "golang.go",
+        "editor.formatOnSave": true
     },
     "better-comments.tags": [
         {
@@ -77,5 +78,9 @@
     },
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.provider": "autopep8"
 }
