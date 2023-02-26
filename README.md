@@ -2,7 +2,7 @@
 
 [![Integration Tests](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml)
 
-[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/push.yml)
+[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml)
 
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml)
 
@@ -69,12 +69,36 @@ spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
 3. download the .env file from Google Drive and place it in root/packages/api
 ```
 
+* __Static BEARER-TOKEN__:
+Add this in the .env file
+```bash
+IS_OFFLINE="true"  # IS_TEST="true" overwrites this
+                   # so make sure that you set IS_TEST to false
+                   # after you're done running integration/unit tests
+```
+
 * __Run__:
 ```shell
 make run-api
 ```
 
-* ### __Debug__:
+* __Run (hot reload)__:
+```
+make reload-api
+```
+
+* using a task:
+    * `ctrl + P` (for mac keybindings might differ)
+    * type `task Hot Reload API`
+
+* or:
+    * `ctrl + shift + P` (for mac keybindings might differ)
+    * type `Tasks: Run Task` and find `Hot Reload API`  
+
+---
+
+
+* #### __Debug__:
 1. Put breakpoints:
 <img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
 
@@ -87,7 +111,7 @@ make run-api
 
 
 
-* ### __How to resolve `could not import module ...`__:
+* #### __How to resolve `could not import module ...`__:
 <img src="https://i.ibb.co/KmHqm1q/image.png" alt="image" border="0">
 
 

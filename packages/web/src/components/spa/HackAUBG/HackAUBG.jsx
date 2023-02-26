@@ -6,6 +6,8 @@ import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
+import MentorsSection from './MentorsSection/MentorsSection';
+import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
@@ -42,14 +44,17 @@ export const HackAUBG = () => {
             <MatrixWindow />
             <AboutHackathon />
             <JourneySection />
+            <MentorsSection />
+            <JudgesSection />
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
             <AwardsSection />
             <FaqSection />
             <Footer
-                colour={'rgb(25, 183, 0)'}
-                iconcolor={'rgb(120, 120, 120)'}
+                color={'rgb(25, 183, 0)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
             />
         </div>
     );

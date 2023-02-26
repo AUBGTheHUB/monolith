@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+// eslint-disable-next-line
+const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
+
+// eslint-disable-next-line
+const gcpToken = process.env.REACT_APP_GCP_TOKEN;
+
 let url =
     process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
         ? process.env.REACT_APP_API_URL // eslint-disable-line
@@ -61,7 +67,18 @@ const checkHashAndScroll = () => {
     }
 };
 
-export { url, checkHashAndScroll, checkBrowserValid };
+const openNewTab = (url) => {
+    window.open(url, '_blank');
+};
+
+export {
+    url,
+    checkHashAndScroll,
+    checkBrowserValid,
+    openNewTab,
+    objUploaderURL,
+    gcpToken
+};
 export default Validate;
 /*
 
