@@ -104,39 +104,54 @@
     }
 }
 
+@media only screen and (max-width: 1076px) {
+    .welcome-text h1 {
+        font-size: 2rem;
+    }
+}
+
 .welcome-text p,
 .aboutUs-btn,
 .aboutUs-btn:hover {
     overflow: hidden;
     z-index: 0;
-    animation: appearing 1.3s backwards 2s;
+    animation: appearing 1.3s backwards 3s;
 }
 
 @media only screen and (min-width: 900px) {
     .hubzzie-image {
         overflow: hidden;
         width: 70%;
-        animation: appearing 1.3s backwards 2s;
+        animation: appearing 1.3s backwards 3s;
     }
 }
 
-.welcome-text h1 {
+#line1 {
     overflow: hidden;
+    visibility: hidden;
     border-right: 0.15em solid white;
     white-space: nowrap;
     animation: typing ease-in-out 3s forwards;
+    animation-fill-mode: forwards;
+}
+#line2 {
+    overflow: hidden;
+    z-index: 0;
+    animation: appearing 1.3s backwards 3s;
 }
 
 /* Sliding and appearing animations */
 
 @keyframes typing {
     from {
+        visibility: visible;
         width: 0;
     }
     to {
         width: 100%;
         /* max-width: fit-content; */
         border-color: transparent;
+        visibility: visible;
     }
 }
 
