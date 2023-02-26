@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     background-color: #222222;
-    padding: 0.5% 20% 25% 20%;
     color: white;
     font-family: 'Roboto';
     font-weight: 500;
@@ -16,7 +15,7 @@
     text-align: center;
     color: #19b700;
     font-weight: 900;
-    padding: 10% 0% 0% 0%;
+    padding: 7% 0% 0% 0%;
 }
 
 .grading-criteria-table {
@@ -26,9 +25,10 @@
     border-top: 3px solid #19b700;
     border-left: 3px solid #19b700;
     border-bottom: 3px solid #19b700;
-    margin: 10%;
+    margin-top: 3%;
+    margin-bottom: 7%;
     width: 800px;
-    height: 400px;
+    height: fit-content;
 }
 
 .grading-criteria-column {
@@ -40,25 +40,28 @@
 .grading-criteria-column h2 {
     height: 120px;
     font-weight: 900;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: #19b700;
     padding: 3% 2% 1% 2%;
 }
 
 @media only screen and (max-width: 900px) {
-    .grading-criteria-table-container {
+    .grading-criteria-container {
         font-weight: 200;
+        padding: 10% 20% 20% 20%;
+    }
+
+    .grading-criteria-container h1 {
+        margin-bottom: 10%;
     }
 
     .grading-criteria-table {
         width: 100%;
-        height: 100%;
         display: flex;
         flex-direction: column;
         border-collapse: collapse;
         border: 2px solid #19b700;
         margin: 0;
-        width: 110%;
     }
 
     .grading-criteria-column {
@@ -72,7 +75,7 @@
     .grading-criteria-column h2 {
         height: 100%;
         font-weight: 500;
-        font-size: larger;
+        font-size: large;
         text-align: center;
         color: #fff;
         padding: 5% 2% 5% 2%;
