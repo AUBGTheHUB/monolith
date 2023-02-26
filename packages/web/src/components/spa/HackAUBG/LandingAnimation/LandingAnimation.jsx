@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import './landing_animation.css';
 
 export const MatrixWindow = () => {
-    const animation = () => {
+    const animateLetters = () => {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let interval = null;
         const h1 = document.querySelector('.toni-montana');
@@ -31,7 +31,7 @@ export const MatrixWindow = () => {
         }, 30);
     };
 
-    useEffect(animation, []);
+    useEffect(animateLetters, []);
 
     return (
         <div className="animation-container">
@@ -39,7 +39,7 @@ export const MatrixWindow = () => {
                 <h1
                     data-value="HACKAUBG 5.0"
                     className="toni-montana"
-                    onMouseEnter={animation}
+                    onMouseEnter={animateLetters}
                 >
                     HACKAUBG 5.0
                 </h1>
