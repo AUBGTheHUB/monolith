@@ -42,7 +42,7 @@
 
 @media only screen and (max-width: 1300px) {
     .landing-content h1 {
-        font-size: 3rem;
+        font-size: 3.8rem;
     }
     .landing-content p {
         font-size: 0.9rem;
@@ -56,34 +56,31 @@
 
 @media only screen and (max-width: 1000px) {
     .landing-content h1 {
-        font-size: 2rem;
+        font-size: 2.8rem;
     }
     .animation-container {
         padding-top: 6vh;
-        height: 100vh;
     }
 }
 
 @media only screen and (max-width: 800px) {
     .landing-content h1 {
-        font-size: 1.8rem;
+        font-size: 2.4rem;
     }
 }
 
 @media only screen and (max-width: 650px) {
     .landing-content h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
     .animation-container {
         padding-top: 7vh;
-        height: 100vh;
     }
 }
 
 @media only screen and (max-width: 500px) {
     .animation-container {
         padding-top: 7vh;
-        height: 100vh;
     }
 }
 
@@ -94,7 +91,6 @@
     }
     .animation-container {
         padding-top: 7vh;
-        height: 100vh;
     }
 }
 
