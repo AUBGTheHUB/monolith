@@ -47,6 +47,10 @@ install-gum:
 install-air:
 	go install github.com/cosmtrek/air@latest
 
+.PHONY: reload-api
+reload-api:
+	cd packages/api && bash ./reload.sh
+
 .SILENT: gum 
 gum:
 	bash ./cli.sh
