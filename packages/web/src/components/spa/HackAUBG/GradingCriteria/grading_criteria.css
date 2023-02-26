@@ -1,4 +1,4 @@
-.grading-criteria-table-container {
+.grading-criteria-container {
     display: flex;
     justify-content: center;
     background-color: #222222;
@@ -11,7 +11,7 @@
     align-items: center;
 }
 
-.grading-criteria-header {
+.grading-criteria-container h1 {
     font-size: 2rem;
     text-align: center;
     color: #19b700;
@@ -32,10 +32,7 @@
 }
 
 .grading-criteria-column {
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 5px;
-    padding-bottom: 10px;
+    padding: 10px 5px 10px 10px;
     width: 200px;
     border-right: 3px solid #19b700;
 }
@@ -86,7 +83,7 @@
     }
 }
 
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1100px) {
     .grading-criteria-column {
         width: 20vw;
     }
