@@ -3,7 +3,7 @@ import './grading_criteria_mobile.css';
 
 export const GradingCriteriaMobile = () => {
     return (
-        <div className="grading-criteria-table-container-mobile">
+            <div className="grading-criteria-table-container-mobile" id="grading">
             <h1 className="grading-criteria-header-mobile">GRADING CRITERIA</h1>
             <table className="grading-criteria-table-mobile">
                 <tbody>
