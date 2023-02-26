@@ -12,10 +12,9 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                 <p>© 2023 The Hub AUBG. All rights reserved</p>
             </div>
             <div className="social-media">
-                <div className="links">
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
                     <div
                         className="footer-icon"
-                        style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
                             openNewTab('https://facebook.com/TheHubAUBG');
                         }}
@@ -23,10 +22,9 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                         <FaFacebookSquare style={{ color: iconColor }} />
                     </div>
                 </div>
-                <div className="links">
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
                     <div
                         className="footer-icon"
-                        style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
                             openNewTab('https://instagram.com/thehubaubg/');
                         }}
@@ -34,10 +32,9 @@ export const Footer = ({ color, iconColor, iconBgColor }) => {
                         <GrInstagram style={{ color: iconColor }} />
                     </div>
                 </div>
-                <div className="links">
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
                     <div
                         className="footer-icon"
-                        style={{ backgroundColor: iconBgColor }}
                         onClick={() => {
                             openNewTab(
                                 'https://youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug'
