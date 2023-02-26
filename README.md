@@ -74,6 +74,22 @@ spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
 make run-api
 ```
 
+* __Run (hot reload)__:
+```
+make reload-api
+```
+
+* using a task:
+    * `ctrl + P` (for mac keybindings might differ)
+    * type `task Hot Reload API`
+
+* or:
+    * `ctrl + shift + P` (for mac keybindings might differ)
+    * type `Tasks: Run Task` and find `Hot Reload API`  
+
+---
+
+
 * #### __Debug__:
 1. Put breakpoints:
 <img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
