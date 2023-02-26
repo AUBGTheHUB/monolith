@@ -3,52 +3,44 @@ import { useEffect } from 'react';
 import './landing_animation.css';
 
 export const MatrixWindow = () => {
-    useEffect(() => {
+    const animation = () => {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let interval = null;
-        const title = document.getElementById('title');
+        const h1 = document.querySelector('.toni-montana');
 
-        function startAnimation(event) {
-            let iteration = 0;
-            clearInterval(interval);
+        let iteration = 0;
+        clearInterval(interval);
 
-            interval = setInterval(() => {
-                event.target.innerText = event.target.innerText
-                    .split('')
-                    .map((letter, index) => {
-                        if (index < iteration) {
-                            return event.target.dataset.value[index];
-                        }
+        interval = setInterval(() => {
+            h1.innerText = h1.innerText
+                .split('')
+                .map((letter, index) => {
+                    if (index < iteration) {
+                        return h1.dataset.value[index];
+                    }
 
-                        return letters[Math.floor(Math.random() * 26)];
-                    })
-                    .join('');
+                    return letters[Math.floor(Math.random() * 26)];
+                })
+                .join('');
 
-                if (iteration >= event.target.dataset.value.length) {
-                    clearInterval(interval);
-                }
-
-                iteration += 1 / 3;
-            }, 30);
-        }
-
-        if (title) {
-            title.addEventListener('mouseover', startAnimation);
-            startAnimation({ target: title });
-        }
-
-        return () => {
-            if (title) {
-                title.removeEventListener('mouseover', startAnimation);
+            if (iteration >= h1.dataset.value.length) {
+                clearInterval(interval);
             }
-            clearInterval(interval);
-        };
-    }, []);
+
+            iteration += 1 / 3;
+        }, 30);
+    };
+
+    useEffect(animation, []);
 
     return (
         <div className="animation-container">
             <div className="landing-content">
-                <h1 data-value="HACKAUBG 5.0" id="title">
+                <h1
+                    data-value="HACKAUBG 5.0"
+                    className="toni-montana"
+                    onMouseEnter={animation}
+                >
                     HACKAUBG 5.0
                 </h1>
                 <p>31st March - 2nd April, AUBG - Blagoevgrad</p>
