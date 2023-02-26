@@ -2,7 +2,7 @@
 
 .welcome-container {
     width: 100vw;
-    height: 80vh;
+    height: 85vh;
     color: white;
     display: flex;
     flex-direction: row;
@@ -88,6 +88,7 @@
 
 @media only screen and (max-width: 900px) {
     .welcome-container {
+        height: 95vh;
         display: flex;
         justify-content: center;
         flex-direction: column-reverse;
