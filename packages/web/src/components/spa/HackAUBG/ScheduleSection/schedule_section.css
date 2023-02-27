@@ -20,8 +20,10 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
     padding-top: 1vh;
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 .schedule-table-container {
@@ -36,7 +38,7 @@
     padding: 5% 0% 10% 0%;
     color: #19b700;
     font-weight: 900;
-    font-size: 1.2em;
+    font-size: 1.4em;
 }
 
 .schedule-table-row {
@@ -47,31 +49,50 @@
 .schedule-time {
     color: #19b700;
     font-weight: 900;
-    font-size: 1em;
+    font-size: 1.3em;
     padding-right: 30px;
 }
 
 .schedule-section-container p {
-    font-size: 0.9em;
-    width: 220px;
+    font-size: 1.2em;
+    width: 320px;
 }
 
 @media only screen and (max-width: 350px) {
     .schedule-text-container {
         padding-left: 10%;
         padding-right: 10%;
+        font-size: 4.5vw;
     }
     .schedule-table-title {
         padding-left: 10%;
-        font-size: 5vw;
+        font-size: 5.5vw;
     }
 
     .schedule-time {
         padding-left: 10%;
-        font-size: 4vw;
+        font-size: 5vw;
     }
 
     .schedule-event-title-hack-aubg {
         font-size: 3.5vw;
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    .schedule-section-container {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
+
+@media only screen and (min-width: 681px) {
+    .schedule-section-container {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    #sunday-container {
+        width: 380px;
     }
 }

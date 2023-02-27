@@ -56,7 +56,7 @@ export const ScheduleHackathon = () => {
                         <p>Coding</p>
                     </div>
                 </div>
-                <div className="schedule-table-container">
+                <div className="schedule-table-container" id="sunday-container">
                     <h1 className="schedule-table-title">SUNDAY</h1>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">09:30</h2>
