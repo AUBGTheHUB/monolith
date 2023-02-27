@@ -87,7 +87,8 @@ def start_docker_compose():
         return f"{REPO_URL}/commit/{hash.stdout}"
 
     dc_start = subprocess.run(
-        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"], stderr=subprocess.PIPE)
+        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"])
+
     if dc_start.returncode == 0:
         print()
 
@@ -130,26 +131,35 @@ def start_docker_compose():
 
         else:
             # docker-compose keeps running when there is a failed container
-            stop_docker_compose()
             errors['WEB'] = get_web
             errors['API'] = get_api
 
-    errors['BUILD'] = dc_start.stderr.decode('utf-8')
+    build_err = subprocess.run(
+        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"], capture_output=True)
+
+    errors["BUILD"] = build_err.stderr.decode('utf-8')
 
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
+
     msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
+
+    errors["BUILD"] = errors["BUILD"].splitlines()[-5:]
+
+    if BUILD_TRY <= 1:
+        requests.post(DISCORD_WH, headers={
+            "Content-Type": "application/x-www-form-urlencoded"}, data={
+            "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{str(errors)}```"
+        })
 
     CURRENTLY_BUILDING.clear()
 
     with lock:
         if BUILD_TRY >= 2:
-            requests.post(DISCORD_WH, headers={
-                          "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{errors}```"
-            })
             os._exit(1)
+
+    return
 
 
 def stop_docker_compose():
