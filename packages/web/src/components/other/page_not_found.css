@@ -10,17 +10,16 @@
     justify-content: center;
     width: 100%;
     margin-right: 2px;
-    padding-top: 0.7%;
 }
 .page-not-found-logo p {
     margin-bottom: 0px !important;
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 500;
     margin-left: 0.5%;
 }
 .page-not-found-logo img {
-    width: 8vh;
+    width: 4vh;
 }
 .background-not-found {
     display: flex;
@@ -91,8 +90,7 @@
     .hubzie-UFO-image {
         width: 100%;
         justify-content: center;
-        margin-top: 5%;
-        margin-bottom: 5%;
+        margin-bottom: 3%;
     }
     .page-not-found-text {
         width: 100%;
@@ -114,11 +112,8 @@
         align-self: center;
         display: flex;
         text-align: -webkit-center;
-        width: initial;
-        margin-top: 2%;
     }
     .button-404 {
-        margin-top: 2%;
         display: flex;
         align-self: center;
     }
