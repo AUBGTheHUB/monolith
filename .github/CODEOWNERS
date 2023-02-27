@@ -1,4 +1,4 @@
-.githooks @asynchroza @SuelaCark
+.githooks @asynchroza @SuelaCark @nikolayninov
 
 .github/workflows @asynchroza
 
@@ -6,9 +6,9 @@
 
 data @asynchroza
 
-packages/web @SuelaCark @Aleks1908
+packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov
 
-packages/api @nikolayninov @IvanObreshkov
+packages/api @nikolayninov @IvanObreshkov @asynchroza
 
 **/Dockerfile @asynchroza
 
@@ -21,3 +21,5 @@ manage_app.py @asynchroza
 Makefile @asynchroza
 
 **/*.conf @asynchroza
+
+packages/services @asynchroza @nikolayninov

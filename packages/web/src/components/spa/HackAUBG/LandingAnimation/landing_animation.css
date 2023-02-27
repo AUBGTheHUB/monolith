@@ -1,5 +1,7 @@
-.animation-container {
-    height: 65vh;
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&display=swap');
+
+.hackaubg-landing-section-text-animation-container {
+    height: 100vh;
     background: #000;
     background-image: url('/public/animation_background.gif');
     background-size: cover;
@@ -14,7 +16,7 @@
     user-select: none;
 }
 
-.landing-content {
+.hackaubg-landing-content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,11 +26,13 @@
     margin-top: 4%;
 }
 
-.landing-content h1 {
-    font-size: 4rem;
+.hackaubg-landing-section-text-animation-container h1 {
+    font-size: 5rem;
+    color: white;
+    font-family: 'Roboto Mono', monospace;
 }
 
-.landing-content p {
+.hackaubg-landing-content p {
     font-size: 1rem;
     margin: 4% 0 6% 0;
     width: 90%;
@@ -37,60 +41,50 @@
 }
 
 @media only screen and (max-width: 1300px) {
-    .landing-content h1 {
-        font-size: 3rem;
+    .hackaubg-landing-content h1 {
+        font-size: 3.8rem;
     }
-    .landing-content p {
+    .hackaubg-landing-content p {
         font-size: 0.9rem;
         padding: 2% 0 2% 0;
         text-overflow: clip;
     }
-    .animation-container {
-        height: 60vh;
+    .hackaubg-landing-section-text-animation-container {
+        height: 100vh;
     }
 }
 
 @media only screen and (max-width: 1000px) {
-    .landing-content h1 {
-        font-size: 2rem;
+    .hackaubg-landing-content h1 {
+        font-size: 2.8rem;
     }
-    .animation-container {
+    .hackaubg-landing-section-text-animation-container {
         padding-top: 6vh;
-        height: 45vh;
     }
 }
 
 @media only screen and (max-width: 800px) {
-    .landing-content h1 {
-        font-size: 1.8rem;
+    .hackaubg-landing-content h1 {
+        font-size: 2.4rem;
     }
 }
 
 @media only screen and (max-width: 650px) {
-    .landing-content h1 {
-        font-size: 1.5rem;
+    .hackaubg-landing-content h1 {
+        font-size: 1.8rem;
     }
-    .animation-container {
+    .hackaubg-landing-section-text-animation-container {
         padding-top: 7vh;
-        height: 45vh;
-    }
-}
-
-@media only screen and (max-width: 500px) {
-    .animation-container {
-        padding-top: 7vh;
-        height: 40vh;
     }
 }
 
 @media only screen and (max-width: 400px) {
-    .landing-content p {
+    .hackaubg-landing-content p {
         font-size: 0.7rem;
         padding: 2% 0 2% 0;
     }
-    .animation-container {
+    .hackaubg-landing-section-text-animation-container{
         padding-top: 7vh;
-        height: 45vh;
     }
 }
 
