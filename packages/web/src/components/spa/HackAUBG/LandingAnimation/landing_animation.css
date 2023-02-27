@@ -34,6 +34,7 @@
 
 .hackaubg-landing-content p {
     font-size: 1.2rem;
+    font-weight: 700;
     margin: 4% 0 6% 0;
     width: 90%;
     align-items: center;
@@ -41,9 +42,6 @@
 }
 
 @media only screen and (max-width: 900px) {
-    .hackaubg-landing-section-text-animation-container {
-        height: 100vh;
-    }
     .hackaubg-landing-content h1 {
         font-size: 2.8rem;
     }
