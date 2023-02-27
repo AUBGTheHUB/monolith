@@ -4,7 +4,12 @@ import './page_not_found.css';
 const NotFound = () => {
     return (
         <div className="page-not-found">
-            <div className="page-not-found-logo">
+            <div
+                className="page-not-found-logo"
+                onClick={() => {
+                    document.location.href = '/';
+                }}
+            >
                 <img
                     src="/hublogo.png"
                     className="page-not-found-logo-image"
