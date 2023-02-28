@@ -36,12 +36,20 @@ export const ScheduleHackathon = () => {
                         <p>Breakfast</p>
                     </div>
                     <div className="schedule-table-row">
+                        <h2 className="schedule-time">11:00</h2>
+                        <p>Mentorship & HR Sessions</p>
+                    </div>
+                    <div className="schedule-table-row">
                         <h2 className="schedule-time">11:30</h2>
-                        <p>Mentor Meetings</p>
+                        <p>Idea Pitching Pt. 2</p>
+                    </div>
+                    <div className="schedule-table-row">
+                        <h2 className="schedule-time">12:00</h2>
+                        <p>Mentorship & HR Sessions</p>
                     </div>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">13:30</h2>
-                        <p>Lunch & HR</p>
+                        <p>Lunch</p>
                     </div>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">14:30</h2>
@@ -56,7 +64,7 @@ export const ScheduleHackathon = () => {
                         <p>Coding</p>
                     </div>
                 </div>
-                <div className="schedule-table-container" id="sunday-container">
+                <div className="schedule-table-container">
                     <h1 className="schedule-table-title">SUNDAY</h1>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">09:30</h2>
