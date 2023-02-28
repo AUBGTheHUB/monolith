@@ -27,7 +27,7 @@ export const MatrixWindow = () => {
                 clearInterval(interval);
             }
 
-            iteration += 1 / 3;
+            iteration += 1 / 4.5;
         }, 30);
     };
 
