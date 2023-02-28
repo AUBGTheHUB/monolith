@@ -5,7 +5,7 @@ export const ScheduleHackathon = () => {
     return (
         <div
             className="schedule-section-container-hack-aubg"
-            id="ScheduleSection"
+            id="schedule"
         >
             <h1 className="schedule-section-title-hack-aubg">THE SCHEDULE</h1>
             <div className="schedule-container-hack-aubg">
