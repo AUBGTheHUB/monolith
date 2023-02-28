@@ -1,15 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-
 .navmobile-body {
+    position: absolute;
     height: 10vh;
+
+    z-index: 1000;
     -webkit-user-select: none;
-    /* Safari */
     -moz-user-select: none;
-    /* Firefox */
     -ms-user-select: none;
-    /* IE10+/Edge */
     user-select: none;
-    /* Standard */
 }
 
 .navmobile-button {
@@ -45,9 +42,6 @@
     left: 0;
     top: 0;
     background-color: #050328;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .navmobile-menu-backwards {
@@ -59,9 +53,6 @@
     background-color: #050328;
     animation-name: toni-montana;
     animation-duration: 0.75s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .navmobile-menu.forwards {
@@ -99,6 +90,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    margin-top: 35vh;
 }
 
 .navmobile-anchors-container ul {
@@ -110,6 +102,10 @@
 .navmobile-anchors-container a {
     color: white;
     text-decoration: none;
+}
+
+.navmobile-anchors-container a:hover {
+    color: var(--anchorHoverColor);
 }
 
 .navmobile-logo {

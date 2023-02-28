@@ -1,24 +1,31 @@
 import React from 'react';
+import { JourneySection } from './JourneySection/JourneySection';
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
 import { NavBar } from '../Navigation/NavBar';
 import { Footer } from '../Footer/Footer';
+import MentorsSection from './MentorsSection/MentorsSection';
+import JudgesSection from './JudgesSection/JudgesSection';
+import VideoSection from './VideoSection/VideoSection';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
+import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
+<<<<<<< HEAD
 import { TopButton } from './TopButton/TopButton';
+=======
+import FaqSection from './FaqSection/FaqSection';
+>>>>>>> master
 
 export const HackAUBG = () => {
     makeBodyScrollable();
 
     const anchorList = [
-        new Anchor('About', '#AboutSection'),
-        // new Anchor('Events', '#events'),
-        // new Anchor('Articles', '#articles'),
-        new Anchor('Schedule', '#team'),
-        new Anchor('Grading criteria', 'jobs'),
-        new Anchor('FAQ', 'jobs')
+        new Anchor('About', '#about'),
+        new Anchor('Schedule', '#schedule'),
+        new Anchor('Grading Criteria', '#grading'),
+        new Anchor('FAQ', '#faq')
     ];
 
     return (
@@ -26,21 +33,34 @@ export const HackAUBG = () => {
             <NavBar
                 props={
                     new Props(
-                        anchorList,
-                        false,
-                        'rgba(0,0,0,.5)',
-                        true,
-                        '#222222',
-                        'red'
+                        anchorList, // list of anchors
+                        false, // hackAUBG button
+                        'rgba(0,0,0,.5)', // desktop background color nav
+                        true, // sticky desktop nav
+                        '#222222', // mobile nav background color when not opened (default transparent)
+                        'gray', // mobile background color nav when opened
+                        'white', // anchor color
+                        'green', // desktop anchor hover color
+                        'dark gray' // mobile anchor hover color
                     )
                 }
             />
             <TopButton />
             <MatrixWindow />
             <AboutHackathon />
+            <JourneySection />
+            <MentorsSection />
+            <JudgesSection />
+            <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
-            <Footer colour={'rgb(25, 183, 0)'} />
+            <AwardsSection />
+            <FaqSection />
+            <Footer
+                color={'rgb(25, 183, 0)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
+            />
         </div>
     );
 };

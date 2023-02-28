@@ -66,6 +66,7 @@ func EditSponsor(c *fiber.Ctx) error {
 		Company:        sponsor.Company,
 		SocialLink:     sponsor.SocialLink,
 		ProfilePicture: sponsor.ProfilePicture,
+		Category:       sponsor.Category,
 	}
 
 	jury_map := make(map[string]string)
@@ -81,6 +82,11 @@ func EditSponsor(c *fiber.Ctx) error {
 	}
 	if newSponsor.ProfilePicture != "" {
 		jury_map["profilepicture"] = newSponsor.ProfilePicture
+		flag = true
+	}
+
+	if newSponsor.Category != "" {
+		jury_map["category"] = newSponsor.Category
 		flag = true
 	}
 

@@ -28,13 +28,18 @@ export const NavDesktop = ({ props }) => {
                 backgroundColor: props.bgColor,
                 position: 'fixed',
                 top: 0,
-                width: '100vw'
+                width: '100vw',
+                zIndex: 1
             };
         }
 
         return {
             backgroundColor: props.bgColor
         };
+    };
+
+    const changeAnchorColor = (e, color) => {
+        e.target.style.color = color;
     };
 
     return (
@@ -50,7 +55,17 @@ export const NavDesktop = ({ props }) => {
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
                     <div className="navdesktop-navdivs" key={index}>
-                        <a href={anchor.endpoint} key={index}>
+                        <a
+                            href={anchor.endpoint}
+                            key={index}
+                            onMouseEnter={(e) => {
+                                changeAnchorColor(e, props.anchorHoverColor);
+                            }}
+                            onMouseLeave={(e) => {
+                                changeAnchorColor(e, props.anchorColor);
+                            }}
+                            style={{ color: props.anchorColor }}
+                        >
                             {anchor.name}
                         </a>
                     </div>

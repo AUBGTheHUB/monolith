@@ -1,21 +1,51 @@
 import React from 'react';
+import { useEffect } from 'react';
+import './landing_animation.css';
 
 export const MatrixWindow = () => {
-    // use this component as the one which is going to be rendering the
-    // matrix animation
+    const animateLetters = () => {
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let interval = null;
+        const h1 = document.querySelector('.hackaubg-moving-letters');
 
-    // I see that you are trying to implement vanilla js in react
-    // this is going to be a huge pain in the ass ...
-    // trust me
-    // better use an npm library
-    // e.g.
-    // https://www.npmjs.com/package/cmatrix
-    // https://www.npmjs.com/package/matrix-rain
-    // https://www.npmjs.com/package/react-matrix-effect
+        let iteration = 0;
+        clearInterval(interval);
+
+        interval = setInterval(() => {
+            h1.innerText = h1.innerText
+                .split('')
+                .map((letter, index) => {
+                    if (index < iteration) {
+                        return h1.dataset.value[index];
+                    }
+
+                    return letters[Math.floor(Math.random() * 26)];
+                })
+                .join('');
+
+            if (iteration >= h1.dataset.value.length) {
+                clearInterval(interval);
+            }
+
+            iteration += 1 / 3;
+        }, 30);
+    };
+
+    useEffect(animateLetters, []);
 
     return (
-        <div className="animation-container">
-            <h1></h1>
+        <div className="hackaubg-landing-section-text-animation-container">
+            <div className="hackaubg-landing-content">
+                <h1
+                    data-value="HACKAUBG 5.0"
+                    className="hackaubg-moving-letters"
+                    onMouseEnter={animateLetters}
+                >
+                    HACKAUBG 5.0
+                </h1>
+                <p>31st March - 2nd April, AUBG - Blagoevgrad</p>
+                <button className="Reg-btn">Go to Registration</button>
+            </div>
         </div>
     );
 };

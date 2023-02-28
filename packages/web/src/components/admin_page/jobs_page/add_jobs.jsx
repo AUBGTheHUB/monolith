@@ -88,6 +88,15 @@ const AddJobs = () => {
                             onChange={handleInputChange}
                         />
                     </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Link</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="link"
+                            name="link"
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
                     <Button
                         variant="primary"
                         type="button"
