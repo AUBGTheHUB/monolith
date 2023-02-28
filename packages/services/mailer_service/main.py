@@ -5,6 +5,7 @@ import functions_framework
 from dotenv import load_dotenv
 import smtplib as smtp
 from os import environ
+from flask_cors import cross_origin
 
 load_dotenv()
 
@@ -35,18 +36,26 @@ def send_mail(receiver, subject, html):
 
 
 @functions_framework.http
+@cross_origin(allowed_methods=["POST"])
 def mailer(request):
 
     if request.headers.get("Authorization") != environ.get("BEARER"):
         return json.dumps({"message": "Wrong or missing Bearer token"}), 401
 
-    if request.form:
-        data = request.form
-    else:
-        data = json.loads(request.data)
+    try:
+        if request.form:
+            data = request.form
+        else:
+            data = json.loads(request.data)
 
-    html = data["html"]
-    subject = data["subject"]
-    receiver = data["receiver"]
+        try:
+            html = data["html"]
+            subject = data["subject"]
+            receiver = data["receiver"]
+        except Exception as e:
+            raise KeyError(e.args[0] + " is missing")
+
+    except Exception as e:
+        return json.dumps({"message": "Request parsing failed", "error": str(e)}), 400
 
     return send_mail(receiver, subject, html)
