@@ -116,6 +116,7 @@
     align-items: center;
     width: 80vw;
     margin-left: 10vw;
+    align-items: stretch;
 }
 
 .member-card {
@@ -130,6 +131,7 @@
     background-color: #181a1b;
     color: #fff;
 }
+
 /* box which holds the card of a member */
 .single-member-box {
     display: column;
