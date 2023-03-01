@@ -3,7 +3,7 @@ import './grading_criteria.css';
 
 export const GradingCriteria = () => {
     return (
-        <div className="grading-criteria-container">
+            <div className="grading-criteria-container" id="grading">
             <h1>GRADING CRITERIA</h1>
             <div className="grading-criteria-table">
                 <div className="grading-criteria-column">
