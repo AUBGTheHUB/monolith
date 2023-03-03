@@ -1,11 +1,12 @@
 import React from 'react';
 import { useRef, useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from './test-axios';
 // import Alert from 'react-bootstrap/Alert';
 import './registration_form.css';
 
 const USER_REGEX = /^[a-zA-Z][\t a-zA-Z]{3,23}$/;
 // const EMAIL_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // change checking values
+const REGISTER_URL = '/register';
 
 const RegistrationForm = () => {
     const userRef = useRef();
@@ -16,7 +17,7 @@ const RegistrationForm = () => {
     const [userFocus, setUserFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
-    const [setSuccess] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         userRef.current.focus();
@@ -93,10 +94,14 @@ const RegistrationForm = () => {
             return;
         }
         try {
-            const response = await axios.post(JSON.stringify({ user }), {
-                headers: { 'Content-Type': 'application/json' },
-                withCredentials: true
-            });
+            const response = await axios.post(
+                REGISTER_URL,
+                JSON.stringify({ user }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
             console.log(response?.data);
             console.log(response?.accessToken);
             console.log(JSON.stringify(response));
@@ -117,51 +122,69 @@ const RegistrationForm = () => {
     };
 
     return (
-        <div className="registration-main">
-            <h1>Register for HackAUBG 5.0</h1>
-            <p
-                ref={errRef}
-                className={errMsg ? 'errmsg' : 'offscreen'}
-                aria-live="assertive"
-            >
-                {errMsg}
-            </p>
-            <form action="" className="reg-form" onSubmit={handleSubmit}>
-                <fieldset className="from-personal-info">
-                    <div className="send-info">
-                        <label htmlFor="">
-                            Full Name
-                            <input
-                                type="text"
-                                id="username"
-                                ref={userRef}
-                                autoComplete="off"
-                                onChange={(e) => setUser(e.target.value)}
-                                value={user}
-                                required
-                                placeholder="Enter your name"
-                                aria-invalid={validName ? 'false' : 'true'}
-                                aria-describedby="uidnote"
-                                onFocus={() => setUserFocus(true)}
-                                onBlur={() => setUserFocus(false)}
-                            />
-                            <p
-                                id="uidnote"
-                                className={
-                                    userFocus && user && !validName
-                                        ? 'instructions'
-                                        : 'offscreen'
-                                }
-                            >
-                                4 to 24 characters.
-                                <br />
-                                Must begin with a letter.
-                                <br />
-                                Letters, numbers, underscores, hyphens allowed.
-                            </p>
-                        </label>
-                    </div>
-                    <div className="send-info">
+        <>
+            {success ? (
+                <section>
+                    <h1>Success!</h1>
+                    <p>
+                        <a href="#">Sign In</a>
+                    </p>
+                </section>
+            ) : (
+                <div className="registration-main">
+                    <h1>Register for HackAUBG 5.0</h1>
+                    <p
+                        ref={errRef}
+                        className={errMsg ? 'errmsg' : 'offscreen'}
+                        aria-live="assertive"
+                    >
+                        {errMsg}
+                    </p>
+                    <form
+                        action=""
+                        className="reg-form"
+                        onSubmit={handleSubmit}
+                    >
+                        <fieldset className="from-personal-info">
+                            <div className="send-info">
+                                <label htmlFor="">
+                                    Full Name
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        ref={userRef}
+                                        autoComplete="off"
+                                        onChange={(e) =>
+                                            setUser(e.target.value)
+                                        }
+                                        value={user}
+                                        required
+                                        placeholder="Enter your name"
+                                        aria-invalid={
+                                            validName ? 'false' : 'true'
+                                        }
+                                        aria-describedby="uidnote"
+                                        onFocus={() => setUserFocus(true)}
+                                        onBlur={() => setUserFocus(false)}
+                                    />
+                                    <p
+                                        id="uidnote"
+                                        className={
+                                            userFocus && user && !validName
+                                                ? 'instructions'
+                                                : 'offscreen'
+                                        }
+                                    >
+                                        4 to 24 characters.
+                                        <br />
+                                        Must begin with a letter.
+                                        <br />
+                                        Letters, numbers, underscores, hyphens
+                                        allowed.
+                                    </p>
+                                </label>
+                            </div>
+                            {/* <div className="send-info">
                         <label htmlFor="">
                             Email
                             <input
@@ -172,8 +195,8 @@ const RegistrationForm = () => {
                                 // onChange={handleInputChange}
                             />
                         </label>
-                    </div>
-                    {/* 
+                    </div> */}
+                            {/* 
                     <div className="send-info">
                         <label htmlFor="">
                             Age
@@ -520,19 +543,21 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                     </div> */}
-                </fieldset>
-                <button
-                    disabled={!validName ? true : false}
-                    className="register-btn"
-                    type="button"
-                    onClick={() => {
-                        // handleSubmit();
-                    }}
-                >
-                    Register
-                </button>
-            </form>
-        </div>
+                        </fieldset>
+                        <button
+                            disabled={!validName ? true : false}
+                            className="register-btn"
+                            type="button"
+                            onClick={() => {
+                                // handleSubmit();
+                            }}
+                        >
+                            Register
+                        </button>
+                    </form>
+                </div>
+            )}
+        </>
     );
 };
 
