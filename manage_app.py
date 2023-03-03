@@ -63,21 +63,14 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
 
 
 def handle_status_code_exception(msg: MIMEMultipart, method: str, url:str, service: str, status_code: int, discord: bool):
-    if status_code != 200 and service == "WEB":
-        if not discord:
-            # send email that the website is down
-            msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
-            send_mail(msg)
-        else:
-            # send discord notification that the website is down
-            requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
-    if status_code != 400 and service == "API":
-        if not discord:
-            # send email that the website is down
-            msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
-            send_mail(msg)
-        else:
-            requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} request to {url} failed with status code: **{str(status_code)}**"})
+    if not discord:
+        # send email that the website is down
+        msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
+        send_mail(msg)
+    else:
+        # send discord notification that the website is down
+        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
+    
     print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,service, str(url)) + bcolors.CEND)
     return status_code
 
@@ -231,7 +224,9 @@ def check_service_up(url: str, service: str, discord: bool):
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
-        handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+        if web_request.status_code != 200:
+            handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+            return
     elif service == "API":
         try:
             web_request = requests.post(url=url)
@@ -239,7 +234,9 @@ def check_service_up(url: str, service: str, discord: bool):
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
-        handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+        if web_request.status_code != 400:
+            handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+            return
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
