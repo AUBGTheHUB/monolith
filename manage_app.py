@@ -95,7 +95,7 @@ def start_docker_compose():
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
-        get_web = check_service_up(WEB_URL, "WEB")
+        get_web = check_service_up(WEB_URL, "WEB", True)
 
         # "connection reset by peer"
         print()
@@ -197,6 +197,7 @@ def check_service_up(url: str, service: str, discord: bool):
     if service == "WEB":
         try:
             web_request = requests.get(url)
+            raise Exception("AAAAAAAAA")
         except Exception as e:
             # TODO: if not discord, send email notification
             if not discord:
