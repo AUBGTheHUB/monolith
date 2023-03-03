@@ -1,91 +1,65 @@
 import React from 'react';
+import { useRef, useState, useEffect } from 'react';
+// import Alert from 'react-bootstrap/Alert';
 import './registration_form.css';
-import { useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
+
+const USER_REGEX = /^[a-zA-Z][a-zA-Z]{3,23}$/;
 
 const RegistrationForm = () => {
+    const userRef = useRef();
+    const errRef = useRef();
 
+    const [user, setUser] = useState('');
+    const [validName, setValidName] = useState(false);
+    const [setUserFocus] = useState(false);
 
-    const [emailFieldError, setEmailFieldError] = useState(false);
-    const [usernameFieldError, setUsernameFieldError] = useState(false);
-    const [success, setSuccess] = useState(0);
-    const [alertShown, setAlertShown] = useState('alert-hidden');
+    const [errMsg, setErrMsg] = useState('');
+    // const [success, setSuccess] = useState(false);
 
-    const [fullNameFormat, setFullNameFormat] = useState('field-incorrect');
-    const [emailFormat, setEmailFormat] = useState('field-incorrect');
+    useEffect(() => {
+        userRef.current.focus();
+    }, []);
 
-    const [errorMessage, setErrorMessage] = useState('');
+    useEffect(() => {
+        const result = USER_REGEX.test(user);
+        console.log(result);
+        console.log(user);
+        setValidName(result);
+    }, [user]);
 
-    const [formState, setFormState] = useState({
-        fullName: '',
-        email: '',
-        school: ''
-    });
+    useEffect(() => {
+        setErrMsg('');
+    }, [user]);
 
-    const buildErrorMessage = () => {
-        let error = '';
-        if (emailFieldError) {
-            error += 'Email field is incorrect';
-        }
-
-        if (usernameFieldError) {
-            error += 'Username field is incorrect';
-        }
-
-        setErrorMessage(error);
-    };
-
-    if (errorMessage) {
-        return (
-            error;
-        );
-        // display error message on top of component
-    }
-
-    function checkFormat(name, value) {
-        if (name === 'email') {
-            if (checkEmail(value)) {
-                setEmailFormat('field-correct');
-            } else {
-                setEmailFormat('field-incorrect');
-            }
-        } else if (name === 'fullName') {
-            if (checkEmptyString(value)) {
-                setFullNameFormat('field-incorrect');
-            } else {
-                setFullNameFormat('field-correct');
-            }
-        }
-    }
-
-    const handleInputChange = (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        setSuccess(0);
-
-        checkFormat(name, value);
-
-        setFormState({
-            ...formState,
-            [name]: value
-        });
-
-        console.log(formState);
-    };
-
-    function checkEmptyString(string) {
-        return /^\s*$/.test(string);
-    }
-
-    function checkEmail(string) {
-        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(string);
-    }
-
-    if (fullNameFormat !== 'field-correct' || emailFormat !== 'field-correct') {
-        // setAlertShown('alert');
-    }
+    //
+    //     const handleInputChange = (event) => {
+    //         const target = event.target;
+    //         const value = target.value;
+    //         const name = target.name;
+    //
+    //         setSuccess(0);
+    //
+    //         checkFormat(name, value);
+    //
+    //         setFormState({
+    //             ...formState,
+    //             [name]: value
+    //         });
+    //
+    //         console.log(formState);
+    //     };
+    //
+    //     function checkEmptyString(string) {
+    //         return /^\s*$/.test(string);
+    //     }
+    //
+    //     function checkEmail(string) {
+    //         return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(string);
+    //     }
+    //
+    //     if (fullNameFormat !== 'field-correct' || emailFormat !== 'field-correct') {
+    //         // setAlertShown('alert');
+    //     }
 
     // const handleSubmit = () => {
     //     if (
@@ -111,19 +85,31 @@ const RegistrationForm = () => {
     return (
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
+            <p
+                ref={errRef}
+                className={errMsg ? 'errmsg' : 'offscreen'}
+                aria-live="assertive"
+            >
+                {errMsg}
+            </p>
             <form action="" className="reg-form">
-                {ShowAlert()}
-
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
                             <input
                                 type="text"
-                                name="full-name"
+                                id="fullname"
+                                ref={userRef}
+                                autoComplete="off"
+                                onChange={(e) => setUser(e.target.value)}
                                 placeholder="Enter your name"
                                 required
-                                onChange={handleInputChange}
+                                aria-invalid={validName ? 'false' : 'true'}
+                                aria-describedby="uidnote"
+                                onFocus={() => setUserFocus(true)}
+                                onBlur={() => setUserFocus}
+                                // onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -490,7 +476,7 @@ const RegistrationForm = () => {
                     className="register-btn"
                     type="button"
                     onClick={() => {
-                        handleSubmit();
+                        // handleSubmit();
                     }}
                 >
                     Register
