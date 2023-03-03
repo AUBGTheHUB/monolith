@@ -40,7 +40,16 @@ export const MentorsSection = () => {
     useEffect(() => {
         getMentors();
     }, []);
-    return <>{renderMentors()}</>;
+    return (
+        <div className="coming-soon">
+            <>{renderMentors()}</>
+
+            <div className="coming-soon-text">
+                <h1>Mentors coming</h1>
+                <h1>soon...</h1>
+            </div>
+        </div>
+    );
 };
 
 export default MentorsSection;

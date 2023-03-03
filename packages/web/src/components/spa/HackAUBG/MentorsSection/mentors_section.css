@@ -33,3 +33,20 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.coming-soon {
+    background-color: #222222;
+}
+
+.coming-soon h1 {
+    margin-bottom: 0%;
+}
+
+.coming-soon-text {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: white;
+    align-content: space-between;
+    margin-right: 5%;
+    text-justify: auto;
+}
