@@ -39,6 +39,8 @@ class bcolors:
     OKGREEN = '\033[92m'
     CEND = '\033[0m'
 
+# TODO: leave this for health check on deployment (1)
+
 
 def send_mail(msg):
     port = 465  # SSL
@@ -181,8 +183,10 @@ def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
     BUILD_RUNNING.clear()
 
+# TODO: add flag for discord or email notification
 
-def check_service_up(url: str, service: str):
+
+def check_service_up(url: str, service: str, discord: bool = False):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
@@ -200,6 +204,7 @@ def check_service_up(url: str, service: str):
         try:
             web_request = requests.get(url)
         except Exception as e:
+            # TODO: if not discord, send email notification
             msg.attach(MIMEText(
                 '<h3>{}: GET Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
             send_mail(msg)
@@ -207,7 +212,11 @@ def check_service_up(url: str, service: str):
                   service, str(url)) + bcolors.CEND)
             return e
 
+            # TODO: if discord, send discord notification
+
         if web_request.status_code != 200:
+            # ? TEST BY CHANGING THE RESPONSE CODE
+            # TODO: do the same here
             # send email that the website is down
             msg.attach(MIMEText('<h3>{}: GET Request to {} failed with status code {}'.format(
                 ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
@@ -217,7 +226,7 @@ def check_service_up(url: str, service: str):
             return web_request.status_code
 
     elif service == "API":
-
+        # TODO: extract these as a function
         try:
             web_request = requests.post(url=url)
         except Exception as e:
@@ -245,6 +254,9 @@ def check_service_up(url: str, service: str):
 
 
 def cron_local_test():
+
+    # TODO: these should be pointed towards discord
+    # TODO: only docker-compose build notifications are going to be emailed
 
     local_web = check_service_up(WEB_URL, "WEB")
     local_api = check_service_up(API_URL, "API")
