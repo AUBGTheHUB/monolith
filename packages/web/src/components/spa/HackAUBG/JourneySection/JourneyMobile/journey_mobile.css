@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-radius: 5px;
+    border-radius: 15px;
     margin-bottom: 5%;
 }
 .mobile-step-container h2 {

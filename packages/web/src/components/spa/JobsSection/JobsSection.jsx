@@ -83,7 +83,6 @@ export const JobsSection = () => {
             </div>
         );
     };
-
     return (
         <>
             <div className="jobs-page">
@@ -91,8 +90,9 @@ export const JobsSection = () => {
                 {DisplayJobs()}
             </div>
             <Footer
-                colour={'rgb(21, 76, 121)'}
-                iconcolor={'rgb(120, 120, 120)'}
+                color={'rgb(21, 76, 121)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
             />
         </>
     );

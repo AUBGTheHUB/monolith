@@ -2,6 +2,10 @@ import React from 'react';
 import './page_not_found.css';
 
 const NotFound = () => {
+    const redirectHome = () => {
+        document.location.href = '/';
+    };
+
     return (
         <div className="page-not-found">
             <div className="page-not-found-logo">
@@ -9,8 +13,9 @@ const NotFound = () => {
                     src="/hublogo.png"
                     className="page-not-found-logo-image"
                     alt="The Hub AUBG"
+                    onClick={redirectHome}
                 />
-                <p>The Hub</p>
+                <p onClick={redirectHome}>The Hub</p>
             </div>
             <div className="background-not-found">
                 <div className="page-not-found-text">
@@ -23,9 +28,7 @@ const NotFound = () => {
                     <button
                         className="button-404"
                         type="button"
-                        onClick={() => {
-                            location.href = '/';
-                        }}
+                        onClick={redirectHome}
                     >
                         Back to Homepage
                     </button>
