@@ -3,23 +3,47 @@ import './footer.css';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { GrInstagram } from 'react-icons/gr';
 import { AiFillYoutube } from 'react-icons/ai';
+import { openNewTab } from '../../../Global';
 
-export const Footer = ({ colour }) => {
+export const Footer = ({ color, iconColor, iconBgColor }) => {
     return (
-        <div className="footer-container" style={{ backgroundColor: colour }}>
+        <div className="footer-container" style={{ backgroundColor: color }}>
             <div className="copyright">
-                <p>© 2022 The Hub AUBG. All rights reserved</p>
+                <p>© 2023 The Hub AUBG. All rights reserved</p>
             </div>
             <div className="social-media">
-                <a href="https://www.facebook.com/TheHubAUBG">
-                    <FaFacebookSquare />
-                </a>
-                <a href="https://www.instagram.com/thehubaubg/">
-                    <GrInstagram />
-                </a>
-                <a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug">
-                    <AiFillYoutube />
-                </a>
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
+                    <div
+                        className="footer-icon"
+                        onClick={() => {
+                            openNewTab('https://facebook.com/TheHubAUBG');
+                        }}
+                    >
+                        <FaFacebookSquare style={{ color: iconColor }} />
+                    </div>
+                </div>
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
+                    <div
+                        className="footer-icon"
+                        onClick={() => {
+                            openNewTab('https://instagram.com/thehubaubg/');
+                        }}
+                    >
+                        <GrInstagram style={{ color: iconColor }} />
+                    </div>
+                </div>
+                <div className="links" style={{ backgroundColor: iconBgColor }}>
+                    <div
+                        className="footer-icon"
+                        onClick={() => {
+                            openNewTab(
+                                'https://youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug'
+                            );
+                        }}
+                    >
+                        <AiFillYoutube style={{ color: iconColor }} />
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -2,3 +2,5 @@
 # ignore executable
 bin
 certs
+__debug_bin
+tmp

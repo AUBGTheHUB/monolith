@@ -1,0 +1,98 @@
+.journey-mobile-section {
+    background-color: #222222;
+    overflow: hidden;
+}
+.journey-mobile-title {
+    margin-bottom: 5%;
+}
+.journey-mobile-title h1 {
+    color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+    text-align: center;
+}
+.mobile-step-container {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 15px;
+    margin-bottom: 5%;
+}
+.mobile-step-container h2 {
+    color: #19b700;
+
+    font-size: 0.9em;
+    width: 91%;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    padding-left: 5%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+.mobile-step-container p {
+    color: #000;
+    font-size: 0.8em;
+    text-align: justify;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.journey-mobile-content {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-step-container {
+    display: inline-block;
+    font-size: 1.15em;
+    margin-top: 0%;
+    margin-bottom: 8%;
+    width: 80%;
+}
+
+.container-content-not-displayed {
+    height: 0;
+    overflow: hidden;
+    animation-name: slideout;
+    animation-duration: 0.5s;
+}
+.container-content-displayed {
+    overflow: hidden;
+    animation-name: slidein;
+    animation-duration: 0.5s;
+}
+.journey-arrow-displayed {
+    display: flex;
+    align-items: center;
+    width: 15%;
+}
+.journey-arrow-not-displayed {
+    display: none;
+}
+.step-title {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+@keyframes slidein {
+    0% {
+        height: 0px;
+    }
+
+    100% {
+        height: var(--elem-Height);
+    }
+}
+@keyframes slideout {
+    0% {
+        height: var(--elem-Height);
+    }
+
+    100% {
+        height: 0px;
+    }
+}

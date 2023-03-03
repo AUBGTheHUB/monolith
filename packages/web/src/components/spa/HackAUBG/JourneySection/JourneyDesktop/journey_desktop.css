@@ -1,0 +1,91 @@
+.journey-desktop-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-left: 11%;
+    padding-right: 11%;
+    background-color: #222222;
+}
+.journey-desktop-title {
+    margin-bottom: 3%;
+}
+.journey-desktop-title h1 {
+    font-weight: bold;
+    color: #19b700;
+}
+
+.journey-desktop-content {
+    display: flex;
+    text-align: justify;
+    margin-bottom: 1%;
+    line-height: 1.5;
+}
+
+.vertical-line {
+    border-radius: 4px;
+    overflow: visible;
+    border: 5px solid #fff;
+    justify-items: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.journey-desktop-section .left {
+    margin-right: 50px;
+    width: 500px;
+}
+
+.journey-desktop-section .right {
+    margin-left: 50px;
+    width: 500px;
+}
+
+.journey-desktop-section .right p {
+    width: 500px;
+}
+
+.journey-desktop-section .left .top {
+    margin-bottom: 54%;
+}
+
+.journey-desktop-section .right .top {
+    margin-top: 55%;
+}
+
+.journey-desktop-section .right .bottom {
+    margin-top: 54%;
+}
+
+.journey-desktop-section .left-dot {
+    background-color: white;
+    height: 45px;
+    width: 45px;
+    position: relative;
+    top: 65px;
+    left: 532.5px;
+    border-radius: 50%;
+}
+
+.journey-desktop-section .right-dot {
+    background-color: white;
+    height: 45px;
+    width: 45px;
+    position: relative;
+    top: 65px;
+    left: -77px;
+    border-radius: 50%;
+}
+.journey-desktop-section .journey-desktop-column h2 {
+    color: #19b700;
+    margin-bottom: 3%;
+}
+.journey-desktop-section .left h2 {
+    display: flex;
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.journey-desktop-section .journey-desktop-column p {
+    color: #fff;
+}

@@ -39,7 +39,7 @@ if [ $ACTIONS == $START ]; then
     elif [ "$ACTIONS" == "$DEPLOYED_CLIENT" ]; then
         make run-dev
     elif [ "$ACTIONS" == "$LOCAL_API" ]; then
-        make run-api
+        make reload-api
     fi
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then

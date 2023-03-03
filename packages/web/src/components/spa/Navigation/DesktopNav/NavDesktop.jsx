@@ -28,7 +28,8 @@ export const NavDesktop = ({ props }) => {
                 backgroundColor: props.bgColor,
                 position: 'fixed',
                 top: 0,
-                width: '100vw'
+                width: '100vw',
+                zIndex: 1
             };
         }
 

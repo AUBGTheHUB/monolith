@@ -18,7 +18,6 @@
 }
 
 .video-header {
-    /* text-align: center; */
     width: 70%;
     color: #fff;
     justify-content: center;
@@ -31,8 +30,7 @@
 
 @media only screen and (max-width: 900px) {
     .video-header {
-        font-size: 32px;
-        font-weight: 900;
+        text-size: 0.5rem;
         text-align: justify;
     }
     .video {

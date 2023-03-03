@@ -1,0 +1,14 @@
+name: Notify Discord - New Issue
+on:
+  issues:
+    types: [opened]
+jobs:
+  send_notification:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: "```css\nISSUE-{{ EVENT_PAYLOAD.issue.number }}: '{{ EVENT_PAYLOAD.issue.title }}' has been opened by {{ EVENT_PAYLOAD.issue.user.login }}\n``` \n [Go To ISSUE:]({{ EVENT_PAYLOAD.issue.html_url }})"

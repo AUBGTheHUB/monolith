@@ -68,6 +68,17 @@
     align-items: center;
 }
 
+@media only screen and (max-width: 1087px) {
+    .navdesktop-navdivs {
+        text-align: center;
+        padding-right: 2%;
+    }
+    .navdesktop-buttons {
+        max-width: 20%;
+        margin-right: 5.5%;
+    }
+}
+
 .navdesktop-navdivs a:hover {
     color: rgb(21, 76, 121);
 }

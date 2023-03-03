@@ -25,12 +25,14 @@ import JuryActions from './components/admin_page/hackathon/hackathon_jury/action
 import RenderSponsors from './components/admin_page/hackathon/hackathon_sponsors/render_sponsors';
 import AddSponsors from './components/admin_page/hackathon/hackathon_sponsors/add_sponsors';
 import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsors/actions_sponsors';
-import RenderPartners from './components/admin_page/hackathon/hackathon_partners.jsx/render_partners';
-import AddPartners from './components/admin_page/hackathon/hackathon_partners.jsx/add_partners';
-import PartnersActions from './components/admin_page/hackathon/hackathon_partners.jsx/actions_partners';
+import RenderPartners from './components/admin_page/hackathon/hackathon_partners/render_partners';
+import AddPartners from './components/admin_page/hackathon/hackathon_partners/add_partners';
+import PartnersActions from './components/admin_page/hackathon/hackathon_partners/actions_partners';
 import './App.css';
 import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
+import S3Panel from './components/admin_page/s3_page/s3_landing';
+import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
 
 function App() {
     return (
@@ -119,6 +121,11 @@ function App() {
             <Route path="/hackaubg" element={<HackAUBG />} />
             <Route path="/jobs" element={<JobsSection />} />
             <Route path="/*" element={<NotFound />} />
+            <Route path="/admin/dashboard/s3" element={<S3Panel />} />
+            <Route
+                path="/admin/dashboard/s3/objects"
+                element={<RenderStorageObjects />}
+            />
         </Routes>
     );
 }

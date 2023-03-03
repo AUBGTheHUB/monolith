@@ -10,7 +10,7 @@ import InvalidClient from '../../invalid_client';
 
 const RenderSponsors = () => {
     const history = useNavigate();
-    const [sponsors, setSponsors] = useState([{}]);
+    const [sponsors, setSponsors] = useState();
 
     const getJobs = () => {
         axios({
@@ -41,6 +41,7 @@ const RenderSponsors = () => {
                             />
                             <Card.Body>
                                 <Card.Title>{sponsor['company']}</Card.Title>
+                                <Card.Text>{sponsor['category']}</Card.Text>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
