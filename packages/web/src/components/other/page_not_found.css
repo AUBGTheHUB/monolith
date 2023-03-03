@@ -10,17 +10,19 @@
     justify-content: center;
     width: 100%;
     margin-right: 2px;
-    cursor: pointer;
+    padding-top: 0.7%;
 }
 .page-not-found-logo p {
     margin-bottom: 0px !important;
     color: #fff;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 500;
     margin-left: 0.5%;
+    cursor: pointer;
 }
 .page-not-found-logo img {
-    width: 4vh;
+    width: 8vh;
+    cursor: pointer;
 }
 .background-not-found {
     display: flex;
@@ -36,7 +38,7 @@
     justify-content: end;
 }
 .hubzie-UFO-image img {
-    width: 60vh;
+    width: 30vw;
     height: auto;
 }
 .page-not-found-text {
@@ -56,9 +58,35 @@
     border: none;
     font-size: 1.2rem;
     font-weight: 600;
-    background-color: #02b0e5;
     padding: 2% 8% 2% 8%;
+    background-size: 300% 100%;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color: #02b0e5;
 }
+
+.button-404:hover {
+    background-color: #4e87e8;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+@keyframes button-404 {
+    0% {
+        background-position: 0% 10%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    1000% {
+        background-position: 0% 50%;
+    }
+}
+
 .heading-text-404 {
     color: white;
     margin-right: 5%;
@@ -76,6 +104,9 @@
 }
 
 @media only screen and (max-width: 1000px) {
+    .page-not-found-logo img {
+        width: 6vh;
+    }
     .page-not-found {
         overflow: hidden;
         position: fixed;
@@ -85,13 +116,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 78vh;
+        height: 75vh;
         flex-direction: column-reverse;
     }
     .hubzie-UFO-image {
         width: 100%;
         justify-content: center;
-        margin-bottom: 3%;
+        margin-top: 11%;
+        margin-bottom: 4%;
     }
     .page-not-found-text {
         width: 100%;
@@ -113,8 +145,12 @@
         align-self: center;
         display: flex;
         text-align: -webkit-center;
+        width: initial;
+        margin-top: 2%;
+        margin-right: 3%;
     }
     .button-404 {
+        margin-top: 2%;
         display: flex;
         align-self: center;
     }
@@ -125,10 +161,10 @@
 
     .hubzie-UFO-image img {
         width: auto;
-        height: 40vh;
+        height: 29vh;
     }
     .page-not-found-logo p {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 }
 
