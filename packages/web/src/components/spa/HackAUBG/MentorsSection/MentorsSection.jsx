@@ -35,16 +35,15 @@ export const MentorsSection = () => {
                     </div>
                 </div>
             );
-        } else {
-            return (
-                <div className="coming-soon">
-                    <div className="coming-soon-text">
-                        <h1>Mentors coming</h1>
-                        <h1>soon...</h1>
-                    </div>
-                </div>
-            );
         }
+        return (
+            <div className="hack-coming-soon-container">
+                <div className="hack-coming-soon-text">
+                    <h1>Mentors coming</h1>
+                    <h1>soon...</h1>
+                </div>
+            </div>
+        );
     };
     useEffect(() => {
         getMentors();

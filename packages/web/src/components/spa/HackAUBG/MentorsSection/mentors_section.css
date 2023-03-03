@@ -33,25 +33,15 @@
     border-radius: 10px;
     cursor: pointer;
 }
-.coming-soon {
+.hack-coming-soon-container {
     background-color: #222222;
-    padding-bottom: 20%;
-    padding-top: 20%;
+    padding-bottom: 5%;
+    padding-top: 5%;
+    height: 100%;
 }
 
-.coming-soon h1 {
-    margin-bottom: 0%;
-    font-size: 350%;
-}
-
-.coming-soon-text {
-    justify-content: center;
-    align-items: center;
+.hack-coming-soon-text {
     text-align: center;
-    width: 100%;
-
     color: white;
-    align-content: space-between;
     margin-right: 5%;
-    text-justify: auto;
 }
