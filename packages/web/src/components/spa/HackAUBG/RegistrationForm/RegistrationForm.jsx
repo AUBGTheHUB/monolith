@@ -1,10 +1,11 @@
 import React from 'react';
 import { useRef, useState, useEffect } from 'react';
-
+import axios from 'axios';
 // import Alert from 'react-bootstrap/Alert';
 import './registration_form.css';
 
 const USER_REGEX = /^[a-zA-Z][\t a-zA-Z]{3,23}$/;
+// const EMAIL_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; // change checking values
 
 const RegistrationForm = () => {
     const userRef = useRef();
@@ -15,7 +16,7 @@ const RegistrationForm = () => {
     const [userFocus, setUserFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
-    // const [success, setSuccess] = useState(false);
+    const [setSuccess] = useState(false);
 
     useEffect(() => {
         userRef.current.focus();
@@ -83,6 +84,38 @@ const RegistrationForm = () => {
     //     }
     // };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // if button enabled with JS hack
+        const v1 = USER_REGEX.test(user);
+        if (!v1) {
+            setErrMsg('Invalid Entry');
+            return;
+        }
+        try {
+            const response = await axios.post(JSON.stringify({ user }), {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            });
+            console.log(response?.data);
+            console.log(response?.accessToken);
+            console.log(JSON.stringify(response));
+            setSuccess(true);
+            //clear state and controlled inputs
+            //need value attrib on inputs for this
+            setUser('');
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('No Server Response');
+            } else if (err.response?.status === 409) {
+                setErrMsg('Username Taken');
+            } else {
+                setErrMsg('Registration Failed');
+            }
+            errRef.current.focus();
+        }
+    };
+
     return (
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
@@ -93,7 +126,7 @@ const RegistrationForm = () => {
             >
                 {errMsg}
             </p>
-            <form action="" className="reg-form">
+            <form action="" className="reg-form" onSubmit={handleSubmit}>
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
@@ -106,6 +139,7 @@ const RegistrationForm = () => {
                                 onChange={(e) => setUser(e.target.value)}
                                 value={user}
                                 required
+                                placeholder="Enter your name"
                                 aria-invalid={validName ? 'false' : 'true'}
                                 aria-describedby="uidnote"
                                 onFocus={() => setUserFocus(true)}
@@ -127,7 +161,7 @@ const RegistrationForm = () => {
                             </p>
                         </label>
                     </div>
-                    {/* <div className="send-info">
+                    <div className="send-info">
                         <label htmlFor="">
                             Email
                             <input
@@ -135,10 +169,11 @@ const RegistrationForm = () => {
                                 name="email"
                                 placeholder="Enter your email"
                                 required
-                                onChange={handleInputChange}
+                                // onChange={handleInputChange}
                             />
                         </label>
                     </div>
+                    {/* 
                     <div className="send-info">
                         <label htmlFor="">
                             Age
