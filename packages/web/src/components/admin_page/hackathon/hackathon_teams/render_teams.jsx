@@ -47,7 +47,7 @@ const RenderTeams = () => {
                                     variant="primary"
                                     onClick={() => {
                                         history(
-                                            '/admin/dashboard/hackathon/teams/actions',
+                                            '/admin/dashboard/hackathon/teams/members',
                                             {
                                                 state: {
                                                     team_data: team
@@ -55,7 +55,7 @@ const RenderTeams = () => {
                                             }
                                         );
                                     }}>
-                                    Actions
+                                    Members
                                 </Button>
                             </Card.Body>
                         </Card>
