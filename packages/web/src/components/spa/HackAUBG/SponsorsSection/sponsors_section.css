@@ -46,12 +46,22 @@
 .bronze-box {
     width: 100%;
     height: fit-content;
+    max-width: 1000px;
+    padding: 15px;
     border-style: solid;
     border-width: 8px;
-    /* display: flex; */
+    display: flex;
     /* flex-direction: column; */
     justify-content: center;
     align-items: center;
+}
+
+.platinum-box .logo-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .platinum-container {
@@ -87,19 +97,29 @@
 }
 
 .bronze-container {
-    background-color: lightgreen;
+    background-color: rgb(163, 104, 37);
     margin-top: 3%;
 }
 
 .bronze-box {
-    border-color: lightgreen;
+    border-color: rgb(163, 104, 37);
 }
 
 .sponsors-main img {
     /* width: 30%; */
-    width: 100%;
-    max-width: 230px;
+    width: 30%;
+    max-width: 200px;
     height: auto;
     /* max-height: 250px; */
     margin: 4% 2%;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .platinum-box, .custom-box, .silver-box, .bronze-box {
+    max-width: 400px;
+  }
+  .platinum-box, .custom-box, .silver-box, .bronze-box .logo-container img {
+    max-width: 80%;
+  }
 }
