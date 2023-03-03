@@ -40,4 +40,8 @@
     .faq-container {
         margin-bottom: 10%;
     }
+
+    .faq {
+        margin-bottom: 2.5rem;
+    }
 }
