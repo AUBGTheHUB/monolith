@@ -16,7 +16,6 @@
 
 .faq-header,
 .faq-text {
-    width: 60%;
     text-align: left;
 }
 
@@ -28,4 +27,11 @@
 
 .faq-text {
     text-align: justify;
+}
+
+@media only screen and (max-width: 1000px) {
+    .faq-text-container {
+        padding-left: 11%;
+        padding-right: 11%;
+    }
 }

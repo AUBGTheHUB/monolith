@@ -76,4 +76,9 @@
     .schedule-event-title-hack-aubg {
         font-size: 3.5vw;
     }
+
+    .schedule-section-container-hack-aubg {
+        padding-left: 11%;
+        padding-right: 11%;
+    }
 }
