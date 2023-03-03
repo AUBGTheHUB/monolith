@@ -223,7 +223,7 @@ def check_service_up(url: str, service: str, discord: bool):
     print()
     print(bcolors.YELLOW_IN +
           "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND)
-    req_method
+    req_method = ""
     if service == "WEB":
         try:
             web_request = requests.get(url)
