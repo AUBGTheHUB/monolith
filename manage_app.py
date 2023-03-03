@@ -116,7 +116,7 @@ def start_docker_compose():
 
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n ✅: Successfully Deployed "
+                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n ✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
@@ -150,7 +150,7 @@ def start_docker_compose():
     if BUILD_TRY <= 1:
         requests.post(DISCORD_WH, headers={
             "Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```"
+            "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```"
         })
 
     CURRENTLY_BUILDING.clear()
@@ -165,13 +165,13 @@ def start_docker_compose():
 def beautify_errors(errors: dict) -> str:
     output_string = ""
     if (build_errors := errors.get("BUILD", None)):
-        output_string += "BUILD: "
+        output_string += "BUILD:\n"
         output_string += '\n\t'.join(build_errors)
     if (build_errors := errors.get("WEB", None)):
-        output_string += "WEB: "
+        output_string += "WEB:\n"
         output_string += '\n\t'.join(build_errors)
     if (build_errors := errors.get("API", None)):
-        output_string += "API: "
+        output_string += "API:\n"
         output_string += '\n\t'.join(build_errors)
 
     return output_string
