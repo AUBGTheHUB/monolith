@@ -11,7 +11,7 @@
 }
 
 .schedule-section-title-hack-aubg {
-    padding: 10% 0% 0% 0%;
+    padding: 5% 0% 0% 0%;
     color: #19b700;
     font-weight: 900;
     font-size: 2em;
@@ -75,5 +75,10 @@
 
     .schedule-event-title-hack-aubg {
         font-size: 3.5vw;
+    }
+
+    .schedule-section-container-hack-aubg {
+        padding-left: 11%;
+        padding-right: 11%;
     }
 }
