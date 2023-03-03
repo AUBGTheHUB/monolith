@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func RegisterTeamMember(c *fiber.Ctx) error {
@@ -50,11 +50,20 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	hasTeam := newHackathonTeamMember.TeamNoTeam
 	var actualTeamID string = ""
 
+	if CheckIfTeamMemberExists(newHackathonTeamMember) {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}
+	resultFromInsertingTeamMemberToDB, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
 	if *hasTeam {
 		results, _ := hackathonTeamCollection.Find(ctx, bson.M{})
 		var nubmerOfTeams int = 0
 		var team models.Team
-		for results.Next(ctx){
+		for results.Next(ctx) {
 			nubmerOfTeams++
 			var res models.Team
 			results.Decode(&res)
@@ -63,19 +72,26 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 				actualTeamID = team.ID.Hex()
 			}
 		}
-		
+
 		if actualTeamID != "" {
-			if len(team.TeamMembers) < 6  {
-				team.TeamMembers = append(team.TeamMembers, newHackathonTeamMember.TeamName)
-			}else{
+			if len(team.TeamMembers) < 6 {
+				key_from_hex, _ := primitive.ObjectIDFromHex(actualTeamID)
+				hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$push": bson.M{"teammembers": resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex()}})
+				return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to existing team"})
+			} else {
 				return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Team's max capacity is reached"})
 			}
-		} else{
+		} else {
 			if nubmerOfTeams < 15 {
-			// actual team name = passed team name
-			// create new team and assign member by id
-			
-			} else{
+				//Creates new Team in the DB with first member the new participant
+				var newTeam models.Team
+				newTeam.TeamName = newHackathonTeamMember.TeamName
+				newTeam.TeamMembers = append(newTeam.TeamMembers, resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex())
+				result, _ := hackathonTeamCollection.InsertOne(ctx, newTeam)
+
+				return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
+
+			} else {
 				return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Max number of teams is reached"})
 			}
 		}
@@ -84,42 +100,9 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	}
 
 	// create new member document
-	
+
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success"})
 }
-
-// func AddHackathonMemberToTeam(teamName string, fullname string) {
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
-// 	// var id string
-// 	var results []models.Team
-// 	// team_map := models.EditTeam{}
-
-// 	cursor, _ := hackathonTeamCollection.Find(
-// 		ctx,
-// 		bson.D{},
-// 	)
-
-// 	_ = cursor.All(ctx, &results)
-
-// 	fmt.Println("HERE", results)
-// 	var teamID string = ""
-// 	if len(results) > 0 {
-// 		for _, result := range results {
-// 			if CompareTeamNames(teamName, result.TeamName) {
-// 				teamID = result.ID.String()
-// 			}
-// 		}
-
-// 		fmt.Println(teamID)
-
-// 		if teamID == "" {
-// 			fmt.Println("No team found")
-// 			// TODO: create new team
-// 		}
-// 	}
-
-// }
 
 func FormatTeamName(teamName string) string {
 	return strings.ToLower(strings.ReplaceAll(teamName, " ", ""))

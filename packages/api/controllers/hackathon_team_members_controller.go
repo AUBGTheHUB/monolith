@@ -237,8 +237,5 @@ func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool{
 
 	_ = cursor.All(ctx, &results)
 
-	if len(results) > 0 {
-		return true
-	}
-	return false
+	return len(results) > 0
 }
