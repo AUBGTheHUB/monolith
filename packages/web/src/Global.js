@@ -82,6 +82,7 @@ const changeHackFavicon = () => {
 
     let origin = new URL(location.href).origin;
     link.href = origin + '/favicon-green.ico';
+    document.title = 'HackAUBG 5.0';
 };
 
 export {
