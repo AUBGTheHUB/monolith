@@ -180,7 +180,7 @@ def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
     BUILD_RUNNING.clear()
 
-def check_service_up(url: str, service: str, discord: bool = True):
+def check_service_up(url: str, service: str, discord: bool):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
@@ -197,7 +197,6 @@ def check_service_up(url: str, service: str, discord: bool = True):
     if service == "WEB":
         try:
             web_request = requests.get(url)
-            raise Exception("TONI MONTANA")
         except Exception as e:
             # TODO: if not discord, send email notification
             if not discord:
