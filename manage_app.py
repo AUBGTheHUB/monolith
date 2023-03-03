@@ -145,7 +145,7 @@ def start_docker_compose():
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
 
-    errors["BUILD"] = errors["BUILD"].splitlines()[-5:]
+    errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
     if BUILD_TRY <= 1:
         requests.post(DISCORD_WH, headers={
