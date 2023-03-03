@@ -9,10 +9,11 @@
 }
 
 .faq {
-    font-size: 32px;
+    font-size: 2rem;
     font-weight: 900;
     padding: 2% 0;
     color: #19b700;
+    text-align: center;
 }
 
 .faq-header,

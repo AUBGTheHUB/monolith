@@ -11,8 +11,9 @@
     margin-bottom: 3%;
 }
 .journey-desktop-title h1 {
-    font-weight: bold;
     color: #19b700;
+    font-size: 2rem;
+    font-weight: 900;
 }
 
 .journey-desktop-content {
