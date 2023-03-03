@@ -79,4 +79,9 @@
     .schedule-text-container {
         justify-content: space-evenly;
     }
+
+    .schedule-section-container-hack-aubg {
+        padding-left: 11%;
+        padding-right: 11%;
+    }
 }
