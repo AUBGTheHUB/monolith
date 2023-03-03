@@ -150,7 +150,7 @@ def start_docker_compose():
     if BUILD_TRY <= 1:
         requests.post(DISCORD_WH, headers={
             "Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{str(errors)}```"
+            "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```"
         })
 
     CURRENTLY_BUILDING.clear()
@@ -160,6 +160,21 @@ def start_docker_compose():
             os._exit(1)
 
     return
+
+
+def beautify_errors(errors: dict) -> str:
+    output_string = ""
+    if (build_errors := errors.get("BUILD", None)):
+        output_string += "BUILD: "
+        output_string += '\n\t'.join(build_errors)
+    if (build_errors := errors.get("WEB", None)):
+        output_string += "WEB: "
+        output_string += '\n\t'.join(build_errors)
+    if (build_errors := errors.get("API", None)):
+        output_string += "API: "
+        output_string += '\n\t'.join(build_errors)
+
+    return output_string
 
 
 def stop_docker_compose():
