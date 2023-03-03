@@ -22,7 +22,7 @@
 .mobile-step-container h2 {
     color: #19b700;
 
-    font-size: 4.5vw;
+    font-size: 3.7vw;
     width: 91%;
     display: flex;
     align-items: center;
@@ -33,7 +33,7 @@
 }
 .mobile-step-container p {
     color: #000;
-    font-size: 4vw;
+    font-size: 3.3vw;
     text-align: justify;
     padding-left: 5%;
     padding-right: 5%;
