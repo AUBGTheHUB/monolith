@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SponsorLogo from './SponsorLogo';
 import axios from 'axios';
 import './sponsors_section.css';
 import { url } from '../../../../Global';
@@ -55,30 +56,38 @@ export const Sponsors = () => {
                 <div className="platinum-box">
                     <div className="logo-container">
                         {/* This will hold all the logos */}
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2017/09/Uber-logo.jpg"
-                            alt="Uber logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2017/09/Uber-logo.jpg"
+                            altText="Uber logo"
                             onClick={() =>
                                 (window.location.href = 'https://www.uber.com')
                             }
                         />
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
-                            alt="Chaos logo"
+                        <SponsorLogo
+                            imageSrc="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
+                            altText="Chaos logo"
                             onClick={() =>
                                 (window.location.href = 'https://www.chaos.com')
                             }
                         />
-                        <img
-                            src="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
-                            alt="vmware logo"
+
+                        <SponsorLogo
+                            imageSrc="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
+                            altText="Chaos logo"
+                            onClick={() =>
+                                (window.location.href = 'https://www.chaos.com')
+                            }
+                        />
+                        <SponsorLogo
+                            imageSrc="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
+                            altText="vmware logo"
                             onClick={() =>
                                 (window.location.href = 'https://vmware.com')
                             }
                         />
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
-                            alt="Bosch logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
+                            altText="Bosch logo"
                             onClick={() =>
                                 (window.location.href = 'https://bosch.com')
                             }
@@ -101,17 +110,26 @@ export const Sponsors = () => {
                 <div className="custom-box">
                     <div className="logo-container">
                         {/* This will hold all the logos */}
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
-                            alt="Chaos logo"
+                        <SponsorLogo
+                            imageSrc="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
+                            altText="Chaos logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
-                        <img
-                            src="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
-                            alt="Chaos logo"
+                        <SponsorLogo
+                            imageSrc="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Chaos_logo.svg/1200px-Chaos_logo.svg.png"
+                            altText="Chaos logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2017/09/Uber-logo.jpg"
-                            alt="Uber logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2017/09/Uber-logo.jpg"
+                            altText="Uber logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
                     </div>
                 </div>
@@ -122,13 +140,19 @@ export const Sponsors = () => {
                 <div className="silver-box">
                     <div className="logo-container">
                         {/* This will hold all the logos */}
-                        <img
-                            src="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
-                            alt="vmware logo"
+                        <SponsorLogo
+                            imageSrc="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
+                            altText="vmware logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
-                        <img
-                            src="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
-                            alt="vmware logo"
+                        <SponsorLogo
+                            imageSrc="https://www.shapeblue.com/wp-content/uploads/2020/11/VMware-logo.jpg"
+                            altText="vmware logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
                     </div>
                 </div>
@@ -138,17 +162,26 @@ export const Sponsors = () => {
                 <div className="bronze-box">
                     <div className="logo-container">
                         {/* This will hold all the logos */}
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
-                            alt="Bosch logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
+                            altText="Bosch logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
-                            alt="Bosch logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
+                            altText="Bosch logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
-                            alt="Bosch logo"
+                        <SponsorLogo
+                            imageSrc="https://1000logos.net/wp-content/uploads/2016/10/Bosch-Logo-1925.png"
+                            altText="Bosch logo"
+                            onClick={() =>
+                                (window.location.href = 'https://bosch.com')
+                            }
                         />
                     </div>
                 </div>

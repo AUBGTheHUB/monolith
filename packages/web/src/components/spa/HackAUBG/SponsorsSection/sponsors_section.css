@@ -33,7 +33,6 @@
     width: 20vw;
     height: fit-content;
     margin-top: 3%;
-    /* margin-bottom: -5vh; */
     text-align: center;
     z-index: 0;
     border: none;
@@ -121,22 +120,14 @@
 }
 
 @media (max-width: 600px) {
-    /* .platinum-box, .custom-box, .gold-box, .silver-box, .bronze-box {
-    max-width: 400px;
-  } */
-    .logo-container img {
-        max-width: 100%;
-    }
     .sponsors-container {
-        font-size: 1.3em;
+        font-size: 1.1em;
     }
-
     .platinum-container,
     .custom-container,
     .gold-container,
     .silver-container,
     .bronze-container {
-        margin-bottom: -2.5vh;
-        width: 40vw;
+        width: 45vw;
     }
 }
