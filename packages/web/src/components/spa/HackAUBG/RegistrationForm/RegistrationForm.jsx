@@ -1,11 +1,158 @@
 import React from 'react';
 import './registration_form.css';
+import { useState } from 'react';
+import Alert from 'react-bootstrap/Alert';
 
 const RegistrationForm = () => {
+    const ShowAlert = () => {
+        // this could be heavily optimized
+        if (
+            fullNameFormat === 'field-correct' &&
+            emailFormat === 'field-correct' &&
+            success === 200
+        ) {
+            return (
+                <Alert status="success" className="success-alert">
+                    You have successfully registered!
+                </Alert>
+            );
+        } else if (
+            fullNameFormat === 'field-correct' &&
+            emailFormat === 'field-correct' &&
+            success === 500
+        ) {
+            return (
+                <Alert status="warning" className="success-alert">
+                    Something went wrong! Please, try again.
+                </Alert>
+            );
+        } else if (
+            fullNameFormat === 'field-incorrect' &&
+            emailFormat === 'field-incorrect'
+        ) {
+            return (
+                <div className={alertShown}>
+                    <Alert>
+                        This is a alert with
+                        <Alert.Link href="#">an example link</Alert.Link>. Give
+                        it a click if you like.
+                    </Alert>
+                </div>
+            );
+        } else if (fullNameFormat === 'field-incorrect') {
+            return (
+                <div className={alertShown}>
+                    <Alert>
+                        This is a alert with
+                        <Alert.Link href="#">an example link</Alert.Link>. Give
+                        it a click if you like.
+                    </Alert>
+                </div>
+            );
+        } else {
+            return (
+                <div className={alertShown}>
+                    <Alert>
+                        This is a alert with
+                        <Alert.Link href="#">an example link</Alert.Link>. Give
+                        it a click if you like.
+                    </Alert>
+                </div>
+            );
+        }
+    };
+
+    const [success, setSuccess] = useState(0);
+    const [alertShown, setAlertShown] = useState('alert-hidden');
+
+    const [fullNameFormat, setFullNameFormat] = useState('field-incorrect');
+    const [emailFormat, setEmailFormat] = useState('field-incorrect');
+
+    const [formState, setFormState] = useState({
+        fullName: '',
+        email: '',
+        school: ''
+    });
+
+    function checkFormat(name, value) {
+        if (name === 'email') {
+            if (checkEmail(value)) {
+                setEmailFormat('field-correct');
+            } else {
+                setEmailFormat('field-incorrect');
+            }
+        } else if (name === 'fullName') {
+            if (checkEmptyString(value)) {
+                setFullNameFormat('field-incorrect');
+            } else {
+                setFullNameFormat('field-correct');
+            }
+        }
+    }
+
+    const handleInputChange = (event) => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        setSuccess(0);
+
+        if (
+            fullNameFormat === 'field-correct' &&
+            emailFormat === 'field-correct'
+        ) {
+            setAlertShown('alert-hidden');
+        }
+
+        checkFormat(name, value);
+
+        setFormState({
+            ...formState,
+            [name]: value
+        });
+
+        console.log(formState);
+    };
+
+    function checkEmptyString(string) {
+        return /^\s*$/.test(string);
+    }
+
+    function checkEmail(string) {
+        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(string);
+    }
+
+    if (fullNameFormat !== 'field-correct' || emailFormat !== 'field-correct') {
+        setAlertShown('alert');
+    }
+
+    const handleSubmit = () => {
+        if (
+            fullNameFormat !== 'field-correct' ||
+            emailFormat !== 'field-correct'
+        ) {
+            setAlertShown('alert');
+        } else {
+            // setAlertShown('alert-hidden');
+            // axios
+            //     .post(url, formState)
+            //     .then((res) => {
+            //         setSuccess(res.status);
+            //         console.log(res);
+            //     })
+            //     .catch((err) => {
+            //         setSuccess(500);
+            //         console.log(err);
+            //     });
+        }
+    };
+
     return (
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
             <form action="" className="reg-form">
+                {ShowAlert()}
+
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
@@ -15,6 +162,7 @@ const RegistrationForm = () => {
                                 name="full-name"
                                 placeholder="Enter your name"
                                 required
+                                onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -26,6 +174,7 @@ const RegistrationForm = () => {
                                 name="email"
                                 placeholder="Enter your email"
                                 required
+                                onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -39,6 +188,7 @@ const RegistrationForm = () => {
                                 min="15"
                                 max="30"
                                 required
+                                onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -50,6 +200,7 @@ const RegistrationForm = () => {
                                 name="location"
                                 placeholder="Enter the place where you currently live"
                                 required
+                                onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -60,6 +211,7 @@ const RegistrationForm = () => {
                                 name="university"
                                 className="select"
                                 required
+                                onChange={handleInputChange}
                             >
                                 <option value="">
                                     (Choose an institution)
@@ -83,6 +235,7 @@ const RegistrationForm = () => {
                                 name="shirt-size"
                                 className="select"
                                 required
+                                onChange={handleInputChange}
                             >
                                 <option value="">(Choose a size)</option>
                                 <option value="1">Small (S)</option>
@@ -95,7 +248,12 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-left">
                             How did you find out about Hack AUBG?
-                            <select name="referrer" className="select" required>
+                            <select
+                                name="referrer"
+                                className="select"
+                                required
+                                onChange={handleInputChange}
+                            >
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
                                 <option value="2">Friends</option>
@@ -111,7 +269,12 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             What are your strongest sides?
-                            <select name="skills" className="select" required>
+                            <select
+                                name="skills"
+                                className="select"
+                                required
+                                onChange={handleInputChange}
+                            >
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">Frontend Programming</option>
                                 <option value="2">Backend Programming</option>
@@ -135,6 +298,7 @@ const RegistrationForm = () => {
                                 name="job-interests"
                                 placeholder="List the fields you are interested to work on"
                                 required
+                                onChange={handleInputChange}
                             />
                         </label>
                     </div>
@@ -145,6 +309,7 @@ const RegistrationForm = () => {
                                 name="programming-level"
                                 className="select"
                                 required
+                                onChange={handleInputChange}
                             >
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
@@ -162,7 +327,11 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you have previous coding experience?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -197,7 +366,11 @@ const RegistrationForm = () => {
                             Have you participated in Hack AUBG before?
                         </label>
                         <div className="radio-select">
-                            <div className="radio-btn" required>
+                            <div
+                                className="radio-btn"
+                                required
+                                onChange={handleInputChange}
+                            >
                                 <label>Yes</label>
                                 <input
                                     type="radio"
@@ -219,7 +392,11 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Are you looking for an internship?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -242,7 +419,11 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Have you participated in other hackathons?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -265,7 +446,11 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you want to share you info with sponsors?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -288,7 +473,11 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you have previous coding experience?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -312,7 +501,11 @@ const RegistrationForm = () => {
                             Do you want to receive our newsletter with potential
                             job offerings?
                         </label>
-                        <div className="radio-select" required>
+                        <div
+                            className="radio-select"
+                            required
+                            onChange={handleInputChange}
+                        >
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -332,7 +525,16 @@ const RegistrationForm = () => {
                         </div>
                     </div>
                 </fieldset>
-                <button className="register-btn">Register</button>
+                {/* <button className="register-btn">Register</button> */}
+                <button
+                    className="register-btn"
+                    type="button"
+                    onClick={() => {
+                        handleSubmit();
+                    }}
+                >
+                    Register
+                </button>
             </form>
         </div>
     );
