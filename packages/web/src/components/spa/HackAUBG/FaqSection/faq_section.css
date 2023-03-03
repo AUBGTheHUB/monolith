@@ -44,4 +44,8 @@
     .faq {
         margin-bottom: 2.5rem;
     }
+
+    .faq-header {
+        width: 100%;
+    }
 }
