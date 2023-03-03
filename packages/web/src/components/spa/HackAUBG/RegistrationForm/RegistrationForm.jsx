@@ -1,5 +1,7 @@
 import React from 'react';
 import { useRef, useState, useEffect } from 'react';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import Alert from 'react-bootstrap/Alert';
 import './registration_form.css';
 
@@ -11,7 +13,7 @@ const RegistrationForm = () => {
 
     const [user, setUser] = useState('');
     const [validName, setValidName] = useState(false);
-    const [setUserFocus] = useState(false);
+    const [userFocus, setUserFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
     // const [success, setSuccess] = useState(false);
@@ -97,6 +99,16 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
+                            <FontAwesomeIcon
+                                icon={faCheck}
+                                className={validName ? 'valid' : 'hide'}
+                            />
+                            <FontAwesomeIcon
+                                icon={faTimes}
+                                className={
+                                    validName || !user ? 'hide' : 'invalid'
+                                }
+                            />
                             <input
                                 type="text"
                                 id="fullname"
@@ -109,6 +121,7 @@ const RegistrationForm = () => {
                                 aria-describedby="uidnote"
                                 onFocus={() => setUserFocus(true)}
                                 onBlur={() => setUserFocus}
+                                className={validName ? 'valid' : 'invalid'}
                                 // onChange={handleInputChange}
                             />
                         </label>
@@ -471,8 +484,19 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                     </div> */}
+                    <p
+                        id="uidnote"
+                        className={
+                            userFocus && user && !validName
+                                ? 'instructions'
+                                : 'offscreen'
+                        }
+                    >
+                        SUCCESS OR FAIL?
+                    </p>
                 </fieldset>
                 <button
+                    disabled={!validName ? true : false}
                     className="register-btn"
                     type="button"
                     onClick={() => {
