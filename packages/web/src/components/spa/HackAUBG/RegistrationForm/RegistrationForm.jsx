@@ -146,7 +146,29 @@ const RegistrationForm = () => {
                             </select>
                         </label>
                     </div>
-
+                    <div className="send-info">
+                        <label className="radio-text">
+                            Do you have previous coding experience?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <div className="send-info">
                         <label htmlFor="" className="column-right">
                             What is the name of your team?
