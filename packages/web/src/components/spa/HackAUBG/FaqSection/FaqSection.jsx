@@ -3,7 +3,7 @@ import './faq_section.css';
 
 export const FaqSection = () => {
     return (
-        <div className="faq-container">
+            <div className="faq-container" id="faq">
             <h1 className="faq">Frequently Asked Questions</h1>
             <div className="faq-text-container">
                 <h2 className="faq-header">
