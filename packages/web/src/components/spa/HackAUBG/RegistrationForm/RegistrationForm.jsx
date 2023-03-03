@@ -56,7 +56,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label>
                             School/University
-                            <select name="university" className="column-left">
+                            <select name="university" className="select">
                                 <option value="">
                                     (Choose an institution)
                                 </option>
@@ -75,7 +75,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             T-shirt size
-                            <select name="shirt-size" className="column-right">
+                            <select name="shirt-size" className="select">
                                 <option value="">(Choose a size)</option>
                                 <option value="1">Small (S)</option>
                                 <option value="2">Medium (M)</option>
@@ -87,7 +87,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-left">
                             How did you find out about Hack AUBG?
-                            <select name="referrer" className="column-left">
+                            <select name="referrer" className="select">
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
                                 <option value="2">Friends</option>
@@ -103,7 +103,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             What are your strongest sides?
-                            <select name="skills" className="column-right">
+                            <select name="skills" className="select">
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">Frontend Programming</option>
                                 <option value="2">Backend Programming</option>
@@ -133,10 +133,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             What is your programming level?
-                            <select
-                                name="programming-level"
-                                className="column-right"
-                            >
+                            <select name="programming-level" className="select">
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
                                 <option value="2">Friends</option>
@@ -149,17 +146,7 @@ const RegistrationForm = () => {
                             </select>
                         </label>
                     </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Do you have a team?
-                        </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="team" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="team" />
-                        </div>
-                    </div>
+
                     <div className="send-info">
                         <label htmlFor="" className="column-right">
                             What is the name of your team?
@@ -175,55 +162,115 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Have you participated in Hack AUBG before?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="oldparticipant" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="oldparticipant" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="send-info">
                         <label className="radio-text">
                             Are you looking for an internship?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="internship" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="internship" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="send-info">
                         <label className="radio-text">
                             Have you participated in other hackathons?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="otherhackathon" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="otherhackathon" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="send-info">
                         <label className="radio-text">
                             Do you want to share you info with sponsors?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="shareinfo" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="shareinfo" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="send-info">
                         <label className="radio-text">
                             Do you have previous coding experience?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="experience" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="experience" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="send-info">
@@ -231,14 +278,32 @@ const RegistrationForm = () => {
                             Do you want to receive our newsletter with potential
                             job offerings?
                         </label>
-                        <div className="radio-btn">
-                            <label>Yes</label>
-                            <input type="radio" name="joboffers" />
-                            <label className="radio-no">No</label>
-                            <input type="radio" name="joboffers" />
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    type="radio"
+                                    name="joboffers"
+                                    className="radio"
+                                />
+                            </div>
                         </div>
                     </div>
                 </fieldset>
+                {/* <div className="radio-btn">
+                    <label>Yes</label>
+                    <input type="radio" name="joboffers" />
+                    <label className="radio-no">No</label>
+                    <input type="radio" name="joboffers" />
+                </div> */}
                 {/* <fieldset className="university column-left">
                     
                 </fieldset>
