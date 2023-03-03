@@ -5,14 +5,20 @@
     display: flex;
     flex-direction: column;
     font-weight: 400;
-    background-color: #fff;
     align-items: center;
     font-family: 'Roboto';
+    /*    background: linear-gradient(#57efc2, #222222);*/
+    /*    background: linear-gradient(#222222, #57efc2);*/
+    /*    background-image: linear-gradient(to bottom, #222222, #38404e, #3b647c, #278da3, #00b7bc, #00b7bc, #00b7bc, #00b7bc, #278da3, #3b647c, #38404e, #222222);*/
+    /*background-image: linear-gradient(to bottom, #57efc2, #57efc2, #222222, #222222, #222222, #222222, #222222, #222222, #222222, #222222, #222222, #222222);*/
+    /*background-image: linear-gradient(to bottom, #57efc2, #00b7bc, #307f98, #3b4b5e, #222222);*/
+    /*background-image: linear-gradient(to bottom, #222222, #222222, #222222, #222222, #222222, #222222);*/
+    /*background-image: linear-gradient(to bottom, #222222, #222222, #222222, #222222, #222222, #222222);*/
 }
 
 .schedule-section-title-hack-aubg {
     padding: 10% 0% 0% 0%;
-    color: #19b700;
+    color: #12b705;
     font-weight: 900;
     font-size: 2em;
 }
@@ -36,7 +42,7 @@
 
 .schedule-table-title-hack-aubg {
     padding: 5% 0% 10% 0%;
-    color: #19b700;
+    color: #12b705;
     font-weight: 900;
     font-size: 1.2em;
 }
@@ -47,7 +53,7 @@
 }
 
 .schedule-time-hack-aubg {
-    color: #19b700;
+    color: #12b705;
     font-weight: 900;
     font-size: 1em;
     padding-right: 30px;
@@ -56,6 +62,7 @@
 .schedule-event-title-hack-aubg {
     font-size: 0.9em;
     width: 220px;
+    color: white;
 }
 
 @media only screen and (max-width: 350px) {

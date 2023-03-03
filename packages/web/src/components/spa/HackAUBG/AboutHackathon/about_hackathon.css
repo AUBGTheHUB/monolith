@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     font-weight: 400;
-    background-color: #222222;
+    /*    background-color: #222222;*/
     align-items: center;
     font-family: 'Roboto';
 }

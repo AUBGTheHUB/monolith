@@ -6,10 +6,8 @@
 
 .video-container {
     margin: 0;
-    background: #f5f6f7;
     font-family: 'Roboto';
     padding: 3% 0%;
-    background-color: #222222;
     background: linear-gradient(#222222, #57efc2);
     justify-content: center;
     align-items: center;
