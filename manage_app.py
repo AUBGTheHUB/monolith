@@ -180,7 +180,7 @@ def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
     BUILD_RUNNING.clear()
 
-def check_service_up(url: str, service: str, discord: bool = False):
+def check_service_up(url: str, service: str, discord: bool = True):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
