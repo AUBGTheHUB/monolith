@@ -145,6 +145,21 @@ const Dash = () => {
                             </Button>
                         </Card.Body>
                     </Card>
+                    <Card className="card-dash-landing">
+                        <Card.Body>
+                            <Card.Title>Hackathon Teams</Card.Title>
+                            <Card.Text>
+                                Edit hackathon teams.
+                            </Card.Text>
+                            <Button 
+                                variant="primary"
+                                onClick={() => {
+                                    history('/admin/dashboard/hackathon/teams');
+                                }}>
+                                    See current teams
+                            </Button>
+                        </Card.Body>
+                    </Card>
                 </div>
             </div>
         );

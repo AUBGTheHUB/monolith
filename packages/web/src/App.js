@@ -31,6 +31,7 @@ import PartnersActions from './components/admin_page/hackathon/hackathon_partner
 import './App.css';
 import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
+import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
 
 function App() {
     return (
@@ -115,6 +116,10 @@ function App() {
             <Route
                 path="/admin/dashboard/partners/actions"
                 element={<PartnersActions />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/teams"
+                element={<RenderTeams />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
             <Route path="/jobs" element={<JobsSection />} />
