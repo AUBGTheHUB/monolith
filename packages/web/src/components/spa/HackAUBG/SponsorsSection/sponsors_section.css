@@ -30,7 +30,7 @@
 .custom-container,
 .silver-container,
 .bronze-container {
-    width: 30%;
+    width: 20vw;
     height: fit-content;
     margin-top: 3%;
     margin-bottom: -5vh;
@@ -116,11 +116,19 @@
     object-fit: contain;
 }
 
-/* @media (max-width: 600px) {
-  .platinum-box, .custom-box, .silver-box, .bronze-box {
+ @media (max-width: 600px) {
+  /* .platinum-box, .custom-box, .gold-box, .silver-box, .bronze-box {
     max-width: 400px;
+  } */
+.logo-container img {
+    max-width: 100%;
   }
-  .platinum-box, .custom-box, .silver-box, .bronze-box .logo-container img {
-    max-width: 80%;
+  .sponsors-container{
+    font-size:1.3em;
   }
-} */
+
+  .platinum-container,.custom-container, .gold-container,.silver-container,.bronze-container{
+    margin-bottom: -2.5vh;
+    width: 40vw;
+  }
+}
