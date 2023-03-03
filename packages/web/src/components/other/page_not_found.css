@@ -64,19 +64,11 @@
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
-    background-image: linear-gradient(
-        to right,
-        #32baf4,
-        #467edd,
-        #3f86ed,
-        #47acdf,
-        #24cc8e
-    );
-    box-shadow: 0 2px 10px 0 rgb(70, 126, 221);
+    background-color: #02b0e5;
 }
 
 .button-404:hover {
-    background-position: 100% 0;
+    background-color: #4e87e8;
     -moz-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
