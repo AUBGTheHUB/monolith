@@ -63,7 +63,7 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
 
 
 def handle_status_code_exception(msg: MIMEMultipart, method: str, url:str, service: str, status_code: int, discord: bool):
-    if status_code != 200:
+    if status_code != 200 and service == "WEB":
         if not discord:
             # send email that the website is down
             msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
@@ -71,7 +71,7 @@ def handle_status_code_exception(msg: MIMEMultipart, method: str, url:str, servi
         else:
             # send discord notification that the website is down
             requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
-    if status_code != 400:
+    if status_code != 400 and service == "API":
         if not discord:
             # send email that the website is down
             msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
