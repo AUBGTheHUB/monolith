@@ -197,6 +197,7 @@ def check_service_up(url: str, service: str, discord: bool = False):
     if service == "WEB":
         try:
             web_request = requests.get(url)
+            raise Exception("TONI MONTANA")
         except Exception as e:
             # TODO: if not discord, send email notification
             if not discord:
@@ -212,7 +213,7 @@ def check_service_up(url: str, service: str, discord: bool = False):
 
             # TODO: if discord, send discord notification
 
-        if web_request.status_code != 201:
+        if web_request.status_code != 200:
             # ? TEST BY CHANGING THE RESPONSE CODE
             # TODO: do the same here
             if not discord:
@@ -222,7 +223,7 @@ def check_service_up(url: str, service: str, discord: bool = False):
                 send_mail(msg)
             else:
             # send discord notification that the website is down
-                requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here GET request to {url} failed with status code:{str(web_request.status_code)}"})
+                requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here GET request to {url} failed with status code: **{str(web_request.status_code)}**"})
             print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
                   service, str(url)) + bcolors.CEND)
             return web_request.status_code
