@@ -7,4 +7,5 @@ type Sponsors struct {
 	Company        string             `json:"company" validate:"required"`
 	SocialLink     string             `json:"sociallink" validate:"required"`
 	ProfilePicture string             `json:"profilepicture" validate:"required"`
+	Category       string             `json:"category" validate:"required"`
 }

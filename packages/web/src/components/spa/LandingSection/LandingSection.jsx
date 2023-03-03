@@ -1,5 +1,6 @@
 import React from 'react';
 import './landing_section.css';
+import { checkBrowserValid } from '../../../Global';
 
 export const LandingSection = () => {
     return (
@@ -16,6 +17,7 @@ export const LandingSection = () => {
                     onClick={() => {
                         window.location.href = '#team';
                     }}
+                    style={{ display: checkBrowserValid() ? '' : 'none' }}
                 >
                     Meet the team
                 </button>

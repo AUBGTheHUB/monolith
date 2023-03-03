@@ -1,10 +1,39 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+// eslint-disable-next-line
+const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
+
+// eslint-disable-next-line
+const gcpToken = process.env.REACT_APP_GCP_TOKEN;
+
 let url =
     process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
         ? process.env.REACT_APP_API_URL // eslint-disable-line
         : location.origin.replace(':3000', '') + ':8000';
+
+const checkBrowserValid = () => {
+    const browsers = [
+        'Opera',
+        'OPR',
+        'Edg',
+        'Chrome',
+        'Safari',
+        'Firefox',
+        'Chromium'
+        // No IE
+    ];
+
+    let isValid = false;
+
+    browsers.forEach((x) => {
+        if (navigator.userAgent.indexOf(x) != -1) {
+            isValid = true;
+        }
+    });
+
+    return isValid;
+};
 
 const Validate = () => {
     const [validated, setValidated] = useState(false);
@@ -38,7 +67,18 @@ const checkHashAndScroll = () => {
     }
 };
 
-export { url, checkHashAndScroll };
+const openNewTab = (url) => {
+    window.open(url, '_blank');
+};
+
+export {
+    url,
+    checkHashAndScroll,
+    checkBrowserValid,
+    openNewTab,
+    objUploaderURL,
+    gcpToken
+};
 export default Validate;
 /*
 

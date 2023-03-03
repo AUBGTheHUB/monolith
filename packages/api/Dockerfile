@@ -1,8 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# SECRETS SHOULD BE ADDED
 
-FROM golang:1.18-alpine
+FROM golang:1.19-alpine as build
 
 WORKDIR /app
 
@@ -16,7 +15,21 @@ WORKDIR /app
 
 RUN go build -o /api
 
+
+
+FROM build as test
+
+ARG CON_STR=${CON_STR}
+
+ENV CON_STR=${CON_STR}
+
+RUN echo -e "IS_TEST=true\nMONGOURI=${CON_STR}" > tests/.env
+
+RUN export CGO_ENABLED=0 && go test ./tests -v
+
+
+FROM build as final
+
 EXPOSE 8000
 
-CMD [ "/api" ]
-
+CMD [ "/api"]
