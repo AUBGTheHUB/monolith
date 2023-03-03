@@ -13,8 +13,10 @@ import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
+import { changeHackFavicon } from '../../../Global';
 
 export const HackAUBG = () => {
+    changeHackFavicon();
     makeBodyScrollable();
 
     const anchorList = [

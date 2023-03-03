@@ -71,11 +71,25 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
+const changeHackFavicon = () => {
+    let link = document.querySelector("link[rel~='icon']");
+
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+
+    let origin = new URL(location.href).origin;
+    link.href = origin + '/favicon-green.ico';
+};
+
 export {
     url,
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
+    changeHackFavicon,
     objUploaderURL,
     gcpToken
 };
