@@ -39,6 +39,7 @@ class bcolors:
     OKGREEN = '\033[92m'
     CEND = '\033[0m'
 
+
 def send_mail(msg):
     port = 465  # SSL
     email = os.environ['HUB_MAIL_USERNAME']
@@ -51,28 +52,35 @@ def send_mail(msg):
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
 
+
 def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e: Exception, discord: bool):
     if not discord:
         msg.attach(MIMEText(
-                '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html'))
+            '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html'))
         send_mail(msg)
     else:
-        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```"})
-    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,service, str(url)) + bcolors.CEND)
+        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```"})
+    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
+          service, str(url)) + bcolors.CEND)
     return e
 
 
-def handle_status_code_exception(msg: MIMEMultipart, method: str, url:str, service: str, status_code: int, discord: bool):
+def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, service: str, status_code: int, discord: bool):
     if not discord:
         # send email that the website is down
-        msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(ENV, method, url, str(status_code)) + '</h3>', 'html'))
+        msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(
+            ENV, method, url, str(status_code)) + '</h3>', 'html'))
         send_mail(msg)
     else:
         # send discord notification that the website is down
-        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={"content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
-    
-    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,service, str(url)) + bcolors.CEND)
+        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
+
+    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
+          service, str(url)) + bcolors.CEND)
     return status_code
+
 
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
@@ -202,6 +210,7 @@ def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
     BUILD_RUNNING.clear()
 
+
 def check_service_up(url: str, service: str, discord: bool):
 
     msg = MIMEMultipart('alternative')
@@ -225,7 +234,8 @@ def check_service_up(url: str, service: str, discord: bool):
             handle_exception(msg, req_method, url, service, e, discord)
             return
         if web_request.status_code != 200:
-            handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+            handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord)
             return
     elif service == "API":
         try:
@@ -235,19 +245,24 @@ def check_service_up(url: str, service: str, discord: bool):
             handle_exception(msg, req_method, url, service, e, discord)
             return
         if web_request.status_code != 400:
-            handle_status_code_exception(msg, req_method, url, service, web_request.status_code, discord)
+            handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord)
             return
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
     return web_request.status_code
 
+
 """ definitions of cron jobs """
 
 
 def cron_local_test():
-    local_web = check_service_up(WEB_URL, "WEB", True)
-    local_api = check_service_up(API_URL, "API", True)
+    if CURRENTLY_BUILDING.is_set():
+        return
+
+    local_web = check_service_up(WEB_URL, "WEB")
+    local_api = check_service_up(API_URL, "API")
 
     # force rebuild
     if local_web != 200 or local_api != 400:
