@@ -56,7 +56,11 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label>
                             School/University
-                            <select name="university" className="select">
+                            <select
+                                name="university"
+                                className="select"
+                                required
+                            >
                                 <option value="">
                                     (Choose an institution)
                                 </option>
@@ -75,7 +79,11 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             T-shirt size
-                            <select name="shirt-size" className="select">
+                            <select
+                                name="shirt-size"
+                                className="select"
+                                required
+                            >
                                 <option value="">(Choose a size)</option>
                                 <option value="1">Small (S)</option>
                                 <option value="2">Medium (M)</option>
@@ -87,7 +95,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-left">
                             How did you find out about Hack AUBG?
-                            <select name="referrer" className="select">
+                            <select name="referrer" className="select" required>
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
                                 <option value="2">Friends</option>
@@ -103,7 +111,7 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             What are your strongest sides?
-                            <select name="skills" className="select">
+                            <select name="skills" className="select" required>
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">Frontend Programming</option>
                                 <option value="2">Backend Programming</option>
@@ -133,7 +141,11 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             What is your programming level?
-                            <select name="programming-level" className="select">
+                            <select
+                                name="programming-level"
+                                className="select"
+                                required
+                            >
                                 <option value="">(Choose one or more)</option>
                                 <option value="1">University</option>
                                 <option value="2">Friends</option>
@@ -150,7 +162,7 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you have previous coding experience?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -185,7 +197,7 @@ const RegistrationForm = () => {
                             Have you participated in Hack AUBG before?
                         </label>
                         <div className="radio-select">
-                            <div className="radio-btn">
+                            <div className="radio-btn" required>
                                 <label>Yes</label>
                                 <input
                                     type="radio"
@@ -207,7 +219,7 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Are you looking for an internship?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -230,7 +242,7 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Have you participated in other hackathons?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -253,7 +265,7 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you want to share you info with sponsors?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -276,7 +288,7 @@ const RegistrationForm = () => {
                         <label className="radio-text">
                             Do you have previous coding experience?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -300,7 +312,7 @@ const RegistrationForm = () => {
                             Do you want to receive our newsletter with potential
                             job offerings?
                         </label>
-                        <div className="radio-select">
+                        <div className="radio-select" required>
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
@@ -320,39 +332,6 @@ const RegistrationForm = () => {
                         </div>
                     </div>
                 </fieldset>
-                {/* <div className="radio-btn">
-                    <label>Yes</label>
-                    <input type="radio" name="joboffers" />
-                    <label className="radio-no">No</label>
-                    <input type="radio" name="joboffers" />
-                </div> */}
-                {/* <fieldset className="university column-left">
-                    
-                </fieldset>
-                <fieldset className="shirt-size column-right">
-                    
-                </fieldset>
-                <fieldset className="referrer column-left">
-                    
-                </fieldset>
-                <fieldset className="skills column-right">
-                    
-                </fieldset>
-                <fieldset className="job-interests column-left">
-
-                </fieldset>
-                <fieldset className="programming-level column-right">
-                </fieldset>
-                <fieldset className="team-section column-left">
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                </fieldset> */}
                 <button className="register-btn">Register</button>
             </form>
         </div>
