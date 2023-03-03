@@ -221,7 +221,7 @@ def check_service_up(url: str, service: str, discord: bool):
         try:
             web_request = requests.get(url)
             req_method = "GET"
-            raise Exception("AAAAA")
+            web_request.status_code = 201
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
@@ -232,7 +232,7 @@ def check_service_up(url: str, service: str, discord: bool):
         try:
             web_request = requests.post(url=url)
             req_method = "POST"
-            raise Exception("AAAAA2")
+            web_request.status_code = 401
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
