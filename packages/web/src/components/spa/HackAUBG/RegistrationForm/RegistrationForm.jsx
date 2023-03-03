@@ -98,7 +98,6 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
-
                             <input
                                 type="text"
                                 id="username"
@@ -486,16 +485,6 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                     </div> */}
-                    <p
-                        id="uidnote"
-                        className={
-                            userFocus && user && !validName
-                                ? 'instructions'
-                                : 'offscreen'
-                        }
-                    >
-                        SUCCESS OR FAIL?
-                    </p>
                 </fieldset>
                 <button
                     disabled={!validName ? true : false}
