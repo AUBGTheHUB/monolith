@@ -137,7 +137,7 @@ def start_docker_compose():
 
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n ✅: Successfully Deployed "
+                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
@@ -221,7 +221,6 @@ def check_service_up(url: str, service: str, discord: bool):
         try:
             web_request = requests.get(url)
             req_method = "GET"
-            web_request.status_code = 201
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
@@ -232,7 +231,6 @@ def check_service_up(url: str, service: str, discord: bool):
         try:
             web_request = requests.post(url=url)
             req_method = "POST"
-            web_request.status_code = 401
         except Exception as e:
             handle_exception(msg, req_method, url, service, e, discord)
             return
@@ -248,10 +246,6 @@ def check_service_up(url: str, service: str, discord: bool):
 
 
 def cron_local_test():
-
-    # TODO: these should be pointed towards discord
-    # TODO: only docker-compose build notifications are going to be emailed
-
     local_web = check_service_up(WEB_URL, "WEB", True)
     local_api = check_service_up(API_URL, "API", True)
 
