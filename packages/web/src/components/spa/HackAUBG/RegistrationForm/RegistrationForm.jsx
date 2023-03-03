@@ -4,75 +4,43 @@ import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
 
 const RegistrationForm = () => {
-    const ShowAlert = () => {
-        // this could be heavily optimized
-        if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct' &&
-            success === 200
-        ) {
-            return (
-                <Alert status="success" className="success-alert">
-                    You have successfully registered!
-                </Alert>
-            );
-        } else if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct' &&
-            success === 500
-        ) {
-            return (
-                <Alert status="warning" className="success-alert">
-                    Something went wrong! Please, try again.
-                </Alert>
-            );
-        } else if (
-            fullNameFormat === 'field-incorrect' &&
-            emailFormat === 'field-incorrect'
-        ) {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        } else if (fullNameFormat === 'field-incorrect') {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        } else {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        }
-    };
 
+
+    const [emailFieldError, setEmailFieldError] = useState(false);
+    const [usernameFieldError, setUsernameFieldError] = useState(false);
     const [success, setSuccess] = useState(0);
     const [alertShown, setAlertShown] = useState('alert-hidden');
 
     const [fullNameFormat, setFullNameFormat] = useState('field-incorrect');
     const [emailFormat, setEmailFormat] = useState('field-incorrect');
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     const [formState, setFormState] = useState({
         fullName: '',
         email: '',
         school: ''
     });
+
+    const buildErrorMessage = () => {
+        let error = '';
+        if (emailFieldError) {
+            error += 'Email field is incorrect';
+        }
+
+        if (usernameFieldError) {
+            error += 'Username field is incorrect';
+        }
+
+        setErrorMessage(error);
+    };
+
+    if (errorMessage) {
+        return (
+            error;
+        );
+        // display error message on top of component
+    }
 
     function checkFormat(name, value) {
         if (name === 'email') {
@@ -97,13 +65,6 @@ const RegistrationForm = () => {
 
         setSuccess(0);
 
-        if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct'
-        ) {
-            setAlertShown('alert-hidden');
-        }
-
         checkFormat(name, value);
 
         setFormState({
@@ -123,29 +84,29 @@ const RegistrationForm = () => {
     }
 
     if (fullNameFormat !== 'field-correct' || emailFormat !== 'field-correct') {
-        setAlertShown('alert');
+        // setAlertShown('alert');
     }
 
-    const handleSubmit = () => {
-        if (
-            fullNameFormat !== 'field-correct' ||
-            emailFormat !== 'field-correct'
-        ) {
-            setAlertShown('alert');
-        } else {
-            // setAlertShown('alert-hidden');
-            // axios
-            //     .post(url, formState)
-            //     .then((res) => {
-            //         setSuccess(res.status);
-            //         console.log(res);
-            //     })
-            //     .catch((err) => {
-            //         setSuccess(500);
-            //         console.log(err);
-            //     });
-        }
-    };
+    // const handleSubmit = () => {
+    //     if (
+    //         fullNameFormat !== 'field-correct' ||
+    //         emailFormat !== 'field-correct'
+    //     ) {
+    //         setAlertShown('alert');
+    //     } else {
+    //         setAlertShown('alert-hidden');
+    //         axios
+    //             .post(url, formState)
+    //             .then((res) => {
+    //                 setSuccess(res.status);
+    //                 console.log(res);
+    //             })
+    //             .catch((err) => {
+    //                 setSuccess(500);
+    //                 console.log(err);
+    //             });
+    //     }
+    // };
 
     return (
         <div className="registration-main">
@@ -166,7 +127,7 @@ const RegistrationForm = () => {
                             />
                         </label>
                     </div>
-                    <div className="send-info">
+                    {/* <div className="send-info">
                         <label htmlFor="">
                             Email
                             <input
@@ -523,9 +484,8 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </fieldset>
-                {/* <button className="register-btn">Register</button> */}
                 <button
                     className="register-btn"
                     type="button"

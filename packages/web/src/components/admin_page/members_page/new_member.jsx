@@ -29,6 +29,8 @@ const AddMember = () => {
         });
     };
 
+    console.log(formState);
+
     const addNewMember = () => {
         axios({
             method: 'post',
