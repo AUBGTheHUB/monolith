@@ -7,6 +7,7 @@
     font-weight: 400;
     align-items: center;
     font-family: 'Roboto';
+    background: linear-gradient(#204829, #222222 50%);
     /*    background: linear-gradient(#57efc2, #222222);*/
     /*    background: linear-gradient(#222222, #57efc2);*/
     /*    background-image: linear-gradient(to bottom, #222222, #38404e, #3b647c, #278da3, #00b7bc, #00b7bc, #00b7bc, #00b7bc, #278da3, #3b647c, #38404e, #222222);*/
@@ -17,10 +18,11 @@
 }
 
 .schedule-section-title-hack-aubg {
-    padding: 10% 0% 0% 0%;
+    padding: 7% 0% 0% 0%;
     color: #12b705;
     font-weight: 900;
     font-size: 2em;
+    padding-bottom: 7%;
 }
 
 .schedule-container-hack-aubg {
@@ -63,6 +65,16 @@
     font-size: 0.9em;
     width: 220px;
     color: white;
+}
+
+.extra-gradient {
+    background: linear-gradient(#57efc2, #222222);
+    color: transparent;
+    width: 100%;
+}
+
+.extra-gradient h1 {
+    font-size: 10em;
 }
 
 @media only screen and (max-width: 350px) {

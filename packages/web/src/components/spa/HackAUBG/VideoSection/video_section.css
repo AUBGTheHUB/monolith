@@ -8,7 +8,7 @@
     margin: 0;
     font-family: 'Roboto';
     padding: 3% 0%;
-    background: linear-gradient(#222222, #57efc2);
+    background-image: linear-gradient(rgba(150, 0, 0, 0), #204829);
     justify-content: center;
     align-items: center;
     display: flex;
