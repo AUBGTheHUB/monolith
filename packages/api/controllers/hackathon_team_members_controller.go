@@ -61,18 +61,11 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		JobInterests:          member.JobInterests,
 		SponsorShare:          member.SponsorShare,
 		NewsLetter:            member.NewsLetter}
-
-	cursor, _ := teamMembersCollection.Find(
-		ctx,
-		bson.D{{"email", newHackathonTeamMember.Email}},
-	)
-	var results []models.TeamMember
-
-	_ = cursor.All(ctx, &results)
-
-	if len(results) > 0 {
+	
+	
+	if CheckIfTeamMemberExists(newHackathonTeamMember){
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
-	}	
+	}
 
 	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
 
@@ -232,4 +225,20 @@ func GetHackathonMembersCount(c *fiber.Ctx) error {
 		responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"count_of_members": countOfMembers}},
 	)
 
+}
+func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool{
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cursor, _ := teamMembersCollection.Find(
+		ctx,
+		bson.D{{"email", newHackathonTeamMember.Email}},
+	)
+	var results []models.TeamMember
+
+	_ = cursor.All(ctx, &results)
+
+	if len(results) > 0 {
+		return true
+	}
+	return false
 }
