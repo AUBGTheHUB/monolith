@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { JourneySection } from './JourneySection/JourneySection';
 import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
@@ -27,9 +26,6 @@ export const HackAUBG = () => {
 
     return (
         <div className="hackaubg-container">
-            <Helmet>
-                <link id="favicon" rel="icon" href="favicon-green.ico" />
-            </Helmet>
             <NavBar
                 props={
                     new Props(
