@@ -165,13 +165,13 @@ def start_docker_compose():
 def beautify_errors(errors: dict) -> str:
     output_string = ""
     if (build_errors := errors.get("BUILD", None)):
-        output_string += "BUILD:\n"
+        output_string += "BUILD:\n\t"
         output_string += '\n\t'.join(build_errors)
     if (build_errors := errors.get("WEB", None)):
-        output_string += "WEB:\n"
+        output_string += "WEB:\n\t"
         output_string += '\n\t'.join(build_errors)
     if (build_errors := errors.get("API", None)):
-        output_string += "API:\n"
+        output_string += "API:\n\t"
         output_string += '\n\t'.join(build_errors)
 
     return output_string
