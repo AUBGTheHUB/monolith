@@ -3,7 +3,7 @@ import './about_hackathon.css';
 
 export const AboutHackathon = () => {
     return (
-            <div className="about-container-hack-aubg" id="about">
+        <div className="about-container-hack-aubg" id="about">
             <h1 className="about-title-hack-aubg">ABOUT</h1>
             <div className="about-text-container-hack-aubg">
                 <p className="about-text-hack-aubg">
