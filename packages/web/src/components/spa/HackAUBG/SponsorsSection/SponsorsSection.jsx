@@ -1,7 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './sponsors_section.css';
+import { url } from '../../../../Global';
 
 export const Sponsors = () => {
+    // eslint-disable-next-line no-unused-vars
+    const [sponsorSections, setSponsorSection] = useState({});
+
+    const fetchSponsors = () => {
+        let unfilteredSponsors;
+        axios({
+            method: 'get',
+            url: url + '/api/sponsors'
+        })
+            .then((res) => {
+                unfilteredSponsors = res.data.data.data;
+                let tempSponsorSections = {
+                    platinum: [],
+                    gold: [],
+                    bronze: [],
+                    silver: [],
+                    custom: []
+                };
+
+                unfilteredSponsors.forEach((x) => {
+                    tempSponsorSections[x.category].push(x);
+                });
+
+                console.log(tempSponsorSections);
+
+                setSponsorSection(tempSponsorSections);
+            })
+            // eslint-disable-next-line no-unused-vars
+            .catch((err) => {});
+    };
+
+    useState(fetchSponsors, []);
+
+    const displaySponsors = (category) => {
+        if (category in sponsorSections) {
+            return sponsorSections[category].map((sponsor, index) => (
+                <img src={sponsor.profilepicture} key={index} />
+            ));
+        }
+    };
+
     return (
         <div className="sponsors-main">
             <h1 className="sponsors-header">SPONSORS</h1>
@@ -48,11 +91,7 @@ export const Sponsors = () => {
                 </div>
                 <div className="gold-box">
                     <div className="logo-container">
-                        {/* This will hold all the logos */}
-                        <img
-                            src="https://1000logos.net/wp-content/uploads/2017/09/Uber-logo.jpg"
-                            alt="Uber logo"
-                        />
+                        {displaySponsors('gold')}
                     </div>
                 </div>
 
