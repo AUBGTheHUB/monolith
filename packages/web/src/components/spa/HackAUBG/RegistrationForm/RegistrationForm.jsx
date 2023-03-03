@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 // import Alert from 'react-bootstrap/Alert';
 import './registration_form.css';
 
-const USER_REGEX = /^[a-zA-Z][a-zA-Z]{3,23}$/;
+const USER_REGEX = /^[a-zA-Z][\t a-zA-Z]{3,23}$/;
 
 const RegistrationForm = () => {
     const userRef = useRef();
