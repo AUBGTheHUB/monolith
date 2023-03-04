@@ -30,11 +30,18 @@ const RegistrationForm = () => {
                                 {...register('fullname', {
                                     required: true,
                                     minLength: {
-                                        message: 'Maximum length is 24',
-                                        value: 5
+                                        message: 'Minimum length is 4',
+                                        value: 4
                                     },
-
-                                    pattern: /^[a-zA-Z][\t a-zA-Z]$/
+                                    maxLength: {
+                                        message: 'Maximum length is 24',
+                                        value: 24
+                                    },
+                                    pattern: {
+                                        value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
+                                        message:
+                                            'No special characters and trailing spaces'
+                                    }
                                 })}
                             />
                         </label>
