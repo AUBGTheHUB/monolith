@@ -307,7 +307,7 @@ const RegistrationForm = () => {
                             How did you find out about HackAUBG?
                             <select
                                 className="select"
-                                {...register('findout', {
+                                {...register('heardaboutus', {
                                     required: true
                                 })}
                             >
@@ -324,7 +324,7 @@ const RegistrationForm = () => {
                             </select>
                         </label>
                         <p>
-                            {errors.findout && (
+                            {errors.heardaboutus && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -377,7 +377,7 @@ const RegistrationForm = () => {
                             What are your job interests?
                             <input
                                 type="text"
-                                {...register('jobinterest', {
+                                {...register('jobinterests', {
                                     required: {
                                         value: true,
                                         message: 'This field is required'
@@ -394,14 +394,14 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.jobinterest?.message}</p>
+                        <p>{errors.jobinterests?.message}</p>
                     </div>
                     <div className="send-info">
                         <label>
                             What is your programming level?
                             <select
                                 className="select"
-                                {...register('level', {
+                                {...register('programminglevel', {
                                     required: true
                                 })}
                             >
@@ -421,7 +421,7 @@ const RegistrationForm = () => {
                             </select>
                         </label>
                         <p>
-                            {errors.level && (
+                            {errors.programminglevel && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -436,7 +436,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('DoYouHaveTeam', {
+                                    {...register('hasteam', {
                                         required: true
                                     })}
                                     type="radio"
@@ -447,7 +447,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('DoYouHaveTeam', {
+                                    {...register('hasteam', {
                                         required: true
                                     })}
                                     type="radio"
@@ -457,7 +457,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.DoYouHaveTeam && (
+                            {errors.hasteam && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -496,7 +496,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('prevHackAUBGParticipant', {
+                                    {...register('prevhackaubgparticipation', {
                                         required: true
                                     })}
                                     type="radio"
@@ -507,7 +507,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('prevHackAUBGParticipant', {
+                                    {...register('prevhackaubgparticipation', {
                                         required: true
                                     })}
                                     type="radio"
@@ -517,7 +517,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.prevHackAUBGParticipant && (
+                            {errors.prevhackaubgparticipation && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -532,7 +532,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('LookingForInternship', {
+                                    {...register('wantinternship', {
                                         required: true
                                     })}
                                     type="radio"
@@ -543,7 +543,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('LookingForInternship', {
+                                    {...register('wantinternship', {
                                         required: true
                                     })}
                                     type="radio"
@@ -553,7 +553,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.LookingForInternship && (
+                            {errors.wantinternship && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -568,7 +568,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('otherHackParticipant', {
+                                    {...register('prevhackathonparticipation', {
                                         required: true
                                     })}
                                     type="radio"
@@ -579,7 +579,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('otherHackParticipant', {
+                                    {...register('prevhackathonparticipation', {
                                         required: true
                                     })}
                                     type="radio"
@@ -589,7 +589,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.otherHackParticipant && (
+                            {errors.prevhackathonparticipation && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -604,7 +604,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('shareInfoWithSponsors', {
+                                    {...register('shareinfowithsponsors', {
                                         required: true
                                     })}
                                     type="radio"
@@ -615,7 +615,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('shareInfoWithSponsors', {
+                                    {...register('shareinfowithsponsors', {
                                         required: true
                                     })}
                                     type="radio"
@@ -625,7 +625,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.shareInfoWithSponsors && (
+                            {errors.shareinfowithsponsors && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -640,7 +640,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('prevExperience', {
+                                    {...register('hasexperience', {
                                         required: true
                                     })}
                                     type="radio"
@@ -651,7 +651,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('prevExperience', {
+                                    {...register('hasexperience', {
                                         required: true
                                     })}
                                     type="radio"
@@ -661,7 +661,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.prevExperience && (
+                            {errors.hasexperience && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
@@ -671,13 +671,13 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label className="column-right">
                             Do you want to receive our newsletter with potential
-                            job offerings?{' '}
+                            job offerings?
                         </label>
                         <div className="radio-select">
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    {...register('JobOffers', {
+                                    {...register('wantjoboffers', {
                                         required: true
                                     })}
                                     type="radio"
@@ -688,7 +688,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    {...register('JobOffers', {
+                                    {...register('wantjoboffers', {
                                         required: true
                                     })}
                                     type="radio"
@@ -698,7 +698,7 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                         <p>
-                            {errors.JobOffers && (
+                            {errors.wantjoboffers && (
                                 <p className="error-text">
                                     This field is required
                                 </p>
