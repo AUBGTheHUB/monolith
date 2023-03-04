@@ -6,22 +6,22 @@ type TeamMember struct {
 	ID                    primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	FullName              string             `json:"fullname" validate:"required"`
 	TeamNoTeam            *bool              `json:"teamnoteam" validate:"required"`
-	TeamName              string             `json:"teamname" validate:"required"`
+	TeamName              string             `json:"teamname"`
 	Email                 string             `json:"email" validate:"required"`
 	School                string             `json:"school" validate:"required"`
 	Age                   int                `json:"age" validate:"required"`
 	Location              string             `json:"location" validate:"required"`
 	HeardAboutUs          string             `json:"aboutus" validate:"required"`
-	PreviousParticipation *bool              `json:"previouspart" validate:"required"`
+	PreviousParticipation *bool               `json:"previouspart" validate:"required"`
 	PartDetails           string             `json:"partdetails" validate:"required"`
-	Experience            *bool              `json:"experience" validate:"required"`
+	Experience            *bool               `json:"experience" validate:"required"`
 	ProgrammingLevel      string             `json:"level" validate:"required"`
 	StrongSides           string             `json:"strength" validate:"required"`
 	ShirtSize             string             `json:"size" validate:"required"`
-	Internship            *bool              `json:"internship" validate:"required"`
+	Internship            *bool               `json:"internship" validate:"required"`
 	JobInterests          string             `json:"jobinterests" validate:"required"`
-	SponsorShare          *bool              `json:"sponsorshare" validate:"required"`
-	NewsLetter            *bool              `json:"newsletter" validate:"required"`
+	SponsorShare          *bool               `json:"sponsorshare" validate:"required"`
+	NewsLetter            *bool               `json:"newsletter" validate:"required"`
 }
 
 type EditTeamMember struct {
