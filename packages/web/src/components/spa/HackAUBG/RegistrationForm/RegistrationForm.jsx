@@ -214,7 +214,7 @@ const RegistrationForm = () => {
                         <p>{errors.location?.message}</p>
                     </div>
                     <div className="send-info">
-                        <label className="radio-text">
+                        <label>
                             School/University
                             <select
                                 className="select"
