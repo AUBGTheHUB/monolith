@@ -21,31 +21,62 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
+                            {/* <input
+                                type="text"
+                                {...register(
+                                    'fullname',
+                                    {
+                                        required: 'This is required',
+                                        minLength: {
+                                            value: 4,
+                                            message: 'Minimum length is 4'
+                                        }
+                                    },
+                                    { pattern: /^[A-Za-z]+$/i }
+                                )}
+                                placeholder="Enter your name"
+                            /> */}
                             <input
                                 type="text"
+                                placeholder="fullname"
                                 {...register('fullname', {
-                                    required: 'This is required',
-                                    minLength: 4,
-                                    message: 'Minimum length is 4'
+                                    required: 'True',
+                                    minLength: {
+                                        message: 'Minimum length is 4',
+                                        value: 4
+                                    },
+                                    pattern: /^[A-Za-z]+$/i
                                 })}
-                                placeholder="Enter your name"
                             />
-                            <p>{errors.fullname?.message}</p>
                         </label>
+                        <p>{errors.fullname?.message}</p>
                     </div>
-                    {/* <div className="send-info">
+                    <div className="send-info">
                         <label htmlFor="">
                             Email
-                            <input
+                            {/* <input
                                 type="email"
                                 name="email"
                                 placeholder="Enter your email"
                                 required
                                 onChange={handleInputChange}
+                            /> */}
+                            <input
+                                type="tel"
+                                placeholder="email"
+                                {...register('email', {
+                                    required: true,
+                                    pattern:{
+                                        value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
+                                        message: "aaa"
+                                    }
+                                        
+                                })}
                             />
+                            <p>{errors.email?.message}</p>
                         </label>
                     </div>
-                    <div className="send-info">
+                    {/*<div className="send-info">
                         <label htmlFor="">
                             Age
                             <input
