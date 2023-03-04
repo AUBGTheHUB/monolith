@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'; // eslint-disable-line
 import './registration_form.css';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import axios from 'axios';
+import { url } from '../../../../Global';
 
 const RegistrationForm = () => {
     const {
@@ -16,15 +18,38 @@ const RegistrationForm = () => {
     const [submitButtonValue, setSubmitButtonValue] = useState('register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
 
+    const makeRegistration = (data) => {
+        axios({
+            method: 'post',
+            url: url + '/api/hackathon/register',
+            headers: {
+                'BEARER-TOKEN': localStorage.getItem('auth_token')
+            },
+            data: { ...data }
+        })
+            // eslint-disable-next-line no-unused-vars
+            .then((res) => {
+                console.log(res);
+                // console.log('New registartion was added');
+            })
+            .catch((err) => {
+                console.log(err);
+                alert(err['response']['data']['data']['data']);
+            });
+    };
+
     const onSubmit = (data) => {
         setLoadingAnimation(true);
+        // console.log(data);
+
+        makeRegistration(data);
         // send request to backend
         // if res is good
         // block submit button, notify that registration is successful
         setTimeout(() => {
             setLoadingAnimation(false);
             setSubmitButtonValue('MONTANA');
-            console.log(data);
+            // console.log(data);
         }, 2000);
 
         setTimeout(() => {}, 2000);
@@ -163,8 +188,9 @@ const RegistrationForm = () => {
                         <label htmlFor="">
                             Age
                             <input
-                                type="text"
+                                type="number"
                                 {...register('age', {
+                                    valueAsNumber: true,
                                     required: {
                                         value: true,
                                         message: '*This field is required'
@@ -176,12 +202,12 @@ const RegistrationForm = () => {
                                     maxLength: {
                                         message: 'Maximum length is 3 symbols',
                                         value: 3
+                                    },
+                                    pattern: {
+                                        value: /^[0-9]+$/,
+                                        message:
+                                            'No special characters and trailing spaces'
                                     }
-                                    // pattern: {
-                                    //     value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
-                                    //     message:
-                                    //         'No special characters and trailing spaces'
-                                    // }
                                 })}
                             />
                         </label>
@@ -280,7 +306,7 @@ const RegistrationForm = () => {
                     </div>
                     <div className="send-info">
                         <label>
-                            T-shirt size
+                            How did you find out about HackAUBG?
                             <select
                                 className="select"
                                 {...register('findout', {
@@ -418,7 +444,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -429,7 +455,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -478,7 +504,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -489,7 +515,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -514,7 +540,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -525,7 +551,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -550,7 +576,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -561,7 +587,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -586,7 +612,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -597,7 +623,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -622,7 +648,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -633,7 +659,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
@@ -659,7 +685,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value="Yes"
+                                    value="True"
                                     className="radio"
                                 />
                             </div>
@@ -670,7 +696,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="False"
                                     className="radio"
                                 />
                             </div>
