@@ -36,6 +36,14 @@ export const JudgesSection = () => {
                 </div>
             );
         }
+        return (
+            <div className="hack-coming-soon-container">
+                <div className="hack-coming-soon-text">
+                    <h1>Judges coming</h1>
+                    <h1>soon...</h1>
+                </div>
+            </div>
+        );
     };
     useEffect(() => {
         getJury();

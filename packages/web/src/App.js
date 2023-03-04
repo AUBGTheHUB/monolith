@@ -31,6 +31,8 @@ import PartnersActions from './components/admin_page/hackathon/hackathon_partner
 import './App.css';
 import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
+import S3Panel from './components/admin_page/s3_page/s3_landing';
+import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
 
 function App() {
     return (
@@ -119,6 +121,11 @@ function App() {
             <Route path="/hackaubg" element={<HackAUBG />} />
             <Route path="/jobs" element={<JobsSection />} />
             <Route path="/*" element={<NotFound />} />
+            <Route path="/admin/dashboard/s3" element={<S3Panel />} />
+            <Route
+                path="/admin/dashboard/s3/objects"
+                element={<RenderStorageObjects />}
+            />
         </Routes>
     );
 }
