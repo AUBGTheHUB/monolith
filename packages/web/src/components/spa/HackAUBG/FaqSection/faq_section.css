@@ -14,13 +14,18 @@
     color: #19b700;
 }
 
-.faq-header,
+.faq-text-container {
+    width: 60%;
+    text-align: left;
+}
+
 .faq-text-container {
     width: 60%;
     text-align: left;
 }
 
 .faq-header {
+    width: 80%;
     font-size: 1.2rem;
     color: #19b700;
     font-weight: bold;
