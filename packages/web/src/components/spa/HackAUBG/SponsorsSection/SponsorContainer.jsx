@@ -6,9 +6,6 @@ const SponsorsContainer = ({ sponsors, category }) => {
     if (sponsors.length !== 0) {
         return (
             <>
-                <h1 className={category + '-header'}>
-                    {category.toUpperCase()}
-                </h1>
                 <div className={category + '-box'}>
                     <div className="logo-container">
                         {sponsors.map((sponsor, index) => (

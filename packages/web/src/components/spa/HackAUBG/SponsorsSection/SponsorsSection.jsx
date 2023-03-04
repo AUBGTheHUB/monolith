@@ -5,7 +5,7 @@ import { url } from '../../../../Global';
 import { useEffect } from 'react';
 import SponsorsContainer from './SponsorContainer';
 
-export const Sponsors = () => {
+const Sponsors = () => {
     // eslint-disable-next-line no-unused-vars
     const [sponsorSections, setSponsorSection] = useState({});
 
@@ -43,22 +43,37 @@ export const Sponsors = () => {
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
                 <div className="sponsors-containers">
+                    <div className="sponsors-box-header-container-platinum">
+                        <h1 style={{ color: '#FFFFFF' }}>Platinum</h1>
+                    </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.platinum}
                         category={'platinum'}
                     />
+                    <div className="sponsors-box-header-container-gold">
+                        <h1 style={{ color: '#FFFFFF' }}>Gold</h1>
+                    </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.gold}
                         category={'gold'}
                     />
+                    <div className="sponsors-box-header-container-custom">
+                        <h1 style={{ color: '#FFFFFF' }}>Custom</h1>
+                    </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.custom}
                         category={'custom'}
                     />
+                    <div className="sponsors-box-header-container-silver">
+                        <h1 style={{ color: '#FFFFFF' }}>Silver</h1>
+                    </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.silver}
                         category={'silver'}
                     />
+                    <div className="sponsors-box-header-container-bronze">
+                        <h1 style={{ color: '#FFFFFF' }}>Bronze</h1>
+                    </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.bronze}
                         category={'bronze'}
