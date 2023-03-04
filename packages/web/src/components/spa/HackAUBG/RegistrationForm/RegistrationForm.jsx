@@ -103,7 +103,9 @@ const RegistrationForm = () => {
                 className="reg-form"
                 onSubmit={handleSubmit(onSubmit, onError)}
             >
-                {errors.test && <p>{errors.test.message}</p>}
+                {errors.test && (
+                    <p className="error-msg">{errors.test.message}</p>
+                )}
 
                 <fieldset className="from-personal-info">
                     <div className="send-info">
@@ -132,7 +134,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.fullname?.message}</p>
+                        <p className="error-msg">{errors.fullname?.message}</p>
                     </div>
                     <div className="send-info">
                         <label htmlFor="">
@@ -154,7 +156,7 @@ const RegistrationForm = () => {
                                     }
                                 })}
                             />
-                            <p>{errors.email?.message}</p>
+                            <p className="error-msg">{errors.email?.message}</p>
                         </label>
                     </div>
                     <div className="send-info">
@@ -183,7 +185,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.age?.message}</p>
+                        <p className="error-msg">{errors.age?.message}</p>
                     </div>
                     <div className="send-info">
                         <label htmlFor="">
@@ -211,7 +213,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.location?.message}</p>
+                        <p className="error-msg">{errors.location?.message}</p>
                     </div>
                     <div className="send-info">
                         <label>
@@ -239,7 +241,7 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.university && (
                                 <p className="error-text">
                                     *University/School is required
@@ -268,7 +270,7 @@ const RegistrationForm = () => {
                                 </option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.shirtsize && (
                                 <p className="error-text">
                                     *Shirt size is required
@@ -297,7 +299,7 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.findout && (
                                 <p className="error-text">
                                     *This field is required
@@ -338,7 +340,7 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.strongsides && (
                                 <p className="error-text">
                                     *This field is required
@@ -368,7 +370,9 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.jobinterest?.message}</p>
+                        <p className="error-msg">
+                            {errors.jobinterest?.message}
+                        </p>
                     </div>
                     <div className="send-info">
                         <label>
@@ -394,7 +398,7 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.level && (
                                 <p className="error-text">
                                     *This field is required
@@ -430,7 +434,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.DoYouHaveTeam && (
                                 <p className="error-text">
                                     *This field is required
@@ -460,7 +464,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.teamname?.message}</p>
+                        <p className="error-msg">{errors.teamname?.message}</p>
                     </div>
                     <div className="send-info">
                         <label className="column-right">
@@ -490,7 +494,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.prevHackAUBGParticipant && (
                                 <p className="error-text">
                                     *This field is required
@@ -526,7 +530,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.LookingForInternship && (
                                 <p className="error-text">
                                     *This field is required
@@ -562,7 +566,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.otherHackParticipant && (
                                 <p className="error-text">
                                     *This field is required
@@ -598,7 +602,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.shareInfoWithSponsors && (
                                 <p className="error-text">
                                     *This field is required
@@ -634,7 +638,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.prevExperience && (
                                 <p className="error-text">
                                     *This field is required
@@ -671,7 +675,7 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.JobOffers && (
                                 <p className="error-text">
                                     *This field is required
