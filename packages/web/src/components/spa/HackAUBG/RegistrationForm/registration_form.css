@@ -24,37 +24,11 @@
     justify-content: center;
 }
 
-/* .personal-info,
-.university, 
-.shirt-size, 
-.referrer,
-.skills,
-.job-interests,
-.programming-level,
-.team-section {
-    display: flex;
-    flex-direction: column;
-} */
-
 .reg-form button {
     margin-top: 2%;
     display: flex;
     flex-direction: column;
 }
-
-/* .reg-form label {
-    display: block;
-} */
-
-.reg-form .register-btn {
-    margin-top: 5%;
-}
-
-/* 
-.reg-form select {
-    display: flex;
-    flex-direction: row;
-} */
 
 .hackaubg-register-btn {
     width: fit-content;
@@ -67,7 +41,7 @@
     font-weight: bold;
     background-color: white;
     padding: 0.8% 6% 0.8% 6%;
-    margin-top: 4%;
+    margin-top: 3%;
 }
 
 .hackaubg-register-btn:hover {
@@ -101,7 +75,6 @@
     margin-left: 5%;
     margin-right: 5%;
     margin-bottom: 6%;
-    align-items: stretch;
 }
 
 .send-info label {
@@ -117,11 +90,6 @@
     border-radius: 7.5px;
     margin-top: 2%;
 }
-
-/* .send-info input::placeholder {
-    padding-left: 5%;
-    margin-left: 5%;
-} */
 
 .radio-text {
     height: 60%;
@@ -159,7 +127,7 @@ input[type='radio'] {
     cursor: pointer;
 }
 
-input[type='text'] required::after {
+input[type='text']:required {
     color: red;
 }
 
@@ -177,7 +145,7 @@ input {
 }
 
 .error-msg {
-    color: red;
+    color: yellow;
     margin-top: 2%;
 }
 
