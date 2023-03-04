@@ -46,10 +46,11 @@
     display: block;
 } */
 
-/* .reg-form .register-btn {
+.reg-form .register-btn {
     margin-top: 5%;
 }
 
+/* 
 .reg-form select {
     display: flex;
     flex-direction: row;
@@ -66,6 +67,7 @@
     font-weight: bold;
     background-color: white;
     padding: 0.8% 6% 0.8% 6%;
+    margin-top: 4%;
 }
 
 .hackaubg-register-btn:hover {
@@ -98,7 +100,7 @@
     height: 80px;
     margin-left: 5%;
     margin-right: 5%;
-    margin-bottom: 2%;
+    margin-bottom: 5%;
 }
 
 .send-info label {
@@ -115,19 +117,9 @@
     margin-top: 2%;
 }
 
-.send-info input::placeholder {
-    padding-left: 1%;
-}
-/* .radio-btn {
-    width: fit-content;
-    align-items: center;
-    display: flex;
-}
-.radio-btn .radio-no {
-    margin-left: 40%;
-}
-.radio-btn input {
-    margin-top: 0.78%;
+/* .send-info input::placeholder {
+    padding-left: 5%;
+    margin-left: 5%;
 } */
 
 .radio-text {
@@ -140,6 +132,9 @@
 
 .radio-btn .radio {
     width: 5%;
+    margin-top: 0;
+    margin-left: 2%;
+    margin-right: 2%;
 }
 
 .radio-btn {
@@ -158,10 +153,17 @@
     font-size: 1.05rem;
 }
 
-.radio-btn .radio {
-    margin-top: 0;
-    margin-left: 2%;
-    margin-right: 2%;
+input[type='radio'] {
+    -webkit-appearance: radio;
+}
+
+.select option {
+    background-color: #3e3b3b;
+    color: white;
+}
+
+option:checked {
+    color: #19b700;
 }
 
 @media only screen and (max-width: 900px) {
@@ -182,21 +184,4 @@
         flex-wrap: wrap;
         width: 80%;
     }
-}
-input[type='radio'] {
-    -webkit-appearance: radio;
-}
-
-.select option {
-    background-color: #3e3b3b;
-    color: white;
-}
-
-option:checked {
-    color: #19b700;
-}
-
-select option:hover,
-select option:focus {
-    background-color: #19b700;
 }
