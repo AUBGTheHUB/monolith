@@ -219,10 +219,7 @@ const RegistrationForm = () => {
                             <select
                                 className="select"
                                 {...register('university', {
-                                    required: {
-                                        value: true,
-                                        message: 'This field is required'
-                                    }
+                                    required: true
                                 })}
                             >
                                 <option value="" disabled selected>
@@ -242,13 +239,413 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
+                        <p>
+                            {errors.university && (
+                                <p className="error-text">
+                                    University/School is required
+                                </p>
+                            )}
+                        </p>
                     </div>
-                    <p>{errors.loc?.university}</p>
+                    <div className="send-info">
+                        <label>
+                            T-shirt size
+                            <select
+                                className="select"
+                                {...register('shirtsize', {
+                                    required: true
+                                })}
+                            >
+                                <option value="" disabled selected>
+                                    Choose a size
+                                </option>
 
+                                <option value="Small (S)">Small (S)</option>
+                                <option value="Medium (M)">Medium (M)</option>
+                                <option value="Large (L)">Large (L)</option>
+                                <option value="Extra Large (XL)">
+                                    Extra Large (XL)
+                                </option>
+                            </select>
+                        </label>
+                        <p>
+                            {errors.shirtsize && (
+                                <p className="error-text">
+                                    Shirt size is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label>
+                            T-shirt size
+                            <select
+                                className="select"
+                                {...register('findout', {
+                                    required: true
+                                })}
+                            >
+                                <option value="" disabled selected>
+                                    Choose one option
+                                </option>
+
+                                <option value="University">University</option>
+                                <option value="Friends">Friends</option>
+                                <option value="prevHackAUBG">
+                                    I was on a previous edition of Hack AUBG
+                                </option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+                        <p>
+                            {errors.findout && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label>
+                            What are your strongest sides?
+                            <select
+                                className="select"
+                                {...register('strongsides', {
+                                    required: true
+                                })}
+                            >
+                                <option value="" disabled selected>
+                                    Choose one option
+                                </option>
+
+                                <option value="Frontend Programming">
+                                    Frontend Programming
+                                </option>
+                                <option value="Backend Programming">
+                                    Backend Programming
+                                </option>
+                                <option value="Programming in C#">
+                                    Programming in C#
+                                </option>
+                                <option value="Programming in Java">
+                                    Programming in Java
+                                </option>
+                                <option value="Programming in Python">
+                                    Programming in Python
+                                </option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="UI/UX">UI/UX</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+                        <p>
+                            {errors.strongsides && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
+                            What are your job interests?
+                            <input
+                                type="text"
+                                {...register('jobinterest', {
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
+                                    minLength: {
+                                        message: 'Minimum length is 4 symbols',
+                                        value: 4
+                                    },
+                                    maxLength: {
+                                        message:
+                                            'Maximum length is 100 symbols',
+                                        value: 100
+                                    }
+                                })}
+                            />
+                        </label>
+                        <p>{errors.jobinterest?.message}</p>
+                    </div>
+                    <div className="send-info">
+                        <label>
+                            What is your programming level?
+                            <select
+                                className="select"
+                                {...register('level', {
+                                    required: true
+                                })}
+                            >
+                                <option value="" disabled selected>
+                                    Choose one option
+                                </option>
+
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">
+                                    Intermediate
+                                </option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="NotProgrammer">
+                                    I am not participating as a programmer
+                                </option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </label>
+                        <p>
+                            {errors.level && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Do you have a team?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('DoYouHaveTeam', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('DoYouHaveTeam', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.DoYouHaveTeam && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
+                            What is the name of your team
+                            <input
+                                type="text"
+                                {...register('teamname', {
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
+                                    minLength: {
+                                        message: 'Minimum length is 4 symbols',
+                                        value: 4
+                                    },
+                                    maxLength: {
+                                        message:
+                                            'Maximum length is 100 symbols',
+                                        value: 100
+                                    }
+                                })}
+                            />
+                        </label>
+                        <p>{errors.teamname?.message}</p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Have you participated in Hack AUBG before?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('prevHackAUBGParticipant', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('prevHackAUBGParticipant', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.prevHackAUBGParticipant && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Are you looking for an internship?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('LookingForInternship', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('LookingForInternship', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.LookingForInternship && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Have you participated in another Hackathons?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('otherHackParticipant', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('otherHackParticipant', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.otherHackParticipant && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Do you want to share you info with sponsors?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('shareInfoWithSponsors', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('shareInfoWithSponsors', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.shareInfoWithSponsors && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
+                    <div className="send-info">
+                        <label className="column-right">
+                            Do you have previous coding experience?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('prevExperience', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('prevExperience', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                        <p>
+                            {errors.prevExperience && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
+                    </div>
                     <div className="send-info">
                         <label className="column-right">
                             Do you want to receive our newsletter with potential
-                            job offerings?
+                            job offerings?{' '}
                         </label>
                         <div className="radio-select">
                             <div className="radio-btn">
@@ -274,338 +671,16 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
+                        <p>
+                            {errors.JobOffers && (
+                                <p className="error-text">
+                                    This field is required
+                                </p>
+                            )}
+                        </p>
                     </div>
-                    <div className="send-info">
-                        <label>
-                            School/University
-                            <select
-                                name="university"
-                                className="select"
-                                required
-                            >
-                                <option value="">
-                                    (Choose an institution)
-                                </option>
-                                <option value="1">AUBG</option>
-                                <option value="2">Sofia University</option>
-                                <option value="3">
-                                    Technical University - Sofia
-                                </option>
-                                <option value="4">Plovdiv University</option>
-                                <option value="5">
-                                    Other (please specify)
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-                    {/*
-                    
-                   
-                    <div className="send-info">
-                        <label className="column-right">
-                            T-shirt size
-                            <select
-                                name="shirt-size"
-                                className="select"
-                                required
-                                onChange={handleInputChange}
-                            >
-                                <option value="">(Choose a size)</option>
-                                <option value="1">Small (S)</option>
-                                <option value="2">Medium (M)</option>
-                                <option value="3">Large (L)</option>
-                                <option value="4">Extra Large (XL)</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label className="column-left">
-                            How did you find out about Hack AUBG?
-                            <select
-                                name="referrer"
-                                className="select"
-                                required
-                                onChange={handleInputChange}
-                            >
-                                <option value="">(Choose one or more)</option>
-                                <option value="1">University</option>
-                                <option value="2">Friends</option>
-                                <option value="3">
-                                    I was on a previous edition of Hack AUBG
-                                </option>
-                                <option value="4">
-                                    Other (please specify)
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label className="column-right">
-                            What are your strongest sides?
-                            <select
-                                name="skills"
-                                className="select"
-                                required
-                                onChange={handleInputChange}
-                            >
-                                <option value="">(Choose one or more)</option>
-                                <option value="1">Frontend Programming</option>
-                                <option value="2">Backend Programming</option>
-                                <option value="3">Programming in C#</option>
-                                <option value="4">Programming in Java</option>
-                                <option value="5">Programming in Python</option>
-                                <option value="6">Marketing</option>
-                                <option value="7">UI/UX</option>
-                                <option value="8">Web development</option>
-                                <option value="9">
-                                    Other (please specify)
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label htmlFor="">
-                            What are your job interests?
-                            <input
-                                type="text"
-                                name="job-interests"
-                                placeholder="List the fields you are interested to work on"
-                                required
-                                onChange={handleInputChange}
-                            />
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label className="column-right">
-                            What is your programming level?
-                            <select
-                                name="programming-level"
-                                className="select"
-                                required
-                                onChange={handleInputChange}
-                            >
-                                <option value="">(Choose one or more)</option>
-                                <option value="1">University</option>
-                                <option value="2">Friends</option>
-                                <option value="3">
-                                    I was on a previous edition of Hack AUBG
-                                </option>
-                                <option value="4">
-                                    Other (please specify)
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Do you have previous coding experience?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label htmlFor="" className="column-right">
-                            What is the name of your team?
-                            <input
-                                type="text"
-                                name="team-name"
-                                placeholder="Enter your team's name"
-                                required
-                            />
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Have you participated in Hack AUBG before?
-                        </label>
-                        <div className="radio-select">
-                            <div
-                                className="radio-btn"
-                                required
-                                onChange={handleInputChange}
-                            >
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Are you looking for an internship?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Have you participated in other hackathons?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Do you want to share you info with sponsors?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label className="radio-text">
-                            Do you have previous coding experience?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="send-info">
-                        <label className="column-right">
-                            Do you want to receive our newsletter with potential
-                            job offerings?
-                        </label>
-                        <div
-                            className="radio-select"
-                            required
-                            onChange={handleInputChange}
-                        >
-                            <div className="radio-btn">
-                                <label>Yes</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                            <div className="radio-btn">
-                                <label>No</label>
-                                <input
-                                    type="radio"
-                                    name="joboffers"
-                                    className="radio"
-                                />
-                            </div>
-                        </div>
-                    </div> */}
                 </fieldset>
-                {/* <button className="register-btn">Register</button> */}
-                {/* <button
-                    className="register-btn"
-                    type="button"
-                    onClick={() => {}}
-                >
-                    Register
-                </button> */}
+
                 {showButton()}
             </form>
         </div>
