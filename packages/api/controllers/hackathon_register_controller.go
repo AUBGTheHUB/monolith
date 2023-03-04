@@ -115,7 +115,15 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 			newTeam.TeamName = newHackathonTeamMember.TeamName
 
 			newTeam.TeamMembers = append(newTeam.TeamMembers, memberID)
-			result, _ := hackathonTeamCollection.InsertOne(ctx, newTeam)
+			result, err := hackathonTeamCollection.InsertOne(ctx, newTeam)
+
+			if err != nil {
+				err := DeleteHackathonMember(c, memberID)
+				if err != nil {
+					return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Failed deleting member when create team has failed"}})
+				}
+				return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't create team"}})
+			}
 
 			return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
 		}

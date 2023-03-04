@@ -174,9 +174,16 @@ func EditHackathonMember(c *fiber.Ctx) error {
 
 }
 
-func DeleteHackathonMember(c *fiber.Ctx) error {
+func DeleteHackathonMember(c *fiber.Ctx, key ...string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	member_key := c.Params("key", "key was not provided")
+	var member_key string
+
+	if len(key) > 0 {
+		member_key = key[0]
+	} else {
+		member_key = c.Params("key", "key was not provided")
+	}
+
 	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
