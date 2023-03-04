@@ -1,6 +1,7 @@
 import React from 'react';
 import './desktop_navbar.css';
 import { navigateTo } from '../../../../Global';
+import { Link } from 'react-router-dom';
 
 export const NavDesktop = ({ props }) => {
     const renderHackButton = () => {
@@ -43,6 +44,40 @@ export const NavDesktop = ({ props }) => {
         e.target.style.color = color;
     };
 
+    const buildDesktopAnchor = (anchor) => {
+        if (anchor.isLink) {
+            return (
+                <Link
+                    to={anchor.endpoint}
+                    onMouseEnter={(e) => {
+                        changeAnchorColor(e, props.anchorHoverColor);
+                    }}
+                    onMouseLeave={(e) => {
+                        changeAnchorColor(e, props.anchorColor);
+                    }}
+                    style={{ color: props.anchorColor }}
+                >
+                    {anchor.name}
+                </Link>
+            );
+        }
+
+        return (
+            <a
+                href={anchor.endpoint}
+                onMouseEnter={(e) => {
+                    changeAnchorColor(e, props.anchorHoverColor);
+                }}
+                onMouseLeave={(e) => {
+                    changeAnchorColor(e, props.anchorColor);
+                }}
+                style={{ color: props.anchorColor }}
+            >
+                {anchor.name}
+            </a>
+        );
+    };
+
     return (
         <div className="navdesktop-container" style={stickyProps()}>
             <div className="navdesktop-logo" onClick={openHome}>
@@ -56,19 +91,7 @@ export const NavDesktop = ({ props }) => {
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
                     <div className="navdesktop-navdivs" key={index}>
-                        <a
-                            href={anchor.endpoint}
-                            key={index}
-                            onMouseEnter={(e) => {
-                                changeAnchorColor(e, props.anchorHoverColor);
-                            }}
-                            onMouseLeave={(e) => {
-                                changeAnchorColor(e, props.anchorColor);
-                            }}
-                            style={{ color: props.anchorColor }}
-                        >
-                            {anchor.name}
-                        </a>
+                        {buildDesktopAnchor(anchor)}
                     </div>
                 ))}
                 {renderHackButton()}
