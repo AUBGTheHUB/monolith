@@ -73,6 +73,7 @@ const openNewTab = (url) => {
 };
 
 const changeFavicon = () => {
+    console.log('CALLED');
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
@@ -82,18 +83,21 @@ const changeFavicon = () => {
     }
 
     let origin = new URL(location.href).origin;
-
-    let iconPath, appleIconPath;
+    let favicon, iosIcon, title;
 
     if (location.href.includes('hackaubg')) {
-        iconPath = origin + '/favicon-green.ico';
-        appleIconPath = origin + '/green-logo512.png';
-        document.title = 'HackAUBG 5.0';
+        favicon = '/favicon-green.ico';
+        iosIcon = origin + '/green-logo512.png';
+        title = 'HackAUBG 5.0';
     } else {
-        iconPath = origin + '/favicon.ico';
-        appleIconPath = origin + '/blue-logo512.png';
-        document.title = 'The Hub AUBG';
+        favicon = '/favicon.ico';
+        iosIcon = '/logo512.png';
+        title = 'The Hub AUBG';
     }
+
+    let iconPath = origin + favicon;
+    let appleIconPath = origin + iosIcon;
+    document.title = title;
 
     document.querySelector('link[rel="apple-touch-icon"]').href = appleIconPath;
     link.href = iconPath;
