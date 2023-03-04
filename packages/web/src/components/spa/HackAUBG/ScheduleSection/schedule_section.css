@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700,900&display=swap');
-
-.schedule-section-container-hack-aubg {
+.schedule-section-container {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -10,75 +8,112 @@
     font-family: 'Roboto';
 }
 
-.schedule-section-title-hack-aubg {
-    padding: 5% 0% 0% 0%;
+.schedule-section-title {
+    padding-top: 7%;
     color: #19b700;
     font-weight: 900;
     font-size: 2em;
 }
 
-.schedule-container-hack-aubg {
-    width: 100%;
+.schedule-text-container {
+    width: 75%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
     padding-top: 1vh;
+    margin-left: 5%;
 }
 
-.schedule-table-container-hack-aubg {
-    padding: 0% 0% 5% 0%;
+.schedule-table-container {
+    padding-bottom: 7%;
+    margin-right: 3%;
     width: 320px;
     display: flex;
     flex-direction: column;
     font-weight: 400;
 }
 
-.schedule-table-title-hack-aubg {
+.schedule-table-title {
     padding: 5% 0% 10% 0%;
     color: #19b700;
     font-weight: 900;
-    font-size: 1.2em;
+    font-size: 1.4em;
+    text-align: center;
 }
 
-.schedule-table-row-hack-aubg {
+.schedule-table-row {
     display: flex;
     flex-direction: row;
 }
 
-.schedule-time-hack-aubg {
+.schedule-time {
     color: #19b700;
     font-weight: 900;
-    font-size: 1em;
+    font-size: 1.3em;
     padding-right: 30px;
 }
 
-.schedule-event-title-hack-aubg {
-    font-size: 0.9em;
-    width: 220px;
+.schedule-section-container p {
+    font-size: 1.2em;
 }
 
-@media only screen and (max-width: 350px) {
-    .schedule-container-hack-aubg {
-        padding-left: 10%;
-        padding-right: 10%;
-    }
-    .schedule-table-title-hack-aubg {
-        padding-left: 10%;
-        font-size: 5vw;
-    }
+#friday-container {
+    margin-right: 0;
+}
 
-    .schedule-time-hack-aubg {
-        padding-left: 10%;
-        font-size: 4vw;
-    }
+#saturday-container {
+    margin-right: 4%;
+}
 
-    .schedule-event-title-hack-aubg {
-        font-size: 3.5vw;
+@media only screen and (max-width: 1450px) {
+    .schedule-text-container {
+        width: 80%;
+        margin-left: 3%;
     }
+}
 
-    .schedule-section-container-hack-aubg {
-        padding-left: 11%;
-        padding-right: 11%;
+@media only screen and (max-width: 1050px) {
+    .schedule-text-container {
+        width: 80%;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .schedule-text-container {
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+        padding: 0%;
+    }
+    .schedule-section-container {
+        align-items: normal;
+        padding-top: 5%;
+    }
+    .schedule-section-title {
+        text-align: center;
+    }
+    .schedule-table-title {
+        padding: 5% 0% 5% 0%;
+    }
+    #friday-container {
+        margin-right: 3%;
+    }
+    #saturday-container {
+        margin-right: 3%;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .schedule-table-container {
+        font-size: 0.7rem;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .schedule-text-container {
+        margin-left: 7%;
+    }
+    .schedule-table-container {
+        width: 280px;
     }
 }
