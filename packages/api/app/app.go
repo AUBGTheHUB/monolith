@@ -28,6 +28,8 @@ func StartApp() {
 	routes.PartnersRoute(app)
 	routes.HackathonTeamMemberRoute(app)
 	routes.HackathonTeamsRoutes(app)
+	routes.HackathonRegisterRoutes(app)
+	routes.NoTeamParticipantsRoute(app)
 	configs.RunCronJobs()
 
 	// ln -s ../../data/certs ./certs
