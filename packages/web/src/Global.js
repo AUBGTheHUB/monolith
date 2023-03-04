@@ -81,14 +81,16 @@ const changeHackFavicon = () => {
     }
 
     let origin = new URL(location.href).origin;
-    let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    let logoPath = isMobile && window.innerWidth < 768 ? (location.href.includes('hackaubg') ? '/green-logo192.png' : '/logo192.png') : (location.href.includes('hackaubg') ? '/green-logo512.png' : '/logo512.png');
-    let iconPath = isMobile ? (location.href.includes('hackaubg') ? '/green-logo512.png' : '/logo512.png') : (location.href.includes('hackaubg') ? '/favicon-green.ico' : '/favicon.ico');
 
+    let iconPath =
+        window.innerWidth < 768 ? '/green-logo192.png' : '/green-logo512.png';
+    let appleIconPath = '/green-logo512.png';
 
     link.href = origin + iconPath;
-    document.querySelector('link[rel="apple-touch-icon"]').href = origin + logoPath;
-    // link.href = origin + '/favicon-green.ico';
+    document.querySelector('link[rel="apple-touch-icon"]').href =
+        origin + appleIconPath;
+    link.href = origin + '/favicon-green.ico';
+
     document.title = 'HackAUBG 5.0';
 };
 
