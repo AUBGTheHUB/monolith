@@ -1,4 +1,4 @@
-.awards-section-hack-aubg-container {
+.awards-section-container {
     display: flex;
     flex-direction: column;
     background-color: #222222;
@@ -15,7 +15,7 @@
     margin-bottom: 1%;
 }
 
-.awards-section-images-container {
+.awards-images-container {
     display: flex;
     align-items: flex-end;
     width: 500px;
@@ -69,13 +69,13 @@
 }
 
 @media only screen and (max-width: 900px) {
-    .awards-section-images-container {
+    .awards-images-container {
         width: 100%;
         height: 40%;
         margin: 9% 15% 0% 15%;
     }
 
-    .awards-section-images-container {
+    .awards-images-container {
         margin: 15% 10% 0% 10%;
     }
 
