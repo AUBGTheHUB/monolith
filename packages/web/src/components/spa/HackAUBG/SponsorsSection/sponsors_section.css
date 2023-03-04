@@ -48,11 +48,9 @@
     width: 100%;
     height: fit-content;
     max-width: 1000px;
-    padding: 4vw;
     border-style: solid;
     border-width: 8px;
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
 }
@@ -60,15 +58,16 @@
 .logo-container {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 23%;
+    gap: 10%;
+    margin: 3% 2% 3% 2%;
 }
 
 .logo-container img {
     cursor: pointer;
-    width: 30%;
-    margin: 4% 2%;
+    width: 25%;
 }
 
 .platinum-container {
