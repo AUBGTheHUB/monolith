@@ -3,7 +3,7 @@ import './awards_section.css';
 
 export const AwardsSection = () => {
     return (
-        <div className="awards-section-container">
+        <div className="awards-section-hack-aubg-container">
             <h1 className="awards-section-title">AWARDS</h1>
             <div className="awards-section-images-container">
                 <div className="awards-pic-text">
@@ -37,7 +37,6 @@ export const AwardsSection = () => {
                     </p>
                 </div>
             </div>
-
             <div className="awards-section-info-text">
                 <p id="awards-info-text">
                     And much more!

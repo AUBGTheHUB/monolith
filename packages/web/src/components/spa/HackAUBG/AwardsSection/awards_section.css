@@ -1,4 +1,4 @@
-.awards-section-container {
+.awards-section-hack-aubg-container {
     display: flex;
     flex-direction: column;
     background-color: #222222;
@@ -80,7 +80,8 @@
     }
 
     #awards-info-text {
-        margin: 10% 11% 15% 11%;
+        margin-top: 15%;
+        margin-bottom: 20%;
         font-size: small;
     }
 
