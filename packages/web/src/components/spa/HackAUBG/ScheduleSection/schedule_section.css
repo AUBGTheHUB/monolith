@@ -13,7 +13,6 @@
     color: #19b700;
     font-weight: 900;
     font-size: 2em;
-    margin-left: 3%;
 }
 
 .schedule-text-container {
@@ -57,6 +56,14 @@
 
 .schedule-section-container p {
     font-size: 1.2em;
+}
+
+#friday-container {
+    margin-right: 0;
+}
+
+#saturday-container {
+    margin-right: 4%;
 }
 
 @media only screen and (max-width: 1450px) {
