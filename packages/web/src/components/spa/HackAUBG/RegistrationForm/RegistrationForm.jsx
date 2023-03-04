@@ -1,172 +1,39 @@
 import React from 'react';
 import './registration_form.css';
-import { useState } from 'react';
-import Alert from 'react-bootstrap/Alert';
+import { useForm } from 'react-hook-form';
 
 const RegistrationForm = () => {
-    const ShowAlert = () => {
-        // this could be heavily optimized
-        if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct' &&
-            success === 200
-        ) {
-            return (
-                <Alert status="success" className="success-alert">
-                    You have successfully registered!
-                </Alert>
-            );
-        } else if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct' &&
-            success === 500
-        ) {
-            return (
-                <Alert status="warning" className="success-alert">
-                    Something went wrong! Please, try again.
-                </Alert>
-            );
-        } else if (
-            fullNameFormat === 'field-incorrect' &&
-            emailFormat === 'field-incorrect'
-        ) {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        } else if (fullNameFormat === 'field-incorrect') {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        } else {
-            return (
-                <div className={alertShown}>
-                    <Alert>
-                        This is a alert with
-                        <Alert.Link href="#">an example link</Alert.Link>. Give
-                        it a click if you like.
-                    </Alert>
-                </div>
-            );
-        }
-    };
-
-    const [success, setSuccess] = useState(0);
-    const [alertShown, setAlertShown] = useState('alert-hidden');
-
-    const [fullNameFormat, setFullNameFormat] = useState('field-incorrect');
-    const [emailFormat, setEmailFormat] = useState('field-incorrect');
-
-    const [formState, setFormState] = useState({
-        fullName: '',
-        email: '',
-        school: ''
-    });
-
-    function checkFormat(name, value) {
-        if (name === 'email') {
-            if (checkEmail(value)) {
-                setEmailFormat('field-correct');
-            } else {
-                setEmailFormat('field-incorrect');
-            }
-        } else if (name === 'fullName') {
-            if (checkEmptyString(value)) {
-                setFullNameFormat('field-incorrect');
-            } else {
-                setFullNameFormat('field-correct');
-            }
-        }
-    }
-
-    const handleInputChange = (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        setSuccess(0);
-
-        if (
-            fullNameFormat === 'field-correct' &&
-            emailFormat === 'field-correct'
-        ) {
-            setAlertShown('alert-hidden');
-        }
-
-        checkFormat(name, value);
-
-        setFormState({
-            ...formState,
-            [name]: value
-        });
-
-        console.log(formState);
-    };
-
-    function checkEmptyString(string) {
-        return /^\s*$/.test(string);
-    }
-
-    function checkEmail(string) {
-        return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(string);
-    }
-
-    if (fullNameFormat !== 'field-correct' || emailFormat !== 'field-correct') {
-        setAlertShown('alert');
-    }
-
-    const handleSubmit = () => {
-        if (
-            fullNameFormat !== 'field-correct' ||
-            emailFormat !== 'field-correct'
-        ) {
-            setAlertShown('alert');
-        } else {
-            // setAlertShown('alert-hidden');
-            // axios
-            //     .post(url, formState)
-            //     .then((res) => {
-            //         setSuccess(res.status);
-            //         console.log(res);
-            //     })
-            //     .catch((err) => {
-            //         setSuccess(500);
-            //         console.log(err);
-            //     });
-        }
-    };
-
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm();
+    console.log(errors);
     return (
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
-            <form action="" className="reg-form">
-                {ShowAlert()}
-
+            <form
+                action=""
+                className="reg-form"
+                onChange={handleSubmit((data) => console.log(data))}
+            >
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
                             <input
                                 type="text"
-                                name="full-name"
+                                {...register('fullname', {
+                                    required: 'This is required',
+                                    minLength: 4,
+                                    message: 'Minimum length is 4'
+                                })}
                                 placeholder="Enter your name"
-                                required
-                                onChange={handleInputChange}
                             />
+                            <p>{errors.fullname?.message}</p>
                         </label>
                     </div>
-                    <div className="send-info">
+                    {/* <div className="send-info">
                         <label htmlFor="">
                             Email
                             <input
@@ -523,18 +390,17 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </fieldset>
                 {/* <button className="register-btn">Register</button> */}
-                <button
+                {/* <button
                     className="register-btn"
                     type="button"
-                    onClick={() => {
-                        handleSubmit();
-                    }}
+                    onClick={() => {}}
                 >
                     Register
-                </button>
+                </button> */}
+                <input type="submit" />
             </form>
         </div>
     );
