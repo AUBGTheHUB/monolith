@@ -181,3 +181,8 @@ func DeleteHackathonTeams(c *fiber.Ctx) error {
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Team successfully deleted!"})
 }
+
+func GetNumberOfHackathonTeams(ctx context.Context) (int64, error) {
+	results, err := hackathonTeamCollection.CountDocuments(ctx, bson.M{})
+	return results, err
+}
