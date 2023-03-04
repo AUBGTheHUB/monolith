@@ -4,7 +4,7 @@ import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { navigateTo } from '../../../../Global';
 
 const makeBodyScrollable = () => {
     document.body.style.position = 'static';
@@ -18,7 +18,6 @@ export const NavMobile = ({ props }) => {
     if (currentBodyHeight !== bodyHeight) {
         setBodyHeight(currentBodyHeight);
     }
-    const navigate = useNavigate();
 
     const renderHackButton = () => {
         if (props.hasHackButton) {
@@ -34,7 +33,7 @@ export const NavMobile = ({ props }) => {
     };
 
     const navigateToHackAUBG = () => {
-        navigate('/hackaubg');
+        navigateTo('/hackaubg');
     };
 
     const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
@@ -47,7 +46,7 @@ export const NavMobile = ({ props }) => {
     };
 
     const openHome = () => {
-        navigate('/');
+        navigateTo('/');
     };
 
     return (
