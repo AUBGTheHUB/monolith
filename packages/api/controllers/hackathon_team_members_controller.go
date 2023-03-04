@@ -67,7 +67,7 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
 
-	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+	result, err := CreateNewHackathonParticipant(ctx, newHackathonTeamMember)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -213,7 +213,7 @@ func GetHackathonMembersCount(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	results, err := teamMembersCollection.CountDocuments(ctx, bson.M{})
+	results, err := GetNumberOfHackathonParticipants(ctx)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -226,6 +226,12 @@ func GetHackathonMembersCount(c *fiber.Ctx) error {
 	)
 
 }
+
+func GetNumberOfHackathonParticipants(ctx context.Context) (int64, error) {
+	results, err := teamMembersCollection.CountDocuments(ctx, bson.M{})
+	return results, err
+}
+
 func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -238,4 +244,9 @@ func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool {
 	_ = cursor.All(ctx, &results)
 
 	return len(results) > 0
+}
+
+func CreateNewHackathonParticipant(ctx context.Context, newHackathonTeamMember models.TeamMember) (*mongo.InsertOneResult, error) {
+	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+	return result, err
 }
