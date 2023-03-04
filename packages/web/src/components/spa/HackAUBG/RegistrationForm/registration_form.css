@@ -1,3 +1,9 @@
+/* Still to fix:
+    1. Stretch the box contents to be aligned in the same row
+    2. Everytime you click inside an input field, the font weight of error message texts changes
+    3. Choose option boxes while on responsiveness hold more width than the select itself
+*/
+
 .registration-main {
     background-color: #222222;
     display: flex;
@@ -6,6 +12,7 @@
     padding-top: 6%;
     padding-bottom: 5%;
     width: 100%;
+    align-items: stretch;
 }
 
 .registration-main h1 {
@@ -72,9 +79,7 @@
 .send-info {
     width: 40%;
     height: 80px;
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 6%;
+    margin: 0 5% 6% 5%;
 }
 
 .send-info label {
@@ -91,19 +96,13 @@
     margin-top: 2%;
 }
 
-.radio-text {
-    height: 60%;
-}
-
 .disabled {
     color: red;
 }
 
 .radio-btn .radio {
     width: 5%;
-    margin-top: 0;
-    margin-left: 2%;
-    margin-right: 2%;
+    margin: 0 2%;
 }
 
 .radio-btn {
@@ -145,7 +144,7 @@ input {
 }
 
 .error-msg {
-    color: yellow;
+    color: red;
     margin-top: 2%;
 }
 
