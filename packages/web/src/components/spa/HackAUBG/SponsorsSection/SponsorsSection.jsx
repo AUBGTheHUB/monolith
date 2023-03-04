@@ -72,7 +72,7 @@ const Sponsors = () => {
                         category={'silver'}
                     />
                     <div className="sponsors-box-header-container-bronze">
-                        <h1 style={{ color: '#FFFFFF' }}>Bronze</h1>
+                        <h1 style={{ color: '#FFFFFF' }}>Media Sponsor</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsorSections.bronze}

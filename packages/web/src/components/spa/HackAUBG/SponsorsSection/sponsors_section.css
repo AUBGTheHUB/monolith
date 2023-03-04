@@ -67,7 +67,7 @@
 .sponsors-box-header-container-bronze {
     border-style: solid;
     background-color: rgb(163, 104, 37);
-    min-width: 15vw;
+    min-width: 20vw;
     text-align: center;
     position: relative;
     top: 32px;
@@ -189,7 +189,7 @@
 
     .sponsors-box-header-container-bronze {
         padding-top: 2%;
-        min-width: 34vw;
+        min-width: 60vw;
     }
 
     .logo-container {
