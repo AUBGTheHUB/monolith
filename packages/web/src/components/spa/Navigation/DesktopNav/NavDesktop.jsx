@@ -1,7 +1,9 @@
 import React from 'react';
 import './desktop_navbar.css';
+import { useNavigate } from 'react-router-dom';
 
 export const NavDesktop = ({ props }) => {
+    const navigate = useNavigate();
     const renderHackButton = () => {
         if (props.hasHackButton) {
             return (
@@ -9,7 +11,7 @@ export const NavDesktop = ({ props }) => {
                     className="hackaubg-btn"
                     type="button"
                     onClick={() => {
-                        location.href = '/hackaubg';
+                        navigate('/hackaubg');
                     }}
                 >
                     <p>HackAUBG</p>
@@ -19,7 +21,7 @@ export const NavDesktop = ({ props }) => {
     };
 
     const openHome = () => {
-        window.location.href = '/';
+        navigate('/');
     };
 
     const stickyProps = () => {
