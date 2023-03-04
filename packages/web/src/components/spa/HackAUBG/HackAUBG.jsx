@@ -19,6 +19,7 @@ import './hack_aubg.css';
 export const HackAUBG = () => {
     changeHackFavicon();
     makeBodyScrollable();
+
     document.body.className = 'hackaubg-container';
 
     const anchorList = [

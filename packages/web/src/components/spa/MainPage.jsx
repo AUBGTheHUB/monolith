@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { checkHashAndScroll } from '../../Global';
 
 const LandingHome = () => {
+    document.body.className = 'main-body';
     const anchorList = [
         new Anchor('About', '#AboutSection'),
         new Anchor('Team', '#team'),

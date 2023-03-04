@@ -4,3 +4,9 @@
     width: 100vw;
     overflow: hidden;
 }
+
+.main-body {
+    width: 100vw !important;
+    overflow-x: hidden !important;
+    scroll-behavior: smooth;
+}

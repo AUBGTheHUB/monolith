@@ -1,4 +1,5 @@
 .hackaubg-container {
+    overflow: scroll;
     --scrollbar-foreground: #999;
     --scrollbar-background: #2222;
     /* Foreground, Background */
