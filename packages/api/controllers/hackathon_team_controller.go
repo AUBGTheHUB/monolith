@@ -34,10 +34,6 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
-	if len(team.TeamMembers) == 0 {
-		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Empty team"}})
-	}
-
 	if validationErr := validate.Struct(&team); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
 	}
@@ -71,8 +67,14 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 func GetHackathonTeams(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
+	bearer_token := c.Get("BEARER-TOKEN")
+
 	var teams []models.Team
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"data": "Unauthorized"}})
+	}
 
 	results, err := hackathonTeamCollection.Find(ctx, bson.M{})
 
@@ -99,8 +101,15 @@ func GetHackathonTeams(c *fiber.Ctx) error {
 func GetHackathonTeam(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	hackathon_team_key := c.Params("key", "key was not provided")
+
+	bearer_token := c.Get("BEARER-TOKEN")
+	
 	var team models.Team
 	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"data": "Unauthorized"}})
+	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
 	
