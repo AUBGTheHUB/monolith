@@ -18,9 +18,8 @@
 .awards-images-container {
     display: flex;
     align-items: flex-end;
-    width: 500px;
-    height: 250px;
-    margin: 2% 0%;
+    width: 70vw;
+    margin: 3% 0%;
     font-family: 'Roboto';
 }
 
@@ -41,7 +40,7 @@
 
 .award-money {
     font-weight: 900;
-    font-size: large;
+    font-size: 2rem;
     display: flex;
     margin-top: 15%;
     justify-content: center;
