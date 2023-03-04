@@ -69,6 +69,10 @@
     margin-bottom: 15%;
 }
 
+.awards-section-info-text {
+    width: 80%;
+}
+
 @media only screen and (max-width: 900px) {
     .awards-section-images-container {
         width: 100%;
