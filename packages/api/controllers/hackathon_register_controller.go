@@ -1,10 +1,14 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -92,6 +96,8 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 						return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": updateErr.Error()}})
 					}
 
+					go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
+
 					return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to existing team"})
 				}
 
@@ -123,6 +129,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 				}
 				return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't create team"}})
 			}
+			go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
 
 			return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
 		}
@@ -150,4 +157,41 @@ func FormatTeamName(teamName string) string {
 
 func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 	return FormatTeamName(passedTeamName) == FormatTeamName(storedTeamName)
+}
+
+func SendEmailToNewParticipant(fullName string, email string) {
+	requestURL := "https://europe-west3-cloudservices-378314.cloudfunctions.net/mailer"
+
+	emailBody := fmt.Sprintf(`{
+		"html": "<h1>Hello %s, This is the body of the email</h1>",
+		"subject": "Welcome to HackAUBG", 
+		"receiver": %s}`, fullName, email)
+	//TODO: Fix parsing. When hardcoded email is passed func works, when it is with %s string it doesn't
+	jsonBody := []byte(emailBody)
+	bodyReader := bytes.NewReader(jsonBody)
+
+	client := &http.Client{}
+
+	req, err := http.NewRequest(http.MethodPost, requestURL, bodyReader)
+
+	if err != nil {
+		fmt.Println("could not create request to mailing service: ")
+		fmt.Print(err.Error())
+	}
+
+	mailingToken := os.Getenv("MAILING_TOKEN")
+	req.Header.Set("Authorization", mailingToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		fmt.Println("error making http request to mailing service: ")
+		fmt.Print(err.Error())
+	}
+
+	fmt.Println("email was sent to parcipant: ")
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
 }
