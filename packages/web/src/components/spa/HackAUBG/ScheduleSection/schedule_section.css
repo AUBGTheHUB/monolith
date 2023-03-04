@@ -13,7 +13,6 @@
     color: #19b700;
     font-weight: 900;
     font-size: 2em;
-    margin-left: 3%;
 }
 
 .schedule-text-container {
@@ -59,6 +58,14 @@
     font-size: 1.2em;
 }
 
+#friday-container {
+    margin-right: 0;
+}
+
+#saturday-container {
+    margin-right: 4%;
+}
+
 @media only screen and (max-width: 1450px) {
     .schedule-text-container {
         width: 80%;
@@ -88,16 +95,17 @@
     .schedule-table-title {
         padding: 5% 0% 5% 0%;
     }
+    #friday-container {
+        margin-right: 3%;
+    }
+    #saturday-container {
+        margin-right: 3%;
+    }
 }
 
 @media only screen and (max-width: 300px) {
-    .schedule-text-container {
-        margin-left: 5%;
-        margin-right: 5%;
-        width: 120px;
-    }
     .schedule-table-container {
-        font-size: 0.9rem;
+        font-size: 0.7rem;
     }
 }
 
@@ -106,6 +114,6 @@
         margin-left: 7%;
     }
     .schedule-table-container {
-        width: 200px;
+        width: 280px;
     }
 }
