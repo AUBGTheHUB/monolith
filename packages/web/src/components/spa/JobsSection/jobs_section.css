@@ -20,9 +20,29 @@
     }
 }
 
+.no-jobs-container {
+    padding-top: 8%;
+    display: flex;
+    justify-content: center;
+}
+
+.no-jobs-image {
+    height: 60vh;
+}
+
 @media only screen and (max-width: 900px) {
     .jobs-page {
         min-height: 90vh;
+    }
+
+    .no-jobs-container {
+        padding-top: 40%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .no-jobs-image {
+        height: 40vh;
     }
 }
 
