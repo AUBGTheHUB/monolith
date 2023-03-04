@@ -14,6 +14,7 @@ import schedule
 
 BUILD_RUNNING = threading.Event()
 CURRENTLY_BUILDING = threading.Event()
+BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
 
@@ -79,6 +80,7 @@ def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, serv
 
     print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
           service, str(url)) + bcolors.CEND)
+
     return status_code
 
 
@@ -96,6 +98,9 @@ def start_docker_compose():
 
     CURRENTLY_BUILDING.set()
     with lock:
+        if BUILD_TRY == 0:
+            BUILD_FAILED.clear()
+
         BUILD_TRY = BUILD_TRY + 1
 
     errors = {}
@@ -211,7 +216,7 @@ def stop_docker_compose():
     BUILD_RUNNING.clear()
 
 
-def check_service_up(url: str, service: str, discord: bool):
+def check_service_up(url: str, service: str, discord=False):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
@@ -222,32 +227,37 @@ def check_service_up(url: str, service: str, discord: bool):
     This could be heavily restructured if there are more services to be checked
     As of now, the replicated code is not an issue - it's easy to read
     """
+
     print()
     print(bcolors.YELLOW_IN +
           "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND)
+
     req_method = ""
+
     if service == "WEB":
         try:
             web_request = requests.get(url)
             req_method = "GET"
+
         except Exception as e:
-            handle_exception(msg, req_method, url, service, e, discord)
-            return
+            return handle_exception(msg, req_method, url, service, e, discord)
+
         if web_request.status_code != 200:
-            handle_status_code_exception(
+            return handle_status_code_exception(
                 msg, req_method, url, service, web_request.status_code, discord)
-            return
+
     elif service == "API":
+
         try:
             web_request = requests.post(url=url)
             req_method = "POST"
+
         except Exception as e:
-            handle_exception(msg, req_method, url, service, e, discord)
-            return
+            return handle_exception(msg, req_method, url, service, e, discord)
+
         if web_request.status_code != 400:
-            handle_status_code_exception(
+            return handle_status_code_exception(
                 msg, req_method, url, service, web_request.status_code, discord)
-            return
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
@@ -258,13 +268,14 @@ def check_service_up(url: str, service: str, discord: bool):
 
 
 def cron_local_test():
-    if CURRENTLY_BUILDING.is_set():
+    # exit if services are currently building
+    if CURRENTLY_BUILDING.is_set() or BUILD_FAILED.is_set():
         return
 
-    local_web = check_service_up(WEB_URL, "WEB")
-    local_api = check_service_up(API_URL, "API")
+    local_web = check_service_up(WEB_URL, "WEB", True)
+    local_api = check_service_up(API_URL, "API", True)
 
-    # force rebuild
+    # build is not running
     if local_web != 200 or local_api != 400:
         BUILD_RUNNING.clear()
 

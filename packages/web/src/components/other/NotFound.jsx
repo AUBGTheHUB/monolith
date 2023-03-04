@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './page_not_found.css';
 
 const NotFound = () => {
+    const navigate = useNavigate();
+
     const redirectHome = () => {
-        document.location.href = '/';
+        navigate('/')
     };
 
     return (
