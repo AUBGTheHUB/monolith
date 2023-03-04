@@ -425,7 +425,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -485,7 +485,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -521,7 +521,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -557,7 +557,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -593,7 +593,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -629,7 +629,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
@@ -666,7 +666,7 @@ const RegistrationForm = () => {
                                         required: true
                                     })}
                                     type="radio"
-                                    value=" No"
+                                    value="No"
                                     className="radio"
                                 />
                             </div>
