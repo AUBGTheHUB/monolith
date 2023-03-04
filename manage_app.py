@@ -14,6 +14,7 @@ import schedule
 
 BUILD_RUNNING = threading.Event()
 CURRENTLY_BUILDING = threading.Event()
+BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
 
@@ -53,6 +54,36 @@ def send_mail(msg):
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
 
 
+def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e: Exception, discord: bool):
+    if not discord:
+        msg.attach(MIMEText(
+            '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html'))
+        send_mail(msg)
+    else:
+        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```"})
+    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
+          service, str(url)) + bcolors.CEND)
+    return e
+
+
+def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, service: str, status_code: int, discord: bool):
+    if not discord:
+        # send email that the website is down
+        msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(
+            ENV, method, url, str(status_code)) + '</h3>', 'html'))
+        send_mail(msg)
+    else:
+        # send discord notification that the website is down
+        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
+
+    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
+          service, str(url)) + bcolors.CEND)
+
+    return status_code
+
+
 def start_docker_compose():
     # --abort-on-container-exit is not compatible with detached mode
     # therefore check up should be done with requests
@@ -67,6 +98,9 @@ def start_docker_compose():
 
     CURRENTLY_BUILDING.set()
     with lock:
+        if BUILD_TRY == 0:
+            BUILD_FAILED.clear()
+
         BUILD_TRY = BUILD_TRY + 1
 
     errors = {}
@@ -96,14 +130,14 @@ def start_docker_compose():
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
-        get_web = check_service_up(WEB_URL, "WEB")
+        get_web = check_service_up(WEB_URL, "WEB", False)
 
         # "connection reset by peer"
         print()
         time.sleep(10)
 
         ###### API ######
-        get_api = check_service_up(API_URL, "API")
+        get_api = check_service_up(API_URL, "API", False)
 
         print()
         if (get_web == 200 and get_api == 400):
@@ -116,7 +150,7 @@ def start_docker_compose():
 
             requests.post(DISCORD_WH, headers={
                           "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n ✅: Successfully Deployed "
+                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed "
             })
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
@@ -145,12 +179,12 @@ def start_docker_compose():
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
 
-    errors["BUILD"] = errors["BUILD"].splitlines()[-5:]
+    errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
     if BUILD_TRY <= 1:
         requests.post(DISCORD_WH, headers={
             "Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{str(errors)}```"
+            "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```"
         })
 
     CURRENTLY_BUILDING.clear()
@@ -162,12 +196,27 @@ def start_docker_compose():
     return
 
 
+def beautify_errors(errors: dict) -> str:
+    output_string = ""
+    if (build_errors := errors.get("BUILD", None)):
+        output_string += "BUILD:\n\t"
+        output_string += '\n\t'.join(build_errors)
+    if (build_errors := errors.get("WEB", None)):
+        output_string += "WEB:\n\t"
+        output_string += '\n\t'.join(build_errors)
+    if (build_errors := errors.get("API", None)):
+        output_string += "API:\n\t"
+        output_string += '\n\t'.join(build_errors)
+
+    return output_string
+
+
 def stop_docker_compose():
     dc_stop = subprocess.run(["sudo", "docker-compose", "down"])
     BUILD_RUNNING.clear()
 
 
-def check_service_up(url: str, service: str):
+def check_service_up(url: str, service: str, discord=False):
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(ENV, service)
@@ -178,48 +227,37 @@ def check_service_up(url: str, service: str):
     This could be heavily restructured if there are more services to be checked
     As of now, the replicated code is not an issue - it's easy to read
     """
+
     print()
     print(bcolors.YELLOW_IN +
           "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND)
+
+    req_method = ""
+
     if service == "WEB":
         try:
             web_request = requests.get(url)
+            req_method = "GET"
+
         except Exception as e:
-            msg.attach(MIMEText(
-                '<h3>{}: GET Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
-            send_mail(msg)
-            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-                  service, str(url)) + bcolors.CEND)
-            return e
+            return handle_exception(msg, req_method, url, service, e, discord)
 
         if web_request.status_code != 200:
-            # send email that the website is down
-            msg.attach(MIMEText('<h3>{}: GET Request to {} failed with status code {}'.format(
-                ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
-            send_mail(msg)
-            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-                  service, str(url)) + bcolors.CEND)
-            return web_request.status_code
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord)
 
     elif service == "API":
 
         try:
             web_request = requests.post(url=url)
-        except Exception as e:
-            msg.attach(MIMEText(
-                '<h3>{}: POST Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, url, str(e)) + '</p>', 'html'))
-            send_mail(msg)
-            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-                  service, str(url)) + bcolors.CEND)
-            return e
+            req_method = "POST"
 
-        if web_request.status_code != 400:  # send email that the website is down
-            msg.attach(MIMEText('<h3>{}: POST Request to {} failed with status code {}'.format(
-                ENV, url, str(web_request.status_code)) + '</h3>', 'html'))
-            send_mail(msg)
-            print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-                  service, str(url)) + bcolors.CEND)
-            return web_request.status_code
+        except Exception as e:
+            return handle_exception(msg, req_method, url, service, e, discord)
+
+        if web_request.status_code != 400:
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord)
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
@@ -230,11 +268,14 @@ def check_service_up(url: str, service: str):
 
 
 def cron_local_test():
+    # exit if services are currently building
+    if CURRENTLY_BUILDING.is_set() or BUILD_FAILED.is_set():
+        return
 
-    local_web = check_service_up(WEB_URL, "WEB")
-    local_api = check_service_up(API_URL, "API")
+    local_web = check_service_up(WEB_URL, "WEB", True)
+    local_api = check_service_up(API_URL, "API", True)
 
-    # force rebuild
+    # build is not running
     if local_web != 200 or local_api != 400:
         BUILD_RUNNING.clear()
 

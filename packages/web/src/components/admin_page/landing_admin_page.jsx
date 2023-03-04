@@ -27,7 +27,8 @@ const LandingAdminPage = () => {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
         axios({
             method: 'post',
             url: url + '/api/login',
@@ -74,10 +75,8 @@ const LandingAdminPage = () => {
                     </Form.Group>
                     <Button
                         variant="primary"
-                        type="button"
-                        onClick={() => {
-                            handleSubmit();
-                        }}
+                        type="submit"
+                        onClick={handleSubmit}
                     >
                         Submit
                     </Button>
