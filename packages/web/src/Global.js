@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line
 const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
@@ -71,7 +72,7 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
-const changeHackFavicon = () => {
+const changeFavicon = () => {
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
@@ -98,12 +99,31 @@ const changeHackFavicon = () => {
     link.href = iconPath;
 };
 
+const History = {
+    navigate: null,
+    push: (page, ...rest) => History.navigate(page, ...rest)
+};
+
+const NavigateSetter = () => {
+    History.navigate = useNavigate();
+
+    return null;
+};
+
+const navigateTo = (endpoint) => {
+    History.navigate(endpoint);
+
+    document.dispatchEvent(new Event('locationChange'));
+};
+
 export {
     url,
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
-    changeHackFavicon,
+    changeFavicon,
+    NavigateSetter,
+    navigateTo,
     objUploaderURL,
     gcpToken
 };
