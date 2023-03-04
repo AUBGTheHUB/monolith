@@ -7,45 +7,34 @@ const RegistrationForm = () => {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm();
+    } = useForm({ mode: 'all' });
+    const onSubmit = (data) => console.log('SUCCESS', data); // send data to api
+    const onError = (data) => console.log('ERROR', data); // do something else
     console.log(errors);
+
     return (
         <div className="registration-main">
             <h1>Register for HackAUBG 5.0</h1>
             <form
                 action=""
                 className="reg-form"
-                onChange={handleSubmit((data) => console.log(data))}
+                onSubmit={handleSubmit(onSubmit, onError)}
             >
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
                             Full Name
-                            {/* <input
-                                type="text"
-                                {...register(
-                                    'fullname',
-                                    {
-                                        required: 'This is required',
-                                        minLength: {
-                                            value: 4,
-                                            message: 'Minimum length is 4'
-                                        }
-                                    },
-                                    { pattern: /^[A-Za-z]+$/i }
-                                )}
-                                placeholder="Enter your name"
-                            /> */}
                             <input
                                 type="text"
                                 placeholder="fullname"
                                 {...register('fullname', {
-                                    required: 'True',
+                                    required: true,
                                     minLength: {
-                                        message: 'Minimum length is 4',
-                                        value: 4
+                                        message: 'Maximum length is 24',
+                                        value: 5
                                     },
-                                    pattern: /^[A-Za-z]+$/i
+
+                                    pattern: /^[a-zA-Z][\t a-zA-Z]$/
                                 })}
                             />
                         </label>
@@ -54,28 +43,32 @@ const RegistrationForm = () => {
                     <div className="send-info">
                         <label htmlFor="">
                             Email
-                            {/* <input
-                                type="email"
-                                name="email"
-                                placeholder="Enter your email"
-                                required
-                                onChange={handleInputChange}
-                            /> */}
                             <input
-                                type="tel"
+                                type="text"
                                 placeholder="email"
                                 {...register('email', {
                                     required: true,
-                                    pattern:{
+                                    pattern: {
                                         value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
-                                        message: "aaa"
+                                        message: 'aaa'
                                     }
-                                        
                                 })}
                             />
                             <p>{errors.email?.message}</p>
                         </label>
                     </div>
+                    {/* <div className="send-info">
+                        <label className="radio-text">
+                            Do you have previous coding experience?
+                            <select
+                                {...register('location', { required: true })}
+                            >
+                                <option value="Varna">Varna</option>
+                                <option value=" Ruse"> Ruse</option>
+                            </select>
+                        </label>
+                    </div> */}
+
                     {/*<div className="send-info">
                         <label htmlFor="">
                             Age
