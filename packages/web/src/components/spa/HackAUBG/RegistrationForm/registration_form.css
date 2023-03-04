@@ -55,7 +55,7 @@
     flex-direction: row;
 } */
 
-.register-btn {
+.hackaubg-register-btn {
     width: fit-content;
     color: #19b700;
     align-items: center;
@@ -68,13 +68,23 @@
     padding: 0.8% 6% 0.8% 6%;
 }
 
-.register-btn:hover {
+.hackaubg-register-btn:hover {
     background-color: #19b700;
     color: white;
     -moz-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
+}
+
+.hackaubg-register-btn.error {
+    background-color: red;
+    color: white;
+}
+
+.hackaubg-register-btn.disabled {
+    background-color: gray;
+    color: white;
 }
 
 .from-personal-info {
@@ -90,11 +100,13 @@
     margin-right: 5%;
     margin-bottom: 2%;
 }
+
 .send-info label {
     display: flex;
     flex-direction: column;
     align-self: center;
 }
+
 .send-info input,
 .send-info select {
     height: 45px;
@@ -102,6 +114,7 @@
     border-radius: 7.5px;
     margin-top: 2%;
 }
+
 .send-info input::placeholder {
     padding-left: 1%;
 }
@@ -116,27 +129,37 @@
 .radio-btn input {
     margin-top: 0.78%;
 } */
+
 .radio-text {
     height: 60%;
+}
+
+.disabled {
+    color: red;
 }
 
 .radio-btn .radio {
     width: 5%;
 }
+
 .radio-btn {
     display: contents;
 }
+
 .radio-select {
     display: flex;
 }
+
 .radio-select label {
     font-size: 1.05rem;
 }
+
 .radio-btn .radio {
     margin-top: 0;
     margin-left: 2%;
     margin-right: 2%;
 }
+
 @media only screen and (max-width: 900px) {
     .send-info {
         width: 100%;
@@ -160,6 +183,5 @@ input[type='radio'] {
     -webkit-appearance: radio;
 }
 
-.select{
-    
+.select {
 }

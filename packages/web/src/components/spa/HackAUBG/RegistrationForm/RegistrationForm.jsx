@@ -1,16 +1,99 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // eslint-disable-line
 import './registration_form.css';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
 const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        setError,
+        formState: { errors } // eslint-disable-line
     } = useForm({ mode: 'all' });
-    const onSubmit = (data) => console.log('SUCCESS', data); // send data to api
-    const onError = (data) => console.log('ERROR', data); // do something else
-    console.log(errors);
+
+    const [loadingAnimation, setLoadingAnimation] = useState(false);
+    const [submitPressed, setSubmitPressed] = useState(false);
+    const [submitButtonValue, setSubmitButtonValue] = useState('register'); // eslint-disable-line
+    const [apiError, setApiError] = useState(false);
+
+    const onSubmit = (data) => {
+        setLoadingAnimation(true);
+        // send request to backend
+        // if res is good
+        // block submit button, notify that registration is successful
+        setTimeout(() => {
+            setLoadingAnimation(false);
+            setSubmitButtonValue('MONTANA');
+            console.log(data);
+        }, 2000);
+
+        setTimeout(() => {}, 2000);
+
+        // axios
+        //     .get()
+        //     .then(() => {})
+        //     .catch(() => {});
+
+        // request failed
+        setTimeout(() => {
+            setLoadingAnimation(true);
+            setError(
+                'test',
+                {
+                    type: 'focus',
+                    message: 'API FAILED'
+                }
+                // { shouldFocus: true }
+            );
+            console.log(errors);
+            setLoadingAnimation(false);
+            setApiError(true);
+        }, 2000);
+    }; // send data to api
+    const onError = (data) => {
+        console.log('ERROR', data);
+    };
+
+    // useEffect will always initialize this with the correct state
+    const [buttonState, setButtonState] = useState(
+        'hackaubg-register-btn disabled'
+    );
+
+    const checkButtonAvailability = () => {
+        if (apiError) {
+            setButtonState('hackaubg-register-btn disabled');
+            return;
+        } else if (Object.keys(errors).length != 0 && submitPressed) {
+            setButtonState('hackaubg-register-btn error');
+            return;
+        }
+        setButtonState('hackaubg-register-btn');
+    };
+
+    useEffect(checkButtonAvailability, [Object.keys(errors)]);
+
+    const showButton = () => {
+        if (loadingAnimation) {
+            return (
+                <input
+                    type="submit"
+                    value="LOADING"
+                    className="hackaubg-register-btn"
+                />
+            );
+        } else {
+            return (
+                <input
+                    type="submit"
+                    className={buttonState}
+                    value={submitButtonValue}
+                    onClick={() => {
+                        setSubmitPressed(true);
+                    }}
+                />
+            );
+        }
+    };
 
     return (
         <div className="registration-main">
@@ -20,6 +103,8 @@ const RegistrationForm = () => {
                 className="reg-form"
                 onSubmit={handleSubmit(onSubmit, onError)}
             >
+                {errors.test && <p>{errors.test.message}</p>}
+
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
@@ -28,14 +113,17 @@ const RegistrationForm = () => {
                                 type="text"
                                 placeholder="fullname"
                                 {...register('fullname', {
-                                    required: true,
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
                                     minLength: {
-                                        message: 'Minimum length is 4',
+                                        message: 'Minimum length is 4 symbols',
                                         value: 4
                                     },
                                     maxLength: {
-                                        message: 'Maximum length is 24',
-                                        value: 24
+                                        message: 'Maximum length is 50 symbols',
+                                        value: 50
                                     },
                                     pattern: {
                                         value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
@@ -54,28 +142,74 @@ const RegistrationForm = () => {
                                 type="text"
                                 placeholder="email"
                                 {...register('email', {
-                                    required: true,
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
                                     pattern: {
                                         value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
-                                        message: 'aaa'
+                                        message: 'Please enter valid email'
+                                    },
+                                    minLength: {
+                                        message: 'Minimum length is 4 symbols',
+                                        value: 4
                                     }
                                 })}
                             />
                             <p>{errors.email?.message}</p>
                         </label>
                     </div>
-                    {/* <div className="send-info">
+                    <div className="send-info">
                         <label className="radio-text">
-                            Do you have previous coding experience?
+                            Location
                             <select
-                                {...register('location', { required: true })}
+                                {...register('location', {
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    }
+                                })}
                             >
+                                <option value="" disabled selected>
+                                    Choose a Location
+                                </option>
+
                                 <option value="Varna">Varna</option>
-                                <option value=" Ruse"> Ruse</option>
+                                <option value="Ruse">Ruse</option>
                             </select>
                         </label>
-                    </div> */}
+                    </div>
 
+                    <div className="send-info">
+                        <label className="column-right">
+                            Do you want to receive our newsletter with potential
+                            job offerings?
+                        </label>
+                        <div className="radio-select">
+                            <div className="radio-btn">
+                                <label>Yes</label>
+                                <input
+                                    {...register('JobOffers', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value="Yes"
+                                    className="radio"
+                                />
+                            </div>
+                            <div className="radio-btn">
+                                <label>No</label>
+                                <input
+                                    {...register('JobOffers', {
+                                        required: true
+                                    })}
+                                    type="radio"
+                                    value=" No"
+                                    className="radio"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     {/*<div className="send-info">
                         <label htmlFor="">
                             Age
@@ -431,7 +565,7 @@ const RegistrationForm = () => {
                 >
                     Register
                 </button> */}
-                <input type="submit" />
+                {showButton()}
             </form>
         </div>
     );
