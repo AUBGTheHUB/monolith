@@ -13,9 +13,11 @@ import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
+import './hack_aubg.css';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
+    document.body.className = 'hackaubg-container';
 
     const anchorList = [
         new Anchor('About', '#about'),
