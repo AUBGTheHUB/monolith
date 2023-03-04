@@ -1,21 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './page_not_found.css';
 
 const NotFound = () => {
+    const navigate = useNavigate();
+
+    const redirectHome = () => {
+        navigate('/');
+    };
+
     return (
         <div className="page-not-found">
-            <div
-                className="page-not-found-logo"
-                onClick={() => {
-                    document.location.href = '/';
-                }}
-            >
+            <div className="page-not-found-logo">
                 <img
                     src="/hublogo.png"
                     className="page-not-found-logo-image"
                     alt="The Hub AUBG"
+                    onClick={redirectHome}
                 />
-                <p>The Hub</p>
+                <p onClick={redirectHome}>The Hub</p>
             </div>
             <div className="background-not-found">
                 <div className="page-not-found-text">
@@ -28,9 +31,7 @@ const NotFound = () => {
                     <button
                         className="button-404"
                         type="button"
-                        onClick={() => {
-                            location.href = '/';
-                        }}
+                        onClick={redirectHome}
                     >
                         Back to Homepage
                     </button>

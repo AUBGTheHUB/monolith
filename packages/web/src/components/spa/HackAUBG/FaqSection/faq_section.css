@@ -16,14 +16,14 @@
     color: #7de776;
 }
 
-.faq-header,
-.faq-text {
+.faq-text-container {
     width: 60%;
     text-align: left;
     color: white;
 }
 
 .faq-header {
+    width: 80%;
     font-size: 1.2rem;
     color: #7de776;
     font-weight: bold;
@@ -31,4 +31,24 @@
 
 .faq-text {
     text-align: justify;
+}
+
+@media only screen and (max-width: 1000px) {
+    .faq-text-container {
+        width: 100%;
+        padding-left: 11%;
+        padding-right: 11%;
+    }
+
+    .faq-container {
+        margin-bottom: 10%;
+    }
+
+    .faq {
+        margin-bottom: 2.5rem;
+    }
+
+    .faq-header {
+        width: 100%;
+    }
 }

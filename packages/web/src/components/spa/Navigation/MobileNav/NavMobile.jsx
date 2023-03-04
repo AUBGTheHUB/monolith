@@ -47,7 +47,7 @@ export const NavMobile = ({ props }) => {
     };
 
     const openHome = () => {
-        window.location.href = '/';
+        navigate('/');
     };
 
     return (

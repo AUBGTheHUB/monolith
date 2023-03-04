@@ -9,6 +9,7 @@ type Team struct {
 }
 
 type EditTeam struct {
-	TeamName    string   `json:"teamname"`
-	TeamMembers []string `json:"teammembers"`
+	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	TeamName    string             `json:"teamname"`
+	TeamMembers []string           `json:"teammembers"`
 }
