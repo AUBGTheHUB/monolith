@@ -128,7 +128,9 @@ const RegistrationForm = () => {
                 className="reg-form"
                 onSubmit={handleSubmit(onSubmit, onError)}
             >
-                {errors.test && <p>{errors.test.message}</p>}
+                {errors.test && (
+                    <p className="error-msg">{errors.test.message}</p>
+                )}
 
                 <fieldset className="from-personal-info">
                     <div className="send-info">
@@ -139,10 +141,10 @@ const RegistrationForm = () => {
                                 {...register('fullname', {
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     minLength: {
-                                        message: 'Minimum length is 4 symbols',
+                                        message: '*Minimum length is 4 symbols',
                                         value: 4
                                     },
                                     maxLength: {
@@ -157,7 +159,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.fullname?.message}</p>
+                        <p className="error-msg">{errors.fullname?.message}</p>
                     </div>
                     <div className="send-info">
                         <label htmlFor="">
@@ -167,19 +169,19 @@ const RegistrationForm = () => {
                                 {...register('email', {
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     pattern: {
                                         value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
-                                        message: 'Please enter valid email'
+                                        message: '*Please enter valid email'
                                     },
                                     minLength: {
-                                        message: 'Minimum length is 4 symbols',
+                                        message: '*Minimum length is 4 symbols',
                                         value: 4
                                     }
                                 })}
                             />
-                            <p>{errors.email?.message}</p>
+                            <p className="error-msg">{errors.email?.message}</p>
                         </label>
                     </div>
                     <div className="send-info">
@@ -191,7 +193,7 @@ const RegistrationForm = () => {
                                     valueAsNumber: true,
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     minLength: {
                                         message: 'Minimum length is 2 symbols',
@@ -209,7 +211,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.age?.message}</p>
+                        <p className="error-msg">{errors.age?.message}</p>
                     </div>
                     <div className="send-info">
                         <label htmlFor="">
@@ -219,7 +221,7 @@ const RegistrationForm = () => {
                                 {...register('location', {
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     minLength: {
                                         message: 'Minimum length is 2 symbols',
@@ -237,7 +239,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.location?.message}</p>
+                        <p className="error-msg">{errors.location?.message}</p>
                     </div>
                     <div className="send-info">
                         <label>
@@ -265,10 +267,10 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.university && (
                                 <p className="error-text">
-                                    University/School is required
+                                    *University/School is required
                                 </p>
                             )}
                         </p>
@@ -294,10 +296,10 @@ const RegistrationForm = () => {
                                 </option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.shirtsize && (
                                 <p className="error-text">
-                                    Shirt size is required
+                                    *Shirt size is required
                                 </p>
                             )}
                         </p>
@@ -323,10 +325,10 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.heardaboutus && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -364,10 +366,10 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.strongsides && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -380,10 +382,10 @@ const RegistrationForm = () => {
                                 {...register('jobinterests', {
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     minLength: {
-                                        message: 'Minimum length is 4 symbols',
+                                        message: '*Minimum length is 4 symbols',
                                         value: 4
                                     },
                                     maxLength: {
@@ -394,7 +396,9 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.jobinterests?.message}</p>
+                        <p className="error-msg">
+                            {errors.jobinterests?.message}
+                        </p>
                     </div>
                     <div className="send-info">
                         <label>
@@ -420,10 +424,10 @@ const RegistrationForm = () => {
                                 <option value="Other">Other</option>
                             </select>
                         </label>
-                        <p>
+                        <p className="error-msg">
                             {errors.programminglevel && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -456,10 +460,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.hasteam && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -472,10 +476,10 @@ const RegistrationForm = () => {
                                 {...register('teamname', {
                                     required: {
                                         value: true,
-                                        message: 'This field is required'
+                                        message: '*This field is required'
                                     },
                                     minLength: {
-                                        message: 'Minimum length is 4 symbols',
+                                        message: '*Minimum length is 4 symbols',
                                         value: 4
                                     },
                                     maxLength: {
@@ -486,7 +490,7 @@ const RegistrationForm = () => {
                                 })}
                             />
                         </label>
-                        <p>{errors.teamname?.message}</p>
+                        <p className="error-msg">{errors.teamname?.message}</p>
                     </div>
                     <div className="send-info">
                         <label className="column-right">
@@ -516,10 +520,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.prevhackaubgparticipation && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -552,10 +556,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.wantinternship && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -588,10 +592,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.prevhackathonparticipation && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -624,10 +628,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.shareinfowithsponsors && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -660,10 +664,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.hasexperience && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>
@@ -697,10 +701,10 @@ const RegistrationForm = () => {
                                 />
                             </div>
                         </div>
-                        <p>
+                        <p className="error-msg">
                             {errors.wantjoboffers && (
                                 <p className="error-text">
-                                    This field is required
+                                    *This field is required
                                 </p>
                             )}
                         </p>

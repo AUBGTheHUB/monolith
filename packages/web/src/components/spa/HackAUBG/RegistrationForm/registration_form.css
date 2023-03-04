@@ -1,3 +1,9 @@
+/* Still to fix:
+    1. Stretch the box contents to be aligned in the same row
+    2. Everytime you click inside an input field, the font weight of error message texts changes
+    3. Choose option boxes while on responsiveness hold more width than the select itself
+*/
+
 .registration-main {
     background-color: #222222;
     display: flex;
@@ -6,6 +12,7 @@
     padding-top: 6%;
     padding-bottom: 5%;
     width: 100%;
+    align-items: stretch;
 }
 
 .registration-main h1 {
@@ -24,36 +31,11 @@
     justify-content: center;
 }
 
-/* .personal-info,
-.university, 
-.shirt-size, 
-.referrer,
-.skills,
-.job-interests,
-.programming-level,
-.team-section {
-    display: flex;
-    flex-direction: column;
-} */
-
 .reg-form button {
     margin-top: 2%;
     display: flex;
     flex-direction: column;
 }
-
-/* .reg-form label {
-    display: block;
-} */
-
-/* .reg-form .register-btn {
-    margin-top: 5%;
-}
-
-.reg-form select {
-    display: flex;
-    flex-direction: row;
-} */
 
 .hackaubg-register-btn {
     width: fit-content;
@@ -66,6 +48,7 @@
     font-weight: bold;
     background-color: white;
     padding: 0.8% 6% 0.8% 6%;
+    margin-top: 3%;
 }
 
 .hackaubg-register-btn:hover {
@@ -96,9 +79,7 @@
 .send-info {
     width: 40%;
     height: 80px;
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 2%;
+    margin: 0 5% 6% 5%;
 }
 
 .send-info label {
@@ -115,31 +96,13 @@
     margin-top: 2%;
 }
 
-.send-info input::placeholder {
-    padding-left: 1%;
-}
-/* .radio-btn {
-    width: fit-content;
-    align-items: center;
-    display: flex;
-}
-.radio-btn .radio-no {
-    margin-left: 40%;
-}
-.radio-btn input {
-    margin-top: 0.78%;
-} */
-
-.radio-text {
-    height: 60%;
-}
-
 .disabled {
     color: red;
 }
 
 .radio-btn .radio {
     width: 5%;
+    margin: 0 2%;
 }
 
 .radio-btn {
@@ -150,35 +113,61 @@
     display: flex;
 }
 
+.radio-select input {
+    accent-color: #19b700;
+}
+
 .radio-select label {
     font-size: 1.05rem;
 }
 
-.radio-btn .radio {
-    margin-top: 0;
-    margin-left: 2%;
-    margin-right: 2%;
+input[type='radio'] {
+    -webkit-appearance: radio;
+    cursor: pointer;
 }
 
-@media only screen and (max-width: 900px) {
+input[type='text']:required {
+    color: red;
+}
+
+.select option {
+    background-color: #3e3b3b;
+    color: white;
+}
+
+option:checked {
+    color: #19b700;
+}
+
+input {
+    text-indent: 2%;
+}
+
+.error-msg {
+    color: red;
+    margin-top: 2%;
+}
+
+@media only screen and (max-width: 1300px) {
     .send-info {
-        width: 100%;
-        height: initial;
-        margin-top: 3%;
-        margin-bottom: 3%;
+        margin-bottom: 9%;
     }
-    /* .radio-btn {
-        width: 60px;
-    }
-    .radio-btn .radio-no {
-        margin-left: 35%;
-    } */
     .from-personal-info {
         display: flex;
         flex-wrap: wrap;
         width: 80%;
     }
 }
-input[type='radio'] {
-    -webkit-appearance: radio;
+
+@media only screen and (max-width: 900px) {
+    .send-info {
+        width: 100%;
+        height: initial;
+        margin-bottom: 5%;
+    }
+    .from-personal-info {
+        display: flex;
+        flex-wrap: wrap;
+        width: 80%;
+    }
 }
