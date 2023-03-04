@@ -103,17 +103,19 @@
     }
 }
 
-@media only screen and (max-width: 300px) {
-    .schedule-table-container {
-        font-size: 0.7rem;
-    }
-}
-
 @media only screen and (max-width: 400px) {
     .schedule-text-container {
         margin-left: 7%;
     }
     .schedule-table-container {
         width: 280px;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .schedule-table-container {
+        font-size: 1rem;
+        word-wrap: break-word;
+        width: 80%;
     }
 }
