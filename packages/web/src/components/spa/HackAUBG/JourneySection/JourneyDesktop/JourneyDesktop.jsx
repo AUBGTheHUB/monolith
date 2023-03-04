@@ -19,7 +19,7 @@ export const JourneyDesktop = () => {
                         </h2>
                         <p>
                             Gather your dream team and register in the form
-                            above! Don’t forget to create a diverse team, as the
+                            below! Don’t forget to create a diverse team, as the
                             best teams usually incorporate programmers, business
                             planners, and designers. The teams should be between
                             3 and 6 people. However, if you have less, don’t
@@ -37,11 +37,10 @@ export const JourneyDesktop = () => {
                         </h2>
                         <p>
                             HackAUBG 5.0 starts on Friday, March 31st. It will
-                            be fully on-ground, taking place in the American
-                            University in Bulgaria’s Sports Hall in the America
-                            for Bulgaria Building. If you don’t reside in
+                            be fully on-ground, taking place in the Sports Hall
+                            in AUBG&apos;s ABF building. If you do not reside in
                             Blagoevgrad, be sure to make arrangements for your
-                            amazing stay here. In case you need help, your Hub
+                            stay here. In case you need help, your Hub
                             facilitator will be more than happy to help you
                             arrange your stay. Below you can check out the
                             HackAUBG 5.0 schedule for all the details. Your
@@ -75,12 +74,12 @@ export const JourneyDesktop = () => {
                                 the following 48 hours, you will receive another
                                 email from us introducing you to your team
                                 facilitator - a Hubber who will guide you
-                                through everything HackAUBG 5.0. Pro tip: take a
-                                few days to research some hackathon strategies,
-                                previous award-winning HackAUBG projects, and
-                                brainstorm! After all, you do not want to be
-                                unprepared for your chance to bring home the
-                                grand prize of 3000 BGN!
+                                through everything about HackAUBG 5.0. Pro tip:
+                                take a few days to research some hackathon
+                                strategies, previous award-winning HackAUBG
+                                projects, and brainstorm! After all, you do not
+                                want to be unprepared for your chance to bring
+                                home the grand prize of 3000 BGN!
                             </p>
                         </div>
                     </div>
@@ -95,10 +94,11 @@ export const JourneyDesktop = () => {
                             consists of creating a presentation for your
                             product, as well as a Software Demo. After your
                             presentation, there will be a Q&A session with the
-                            judge panel. The grading criteria for the project
-                            and presentation can be found below. Make sure to
-                            check it, as it is extremely important! If you have
-                            any more questions, check out the FAQ section below!
+                            panel of judges. The grading criteria for the
+                            project and presentation can be found below. Make
+                            sure to check it, as it is extremely important! If
+                            you have any more questions, check out the FAQ
+                            section at the end of the page!
                         </p>
                     </div>
                 </div>

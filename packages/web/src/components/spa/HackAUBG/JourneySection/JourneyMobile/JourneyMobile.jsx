@@ -20,7 +20,7 @@ export const JourneyMobile = () => {
                     text={
                         <p>
                             Gather your dream team and register in the form
-                            above! Don’t forget to create a diverse team, as the
+                            below! Don’t forget to create a diverse team, as the
                             best teams usually incorporate programmers, business
                             planners, and designers. The teams should be between
                             3 and 6 people. However, if you have less, don’t
@@ -44,7 +44,7 @@ export const JourneyMobile = () => {
                             receive an email confirming your place. In the
                             following 48 hours, you will receive another email
                             from us introducing you to your team facilitator - a
-                            Hubber who will guide you through everything
+                            Hubber who will guide you through everything about
                             HackAUBG 5.0. Pro tip: take a few days to research
                             some hackathon strategies, previous award-winning
                             HackAUBG projects, and brainstorm! After all, you do
@@ -62,9 +62,8 @@ export const JourneyMobile = () => {
                     text={
                         <p>
                             HackAUBG 5.0 starts on Friday, March 31st. It will
-                            be fully on-ground, taking place in the American
-                            University in Bulgaria’s Sports Hall in the America
-                            for Bulgaria Building. If you do not reside in
+                            be fully on-ground, taking place in the Sports Hall
+                            in AUBG&apos;s ABF building. If you do not reside in
                             Blagoevgrad, be sure to make arrangements for your
                             stay here. In case you need help, your Hub
                             facilitator will be more than happy to help you
@@ -92,11 +91,11 @@ export const JourneyMobile = () => {
                             consists of creating a presentation for your
                             product, as well as a Software Demo. After your
                             presentation, there will be a Q&A session with the
-                            judge panel. The grading criteria for the project
-                            and presentation can be found below. Make sure to
-                            check it, as it is extremely important! If you have
-                            any more questions, check out the FAQ section below
-                            to learn more!
+                            panel of judges. The grading criteria for the
+                            project and presentation can be found below. Make
+                            sure to check it, as it is extremely important! If
+                            you have any more questions, check out the FAQ
+                            section at the end of the page to learn more!
                         </p>
                     }
                 />
