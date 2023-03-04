@@ -82,16 +82,20 @@ const changeHackFavicon = () => {
 
     let origin = new URL(location.href).origin;
 
-    let iconPath =
-        window.innerWidth < 768 ? '/green-logo192.png' : '/green-logo512.png';
-    let appleIconPath = '/green-logo512.png';
+    let iconPath, appleIconPath;
 
-    link.href = origin + iconPath;
-    document.querySelector('link[rel="apple-touch-icon"]').href =
-        origin + appleIconPath;
-    link.href = origin + '/favicon-green.ico';
+    if (location.href.includes('hackaubg')) {
+        iconPath = origin + '/favicon-green.ico';
+        appleIconPath = origin + '/green-logo512.png';
+        document.title = 'HackAUBG 5.0';
+    } else {
+        iconPath = origin + '/favicon.ico';
+        appleIconPath = origin + '/blue-logo512.png';
+        document.title = 'The Hub AUBG';
+    }
 
-    document.title = 'HackAUBG 5.0';
+    document.querySelector('link[rel="apple-touch-icon"]').href = appleIconPath;
+    link.href = iconPath;
 };
 
 export {
