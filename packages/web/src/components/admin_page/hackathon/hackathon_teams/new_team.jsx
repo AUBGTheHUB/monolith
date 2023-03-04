@@ -50,8 +50,8 @@ const AddNewTeam = () => {
                         <Form.Label>Team Name</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="fullname"
-                            name="fullname"
+                            placeholder="teamname"
+                            name="teamname"
                             onChange={handleInputChange}
                         />
                     </Form.Group>

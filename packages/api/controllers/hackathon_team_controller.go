@@ -176,7 +176,7 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
 
-	result, err := hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": update})
+	result, err := hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName, "teammembers":team.TeamMembers}})
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})

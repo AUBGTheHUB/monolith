@@ -24,7 +24,7 @@ const RenderTeamMembers = () => {
 =======
     const [team, setTeam] = useState();
     const team_data = location.state.team_data;
-    console.log(team)
+
     const getTeamMembers = () => {
         axios({
             method: 'get',
@@ -114,7 +114,11 @@ const RenderTeamMembers = () => {
                     onClick={() => {
                         history(
                             '/admin/dashboard/hackathon/teams/members/add',
-                            {}
+                            {
+                                state: {
+                                    team_data: team_data
+                                }
+                            }
                         );
                     }}
                 >
