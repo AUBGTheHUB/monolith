@@ -62,11 +62,13 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 23%;
 }
 
 .logo-container img {
     cursor: pointer;
+    width: 30%;
+    margin: 4% 2%;
 }
 
 .platinum-container {
@@ -77,12 +79,20 @@
     border-color: #00b79a;
 }
 
+.platinum-header {
+    color: #00b79a;
+}
+
 .gold-container {
     background-color: #c9b037;
 }
 
 .gold-box {
     border-color: #c9b037;
+}
+
+.gold-header {
+    color: #c9b037;
 }
 
 .custom-container {
@@ -93,6 +103,14 @@
     border-color: #cdbaba;
 }
 
+.custom-header {
+    color: #cdbaba;
+}
+
+.silver-header {
+    color: #b4b4b4;
+}
+
 .silver-container {
     background-color: #b4b4b4;
 }
@@ -101,22 +119,16 @@
     border-color: #b4b4b4;
 }
 
+.bronze-header {
+    color: rgb(163, 104, 37);
+}
+
 .bronze-container {
     background-color: rgb(163, 104, 37);
 }
 
 .bronze-box {
     border-color: rgb(163, 104, 37);
-}
-
-.sponsors-main img {
-    /* width: 30%; */
-    width: 30%;
-    max-width: 200px;
-    height: auto;
-    /* max-height: 250px; */
-    margin: 4% 2%;
-    object-fit: contain;
 }
 
 @media (max-width: 600px) {

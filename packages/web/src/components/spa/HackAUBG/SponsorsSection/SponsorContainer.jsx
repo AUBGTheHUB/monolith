@@ -6,11 +6,7 @@ const SponsorsContainer = ({ sponsors, category }) => {
     if (sponsors.length !== 0) {
         return (
             <>
-                <h1
-                    style={{
-                        color: 'black'
-                    }}
-                >
+                <h1 className={category + '-header'}>
                     {category.toUpperCase()}
                 </h1>
                 <div className={category + '-box'}>
