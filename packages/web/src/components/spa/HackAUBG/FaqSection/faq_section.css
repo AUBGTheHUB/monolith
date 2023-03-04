@@ -9,9 +9,13 @@
 }
 
 .faq {
+    display: flex;
     font-size: 2rem;
     padding: 2% 0;
     color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+    align-items: center;
 }
 
 .faq-text-container {
@@ -43,6 +47,8 @@
 
     .faq {
         margin-bottom: 2.5rem;
+        align-items: center;
+        justify-content: center;
     }
 
     .faq-header {
