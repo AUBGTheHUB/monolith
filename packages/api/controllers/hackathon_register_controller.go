@@ -47,61 +47,94 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		SponsorShare:          member.SponsorShare,
 		NewsLetter:            member.NewsLetter}
 
-	hasTeam := newHackathonTeamMember.TeamNoTeam
-	var actualTeamID string = ""
+	numberOfMembers, _ := GetNumberOfHackathonParticipants(ctx)
+	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
+
+	if numberOfMembers >= 90 {
+		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max Hackathon participants is reached"})
+	}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
-	resultFromInsertingTeamMemberToDB, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+
+	hasTeam := newHackathonTeamMember.TeamNoTeam
+
+	if *hasTeam {
+
+		results, _ := hackathonTeamCollection.Find(ctx, bson.M{})
+
+		for results.Next(ctx) {
+
+			var team models.Team
+			results.Decode(&team)
+
+			//Finds if a team exists in the DB by comparing passed teamName from particapnt to teamNames in DB
+			if CompareTeamNames(team.TeamName, member.TeamName) {
+
+				if len(team.TeamMembers) < 6 {
+
+					//Sets the correct teamName for particiapnt (the one in the DB)
+					member.TeamName = team.TeamName
+					actualTeamID, _ := primitive.ObjectIDFromHex(team.ID.Hex())
+
+					//Creates new participant in the DB
+					resultFromInsertingTeamMemberToDB, createErr := CreateNewHackathonParticipant(ctx, newHackathonTeamMember)
+					memberID := resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex()
+
+					if createErr != nil {
+						return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": createErr.Error()}})
+					}
+
+					//Add new participant to rescpective team in the DB
+					_, updateErr := hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": actualTeamID}, bson.M{"$push": bson.M{"teammembers": memberID}})
+
+					if updateErr != nil {
+						return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": updateErr.Error()}})
+					}
+
+					return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to existing team"})
+				}
+
+				return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Team's max capacity is reached"})
+			}
+		}
+
+		if numberOfTeams < 15 {
+
+			//Creates new participant in the DB
+			resultFromInsertingTeamMemberToDB, createErr := CreateNewHackathonParticipant(ctx, newHackathonTeamMember)
+
+			if createErr != nil {
+				return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": createErr.Error()}})
+			}
+
+			//Creates new Team in the DB with first member the new participant
+			var newTeam models.Team
+			memberID := resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex()
+			newTeam.TeamName = newHackathonTeamMember.TeamName
+
+			newTeam.TeamMembers = append(newTeam.TeamMembers, memberID)
+			result, _ := hackathonTeamCollection.InsertOne(ctx, newTeam)
+
+			return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
+		}
+	}
+
+	if CheckIfNoTeamParticipantExists(newHackathonTeamMember) {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}
+
+	// Add participant to collection of participants without team
+	_, err := noTeamParticipantsCollection.InsertOne(ctx, newHackathonTeamMember)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
-	if *hasTeam {
-		results, _ := hackathonTeamCollection.Find(ctx, bson.M{})
-		var nubmerOfTeams int = 0
-		var team models.Team
-		for results.Next(ctx) {
-			nubmerOfTeams++
-			var res models.Team
-			results.Decode(&res)
-			if CompareTeamNames(res.TeamName, member.TeamName) {
-				team = res
-				actualTeamID = team.ID.Hex()
-			}
-		}
+	// return success code participant added to no team list and created
+	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to particapnts without team collection"})
 
-		if actualTeamID != "" {
-			if len(team.TeamMembers) < 6 {
-				key_from_hex, _ := primitive.ObjectIDFromHex(actualTeamID)
-				hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$push": bson.M{"teammembers": resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex()}})
-				return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to existing team"})
-			} else {
-				return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Team's max capacity is reached"})
-			}
-		} else {
-			if nubmerOfTeams < 15 {
-				//Creates new Team in the DB with first member the new participant
-				var newTeam models.Team
-				newTeam.TeamName = newHackathonTeamMember.TeamName
-				newTeam.TeamMembers = append(newTeam.TeamMembers, resultFromInsertingTeamMemberToDB.InsertedID.(primitive.ObjectID).Hex())
-				result, _ := hackathonTeamCollection.InsertOne(ctx, newTeam)
-
-				return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
-
-			} else {
-				return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Max number of teams is reached"})
-			}
-		}
-	} else {
-		// assign member to list of no team participants
-	}
-
-	// create new member document
-
-	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "success"})
 }
 
 func FormatTeamName(teamName string) string {
