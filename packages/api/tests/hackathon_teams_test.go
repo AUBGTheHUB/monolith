@@ -1,43 +1,32 @@
 package tests
 
+// TODO: Simulate an E2E registration workflow. Assert possible exceptions, such as 'full team', 'non-existing team', 'existing team' and etc.
+// TODO: All req storing the API should use HTTP; responses should be Marshal; remove Nini's code, calling the API, which uses the package functions
+// TODO: No usage of collections, they're set automatically
+// TODO: Write only Team Endpoint tests in this file and each case should be in a different func; new files should be called x_test.go E2E_test.go
+
 import (
 	"bytes"
-	"context"
 	"encoding/json"
-	"fmt"
 	"hub-backend/app"
-	"hub-backend/configs"
 	"hub-backend/models"
 	"net/http"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const url string = "http://127.0.0.1:8000/api/hackathon/teams"
+const url string = "http://127.0.0.1:8000/api/hackathon"
 
 func SetHeaders(req *http.Request) {
 	req.Header.Set("BEARER-TOKEN", "TEST_TOKEN")
 	req.Header.Set("Content-Type", "application/json")
 }
 
-func TestTeamEndpoint(t *testing.T) {
-	// Set up
-	go app.StartApp()
-
-	time.Sleep(5 * time.Second)
-
-	// Test Create Team endpoint
-	var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
-	var hackathonTeamCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonTeam")
-
+// TODO: Add another arg for num of members and make it return a slice
+func GetMember(client http.Client, numberOfMembers int) string {
 	var testBool bool = true
-
-	var dataTeam models.Team
 	dataMember := &models.TeamMember{
 		FullName:              "Test",
 		TeamNoTeam:            &testBool,
@@ -59,16 +48,66 @@ func TestTeamEndpoint(t *testing.T) {
 		NewsLetter:            &testBool,
 	}
 
-	memberResult, err := teamMembersCollection.InsertOne(context.TODO(), dataMember)
+	json_data, _ := json.Marshal(dataMember)
+	memberRequest, _ := http.NewRequest("POST", url+"/members", bytes.NewBuffer(json_data))
 
-	dataTeam.TeamName = "INTEGRATION TEST"
-	dataTeam.TeamMembers = []string{memberResult.InsertedID.(primitive.ObjectID).Hex()}
+	SetHeaders(memberRequest)
 
-	json_data, _ := json.Marshal(dataTeam)
+	memberResponse, _ := client.Do(memberRequest)
+	var memberResult map[string]interface{}
+	json.NewDecoder(memberResponse.Body).Decode(&memberResult)
 
+	memberResultID := memberResult["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+
+	return memberResultID.(string)
+}
+
+func GetTeamID(client http.Client, data models.Team) string {
+	json_data, _ := json.Marshal(data)
+	teamRequest, _ := http.NewRequest("POST", url+"/teams", bytes.NewBuffer(json_data))
+
+	SetHeaders(teamRequest)
+
+	teamResponse, _ := client.Do(teamRequest)
+	var teamResult map[string]interface{}
+	json.NewDecoder(teamResponse.Body).Decode(&teamResult)
+
+	teamResultID := teamResult["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+
+	return teamResultID.(string)
+}
+
+// TODO: Fix return value of string, check if func works as intended
+func CleanUp(client http.Client, data models.Team, res map[string]interface{}) (bool, string) {
+	req, _ := http.NewRequest("DELETE", url+"/teams/"+GetTeamID(client, data), bytes.NewBufferString(""))
+
+	SetHeaders(req)
+
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return false, err.Error()
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+	if res["status"] == 200 {
+		return true, ""
+	}
+
+	return false, ""
+}
+
+func TestPostTeamEndPoint(t *testing.T) {
+	go app.StartApp()
+	time.Sleep(5 * time.Second)
+
+	var data models.Team
 	client := &http.Client{}
-
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json_data))
+	data.TeamName = "LookForTomAndYouWillFindJerrySuela2k23"
+	data.TeamMembers = []string{GetMember(*client, 6)}
+	json_data, _ := json.Marshal(data)
+	// TODO: Check all cases => when empty, 1 or full
+	req, _ := http.NewRequest("POST", url+"/teams", bytes.NewBuffer(json_data))
 
 	SetHeaders(req)
 
@@ -79,48 +118,6 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	var res map[string]interface{}
-
 	json.NewDecoder(resp.Body).Decode(&res)
-
 	assert.Equal(t, float64(201), res["status"])
-
-	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
-
-	// Verify
-	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
-	SetHeaders(req)
-
-	resp, err = client.Do(req)
-
-	if err != nil {
-		assert.FailNow(t, err.Error())
-	}
-
-	json.NewDecoder(resp.Body).Decode(&res)
-
-	var uTD models.Team
-	key_from_hex, _ := primitive.ObjectIDFromHex(iID.(string))
-	err = hackathonTeamCollection.FindOne(context.TODO(), bson.M{"_id": key_from_hex}).Decode(&uTD)
-
-	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
-	
-	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
-
-	// Clean Up
-	teamMembersCollection.DeleteOne(context.TODO(), bson.M{"_id": dataTeam.TeamMembers[0]})
-	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
-	SetHeaders(req)
-
-	resp, err = client.Do(req)
-
-	if err != nil {
-		assert.FailNow(t, err.Error())
-	}
-
-	json.NewDecoder(resp.Body).Decode(&res)
-
-	assert.Equal(t, float64(200), res["status"])
-
 }
