@@ -41,7 +41,6 @@ export const AwardsSection = () => {
                 <p id="awards-info-text">
                     And much more!
                     <br />
-                    Take part in all of the games we have prepared!
                     <br />
                     All participants will recieve giftbags with swag from The
                     Hub and all HackAUBG 5.0 partners!
