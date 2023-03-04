@@ -150,6 +150,10 @@
     display: flex;
 }
 
+.radio-select input {
+    accent-color: #19b700;
+}
+
 .radio-select label {
     font-size: 1.05rem;
 }
@@ -183,5 +187,16 @@ input[type='radio'] {
     -webkit-appearance: radio;
 }
 
-.select {
+.select option {
+    background-color: #3e3b3b;
+    color: white;
+}
+
+option:checked {
+    color: #19b700;
+}
+
+select option:hover,
+select option:focus {
+    background-color: #19b700;
 }
