@@ -111,7 +111,6 @@ const RegistrationForm = () => {
                             Full Name
                             <input
                                 type="text"
-                                placeholder="fullname"
                                 {...register('fullname', {
                                     required: {
                                         value: true,
@@ -140,7 +139,6 @@ const RegistrationForm = () => {
                             Email
                             <input
                                 type="text"
-                                placeholder="email"
                                 {...register('email', {
                                     required: {
                                         value: true,
@@ -160,10 +158,67 @@ const RegistrationForm = () => {
                         </label>
                     </div>
                     <div className="send-info">
-                        <label className="radio-text">
+                        <label htmlFor="">
+                            Age
+                            <input
+                                type="text"
+                                {...register('age', {
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
+                                    minLength: {
+                                        message: 'Minimum length is 2 symbols',
+                                        value: 2
+                                    },
+                                    maxLength: {
+                                        message: 'Maximum length is 3 symbols',
+                                        value: 3
+                                    }
+                                    // pattern: {
+                                    //     value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
+                                    //     message:
+                                    //         'No special characters and trailing spaces'
+                                    // }
+                                })}
+                            />
+                        </label>
+                        <p>{errors.age?.message}</p>
+                    </div>
+                    <div className="send-info">
+                        <label htmlFor="">
                             Location
-                            <select
+                            <input
+                                type="text"
                                 {...register('location', {
+                                    required: {
+                                        value: true,
+                                        message: 'This field is required'
+                                    },
+                                    minLength: {
+                                        message: 'Minimum length is 2 symbols',
+                                        value: 2
+                                    },
+                                    maxLength: {
+                                        message: 'Maximum length is 50 symbols',
+                                        value: 50
+                                    },
+                                    pattern: {
+                                        value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
+                                        message:
+                                            'No special characters and trailing spaces'
+                                    }
+                                })}
+                            />
+                        </label>
+                        <p>{errors.location?.message}</p>
+                    </div>
+                    <div className="send-info">
+                        <label className="radio-text">
+                            School/University
+                            <select
+                                className="select"
+                                {...register('university', {
                                     required: {
                                         value: true,
                                         message: 'This field is required'
@@ -174,11 +229,21 @@ const RegistrationForm = () => {
                                     Choose a Location
                                 </option>
 
-                                <option value="Varna">Varna</option>
-                                <option value="Ruse">Ruse</option>
+                                <option value="AUBG">AUBG</option>
+                                <option value="Sofia University">
+                                    Sofia University
+                                </option>
+                                <option value="Technical University - Sofia">
+                                    Technical University - Sofia
+                                </option>
+                                <option value="Plovdiv University">
+                                    Plovdiv University
+                                </option>
+                                <option value="Other">Other</option>
                             </select>
                         </label>
                     </div>
+                    <p>{errors.loc?.university}</p>
 
                     <div className="send-info">
                         <label className="column-right">
@@ -210,32 +275,6 @@ const RegistrationForm = () => {
                             </div>
                         </div>
                     </div>
-                    {/*<div className="send-info">
-                        <label htmlFor="">
-                            Age
-                            <input
-                                type="number"
-                                name="age"
-                                placeholder="Enter your age"
-                                min="15"
-                                max="30"
-                                required
-                                onChange={handleInputChange}
-                            />
-                        </label>
-                    </div>
-                    <div className="send-info">
-                        <label htmlFor="">
-                            Location
-                            <input
-                                type="text"
-                                name="location"
-                                placeholder="Enter the place where you currently live"
-                                required
-                                onChange={handleInputChange}
-                            />
-                        </label>
-                    </div>
                     <div className="send-info">
                         <label>
                             School/University
@@ -243,7 +282,6 @@ const RegistrationForm = () => {
                                 name="university"
                                 className="select"
                                 required
-                                onChange={handleInputChange}
                             >
                                 <option value="">
                                     (Choose an institution)
@@ -260,6 +298,9 @@ const RegistrationForm = () => {
                             </select>
                         </label>
                     </div>
+                    {/*
+                    
+                   
                     <div className="send-info">
                         <label className="column-right">
                             T-shirt size
