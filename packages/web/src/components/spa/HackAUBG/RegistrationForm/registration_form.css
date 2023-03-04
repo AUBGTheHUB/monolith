@@ -178,3 +178,25 @@ input[type='radio'] {
     position: absolute;
     left: -9999px;
 }
+
+.registration-main .hide {
+    display: none;
+}
+
+.registration-main .valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+}
+
+.registration-main .invalid {
+    color: red;
+    margin-left: 0.25rem;
+}
+
+.registration-main .errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
