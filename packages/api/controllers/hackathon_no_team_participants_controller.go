@@ -27,7 +27,7 @@ func CreateNoTeamHackathonParticipant(c *fiber.Ctx) error {
 
 	bearer_token := c.Get("BEARER-TOKEN")
 
-	var member models.TeamMember
+	var no_team_participant models.TeamMember
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {
@@ -35,32 +35,33 @@ func CreateNoTeamHackathonParticipant(c *fiber.Ctx) error {
 	}
 
 	// validate request body
-	if err := c.BodyParser(&member); err != nil {
+	if err := c.BodyParser(&no_team_participant); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
-	if validationErr := validateNoTeamParticipants.Struct(&member); validationErr != nil {
+	if validationErr := validateNoTeamParticipants.Struct(&no_team_participant); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": validationErr.Error()}})
 	}
 
 	newNoTeamParticipant := models.TeamMember{
-		FullName:              member.FullName,
-		TeamNoTeam:            member.TeamNoTeam,
-		TeamName:              member.TeamName,
-		Email:                 member.Email,
-		School:                member.School,
-		Age:                   member.Age,
-		Location:              member.Location,
-		HeardAboutUs:          member.HeardAboutUs,
-		PreviousParticipation: member.PreviousParticipation,
-		Experience:            member.Experience,
-		ProgrammingLevel:      member.ProgrammingLevel,
-		StrongSides:           member.StrongSides,
-		ShirtSize:             member.ShirtSize,
-		Internship:            member.Internship,
-		JobInterests:          member.JobInterests,
-		SponsorShare:          member.SponsorShare,
-		NewsLetter:            member.NewsLetter}
+		FullName:                       no_team_participant.FullName,
+		HasTeam:                        no_team_participant.HasTeam,
+		TeamName:                       no_team_participant.TeamName,
+		Email:                          no_team_participant.Email,
+		University:                     no_team_participant.University,
+		Age:                            no_team_participant.Age,
+		Location:                       no_team_participant.Location,
+		HeardAboutUs:                   no_team_participant.HeardAboutUs,
+		PreviousHackathonParticipation: no_team_participant.PreviousHackathonParticipation,
+		PreviousHackAUBGParticipation:  no_team_participant.PreviousHackAUBGParticipation,
+		HasExperience:                  no_team_participant.HasExperience,
+		ProgrammingLevel:               no_team_participant.ProgrammingLevel,
+		StrongSides:                    no_team_participant.StrongSides,
+		ShirtSize:                      no_team_participant.ShirtSize,
+		WantInternship:                 no_team_participant.WantInternship,
+		JobInterests:                   no_team_participant.JobInterests,
+		ShareInfoWithSponsors:          no_team_participant.ShareInfoWithSponsors,
+		WantJobOffers:                  no_team_participant.WantJobOffers}
 
 	if CheckIfNoTeamParticipantExists(newNoTeamParticipant) {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newNoTeamParticipant.Email}})
@@ -78,35 +79,35 @@ func CreateNoTeamHackathonParticipant(c *fiber.Ctx) error {
 
 func GetNoTeamParticipant(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	member_key := c.Params("key", "key was not provided")
+	no_team_participant_key := c.Params("key", "key was not provided")
 
 	bearer_token := c.Get("BEARER-TOKEN")
 
-	var member models.TeamMember
+	var no_team_participant models.TeamMember
 	defer cancel()
 
 	if bearer_token != configs.ReturnAuthToken() {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
-	err := noTeamParticipantsCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
+	key_from_hex, _ := primitive.ObjectIDFromHex(no_team_participant_key)
+	err := noTeamParticipantsCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&no_team_participant)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + no_team_participant_key}})
 	}
-	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": member}})
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": no_team_participant}})
 }
 
 func EditNoTeamParticipant(c *fiber.Ctx) error {
 
 	//TODO: Maybe change message if body is only of non-existings fields
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	member_key := c.Params("key", "key was not provided")
-	var member models.EditTeamMember
+	no_team_participant_key := c.Params("key", "key was not provided")
+	var no_team_participant models.EditTeamMember
 	defer cancel()
-	var member_map models.EditTeamMember
-	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
-	err1 := noTeamParticipantsCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member_map)
+	var no_team_participant_map models.EditTeamMember
+	key_from_hex, _ := primitive.ObjectIDFromHex(no_team_participant_key)
+	err1 := noTeamParticipantsCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&no_team_participant_map)
 
 	if err1 != nil {
 		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "No such memb"})
@@ -118,41 +119,40 @@ func EditNoTeamParticipant(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	if err := c.BodyParser(&member); err != nil {
+	if err := c.BodyParser(&no_team_participant); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Empty Body"})
 	}
 
-	if validationErr := validateNoTeamParticipants.Struct(&member); validationErr != nil {
+	if validationErr := validateNoTeamParticipants.Struct(&no_team_participant); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Body is not compatible"})
 	}
-
-	if member.FullName != "" {
-		member_map.FullName = member.FullName
+	if no_team_participant.FullName != "" {
+		no_team_participant_map.FullName = no_team_participant.FullName
 	}
-	if member.TeamNoTeam {
-		member_map.TeamNoTeam = member.TeamNoTeam
+	if *no_team_participant.HasTeam {
+		no_team_participant_map.HasTeam = no_team_participant.HasTeam
 	}
-	if member.TeamName != "" {
-		member_map.TeamName = member.TeamName
+	if no_team_participant.TeamName != "" {
+		no_team_participant_map.TeamName = no_team_participant.TeamName
 	}
-	if member.Email != "" {
-		member_map.Email = member.Email
+	if no_team_participant.Email != "" {
+		no_team_participant_map.Email = no_team_participant.Email
 	}
-	if member.School != "" {
-		member_map.School = member.School
+	if no_team_participant.University != "" {
+		no_team_participant_map.University = no_team_participant.University
 	}
-	if member.Age != 0 {
-		member_map.Age = member.Age
+	if no_team_participant.Age != 0 {
+		no_team_participant_map.Age = no_team_participant.Age
 	}
-	if member.Location != "" {
-		member_map.Location = member.Location
+	if no_team_participant.Location != "" {
+		no_team_participant_map.Location = no_team_participant.Location
 	}
-	if member.ShirtSize != "" {
-		member_map.ShirtSize = member.ShirtSize
+	if no_team_participant.ShirtSize != "" {
+		no_team_participant_map.ShirtSize = no_team_participant.ShirtSize
 	}
 
 	update := bson.M{}
-	v := reflect.ValueOf(member_map)
+	v := reflect.ValueOf(no_team_participant_map)
 	typeOfS := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
@@ -175,7 +175,7 @@ func EditNoTeamParticipant(c *fiber.Ctx) error {
 
 func DeleteNoTeamParticipant(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	member_key := c.Params("key", "key was not provided")
+	no_team_participant_key := c.Params("key", "key was not provided")
 	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
@@ -183,11 +183,11 @@ func DeleteNoTeamParticipant(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+	key_from_hex, _ := primitive.ObjectIDFromHex(no_team_participant_key)
 
 	result, err := noTeamParticipantsCollection.DeleteOne(ctx, bson.M{"_id": key_from_hex})
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": member_key}})
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": no_team_participant_key}})
 	}
 
 	if result.DeletedCount < 1 {
