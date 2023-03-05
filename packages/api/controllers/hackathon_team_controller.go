@@ -118,7 +118,22 @@ func GetHackathonTeam(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + hackathon_team_key}})
 	}
 
-	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": team}})
+	teamMembers := make([]models.TeamMember, len(team.TeamMembers))
+
+	var displayTeamMembers models.TeamMember
+
+	for i := 0; i < len(team.TeamMembers); i++ {
+		key_from_hex, _ := primitive.ObjectIDFromHex(team.TeamMembers[i])
+		_ = teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&displayTeamMembers)
+		teamMembers[i] = displayTeamMembers
+	}
+
+	newTeam := map[string]interface{}{
+		"TeamName":    team.TeamName,
+		"TeamMembers": teamMembers,
+	}
+
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": newTeam}})
 
 }
 

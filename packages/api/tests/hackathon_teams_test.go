@@ -71,7 +71,7 @@ func TestTeamEndpoint(t *testing.T) {
 
 	// * CREATE NEW TEAM
 	var dataTeam models.Team
-	dataTeam.TeamName = "INTEGRATION TEST TEAM"
+	dataTeam.TeamName = configs.GenerateToken(5)
 	dataTeam.TeamMembers = []string{fmt.Sprint(memberId)}
 
 	json_data, _ = json.Marshal(dataTeam)
@@ -104,11 +104,14 @@ func TestTeamEndpoint(t *testing.T) {
 	json.NewDecoder(resp.Body).Decode(&res)
 
 	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
-	var uTD models.Team
+	var uTD map[string]interface{}
+
 	json.NewDecoder(bytes.NewBuffer(teamData)).Decode(&uTD)
 
-	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
-	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
+	firstMember := uTD["TeamMembers"].([]interface{})[0].(map[string]interface{})["id"]
+
+	assert.Equal(t, dataTeam.TeamName, uTD["TeamName"])
+	assert.Equal(t, dataTeam.TeamMembers[0], firstMember)
 
 	// * CLEAN UP TEAM ENTRY
 	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
