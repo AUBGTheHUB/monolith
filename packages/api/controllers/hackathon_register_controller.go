@@ -7,9 +7,7 @@ import (
 	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
-	"io"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -161,26 +159,23 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 }
 
 func SendEmailToNewParticipant(fullName string, email string) {
-	requestURL := "https://europe-west3-cloudservices-378314.cloudfunctions.net/mailer"
+	// TODO: load url from env as well
+	requestURL := ""
 
 	type Mailer struct {
-		receiver string `json:"receiver"`
-		html     string `json:"html"`
-		subject  string `json:"subject"`
+		Receiver string `json:"receiver"`
+		Html     string `json:"html"`
+		Subject  string `json:"subject"`
 	}
 
 	var reqBody Mailer
 
-	reqBody.html = "<h1>HELLO</h1>"
-	reqBody.receiver = "test@email.com"
-	reqBody.subject = "TEST"
+	reqBody.Html = "<h1>HELLO</h1>"
+	reqBody.Receiver = email
+	reqBody.Subject = "TEST"
 
-	//TODO: Fix parsing. When hardcoded email is passed func works, when it is with %s string it doesn't
-	json_data, err := json.Marshal(reqBody) // doesn't have custom marshaling?
-
-	if err != nil {
-		// do something
-	}
+	fmt.Println(reqBody)
+	json_data, _ := json.Marshal(reqBody)
 
 	client := &http.Client{}
 
@@ -191,8 +186,9 @@ func SendEmailToNewParticipant(fullName string, email string) {
 		fmt.Print(err.Error())
 	}
 
-	mailingToken := os.Getenv("MAILING_TOKEN")
-	req.Header.Set("Authorization", mailingToken)
+	// TODO: load from env
+	// mailingToken := ??
+	// req.Header.Set("Authorization", mailingToken)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
@@ -202,8 +198,9 @@ func SendEmailToNewParticipant(fullName string, email string) {
 		fmt.Print(err.Error())
 	}
 
-	fmt.Println("email was sent to parcipant: ")
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
+	var res map[string]interface{}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	fmt.Println(res)
 }
