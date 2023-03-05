@@ -42,7 +42,7 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 
 	err := hackathonTeamCollection.FindOne(ctx, bson.M{"teamname": team.TeamName}).Decode(&oldTeam)
 	if err == nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Team already exists"}})
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Team already exists"}})
 	}
 
 	var checkTeamMembers models.TeamMember
@@ -52,7 +52,7 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 		err := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&checkTeamMembers)
 
 		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Team member with id " + team.TeamMembers[i] + " doesn't exist"}})
+			return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "Team member with id " + team.TeamMembers[i] + " doesn't exist"}})
 		}
 	}
 
