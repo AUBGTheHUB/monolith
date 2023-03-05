@@ -3,6 +3,7 @@ package controllers
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
@@ -162,17 +163,28 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 func SendEmailToNewParticipant(fullName string, email string) {
 	requestURL := "https://europe-west3-cloudservices-378314.cloudfunctions.net/mailer"
 
-	emailBody := fmt.Sprintf(`{
-		"html": "<h1>Hello %s, This is the body of the email</h1>",
-		"subject": "Welcome to HackAUBG", 
-		"receiver": %s}`, fullName, email)
+	type Mailer struct {
+		receiver string `json:"receiver"`
+		html     string `json:"html"`
+		subject  string `json:"subject"`
+	}
+
+	var reqBody Mailer
+
+	reqBody.html = "<h1>HELLO</h1>"
+	reqBody.receiver = "test@email.com"
+	reqBody.subject = "TEST"
+
 	//TODO: Fix parsing. When hardcoded email is passed func works, when it is with %s string it doesn't
-	jsonBody := []byte(emailBody)
-	bodyReader := bytes.NewReader(jsonBody)
+	json_data, err := json.Marshal(reqBody) // doesn't have custom marshaling?
+
+	if err != nil {
+		// do something
+	}
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest(http.MethodPost, requestURL, bodyReader)
+	req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(json_data))
 
 	if err != nil {
 		fmt.Println("could not create request to mailing service: ")
