@@ -38,7 +38,7 @@ export const JourneyDesktop = () => {
                         <p>
                             HackAUBG 5.0 starts on Friday, March 31st. It will
                             be fully on-ground, taking place at American
-                            Univeristy in Bulgaria&apos;s Sports Hall in ABF
+                            University in Bulgaria&apos;s Sports Hall in the ABF
                             building. If you do not reside in Blagoevgrad, be
                             sure to make arrangements for your stay here. In
                             case you need help, your Hub facilitator will be
