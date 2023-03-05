@@ -21,13 +21,15 @@
 }
 
 .no-jobs-container {
-    padding-top: 8%;
+    height: 80vh;
     display: flex;
     justify-content: center;
 }
 
 .no-jobs-image {
     height: 60vh;
+    display: flex;
+    align-self: center;
 }
 
 @media only screen and (max-width: 900px) {
@@ -36,9 +38,7 @@
     }
 
     .no-jobs-container {
-        padding-top: 40%;
-        display: flex;
-        justify-content: center;
+        height: 90vh;
     }
 
     .no-jobs-image {
