@@ -4,7 +4,8 @@ import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { navigateTo } from '../../../../Global';
+import { Link } from 'react-router-dom';
 
 const makeBodyScrollable = () => {
     document.body.style.position = 'static';
@@ -18,7 +19,6 @@ export const NavMobile = ({ props }) => {
     if (currentBodyHeight !== bodyHeight) {
         setBodyHeight(currentBodyHeight);
     }
-    const navigate = useNavigate();
 
     const renderHackButton = () => {
         if (props.hasHackButton) {
@@ -34,7 +34,7 @@ export const NavMobile = ({ props }) => {
     };
 
     const navigateToHackAUBG = () => {
-        navigate('/hackaubg');
+        navigateTo('/hackaubg');
     };
 
     const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
@@ -47,7 +47,36 @@ export const NavMobile = ({ props }) => {
     };
 
     const openHome = () => {
-        navigate('/');
+        navigateTo('/');
+        window.scrollTo(0, 0);
+    };
+
+    const buildMobileAnchor = (anchor) => {
+        if (anchor.isLink) {
+            return (
+                <Link
+                    to={anchor.endpoint}
+                    onClick={() => {
+                        closeMenu();
+                        makeBodyScrollable();
+                    }}
+                >
+                    {anchor.name}
+                </Link>
+            );
+        }
+
+        return (
+            <a
+                href={anchor.endpoint}
+                onClick={() => {
+                    closeMenu();
+                    makeBodyScrollable();
+                }}
+            >
+                {anchor.name}
+            </a>
+        );
     };
 
     return (
@@ -115,18 +144,7 @@ export const NavMobile = ({ props }) => {
                 <div className="navmobile-anchors-container">
                     <ul>
                         {props.anchorList.map((anchor, index) => (
-                            <li key={index}>
-                                <a
-                                    href={anchor.endpoint}
-                                    key={index}
-                                    onClick={() => {
-                                        closeMenu();
-                                        makeBodyScrollable();
-                                    }}
-                                >
-                                    {anchor.name}
-                                </a>
-                            </li>
+                            <li key={index}>{buildMobileAnchor(anchor)}</li>
                         ))}
                     </ul>
                     {renderHackButton()}

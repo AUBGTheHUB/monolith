@@ -3,9 +3,9 @@ import './awards_section.css';
 
 export const AwardsSection = () => {
     return (
-        <div className="awards-section-hack-aubg-container">
+        <div className="awards-section-container">
             <h1 className="awards-section-title">AWARDS</h1>
-            <div className="awards-section-images-container">
+            <div className="awards-images-container">
                 <div className="awards-pic-text">
                     <img
                         src="awardIconSilver.png"
