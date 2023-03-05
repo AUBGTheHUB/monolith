@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/MainPage';
 import NotFound from './components/other/NotFound';
@@ -38,6 +38,7 @@ import { changeFavicon } from './Global';
 function App() {
     document.addEventListener('locationChange', changeFavicon);
     window.addEventListener('load', changeFavicon);
+    useEffect(changeFavicon, []);
 
     return (
         <Routes>
