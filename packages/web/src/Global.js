@@ -73,7 +73,6 @@ const openNewTab = (url) => {
 };
 
 const changeFavicon = () => {
-    console.log('CALLED');
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
