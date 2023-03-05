@@ -7,52 +7,79 @@ export const FaqSection = () => {
             <h1 className="faq">Frequently Asked Questions</h1>
             <div className="faq-text-container">
                 <h2 className="faq-header">
-                    What is the deadline for registering?
+                    I want to participate! When is the deadline for registering?
                 </h2>
                 <p className="faq-text">
                     Registration is open until Friday, March 25th.
                 </p>
+                <h2 className="faq-header">
+                    How many people can be in a team?
+                </h2>
+                <p className="faq-text">
+                    The minimum number of people in a team is 3, but you can
+                    have up to 6 people in a team. The ideal team would consist
+                    of one or two software developers, a designer, and one or
+                    two business planners.
+                </p>
                 <h2 className="faq-header">Can I register without a team?</h2>
                 <p className="faq-text">
-                    Yes! If your alone or if you have only 1 teammate you can
-                    register and a facilitator from the Hub organizing team will
-                    help you in finding more teammates. The wisest team-combo
-                    would be a developer or two, a designer, and one or two
-                    business planners.
+                    Of course! If you are alone or if you only have 1 other
+                    teammate, you can register and a facilitator from the Hub’s
+                    organizing team will help you in finding more teammates.
+                </p>
+                <h2 className="faq-header">
+                    Where will the Hackathon be held?
+                </h2>
+                <p className="faq-text">
+                    The Hackathon will be in American University in Bulgaria’s
+                    ABF Sports Hall, located on ul. Svoboda Bachvarova 12 in
+                    Blagoevgrad.
+                </p>
+                <h2 className="faq-header">
+                    How long will we have to develop our projects?
+                </h2>
+                <p className="faq-text">
+                    The brainstorming process starts on Friday at 20:00 and you
+                    will have until Sunday at 13:00 to submit your project. Make
+                    sure you keep an eye on the clock!
+                </p>
+                <h2 className="faq-header">
+                    Is there a theme for the Hackathon?
+                </h2>
+                <p className="faq-text">
+                    Yes! However, it will be kept a secret until the Opening
+                    Ceremony on Friday.
                 </p>
                 <h2 className="faq-header">
                     Can I start developing something in advance?
                 </h2>
                 <p className="faq-text">
-                    We would advise you not to begin developing anything, since
-                    the theme is what matters most when you decide on the
-                    project. However, you can definitely research winning
-                    projects from other hackathons and practice brainstorming
-                    and developing with your team
+                    We advise you to not start developing in advance, since the
+                    project you will eventually develop has to be related to the
+                    theme of the Hackathon, which is announced at the opening
+                    ceremony. However, if you would like to research winning
+                    projects from previous years, feel free! You can also start
+                    brainstorming with your team well before the start of the
+                    Hackathon.
                 </p>
                 <h2 className="faq-header">
-                    Is there a theme for this hackathon?
+                    What if I have an urgent question during the Hackathon?
+                    Where can I ask?
                 </h2>
                 <p className="faq-text">
-                    Yes! However, the HackAUBG format requires that the theme is
-                    kept a secret until the Opening Ceremony on Friday.
+                    We will be setting up a Facebook group for the registered
+                    participants. There, you can ask questions during the event.
+                    In addition, the Hub members will be around at all times to
+                    answer any questions that pop up.
                 </p>
                 <h2 className="faq-header">
-                    Will there be a communication board where I can ask
-                    questions during the event?
+                    Is there a specific technology or tech stack I need to use
+                    for the Hackathon?
                 </h2>
                 <p className="faq-text">
-                    Yes, indeed! It will be in the form of a private Facebook
-                    group for all the registered participants. We will send you
-                    a link with your registration confirmation email.
-                </p>
-                <h2 className="faq-header">
-                    Is there a specific technology I need to use for my project?
-                </h2>
-                <p className="faq-text">
-                    None at all. Although, the judges do reward the projects
-                    with more modern tech-stacks a bit higher usually. But, most
-                    importantly, remember to focus on the execution!
+                    No, there is not. You may use whatever you would like. Keep
+                    in mind, however, that the judges tend to reward the
+                    projects with more modern tech stacks more than others.
                 </p>
             </div>
         </div>

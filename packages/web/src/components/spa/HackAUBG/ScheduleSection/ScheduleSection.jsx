@@ -3,7 +3,7 @@ import './schedule_section.css';
 
 export const ScheduleHackathon = () => {
     return (
-        <div className="schedule-section-container">
+        <div className="schedule-section-container" id="schedule">
             <h1 className="schedule-section-title">THE SCHEDULE</h1>
             <div className="schedule-text-container">
                 <div className="schedule-table-container" id="friday-container">
