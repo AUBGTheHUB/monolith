@@ -2,20 +2,15 @@ package tests
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"hub-backend/app"
-	"hub-backend/configs"
 	"hub-backend/models"
 	"net/http"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const url string = "http://127.0.0.1:8000/api/hackathon/teams"
@@ -31,45 +26,55 @@ func TestTeamEndpoint(t *testing.T) {
 
 	time.Sleep(5 * time.Second)
 
-	// Test Create Team endpoint
-	var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
-	var hackathonTeamCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonTeam")
+	type Member struct {
+		FullName                       string `json:"fullname" validate:"required"`
+		HasTeam                        bool   `json:"hasteam" validate:"required"`
+		TeamName                       string `json:"teamname" validate:"required"`
+		Email                          string `json:"email" validate:"required"`
+		University                     string `json:"university" validate:"required"`
+		Age                            int    `json:"age" validate:"required"`
+		Location                       string `json:"location" validate:"required"`
+		HeardAboutUs                   string `json:"heardaboutus" validate:"required"`
+		PreviousHackathonParticipation bool   `json:"prevhackathonparticipation" validate:"required"`
+		PreviousHackAUBGParticipation  bool   `json:"prevhackaubgparticipation" validate:"required"`
+		HasExperience                  bool   `json:"hasexperience" validate:"required"`
+		ProgrammingLevel               string `json:"programminglevel" validate:"required"`
+		StrongSides                    string `json:"strongsides" validate:"required"`
+		ShirtSize                      string `json:"shirtsize" validate:"required"`
+		WantInternship                 bool   `json:"wantinternship" validate:"required"`
+		JobInterests                   string `json:"jobinterests" validate:"required"`
+		ShareInfoWithSponsors          bool   `json:"shareinfowithsponsors" validate:"required"`
+		WantJobOffers                  bool   `json:"wantjoboffers" validate:"required"`
+	}
 
-	var testBool bool = true
-
-	var dataTeam models.Team
-	dataMember := &models.TeamMember{
+	dataMember := Member{
 		FullName:                       "Test",
-		HasTeam:                        &testBool,
+		HasTeam:                        true,
 		TeamName:                       "Integration Test",
 		Email:                          "integration_test@gmail.com",
 		University:                     "Test School",
 		Age:                            18,
 		Location:                       "Test Location",
 		HeardAboutUs:                   "Test",
-		PreviousHackathonParticipation: &testBool,
-		PreviousHackAUBGParticipation:  &testBool,
-		HasExperience:                  &testBool,
+		PreviousHackathonParticipation: true,
+		PreviousHackAUBGParticipation:  true,
+		HasExperience:                  true,
 		ProgrammingLevel:               "Test",
 		StrongSides:                    "Test",
 		ShirtSize:                      "Test",
-		WantInternship:                 &testBool,
+		WantInternship:                 true,
 		JobInterests:                   "Test",
-		ShareInfoWithSponsors:          &testBool,
-		WantJobOffers:                  &testBool,
+		ShareInfoWithSponsors:          true,
+		WantJobOffers:                  true,
 	}
 
-	memberResult, err := teamMembersCollection.InsertOne(context.TODO(), dataMember)
-
-	dataTeam.TeamName = "INTEGRATION TEST"
-	dataTeam.TeamMembers = []string{memberResult.InsertedID.(primitive.ObjectID).Hex()}
-
-	json_data, _ := json.Marshal(dataTeam)
+	fmt.Println(dataMember)
 
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json_data))
-
+	// * CREATE NEW MEMBER
+	json_data, _ := json.Marshal(dataMember)
+	req, _ := http.NewRequest("POST", "http://127.0.0.1:8000/api/hackathon/members", bytes.NewBuffer(json_data))
 	SetHeaders(req)
 
 	resp, err := client.Do(req)
@@ -79,16 +84,21 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	var res map[string]interface{}
-
 	json.NewDecoder(resp.Body).Decode(&res)
 
+	fmt.Println(res)
+
 	assert.Equal(t, float64(201), res["status"])
+	memberId := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
 
-	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+	// * CREATE NEW TEAM
+	var dataTeam models.Team
+	dataTeam.TeamName = "INTEGRATION TEST TEAM"
+	dataTeam.TeamMembers = []string{fmt.Sprint(memberId)}
 
-	// Verify
-	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
+	json_data, _ = json.Marshal(dataTeam)
 
+	req, _ = http.NewRequest("POST", url, bytes.NewBuffer(json_data))
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -99,18 +109,31 @@ func TestTeamEndpoint(t *testing.T) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
+	assert.Equal(t, float64(201), res["status"])
+
+	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+
+	// * VERIFY CREATE TEAM AND POPULATED MEMBER LIST
+	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
 	var uTD models.Team
-	key_from_hex, _ := primitive.ObjectIDFromHex(iID.(string))
-	err = hackathonTeamCollection.FindOne(context.TODO(), bson.M{"_id": key_from_hex}).Decode(&uTD)
+	json.NewDecoder(bytes.NewBuffer(teamData)).Decode(&uTD)
 
 	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
-
 	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
 
-	// Clean Up
-	teamMembersCollection.DeleteOne(context.TODO(), bson.M{"_id": dataTeam.TeamMembers[0]})
+	// * CLEAN UP TEAM ENTRY
 	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -123,4 +146,17 @@ func TestTeamEndpoint(t *testing.T) {
 
 	assert.Equal(t, float64(200), res["status"])
 
+	// * CLEAN UP MEMBER ENTRY
+	req, _ = http.NewRequest("DELETE", "http://127.0.0.1:8000/api/hackathon/members"+"/"+fmt.Sprint(memberId), bytes.NewBufferString(""))
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	assert.Equal(t, float64(200), res["status"])
 }
