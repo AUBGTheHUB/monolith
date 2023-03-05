@@ -37,7 +37,6 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		Location:              member.Location,
 		HeardAboutUs:          member.HeardAboutUs,
 		PreviousParticipation: member.PreviousParticipation,
-		PartDetails:           member.PartDetails,
 		Experience:            member.Experience,
 		ProgrammingLevel:      member.ProgrammingLevel,
 		StrongSides:           member.StrongSides,
