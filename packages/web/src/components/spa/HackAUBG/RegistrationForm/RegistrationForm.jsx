@@ -37,11 +37,22 @@ const RegistrationForm = () => {
                 alert(err['response']['data']['data']['data']);
             });
     };
+    const convertToBool = (data) => {
+        data.prevhackaubgparticipation =
+            data.prevhackaubgparticipation == 'False' ? false : true;
+        data.hasteam = data.hasteam == 'False' ? false : true;
+        data.prevhackathonparticipation =
+            data.prevhackathonparticipation == 'False' ? false : true;
+        data.hasexperience = data.hasexperience == 'False' ? false : true;
+        data.wantinternship = data.wantinternship == 'False' ? false : true;
+        data.shareinfowithsponsors =
+            data.shareinfowithsponsors == 'False' ? false : true;
+        data.wantjoboffers = data.wantjoboffers == 'False' ? false : true;
+    };
 
     const onSubmit = (data) => {
         setLoadingAnimation(true);
-        // console.log(data);
-
+        convertToBool(data);
         makeRegistration(data);
         // send request to backend
         // if res is good
