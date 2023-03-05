@@ -23,6 +23,7 @@ func SetHeaders(req *http.Request) {
 
 func TestTeamEndpoint(t *testing.T) {
 	// Set up
+	t.Cleanup(CleanUpCollection)
 	go app.StartApp()
 
 	time.Sleep(5 * time.Second)
