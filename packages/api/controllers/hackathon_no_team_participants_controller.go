@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	"hub-backend/configs"
 	"hub-backend/models"
 	"hub-backend/responses"
@@ -127,12 +126,10 @@ func EditNoTeamParticipant(c *fiber.Ctx) error {
 	if validationErr := validateNoTeamParticipants.Struct(&no_team_participant); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Body is not compatible"})
 	}
-	fmt.Println("KUR")
-	fmt.Println((no_team_participant.HasTeam))
 	if no_team_participant.FullName != "" {
 		no_team_participant_map.FullName = no_team_participant.FullName
 	}
-	if !*no_team_participant.HasTeam {
+	if *no_team_participant.HasTeam {
 		no_team_participant_map.HasTeam = no_team_participant.HasTeam
 	}
 	if no_team_participant.TeamName != "" {
