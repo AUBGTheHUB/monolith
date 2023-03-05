@@ -4,7 +4,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 4% 0;
+    padding: 2% 0;
+    background: linear-gradient(#204829, #222222);
     font-family: 'Roboto';
 }
 
@@ -12,7 +13,7 @@
     display: flex;
     font-size: 2rem;
     padding: 2% 0;
-    color: #19b700;
+    color: #7de776;
     font-weight: 900;
     font-size: 2em;
     align-items: center;
@@ -22,12 +23,13 @@
 .faq-text-container {
     width: 60%;
     text-align: left;
+    color: white;
 }
 
 .faq-header {
     width: 60%;
     font-size: 1.2rem;
-    color: #19b700;
+    color: #7de776;
     font-weight: bold;
 }
 
