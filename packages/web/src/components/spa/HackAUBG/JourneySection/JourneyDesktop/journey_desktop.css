@@ -5,10 +5,11 @@
     flex-direction: column;
     padding-left: 11%;
     padding-right: 11%;
-    background-color: #222222;
 }
 .journey-desktop-title {
     margin-bottom: 3%;
+    font-weight: 900;
+    font-size: 2em;
 }
 .journey-desktop-title h1 {
     font-weight: bold;

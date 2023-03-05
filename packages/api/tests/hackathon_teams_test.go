@@ -39,24 +39,24 @@ func TestTeamEndpoint(t *testing.T) {
 
 	var dataTeam models.Team
 	dataMember := &models.TeamMember{
-		FullName:              "Test",
-		TeamNoTeam:            &testBool,
-		TeamName:              "Integration Test",
-		Email:                 "integration_test@gmail.com",
-		School:                "Test School",
-		Age:                   18,
-		Location:              "Test Location",
-		HeardAboutUs:          "Test",
-		PreviousParticipation: &testBool,
-		PartDetails:           "Test",
-		Experience:            &testBool,
-		ProgrammingLevel:      "Test",
-		StrongSides:           "Test",
-		ShirtSize:             "Test",
-		Internship:            &testBool,
-		JobInterests:          "Test",
-		SponsorShare:          &testBool,
-		NewsLetter:            &testBool,
+		FullName:                       "Test",
+		HasTeam:                        &testBool,
+		TeamName:                       "Integration Test",
+		Email:                          "integration_test@gmail.com",
+		University:                     "Test School",
+		Age:                            18,
+		Location:                       "Test Location",
+		HeardAboutUs:                   "Test",
+		PreviousHackathonParticipation: &testBool,
+		PreviousHackAUBGParticipation:  &testBool,
+		HasExperience:                  &testBool,
+		ProgrammingLevel:               "Test",
+		StrongSides:                    "Test",
+		ShirtSize:                      "Test",
+		WantInternship:                 &testBool,
+		JobInterests:                   "Test",
+		ShareInfoWithSponsors:          &testBool,
+		WantJobOffers:                  &testBool,
 	}
 
 	memberResult, err := teamMembersCollection.InsertOne(context.TODO(), dataMember)
@@ -104,7 +104,7 @@ func TestTeamEndpoint(t *testing.T) {
 	err = hackathonTeamCollection.FindOne(context.TODO(), bson.M{"_id": key_from_hex}).Decode(&uTD)
 
 	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
-	
+
 	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
 
 	// Clean Up
