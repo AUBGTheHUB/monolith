@@ -37,19 +37,19 @@ export const JourneyDesktop = () => {
                         </h2>
                         <p>
                             HackAUBG 5.0 starts on Friday, March 31st. It will
-                            be fully on-ground, taking place in the Sports Hall
-                            in AUBG&apos;s ABF building. If you do not reside in
-                            Blagoevgrad, be sure to make arrangements for your
-                            stay here. In case you need help, your Hub
-                            facilitator will be more than happy to help you
-                            arrange your stay. Below you can check out the
-                            HackAUBG 5.0 schedule for all the details. Your
-                            facilitator will be checking in with you to make
-                            sure you have access to everything needed prior to
-                            the event. Once it becomes time for the Opening
-                            Ceremony on Friday, March 31st, the theme will be
-                            announced. Then it is time to start developing,
-                            designing, and strategizing!
+                            be fully on-ground, taking place at American
+                            Univeristy in Bulgaria&apos;s Sports Hall in ABF
+                            building. If you do not reside in Blagoevgrad, be
+                            sure to make arrangements for your stay here. In
+                            case you need help, your Hub facilitator will be
+                            more than happy to help you arrange your stay. Below
+                            you can check out the HackAUBG 5.0 schedule for all
+                            the details. Your facilitator will be checking in
+                            with you to make sure you have access to everything
+                            needed prior to the event. Once it becomes time for
+                            the Opening Ceremony on Friday, March 31st, the
+                            theme will be announced. Then it is time to start
+                            developing, designing, and strategizing!
                         </p>
                     </div>
                 </div>
