@@ -10,9 +10,14 @@
 }
 
 .faq {
+    display: flex;
     font-size: 2rem;
     padding: 2% 0;
     color: #7de776;
+    font-weight: 900;
+    font-size: 2em;
+    align-items: center;
+    text-align: center;
 }
 
 .faq-text-container {
@@ -22,7 +27,7 @@
 }
 
 .faq-header {
-    width: 80%;
+    width: 60%;
     font-size: 1.2rem;
     color: #7de776;
     font-weight: bold;
@@ -44,10 +49,20 @@
     }
 
     .faq {
-        margin-bottom: 2.5rem;
+        margin-bottom: 3%;
+        margin-top: 4%;
+        /* width: 90%; */
+        text-overflow: wrap;
     }
 
     .faq-header {
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .faq {
+        width: 90%;
+        text-overflow: wrap;
     }
 }
