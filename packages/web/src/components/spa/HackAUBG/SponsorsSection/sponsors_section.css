@@ -23,7 +23,56 @@
     font-weight: 900;
     font-size: 2em;
 }
-/* Optimize the following css by grouping all containers that use the same code */
+
+.sponsors-box-header-container-platinum {
+    border-style: solid;
+    background-color: #00b79a;
+    min-width: 15vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-color: #00b79a;
+}
+
+.sponsors-box-header-container-gold {
+    border-style: solid;
+    background-color: #c9b037;
+    min-width: 15vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-color: #c9b037;
+}
+
+.sponsors-box-header-container-custom {
+    border-style: solid;
+    background-color: #cdbaba;
+    min-width: 15vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-color: #cdbaba;
+}
+
+.sponsors-box-header-container-silver {
+    border-style: solid;
+    background-color: #b4b4b4;
+    min-width: 15vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-color: #b4b4b4;
+}
+
+.sponsors-box-header-container-bronze {
+    border-style: solid;
+    background-color: rgb(163, 104, 37);
+    min-width: 20vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-color: rgb(163, 104, 37);
+}
 
 .platinum-container,
 .gold-container,
@@ -58,11 +107,10 @@
 .logo-container {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 10%;
-    margin: 3% 2% 3% 2%;
+    margin: 4% 2% 2% 2%;
 }
 
 .logo-container img {
@@ -78,20 +126,12 @@
     border-color: #00b79a;
 }
 
-.platinum-header {
-    color: #00b79a;
-}
-
 .gold-container {
     background-color: #c9b037;
 }
 
 .gold-box {
     border-color: #c9b037;
-}
-
-.gold-header {
-    color: #c9b037;
 }
 
 .custom-container {
@@ -106,10 +146,6 @@
     color: #cdbaba;
 }
 
-.silver-header {
-    color: #b4b4b4;
-}
-
 .silver-container {
     background-color: #b4b4b4;
 }
@@ -118,16 +154,59 @@
     border-color: #b4b4b4;
 }
 
-.bronze-header {
-    color: rgb(163, 104, 37);
-}
-
 .bronze-container {
     background-color: rgb(163, 104, 37);
 }
 
 .bronze-box {
     border-color: rgb(163, 104, 37);
+}
+
+@media only screen and (max-width: 900px) {
+    .sponsors-main {
+        margin-bottom: 5%;
+    }
+
+    .sponsors-box-header-container-platinum {
+        padding-top: 2%;
+        min-width: 34vw;
+    }
+
+    .sponsors-box-header-container-gold {
+        padding-top: 2%;
+        min-width: 34vw;
+    }
+
+    .sponsors-box-header-container-custom {
+        padding-top: 2%;
+        min-width: 34vw;
+    }
+
+    .sponsors-box-header-container-silver {
+        padding-top: 2%;
+        min-width: 34vw;
+    }
+
+    .sponsors-box-header-container-bronze {
+        padding-top: 2%;
+        min-width: 60vw;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10%;
+        margin-right: -10%;
+        margin-left: -10%;
+        flex-direction: column;
+    }
+
+    .logo-container img {
+        cursor: pointer;
+        width: 75%;
+        margin-top: 10%;
+        margin-bottom: 3%;
+    }
 }
 
 @media (max-width: 600px) {
