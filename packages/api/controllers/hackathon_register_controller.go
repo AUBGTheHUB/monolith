@@ -28,23 +28,24 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	}
 
 	newHackathonTeamMember := models.TeamMember{
-		FullName:              member.FullName,
-		TeamNoTeam:            member.TeamNoTeam,
-		TeamName:              member.TeamName,
-		Email:                 member.Email,
-		School:                member.School,
-		Age:                   member.Age,
-		Location:              member.Location,
-		HeardAboutUs:          member.HeardAboutUs,
-		PreviousParticipation: member.PreviousParticipation,
-		Experience:            member.Experience,
-		ProgrammingLevel:      member.ProgrammingLevel,
-		StrongSides:           member.StrongSides,
-		ShirtSize:             member.ShirtSize,
-		Internship:            member.Internship,
-		JobInterests:          member.JobInterests,
-		SponsorShare:          member.SponsorShare,
-		NewsLetter:            member.NewsLetter}
+		FullName:                       member.FullName,
+		HasTeam:                        member.HasTeam,
+		TeamName:                       member.TeamName,
+		Email:                          member.Email,
+		University:                     member.University,
+		Age:                            member.Age,
+		Location:                       member.Location,
+		HeardAboutUs:                   member.HeardAboutUs,
+		PreviousHackathonParticipation: member.PreviousHackathonParticipation,
+		PreviousHackAUBGParticipation:  member.PreviousHackAUBGParticipation,
+		HasExperience:                  member.HasExperience,
+		ProgrammingLevel:               member.ProgrammingLevel,
+		StrongSides:                    member.StrongSides,
+		ShirtSize:                      member.ShirtSize,
+		WantInternship:                 member.WantInternship,
+		JobInterests:                   member.JobInterests,
+		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
+		WantJobOffers:                  member.WantJobOffers}
 
 	numberOfMembers, _ := GetNumberOfHackathonParticipants(ctx)
 	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
@@ -57,7 +58,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
 
-	hasTeam := newHackathonTeamMember.TeamNoTeam
+	hasTeam := newHackathonTeamMember.HasTeam
 
 	if *hasTeam {
 
