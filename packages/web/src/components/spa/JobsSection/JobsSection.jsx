@@ -78,8 +78,8 @@ export const JobsSection = () => {
         }
 
         return (
-            <div>
-                <h1>No jobs available</h1>
+            <div className="no-jobs-container">
+                <img src="noJobsAvailable.png" className="no-jobs-image"></img>
             </div>
         );
     };
