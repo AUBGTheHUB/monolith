@@ -44,23 +44,24 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 	}
 
 	newHackathonTeamMember := models.TeamMember{
-		FullName:              member.FullName,
-		TeamNoTeam:            member.TeamNoTeam,
-		TeamName:              member.TeamName,
-		Email:                 member.Email,
-		School:                member.School,
-		Age:                   member.Age,
-		Location:              member.Location,
-		HeardAboutUs:          member.HeardAboutUs,
-		PreviousParticipation: member.PreviousParticipation,
-		Experience:            member.Experience,
-		ProgrammingLevel:      member.ProgrammingLevel,
-		StrongSides:           member.StrongSides,
-		ShirtSize:             member.ShirtSize,
-		Internship:            member.Internship,
-		JobInterests:          member.JobInterests,
-		SponsorShare:          member.SponsorShare,
-		NewsLetter:            member.NewsLetter}
+		FullName:                       member.FullName,
+		HasTeam:                        member.HasTeam,
+		TeamName:                       member.TeamName,
+		Email:                          member.Email,
+		University:                     member.University,
+		Age:                            member.Age,
+		Location:                       member.Location,
+		HeardAboutUs:                   member.HeardAboutUs,
+		PreviousHackathonParticipation: member.PreviousHackathonParticipation,
+		PreviousHackAUBGParticipation:  member.PreviousHackAUBGParticipation,
+		HasExperience:                  member.HasExperience,
+		ProgrammingLevel:               member.ProgrammingLevel,
+		StrongSides:                    member.StrongSides,
+		ShirtSize:                      member.ShirtSize,
+		WantInternship:                 member.WantInternship,
+		JobInterests:                   member.JobInterests,
+		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
+		WantJobOffers:                  member.WantJobOffers}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
@@ -129,8 +130,8 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.FullName != "" {
 		member_map.FullName = member.FullName
 	}
-	if *member.TeamNoTeam {
-		member_map.TeamNoTeam = member.TeamNoTeam
+	if *member.HasTeam {
+		member_map.HasTeam = member.HasTeam
 	}
 	if member.TeamName != "" {
 		member_map.TeamName = member.TeamName
@@ -138,8 +139,8 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.Email != "" {
 		member_map.Email = member.Email
 	}
-	if member.School != "" {
-		member_map.School = member.School
+	if member.University != "" {
+		member_map.University = member.University
 	}
 	if member.Age != 0 {
 		member_map.Age = member.Age
