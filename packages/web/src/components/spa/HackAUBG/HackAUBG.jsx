@@ -13,11 +13,9 @@ import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
-import { changeHackFavicon } from '../../../Global';
 import './hack_aubg.css';
 
 export const HackAUBG = () => {
-    changeHackFavicon();
     makeBodyScrollable();
     document.body.className = 'hackaubg-container';
 
