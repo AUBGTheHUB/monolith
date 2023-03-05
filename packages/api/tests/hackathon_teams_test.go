@@ -48,7 +48,6 @@ func TestTeamEndpoint(t *testing.T) {
 		Location:              "Test Location",
 		HeardAboutUs:          "Test",
 		PreviousParticipation: &testBool,
-		PartDetails:           "Test",
 		Experience:            &testBool,
 		ProgrammingLevel:      "Test",
 		StrongSides:           "Test",
@@ -104,7 +103,7 @@ func TestTeamEndpoint(t *testing.T) {
 	err = hackathonTeamCollection.FindOne(context.TODO(), bson.M{"_id": key_from_hex}).Decode(&uTD)
 
 	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
-	
+
 	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
 
 	// Clean Up

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line
 const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
@@ -71,11 +72,62 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
+const changeFavicon = () => {
+    console.log('CALLED');
+    let link = document.querySelector("link[rel~='icon']");
+
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+
+    let origin = new URL(location.href).origin;
+    let favicon, iosIcon, title;
+
+    if (location.href.includes('hackaubg')) {
+        favicon = '/favicon-green.ico';
+        iosIcon = origin + '/green-logo512.png';
+        title = 'HackAUBG 5.0';
+    } else {
+        favicon = '/favicon.ico';
+        iosIcon = '/logo512.png';
+        title = 'The Hub AUBG';
+    }
+
+    let iconPath = origin + favicon;
+    let appleIconPath = origin + iosIcon;
+    document.title = title;
+
+    document.querySelector('link[rel="apple-touch-icon"]').href = appleIconPath;
+    link.href = iconPath;
+};
+
+const History = {
+    navigate: null,
+    push: (page, ...rest) => History.navigate(page, ...rest)
+};
+
+const NavigateSetter = () => {
+    History.navigate = useNavigate();
+
+    return null;
+};
+
+const navigateTo = (endpoint) => {
+    History.navigate(endpoint);
+
+    document.dispatchEvent(new Event('locationChange'));
+};
+
 export {
     url,
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
+    changeFavicon,
+    NavigateSetter,
+    navigateTo,
     objUploaderURL,
     gcpToken
 };
