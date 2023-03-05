@@ -8,8 +8,9 @@ export const LandingSection = () => {
             <div className="welcome-text">
                 <h1>Welcome to The Hub!</h1>
                 <p>
-                    The IT and innovations club at the American University in
-                    Bulgaria.
+                    We are a group of passionate IT-oriented students who strive
+                    to make technological innovation thrive within AUBG and
+                    beyond.
                 </p>
                 <button
                     className="aboutUs-btn"
