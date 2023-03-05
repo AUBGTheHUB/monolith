@@ -14,7 +14,6 @@ import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
-import { changeHackFavicon } from '../../../Global';
 import './hack_aubg.css';
 
 export const HackAUBG = () => {
