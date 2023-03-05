@@ -8,6 +8,7 @@ import (
 	"hub-backend/models"
 	"hub-backend/responses"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -146,6 +147,8 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
+	go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
+
 	// return success code participant added to no team list and created
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to particapnts without team collection"})
 
@@ -160,8 +163,8 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 }
 
 func SendEmailToNewParticipant(fullName string, email string) {
-	// TODO: load url from env as well
-	requestURL := ""
+
+	requestURL := os.Getenv("MAILING_URL")
 
 	type Mailer struct {
 		Receiver string `json:"receiver"`
@@ -187,9 +190,8 @@ func SendEmailToNewParticipant(fullName string, email string) {
 		fmt.Print(err.Error())
 	}
 
-	// TODO: load from env
-	// mailingToken := ??
-	// req.Header.Set("Authorization", mailingToken)
+	mailingToken := os.Getenv("MAILING_TOKEN")
+	req.Header.Set("Authorization", mailingToken)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
