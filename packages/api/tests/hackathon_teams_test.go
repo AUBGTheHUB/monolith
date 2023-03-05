@@ -53,7 +53,6 @@ func TestTeamEndpoint(t *testing.T) {
 		WantJobOffers:                  &falseBool,
 	}
 
-	fmt.Println(dataMember)
 	json_data, _ := json.Marshal(dataMember)
 	req, _ := http.NewRequest("POST", "http://127.0.0.1:8000/api/hackathon/members", bytes.NewBuffer(json_data))
 	SetHeaders(req)
@@ -66,10 +65,6 @@ func TestTeamEndpoint(t *testing.T) {
 
 	var res map[string]interface{}
 	json.NewDecoder(resp.Body).Decode(&res)
-
-	fmt.Println("RESPONSE (CREATE MEMBER): ", res)
-	fmt.Println()
-	fmt.Println()
 
 	assert.Equal(t, float64(201), res["status"])
 	memberId := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
@@ -107,10 +102,6 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	json.NewDecoder(resp.Body).Decode(&res)
-
-	fmt.Println("RESPONSE (VERIFY TEAM): ", res)
-	fmt.Println()
-	fmt.Println()
 
 	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
 	var uTD models.Team
