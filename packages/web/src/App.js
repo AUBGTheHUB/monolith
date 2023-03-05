@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/MainPage';
 import NotFound from './components/other/NotFound';
@@ -33,8 +33,13 @@ import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
+import { changeFavicon } from './Global';
 
 function App() {
+    document.addEventListener('locationChange', changeFavicon);
+    window.addEventListener('load', changeFavicon);
+    useEffect(changeFavicon, []);
+
     return (
         <Routes>
             <Route path="/" element={<LandingHome />} />

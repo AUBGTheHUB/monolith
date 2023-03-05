@@ -7,26 +7,29 @@ export const AboutHackathon = () => {
             <h1 className="about-title-hack-aubg">ABOUT</h1>
             <div className="about-text-container-hack-aubg">
                 <p className="about-text-hack-aubg">
-                    HackAUBG is a 3 day-long programming hackathon organized by
-                    The Hub AUBG. Ten teams of university and high-school
-                    students will have 48 hours to create an IT solution and
-                    profitable product along a common social theme, i.e. Digital
-                    Wellbeing. Environmental Sustainability, etc. Of course, the
-                    theme is kept secret until the beginning of the competition!
-                    There is no limit to the technologies the teams can use in
-                    development and many take advantage of the mentors and their
-                    knowledge of cutting-edge practices to give something new
-                    and exciting a try!
+                    Welcome to HackAUBG 5.0 - the ultimate 52-hour hackathon
+                    experience organized by The Hub. At HackAUBG, our goal is to
+                    provide a platform for students, professionals, and
+                    entrepreneurs to come together and develop solutions for
+                    real-world problems. Whether you’re a programmer, a
+                    designer, or simply have an interest in tech or business, we
+                    welcome you to join us and put your skills to the test.
                     <br />
                     <br />
-                    Yes! The teams are not alone in their journey! Mentors, IT
-                    professionals from Bulgaria who specialize in a wide range
-                    of technologies, are there to help the teamds develop,
-                    design and create business plans for their projects! Last,
-                    but not least, is the product presentation and software demo
-                    in front of the judges panel, where the teams get to wow the
-                    audience and show the potential of their creativity and the
-                    fruits of their labour.
+                    Over the course of 52 hours, you will work in teams to
+                    brainstorm and prototype your project idea based on the
+                    topic we will reveal during the Opening Ceremony, as well as
+                    pitch your project to a panel of judges. But you won’t be on
+                    your own - we will have a team of experienced mentors on
+                    hand to offer guidance and support throughout the event.
+                    Plus, there will be awesome prizes and food to keep you
+                    fueled and motivated!
+                    <br />
+                    <br />
+                    HackAUBG is more than just a hackathon - it’s a community of
+                    innovators, collaborators, and problem-solvers. We believe
+                    that together, we can create a better future through
+                    technology and creativity.
                 </p>
             </div>
         </div>
