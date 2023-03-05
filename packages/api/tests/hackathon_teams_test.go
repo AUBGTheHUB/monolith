@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hub-backend/app"
+	"hub-backend/configs"
 	"hub-backend/models"
 	"net/http"
 	"testing"
@@ -26,46 +27,27 @@ func TestTeamEndpoint(t *testing.T) {
 
 	time.Sleep(5 * time.Second)
 
-	type Member struct {
-		FullName                       string `json:"fullname" validate:"required"`
-		HasTeam                        bool   `json:"hasteam" validate:"required"`
-		TeamName                       string `json:"teamname" validate:"required"`
-		Email                          string `json:"email" validate:"required"`
-		University                     string `json:"university" validate:"required"`
-		Age                            int    `json:"age" validate:"required"`
-		Location                       string `json:"location" validate:"required"`
-		HeardAboutUs                   string `json:"heardaboutus" validate:"required"`
-		PreviousHackathonParticipation bool   `json:"prevhackathonparticipation" validate:"required"`
-		PreviousHackAUBGParticipation  bool   `json:"prevhackaubgparticipation" validate:"required"`
-		HasExperience                  bool   `json:"hasexperience" validate:"required"`
-		ProgrammingLevel               string `json:"programminglevel" validate:"required"`
-		StrongSides                    string `json:"strongsides" validate:"required"`
-		ShirtSize                      string `json:"shirtsize" validate:"required"`
-		WantInternship                 bool   `json:"wantinternship" validate:"required"`
-		JobInterests                   string `json:"jobinterests" validate:"required"`
-		ShareInfoWithSponsors          bool   `json:"shareinfowithsponsors" validate:"required"`
-		WantJobOffers                  bool   `json:"wantjoboffers" validate:"required"`
-	}
+	var falseBool bool = false
 
-	dataMember := Member{
+	dataMember := models.TeamMember{
 		FullName:                       "Test",
-		HasTeam:                        true,
+		HasTeam:                        &falseBool,
 		TeamName:                       "Integration Test",
-		Email:                          "integration_test@gmail.com",
+		Email:                          configs.GenerateToken(10) + "@gmail.com",
 		University:                     "Test School",
 		Age:                            18,
 		Location:                       "Test Location",
 		HeardAboutUs:                   "Test",
-		PreviousHackathonParticipation: true,
-		PreviousHackAUBGParticipation:  true,
-		HasExperience:                  true,
+		PreviousHackathonParticipation: &falseBool,
+		PreviousHackAUBGParticipation:  &falseBool,
+		HasExperience:                  &falseBool,
 		ProgrammingLevel:               "Test",
 		StrongSides:                    "Test",
 		ShirtSize:                      "Test",
-		WantInternship:                 true,
+		WantInternship:                 &falseBool,
 		JobInterests:                   "Test",
-		ShareInfoWithSponsors:          true,
-		WantJobOffers:                  true,
+		ShareInfoWithSponsors:          &falseBool,
+		WantJobOffers:                  &falseBool,
 	}
 
 	fmt.Println(dataMember)
@@ -86,7 +68,9 @@ func TestTeamEndpoint(t *testing.T) {
 	var res map[string]interface{}
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	fmt.Println(res)
+	fmt.Println("RESPONSE (CREATE MEMBER): ", res)
+	fmt.Println()
+	fmt.Println()
 
 	assert.Equal(t, float64(201), res["status"])
 	memberId := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
@@ -124,6 +108,10 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	json.NewDecoder(resp.Body).Decode(&res)
+
+	fmt.Println("RESPONSE (VERIFY TEAM): ", res)
+	fmt.Println()
+	fmt.Println()
 
 	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
 	var uTD models.Team
