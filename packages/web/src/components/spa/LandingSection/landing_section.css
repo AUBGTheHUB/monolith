@@ -26,7 +26,7 @@
 .welcome-text {
     justify-content: center;
     align-items: center;
-    width: 55%;
+    width: 60%;
     color: white;
     align-content: space-between;
     margin-right: 5%;
@@ -34,7 +34,7 @@
 }
 
 .welcome-text p {
-    margin-top: 3%;
+    margin-top: 4%;
     margin-bottom: 6%;
     font-size: 1rem;
 }

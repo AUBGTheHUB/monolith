@@ -18,7 +18,6 @@ import { changeHackFavicon } from '../../../Global';
 import './hack_aubg.css';
 
 export const HackAUBG = () => {
-    changeHackFavicon();
     makeBodyScrollable();
     document.body.className = 'hackaubg-container';
 
