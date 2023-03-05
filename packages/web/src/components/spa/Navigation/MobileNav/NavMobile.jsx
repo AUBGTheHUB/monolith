@@ -48,6 +48,7 @@ export const NavMobile = ({ props }) => {
 
     const openHome = () => {
         navigateTo('/');
+        window.scrollTo(0, 0);
     };
 
     const buildMobileAnchor = (anchor) => {

@@ -22,6 +22,7 @@ export const NavDesktop = ({ props }) => {
 
     const openHome = () => {
         navigateTo('/');
+        window.scrollTo(0, 0);
     };
 
     const stickyProps = () => {
