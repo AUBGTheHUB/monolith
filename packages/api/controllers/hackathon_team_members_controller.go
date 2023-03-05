@@ -29,6 +29,7 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 
 	var member models.TeamMember
 	defer cancel()
+
 	if bearer_token != configs.ReturnAuthToken() {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
@@ -43,40 +44,30 @@ func CreateHackathonMember(c *fiber.Ctx) error {
 	}
 
 	newHackathonTeamMember := models.TeamMember{
-		FullName:              member.FullName,
-		TeamNoTeam:            member.TeamNoTeam,
-		TeamName:              member.TeamName,
-		Email:                 member.Email,
-		School:                member.School,
-		Age:                   member.Age,
-		Location:              member.Location,
-		HeardAboutUs:          member.HeardAboutUs,
-		PreviousParticipation: member.PreviousParticipation,
-		PartDetails:           member.PartDetails,
-		Experience:            member.Experience,
-		ProgrammingLevel:      member.ProgrammingLevel,
-		StrongSides:           member.StrongSides,
-		ShirtSize:             member.ShirtSize,
-		Internship:            member.Internship,
-		JobInterests:          member.JobInterests,
-		SponsorShare:          member.SponsorShare,
-		NewsLetter:            member.NewsLetter}
+		FullName:                       member.FullName,
+		HasTeam:                        member.HasTeam,
+		TeamName:                       member.TeamName,
+		Email:                          member.Email,
+		University:                     member.University,
+		Age:                            member.Age,
+		Location:                       member.Location,
+		HeardAboutUs:                   member.HeardAboutUs,
+		PreviousHackathonParticipation: member.PreviousHackathonParticipation,
+		PreviousHackAUBGParticipation:  member.PreviousHackAUBGParticipation,
+		HasExperience:                  member.HasExperience,
+		ProgrammingLevel:               member.ProgrammingLevel,
+		StrongSides:                    member.StrongSides,
+		ShirtSize:                      member.ShirtSize,
+		WantInternship:                 member.WantInternship,
+		JobInterests:                   member.JobInterests,
+		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
+		WantJobOffers:                  member.WantJobOffers}
 
-	cursor, err := teamMembersCollection.Find(
-		ctx,
-		bson.D{{"email", newHackathonTeamMember.Email}},
-	)
-	var results []models.TeamMember
-
-	if len(results) >= 1 {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	if CheckIfTeamMemberExists(newHackathonTeamMember) {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
 
-	if err = cursor.All(ctx, &results); err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
-	}
-
-	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+	result, err := CreateNewHackathonParticipant(ctx, newHackathonTeamMember)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -119,7 +110,7 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	err1 := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member_map)
 
 	if err1 != nil {
-		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "No such memb"})
+		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "No such memb"})
 	}
 	bearer_token := c.Get("BEARER-TOKEN")
 
@@ -139,8 +130,8 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.FullName != "" {
 		member_map.FullName = member.FullName
 	}
-	if member.TeamNoTeam {
-		member_map.TeamNoTeam = member.TeamNoTeam
+	if *member.HasTeam {
+		member_map.HasTeam = member.HasTeam
 	}
 	if member.TeamName != "" {
 		member_map.TeamName = member.TeamName
@@ -148,8 +139,8 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.Email != "" {
 		member_map.Email = member.Email
 	}
-	if member.School != "" {
-		member_map.School = member.School
+	if member.University != "" {
+		member_map.University = member.University
 	}
 	if member.Age != 0 {
 		member_map.Age = member.Age
@@ -176,16 +167,23 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	}
 
 	if result.MatchedCount != 1 {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Document not found"})
+		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "Document not found"})
 	}
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "User was updated"})
 
 }
 
-func DeleteHackathonMember(c *fiber.Ctx) error {
+func DeleteHackathonMember(c *fiber.Ctx, key ...string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	member_key := c.Params("key", "key was not provided")
+	var member_key string
+
+	if len(key) > 0 {
+		member_key = key[0]
+	} else {
+		member_key = c.Params("key", "key was not provided")
+	}
+
 	bearer_token := c.Get("BEARER-TOKEN")
 	defer cancel()
 
@@ -222,7 +220,7 @@ func GetHackathonMembersCount(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	results, err := teamMembersCollection.CountDocuments(ctx, bson.M{})
+	results, err := GetNumberOfHackathonParticipants(ctx)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -234,4 +232,28 @@ func GetHackathonMembersCount(c *fiber.Ctx) error {
 		responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"count_of_members": countOfMembers}},
 	)
 
+}
+
+func GetNumberOfHackathonParticipants(ctx context.Context) (int64, error) {
+	results, err := teamMembersCollection.CountDocuments(ctx, bson.M{})
+	return results, err
+}
+
+func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cursor, _ := teamMembersCollection.Find(
+		ctx,
+		bson.D{{"email", newHackathonTeamMember.Email}},
+	)
+	var results []models.TeamMember
+
+	_ = cursor.All(ctx, &results)
+
+	return len(results) > 0
+}
+
+func CreateNewHackathonParticipant(ctx context.Context, newHackathonTeamMember models.TeamMember) (*mongo.InsertOneResult, error) {
+	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+	return result, err
 }

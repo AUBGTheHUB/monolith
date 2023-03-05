@@ -1,7 +1,6 @@
 .grading-criteria-container {
     display: flex;
     justify-content: center;
-    background-color: #222222;
     color: white;
     font-family: 'Roboto';
     font-weight: 500;
@@ -12,6 +11,7 @@
 
 .grading-criteria-container h1 {
     font-size: 2rem;
+    font-weight: 900;
     text-align: center;
     color: #19b700;
     font-weight: 900;

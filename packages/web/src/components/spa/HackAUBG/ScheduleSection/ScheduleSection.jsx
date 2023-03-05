@@ -3,10 +3,10 @@ import './schedule_section.css';
 
 export const ScheduleHackathon = () => {
     return (
-        <div className="schedule-section-container">
+        <div className="schedule-section-container" id="schedule">
             <h1 className="schedule-section-title">THE SCHEDULE</h1>
             <div className="schedule-text-container">
-                <div className="schedule-table-container">
+                <div className="schedule-table-container" id="friday-container">
                     <h1 className="schedule-table-title">FRIDAY</h1>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">17:30</h2>
@@ -29,7 +29,10 @@ export const ScheduleHackathon = () => {
                         <p>Start coding</p>
                     </div>
                 </div>
-                <div className="schedule-table-container">
+                <div
+                    className="schedule-table-container"
+                    id="saturday-container"
+                >
                     <h1 className="schedule-table-title">SATURDAY</h1>
                     <div className="schedule-table-row">
                         <h2 className="schedule-time">09:30</h2>
