@@ -99,10 +99,25 @@
     .mobile-step-container h2 {
         font-size: 1em;
     }
+    .mobile-step-container p {
+        font-size: 0.8em;
+    }
 }
 
 @media only screen and (max-width: 500px) {
     .mobile-step-container h2 {
         font-size: 0.85em;
+    }
+    .mobile-step-container p {
+        font-size: 0.7em;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .mobile-step-container h2 {
+        font-size: 0.8em;
+    }
+    .mobile-step-container p {
+        font-size: 0.65em;
     }
 }
