@@ -2,7 +2,6 @@ package tests
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"hub-backend/app"
@@ -13,9 +12,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const url string = "http://127.0.0.1:8000/api/hackathon/teams"
@@ -27,49 +23,39 @@ func SetHeaders(req *http.Request) {
 
 func TestTeamEndpoint(t *testing.T) {
 	// Set up
+	t.Cleanup(CleanUpCollection)
 	go app.StartApp()
 
 	time.Sleep(5 * time.Second)
 
-	// Test Create Team endpoint
-	var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
-	var hackathonTeamCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonTeam")
+	client := &http.Client{}
 
-	var testBool bool = true
+	// * CREATE NEW MEMBER
+	var falseBool bool = false
 
-	var dataTeam models.Team
-	dataMember := &models.TeamMember{
+	dataMember := models.TeamMember{
 		FullName:                       "Test",
-		HasTeam:                        &testBool,
+		HasTeam:                        &falseBool,
 		TeamName:                       "Integration Test",
-		Email:                          "integration_test@gmail.com",
+		Email:                          configs.GenerateToken(10) + "@gmail.com",
 		University:                     "Test School",
 		Age:                            18,
 		Location:                       "Test Location",
 		HeardAboutUs:                   "Test",
-		PreviousHackathonParticipation: &testBool,
-		PreviousHackAUBGParticipation:  &testBool,
-		HasExperience:                  &testBool,
+		PreviousHackathonParticipation: &falseBool,
+		PreviousHackAUBGParticipation:  &falseBool,
+		HasExperience:                  &falseBool,
 		ProgrammingLevel:               "Test",
 		StrongSides:                    "Test",
 		ShirtSize:                      "Test",
-		WantInternship:                 &testBool,
+		WantInternship:                 &falseBool,
 		JobInterests:                   "Test",
-		ShareInfoWithSponsors:          &testBool,
-		WantJobOffers:                  &testBool,
+		ShareInfoWithSponsors:          &falseBool,
+		WantJobOffers:                  &falseBool,
 	}
 
-	memberResult, err := teamMembersCollection.InsertOne(context.TODO(), dataMember)
-
-	dataTeam.TeamName = "INTEGRATION TEST"
-	dataTeam.TeamMembers = []string{memberResult.InsertedID.(primitive.ObjectID).Hex()}
-
-	json_data, _ := json.Marshal(dataTeam)
-
-	client := &http.Client{}
-
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json_data))
-
+	json_data, _ := json.Marshal(dataMember)
+	req, _ := http.NewRequest("POST", "http://127.0.0.1:8000/api/hackathon/members", bytes.NewBuffer(json_data))
 	SetHeaders(req)
 
 	resp, err := client.Do(req)
@@ -79,16 +65,19 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	var res map[string]interface{}
-
 	json.NewDecoder(resp.Body).Decode(&res)
 
 	assert.Equal(t, float64(201), res["status"])
+	memberId := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
 
-	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+	// * CREATE NEW TEAM
+	var dataTeam models.Team
+	dataTeam.TeamName = configs.GenerateToken(5)
+	dataTeam.TeamMembers = []string{fmt.Sprint(memberId)}
 
-	// Verify
-	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
+	json_data, _ = json.Marshal(dataTeam)
 
+	req, _ = http.NewRequest("POST", url, bytes.NewBuffer(json_data))
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -99,18 +88,34 @@ func TestTeamEndpoint(t *testing.T) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	var uTD models.Team
-	key_from_hex, _ := primitive.ObjectIDFromHex(iID.(string))
-	err = hackathonTeamCollection.FindOne(context.TODO(), bson.M{"_id": key_from_hex}).Decode(&uTD)
+	assert.Equal(t, float64(201), res["status"])
 
-	assert.Equal(t, dataTeam.TeamName, uTD.TeamName)
+	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
 
-	assert.Equal(t, dataTeam.TeamMembers, uTD.TeamMembers)
+	// * VERIFY CREATE TEAM AND POPULATED MEMBER LIST
+	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
+	SetHeaders(req)
 
-	// Clean Up
-	teamMembersCollection.DeleteOne(context.TODO(), bson.M{"_id": dataTeam.TeamMembers[0]})
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
+	var uTD map[string]interface{}
+
+	json.NewDecoder(bytes.NewBuffer(teamData)).Decode(&uTD)
+
+	firstMember := uTD["TeamMembers"].([]interface{})[0].(map[string]interface{})["id"]
+
+	assert.Equal(t, dataTeam.TeamName, uTD["TeamName"])
+	assert.Equal(t, dataTeam.TeamMembers[0], firstMember)
+
+	// * CLEAN UP TEAM ENTRY
 	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -123,4 +128,17 @@ func TestTeamEndpoint(t *testing.T) {
 
 	assert.Equal(t, float64(200), res["status"])
 
+	// * CLEAN UP MEMBER ENTRY
+	req, _ = http.NewRequest("DELETE", "http://127.0.0.1:8000/api/hackathon/members"+"/"+fmt.Sprint(memberId), bytes.NewBufferString(""))
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	assert.Equal(t, float64(200), res["status"])
 }
