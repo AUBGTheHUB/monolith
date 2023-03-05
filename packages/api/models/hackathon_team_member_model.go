@@ -25,22 +25,22 @@ type TeamMember struct {
 }
 
 type EditTeamMember struct {
-	FullName              string `json:"fullname"`
-	TeamNoTeam            bool   `json:"teamnoteam"`
-	TeamName              string `json:"teamname"`
-	Email                 string `json:"email"`
-	School                string `json:"school"`
-	Age                   int    `json:"age"`
-	Location              string `json:"location"`
-	HeardAboutUs          string `json:"aboutus"`
-	PreviousParticipation *bool  `json:"previouspart"`
-	PartDetails           string `json:"partdetails"`
-	Experience            *bool  `json:"experience"`
-	ProgrammingLevel      string `json:"level"`
-	StrongSides           string `json:"strength"`
-	ShirtSize             string `json:"size"`
-	Internship            *bool  `json:"internship"`
-	JobInterests          string `json:"jobinterests"`
-	SponsorShare          *bool  `json:"sponsorshare"`
-	NewsLetter            *bool  `json:"newsletter"`
+	FullName                      string `json:"fullname"`
+	TeamNoTeam                    *bool  `json:"hasteam"`
+	TeamName                      string `json:"teamname"`
+	Email                         string `json:"email"`
+	School                        string `json:"university"`
+	Age                           int    `json:"age"`
+	Location                      string `json:"location"`
+	HeardAboutUs                  string `json:"heardaboutus"`
+	PreviousParticipation         *bool  `json:"prevhackathonparticipation"`
+	PreviousHackAUBGParticipation *bool  `json:"prevhackaubgparticipation"`
+	Experience                    *bool  `json:"hasexperience"`
+	ProgrammingLevel              string `json:"programminglevel"`
+	StrongSides                   string `json:"strongsides"`
+	ShirtSize                     string `json:"shirtsize"`
+	Internship                    *bool  `json:"wantinternship"`
+	JobInterests                  string `json:"jobinterests"`
+	SponsorShare                  *bool  `json:"shareinfowithsponsors"`
+	NewsLetter                    *bool  `json:"wantjoboffers"`
 }
