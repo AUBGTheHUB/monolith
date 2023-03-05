@@ -41,9 +41,7 @@
     }
 
     .about-text-container-hack-aubg {
-        width: 70vw;
-        margin-left: 11%;
-        margin-right: 11%;
+        width: 80%;
         display: flex;
         color: white;
         align-items: center;
