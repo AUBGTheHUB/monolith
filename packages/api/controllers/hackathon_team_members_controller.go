@@ -129,7 +129,7 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.FullName != "" {
 		member_map.FullName = member.FullName
 	}
-	if member.TeamNoTeam {
+	if *member.TeamNoTeam {
 		member_map.TeamNoTeam = member.TeamNoTeam
 	}
 	if member.TeamName != "" {
