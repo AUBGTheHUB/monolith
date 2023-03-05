@@ -27,6 +27,9 @@ func TestTeamEndpoint(t *testing.T) {
 
 	time.Sleep(5 * time.Second)
 
+	client := &http.Client{}
+
+	// * CREATE NEW MEMBER
 	var falseBool bool = false
 
 	dataMember := models.TeamMember{
@@ -51,10 +54,6 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	fmt.Println(dataMember)
-
-	client := &http.Client{}
-
-	// * CREATE NEW MEMBER
 	json_data, _ := json.Marshal(dataMember)
 	req, _ := http.NewRequest("POST", "http://127.0.0.1:8000/api/hackathon/members", bytes.NewBuffer(json_data))
 	SetHeaders(req)
