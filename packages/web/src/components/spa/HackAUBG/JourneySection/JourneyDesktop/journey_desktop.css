@@ -10,8 +10,6 @@
     margin-bottom: 3%;
     font-weight: 900;
     font-size: 2em;
-}
-.journey-desktop-title h1 {
     font-weight: bold;
     color: #19b700;
 }
@@ -21,6 +19,7 @@
     text-align: justify;
     margin-bottom: 1%;
     line-height: 1.5;
+    font-size: 1.1em;
 }
 
 .vertical-line {
