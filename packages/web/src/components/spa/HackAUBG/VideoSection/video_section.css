@@ -21,6 +21,8 @@
     display: flex;
     padding: 3% 0%;
     text-align: center;
+    font-weight: 900;
+    font-size: 2em;
 }
 
 @media only screen and (max-width: 900px) {
