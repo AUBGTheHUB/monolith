@@ -12,6 +12,7 @@ import { checkHashAndScroll } from '../../Global';
 
 const LandingHome = () => {
     document.body.className = 'main-body';
+
     const anchorList = [
         new Anchor('About', '#about'),
         new Anchor('Team', '#team'),
