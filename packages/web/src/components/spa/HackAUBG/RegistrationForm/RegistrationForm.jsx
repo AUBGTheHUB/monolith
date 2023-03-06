@@ -9,7 +9,6 @@ const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        setError,
         formState: { errors } // eslint-disable-line
     } = useForm({ mode: 'all' });
 
@@ -17,6 +16,7 @@ const RegistrationForm = () => {
     const [submitPressed, setSubmitPressed] = useState(false);
     const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
+    const [buttonMessage, setButtonMessage] = useState('');
 
     const registerMember = (data) => {
         axios({
@@ -32,11 +32,7 @@ const RegistrationForm = () => {
             .catch((err) => {
                 console.log(err);
                 setLoadingAnimation(false);
-                let error = err['response']['data']['message'];
-                setError('test', {
-                    type: 'focus',
-                    message: error
-                });
+                setButtonMessage(err['response']['data']['message']);
 
                 setApiError(true);
             });
@@ -57,12 +53,14 @@ const RegistrationForm = () => {
         data = parseVars(data);
         registerMember(data);
     };
+
+    // eslint-disable-next-line
     const onError = (data) => {
-        setLoadingAnimation(true);
-        console.log('ERROR', data);
-        data = parseVars(data);
-        registerMember(data);
-        setApiError(false);
+        // setLoadingAnimation(true);
+        // console.log('ERROR', data);
+        // data = parseVars(data);
+        // setApiError(false);
+        console.log('ERROR');
     };
 
     // useEffect will always initialize this with the correct state
@@ -692,9 +690,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                 </fieldset>
-                {errors.test && (
-                    <p className="error-msg">{errors.test.message}</p>
-                )}
+                {apiError && <p className="error-msg">{buttonMessage}</p>}
                 {showButton()}
             </form>
         </div>
