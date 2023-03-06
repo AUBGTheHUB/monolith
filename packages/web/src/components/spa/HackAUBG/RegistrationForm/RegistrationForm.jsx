@@ -65,7 +65,6 @@ const RegistrationForm = () => {
         registerMember(data);
     }; // send data to api
     const onError = (data) => {
-        registerMember(data);
         console.log('ERROR', data);
     };
 
