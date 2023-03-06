@@ -12,7 +12,7 @@ const RenderSponsors = () => {
     const history = useNavigate();
     const [sponsors, setSponsors] = useState();
 
-    const getJobs = () => {
+    const getSponsors = () => {
         axios({
             method: 'get',
             url: url + '/api/sponsors'
@@ -75,7 +75,7 @@ const RenderSponsors = () => {
     };
 
     useEffect(() => {
-        getJobs();
+        getSponsors();
     }, []);
 
     if (Validate()) {

@@ -13,6 +13,7 @@ import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
+import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 
 export const HackAUBG = () => {
@@ -53,6 +54,7 @@ export const HackAUBG = () => {
             <ScheduleHackathon />
             <GradingCriteria />
             <AwardsSection />
+            <Sponsors />
             <FaqSection />
             <Footer
                 color={'rgb(25, 183, 0)'}
