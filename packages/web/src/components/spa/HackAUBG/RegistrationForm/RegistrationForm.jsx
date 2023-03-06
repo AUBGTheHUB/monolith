@@ -25,30 +25,28 @@ const RegistrationForm = () => {
             headers: {
                 'BEARER-TOKEN': localStorage.getItem('auth_token')
             },
-            data: data
+            data: data,
+            timeout: 10
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log(res);
-                // console.log('New registartion was added');
+                setLoadingAnimation(false);
+                setSubmitButtonValue('Successful');
             })
             .catch((err) => {
-                console.log(err);
-                alert(err['response']['data']['data']['data']);
+                setLoadingAnimation(true);
+                setError(
+                    'test',
+                    {
+                        type: 'focus',
+                        message: err['response']['data']['data']['data']
+                    }
+                    // { shouldFocus: true }
+                );
+                setLoadingAnimation(false);
+                setApiError(true);
             });
     };
-    // const convertToBool = (data) => {
-    //     data.prevhackaubgparticipation =
-    //         data.prevhackaubgparticipation == 'False' ? false : true;
-    //     data.hasteam = data.hasteam == 'False' ? false : true;
-    //     data.prevhackathonparticipation =
-    //         data.prevhackathonparticipation == 'False' ? false : true;
-    //     data.hasexperience = data.hasexperience == 'False' ? false : true;
-    //     data.wantinternship = data.wantinternship == 'False' ? false : true;
-    //     data.shareinfowithsponsors =
-    //         data.shareinfowithsponsors == 'False' ? false : true;
-    //     data.wantjoboffers = data.wantjoboffers == 'False' ? false : true;
-    // };
 
     function parseVars(data) {
         Object.entries(data).forEach((field) => {
@@ -62,40 +60,8 @@ const RegistrationForm = () => {
 
     const onSubmit = (data) => {
         setLoadingAnimation(true);
-        // convertToBool(data);
         data = parseVars(data);
         registerMember(data);
-        // send request to backend
-        // if res is good
-        // block submit button, notify that registration is successful
-        setTimeout(() => {
-            setLoadingAnimation(false);
-            setSubmitButtonValue('Successful');
-            // console.log(data);
-        }, 2000);
-
-        setTimeout(() => {}, 2000);
-
-        // axios
-        //     .get()
-        //     .then(() => {})
-        //     .catch(() => {});
-
-        // request failed
-        setTimeout(() => {
-            setLoadingAnimation(true);
-            setError(
-                'test',
-                {
-                    type: 'focus',
-                    message: 'API FAILED'
-                }
-                // { shouldFocus: true }
-            );
-            console.log(errors);
-            setLoadingAnimation(false);
-            setApiError(true);
-        }, 2000);
     }; // send data to api
     const onError = (data) => {
         console.log('ERROR', data);
