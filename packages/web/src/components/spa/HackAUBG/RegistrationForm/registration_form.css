@@ -145,7 +145,12 @@ option:checked {
 input {
     text-indent: 2%;
 }
-
+.invisible {
+    display: none;
+}
+.visible {
+    display: initial;
+}
 .db-error-msg {
     color: red;
     margin-top: 2%;

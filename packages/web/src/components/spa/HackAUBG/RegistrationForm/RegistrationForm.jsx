@@ -19,6 +19,11 @@ const RegistrationForm = () => {
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
 
+    // eslint-disable-next-line no-unused-vars
+    const [teamname, setTeamname] = useState(false);
+    // eslint-disable-next-line no-unused-vars
+    const [teamState, setTeamState] = useState('send-info invisible');
+
     const registerMember = (data) => {
         axios({
             method: 'post',
@@ -53,10 +58,21 @@ const RegistrationForm = () => {
         return data;
     }
 
+    function teamToggle(event) {
+        const result = event.target.value;
+        if (result == 'True') {
+            setTeamname(true);
+            setTeamState('send-info visible');
+        } else {
+            setTeamname(false);
+            setTeamState('send-info invisible');
+        }
+    }
     const onSubmit = (data) => {
         setLoadingAnimation(true);
         data = parseVars(data);
         registerMember(data);
+        console.log(data.hasteam);
     };
 
     // useEffect will always initialize this with the correct state
@@ -64,6 +80,9 @@ const RegistrationForm = () => {
         'hackaubg-register-btn disabled'
     );
 
+    // const checkTeam = () =>{
+    //     if()
+    // }
     const checkButtonAvailability = () => {
         if (apiError) {
             setButtonState('hackaubg-register-btn error');
@@ -227,7 +246,7 @@ const RegistrationForm = () => {
                                 })}
                             >
                                 <option value="" disabled selected>
-                                    Choose a Location
+                                    Choose an School/University
                                 </option>
 
                                 <option value="AUBG">AUBG</option>
@@ -416,6 +435,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
+                                    onClick={teamToggle}
                                     {...register('hasteam', {
                                         required: true
                                     })}
@@ -427,6 +447,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
+                                    onClick={teamToggle}
                                     {...register('hasteam', {
                                         required: true
                                     })}
@@ -444,14 +465,14 @@ const RegistrationForm = () => {
                             )}
                         </p>
                     </div>
-                    <div className="send-info">
+                    <div className={teamState}>
                         <label htmlFor="">
-                            What is the name of your team
+                            What is the name of your team?
                             <input
                                 type="text"
                                 {...register('teamname', {
                                     required: {
-                                        value: true,
+                                        value: teamname,
                                         message: '*This field is required'
                                     },
                                     minLength: {
