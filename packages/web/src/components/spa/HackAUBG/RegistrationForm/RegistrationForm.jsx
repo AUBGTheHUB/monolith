@@ -28,13 +28,16 @@ const RegistrationForm = () => {
             .then((res) => {
                 setLoadingAnimation(false);
                 setSubmitButtonValue('Successful');
+
+                setApiError(false); // remove red color of button
+                // disableButton(true);
             })
             .catch((err) => {
                 console.log(err);
                 setLoadingAnimation(false);
                 setButtonMessage(err['response']['data']['message']);
 
-                setApiError(true);
+                setApiError(true); // put button in error state
             });
     };
 
@@ -52,15 +55,6 @@ const RegistrationForm = () => {
         setLoadingAnimation(true);
         data = parseVars(data);
         registerMember(data);
-    };
-
-    // eslint-disable-next-line
-    const onError = (data) => {
-        // setLoadingAnimation(true);
-        // console.log('ERROR', data);
-        // data = parseVars(data);
-        // setApiError(false);
-        console.log('ERROR');
     };
 
     // useEffect will always initialize this with the correct state
@@ -110,7 +104,7 @@ const RegistrationForm = () => {
             <form
                 action=""
                 className="reg-form"
-                onSubmit={handleSubmit(onSubmit, onError)}
+                onSubmit={handleSubmit(onSubmit)}
             >
                 <fieldset className="from-personal-info">
                     <div className="send-info">
