@@ -9,7 +9,7 @@ const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        // setError,
+        setError,
         formState: { errors } // eslint-disable-line
     } = useForm({ mode: 'all' });
 
@@ -22,28 +22,22 @@ const RegistrationForm = () => {
         axios({
             method: 'post',
             url: url + '/api/hackathon/register',
-            data: { ...data }
+            data
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                //status:201
                 setLoadingAnimation(false);
                 setSubmitButtonValue('Successful');
             })
             .catch((err) => {
                 console.log(err);
                 setLoadingAnimation(false);
-                let x = err['response']['data']['message'];
-                console.log(x);
-                // setError(
-                //     'test',
-                //     {
-                //         type: 'focus',
-                //         message: err['response']['data']['message']
-                //     }
+                let error = err['response']['data']['message'];
+                setError('test', {
+                    type: 'focus',
+                    message: error
+                });
 
-                //     // { shouldFocus: true }
-                // );
                 setApiError(true);
             });
     };
