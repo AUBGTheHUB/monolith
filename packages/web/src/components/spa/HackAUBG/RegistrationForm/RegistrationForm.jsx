@@ -19,15 +19,16 @@ const RegistrationForm = () => {
     const [apiError, setApiError] = useState(false);
 
     const registerMember = (data) => {
-        axios({
-            method: 'post',
-            url: url + '/api/hackathon/register',
-            headers: {
-                'BEARER-TOKEN': localStorage.getItem('auth_token')
-            },
-            data: data,
-            timeout: 10
-        })
+        console.log('HERE');
+        axios
+            .post({
+                url: url + '/api/hackathon/register',
+                headers: {
+                    'BEARER-TOKEN': localStorage.getItem('auth_token')
+                },
+                data: { ...data },
+                timeout: 10
+            })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
                 setLoadingAnimation(false);
@@ -64,6 +65,7 @@ const RegistrationForm = () => {
         registerMember(data);
     }; // send data to api
     const onError = (data) => {
+        registerMember(data);
         console.log('ERROR', data);
     };
 
