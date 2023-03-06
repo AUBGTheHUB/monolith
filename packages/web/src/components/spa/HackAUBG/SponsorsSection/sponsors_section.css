@@ -24,11 +24,11 @@
     font-size: 2em;
 }
 
-.sponsors-box-header-container-platinum,
-.sponsors-box-header-container-gold,
-.sponsors-box-header-container-custom,
-.sponsors-box-header-container-silver,
-.sponsors-box-header-container-bronze {
+.sponsors-box-header-platinum,
+.sponsors-box-header-gold,
+.sponsors-box-header-custom,
+.sponsors-box-header-silver,
+.sponsors-box-header-bronze {
     min-width: 15vw;
     text-align: center;
     position: relative;
@@ -36,27 +36,27 @@
     border-style: solid;
 }
 
-.sponsors-box-header-container-platinum {
+.sponsors-box-header-platinum {
     background-color: #00b79a;
     border-color: #00b79a;
 }
 
-.sponsors-box-header-container-gold {
+.sponsors-box-header-gold {
     background-color: #c9b037;
     border-color: #c9b037;
 }
 
-.sponsors-box-header-container-custom {
+.sponsors-box-header-custom {
     background-color: #cdbaba;
     border-color: #cdbaba;
 }
 
-.sponsors-box-header-container-silver {
+.sponsors-box-header-silver {
     background-color: #b4b4b4;
     border-color: #b4b4b4;
 }
 
-.sponsors-box-header-container-bronze {
+.sponsors-box-header-bronze {
     background-color: rgb(163, 104, 37);
     border-color: rgb(163, 104, 37);
     min-width: 20vw;
@@ -118,15 +118,15 @@
         margin-bottom: 5%;
     }
 
-    .sponsors-box-header-container-platinum,
-    .sponsors-box-header-container-gold,
-    .sponsors-box-header-container-custom,
-    .sponsors-box-header-container-silver {
+    .sponsors-box-header-platinum,
+    .sponsors-box-header-gold,
+    .sponsors-box-header-custom,
+    .sponsors-box-header-silver {
         padding-top: 2%;
         min-width: 34vw;
     }
 
-    .sponsors-box-header-container-bronze {
+    .sponsors-box-header-bronze {
         padding-top: 2%;
         min-width: 60vw;
     }
@@ -147,13 +147,13 @@
 }
 
 @media only screen and (max-width: 300px) {
-    .sponsors-box-header-container-platinum,
-    .sponsors-box-header-container-custom {
+    .sponsors-box-header-platinum,
+    .sponsors-box-header-custom {
         min-width: 50vw;
         margin: 10% 2% 6% 2%;
     }
 
-    .sponsors-box-header-container-bronze {
+    .sponsors-box-header-bronze {
         min-width: 70vw;
         margin: 10% 2% 6% 2%;
     }

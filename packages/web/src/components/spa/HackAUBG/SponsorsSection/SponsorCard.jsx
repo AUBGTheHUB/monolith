@@ -1,5 +1,4 @@
 import React from 'react';
-import './sponsors_section.css';
 import { openNewTab } from '../../../../Global';
 
 const SponsorCard = ({ sponsor }) => {

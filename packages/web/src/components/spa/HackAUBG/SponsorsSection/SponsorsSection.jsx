@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
-import './sponsors_section.css';
 import { url } from '../../../../Global';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SponsorsContainer from './SponsorContainer';
+import './sponsors_section.css';
 
 const Sponsors = () => {
     // eslint-disable-next-line no-unused-vars
-    const [sponsorSections, setSponsorSection] = useState({});
+    const [sponsor, setSponsor] = useState({});
 
     const fetchSponsors = () => {
         let unfilteredSponsors;
@@ -17,7 +17,7 @@ const Sponsors = () => {
         })
             .then((res) => {
                 unfilteredSponsors = res.data.data.data;
-                let tempSponsorSections = {
+                let tempSponsor = {
                     platinum: [],
                     gold: [],
                     bronze: [],
@@ -26,56 +26,54 @@ const Sponsors = () => {
                 };
 
                 unfilteredSponsors.forEach((x) => {
-                    tempSponsorSections[x.category].push(x);
+                    tempSponsor[x.category].push(x);
                 });
 
-                console.log(tempSponsorSections);
-
-                setSponsorSection(tempSponsorSections);
+                setSponsor(tempSponsor);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {});
     };
 
     useEffect(fetchSponsors, []);
-    if (Object.keys(sponsorSections).length !== 0) {
+    if (Object.keys(sponsor).length !== 0) {
         return (
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
                 <div className="sponsors-containers">
-                    <div className="sponsors-box-header-container-platinum">
+                    <div className="sponsors-box-header-platinum">
                         <h1 style={{ color: '#FFFFFF' }}>Platinum</h1>
                     </div>
                     <SponsorsContainer
-                        sponsors={sponsorSections.platinum}
+                        sponsors={sponsor.platinum}
                         category={'platinum'}
                     />
-                    <div className="sponsors-box-header-container-gold">
+                    <div className="sponsors-box-header-gold">
                         <h1 style={{ color: '#FFFFFF' }}>Gold</h1>
                     </div>
                     <SponsorsContainer
-                        sponsors={sponsorSections.gold}
+                        sponsors={sponsor.gold}
                         category={'gold'}
                     />
-                    <div className="sponsors-box-header-container-custom">
+                    <div className="sponsors-box-header-custom">
                         <h1 style={{ color: '#FFFFFF' }}>Custom</h1>
                     </div>
                     <SponsorsContainer
-                        sponsors={sponsorSections.custom}
+                        sponsors={sponsor.custom}
                         category={'custom'}
                     />
-                    <div className="sponsors-box-header-container-silver">
+                    <div className="sponsors-box-header-silver">
                         <h1 style={{ color: '#FFFFFF' }}>Silver</h1>
                     </div>
                     <SponsorsContainer
-                        sponsors={sponsorSections.silver}
+                        sponsors={sponsor.silver}
                         category={'silver'}
                     />
-                    <div className="sponsors-box-header-container-bronze">
+                    <div className="sponsors-box-header-bronze">
                         <h1 style={{ color: '#FFFFFF' }}>Media Sponsor</h1>
                     </div>
                     <SponsorsContainer
-                        sponsors={sponsorSections.bronze}
+                        sponsors={sponsor.bronze}
                         category={'bronze'}
                     />
                 </div>
