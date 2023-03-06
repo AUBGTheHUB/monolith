@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import axios from 'axios';
 import { url } from '../../../../Global';
+import { BsExclamationCircleFill } from 'react-icons/bs';
 
 const RegistrationForm = () => {
     const {
@@ -408,7 +409,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Do you have a team?
                         </label>
                         <div className="radio-select">
@@ -468,7 +469,7 @@ const RegistrationForm = () => {
                         <p className="error-msg">{errors.teamname?.message}</p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Have you participated in Hack AUBG before?
                         </label>
                         <div className="radio-select">
@@ -504,7 +505,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Are you looking for an internship?
                         </label>
                         <div className="radio-select">
@@ -540,7 +541,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Have you participated in another Hackathons?
                         </label>
                         <div className="radio-select">
@@ -576,7 +577,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Do you want to share you info with sponsors?
                         </label>
                         <div className="radio-select">
@@ -612,7 +613,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Do you have previous coding experience?
                         </label>
                         <div className="radio-select">
@@ -648,7 +649,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                     <div className="send-info">
-                        <label className="column-right">
+                        <label className="radio-label">
                             Do you want to receive our newsletter with potential
                             job offerings?
                         </label>
@@ -685,7 +686,12 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                 </fieldset>
-                {apiError && <p className="error-msg">{buttonMessage}</p>}
+                {apiError && (
+                    <p className="db-error-msg">
+                        <BsExclamationCircleFill />
+                        {buttonMessage}
+                    </p>
+                )}
                 {showButton()}
             </form>
         </div>

@@ -87,6 +87,9 @@
     flex-direction: column;
     align-self: center;
 }
+.radio-label {
+    height: 70%;
+}
 
 .send-info input,
 .send-info select {
@@ -143,9 +146,23 @@ input {
     text-indent: 2%;
 }
 
-.error-msg {
+.db-error-msg {
     color: red;
     margin-top: 2%;
+    /* width: 60%; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #fc9992; */
+    font-size: 25px;
+    background-color: #ffbcb8;
+    border-radius: 5px;
+    /* padding-left: 5px;
+    padding-right: 5px; */
+    padding: 10px 30px;
+}
+.db-error-msg svg {
+    margin-right: 10px;
 }
 
 @media only screen and (max-width: 1300px) {
