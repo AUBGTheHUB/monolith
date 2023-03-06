@@ -42,7 +42,7 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 
 	err := hackathonTeamCollection.FindOne(ctx, bson.M{"teamname": team.TeamName}).Decode(&oldTeam)
 	if err == nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Team already exists"}})
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "error", Data: &fiber.Map{"data": "Team already exists"}})
 	}
 
 	var checkTeamMembers models.TeamMember
@@ -52,7 +52,7 @@ func CreateHackathonTeam(c *fiber.Ctx) error {
 		err := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&checkTeamMembers)
 
 		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Team member with id "+team.TeamMembers[i]+" doesn't exist"}})
+			return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "Team member with id " + team.TeamMembers[i] + " doesn't exist"}})
 		}
 	}
 
@@ -103,7 +103,7 @@ func GetHackathonTeam(c *fiber.Ctx) error {
 	hackathon_team_key := c.Params("key", "key was not provided")
 
 	bearer_token := c.Get("BEARER-TOKEN")
-	
+
 	var team models.Team
 	defer cancel()
 
@@ -112,7 +112,7 @@ func GetHackathonTeam(c *fiber.Ctx) error {
 	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
-	
+
 	err := hackathonTeamCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&team)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + hackathon_team_key}})
@@ -129,10 +129,9 @@ func GetHackathonTeam(c *fiber.Ctx) error {
 	}
 
 	newTeam := map[string]interface{}{
-		"TeamName": team.TeamName,
+		"TeamName":    team.TeamName,
 		"TeamMembers": teamMembers,
 	}
-
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": newTeam}})
 
@@ -191,7 +190,7 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 
 }
 
-func DeleteHackathonTeams(c *fiber.Ctx) error{
+func DeleteHackathonTeams(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	hackathon_team_key := c.Params("key", "key was not provided")
 	bearer_token := c.Get("BEARER-TOKEN")
@@ -214,4 +213,9 @@ func DeleteHackathonTeams(c *fiber.Ctx) error{
 	}
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Team successfully deleted!"})
+}
+
+func GetNumberOfHackathonTeams(ctx context.Context) (int64, error) {
+	results, err := hackathonTeamCollection.CountDocuments(ctx, bson.M{})
+	return results, err
 }

@@ -1,8 +1,18 @@
 import React from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import './landing_animation.css';
 
 export const MatrixWindow = () => {
+    const [dataValue, setDataValue] = useState('HACKAUBG 5.0');
+    const [clicks, setClicks] = useState(0);
+
+    useEffect(() => {
+        if (clicks >= 69) {
+            setDataValue('TONI MONTANA');
+        }
+    }, [clicks]);
+
     const animateLetters = () => {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let interval = null;
@@ -37,9 +47,12 @@ export const MatrixWindow = () => {
         <div className="hackaubg-landing-section-text-animation-container">
             <div className="hackaubg-landing-content">
                 <h1
-                    data-value="HACKAUBG 5.0"
+                    data-value={dataValue}
                     className="hackaubg-moving-letters"
-                    onMouseEnter={animateLetters}
+                    onMouseEnter={() => {
+                        animateLetters();
+                        setClicks(clicks + 1);
+                    }}
                 >
                     HACKAUBG 5.0
                 </h1>

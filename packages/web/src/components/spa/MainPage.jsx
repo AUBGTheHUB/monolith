@@ -13,9 +13,9 @@ import { checkHashAndScroll } from '../../Global';
 const LandingHome = () => {
     document.body.className = 'main-body';
     const anchorList = [
-        new Anchor('About', '#AboutSection'),
+        new Anchor('About', '#about'),
         new Anchor('Team', '#team'),
-        new Anchor('Jobs', 'jobs')
+        new Anchor('Jobs', 'jobs', true)
     ];
 
     useEffect(checkHashAndScroll, []);
