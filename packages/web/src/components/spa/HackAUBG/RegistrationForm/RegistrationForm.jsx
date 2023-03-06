@@ -9,36 +9,41 @@ const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        setError,
+        // setError,
         formState: { errors } // eslint-disable-line
     } = useForm({ mode: 'all' });
 
     const [loadingAnimation, setLoadingAnimation] = useState(false);
     const [submitPressed, setSubmitPressed] = useState(false);
-    const [submitButtonValue, setSubmitButtonValue] = useState('register'); // eslint-disable-line
+    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
 
     const registerMember = (data) => {
         axios({
             method: 'post',
             url: url + '/api/hackathon/register',
-            data: { ...data }
+            data
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
+                //status:201
                 setLoadingAnimation(false);
                 setSubmitButtonValue('Successful');
             })
             .catch((err) => {
+                console.log(err);
                 setLoadingAnimation(false);
-                setError(
-                    'test',
-                    {
-                        type: 'focus',
-                        message: err['response']['data']['data']['data']
-                    }
-                    // { shouldFocus: true }
-                );
+                let x = err['response']['data']['message'];
+                console.log(x);
+                // setError(
+                //     'test',
+                //     {
+                //         type: 'focus',
+                //         message: err['response']['data']['message']
+                //     }
+
+                //     // { shouldFocus: true }
+                // );
                 setApiError(true);
             });
     };
@@ -57,9 +62,13 @@ const RegistrationForm = () => {
         setLoadingAnimation(true);
         data = parseVars(data);
         registerMember(data);
-    }; // send data to api
+    };
     const onError = (data) => {
+        setLoadingAnimation(true);
         console.log('ERROR', data);
+        data = parseVars(data);
+        registerMember(data);
+        setApiError(false);
     };
 
     // useEffect will always initialize this with the correct state
@@ -69,7 +78,7 @@ const RegistrationForm = () => {
 
     const checkButtonAvailability = () => {
         if (apiError) {
-            setButtonState('hackaubg-register-btn disabled');
+            setButtonState('hackaubg-register-btn error');
             return;
         } else if (Object.keys(errors).length != 0 && submitPressed) {
             setButtonState('hackaubg-register-btn error');
@@ -111,10 +120,6 @@ const RegistrationForm = () => {
                 className="reg-form"
                 onSubmit={handleSubmit(onSubmit, onError)}
             >
-                {errors.test && (
-                    <p className="error-msg">{errors.test.message}</p>
-                )}
-
                 <fieldset className="from-personal-info">
                     <div className="send-info">
                         <label htmlFor="">
@@ -693,7 +698,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                 </fieldset>
-
+                {errors.test && <p className="error-msg">{x}</p>}
                 {showButton()}
             </form>
         </div>
