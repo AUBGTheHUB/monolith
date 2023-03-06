@@ -38,6 +38,7 @@ const RegistrationForm = () => {
                 setButtonMessage(err['response']['data']['message']);
 
                 setApiError(true); // put button in error state
+                setSubmitButtonValue('Retry');
             });
     };
 
