@@ -173,10 +173,65 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	}
 
 	var reqBody Mailer
+	
+	firstName := strings.Split(fullName, " ")[0]
 
-	reqBody.Html = "<h1>HELLO</h1>"
+	//TODO: bruh Please somebody fix this html :D, Also maybe we should make a separeate issue for it.
+	html := fmt.Sprintf(`<div class="container"
+		style="max-width: 700px;  background-color: #fcfcff; padding-left: 30px; padding-right: 90px;">
+		<br /><br />
+		<h4><b> You registered for HackAUBG 5.0! <br /></b></h4>
+		<br />
+		Welcome on board, %s! <b>Text from Marketing.
+		<br/>
+		<br />
+
+		Each team that takes part in HackAUBG 5.0 will have assigned a <b>facilitator</b> from The Hub. This will be the person to answer all your questions and help you out whenever you need assistance.
+			We'll send you a follow-up email to introduce you to your facilitator and let you know what follows!
+		<br />
+
+		<br />
+		We can't wait to meet you!
+
+		<br />
+		<br />
+		<b>- The Hub AUBG</b>
+		<br />
+		<br />
+		<a href="https://www.facebook.com/TheHubAUBG/" target="_blank" title="TheHubAUBG"><i class="fa fa-facebook" style="font-size: 25px; padding-right: 10px;"></i></a>
+		<a href="https://www.instagram.com/thehubaubg/" target="_blank" title="TheHubAUBG"><i class="fa fa-instagram" style="font-size: 25px; padding-right: 10px;"></i></a>
+		<a href="https://www.linkedin.com/company/the-hub-aubg" target="_blank" title="TheHubAUBG" style="padding-left:8px;"><i class="fa fa-linkedin" style="font-size: 25px; padding-right: 10px;"></i></a>
+		<a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug" target="_blank" title="TheHubAUBG" style="padding-left:8px;"><i class="fa fa-youtube" style="font-size: 25px; padding-right: 10px;"></i></a>
+
+		<br />
+		<br />
+	</div>
+
+	<div class="container" style="max-width: 700px; background-color: #fcfcff; padding-right:0; margin-top: -100px; z-index: -1;">
+		<img src="https://i.ibb.co/5Mw9Dzr/Robot.png" width="250"
+				height="auto" alt="TheHubAUBG"
+				style="display:block; border: none; max-width:230px; margin: 0 auto; margin-bottom: 0; margin-right:0;" />
+	</div>
+
+	<div class="container" style="max-height: 72px; height: 72px; background: linear-gradient(90deg, rgba(0,87,146,1) 0%, rgba(0,187,240,1) 100%); -webkit-border-bottom-right-radius: 72px;
+	-moz-border-radius-bottomleft: 90px;
+	border-bottom-right-radius: 72px;
+	max-width: 700px;">
+		<h5 class="text-center" style="vertical-align: middle;
+	line-height: 72px; color: white; ">Learn &nbsp;•&nbsp; Innovate &nbsp;•&nbsp; Inspire</h5>
+	</div>
+	</div>
+	<div class="container" style="margin-top: 15px; margin-bottom: 15px; max-width: 700px; font-size: 12px;
+					line-height: 15px;
+					text-align: center;
+					color: black;
+					max-width: 820px">
+		<div class="text-center">Hub International &copy;, <br />2022</div>
+	</div>`, firstName)
+
+	reqBody.Html = html
 	reqBody.Receiver = email
-	reqBody.Subject = "TEST"
+	reqBody.Subject = "Welcome to HackAUBG 5.0"
 
 	fmt.Println(reqBody)
 	json_data, _ := json.Marshal(reqBody)
@@ -188,6 +243,7 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	if err != nil {
 		fmt.Println("could not create request to mailing service: ")
 		fmt.Print(err.Error())
+		return
 	}
 
 	mailingToken := os.Getenv("MAILING_TOKEN")
@@ -199,6 +255,7 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	if err != nil {
 		fmt.Println("error making http request to mailing service: ")
 		fmt.Print(err.Error())
+		return
 	}
 
 	var res map[string]interface{}
@@ -206,4 +263,5 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	json.NewDecoder(resp.Body).Decode(&res)
 
 	fmt.Println(res)
+
 }
