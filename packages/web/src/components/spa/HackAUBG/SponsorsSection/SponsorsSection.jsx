@@ -41,35 +41,35 @@ const Sponsors = () => {
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
                 <div className="sponsors-containers">
-                    <div className="sponsors-box-header-platinum">
+                    <div className="sponsors-header-platinum sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Platinum</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsor.platinum}
                         category={'platinum'}
                     />
-                    <div className="sponsors-box-header-gold">
+                    <div className="sponsors-header-gold sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Gold</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsor.gold}
                         category={'gold'}
                     />
-                    <div className="sponsors-box-header-custom">
+                    <div className="sponsors-header-custom sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Custom</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsor.custom}
                         category={'custom'}
                     />
-                    <div className="sponsors-box-header-silver">
+                    <div className="sponsors-header-silver sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Silver</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsor.silver}
                         category={'silver'}
                     />
-                    <div className="sponsors-box-header-bronze">
+                    <div className="sponsors-header-bronze sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Media Sponsor</h1>
                     </div>
                     <SponsorsContainer
