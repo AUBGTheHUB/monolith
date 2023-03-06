@@ -5,7 +5,7 @@
     justify-content: center;
     flex-direction: column;
     padding: 2% 0;
-    background: linear-gradient(#222222, #204829);
+    background: linear-gradient(#204829, #222222, #222222);
     font-family: 'Roboto';
 }
 
