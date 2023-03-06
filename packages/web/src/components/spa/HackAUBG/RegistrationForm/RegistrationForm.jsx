@@ -22,7 +22,7 @@ const RegistrationForm = () => {
         axios({
             method: 'post',
             url: url + '/api/hackathon/register',
-            data
+            data: { ...data }
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
@@ -698,7 +698,9 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                 </fieldset>
-                {errors.test && <p className="error-msg">{x}</p>}
+                {errors.test && (
+                    <p className="error-msg">{errors.test.message}</p>
+                )}
                 {showButton()}
             </form>
         </div>
