@@ -18,7 +18,9 @@ const RegistrationForm = () => {
     const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
+    const [disableTeamNameField, setDisableTeamNameField] = useState(true);
 
+    // ? What are these used for?
     // eslint-disable-next-line no-unused-vars
     const [teamname, setTeamname] = useState(false);
     // eslint-disable-next-line no-unused-vars
@@ -58,16 +60,6 @@ const RegistrationForm = () => {
         return data;
     }
 
-    function teamToggle(event) {
-        const result = event.target.value;
-        if (result == 'True') {
-            setTeamname(true);
-            setTeamState('send-info visible');
-        } else {
-            setTeamname(false);
-            setTeamState('send-info invisible');
-        }
-    }
     const onSubmit = (data) => {
         setLoadingAnimation(true);
         data = parseVars(data);
@@ -80,9 +72,16 @@ const RegistrationForm = () => {
         'hackaubg-register-btn disabled'
     );
 
-    // const checkTeam = () =>{
-    //     if()
-    // }
+    const handleDisabledFields = (e) => {
+        if (e.target.name === 'hasteam') {
+            if (e.target.value === 'False') {
+                setDisableTeamNameField(true);
+            } else {
+                setDisableTeamNameField(false);
+            }
+        }
+    };
+
     const checkButtonAvailability = () => {
         if (apiError) {
             setButtonState('hackaubg-register-btn error');
@@ -126,6 +125,7 @@ const RegistrationForm = () => {
                 action=""
                 className="reg-form"
                 onSubmit={handleSubmit(onSubmit)}
+                onChange={handleDisabledFields}
             >
                 <fieldset className="from-personal-info">
                     <div className="send-info">
@@ -435,7 +435,6 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>Yes</label>
                                 <input
-                                    onClick={teamToggle}
                                     {...register('hasteam', {
                                         required: true
                                     })}
@@ -447,7 +446,7 @@ const RegistrationForm = () => {
                             <div className="radio-btn">
                                 <label>No</label>
                                 <input
-                                    onClick={teamToggle}
+                                    // onClick={teamToggle}
                                     {...register('hasteam', {
                                         required: true
                                     })}
@@ -465,10 +464,11 @@ const RegistrationForm = () => {
                             )}
                         </p>
                     </div>
-                    <div className={teamState}>
+                    <div className="send-info">
                         <label htmlFor="">
                             What is the name of your team?
                             <input
+                                disabled={disableTeamNameField}
                                 type="text"
                                 {...register('teamname', {
                                     required: {
