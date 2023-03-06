@@ -18,6 +18,7 @@ import './hack_aubg.css';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
+
     document.body.className = 'hackaubg-container';
 
     const anchorList = [

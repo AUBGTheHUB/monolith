@@ -21,7 +21,7 @@
 }
 
 .faq-text-container {
-    width: 60%;
+    width: 64%;
     text-align: left;
     color: white;
 }
@@ -51,7 +51,6 @@
     .faq {
         margin-bottom: 3%;
         margin-top: 4%;
-        /* width: 90%; */
         text-overflow: wrap;
     }
 
