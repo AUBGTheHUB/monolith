@@ -19,9 +19,9 @@ const RegistrationForm = () => {
     const [apiError, setApiError] = useState(false);
 
     const registerMember = (data) => {
-        console.log('HERE');
         axios
-            .post({
+            .request({
+                method: 'post',
                 url: url + '/api/hackathon/register',
                 headers: {
                     'BEARER-TOKEN': localStorage.getItem('auth_token')
