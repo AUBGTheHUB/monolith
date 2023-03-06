@@ -18,14 +18,14 @@ const RegistrationForm = () => {
     const [submitButtonValue, setSubmitButtonValue] = useState('register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
 
-    const makeRegistration = (data) => {
+    const registerMember = (data) => {
         axios({
             method: 'post',
             url: url + '/api/hackathon/register',
             headers: {
                 'BEARER-TOKEN': localStorage.getItem('auth_token')
             },
-            data: { ...data }
+            data: data
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
@@ -37,29 +37,40 @@ const RegistrationForm = () => {
                 alert(err['response']['data']['data']['data']);
             });
     };
-    const convertToBool = (data) => {
-        data.prevhackaubgparticipation =
-            data.prevhackaubgparticipation == 'False' ? false : true;
-        data.hasteam = data.hasteam == 'False' ? false : true;
-        data.prevhackathonparticipation =
-            data.prevhackathonparticipation == 'False' ? false : true;
-        data.hasexperience = data.hasexperience == 'False' ? false : true;
-        data.wantinternship = data.wantinternship == 'False' ? false : true;
-        data.shareinfowithsponsors =
-            data.shareinfowithsponsors == 'False' ? false : true;
-        data.wantjoboffers = data.wantjoboffers == 'False' ? false : true;
-    };
+    // const convertToBool = (data) => {
+    //     data.prevhackaubgparticipation =
+    //         data.prevhackaubgparticipation == 'False' ? false : true;
+    //     data.hasteam = data.hasteam == 'False' ? false : true;
+    //     data.prevhackathonparticipation =
+    //         data.prevhackathonparticipation == 'False' ? false : true;
+    //     data.hasexperience = data.hasexperience == 'False' ? false : true;
+    //     data.wantinternship = data.wantinternship == 'False' ? false : true;
+    //     data.shareinfowithsponsors =
+    //         data.shareinfowithsponsors == 'False' ? false : true;
+    //     data.wantjoboffers = data.wantjoboffers == 'False' ? false : true;
+    // };
+
+    function parseVars(data) {
+        Object.entries(data).forEach((field) => {
+            if (field[1] === 'True' || field[1] === 'False') {
+                data[field[0]] = field[1] === 'True' ? true : false;
+            }
+        });
+
+        return data;
+    }
 
     const onSubmit = (data) => {
         setLoadingAnimation(true);
-        convertToBool(data);
-        makeRegistration(data);
+        // convertToBool(data);
+        data = parseVars(data);
+        registerMember(data);
         // send request to backend
         // if res is good
         // block submit button, notify that registration is successful
         setTimeout(() => {
             setLoadingAnimation(false);
-            setSubmitButtonValue('MONTANA');
+            setSubmitButtonValue('Successful');
             // console.log(data);
         }, 2000);
 
