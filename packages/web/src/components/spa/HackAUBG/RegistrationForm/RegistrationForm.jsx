@@ -259,12 +259,13 @@ const RegistrationForm = () => {
                         <label>
                             School/University
                             <select
+                                defaultValue={'default'}
                                 className="select"
                                 {...register('university', {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled selected>
+                                <option value="default" disabled>
                                     Choose an School/University
                                 </option>
 
@@ -294,11 +295,12 @@ const RegistrationForm = () => {
                             T-shirt size
                             <select
                                 className="select"
+                                defaultValue={'default'}
                                 {...register('shirtsize', {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled selected>
+                                <option value="default" disabled>
                                     Choose a size
                                 </option>
 
@@ -323,11 +325,12 @@ const RegistrationForm = () => {
                             How did you find out about HackAUBG?
                             <select
                                 className="select"
+                                defaultValue={'default'}
                                 {...register('heardaboutus', {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled selected>
+                                <option value="default" disabled>
                                     Choose one option
                                 </option>
 
@@ -352,11 +355,12 @@ const RegistrationForm = () => {
                             What are your strongest sides?
                             <select
                                 className="select"
+                                defaultValue={'default'}
                                 {...register('strongsides', {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled selected>
+                                <option value="default" disabled>
                                     Choose one option
                                 </option>
 
@@ -419,11 +423,12 @@ const RegistrationForm = () => {
                             What is your programming level?
                             <select
                                 className="select"
+                                defaultValue={'default'}
                                 {...register('programminglevel', {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled selected>
+                                <option value="" disabled>
                                     Choose one option
                                 </option>
 
