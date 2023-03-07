@@ -97,7 +97,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 						return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": updateErr.Error()}})
 					}
 
-					go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
+					go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email, c.Query("string"))
 
 					return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to existing team"})
 				}
@@ -130,7 +130,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 				}
 				return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't create team"}})
 			}
-			go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
+			go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email, c.Query("testing"))
 
 			return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
 		}
@@ -147,7 +147,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
-	go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email)
+	go SendEmailToNewParticipant(newHackathonTeamMember.FullName, newHackathonTeamMember.Email, c.Query("testing"))
 
 	// return success code participant added to no team list and created
 	return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "Partcipant added to particapnts without team collection"})
@@ -162,9 +162,14 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 	return FormatTeamName(passedTeamName) == FormatTeamName(storedTeamName)
 }
 
-func SendEmailToNewParticipant(fullName string, email string) {
+func SendEmailToNewParticipant(fullName string, email string, testing string) {
+
+	if testing == "true" {
+		return
+	}
 
 	requestURL := os.Getenv("MAILING_URL")
+	mailingToken := os.Getenv("MAILING_TOKEN")
 
 	type Mailer struct {
 		Receiver string `json:"receiver"`
@@ -173,7 +178,7 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	}
 
 	var reqBody Mailer
-	
+
 	firstName := strings.Split(fullName, " ")[0]
 
 	//TODO: bruh Please somebody fix this html :D, Also maybe we should make a separeate issue for it.
@@ -233,7 +238,6 @@ func SendEmailToNewParticipant(fullName string, email string) {
 	reqBody.Receiver = email
 	reqBody.Subject = "Welcome to HackAUBG 5.0"
 
-	fmt.Println(reqBody)
 	json_data, _ := json.Marshal(reqBody)
 
 	client := &http.Client{}
@@ -246,7 +250,6 @@ func SendEmailToNewParticipant(fullName string, email string) {
 		return
 	}
 
-	mailingToken := os.Getenv("MAILING_TOKEN")
 	req.Header.Set("Authorization", mailingToken)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -262,6 +265,6 @@ func SendEmailToNewParticipant(fullName string, email string) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	fmt.Println(res)
+	fmt.Println(res["message"])
 
 }
