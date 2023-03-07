@@ -51,10 +51,11 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
 		WantJobOffers:                  member.WantJobOffers}
 
-	numberOfMembers, _ := GetNumberOfHackathonParticipants(ctx)
+	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
+	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
 	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
 
-	if numberOfMembers >= 90 {
+	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
 		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max Hackathon participants is reached"})
 	}
 
