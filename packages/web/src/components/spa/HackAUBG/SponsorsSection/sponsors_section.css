@@ -1,0 +1,161 @@
+.sponsors-main {
+    height: fit-content;
+    background: linear-gradient(
+        #204829,
+        #222222,
+        #222222,
+        #222222,
+        #204829,
+        #204829
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sponsors-containers {
+    width: 80%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sponsors-header {
+    margin-top: 3%;
+    color: #7de776;
+    font-family: 'Roboto';
+    font-weight: 900;
+    font-size: 2em;
+}
+
+.sponsors-headers {
+    min-width: 15vw;
+    text-align: center;
+    position: relative;
+    top: 32px;
+    border-style: solid;
+}
+
+.sponsors-header-platinum {
+    background-color: #00b79a;
+    border-color: #00b79a;
+}
+
+.sponsors-header-gold {
+    background-color: #c9b037;
+    border-color: #c9b037;
+}
+
+.sponsors-header-custom {
+    background-color: #cdbaba;
+    border-color: #cdbaba;
+}
+
+.sponsors-header-silver {
+    background-color: #b4b4b4;
+    border-color: #b4b4b4;
+}
+
+.sponsors-header-bronze {
+    background-color: rgb(163, 104, 37);
+    border-color: rgb(163, 104, 37);
+    min-width: 20vw;
+}
+
+.platinum-box,
+.gold-box,
+.silver-box,
+.custom-box,
+.bronze-box {
+    width: 100%;
+    height: fit-content;
+    max-width: 1000px;
+    border-style: solid;
+    border-width: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.logo-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    margin: 4% 2% 2% 2%;
+    background-color: white;
+}
+
+.logo-container img {
+    cursor: pointer;
+    width: 25%;
+}
+
+.platinum-box {
+    border-color: #00b79a;
+}
+
+.gold-box {
+    border-color: #c9b037;
+}
+
+.custom-box {
+    border-color: #cdbaba;
+}
+
+.silver-box {
+    border-color: #b4b4b4;
+}
+
+.bronze-box {
+    border-color: rgb(163, 104, 37);
+    margin-bottom: 5%;
+}
+
+@media only screen and (max-width: 900px) {
+    .sponsors-main {
+        padding-bottom: 5%;
+    }
+
+    .sponsors-headers {
+        padding-top: 2%;
+        min-width: 34vw;
+    }
+
+    .sponsors-box-header-bronze {
+        padding-top: 2%;
+        min-width: 60vw;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10%;
+        flex-direction: column;
+    }
+
+    .logo-container img {
+        cursor: pointer;
+        width: 75%;
+        margin-top: 10%;
+        margin-bottom: 3%;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .sponsors-header-platinum,
+    .sponsors-header-custom {
+        min-width: 50vw;
+        margin: 10% 2% 6% 2%;
+    }
+
+    .sponsors-header-bronze {
+        min-width: 70vw;
+        margin: 10% 2% 6% 2%;
+    }
+}

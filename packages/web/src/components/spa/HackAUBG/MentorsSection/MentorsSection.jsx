@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
 import { MentorsCard } from './MentorsCard';
 import './mentors_section.css';
