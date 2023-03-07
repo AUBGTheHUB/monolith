@@ -62,6 +62,10 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
 	}
 
+	if CheckIfNoTeamParticipantExists(newHackathonTeamMember) {
+		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+	}
+
 	hasTeam := newHackathonTeamMember.HasTeam
 
 	if *hasTeam {
@@ -134,10 +138,8 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 
 			return c.Status(http.StatusCreated).JSON(responses.MemberResponse{Status: http.StatusCreated, Message: "New team created", Data: &fiber.Map{"data": result}})
 		}
-	}
 
-	if CheckIfNoTeamParticipantExists(newHackathonTeamMember) {
-		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
+		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max number of teams in the hackathon is reached"})
 	}
 
 	// Add participant to collection of participants without team
