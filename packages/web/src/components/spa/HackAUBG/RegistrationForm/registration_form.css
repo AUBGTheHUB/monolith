@@ -66,8 +66,10 @@
 }
 
 .hackaubg-register-btn.disabled {
-    background-color: gray;
+    background-color: #19b700;
     color: white;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .from-personal-info {

@@ -34,16 +34,13 @@ const RegistrationForm = () => {
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
                 setLoadingAnimation(false);
-                setSubmitButtonValue('Successful');
-
                 setApiError(false); // remove red color of button
-                // disableButton(true);
+                console.log(res);
             })
             .catch((err) => {
                 console.log(err);
                 setLoadingAnimation(false);
-                setButtonMessage(err['response']['data']['message']);
-
+                getErrorMessage(err);
                 setApiError(true); // put button in error state
                 setSubmitButtonValue('Retry');
             });
@@ -58,10 +55,17 @@ const RegistrationForm = () => {
 
         return data;
     }
+    function getErrorMessage(err) {
+        console.log(err['response']['status']);
+        if (err['response']['status'] >= 500) {
+            setButtonMessage('Something went wrong');
+        } else {
+            setButtonMessage(err['response']['data']['message']);
+        }
+    }
     function checkTeamname(data) {
         if (data.hasteam == false) {
-            data.teamname = '';
-            console.log(data.teamname);
+            data.teamname = null;
         }
         return data;
     }
@@ -70,7 +74,7 @@ const RegistrationForm = () => {
         data = parseVars(data);
         data = checkTeamname(data);
         registerMember(data);
-        console.log(data);
+        console.log();
     };
 
     // useEffect will always initialize this with the correct state
@@ -89,14 +93,19 @@ const RegistrationForm = () => {
     };
 
     const checkButtonAvailability = () => {
-        if (apiError) {
+        if (apiError == true) {
+            console.log(apiError);
             setButtonState('hackaubg-register-btn error');
+            return;
+        } else if (apiError == false && submitPressed) {
+            setSubmitButtonValue('Successful');
+            setButtonState('hackaubg-register-btn disabled');
             return;
         } else if (Object.keys(errors).length != 0 && submitPressed) {
             setButtonState('hackaubg-register-btn error');
             return;
         }
-        setButtonState('hackaubg-register-btn');
+        setButtonState('hackaubg-register-btn ');
     };
 
     useEffect(checkButtonAvailability, [Object.keys(errors)]);
@@ -713,7 +722,7 @@ const RegistrationForm = () => {
                         </p>
                     </div>
                 </fieldset>
-                {apiError && (
+                {apiError == true && (
                     <p className="db-error-msg">
                         <BsExclamationCircleFill />
                         {buttonMessage}
