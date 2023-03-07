@@ -29,7 +29,9 @@ const RegistrationForm = () => {
     const registerMember = (data) => {
         axios({
             method: 'post',
-            url: url + '/api/hackathon/register',
+            // TODO: Remove the url param when done with testing the endpoint
+            // * this disables the mailing feature -> e.g. it won't send emails to random emails you use to test the registration with
+            url: url + '/api/hackathon/register?testing=true',
             data
         })
             // eslint-disable-next-line no-unused-vars
