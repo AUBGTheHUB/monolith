@@ -22,9 +22,6 @@ const RegistrationForm = () => {
 
     // ? What are these used for?
     // eslint-disable-next-line no-unused-vars
-    const [teamname, setTeamname] = useState(false);
-    // eslint-disable-next-line no-unused-vars
-    const [teamState, setTeamState] = useState('send-info invisible');
 
     const registerMember = (data) => {
         axios({
@@ -59,12 +56,19 @@ const RegistrationForm = () => {
 
         return data;
     }
-
+    function checkTeamname(data) {
+        if (data.hasteam == false) {
+            data.teamname = '';
+            console.log(data.teamname);
+        }
+        return data;
+    }
     const onSubmit = (data) => {
         setLoadingAnimation(true);
         data = parseVars(data);
+        data = checkTeamname(data);
         registerMember(data);
-        console.log(data.hasteam);
+        console.log(data);
     };
 
     // useEffect will always initialize this with the correct state
@@ -472,7 +476,7 @@ const RegistrationForm = () => {
                                 type="text"
                                 {...register('teamname', {
                                     required: {
-                                        value: teamname,
+                                        value: !disableTeamNameField,
                                         message: '*This field is required'
                                     },
                                     minLength: {
