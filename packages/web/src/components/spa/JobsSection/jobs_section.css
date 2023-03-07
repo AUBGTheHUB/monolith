@@ -24,6 +24,25 @@
     .jobs-page {
         min-height: 90vh;
     }
+    .no-jobs-container {
+        height: 90vh;
+    }
+
+    .no-jobs-image {
+        height: 40vh;
+    }
+}
+
+.no-jobs-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+}
+
+.no-jobs-image {
+    height: 60vh;
+    display: flex;
+    align-self: center;
 }
 
 .jobs-page .footer-container {
