@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'; // eslint-disable-line
 import './registration_form.css';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -10,12 +10,12 @@ const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors } 
+        formState: { errors } // eslint-disable-line
     } = useForm({ mode: 'all' });
 
     const [loadingAnimation, setLoadingAnimation] = useState(false);
-    const [submitPressed, setSubmitPressed] = useState(false);
-    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); 
+    const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
+    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
     const [disableTeamNameField, setDisableTeamNameField] = useState(true);
@@ -35,7 +35,7 @@ const RegistrationForm = () => {
             })
             .catch((err) => {
                 setLoadingAnimation(false);
-                getErrorMessage(err);
+                setErrorMessage(err);
                 setApiError(true); // put button in error state
                 setSubmitButtonValue('Retry');
             });
@@ -52,9 +52,9 @@ const RegistrationForm = () => {
     }
 
     //checking what error code we receive from the backend and outputing message depending on the code
-    function getErrorMessage(err) {
+    function setErrorMessage(err) {
         if (err['response']['status'] >= 500) {
-            setButtonMessage('Something went wrong');
+            setButtonMessage('Something went wrong'); //add new message
         } else {
             setButtonMessage(err['response']['data']['message']);
         }
@@ -69,8 +69,6 @@ const RegistrationForm = () => {
     };
 
     // useEffect will always initialize this with the correct state
-    useEffect(checkButtonAvailability, [Object.keys(errors)]);
-
     const [buttonState, setButtonState] = useState(
         'hackaubg-register-btn disabled'
     );
@@ -114,6 +112,7 @@ const RegistrationForm = () => {
         setSubmitButtonValue('Submit');
     };
 
+    useEffect(checkButtonAvailability, [Object.keys(errors)]);
 
     const showButton = () => {
         if (loadingAnimation) {
