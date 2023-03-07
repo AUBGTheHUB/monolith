@@ -92,12 +92,25 @@ const RegistrationForm = () => {
         if (apiError == true) {
             setButtonState('hackaubg-register-btn error');
             return;
-        } else if (apiError == false && submitPressed) {
-            setSubmitButtonValue('Successful');
-            setButtonState('hackaubg-register-btn disabled');
+        } else if (
+            apiError == false &&
+            submitPressed &&
+            Object.keys(errors).length != 0
+        ) {
+            setButtonState('hackaubg-register-btn error');
             return;
         } else if (Object.keys(errors).length != 0 && submitPressed) {
             setButtonState('hackaubg-register-btn error');
+
+            return;
+        } else if (
+            apiError == false &&
+            submitPressed &&
+            Object.keys(errors).length == 0
+        ) {
+            setButtonState('hackaubg-register-btn disabled');
+            setSubmitButtonValue('Success');
+
             return;
         }
         setButtonState('hackaubg-register-btn ');
