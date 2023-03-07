@@ -35,10 +35,8 @@ const RegistrationForm = () => {
             .then((res) => {
                 setLoadingAnimation(false);
                 setApiError(false); // remove red color of button
-                console.log(res);
             })
             .catch((err) => {
-                console.log(err);
                 setLoadingAnimation(false);
                 getErrorMessage(err);
                 setApiError(true); // put button in error state
@@ -56,7 +54,6 @@ const RegistrationForm = () => {
         return data;
     }
     function getErrorMessage(err) {
-        console.log(err['response']['status']);
         if (err['response']['status'] >= 500) {
             setButtonMessage('Something went wrong');
         } else {
@@ -74,7 +71,6 @@ const RegistrationForm = () => {
         data = parseVars(data);
         data = checkTeamname(data);
         registerMember(data);
-        console.log();
     };
 
     // useEffect will always initialize this with the correct state
@@ -94,7 +90,6 @@ const RegistrationForm = () => {
 
     const checkButtonAvailability = () => {
         if (apiError == true) {
-            console.log(apiError);
             setButtonState('hackaubg-register-btn error');
             return;
         } else if (apiError == false && submitPressed) {
