@@ -723,6 +723,11 @@ const RegistrationForm = () => {
                         {buttonMessage}
                     </p>
                 )}
+                <p className="db-error-msg">
+                    <BsExclamationCircleFill />
+                    Something went wrong
+                    {buttonMessage}
+                </p>
                 {showButton()}
             </form>
         </div>

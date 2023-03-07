@@ -189,9 +189,27 @@ input {
         height: initial;
         margin-bottom: 5%;
     }
+    .radio-label {
+        height: initial;
+        margin-bottom: 2%;
+    }
     .from-personal-info {
         display: flex;
         flex-wrap: wrap;
         width: 80%;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .db-error-msg {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .db-error-msg {
+        font-size: 15px;
+    }
+    .radio-btn .radio {
+        width: 8%;
     }
 }
