@@ -6,7 +6,7 @@ type TeamMember struct {
 	ID                             primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	FullName                       string             `json:"fullname" validate:"required"`
 	HasTeam                        *bool              `json:"hasteam" validate:"required"`
-	TeamName                       string             `json:"teamname" validate:"required"`
+	TeamName                       string             `json:"teamname"`
 	Email                          string             `json:"email" validate:"required"`
 	University                     string             `json:"university" validate:"required"`
 	Age                            int                `json:"age" validate:"required"`
