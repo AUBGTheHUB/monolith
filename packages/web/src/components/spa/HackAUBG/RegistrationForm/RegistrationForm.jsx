@@ -125,7 +125,7 @@ const RegistrationForm = () => {
     };
 
     return (
-        <div className="registration-main">
+        <div className="registration-main" id="registration">
             <h1>Register for HackAUBG 5.0</h1>
             <form
                 action=""
