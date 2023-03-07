@@ -212,7 +212,7 @@ func GetNoTeamParticipantsCount(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
 	}
 
-	results, err := noTeamParticipantsCollection.CountDocuments(ctx, bson.M{})
+	results, err := GetNumberOfNoTeamParticipants(ctx)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -237,4 +237,8 @@ func CheckIfNoTeamParticipantExists(newNoTeamParticipant models.TeamMember) bool
 	_ = cursor.All(ctx, &results)
 
 	return len(results) > 0
+}
+func GetNumberOfNoTeamParticipants(ctx context.Context) (int64, error) {
+	results, err := noTeamParticipantsCollection.CountDocuments(ctx, bson.M{})
+	return results, err
 }
