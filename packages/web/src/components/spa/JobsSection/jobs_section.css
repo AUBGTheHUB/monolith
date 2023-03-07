@@ -71,6 +71,7 @@
 
 .job-logo {
     margin-top: 5%;
+    justify-content: center;
     width: 90%;
     margin-bottom: 5%;
     height: 24vh;
