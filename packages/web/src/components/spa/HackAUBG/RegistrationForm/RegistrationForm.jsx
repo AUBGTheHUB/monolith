@@ -14,7 +14,7 @@ const RegistrationForm = () => {
     } = useForm({ mode: 'all' });
 
     const [loadingAnimation, setLoadingAnimation] = useState(false);
-    const [submitPressed, setSubmitPressed] = useState(false);
+    const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
     const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
@@ -92,28 +92,22 @@ const RegistrationForm = () => {
         if (apiError == true) {
             setButtonState('hackaubg-register-btn error');
             return;
-        } else if (
-            apiError == false &&
-            submitPressed &&
-            Object.keys(errors).length != 0
-        ) {
-            setButtonState('hackaubg-register-btn error');
-            return;
-        } else if (Object.keys(errors).length != 0 && submitPressed) {
-            setButtonState('hackaubg-register-btn error');
+        } else if (apiError == false) {
+            if (Object.keys(errors).length != 0) {
+                setButtonState('hackaubg-register-btn error');
+                setSubmitPressed(false);
+                setSubmitButtonValue('Retry');
 
-            return;
-        } else if (
-            apiError == false &&
-            submitPressed &&
-            Object.keys(errors).length == 0
-        ) {
-            setButtonState('hackaubg-register-btn disabled');
-            setSubmitButtonValue('Success');
+                return;
+            } else if (Object.keys(errors).length == 0 && submitPressed) {
+                setButtonState('hackaubg-register-btn disabled');
+                setSubmitButtonValue('Success');
 
-            return;
+                return;
+            }
         }
         setButtonState('hackaubg-register-btn ');
+        setSubmitButtonValue('Submit');
     };
 
     useEffect(checkButtonAvailability, [Object.keys(errors)]);
