@@ -51,11 +51,10 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
 		WantJobOffers:                  member.WantJobOffers}
 
-	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
-	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
+	numberOfTotalParticipants := GetTotalNumberOfParticipants()
 	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
 
-	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
+	if numberOfTotalParticipants >= 90 {
 		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max Hackathon participants is reached"})
 	}
 
@@ -163,6 +162,15 @@ func FormatTeamName(teamName string) string {
 
 func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 	return FormatTeamName(passedTeamName) == FormatTeamName(storedTeamName)
+}
+
+func GetTotalNumberOfParticipants() int64 {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
+	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
+	result := numberOfParticipantsWithTeam + numberOfParticipantsWithoutTeam
+	return result
 }
 
 func SendEmailToNewParticipant(fullName string, email string, testing string) {
