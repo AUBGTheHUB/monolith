@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // eslint-disable-line
+import React, { useEffect } from 'react';
 import './registration_form.css';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
@@ -10,18 +10,15 @@ const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors } // eslint-disable-line
+        formState: { errors } 
     } = useForm({ mode: 'all' });
 
     const [loadingAnimation, setLoadingAnimation] = useState(false);
-    const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
-    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
+    const [submitPressed, setSubmitPressed] = useState(false);
+    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); 
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
     const [disableTeamNameField, setDisableTeamNameField] = useState(true);
-
-    // ? What are these used for?
-    // eslint-disable-next-line no-unused-vars
 
     const registerMember = (data) => {
         axios({
@@ -34,7 +31,7 @@ const RegistrationForm = () => {
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
                 setLoadingAnimation(false);
-                setApiError(false); // remove red color of button
+                setApiError(false);
             })
             .catch((err) => {
                 setLoadingAnimation(false);
@@ -45,14 +42,16 @@ const RegistrationForm = () => {
     };
 
     function parseVars(data) {
+        //getting all data from form and converting True/False string to boolean
         Object.entries(data).forEach((field) => {
             if (field[1] === 'True' || field[1] === 'False') {
                 data[field[0]] = field[1] === 'True' ? true : false;
             }
         });
-
         return data;
     }
+
+    //checking what error code we receive from the backend and outputing message depending on the code
     function getErrorMessage(err) {
         if (err['response']['status'] >= 500) {
             setButtonMessage('Something went wrong');
@@ -60,12 +59,8 @@ const RegistrationForm = () => {
             setButtonMessage(err['response']['data']['message']);
         }
     }
-    function checkTeamname(data) {
-        if (data.hasteam == false) {
-            data.teamname = null;
-        }
-        return data;
-    }
+
+    //send data to registerMember function
     const onSubmit = (data) => {
         setLoadingAnimation(true);
         data = parseVars(data);
@@ -74,10 +69,13 @@ const RegistrationForm = () => {
     };
 
     // useEffect will always initialize this with the correct state
+    useEffect(checkButtonAvailability, [Object.keys(errors)]);
+
     const [buttonState, setButtonState] = useState(
         'hackaubg-register-btn disabled'
     );
 
+    //handleDisabledFields will blur teamname inout field if they answer no
     const handleDisabledFields = (e) => {
         if (e.target.name === 'hasteam') {
             if (e.target.value === 'False') {
@@ -87,7 +85,15 @@ const RegistrationForm = () => {
             }
         }
     };
+    //checks if user selected Yes/No on question about if they have team and if they do not have the teamname value is null
+    function checkTeamname(data) {
+        if (data.hasteam == false) {
+            data.teamname = null;
+        }
+        return data;
+    }
 
+    //changes the button color and text depending on what is enetred in the form
     const checkButtonAvailability = () => {
         if (apiError == true) {
             setButtonState('hackaubg-register-btn error');
@@ -97,12 +103,10 @@ const RegistrationForm = () => {
                 setButtonState('hackaubg-register-btn error');
                 setSubmitPressed(false);
                 setSubmitButtonValue('Retry');
-
                 return;
             } else if (Object.keys(errors).length == 0 && submitPressed) {
                 setButtonState('hackaubg-register-btn disabled');
                 setSubmitButtonValue('Success');
-
                 return;
             }
         }
@@ -110,7 +114,6 @@ const RegistrationForm = () => {
         setSubmitButtonValue('Submit');
     };
 
-    useEffect(checkButtonAvailability, [Object.keys(errors)]);
 
     const showButton = () => {
         if (loadingAnimation) {
