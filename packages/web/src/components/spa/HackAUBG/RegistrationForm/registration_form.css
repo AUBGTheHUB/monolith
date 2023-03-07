@@ -16,11 +16,15 @@
 }
 
 .registration-main h1 {
-    color: #19b700;
+    /* color: #19b700;
     margin-bottom: 4%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: center; */
+    color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+    text-align: center;
 }
 
 .reg-form {
