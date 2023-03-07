@@ -428,7 +428,7 @@ const RegistrationForm = () => {
                                     required: true
                                 })}
                             >
-                                <option value="" disabled>
+                                <option value="default" disabled>
                                     Choose one option
                                 </option>
 
