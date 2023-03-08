@@ -152,6 +152,7 @@ const RegistrationForm = () => {
                             Full Name
                             <input
                                 type="text"
+                                placeholder="Enter your name"
                                 {...register('fullname', {
                                     required: {
                                         value: true,
@@ -180,6 +181,7 @@ const RegistrationForm = () => {
                             Email
                             <input
                                 type="text"
+                                placeholder="Enter your email"
                                 {...register('email', {
                                     required: {
                                         value: true,
@@ -203,6 +205,7 @@ const RegistrationForm = () => {
                             Age
                             <input
                                 type="number"
+                                placeholder="Enter your age"
                                 {...register('age', {
                                     valueAsNumber: true,
                                     required: {
@@ -232,6 +235,7 @@ const RegistrationForm = () => {
                             Location
                             <input
                                 type="text"
+                                placeholder="Enter the place you currently live"
                                 {...register('location', {
                                     required: {
                                         value: true,
@@ -397,6 +401,7 @@ const RegistrationForm = () => {
                             What are your job interests?
                             <input
                                 type="text"
+                                placeholder="List the fields you are interested to work in"
                                 {...register('jobinterests', {
                                     required: {
                                         value: true,
@@ -493,6 +498,11 @@ const RegistrationForm = () => {
                             What is the name of your team?
                             <input
                                 disabled={disableTeamNameField}
+                                placeholder={
+                                    disableTeamNameField == false
+                                        ? "Enter your team's name"
+                                        : 'We will find you a team!'
+                                }
                                 type="text"
                                 {...register('teamname', {
                                     required: {
