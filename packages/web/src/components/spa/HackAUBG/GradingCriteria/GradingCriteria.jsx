@@ -12,7 +12,7 @@ export const GradingCriteria = () => {
                     </h2>
                     <p>Innovative idea and originality (7 points)</p>
                     <p>Market Research (6 points)</p>
-                    <p>Inclusion of external sources/data (2 points)</p>
+                    <p>Usage of external data to verify the idea (2 points)</p>
                 </div>
                 <div className="grading-criteria-column">
                     <h2>
@@ -27,7 +27,7 @@ export const GradingCriteria = () => {
                     <h2>
                         COMPLEXITY OF THE PROJECT<br></br> (40 points)
                     </h2>
-                    <p>Self-engineered code? (15 points)</p>
+                    <p>Code originality (15 points)</p>
                     <p>Suitable technology stack (10 points)</p>
                     <p>Clear coding style (10 points)</p>
                     <p>Security (5 points)</p>
@@ -43,8 +43,8 @@ export const GradingCriteria = () => {
                     </p>
                     <p>Demo (3 points)</p>
                     <p>
-                        Demonstration and explanation of the most complex line
-                        of code in the project (2 points)
+                        Demonstration and explanation of the most complex
+                        feature of the project (2 points)
                     </p>
                 </div>
             </div>
