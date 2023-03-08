@@ -163,12 +163,23 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 func GetTotalNumberOfParticipants(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
-	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
+
+	numberOfParticipantsWithTeam, err := GetNumberOfHackathonParticipants(ctx)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't get number of participants with a team"}})
+	}
+
+	numberOfParticipantsWithoutTeam, err := GetNumberOfNoTeamParticipants(ctx)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't get number of participants without a team"}})
+	}
+
 	result := numberOfParticipantsWithTeam + numberOfParticipantsWithoutTeam
+
 	if result >= 90 {
 		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max number of Hackathon participants is reached"})
 	}
+
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Registration avaliable"})
 }
 
