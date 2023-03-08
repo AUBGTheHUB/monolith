@@ -102,7 +102,7 @@
 }
 .job-description {
     width: 90%;
-    height: 34%;
+    height: 28%;
     align-self: center;
     display: flex;
     flex-wrap: wrap;
@@ -114,6 +114,7 @@
 .job-position {
     align-self: center;
     width: 90%;
+    height: 12%;
 }
 
 .job-position h3 {
@@ -176,6 +177,9 @@
     }
     .job-logo {
         height: 30%;
+    }
+    .job-description {
+        height: 34%;
     }
 }
 
