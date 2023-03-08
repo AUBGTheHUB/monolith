@@ -16,7 +16,7 @@ export const FaqSection = () => {
                     How many people can be in a team?
                 </h2>
                 <p className="faq-text">
-                    The minimum number of people in a team is 3, but you can
+                    The minimum number of people in a team is 4, but you can
                     have up to 6 people in a team. The ideal team would consist
                     of one or two software developers, a designer, and one or
                     two business planners.

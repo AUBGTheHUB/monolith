@@ -1,9 +1,8 @@
 import React from 'react';
 import { NavBar } from '../Navigation/NavBar';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Anchor, Props } from '../Navigation/NavFactory';
-import { useEffect } from 'react';
 import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
 import { Footer } from '../Footer/Footer';

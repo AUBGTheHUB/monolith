@@ -22,7 +22,7 @@ export const JourneyDesktop = () => {
                             below! Don’t forget to create a diverse team, as the
                             best teams usually incorporate programmers, business
                             planners, and designers. The teams should be between
-                            3 and 6 people. However, if you have less, don’t
+                            4 and 6 people. However, if you have less, don’t
                             worry! Organizers from the Hub will add you to the
                             best suited team for you. Don’t procrastinate
                             registering, because if the registered teams become
