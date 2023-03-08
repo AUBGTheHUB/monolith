@@ -51,12 +51,8 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
 		WantJobOffers:                  member.WantJobOffers}
 
-	numberOfTotalParticipants := GetTotalNumberOfParticipants()
+	// numberOfTotalParticipants := GetTotalNumberOfParticipants()
 	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
-
-	if numberOfTotalParticipants >= 90 {
-		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max Hackathon participants is reached"})
-	}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "This email is already present in the DB", Data: &fiber.Map{"data": newHackathonTeamMember.Email}})
@@ -164,13 +160,16 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 	return FormatTeamName(passedTeamName) == FormatTeamName(storedTeamName)
 }
 
-func GetTotalNumberOfParticipants() int64 {
+func GetTotalNumberOfParticipants(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
 	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
 	result := numberOfParticipantsWithTeam + numberOfParticipantsWithoutTeam
-	return result
+	if result >= 90 {
+		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max number of Hackathon participants is reached"})
+	}
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Registration avaliable"})
 }
 
 func SendEmailToNewParticipant(fullName string, email string, testing string) {
