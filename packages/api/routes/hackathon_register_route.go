@@ -8,5 +8,5 @@ import (
 
 func HackathonRegisterRoutes(app *fiber.App) {
 	app.Post("/api/hackathon/register", controllers.RegisterTeamMember)
-	app.Get("/api/hackathon/register/available", controllers.CheckRegistrationAvailability)
+	app.Get("/api/hackathon/register/available", controllers.IsRegistrationAvailable)
 }
