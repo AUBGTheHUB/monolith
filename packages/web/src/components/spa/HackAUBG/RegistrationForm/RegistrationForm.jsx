@@ -27,7 +27,8 @@ const RegistrationForm = () => {
             url: url + '/api/hackathon/register/available'
         })
             .then((res) => {
-                setFormState(res.status);
+                console.log(res.data.status);
+                setFormState(res.data.status);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {});
@@ -41,13 +42,14 @@ const RegistrationForm = () => {
             method: 'post',
             // TODO: Remove the url param when done with testing the endpoint
             // * this disables the mailing feature -> e.g. it won't send emails to random emails you use to test the registration with
-            url: url + '/api/hackathon/register?testing=true',
+            url: url + '/api/hackathon/register',
             data
         })
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
                 setLoadingAnimation(false);
                 setApiError(false);
+                console.log(res['response']['data']['message']);
             })
             .catch((err) => {
                 setLoadingAnimation(false);
@@ -800,9 +802,8 @@ const RegistrationForm = () => {
                 </form>
             </div>
         );
-    } else {
-        return <h1 className="reg-closed">Registration Closed</h1>;
     }
+    return <h1 className="reg-closed">Registration is closed</h1>;
 };
 
 export default RegistrationForm;
