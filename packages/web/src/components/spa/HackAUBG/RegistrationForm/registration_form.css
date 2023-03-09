@@ -212,3 +212,8 @@ input {
         width: 8%;
     }
 }
+.reg-closed {
+    margin-top: 5%;
+    color: white;
+    text-align: center;
+}
