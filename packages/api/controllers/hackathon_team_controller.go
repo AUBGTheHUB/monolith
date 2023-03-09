@@ -206,7 +206,7 @@ func DeleteHackathonTeams(c *fiber.Ctx) error {
 	err := hackathonTeamCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&team)
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error()}})
 	}
 
 
