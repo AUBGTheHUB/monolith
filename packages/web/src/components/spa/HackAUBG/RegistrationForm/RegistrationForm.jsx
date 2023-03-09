@@ -26,12 +26,10 @@ const RegistrationForm = () => {
             method: 'get',
             url: url + '/api/hackathon/register/available'
         })
-            // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(() => {
                 setIsFormAvailable(true);
             })
-            // eslint-disable-next-line no-unused-vars
-            .catch((err) => {
+            .catch(() => {
                 setIsFormAvailable(false);
             });
     };
