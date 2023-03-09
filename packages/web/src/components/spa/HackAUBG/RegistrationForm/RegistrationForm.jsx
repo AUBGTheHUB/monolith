@@ -19,22 +19,25 @@ const RegistrationForm = () => {
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
     const [disableTeamNameField, setDisableTeamNameField] = useState(true);
-    const [formCheck, setFormCheck] = useState();
+    const [isFormAvailable, setIsFormAvailable] = useState(false);
 
-    const getSpots = () => {
+    const checkRegistrationAvailability = () => {
         axios({
             method: 'get',
             url: url + '/api/hackathon/register/available'
         })
+            // eslint-disable-next-line no-unused-vars
             .then((res) => {
-                console.log(res.data.status);
-                setFormCheck(res.data.status);
+                setIsFormAvailable(true);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch((err) => {
+                setIsFormAvailable(false);
+            });
     };
+
     useEffect(() => {
-        getSpots();
+        checkRegistrationAvailability();
     }, []);
 
     const registerMember = (data) => {
@@ -154,7 +157,7 @@ const RegistrationForm = () => {
             );
         }
     };
-    if (formCheck == 200) {
+    if (isFormAvailable) {
         return (
             <div className="registration-main" id="registration">
                 <h1>Register for HackAUBG 5.0</h1>
