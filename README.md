@@ -11,6 +11,7 @@
 
 Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
 ##### Recommended Text Editor: `VSCode`
+##### Recommended Plugins: `GitLens`
 ---
 
 ### Adding your SSH key to the ssh-agent and GitHub
