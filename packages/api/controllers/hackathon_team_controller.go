@@ -202,6 +202,36 @@ func DeleteHackathonTeams(c *fiber.Ctx) error {
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
 
+	var team models.Team
+	err := hackathonTeamCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&team)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+
+	teamMembers := make([]models.TeamMember, len(team.TeamMembers))
+
+	var tempTeamMember models.TeamMember
+
+	for i := 0; i < len(team.TeamMembers); i++ {
+		key_from_hex, _ := primitive.ObjectIDFromHex(team.TeamMembers[i])
+		_ = teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&tempTeamMember)
+		teamMembers[i] = tempTeamMember
+	}
+
+	err = BatchAddTeamMembersToNoParticipants(ctx, teamMembers)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Failed moving members (adding)", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	_, err = BatchDeleteTeamMembers(ctx, team.TeamMembers)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Failed moving members (deleting)", Data: &fiber.Map{"data": err.Error()}})
+	}
+
 	result, err := hackathonTeamCollection.DeleteOne(ctx, bson.M{"_id": key_from_hex})
 
 	if err != nil {

@@ -129,7 +129,7 @@ func TestTeamEndpoint(t *testing.T) {
 	assert.Equal(t, float64(200), res["status"])
 
 	// * CLEAN UP MEMBER ENTRY
-	req, _ = http.NewRequest("DELETE", "http://127.0.0.1:8000/api/hackathon/members"+"/"+fmt.Sprint(memberId), bytes.NewBufferString(""))
+	req, _ = http.NewRequest("DELETE", "http://127.0.0.1:8000/api/hackathon/participants_no_team"+"/"+fmt.Sprint(memberId), bytes.NewBufferString(""))
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
