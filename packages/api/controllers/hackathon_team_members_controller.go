@@ -18,6 +18,7 @@ import (
 )
 
 var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
+// var teamMembersCollection
 
 var validateTeamMembers = validator.New()
 
@@ -255,5 +256,15 @@ func CheckIfTeamMemberExists(newHackathonTeamMember models.TeamMember) bool {
 
 func CreateNewHackathonParticipant(ctx context.Context, newHackathonTeamMember models.TeamMember) (*mongo.InsertOneResult, error) {
 	result, err := teamMembersCollection.InsertOne(ctx, newHackathonTeamMember)
+	return result, err
+}
+
+func BatchDeleteTeamMembers(ctx context.Context, keys []string) (*mongo.DeleteResult, error) {
+	var keys_from_hex []primitive.ObjectID
+	for _, key := range keys {
+		key_from_hex, _ := primitive.ObjectIDFromHex(key)
+		keys_from_hex = append(keys_from_hex, key_from_hex)
+	}
+	result, err := teamMembersCollection.DeleteMany(ctx, bson.M{"_id": bson.M{"$in": keys_from_hex}})
 	return result, err
 }
