@@ -57,7 +57,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	err := IsRegistrationAvailable(c)
 
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": "Couldn't get number of participants, please contact TheHubAUBG"}})
+		return c.Status(500).JSON(responses.MemberResponse{Status: 500, Message: err.Error()})
 	}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
@@ -169,27 +169,38 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 func IsRegistrationAvailable(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
-	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
-	// if err != nil {
-
-	// }
-
-	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
-	// if err != nil {
-
-	// }
-
-	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
-		c.SendStatus(400)
+	numberOfParticipantsWithTeam, err := GetNumberOfHackathonParticipants(ctx)
+	if err != nil {
 		var err fiber.Error
-		err.Code = 400
-		err.Message = "Max capacity is reached"
+		c.SendStatus(503)
+		err.Code = 503
+		err.Message = "Couldn't get number of participants with a team, please contact TheHubAUBG"
 
 		return &err
 	}
 
-	return c.SendStatus(200)
+	numberOfParticipantsWithoutTeam, err := GetNumberOfNoTeamParticipants(ctx)
+
+	if err != nil {
+		var err fiber.Error
+		c.SendStatus(503)
+		err.Code = 503
+		err.Message = "Couldn't get number of participants without a team, please contact TheHubAUBG"
+
+		return &err
+	}
+
+	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
+		var err fiber.Error
+		c.SendStatus(503)
+		err.Code = 503
+		err.Message = "Max capacity of participants is reached"
+
+		return &err
+	}
+
+	return c.SendStatus(http.StatusOK)
+
 }
 
 func SendEmailToNewParticipant(fullName string, email string, testing string) {
