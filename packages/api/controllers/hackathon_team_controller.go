@@ -220,8 +220,17 @@ func DeleteHackathonTeams(c *fiber.Ctx) error {
 		teamMembers[i] = tempTeamMember
 	}
 
-	BatchAddTeamMembersToNoParticipants(ctx, teamMembers)
-	BatchDeleteTeamMembers(ctx, team.TeamMembers)
+	err = BatchAddTeamMembersToNoParticipants(ctx, teamMembers)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Failed moving members (adding)", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	_, err = BatchDeleteTeamMembers(ctx, team.TeamMembers)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Failed moving members (deleting)", Data: &fiber.Map{"data": err.Error()}})
+	}
 
 	result, err := hackathonTeamCollection.DeleteOne(ctx, bson.M{"_id": key_from_hex})
 
