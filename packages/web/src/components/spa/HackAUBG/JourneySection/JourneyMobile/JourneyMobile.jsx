@@ -12,6 +12,7 @@ export const JourneyMobile = () => {
             </div>
             <div className="journey-mobile-content">
                 <JourneyStep
+                    id="1"
                     title={
                         <h2>
                             STEP 1:<br></br> Gather a team and register
@@ -33,6 +34,7 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
+                    id="2"
                     title={
                         <h2>
                             STEP 2:<br></br> Meet the Hub and prepare
@@ -54,6 +56,7 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
+                    id="3"
                     title={
                         <h2>
                             STEP 3:<br></br> Get Hackathoning
@@ -79,6 +82,7 @@ export const JourneyMobile = () => {
                     }
                 />
                 <JourneyStep
+                    id="4"
                     title={
                         <h2>
                             STEP 4:<br></br> Present and win

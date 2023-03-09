@@ -19,7 +19,7 @@ const RegistrationForm = () => {
     const [apiError, setApiError] = useState(false);
     const [buttonMessage, setButtonMessage] = useState('');
     const [disableTeamNameField, setDisableTeamNameField] = useState(true);
-    const [formState, setFormState] = useState();
+    const [formCheck, setFormCheck] = useState();
 
     const getSpots = () => {
         axios({
@@ -28,7 +28,7 @@ const RegistrationForm = () => {
         })
             .then((res) => {
                 console.log(res.data.status);
-                setFormState(res.data.status);
+                setFormCheck(res.data.status);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {});
@@ -154,7 +154,7 @@ const RegistrationForm = () => {
             );
         }
     };
-    if (formState == 200) {
+    if (formCheck == 200) {
         return (
             <div className="registration-main" id="registration">
                 <h1>Register for HackAUBG 5.0</h1>

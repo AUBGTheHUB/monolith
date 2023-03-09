@@ -8,11 +8,15 @@ export const JourneyStep = (props) => {
     const [stepContent, setStepContent] = useState(
         'container-content-not-displayed'
     );
+    // eslint-disable-next-line no-unused-vars
+    const [stepId, setStepId] = useState(`step-${props.id}`);
     const [arrowDown, setArrowDown] = useState('journey-arrow-displayed');
     const [arrowUp, setArrowUp] = useState('journey-arrow-not-displayed');
     const getHeight = () => {
-        const divElement = document.getElementById('step-height');
+        var divElement = document.getElementById(stepId);
         if (divElement) {
+            console.log(divElement.scrollHeight);
+
             return divElement.scrollHeight;
         }
     };
@@ -31,14 +35,16 @@ export const JourneyStep = (props) => {
 
     return (
         <div
-            style={{ '--elem-Height': getHeight() + 15 + 'px' }}
+            style={{ '--elem-Height': getHeight() + 'px' }}
             className="mobile-step-container"
-            onClick={() => {
-                setMenuClass();
-                getHeight();
-            }}
         >
-            <div className="step-title">
+            <div
+                className="step-title"
+                onClick={() => {
+                    setMenuClass();
+                    getHeight();
+                }}
+            >
                 {props.title}
                 <div className={arrowUp}>
                     <AiOutlineArrowUp />
@@ -48,8 +54,8 @@ export const JourneyStep = (props) => {
                 </div>
             </div>
 
-            <div className={stepContent}>
-                <div id="step-height">{props.text}</div>
+            <div className={stepContent} id={stepId}>
+                <div>{props.text}</div>
             </div>
         </div>
     );
