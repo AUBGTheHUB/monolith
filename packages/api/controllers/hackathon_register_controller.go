@@ -57,7 +57,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	err := IsRegistrationAvailable(c)
 
 	if err != nil {
-		return c.Status(500).JSON(responses.MemberResponse{Status: 500, Message: err.Error()})
+		return err
 	}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
@@ -169,12 +169,19 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 func IsRegistrationAvailable(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	var regErr responses.MemberResponse
+
 	numberOfParticipantsWithTeam, err := GetNumberOfHackathonParticipants(ctx)
 	if err != nil {
 		var err fiber.Error
 		c.SendStatus(503)
-		err.Code = 503
-		err.Message = "Couldn't get number of participants with a team, please contact TheHubAUBG"
+
+		regErr.Message = "Couldn't get number of participants with a team, please contact TheHubAUBG"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
 
 		return &err
 	}
@@ -184,8 +191,12 @@ func IsRegistrationAvailable(c *fiber.Ctx) error {
 	if err != nil {
 		var err fiber.Error
 		c.SendStatus(503)
-		err.Code = 503
-		err.Message = "Couldn't get number of participants without a team, please contact TheHubAUBG"
+
+		regErr.Message = "Couldn't get number of participants without a team, please contact TheHubAUBG"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
 
 		return &err
 	}
@@ -193,8 +204,12 @@ func IsRegistrationAvailable(c *fiber.Ctx) error {
 	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
 		var err fiber.Error
 		c.SendStatus(503)
-		err.Code = 503
-		err.Message = "Max capacity of participants is reached"
+
+		regErr.Message = "Max capacity of participans is reached"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
 
 		return &err
 	}
