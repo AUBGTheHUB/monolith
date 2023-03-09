@@ -176,7 +176,6 @@ func IsRegistrationAvailable(c *fiber.Ctx) error {
 	if err != nil {
 		var err fiber.Error
 		err.Code = 503
-		c.SendStatus(503)
 
 		regErr.Message = "Couldn't get number of participants with a team, please contact TheHubAUBG"
 		regErr.Status = 503
@@ -192,7 +191,6 @@ func IsRegistrationAvailable(c *fiber.Ctx) error {
 	if err != nil {
 		var err fiber.Error
 		err.Code = 503
-		c.SendStatus(503)
 
 		regErr.Message = "Couldn't get number of participants without a team, please contact TheHubAUBG"
 		regErr.Status = 503
@@ -206,7 +204,6 @@ func IsRegistrationAvailable(c *fiber.Ctx) error {
 	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
 		var err fiber.Error
 		err.Code = 503
-		c.SendStatus(503)
 
 		regErr.Message = "Max capacity of participans is reached"
 		regErr.Status = 503
