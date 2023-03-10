@@ -2,6 +2,25 @@
 
 current_directory=${PWD##*/} 
 
+set_vm_ip () {
+    if [[ ! -z "${HUB_VM}" ]]; then
+        echo "Do you wish to use the currently saved Virtual Machine IP?"
+        USE_DEFAULT=$(gum choose --limit 1 "yes" "no")
+        if [ "$USE_DEFAULT" == "yes" ]; then
+            VM_IP=$HUB_VM
+            return
+        fi
+    fi
+
+    echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
+    read USER
+
+    echo "What's the IP of the $(gum style --foreground 212 "Virtual Machine"):"
+    read IP
+
+    VM_IP="$USER@$IP"
+}
+
 if [[ $current_directory != "spa-website-2022" ]]
 then
     echo "Run this script from the root of the SPA project"
@@ -45,33 +64,16 @@ if [ $ACTIONS == $START ]; then
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
     LOGIN_IN_VM="SSH into a Virtual Machine"
     SET_VM_ENV="Set up Virtual Machine for Deployment"
+    VM_IP=""
 
     ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOGIN_IN_VM" "$SET_VM_ENV")
 
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
-        if [[ -z "${HUB_VM}" ]]; then
-            echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
-            read USER
-
-            echo "What's the IP of the $(gum style --foreground 212 "Virtual Machine"):"
-            read IP
-
-            ssh "$USER@$IP";
-        else
-            ssh $HUB_VM;
-        fi
+        set_vm_ip
+        ssh $VM_IP
     
     elif [ "$ACTIONS" == "$SET_VM_ENV" ]; then
-        if [[ -z "${HUB_VM}" ]]; then
-            echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
-            read USER
-
-            echo "What's the IP of the $(gum style --foreground 212 "Virtual Machine"):"
-            read IP
-
-            ssh -t "$USER@$IP" "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | sudo bash"
-        else
-            ssh -t $HUB_VM "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | sudo bash"
-        fi
+        set_vm_ip
+        ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/%23167-Gum-Managing-Tool/set_vm_env.sh | bash"
     fi
 fi
