@@ -60,5 +60,18 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
         else
             ssh $HUB_VM;
         fi
+    
+    elif [ "$ACTIONS" == "$DEPLOY_SPA" ]; then
+        if [[ -z "${HUB_VM}" ]]; then
+            echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
+            read USER
+
+            echo "What's the IP of the $(gum style --foreground 212 "Virtual Machine"):"
+            read IP
+
+            ssh "$USER@$IP" "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
+        else
+            ssh $HUB_VM "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
+        fi
     fi
 fi
