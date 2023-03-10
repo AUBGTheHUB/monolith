@@ -44,9 +44,9 @@ if [ $ACTIONS == $START ]; then
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
     LOGIN_IN_VM="SSH into a Virtual Machine"
-    SET_UP_VM="Set up Virtual Machine for Deployment"
+    SET_VM_ENV="Set up Virtual Machine for Deployment"
 
-    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOGIN_IN_VM" "$SET_UP_VM")
+    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOGIN_IN_VM" "$SET_VM_ENV")
 
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
         if [[ -z "${HUB_VM}" ]]; then
@@ -61,7 +61,7 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
             ssh $HUB_VM;
         fi
     
-    elif [ "$ACTIONS" == "$SET_UP_VM" ]; then
+    elif [ "$ACTIONS" == "$SET_VM_ENV" ]; then
         if [[ -z "${HUB_VM}" ]]; then
             echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
             read USER
