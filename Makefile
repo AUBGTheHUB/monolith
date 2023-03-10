@@ -37,7 +37,9 @@ post-wsl:
 install-code-plugins:
 	code --install-extension aaron-bond.better-comments \ 
 	code --install-extension dbaeumer.vscode-eslint \
-	code --install-extension esbenp.prettier-vscode
+	code --install-extension esbenp.prettier-vscode \
+	code --install-extension golang.Go 
+
 
 .PHONY: install-gum
 install-gum:
