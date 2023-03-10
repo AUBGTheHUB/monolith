@@ -21,7 +21,7 @@ echo -e "What would you like to do?"
 START="Develop"
 DEPLOY="Deploy"
 
-ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$START" "$DEPLOY" )
+ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$START" "$DEPLOY" )
 
 if [ $ACTIONS == $START ]; then
     clear
@@ -30,7 +30,7 @@ if [ $ACTIONS == $START ]; then
     LOCAL_CLIENT="Client (requests towards local api)"
     DEPLOYED_CLIENT="Client (requests towards deployed api)"
     LOCAL_API="Run Api"
-    ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
+    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
 
     clear
 
@@ -44,9 +44,9 @@ if [ $ACTIONS == $START ]; then
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
     LOGIN_IN_VM="SSH into a Virtual Machine"
-    DEPLOY_SPA="Deploy SPA on a Virtual Machine"
+    SET_UP_VM="Set up Virtual Machine for Deployment"
 
-    ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$LOGIN_IN_VM" "$DEPLOY_SPA")
+    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOGIN_IN_VM" "$SET_UP_VM")
 
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
         if [[ -z "${HUB_VM}" ]]; then
@@ -61,7 +61,7 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
             ssh $HUB_VM;
         fi
     
-    elif [ "$ACTIONS" == "$DEPLOY_SPA" ]; then
+    elif [ "$ACTIONS" == "$SET_UP_VM" ]; then
         if [[ -z "${HUB_VM}" ]]; then
             echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
             read USER
