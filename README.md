@@ -59,50 +59,33 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 ### Easy access to repo
 
 ```bash
-spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
+alias spa="cd ~/go/src/spa-website-2022"
 ```
 ---
 ### __GUM__:
-* GUM can be used for the following: 
-    * ``Run Client (requests towards local API)``
-    * ``Run Client (requests towards deployed API)``
-    * ``Run API``
-    * ``SSH into a VM``
-    * ``Set up VM for Deployment``
 
-*If you don't want to use gum, you may proceed to the next sections*
-#### __Set up__:
+```bash
+make gum
 ```
-1. vim ~/.bashrc
-2. Add export HUB_VM="root@188.166.65.120" (make sure it's not in an if statement or for cycle)
-3. Type :q and press Enter
-```
-### __Run Development__:
-```
-1. make gum
-2. Choose Develop
-3. Choose which instance you want to spin up
-```
-### __Run Deploy__:
-```
-1. make gum
-2. Choose Deploy
-3. Choose what you would like to do
-    3.1. SSH into a Virtual Machine
-    3.2. Set up Virutal Machine for Deployment - SSHs into the VM and executes the "set_vm_env.sh" script
-```
+#### This is a command-line tool for managing running services and setting up deployment environments
+
+**For developers**:
+Spin up local server instances:
+
+<img src="https://i.ibb.co/tsyS8rd/image.png" alt="image" border="0">
+
+**For deployments**:
+
+<img src="https://i.ibb.co/7nBqHkn/image.png" alt="image" border="0">
+
 ---
 ### Backend
-* Installation from `root` (not needed if you've run one of the above mentioned installations): 
-```markdown
-1. install go - https://go.dev/doc/install
-2. git clone the repo in go/src
-3. download the .env file from Google Drive and place it in root/packages/api
-```
 
 * __Static BEARER-TOKEN__:
 Add this in the .env file
 ```bash
+MONGO_URI=<uri>    # Ask NOSYNCDEV for the uri
+
 IS_OFFLINE="true"  # IS_TEST="true" overwrites this
                    # so make sure that you set IS_TEST to false
                    # after you're done running integration/unit tests
@@ -138,8 +121,6 @@ make reload-api
 
 3. Click the green arrow icon:
 <img src="https://i.ibb.co/9VrKp3R/image.png" border="0">  
-
-
 
 
 * #### __How to resolve `could not import module ...`__:
@@ -219,12 +200,12 @@ docker-compose up --build
 1. Choose an issue you want to work on (e.g. [#11 - Optimizations](https://github.com/AUBGTheHUB/spa-website-2022/issues/11))
 2. Create a new branch by running the following command:
 ```shell
-git checkout -b "#11-Optimizations"
+git checkout -b "11-specific-optimizations"
 ```
 3. When commiting, place the issue number at the beginning of the commit message
 ```shell
 git add .                               # be careful if something important is not gitignored
-git commit -m "#11 Added new feature"
+git commit -m "#11 Added a new feature"
 ```
 4. Push your updates to the remote branch 
 ```
