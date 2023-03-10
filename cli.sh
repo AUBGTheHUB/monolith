@@ -49,12 +49,6 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
     ACTIONS=$(gum choose --cursor-prefix "[ ] " --selected-prefix "[✓] " --no-limit "$LOGIN_IN_VM" "$DEPLOY_SPA")
 
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
-    echo "What's the user of the $(gum style --foreground 212 "Virtual Machine") (in most cases it's $(gum style --foreground 212 "root")):"
-    read USER 
-
-    echo "What's the ip of the $(gum style --foreground 212 "Virtual Machine")":
-    read IP 
-
-    ssh "$USER@$IP";
+        ssh $HUB_VM
     fi
 fi
