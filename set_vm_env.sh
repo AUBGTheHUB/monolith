@@ -6,9 +6,9 @@
 #   which are running the manage_app.py script
 #      
 
-yes | apt install python3-pip
-yes | apt install docker-compose
-yes | snap install certbot
+yes | sudo apt install python3-pip
+yes | sudo apt install docker-compose
+yes | sudo snap install certbot
 
 pip install schedule
 

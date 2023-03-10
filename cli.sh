@@ -69,9 +69,9 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
             echo "What's the IP of the $(gum style --foreground 212 "Virtual Machine"):"
             read IP
 
-            ssh "$USER@$IP" "sudo curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
+            ssh -t "$USER@$IP" "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | sudo bash"
         else
-            ssh $HUB_VM "sudo curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
+            ssh -t $HUB_VM "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | sudo bash"
         fi
     fi
 fi
