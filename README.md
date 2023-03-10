@@ -62,6 +62,36 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 spa # alias for cd ~/go/src/spa-website-2022 set in .zshrc or .bashrc
 ```
 ---
+### __GUM__:
+* GUM can be used for the following: 
+    * ``Run Client (requests towards local API)``
+    * ``Run Client (requests towards deployed API)``
+    * ``Run API``
+    * ``SSH into a VM``
+    * ``Set up VM for Deployment``
+
+*If you don't want to use gum, you may proceed to the next sections*
+#### __Set up__:
+```
+1. vim ~/.bashrc
+2. Add export HUB_VM="root@188.166.65.120" (make sure it's not in an if statement or for cycle)
+3. Type :q and press Enter
+```
+### __Run Development__:
+```
+1. make gum
+2. Choose Develop
+3. Choose which instance you want to spin up
+```
+### __Run Deploy__:
+```
+1. make gum
+2. Choose Deploy
+3. Choose what you would like to do
+    3.1. SSH into a Virtual Machine
+    3.2. Set up Virutal Machine for Deployment - SSHs into the VM and executes the "set_vm_env.sh" script
+```
+---
 ### Backend
 * Installation from `root` (not needed if you've run one of the above mentioned installations): 
 ```markdown
