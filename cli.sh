@@ -40,7 +40,7 @@ echo -e "What would you like to do?"
 START="Develop"
 DEPLOY="Deploy"
 
-ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$START" "$DEPLOY" )
+ACTIONS=$(gum choose --limit 1 "$START" "$DEPLOY" )
 
 if [ $ACTIONS == $START ]; then
     clear
@@ -49,7 +49,7 @@ if [ $ACTIONS == $START ]; then
     LOCAL_CLIENT="Client (requests towards local api)"
     DEPLOYED_CLIENT="Client (requests towards deployed api)"
     LOCAL_API="Run Api"
-    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
+    ACTIONS=$(gum choose --limit 1 "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
 
     clear
 
@@ -66,7 +66,7 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
     SET_VM_ENV="Set up Virtual Machine for Deployment"
     VM_IP=""
 
-    ACTIONS=$(gum choose --cursor-prefix "[ ] " --no-limit "$LOGIN_IN_VM" "$SET_VM_ENV")
+    ACTIONS=$(gum choose --limit 1 "$LOGIN_IN_VM" "$SET_VM_ENV")
 
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
         set_vm_ip
@@ -74,6 +74,6 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
     
     elif [ "$ACTIONS" == "$SET_VM_ENV" ]; then
         set_vm_ip
-        ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/%23167-Gum-Managing-Tool/set_vm_env.sh | bash"
+        ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
     fi
 fi
