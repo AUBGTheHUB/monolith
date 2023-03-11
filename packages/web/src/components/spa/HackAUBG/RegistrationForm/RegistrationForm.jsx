@@ -117,9 +117,9 @@ const RegistrationForm = () => {
             return;
         } else {
             if (Object.keys(errors).length != 0) {
-                setButtonState('hackaubg-register-btn ');
+                setButtonState('hackaubg-register-btn error');
                 setSubmitPressed(false);
-                setSubmitButtonValue('Submit');
+                setSubmitButtonValue('Check inputs');
                 return;
             } else if (Object.keys(errors).length == 0 && submitPressed) {
                 setButtonState('hackaubg-register-btn disabled');
