@@ -125,7 +125,7 @@ export {
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
-    changeFavicon,
+    changeFaviconAndBackground,
     NavigateSetter,
     navigateTo,
     objUploaderURL,
