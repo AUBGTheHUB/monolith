@@ -117,9 +117,9 @@ const RegistrationForm = () => {
             return;
         } else {
             if (Object.keys(errors).length != 0) {
-                setButtonState('hackaubg-register-btn error');
+                setButtonState('hackaubg-register-btn ');
                 setSubmitPressed(false);
-                setSubmitButtonValue('Retry');
+                setSubmitButtonValue('Submit');
                 return;
             } else if (Object.keys(errors).length == 0 && submitPressed) {
                 setButtonState('hackaubg-register-btn disabled');
@@ -641,7 +641,7 @@ const RegistrationForm = () => {
                         </div>
                         <div className="send-info">
                             <label className="radio-label">
-                                Have you participated in another Hackathons?
+                                Have you participated in other Hackathons?
                             </label>
                             <div className="radio-select">
                                 <div className="radio-btn">
