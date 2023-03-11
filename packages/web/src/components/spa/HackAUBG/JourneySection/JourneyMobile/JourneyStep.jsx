@@ -45,7 +45,11 @@ export const JourneyStep = (props) => {
                     getHeight();
                 }}
             >
-                {props.title}
+                <div className="journey-h2">
+                    <h2>{props.stepnum}</h2>
+                    <h2>{props.title}</h2>
+                </div>
+
                 <div className={arrowUp}>
                     <AiOutlineArrowUp />
                 </div>
@@ -55,7 +59,9 @@ export const JourneyStep = (props) => {
             </div>
 
             <div className={stepContent} id={stepId}>
-                <div>{props.text}</div>
+                <div>
+                    <p>{props.text}</p>
+                </div>
             </div>
         </div>
     );
