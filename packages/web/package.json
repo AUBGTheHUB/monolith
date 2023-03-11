@@ -24,7 +24,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "dev": "REACT_APP_API_URL=https://dev.thehub-aubg.com npm start",
+        "dev": "REACT_APP_API_URL=https://thehub-aubg.com npm start",
         "local": "HOST=0.0.0.0 npm run start",
         "build": "react-scripts build",
         "test": "react-scripts test",
