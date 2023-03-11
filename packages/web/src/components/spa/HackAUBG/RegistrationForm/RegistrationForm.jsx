@@ -112,10 +112,10 @@ const RegistrationForm = () => {
 
     //changes the button color and text depending on what is enetred in the form
     const checkButtonAvailability = () => {
-        if (apiError == true) {
+        if (apiError) {
             setButtonState('hackaubg-register-btn error');
             return;
-        } else if (apiError == false) {
+        } else if (!apiError) {
             if (Object.keys(errors).length != 0) {
                 setButtonState('hackaubg-register-btn error');
                 setSubmitPressed(false);
@@ -127,7 +127,7 @@ const RegistrationForm = () => {
                 return;
             }
         }
-        setButtonState('hackaubg-register-btn ');
+        setButtonState('hackaubg-register-btn');
         setSubmitButtonValue('Submit');
     };
 
@@ -167,7 +167,7 @@ const RegistrationForm = () => {
                 >
                     <fieldset className="from-personal-info">
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 Full Name
                                 <input
                                     type="text"
@@ -200,7 +200,7 @@ const RegistrationForm = () => {
                             </p>
                         </div>
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 Email
                                 <input
                                     type="text"
@@ -227,39 +227,38 @@ const RegistrationForm = () => {
                             </label>
                         </div>
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 Age
                                 <input
                                     type="number"
                                     placeholder="Enter your age"
                                     {...register('age', {
-                                        valueAsNumber: true,
                                         required: {
                                             value: true,
                                             message: '*This field is required'
                                         },
-                                        minLength: {
-                                            message:
-                                                'Minimum length is 2 symbols',
-                                            value: 2
+                                        min: {
+                                            message: 'Minimum age is 16',
+                                            value: 16
                                         },
-                                        maxLength: {
+                                        max: {
                                             message:
                                                 'Maximum length is 3 symbols',
-                                            value: 3
+                                            value: 99
                                         },
                                         pattern: {
-                                            value: /^[0-9]+$/,
+                                            value: /^\d{2}$/,
                                             message:
                                                 'No special characters and trailing spaces'
-                                        }
+                                        },
+                                        valueAsNumber: true
                                     })}
                                 />
                             </label>
                             <p className="error-msg">{errors.age?.message}</p>
                         </div>
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 Location
                                 <input
                                     type="text"
@@ -433,7 +432,7 @@ const RegistrationForm = () => {
                             </p>
                         </div>
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 What are your job interests?
                                 <input
                                     type="text"
@@ -531,7 +530,7 @@ const RegistrationForm = () => {
                             </p>
                         </div>
                         <div className="send-info">
-                            <label htmlFor="">
+                            <label>
                                 What is the name of your team?
                                 <input
                                     disabled={disableTeamNameField}
