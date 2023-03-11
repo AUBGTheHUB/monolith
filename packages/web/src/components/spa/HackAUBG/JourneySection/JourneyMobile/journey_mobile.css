@@ -28,16 +28,13 @@
     display: flex;
     align-items: center;
     margin-bottom: 0;
-    padding-left: 5%;
-    padding-top: 5%;
-    padding-bottom: 5%;
+    padding: 5% 0 5% 5%;
 }
 .mobile-step-container p {
     color: #000;
     font-size: 1em;
     text-align: justify;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 0 5% 3% 5%;
 }
 .journey-mobile-content {
     justify-content: center;
@@ -49,13 +46,11 @@
 .container-content-not-displayed {
     height: 0;
     overflow: hidden;
-    animation-name: slideout;
-    animation-duration: 0.5s;
+    animation: slideout ease-in-out 0.5s;
 }
 .container-content-displayed {
     overflow: hidden;
-    animation-name: slidein;
-    animation-duration: 0.5s;
+    animation: slidein ease-in-out 0.5s;
 }
 .journey-arrow-displayed {
     display: flex;

@@ -47,9 +47,9 @@ export const JourneyMobile = () => {
                             Hubber who will guide you through everything about
                             HackAUBG 5.0. Pro tip: take a few days to research
                             some hackathon strategies, previous award-winning
-                            HackAUBG projects, and brainstorm! After all, you do
-                            not want to be unprepared for your chance to bring
-                            home the grand prize of 3000 BGN!
+                            projects, and brainstorm! After all, you do not want
+                            to be unprepared for your chance to bring home the
+                            grand prize of 3000 BGN!
                         </p>
                     }
                 />
