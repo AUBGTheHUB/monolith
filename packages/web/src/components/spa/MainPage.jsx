@@ -15,8 +15,8 @@ const LandingHome = () => {
     document.body.className = 'main-body';
 
     const anchorList = [
-        new Anchor('About', '#about'),
-        new Anchor('Team', '#team'),
+        new Anchor('About', '#about', false),
+        new Anchor('Team', '#team', false, FEATURE_SWITCHES.team),
         new Anchor('Jobs', 'jobs', true, FEATURE_SWITCHES.jobs)
     ];
 
