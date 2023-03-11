@@ -72,7 +72,7 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
-const changeFaviconAndBackground = () => {
+const handleUrlDependantStyling = () => {
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
@@ -93,6 +93,7 @@ const changeFaviconAndBackground = () => {
         favicon = '/favicon.ico';
         iosIcon = '/logo512.png';
         title = 'The Hub AUBG';
+        document.body.style.backgroundColor = 'rgb(118, 181, 197)';
     }
 
     let iconPath = origin + favicon;
@@ -125,13 +126,14 @@ export {
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
-    changeFaviconAndBackground,
+    handleUrlDependantStyling,
     NavigateSetter,
     navigateTo,
     objUploaderURL,
     gcpToken
 };
 export default Validate;
+
 /*
 
     this is how you should handle the validation of the client

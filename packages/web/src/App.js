@@ -33,12 +33,12 @@ import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
-import { changeFaviconAndBackground } from './Global';
+import { handleUrlDependantStyling } from './Global';
 
 function App() {
-    document.addEventListener('locationChange', changeFaviconAndBackground);
-    window.addEventListener('load', changeFaviconAndBackground);
-    useEffect(changeFaviconAndBackground, []);
+    document.addEventListener('locationChange', handleUrlDependantStyling);
+    window.addEventListener('load', handleUrlDependantStyling);
+    useEffect(handleUrlDependantStyling, []);
 
     return (
         <Routes>
