@@ -33,13 +33,13 @@ import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
-import { changeFavicon } from './Global';
+import { handleUrlDependantStyling } from './Global';
 import { FEATURE_SWITCHES } from './feature_switches';
 
 function App() {
-    document.addEventListener('locationChange', changeFavicon);
-    window.addEventListener('load', changeFavicon);
-    useEffect(changeFavicon, []);
+    document.addEventListener('locationChange', handleUrlDependantStyling);
+    window.addEventListener('load', handleUrlDependantStyling);
+    useEffect(handleUrlDependantStyling, []);
 
     return (
         <Routes>
@@ -125,7 +125,9 @@ function App() {
                 element={<PartnersActions />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
-            { FEATURE_SWITCHES.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
+            {FEATURE_SWITCHES.jobs ? (
+                <Route path="/jobs" element={<JobsSection />} />
+            ) : null}
             <Route path="/*" element={<NotFound />} />
             <Route path="/admin/dashboard/s3" element={<S3Panel />} />
             <Route
