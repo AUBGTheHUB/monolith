@@ -41,8 +41,8 @@ const RegistrationForm = () => {
     const registerMember = (data) => {
         axios({
             method: 'post',
-            // TODO: Remove the url param when done with testing the endpoint
-            // * this disables the mailing feature -> e.g. it won't send emails to random emails you use to test the registration with
+
+            // * /api/hackathon/register?testing=true -> if you want to test the endpoint without sending an email upon registration
             url: url + '/api/hackathon/register',
             data
         })
@@ -115,7 +115,7 @@ const RegistrationForm = () => {
         if (apiError) {
             setButtonState('hackaubg-register-btn error');
             return;
-        } else if (!apiError) {
+        } else {
             if (Object.keys(errors).length != 0) {
                 setButtonState('hackaubg-register-btn error');
                 setSubmitPressed(false);
