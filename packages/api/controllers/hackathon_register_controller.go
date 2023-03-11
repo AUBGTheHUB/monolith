@@ -18,6 +18,7 @@ import (
 )
 
 func RegisterTeamMember(c *fiber.Ctx) error {
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	var member models.TeamMember
 	defer cancel()
@@ -51,11 +52,12 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 		ShareInfoWithSponsors:          member.ShareInfoWithSponsors,
 		WantJobOffers:                  member.WantJobOffers}
 
-	numberOfTotalParticipants := GetTotalNumberOfParticipants()
 	numberOfTeams, _ := GetNumberOfHackathonTeams(ctx)
 
-	if numberOfTotalParticipants >= 90 {
-		return c.Status(http.StatusConflict).JSON(responses.MemberResponse{Status: http.StatusConflict, Message: "Max Hackathon participants is reached"})
+	err := IsRegistrationAvailable(c)
+
+	if err != nil {
+		return err
 	}
 
 	if CheckIfTeamMemberExists(newHackathonTeamMember) {
@@ -143,7 +145,7 @@ func RegisterTeamMember(c *fiber.Ctx) error {
 	}
 
 	// Add participant to collection of participants without team
-	_, err := noTeamParticipantsCollection.InsertOne(ctx, newHackathonTeamMember)
+	_, err = noTeamParticipantsCollection.InsertOne(ctx, newHackathonTeamMember)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -164,13 +166,56 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 	return FormatTeamName(passedTeamName) == FormatTeamName(storedTeamName)
 }
 
-func GetTotalNumberOfParticipants() int64 {
+func IsRegistrationAvailable(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	numberOfParticipantsWithTeam, _ := GetNumberOfHackathonParticipants(ctx)
-	numberOfParticipantsWithoutTeam, _ := GetNumberOfNoTeamParticipants(ctx)
-	result := numberOfParticipantsWithTeam + numberOfParticipantsWithoutTeam
-	return result
+
+	var regErr responses.MemberResponse
+
+	numberOfParticipantsWithTeam, err := GetNumberOfHackathonParticipants(ctx)
+	if err != nil {
+		var err fiber.Error
+		err.Code = 503
+
+		regErr.Message = "Couldn't get number of participants with a team, please contact TheHubAUBG"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
+
+		return &err
+	}
+
+	numberOfParticipantsWithoutTeam, err := GetNumberOfNoTeamParticipants(ctx)
+
+	if err != nil {
+		var err fiber.Error
+		err.Code = 503
+
+		regErr.Message = "Couldn't get number of participants without a team, please contact TheHubAUBG"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
+
+		return &err
+	}
+
+	if numberOfParticipantsWithTeam+numberOfParticipantsWithoutTeam >= 90 {
+		var err fiber.Error
+		err.Code = 503
+
+		regErr.Message = "Max capacity of participans is reached"
+		regErr.Status = 503
+
+		message, _ := json.Marshal(regErr)
+		err.Message = string(message)
+
+		return &err
+	}
+
+	return c.SendStatus(http.StatusOK)
+
 }
 
 func SendEmailToNewParticipant(fullName string, email string, testing string) {

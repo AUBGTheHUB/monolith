@@ -242,3 +242,13 @@ func GetNumberOfNoTeamParticipants(ctx context.Context) (int64, error) {
 	results, err := noTeamParticipantsCollection.CountDocuments(ctx, bson.M{})
 	return results, err
 }
+
+func BatchAddTeamMembersToNoParticipants(ctx context.Context, teamMembers []models.TeamMember) error {
+	for i := 0; i < len(teamMembers); i++ {
+		_, err := noTeamParticipantsCollection.InsertOne(ctx, teamMembers[i])
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

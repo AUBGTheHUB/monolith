@@ -7,9 +7,12 @@ import (
 )
 
 func CleanUpCollection() {
-	collection := configs.GetCollection(configs.DB, "_tests")
+	collections := configs.GetCollectionsStartingWith(configs.DB, "_tests")
+	
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	collection.Drop(ctx)
+	for _, collection := range collections {
+		collection.Drop(ctx)	
+	}
 }
