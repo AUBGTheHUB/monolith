@@ -1,8 +1,8 @@
-.awards-section-hack-aubg-container {
-    margin-bottom: 5%;
+.awards-section-container {
+    padding-bottom: 3%;
     display: flex;
     flex-direction: column;
-    background-color: #222222;
+    background: linear-gradient(#222222, #204829);
     align-items: center;
     justify-content: center;
 }
@@ -13,16 +13,14 @@
     font-size: 2em;
     font-weight: 900;
     margin-top: 2%;
-    margin-bottom: 1%;
 }
 
-.awards-section-images-container {
+.awards-images-container {
     display: flex;
     align-items: flex-end;
-    width: 500px;
-    height: 250px;
-    margin: 2% 0%;
+    width: 50%;
     font-family: 'Roboto';
+    margin: 4% 0;
 }
 
 #silver-img {
@@ -66,22 +64,22 @@
     font-family: 'Roboto';
     font-weight: 400;
     font-size: large;
-    margin-bottom: 15%;
+    margin-bottom: 5%;
+}
+
+.awards-section-info-text {
+    width: 80%;
 }
 
 @media only screen and (max-width: 900px) {
-    .awards-section-images-container {
-        width: 100%;
-        height: 40%;
-        margin: 9% 15% 0% 15%;
-    }
-
-    .awards-section-images-container {
-        margin: 15% 10% 0% 10%;
+    .awards-images-container {
+        width: 70%;
+        margin: 3% 0%;
     }
 
     #awards-info-text {
-        margin: 15% 11% 20% 11%;
+        margin-top: 5%;
+        margin-bottom: 20%;
         font-size: small;
     }
 
@@ -98,5 +96,12 @@
         max-width: 70%;
         margin-left: 17%;
         margin-bottom: 4%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .awards-images-container {
+        width: 90%;
+        margin: 6% 0;
     }
 }

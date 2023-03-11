@@ -37,11 +37,21 @@ post-wsl:
 install-code-plugins:
 	code --install-extension aaron-bond.better-comments \ 
 	code --install-extension dbaeumer.vscode-eslint \
-	code --install-extension esbenp.prettier-vscode
+	code --install-extension esbenp.prettier-vscode \
+	code --install-extension golang.Go 
+
 
 .PHONY: install-gum
 install-gum:
 	go install github.com/charmbracelet/gum@latest
+
+.PHONY: install-air
+install-air:
+	go install github.com/cosmtrek/air@latest
+
+.PHONY: reload-api
+reload-api:
+	cd packages/api && bash ./reload.sh
 
 .SILENT: gum 
 gum:

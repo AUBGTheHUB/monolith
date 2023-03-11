@@ -9,12 +9,15 @@ import { AboutSection } from './AboutSection/AboutSection';
 import '../../../node_modules/react-hovering-cards-carousel/dist/style.css';
 import { useEffect } from 'react';
 import { checkHashAndScroll } from '../../Global';
+import { FEATURE_SWITCHES } from '../../feature_switches';
 
 const LandingHome = () => {
+    document.body.className = 'main-body';
+
     const anchorList = [
-        new Anchor('About', '#AboutSection'),
-        new Anchor('Team', '#team'),
-        new Anchor('Jobs', 'jobs')
+        new Anchor('About', '#about', false),
+        new Anchor('Team', '#team', false, FEATURE_SWITCHES.team),
+        new Anchor('Jobs', 'jobs', true, FEATURE_SWITCHES.jobs)
     ];
 
     useEffect(checkHashAndScroll, []);

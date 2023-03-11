@@ -11,6 +11,8 @@
     text-align: center;
     color: #19b700;
     padding: 1% 0;
+    font-weight: 900;
+    font-size: 2em;
 }
 
 .mentor-container {
@@ -32,4 +34,16 @@
     object-fit: cover;
     border-radius: 10px;
     cursor: pointer;
+}
+.hack-coming-soon-container {
+    background-color: #222222;
+    padding-bottom: 5%;
+    padding-top: 5%;
+    height: 100%;
+}
+
+.hack-coming-soon-text {
+    text-align: center;
+    color: white;
+    margin-right: 5%;
 }

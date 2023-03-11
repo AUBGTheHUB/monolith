@@ -1,18 +1,18 @@
 import React from 'react';
 import { NavBar } from '../Navigation/NavBar';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Anchor, Props } from '../Navigation/NavFactory';
-import { useEffect } from 'react';
 import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
 import { Footer } from '../Footer/Footer';
 import './jobs_section.css';
+import { FEATURE_SWITCHES } from '../../../feature_switches';
 
 const anchorList = [
     new Anchor('About', '/#about'),
-    new Anchor('Team', '/#team'),
-    new Anchor('Jobs', '/jobs')
+    new Anchor('Team', '/#team', true, FEATURE_SWITCHES.team),
+    new Anchor('Jobs', '/jobs', false, FEATURE_SWITCHES.jobs)
 ];
 
 export const JobsSection = () => {
@@ -30,7 +30,7 @@ export const JobsSection = () => {
                     setIsFetching(false);
                 }, 750);
 
-                // // force earlier download
+                // force earlier download
                 res.data.data.data.forEach((element) => {
                     let img = new Image();
                     img.src = element.logo;
@@ -78,12 +78,11 @@ export const JobsSection = () => {
         }
 
         return (
-            <div>
-                <h1>No jobs available</h1>
+            <div className="no-jobs-container">
+                <img src="noJobsAvailable.png" className="no-jobs-image"></img>
             </div>
         );
     };
-
     return (
         <>
             <div className="jobs-page">
@@ -91,8 +90,9 @@ export const JobsSection = () => {
                 {DisplayJobs()}
             </div>
             <Footer
-                colour={'rgb(21, 76, 121)'}
-                iconcolor={'rgb(120, 120, 120)'}
+                color={'rgb(21, 76, 121)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
             />
         </>
     );

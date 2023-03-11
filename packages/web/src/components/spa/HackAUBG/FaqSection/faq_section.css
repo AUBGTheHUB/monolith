@@ -5,27 +5,63 @@
     justify-content: center;
     flex-direction: column;
     padding: 2% 0;
+    background: linear-gradient(#204829, #222222, #222222);
     font-family: 'Roboto';
 }
 
 .faq {
+    display: flex;
     font-size: 2rem;
     padding: 2% 0;
-    color: #19b700;
+    color: #7de776;
+    font-weight: 900;
+    font-size: 2em;
+    align-items: center;
+    text-align: center;
 }
 
-.faq-header,
-.faq-text {
-    width: 60%;
+.faq-text-container {
+    width: 64%;
     text-align: left;
+    color: white;
 }
 
 .faq-header {
+    width: 60%;
     font-size: 1.2rem;
-    color: #19b700;
+    color: #7de776;
     font-weight: bold;
 }
 
 .faq-text {
     text-align: justify;
+}
+
+@media only screen and (max-width: 1000px) {
+    .faq-text-container {
+        width: 100%;
+        padding-left: 11%;
+        padding-right: 11%;
+    }
+
+    .faq-container {
+        margin-bottom: 10%;
+    }
+
+    .faq {
+        margin-bottom: 3%;
+        margin-top: 4%;
+        text-overflow: wrap;
+    }
+
+    .faq-header {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .faq {
+        width: 90%;
+        text-overflow: wrap;
+    }
 }

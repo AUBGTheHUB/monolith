@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hub-backend/app"
+	"hub-backend/configs"
 	"hub-backend/models"
 	"net/http"
 	"testing"
@@ -22,22 +23,39 @@ func SetHeaders(req *http.Request) {
 
 func TestTeamEndpoint(t *testing.T) {
 	// Set up
-
+	t.Cleanup(CleanUpCollection)
 	go app.StartApp()
 
 	time.Sleep(5 * time.Second)
 
-	// Test Create Team endpoint
-	var data models.Team
-	data.TeamName = "TEST TEAM"
-	data.TeamMembers = []string{"memberOne", "memberTwo"}
-
-	json_data, _ := json.Marshal(data)
-
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(json_data))
+	// * CREATE NEW MEMBER
+	var falseBool bool = false
 
+	dataMember := models.TeamMember{
+		FullName:                       "Test",
+		HasTeam:                        &falseBool,
+		TeamName:                       "Integration Test",
+		Email:                          configs.GenerateToken(10) + "@gmail.com",
+		University:                     "Test School",
+		Age:                            18,
+		Location:                       "Test Location",
+		HeardAboutUs:                   "Test",
+		PreviousHackathonParticipation: &falseBool,
+		PreviousHackAUBGParticipation:  &falseBool,
+		HasExperience:                  &falseBool,
+		ProgrammingLevel:               "Test",
+		StrongSides:                    "Test",
+		ShirtSize:                      "Test",
+		WantInternship:                 &falseBool,
+		JobInterests:                   "Test",
+		ShareInfoWithSponsors:          &falseBool,
+		WantJobOffers:                  &falseBool,
+	}
+
+	json_data, _ := json.Marshal(dataMember)
+	req, _ := http.NewRequest("POST", "http://127.0.0.1:8000/api/hackathon/members", bytes.NewBuffer(json_data))
 	SetHeaders(req)
 
 	resp, err := client.Do(req)
@@ -47,6 +65,26 @@ func TestTeamEndpoint(t *testing.T) {
 	}
 
 	var res map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	assert.Equal(t, float64(201), res["status"])
+	memberId := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
+
+	// * CREATE NEW TEAM
+	var dataTeam models.Team
+	dataTeam.TeamName = configs.GenerateToken(5)
+	dataTeam.TeamMembers = []string{fmt.Sprint(memberId)}
+
+	json_data, _ = json.Marshal(dataTeam)
+
+	req, _ = http.NewRequest("POST", url, bytes.NewBuffer(json_data))
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
@@ -54,9 +92,8 @@ func TestTeamEndpoint(t *testing.T) {
 
 	iID := res["data"].(map[string]interface{})["data"].(map[string]interface{})["InsertedID"]
 
-	// Verify
+	// * VERIFY CREATE TEAM AND POPULATED MEMBER LIST
 	req, _ = http.NewRequest("GET", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -68,15 +105,17 @@ func TestTeamEndpoint(t *testing.T) {
 	json.NewDecoder(resp.Body).Decode(&res)
 
 	teamData, _ := json.Marshal(res["data"].(map[string]interface{})["data"])
-	var uTD models.Team
+	var uTD map[string]interface{}
+
 	json.NewDecoder(bytes.NewBuffer(teamData)).Decode(&uTD)
 
-	assert.Equal(t, data.TeamName, uTD.TeamName)
-	assert.Equal(t, data.TeamMembers, uTD.TeamMembers)
+	firstMember := uTD["TeamMembers"].([]interface{})[0].(map[string]interface{})["id"]
 
-	// Clean Up
+	assert.Equal(t, dataTeam.TeamName, uTD["TeamName"])
+	assert.Equal(t, dataTeam.TeamMembers[0], firstMember)
+
+	// * CLEAN UP TEAM ENTRY
 	req, _ = http.NewRequest("DELETE", url+"/"+fmt.Sprint(iID), bytes.NewBufferString(""))
-
 	SetHeaders(req)
 
 	resp, err = client.Do(req)
@@ -89,4 +128,17 @@ func TestTeamEndpoint(t *testing.T) {
 
 	assert.Equal(t, float64(200), res["status"])
 
+	// * CLEAN UP MEMBER ENTRY
+	req, _ = http.NewRequest("DELETE", "http://127.0.0.1:8000/api/hackathon/participants_no_team"+"/"+fmt.Sprint(memberId), bytes.NewBufferString(""))
+	SetHeaders(req)
+
+	resp, err = client.Do(req)
+
+	if err != nil {
+		assert.FailNow(t, err.Error())
+	}
+
+	json.NewDecoder(resp.Body).Decode(&res)
+
+	assert.Equal(t, float64(200), res["status"])
 }

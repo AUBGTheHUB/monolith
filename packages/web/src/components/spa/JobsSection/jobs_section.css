@@ -24,6 +24,25 @@
     .jobs-page {
         min-height: 90vh;
     }
+    .no-jobs-container {
+        height: 90vh;
+    }
+
+    .no-jobs-image {
+        height: 40vh;
+    }
+}
+
+.no-jobs-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+}
+
+.no-jobs-image {
+    height: 60vh;
+    display: flex;
+    align-self: center;
 }
 
 .jobs-page .footer-container {
@@ -31,8 +50,8 @@
 }
 
 .jobs-card-section {
-    /* display: none !important; */
     display: flex;
+    padding-top: 10vh;
     margin-left: 6%;
     margin-right: 6%;
     justify-content: center;
@@ -52,9 +71,10 @@
 
 .job-logo {
     margin-top: 5%;
+    justify-content: center;
     width: 90%;
     margin-bottom: 5%;
-    height: 24vh;
+    height: 35%;
     margin-left: 5.5%;
     margin-right: 5.5%;
     align-self: center;
@@ -68,9 +88,8 @@
 }
 
 .job-card-content {
-    /* display: none !important; */
-    width: 400px;
-    height: 487px;
+    width: 380px;
+    height: 500px;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -82,17 +101,20 @@
     border-radius: 5vh;
 }
 .job-description {
-    height: 17vh;
     width: 90%;
+    height: 28%;
     align-self: center;
     display: flex;
     flex-wrap: wrap;
     align-content: center;
+    margin-top: 2.5%;
+    margin-bottom: 4.5%;
 }
 
 .job-position {
     align-self: center;
     width: 90%;
+    height: 12%;
 }
 
 .job-position h3 {
@@ -109,7 +131,6 @@
     width: 90%;
     justify-items: end;
     margin-bottom: 5%;
-
     align-self: center;
 }
 
@@ -147,28 +168,39 @@
     color: #fff;
 }
 
-@media only screen and (max-width: 1000px) {
-    .jobs-page .footer-container {
-        margin-top: 0;
+@media only screen and (max-width: 750px) {
+    .job-card-content {
+        height: 525px;
     }
-    .jobs-section-body {
-        margin-left: 3.5%;
-        margin-right: 3.5%;
+    .job-button {
+        margin-top: 5%;
     }
-    .jobs-loader {
-        height: 80vh;
+    .job-logo {
+        height: 30%;
+    }
+    .job-description {
+        height: 34%;
     }
 }
 
 @media only screen and (max-width: 300px) {
+    .job-card-content {
+        height: 550px;
+    }
     .job-description {
-        height: 25vh;
+        height: 50%;
+    }
+    .job-button {
+        margin-top: 5%;
+    }
+    .job-logo {
+        height: 20%;
     }
 }
 
 @media (hover: hover) and (pointer: fine) {
     .job-card-content:hover {
-        transform: translateY(-2%) rotate(2deg);
+        transform: translateY(-2%) rotate(0deg);
         box-shadow: 0 1.5% 2% #467edd;
         cursor: pointer;
         z-index: 1;
@@ -178,8 +210,8 @@
     .job-card-content::before {
         content: '';
         position: absolute;
-        width: 400px;
-        height: 487px;
+        width: 380px;
+        height: 500px;
 
         border-radius: 10%;
         background-color: rgba(255, 255, 255, 0.1);

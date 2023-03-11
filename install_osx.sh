@@ -39,9 +39,13 @@ if [ "$1" != "--post" ]; then
     exec $SHELL 
  
 else
-    echo "If you are getting the following error: nvm command not found"
-    echo "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh"
-    echo "The first step of the project intialization has already set up a new login shell"
+
+	YELLOW='\033[1;33m'
+	NC='\033[0m'
+
+    echo -e "\n${YELLOW}If you are getting the following error: nvm command not found\n"
+    echo -e "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh\n"
+    echo -e "The first step of the project intialization has already set up a new login shell\n${NC}"
 
 	source $HOME/.nvm/nvm.sh
 	nvm install --lts
@@ -49,6 +53,7 @@ else
 
 	make install-hooks 
 	make install-web
+	make install-code-plugins
 
 	echo "alias spa=\"cd ${PWD}\"" >> $HOME/.zshrc
 fi

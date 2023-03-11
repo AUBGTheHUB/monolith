@@ -30,6 +30,7 @@ else
 
     make install-hooks
     make install-web
+    make install-code-plugins
 
     echo "alias spa=\"cd ${PWD}\"" >> $HOME/.bashrc
 fi

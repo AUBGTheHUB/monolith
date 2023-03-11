@@ -1,5 +1,7 @@
 import React from 'react';
 import './desktop_navbar.css';
+import { navigateTo } from '../../../../Global';
+import { Link } from 'react-router-dom';
 
 export const NavDesktop = ({ props }) => {
     const renderHackButton = () => {
@@ -9,7 +11,7 @@ export const NavDesktop = ({ props }) => {
                     className="hackaubg-btn"
                     type="button"
                     onClick={() => {
-                        location.href = '/hackaubg';
+                        navigateTo('/hackaubg');
                     }}
                 >
                     <p>HackAUBG</p>
@@ -19,7 +21,8 @@ export const NavDesktop = ({ props }) => {
     };
 
     const openHome = () => {
-        window.location.href = '/';
+        navigateTo('/');
+        window.scrollTo(0, 0);
     };
 
     const stickyProps = () => {
@@ -42,6 +45,40 @@ export const NavDesktop = ({ props }) => {
         e.target.style.color = color;
     };
 
+    const buildDesktopAnchor = (anchor) => {
+        if (anchor.isLink) {
+            return (
+                <Link
+                    to={anchor.endpoint}
+                    onMouseEnter={(e) => {
+                        changeAnchorColor(e, props.anchorHoverColor);
+                    }}
+                    onMouseLeave={(e) => {
+                        changeAnchorColor(e, props.anchorColor);
+                    }}
+                    style={{ color: props.anchorColor }}
+                >
+                    {anchor.name}
+                </Link>
+            );
+        }
+
+        return (
+            <a
+                href={anchor.endpoint}
+                onMouseEnter={(e) => {
+                    changeAnchorColor(e, props.anchorHoverColor);
+                }}
+                onMouseLeave={(e) => {
+                    changeAnchorColor(e, props.anchorColor);
+                }}
+                style={{ color: props.anchorColor }}
+            >
+                {anchor.name}
+            </a>
+        );
+    };
+
     return (
         <div className="navdesktop-container" style={stickyProps()}>
             <div className="navdesktop-logo" onClick={openHome}>
@@ -52,24 +89,20 @@ export const NavDesktop = ({ props }) => {
                 />
                 <p>The Hub</p>
             </div>
-            <div className="navdesktop-buttons">
-                {props.anchorList.map((anchor, index) => (
-                    <div className="navdesktop-navdivs" key={index}>
-                        <a
-                            href={anchor.endpoint}
+            <div className="navdesktop-flex-buttons">
+                <div className="navdesktop-buttons">
+                    {props.anchorList.map((anchor, index) => (
+                        <div
+                            className="navdesktop-navdivs"
                             key={index}
-                            onMouseEnter={(e) => {
-                                changeAnchorColor(e, props.anchorHoverColor);
+                            style={{
+                                display: !anchor.featureSwitch ? 'none' : ''
                             }}
-                            onMouseLeave={(e) => {
-                                changeAnchorColor(e, props.anchorColor);
-                            }}
-                            style={{ color: props.anchorColor }}
                         >
-                            {anchor.name}
-                        </a>
-                    </div>
-                ))}
+                            {buildDesktopAnchor(anchor)}
+                        </div>
+                    ))}
+                </div>
                 {renderHackButton()}
             </div>
         </div>

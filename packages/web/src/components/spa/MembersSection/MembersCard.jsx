@@ -8,10 +8,12 @@ export const MembersCard = ({ prop }) => {
             <h2 className="members-card-overlay-text position">
                 {prop.position}
             </h2>
-            <BsLinkedin
-                className="members-card-overlay-text linkedin-icon"
-                onClick={() => window.open(prop.sociallink)}
-            />
+            {prop.sociallink !== '' && (
+                <BsLinkedin
+                    className="members-card-overlay-text linkedin-icon"
+                    onClick={() => window.open(prop.sociallink)}
+                />
+            )}
         </div>
     );
 };

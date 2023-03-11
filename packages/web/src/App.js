@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/MainPage';
 import NotFound from './components/other/NotFound';
@@ -34,8 +34,16 @@ import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
 import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
 
+import S3Panel from './components/admin_page/s3_page/s3_landing';
+import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
+import { handleUrlDependantStyling } from './Global';
+import { FEATURE_SWITCHES } from './feature_switches';
 
 function App() {
+    document.addEventListener('locationChange', handleUrlDependantStyling);
+    window.addEventListener('load', handleUrlDependantStyling);
+    useEffect(handleUrlDependantStyling, []);
+
     return (
         <Routes>
             <Route path="/" element={<LandingHome />} />
@@ -128,8 +136,15 @@ function App() {
                 element={<RenderTeamMembers />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
-            <Route path="/jobs" element={<JobsSection />} />
+            {FEATURE_SWITCHES.jobs ? (
+                <Route path="/jobs" element={<JobsSection />} />
+            ) : null}
             <Route path="/*" element={<NotFound />} />
+            <Route path="/admin/dashboard/s3" element={<S3Panel />} />
+            <Route
+                path="/admin/dashboard/s3/objects"
+                element={<RenderStorageObjects />}
+            />
         </Routes>
     );
 }

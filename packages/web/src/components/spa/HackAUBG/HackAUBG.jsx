@@ -9,13 +9,18 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
+import RegistrationForm from './RegistrationForm/RegistrationForm';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
+import Sponsors from './SponsorsSection/SponsorsSection';
+import './hack_aubg.css';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
+
+    document.body.className = 'hackaubg-container';
 
     const anchorList = [
         new Anchor('About', '#about'),
@@ -44,12 +49,14 @@ export const HackAUBG = () => {
             <MatrixWindow />
             <AboutHackathon />
             <JourneySection />
+            <RegistrationForm />
             <MentorsSection />
             <JudgesSection />
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
             <AwardsSection />
+            <Sponsors />
             <FaqSection />
             <Footer
                 color={'rgb(25, 183, 0)'}

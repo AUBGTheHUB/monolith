@@ -23,9 +23,11 @@ class Props {
 }
 
 class Anchor {
-    constructor(name, endpoint) {
+    constructor(name, endpoint, isLink = false, featureSwitch = true) {
         this.name = name;
         this.endpoint = endpoint;
+        this.isLink = isLink;
+        this.featureSwitch = featureSwitch;
     }
 }
 
