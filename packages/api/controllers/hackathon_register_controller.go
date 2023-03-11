@@ -7,8 +7,12 @@ import (
 	"fmt"
 	"hub-backend/models"
 	"hub-backend/responses"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -236,101 +240,19 @@ func SendEmailToNewParticipant(fullName string, email string, testing string) {
 	var reqBody Mailer
 
 	firstName := strings.Split(fullName, " ")[0]
+	_, base, _, _ := runtime.Caller(0)
+	root := filepath.Join(filepath.Dir(base), "..")
+	html_file := path.Join(root, "email_template.html")
+	html_bytes, err := ioutil.ReadFile(html_file)
 
-	//TODO: bruh Please somebody fix this html :D, Also maybe we should make a separeate issue for it.
-	html := fmt.Sprintf(`<!doctype html>
-<html lang="en">
-<head>
-    <!-- Required meta tags -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-    <title>You registered for HackAUBG 5.0!</title>
-    <style>
-    </style>
-</head>
-<body style="margin-top: 15px;">
-    <div class="container" style=
-    "max-height: 72px; 
-    height: 72px; 
-    background: linear-gradient(90deg, rgba(0,87,146,1) 0%, rgba(0,187,240,1) 100%); 
-    -webkit-border-top-left-radius: 72px;
-    -moz-border-radius-bottomleft: 90px;
-    border-top-left-radius: 72px;
-    max-width: 700px;">
-    </div>
-    <div class="container" style="max-width: 700px;  background-color: #fcfcff; padding-left: 30px; padding-right: 90px;">
-        <br/><br/>
-        <h4><b> Thank you for registering for HackAUBG 5.0! <br/></b></h4>
-        <br/>
-		<p> Welcome on board, %s! <br> <br>
-            Before the hackathon starts, there are a few <b>important things:</b>  <br> <br> To ensure you stay in the loop, 
-            we will invite you to join the Official HackAUBG 5.0 Facebook group. That is where we'll share all the latest 
-            updates and instructions about the event. 
-        </p> 
-		
-        <p>
-            What's more, each team will have their very own <b>facilitator</b> from The Hub to guide you through the hackathon. 
-            They'll be your point of contact for any questions or concerns you may have and will even help you find new teammates if needed.
-        </p> 
-    
-        <p>
-            We're thrilled to have you on board and can't wait to meet you!
-        </p> 
-		
-       <p>
-        <b>- The Hub AUBG</b>
-       </p> 
-		<a href="https://www.facebook.com/TheHubAUBG/" target="_blank" title="TheHubAUBG"><i class="fa fa-facebook" style="font-size: 25px; padding-right: 10px;"></i></a>
-		<a href="https://www.instagram.com/thehubaubg/" target="_blank" title="TheHubAUBG"><i class="fa fa-instagram" style="font-size: 25px; padding-right: 10px;"></i></a>
-		<a href="https://www.linkedin.com/company/the-hub-aubg" target="_blank" title="TheHubAUBG" style="padding-left:8px;"><i class="fa fa-linkedin" style="font-size: 25px; padding-right: 10px;"></i></a>
-		<a href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug" target="_blank" title="TheHubAUBG" style="padding-left:8px;"><i class="fa fa-youtube" style="font-size: 25px; padding-right: 10px;"></i></a>
-    </div>
-	
-	<div class="container" style="max-width: 700px; background-color: #fcfcff; padding-right:0; margin-top: -100px; z-index: -1;">
-        <img 
-            src="https://i.ibb.co/5Mw9Dzr/Robot.png" 
-            width="250"
-            height="auto" alt="TheHubAUBG"
-            style="display:block; border: none; max-width:230px; margin: 0 auto; margin-bottom: 0; margin-right:0;" />
-    </div>
- 
-    <div class="container" style="max-height: 72px; height: 72px; 
-        background: linear-gradient(90deg, rgba(0,87,146,1) 0%, rgba(0,187,240,1) 100%); 
-        -webkit-border-bottom-right-radius: 72px;
-        -moz-border-radius-bottomleft: 90px;
-        border-bottom-right-radius: 72px;
-        max-width: 700px;">
-        <h5 class="text-center" style="vertical-align: middle;
-        line-height: 72px; color: white; ">Learn &nbsp;•&nbsp; Innovate &nbsp;•&nbsp; Inspire</h5>
-    </div>
-    <div class="container" style=    
-        "margin-top: 15px; margin-bottom: 15px; max-width: 700px; font-size: 12px;
-		line-height: 15px;
-		text-align: center;
-		color: black;
-        max-width: 820px">
-        <div class="text-center"> Hub International &copy;, <br />2023</div>
-    </div>
+	if err != nil {
+		fmt.Println("Error loading html")
+		fmt.Println(err)
+		return
+	}
+	html_string := string(html_bytes)
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-</body>
-</html>`, firstName)
+	html := fmt.Sprintf(html_string, firstName)
 
 	reqBody.Html = html
 	reqBody.Receiver = email
@@ -343,8 +265,8 @@ func SendEmailToNewParticipant(fullName string, email string, testing string) {
 	req, err := http.NewRequest(http.MethodPost, requestURL, bytes.NewBuffer(json_data))
 
 	if err != nil {
-		fmt.Println("could not create request to mailing service: ")
-		fmt.Print(err.Error())
+		fmt.Println("Could not build mailing request")
+		fmt.Print(err)
 		return
 	}
 
@@ -354,8 +276,8 @@ func SendEmailToNewParticipant(fullName string, email string, testing string) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		fmt.Println("error making http request to mailing service: ")
-		fmt.Print(err.Error())
+		fmt.Println("Failed making mailing request")
+		fmt.Print(err)
 		return
 	}
 
