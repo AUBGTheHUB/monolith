@@ -20,6 +20,7 @@ export const HackAUBG = () => {
     makeBodyScrollable();
 
     document.body.className = 'hackaubg-container';
+    document.body.style.backgroundColor = '#222222';
 
     const anchorList = [
         new Anchor('About', '#about'),
