@@ -142,11 +142,16 @@ export const NavMobile = ({ props }) => {
                 />
 
                 <div className="navmobile-anchors-container">
-                    <ul>
-                        {props.anchorList.map((anchor, index) => (
-                            <li key={index}>{buildMobileAnchor(anchor)}</li>
-                        ))}
-                    </ul>
+                    {props.anchorList.map((anchor, index) => (
+                        <ul
+                            key={index}
+                            style={{
+                                display: !anchor.featureSwitch ? 'none' : ''
+                            }}
+                        >
+                            <li>{buildMobileAnchor(anchor)}</li>
+                        </ul>
+                    ))}
                     {renderHackButton()}
                 </div>
             </div>
