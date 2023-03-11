@@ -91,7 +91,11 @@ export const NavDesktop = ({ props }) => {
             </div>
             <div className="navdesktop-buttons">
                 {props.anchorList.map((anchor, index) => (
-                    <div className="navdesktop-navdivs" key={index}>
+                    <div
+                        className="navdesktop-navdivs"
+                        key={index}
+                        style={{ display: !anchor.featureSwitch ? 'none' : '' }}
+                    >
                         {buildDesktopAnchor(anchor)}
                     </div>
                 ))}

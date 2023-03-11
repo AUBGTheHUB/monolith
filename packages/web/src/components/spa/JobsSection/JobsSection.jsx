@@ -7,11 +7,12 @@ import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
 import { Footer } from '../Footer/Footer';
 import './jobs_section.css';
+import { FEATURE_SWITCHES } from '../../../feature_switches';
 
 const anchorList = [
     new Anchor('About', '/#about'),
     new Anchor('Team', '/#team'),
-    new Anchor('Jobs', '/jobs')
+    new Anchor('Jobs', '/jobs', false, FEATURE_SWITCHES.jobs)
 ];
 
 export const JobsSection = () => {
