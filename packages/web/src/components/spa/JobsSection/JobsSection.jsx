@@ -11,7 +11,7 @@ import { FEATURE_SWITCHES } from '../../../feature_switches';
 
 const anchorList = [
     new Anchor('About', '/#about'),
-    new Anchor('Team', '/#team'),
+    new Anchor('Team', '/#team', true, FEATURE_SWITCHES.team),
     new Anchor('Jobs', '/jobs', false, FEATURE_SWITCHES.jobs)
 ];
 
@@ -30,7 +30,7 @@ export const JobsSection = () => {
                     setIsFetching(false);
                 }, 750);
 
-                // // force earlier download
+                // force earlier download
                 res.data.data.data.forEach((element) => {
                     let img = new Image();
                     img.src = element.logo;
