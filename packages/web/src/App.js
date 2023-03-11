@@ -34,6 +34,7 @@ import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
 import { handleUrlDependantStyling } from './Global';
+import { FEATURE_SWITCHES } from './feature_switches';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -124,7 +125,9 @@ function App() {
                 element={<PartnersActions />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
-            <Route path="/jobs" element={<JobsSection />} />
+            {FEATURE_SWITCHES.jobs ? (
+                <Route path="/jobs" element={<JobsSection />} />
+            ) : null}
             <Route path="/*" element={<NotFound />} />
             <Route path="/admin/dashboard/s3" element={<S3Panel />} />
             <Route
