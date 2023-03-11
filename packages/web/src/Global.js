@@ -72,7 +72,7 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
-const changeFavicon = () => {
+const changeFaviconAndBackground = () => {
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
@@ -86,8 +86,9 @@ const changeFavicon = () => {
 
     if (location.href.includes('hackaubg')) {
         favicon = '/favicon-green.ico';
-        iosIcon = origin + '/green-logo512.png';
+        iosIcon = '/green-logo512.png';
         title = 'HackAUBG 5.0';
+        document.body.style.backgroundColor = '#222222';
     } else {
         favicon = '/favicon.ico';
         iosIcon = '/logo512.png';
