@@ -44,14 +44,19 @@
 
 /*Buttons*/
 
+.navdesktop-flex-buttons {
+    align-items: center;
+    display: inline-flex;
+    justify-content: flex-end;
+    font-weight: bold;
+}
+
 .navdesktop-buttons {
-    min-width: 40%;
-    width: 45%;
-    max-width: 50%;
     align-items: center;
     display: inline-flex;
     justify-content: space-between;
     font-weight: bold;
+    padding-right: 0.5rem;
 }
 
 .navdesktop-navdivs a {
@@ -66,6 +71,8 @@
     font-size: 1.2rem;
     justify-content: center;
     align-items: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 @media only screen and (max-width: 1087px) {
@@ -74,7 +81,6 @@
         padding-right: 2%;
     }
     .navdesktop-buttons {
-        max-width: 20%;
         margin-right: 5.5%;
     }
 }
@@ -157,7 +163,7 @@
     50% {
         background-position: 100% 50%;
     }
-    1000% {
+    100% {
         background-position: 0% 50%;
     }
 }
