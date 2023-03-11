@@ -179,12 +179,12 @@ const RegistrationForm = () => {
                                         },
                                         minLength: {
                                             message:
-                                                '*Minimum length is 4 symbols',
+                                                '*Minimum length is 4 characters',
                                             value: 4
                                         },
                                         maxLength: {
                                             message:
-                                                'Maximum length is 50 symbols',
+                                                'Maximum length is 50 characters',
                                             value: 50
                                         },
                                         pattern: {
@@ -216,7 +216,7 @@ const RegistrationForm = () => {
                                         },
                                         minLength: {
                                             message:
-                                                '*Minimum length is 4 symbols',
+                                                '*Minimum length is 4 characters',
                                             value: 4
                                         }
                                     })}
@@ -270,12 +270,12 @@ const RegistrationForm = () => {
                                         },
                                         minLength: {
                                             message:
-                                                'Minimum length is 2 symbols',
+                                                'Minimum length is 2 characters',
                                             value: 2
                                         },
                                         maxLength: {
                                             message:
-                                                'Maximum length is 50 symbols',
+                                                'Maximum length is 50 characters',
                                             value: 50
                                         },
                                         pattern: {
@@ -444,12 +444,12 @@ const RegistrationForm = () => {
                                         },
                                         minLength: {
                                             message:
-                                                '*Minimum length is 4 symbols',
+                                                '*Minimum length is 4 characters',
                                             value: 4
                                         },
                                         maxLength: {
                                             message:
-                                                'Maximum length is 100 symbols',
+                                                'Maximum length is 100 characters',
                                             value: 100
                                         }
                                     })}
@@ -547,12 +547,12 @@ const RegistrationForm = () => {
                                         },
                                         minLength: {
                                             message:
-                                                '*Minimum length is 4 symbols',
+                                                '*Minimum length is 4 characters',
                                             value: 4
                                         },
                                         maxLength: {
                                             message:
-                                                'Maximum length is 100 symbols',
+                                                'Maximum length is 100 characters',
                                             value: 100
                                         }
                                     })}
