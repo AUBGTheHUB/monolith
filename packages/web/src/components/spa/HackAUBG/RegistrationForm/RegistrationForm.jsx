@@ -160,7 +160,6 @@ const RegistrationForm = () => {
             <div className="registration-main" id="registration">
                 <h1>Register for HackAUBG 5.0</h1>
                 <form
-                    action=""
                     className="reg-form"
                     onSubmit={handleSubmit(onSubmit)}
                     onChange={handleDisabledFields}
