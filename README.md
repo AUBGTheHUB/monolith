@@ -72,7 +72,17 @@ make gum
 **For developers**:
 Spin up local server instances:
 
-<img src="https://i.ibb.co/tsyS8rd/image.png" alt="image" border="0">
+<img src="https://i.imgur.com/02MAbG1.png" alt="image" border="0">
+
+#### Client (requests towards local api) runs the requests towards your local API
+
+<img src="https://i.imgur.com/6M5pwfA.png" alt="image" border="0">
+
+#### Client (requests towards PROD api) runs the requests towards the production API. Run this only if you don't make any changes to the API (Run this only if you're doing Frontend)
+
+<img src="https://i.imgur.com/nrMG3iI.png" alt="image" border="0">
+
+#### Client (requests towards DEV api) runs the requests towards the development medium API. Run this if you're testing changes on the API
 
 **For deployments**:
 
@@ -99,6 +109,11 @@ make run-api
 * __Run (hot reload)__:
 ```
 make reload-api
+```
+
+* __Run (prod API)__:
+```
+make run-prod
 ```
 
 * using a task:
@@ -144,7 +159,9 @@ make install-web
 ```shell
 make run-web # web is going to make requests towards a local instance of api (make run-api)
 
-make run-dev # web is going to make requests towards a deployed instance of the api (e.g. https://dev.thehub-aubg.com/api)
+make run-dev # web is going to make requests towards a development instance of the api (e.g. https://dev.thehub-aubg.com/api)
+
+make run-prod # web is going to make requests towards the deployed instance of the api (https://thehub-aubg.com/api)
 ```
 
 ** For installing, running, cleaning and building from `web` - take a look at the `scripts` in `web/package.json`
