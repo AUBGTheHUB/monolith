@@ -52,9 +52,9 @@ if [ $ACTIONS == $START ]; then
     clear
     echo -e "What instance do you want to spin up?"
 
-    WEB_CLIENT="Client (requests towards local api)"
-    PROD_CLIENT="Client (requests towards PROD api)"
-    DEV_CLIENT="Client (requests towards DEV api)"
+    WEB_CLIENT="Client (local)"
+    PROD_CLIENT="Client (dev)"
+    DEV_CLIENT="Client (prod)"
     LOCAL_API="Run Api"
     ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$PROD_CLIENT" "$DEV_CLIENT" "$LOCAL_API")
 
@@ -87,7 +87,7 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
     fi
 fi
 
-if [ -z "${HUB_VM}" ]; then
+if [ -z "${HUB_VM}" ] && [! -z "${VM_IP}"]; then
     echo "Saving the $(gum style --foreground 212 "Virtual Machine")..."
     exec $SHELL
 fi
