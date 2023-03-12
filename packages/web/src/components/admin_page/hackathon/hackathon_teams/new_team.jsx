@@ -11,7 +11,7 @@ const AddNewTeam = () => {
 
     const [formState, setFormState] = useState({
         teamname: '',
-        teammembers: [],
+        teammembers: []
     });
 
     const handleInputChange = (e) => {
