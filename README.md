@@ -72,15 +72,15 @@ make gum
 **For developers**:
 Spin up local server instances:
 
-<img src="https://i.imgur.com/02MAbG1.png" alt="image" border="0">
+<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/local_api_readme_gum.png" alt="image" border="0">
 
 #### Client (requests towards local api) runs the requests towards your local API
 
-<img src="https://i.imgur.com/6M5pwfA.png" alt="image" border="0">
+<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/prod_api_readme_gum.png" alt="image" border="0">
 
 #### Client (requests towards PROD api) runs the requests towards the production API. Run this only if you don't make any changes to the API (Run this only if you're doing Frontend)
 
-<img src="https://i.imgur.com/nrMG3iI.png" alt="image" border="0">
+<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/dev_api_readme_gum.png" alt="image" border="0">
 
 #### Client (requests towards DEV api) runs the requests towards the development medium API. Run this if you're testing changes on the API
 
