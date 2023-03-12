@@ -229,11 +229,9 @@ git push --set-upstream origin #11-Optimizations
 - Reference the issue in the title
 - Write a brief discription of what you have worked on  
 
-#### If nobody has reviewed the Pull Request by the end of the day, ping [@asynchroza](https://github.com/asynchroza)
-
 ---
 ### Important: 
-* If you encounter any issues setting up the project, ping either [@asynchroza](https://github.com/asynchroza) or [@nikolayninov](https://github.com/nikolayninov)
+* If you encounter any issues setting up the project, ping the team in Discord or Messenger
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
