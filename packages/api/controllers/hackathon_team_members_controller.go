@@ -18,6 +18,7 @@ import (
 )
 
 var teamMembersCollection *mongo.Collection = configs.GetCollection(configs.DB, "hackathonMembers")
+
 // var teamMembersCollection
 
 var validateTeamMembers = validator.New()
@@ -193,6 +194,32 @@ func DeleteHackathonMember(c *fiber.Ctx, key ...string) error {
 	}
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(member_key)
+
+	var member models.TeamMember
+
+	err := teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&member)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
+	}
+
+	if member.HasTeam {
+
+	results, _ := hackathonTeamCollection.Find(ctx, bson.M{})
+
+	for results.Next(ctx) {
+		var team models.Team
+		results.Decode(&team)
+		if CompareTeamNames(team.TeamName, member.TeamName) {
+			_, err := hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": team.ID}, bson.M{"$pull": bson.M{"teammembers": member_key}})
+			
+			if err != nil {
+				return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error()}})
+			}
+		}
+	}
+
+	}
 
 	result, err := teamMembersCollection.DeleteOne(ctx, bson.M{"_id": key_from_hex})
 	if err != nil {
