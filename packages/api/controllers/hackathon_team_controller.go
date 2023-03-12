@@ -176,7 +176,14 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 
 	key_from_hex, _ := primitive.ObjectIDFromHex(hackathon_team_key)
 
-	result, err := hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName, "teammembers":team.TeamMembers}})
+	var result *mongo.UpdateResult
+	var err error
+
+	if team.TeamMembers == nil {
+		result, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName}})
+	} else {
+		result, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName, "teammembers":team.TeamMembers}})
+	}
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
@@ -185,6 +192,17 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 	if result.MatchedCount != 1 {
 		return c.Status(http.StatusNotFound).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "Team not found"}})
 	}
+
+	for i := 0; i < len(team.TeamMembers); i++ {
+		member_key_from_hex, _ := primitive.ObjectIDFromHex(team.TeamMembers[i])
+
+		_, err := teamMembersCollection.UpdateOne(ctx, bson.M{"_id": member_key_from_hex}, bson.M{"$set": bson.M{"teamname": team_map.TeamName}})
+
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+		}
+	}
+
 
 	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "Updated!"})
 
