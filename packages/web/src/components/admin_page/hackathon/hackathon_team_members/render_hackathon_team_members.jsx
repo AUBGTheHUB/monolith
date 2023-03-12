@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import InvalidClient from '../../invalid_client';
 import Validate, { url } from '../../../../Global';
 
 const RenderTeamMembers = () => {
+    const location = useLocation();
     const history = useNavigate();
     const [teamMembers, setTeamMembers] = useState();
+    const team_data = location.state.team_data;
 
     const getTeamMembers = () => {
         axios({
             method: 'get',
-            url: url + '/api/hackathon/teams/members',
+            url: url + `/api/hackathon/teams/${team_data.id}`,
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
         })
             .then((res) => {
-                setTeamMembers(res.data.data.data);
+                console.log(res.data.data.data);
+                setTeamMembers(res.data.data.data.TeamMembers);
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {});
@@ -29,7 +32,7 @@ const RenderTeamMembers = () => {
     const renderMap = () => {
         if (teamMembers) {
             return (
-                <div className="teamMembers-box">
+                <div className="members-box">
                     {teamMembers.map((person, index) => (
                         <Card
                             style={{ width: '18rem' }}
@@ -46,7 +49,20 @@ const RenderTeamMembers = () => {
                                     {'Team: ' + person['teamname']}
                                 </Card.Text>
                                 <Card.Text>
-                                    {'School: ' + person['school']}
+                                    {'Email: ' + person['email']}
+                                </Card.Text>
+                                <Card.Text>
+                                    {'School: ' + person['university']}
+                                </Card.Text>
+                                <Card.Text>
+                                    {'Location: ' + person['location']}
+                                </Card.Text>
+                                <Card.Text>
+                                    {'Programming Level: ' +
+                                        person['programminglevel']}
+                                </Card.Text>
+                                <Card.Text>
+                                    {'T-shirt Size: ' + person['shirtsize']}
                                 </Card.Text>
                                 <Button
                                     variant="primary"
