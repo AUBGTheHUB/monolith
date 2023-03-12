@@ -38,7 +38,10 @@ export const JudgesSection = () => {
         }
         return (
             <div className="judges-coming-soon-container">
-                <h1>Judges coming soon...</h1>
+                <h1>
+                    Judges coming <br />
+                    soon...
+                </h1>
             </div>
         );
     };
