@@ -203,7 +203,7 @@ func DeleteHackathonMember(c *fiber.Ctx, key ...string) error {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error() + "key: " + member_key}})
 	}
 
-	if member.HasTeam {
+	if *(member.HasTeam) {
 
 	results, _ := hackathonTeamCollection.Find(ctx, bson.M{})
 
