@@ -206,7 +206,7 @@ input {
     }
 }
 .reg-closed {
-    margin-top: 5%;
+    padding-top: 10%;
     color: white;
     text-align: center;
 }

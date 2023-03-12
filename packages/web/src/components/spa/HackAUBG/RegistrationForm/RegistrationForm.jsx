@@ -5,6 +5,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { url } from '../../../../Global';
 import { BsExclamationCircleFill } from 'react-icons/bs';
+import { FEATURE_SWITCHES } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
     const {
@@ -155,7 +156,7 @@ const RegistrationForm = () => {
             );
         }
     };
-    if (isFormAvailable) {
+    if (isFormAvailable && FEATURE_SWITCHES.regForm) {
         return (
             <div className="registration-main" id="registration">
                 <h1>Register for HackAUBG 5.0</h1>
@@ -802,7 +803,11 @@ const RegistrationForm = () => {
             </div>
         );
     }
-    return <h1 className="reg-closed">Registration is closed</h1>;
+    return (
+        <h1 className="reg-closed" id="registration">
+            Registration is closed
+        </h1>
+    );
 };
 
 export default RegistrationForm;
