@@ -77,6 +77,35 @@ func CreateNoTeamHackathonParticipant(c *fiber.Ctx) error {
 
 }
 
+func GetNoTeamParticipants(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	bearer_token := c.Get("BEARER-TOKEN")
+
+	var no_team_participants []models.TeamMember
+	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
+
+	cursor, err := noTeamParticipantsCollection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var no_team_participant models.TeamMember
+		cursor.Decode(&no_team_participant)
+		no_team_participants = append(no_team_participants, no_team_participant)
+	}
+
+
+	return c.Status(http.StatusOK).JSON(responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": no_team_participants}})
+}
+
 func GetNoTeamParticipant(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	no_team_participant_key := c.Params("key", "key was not provided")
