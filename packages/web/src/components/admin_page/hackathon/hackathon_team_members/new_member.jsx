@@ -12,32 +12,32 @@ const AddTeamMember = () => {
     const history = useNavigate();
     const [formState, setFormState] = useState({
         fullname: '',
-        teamnoteam: true,
+        hasteam: true,
         teamname: team_data.teamname,
         email: '',
-        school: '',
+        university: '',
         age: 0,
         location: '',
-        aboutus: '',
-        previouspart: false,
-        partdetails: '',
-        experience: false,
-        level: '',
-        strength: '',
-        size: '',
-        internship: false,
+        heardaboutus: '',
+        prevhackathonparticipation: false,
+        prevhackaubgparticipation: false,
+        hasexperience: false,
+        programminglevel: '',
+        strongsides: '',
+        shirtsize: '',
+        wantinternship: false,
         jobinterests: '',
-        sponsorshare: false,
-        newsletter: false,
+        shareinfowithsponsors: false,
+        wantjoboffers: false
     });
 
     const handleInputChange = (e) => {
         const target = e.target;
         const name = target.name;
-        const value = (name=='age') ? Number(target.value):target.value;
+        const value = name == 'age' ? Number(target.value) : target.value;
         setFormState({
             ...formState,
-            [name]: (target.type == 'checkbox') ? target.checked : value
+            [name]: target.type == 'checkbox' ? target.checked : value
         });
     };
 
@@ -54,8 +54,11 @@ const AddTeamMember = () => {
             // eslint-disable-next-line no-unused-vars
             .then((res) => {
                 console.log('New member was added');
-                team_data["teammembers"].push(res['data']['data']['data']['InsertedID'])
-
+                team_data['teammembers'].push(
+                    res['data']['data']['data']['InsertedID']
+                );
+                console.log(team_data);
+                console.log(teamID);
                 axios({
                     method: 'put',
                     url: url + `/api/hackathon/teams/${teamID}`,
@@ -76,8 +79,6 @@ const AddTeamMember = () => {
             .catch((err) => {
                 alert(err['response']['data']['data']['data']);
             });
-            
-         
     };
 
     if (Validate()) {
@@ -106,8 +107,8 @@ const AddTeamMember = () => {
                         <Form.Label>School</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="school"
-                            name="school"
+                            placeholder="university"
+                            name="university"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -136,48 +137,54 @@ const AddTeamMember = () => {
                         <Form.Label>Heard about us?</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="aboutus"
-                            name="aboutus"
+                            placeholder="heardaboutus"
+                            name="heardaboutus"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
-                        <Form.Label>Previous Participation?</Form.Label>
+                        <Form.Label>
+                            Previous Hackathon Participation?
+                        </Form.Label>
                         <Form.Check
                             type="switch"
-                            label="TEST"
-                            name="previouspart"
+                            label="prevhackathonparticipation"
+                            name="prevhackathonparticipation"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
-                        <Form.Label>Participation Info</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="partdetails"
-                            name="partdetails"
-                            onChange={handleInputChange}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" controlId="formBasicText">
-                        <Form.Label>Experience</Form.Label>
+                        <Form.Label>
+                            Previous HackAUBG Participation?
+                        </Form.Label>
                         <Form.Check
                             type="switch"
-                            label="TEST"
-                            name="experience"
+                            label="prevhackaubgparticipation"
+                            name="prevhackaubgparticipation"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
-                        <Form.Label>Programming Level</Form.Label>
+                        <Form.Label>
+                            Previous HackAUBG Participation?
+                        </Form.Label>
+                        <Form.Check
+                            type="switch"
+                            label="hasexperience"
+                            name="hasexperience"
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Programming level</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="level"
-                            name="level"
+                            label="programminglevel"
+                            name="programminglevel"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -186,8 +193,8 @@ const AddTeamMember = () => {
                         <Form.Label>Strong Sides</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="strength"
-                            name="strength"
+                            placeholder="strongsides"
+                            name="strongsides"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -196,8 +203,8 @@ const AddTeamMember = () => {
                         <Form.Label>Shirt Size</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="size"
-                            name="size"
+                            placeholder="shirtsize"
+                            name="shirtsize"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -206,8 +213,8 @@ const AddTeamMember = () => {
                         <Form.Label>Internship</Form.Label>
                         <Form.Check
                             type="switch"
-                            label="TEST"
-                            name="internship"
+                            label="wantinternship"
+                            name="wantinternship"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -225,8 +232,8 @@ const AddTeamMember = () => {
                         <Form.Label>Sponsor Share</Form.Label>
                         <Form.Check
                             type="switch"
-                            label="TEST"
-                            name="sponsorshare"
+                            label="shareinfowithsponsors"
+                            name="shareinfowithsponsors"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -235,8 +242,8 @@ const AddTeamMember = () => {
                         <Form.Label>NewsLetter</Form.Label>
                         <Form.Check
                             type="switch"
-                            label="TEST"
-                            name="newsletter"
+                            label="wantjoboffers"
+                            name="wantjoboffers"
                             onChange={handleInputChange}
                         />
                     </Form.Group>
