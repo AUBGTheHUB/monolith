@@ -72,7 +72,7 @@ const openNewTab = (url) => {
     window.open(url, '_blank');
 };
 
-const changeFavicon = () => {
+const handleUrlDependantStyling = () => {
     let link = document.querySelector("link[rel~='icon']");
 
     if (!link) {
@@ -86,12 +86,14 @@ const changeFavicon = () => {
 
     if (location.href.includes('hackaubg')) {
         favicon = '/favicon-green.ico';
-        iosIcon = origin + '/green-logo512.png';
+        iosIcon = '/green-logo512.png';
         title = 'HackAUBG 5.0';
+        document.body.style.backgroundColor = '#222222';
     } else {
         favicon = '/favicon.ico';
         iosIcon = '/logo512.png';
         title = 'The Hub AUBG';
+        document.body.style.backgroundColor = 'rgb(118, 181, 197)';
     }
 
     let iconPath = origin + favicon;
@@ -124,13 +126,14 @@ export {
     checkHashAndScroll,
     checkBrowserValid,
     openNewTab,
-    changeFavicon,
+    handleUrlDependantStyling,
     NavigateSetter,
     navigateTo,
     objUploaderURL,
     gcpToken
 };
 export default Validate;
+
 /*
 
     this is how you should handle the validation of the client

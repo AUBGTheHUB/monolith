@@ -14,25 +14,24 @@ const Sponsors = () => {
         axios({
             method: 'get',
             url: url + '/api/sponsors'
-        })
-            .then((res) => {
-                unfilteredSponsors = res.data.data.data;
-                let tempSponsor = {
-                    platinum: [],
-                    gold: [],
-                    bronze: [],
-                    silver: [],
-                    custom: []
-                };
+        }).then((res) => {
+            unfilteredSponsors = res.data.data.data;
+            let tempSponsor = {
+                platinum: [],
+                gold: [],
+                bronze: [],
+                silver: [],
+                custom: []
+            };
 
-                unfilteredSponsors.forEach((x) => {
-                    tempSponsor[x.category].push(x);
-                });
+            unfilteredSponsors.forEach((x) => {
+                tempSponsor[x.category].push(x);
+            });
 
-                setSponsor(tempSponsor);
-            })
-            // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            setSponsor(tempSponsor);
+        });
+        // eslint-disable-next-line no-unused-vars
+        //removed catch to fix console error
     };
 
     useEffect(fetchSponsors, []);
@@ -69,6 +68,8 @@ const Sponsors = () => {
                         sponsors={sponsor.silver}
                         category={'silver'}
                     />
+                    {/* TODO: add hackathon partners to hackathon partners in admin panel */}
+                    {/* !!!!!!! PUT IT IN A NEW COMPONENT !!!!!!!!! */}
                     <div className="sponsors-header-bronze sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Media Partners</h1>
                     </div>

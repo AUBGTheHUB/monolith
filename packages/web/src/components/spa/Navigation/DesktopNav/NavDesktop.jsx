@@ -89,12 +89,20 @@ export const NavDesktop = ({ props }) => {
                 />
                 <p>The Hub</p>
             </div>
-            <div className="navdesktop-buttons">
-                {props.anchorList.map((anchor, index) => (
-                    <div className="navdesktop-navdivs" key={index}>
-                        {buildDesktopAnchor(anchor)}
-                    </div>
-                ))}
+            <div className="navdesktop-flex-buttons">
+                <div className="navdesktop-buttons">
+                    {props.anchorList.map((anchor, index) => (
+                        <div
+                            className="navdesktop-navdivs"
+                            key={index}
+                            style={{
+                                display: !anchor.featureSwitch ? 'none' : ''
+                            }}
+                        >
+                            {buildDesktopAnchor(anchor)}
+                        </div>
+                    ))}
+                </div>
                 {renderHackButton()}
             </div>
         </div>

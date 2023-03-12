@@ -13,6 +13,7 @@
         "react": "^18.2.0",
         "react-bootstrap": "^2.4.0",
         "react-dom": "^18.2.0",
+        "react-hook-form": "^7.43.4",
         "react-hovering-cards-carousel": "^0.9.71",
         "react-icons": "^4.6.0",
         "react-responsive": "^9.0.0",
@@ -24,6 +25,7 @@
     "scripts": {
         "start": "react-scripts start",
         "dev": "REACT_APP_API_URL=https://dev.thehub-aubg.com npm start",
+        "prod": "REACT_APP_API_URL=https://thehub-aubg.com npm start",
         "local": "HOST=0.0.0.0 npm run start",
         "build": "react-scripts build",
         "test": "react-scripts test",
