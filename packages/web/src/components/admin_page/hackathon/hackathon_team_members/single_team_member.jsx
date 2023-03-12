@@ -34,9 +34,8 @@ const TeamMemberActions = () => {
 
     const handleInputChange = (e) => {
         const target = e.target;
-        const value = target.value;
         const name = target.name;
-
+        const value = name == 'age' ? parseInt(target.value) : target.value;
         setFormState({
             ...formState,
             [name]: value
