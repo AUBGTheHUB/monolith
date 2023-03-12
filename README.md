@@ -108,11 +108,6 @@ make run-api
 make reload-api
 ```
 
-* __Run (prod API)__:
-```
-make run-prod
-```
-
 * using a task:
     * `ctrl + P` (for mac keybindings might differ)
     * type `task Hot Reload API`
