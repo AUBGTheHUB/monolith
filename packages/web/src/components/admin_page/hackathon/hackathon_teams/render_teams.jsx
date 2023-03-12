@@ -27,7 +27,7 @@ const RenderTeams = () => {
 
     const renderMap = () => {
         if (teams) {
-            console.log(teams)
+            console.log(teams);
             return (
                 <div className="members-box">
                     {teams.map((team, index) => {
@@ -77,10 +77,11 @@ const RenderTeams = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/hackathon/teams/add', {});
-                    }}>
-                        Add Team
-                    </Button>
-                    {renderMap()}
+                    }}
+                >
+                    Add Team
+                </Button>
+                {renderMap()}
             </div>
         );
     } else {
