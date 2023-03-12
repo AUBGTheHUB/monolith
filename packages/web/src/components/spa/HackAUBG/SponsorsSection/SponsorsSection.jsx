@@ -68,8 +68,10 @@ const Sponsors = () => {
                         sponsors={sponsor.silver}
                         category={'silver'}
                     />
+                    {/* TODO: add hackathon partners to hackathon partners in admin panel */}
+                    {/* !!!!!!! PUT IT IN A NEW COMPONENT !!!!!!!!! */}
                     <div className="sponsors-header-bronze sponsors-headers">
-                        <h1 style={{ color: '#FFFFFF' }}>Media Sponsor</h1>
+                        <h1 style={{ color: '#FFFFFF' }}>Media Partners</h1>
                     </div>
                     <SponsorsContainer
                         sponsors={sponsor.bronze}
