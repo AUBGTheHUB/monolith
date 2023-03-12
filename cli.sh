@@ -19,6 +19,12 @@ set_vm_ip () {
     read IP
 
     VM_IP="$USER@$IP"
+
+    echo "Would you like to remember the $(gum style --foreground 212 "Virtual Machine")?"
+    USE_DEFAULT=$(gum choose --limit 1 "yes" "no")
+    if [ "$USE_DEFAULT" == "yes" ]; then
+        echo "export HUB_VM=\"$VM_IP\"" >> ~/.bashrc
+    fi
 }
 
 if [[ $current_directory != "spa-website-2022" ]]
@@ -79,4 +85,9 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
         set_vm_ip
         ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
     fi
+fi
+
+if [ -z "${HUB_VM}" ]; then
+    echo "Saving the $(gum style --foreground 212 "Virtual Machine")..."
+    exec $SHELL
 fi
