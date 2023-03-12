@@ -8,6 +8,7 @@ import Validate, { url } from '../../../../Global';
 const RenderTeamMembers = () => {
     const location = useLocation();
     const history = useNavigate();
+<<<<<<< HEAD
     const [teamMembers, setTeamMembers] = useState();
     const team_data = location.state.team_data;
 
@@ -20,6 +21,19 @@ const RenderTeamMembers = () => {
             .then((res) => {
                 console.log(res.data.data.data);
                 setTeamMembers(res.data.data.data.TeamMembers);
+=======
+    const [team, setTeam] = useState();
+    const team_data = location.state.team_data;
+    console.log(team)
+    const getTeamMembers = () => {
+        axios({
+            method: 'get',
+            url: url + `/api/hackathon/teams/${team_data['id']}`,
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+        })
+            .then((res) => {
+                setTeam(res.data.data.data);
+>>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
             })
             // eslint-disable-next-line no-unused-vars
             .catch((err) => {});
@@ -30,10 +44,15 @@ const RenderTeamMembers = () => {
     }, []);
 
     const renderMap = () => {
-        if (teamMembers) {
+        if (team) {
             return (
+<<<<<<< HEAD
                 <div className="members-box">
                     {teamMembers.map((person, index) => (
+=======
+                <div className="teamMembers-box">
+                    {team.TeamMembers.map((person, index) => (
+>>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
                         <Card
                             style={{ width: '18rem' }}
                             key={index}
@@ -46,7 +65,7 @@ const RenderTeamMembers = () => {
                             <Card.Body>
                                 <Card.Title>{person['fullname']}</Card.Title>
                                 <Card.Text>
-                                    {'Team: ' + person['teamname']}
+                                    {'Email: ' + person['email']}
                                 </Card.Text>
                                 <Card.Text>
                                     {'Email: ' + person['email']}

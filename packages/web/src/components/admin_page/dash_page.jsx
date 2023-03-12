@@ -147,15 +147,26 @@ const Dash = () => {
                     </Card>
                     <Card className="card-dash-landing">
                         <Card.Body>
+<<<<<<< HEAD
                             <Card.Title>Hackathon Teams</Card.Title>
                             <Card.Text>Edit hackathon teams.</Card.Text>
+=======
+                            <Card.Title>Hackathon teams</Card.Title>
+                            <Card.Text>
+                                Manage the hackathon teams
+                            </Card.Text>
+>>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
                             <Button
                                 variant="primary"
                                 onClick={() => {
                                     history('/admin/dashboard/hackathon/teams');
                                 }}
                             >
+<<<<<<< HEAD
                                 See current teams
+=======
+                                Manage
+>>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
                             </Button>
                         </Card.Body>
                     </Card>

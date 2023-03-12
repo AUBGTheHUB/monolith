@@ -36,8 +36,14 @@ import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_
 
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
+<<<<<<< HEAD
 import { handleUrlDependantStyling } from './Global';
 import { FEATURE_SWITCHES } from './feature_switches';
+=======
+import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
+import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
+import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
+>>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -134,6 +140,18 @@ function App() {
             <Route
                 path="/admin/dashboard/hackathon/teams/members"
                 element={<RenderTeamMembers />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/teams/members/actions"
+                element={<TeamMemberActions />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/teams/members/add"
+                element={<AddTeamMember />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/teams/add"
+                element={<AddNewTeam />}
             />
             <Route path="/hackaubg" element={<HackAUBG />} />
             {FEATURE_SWITCHES.jobs ? (
