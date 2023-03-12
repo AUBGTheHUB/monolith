@@ -46,16 +46,19 @@ if [ $ACTIONS == $START ]; then
     clear
     echo -e "What instance do you want to spin up?"
 
-    LOCAL_CLIENT="Client (requests towards local api)"
-    DEPLOYED_CLIENT="Client (requests towards deployed api)"
+    WEB_CLIENT="Client (requests towards local api)"
+    PROD_CLIENT="Client (requests towards PROD api)"
+    DEV_CLIENT="Client (requests towards DEV api)"
     LOCAL_API="Run Api"
-    ACTIONS=$(gum choose --limit 1 "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$PROD_CLIENT" "$DEV_CLIENT" "$LOCAL_API")
 
     clear
 
-    if [ "$ACTIONS" == "$LOCAL_CLIENT" ]; then 
+    if [ "$ACTIONS" == "$WEB_CLIENT" ]; then 
         make run-web
-    elif [ "$ACTIONS" == "$DEPLOYED_CLIENT" ]; then
+    elif [ "$ACTIONS" == "$PROD_CLIENT" ]; then
+        make run-prod
+    elif [ "$ACTIONS" == "$DEV_CLIENT" ]; then
         make run-dev
     elif [ "$ACTIONS" == "$LOCAL_API" ]; then
         make reload-api

@@ -10,6 +10,10 @@ run-web:
 run-dev:
 	cd ./packages/web/ && npm run dev
 
+.PHONY: run-prod
+run-prod:
+	cd ./packages/web/ && npm run prod
+
 .PHONY: run-api
 run-api:
 	cd ./packages/api/ && go run main.go
