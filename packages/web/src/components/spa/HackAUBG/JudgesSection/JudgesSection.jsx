@@ -37,11 +37,11 @@ export const JudgesSection = () => {
             );
         }
         return (
-            <div className="hack-coming-soon-container">
-                <div className="hack-coming-soon-text">
-                    <h1>Judges coming</h1>
-                    <h1>soon...</h1>
-                </div>
+            <div className="judges-coming-soon-container">
+                <h1>
+                    Judges coming <br />
+                    soon...
+                </h1>
             </div>
         );
     };
