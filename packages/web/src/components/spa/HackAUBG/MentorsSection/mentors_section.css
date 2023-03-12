@@ -4,7 +4,6 @@
     font-family: 'Roboto';
     padding: 3% 0%;
     background-color: #222222;
-    /* background: linear-gradient(#57efc2, #222222); */
 }
 
 .mentors-section-container h1 {
@@ -35,8 +34,9 @@
     border-radius: 10px;
     cursor: pointer;
 }
-.hack-coming-soon-container {
-    padding-top: 12%;
+
+.mentors-coming-soon-container {
+    padding-top: 15%;
     padding-bottom: 5%;
     color: white;
     text-align: center;

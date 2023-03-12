@@ -36,7 +36,7 @@ export const MentorsSection = () => {
             );
         }
         return (
-            <div className="hack-coming-soon-container">
+            <div className="mentors-coming-soon-container">
                 <h1>Mentors coming soon...</h1>
                 {/* <h1>soon...</h1> */}
             </div>
