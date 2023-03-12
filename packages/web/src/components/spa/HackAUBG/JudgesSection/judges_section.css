@@ -34,3 +34,10 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+.judges-coming-soon-container {
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: white;
+    text-align: center;
+}

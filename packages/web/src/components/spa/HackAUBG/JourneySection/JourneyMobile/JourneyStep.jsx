@@ -15,8 +15,6 @@ export const JourneyStep = (props) => {
     const getHeight = () => {
         var divElement = document.getElementById(stepId);
         if (divElement) {
-            console.log(divElement.scrollHeight);
-
             return divElement.scrollHeight;
         }
     };
