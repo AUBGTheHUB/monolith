@@ -161,6 +161,26 @@ const Dash = () => {
                     </Card>
                     <Card className="card-dash-landing">
                         <Card.Body>
+                            <Card.Title>
+                                Hackathon Participants Without a Team
+                            </Card.Title>
+                            <Card.Text>
+                                Edit Participants Without a Team
+                            </Card.Text>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    history(
+                                        '/admin/dashboard/hackathon/noteamparticipants'
+                                    );
+                                }}
+                            >
+                                See no team participants
+                            </Button>
+                        </Card.Body>
+                    </Card>
+                    <Card className="card-dash-landing">
+                        <Card.Body>
                             <Card.Title>Image Management</Card.Title>
                             <Card.Text>
                                 Management window for S3 objects

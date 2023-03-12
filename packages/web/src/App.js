@@ -33,6 +33,7 @@ import { HackAUBG } from './components/spa/HackAUBG/HackAUBG';
 import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
 import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
+import TeamActions from './components/admin_page/hackathon/hackathon_teams/actions_teams';
 
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
@@ -41,6 +42,8 @@ import { FEATURE_SWITCHES } from './feature_switches';
 import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
 import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
 import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
+import RenderNoTeamParticipants from './components/admin_page/hackathon/hackathon_no_team_participants/render_no_team_participants';
+import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -150,6 +153,19 @@ function App() {
                 path="/admin/dashboard/hackathon/teams/add"
                 element={<AddNewTeam />}
             />
+            <Route
+                path="/admin/dashboard/hackathon/teams/actions"
+                element={<TeamActions />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/noteamparticipants"
+                element={<RenderNoTeamParticipants />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/noteamparticipants/actions"
+                element={<NoTeamParticipantsActions />}
+            />
+
             <Route path="/hackaubg" element={<HackAUBG />} />
             {FEATURE_SWITCHES.jobs ? (
                 <Route path="/jobs" element={<JobsSection />} />
