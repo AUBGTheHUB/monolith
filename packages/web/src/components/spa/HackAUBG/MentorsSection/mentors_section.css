@@ -36,14 +36,8 @@
     cursor: pointer;
 }
 .hack-coming-soon-container {
-    background-color: #222222;
+    padding-top: 12%;
     padding-bottom: 5%;
-    padding-top: 5%;
-    height: 100%;
-}
-
-.hack-coming-soon-text {
-    text-align: center;
     color: white;
-    margin-right: 5%;
+    text-align: center;
 }
