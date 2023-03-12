@@ -31,12 +31,6 @@ const RenderTeams = () => {
             return (
                 <div className="members-box">
                     {teams.map((team, index) => {
-<<<<<<< HEAD
-                        console.log(team);
-                        console.log(team['teamname']);
-                        console.log(team['teammembers']);
-=======
->>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
                         return (
                             <Card
                                 style={{ width: '18rem' }}
@@ -82,20 +76,11 @@ const RenderTeams = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-<<<<<<< HEAD
-                        history('/admin/dashboard/teams/edit', {});
-                    }}
-                >
-                    Edit Team
-                </Button>
-                {renderMap()}
-=======
                         history('/admin/dashboard/hackathon/teams/add', {});
                     }}>
                         Add Team
                     </Button>
                     {renderMap()}
->>>>>>> d06cb3e (#310 Fix hackathon teams display and adding functionalities)
             </div>
         );
     } else {
