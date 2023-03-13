@@ -67,12 +67,19 @@ alias spa="cd ~/go/src/spa-website-2022"
 ```bash
 make gum
 ```
-#### This is a command-line tool for managing running services and setting up deployment environments
+> This is a command-line tool for managing running services and setting up deployment environments
 
 **For developers**:
 Spin up local server instances:
 
-<img src="https://i.ibb.co/tsyS8rd/image.png" alt="image" border="0">
+<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/gum_development_options.png" alt="image" border="0">
+
+Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made. 
+```
+local api -> localhost:8000
+prod api -> https://thehub-aubg.com
+dev api -> https://dev.thehub-aubg.com
+```
 
 **For deployments**:
 
@@ -142,15 +149,17 @@ make install-web
 
 * Run from `root`:
 ```shell
-make run-web # web is going to make requests towards a local instance of api (make run-api)
+make run-web    # run this if you are applying changes to the api and you want to test them locally using the frontend (or if prod and dev are down)
 
-make run-dev # web is going to make requests towards a deployed instance of the api (e.g. https://dev.thehub-aubg.com/api)
+make run-dev    # run this if you want the frontend to make requests towards the api which is currently staged on the dev environment
+
+make run-prod   # run this if you want the frontend to make requests towards the production api on https://thehub-aubg.com
 ```
 
 ** For installing, running, cleaning and building from `web` - take a look at the `scripts` in `web/package.json`
 
 * Lint (part of the hooks):
-```shell
+```bash
 make lint  # makes your code more readable 🥰
 ```
 ---
@@ -215,11 +224,9 @@ git push --set-upstream origin #11-Optimizations
 - Reference the issue in the title
 - Write a brief discription of what you have worked on  
 
-#### If nobody has reviewed the Pull Request by the end of the day, ping [@asynchroza](https://github.com/asynchroza)
-
 ---
 ### Important: 
-* If you encounter any issues setting up the project, ping either [@asynchroza](https://github.com/asynchroza) or [@nikolayninov](https://github.com/nikolayninov)
+* If you encounter any issues setting up the project, ping the team in Discord or Messenger
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
 
