@@ -179,11 +179,7 @@ func EditHackathonTeams(c *fiber.Ctx) error {
 	var result *mongo.UpdateResult
 	var err error
 
-	if team.TeamMembers == nil {
-		result, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName}})
-	} else {
-		result, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName, "teammembers":team.TeamMembers}})
-	}
+	result, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": key_from_hex}, bson.M{"$set": bson.M{"teamname": team.TeamName, "teammembers":team.TeamMembers}})
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "error", Data: &fiber.Map{"data": err.Error()}})

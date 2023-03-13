@@ -12,7 +12,7 @@ const TeamActions = () => {
     const team_data = location.state.team_data;
     console.log(team_data);
     const [formState, setFormState] = useState({
-        // teamname: '',
+        teamname: '',
         teammembers: team_data.teammembers
     });
 
