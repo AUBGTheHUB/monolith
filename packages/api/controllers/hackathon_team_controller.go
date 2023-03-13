@@ -235,6 +235,8 @@ func DeleteHackathonTeams(c *fiber.Ctx) error {
 		for i := 0; i < len(team.TeamMembers); i++ {
 			key_from_hex, _ := primitive.ObjectIDFromHex(team.TeamMembers[i])
 			_ = teamMembersCollection.FindOne(ctx, bson.M{"_id": key_from_hex}).Decode(&tempTeamMember)
+			*(tempTeamMember.HasTeam) = false
+			tempTeamMember.TeamName = ""
 			teamMembers[i] = tempTeamMember
 		}
 
