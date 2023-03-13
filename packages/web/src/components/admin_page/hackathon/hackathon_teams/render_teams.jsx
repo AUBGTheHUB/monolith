@@ -98,7 +98,7 @@ const RenderTeams = () => {
                                             );
                                         }}
                                     >
-                                        Members
+                                        Details (Controls)
                                     </Button>
                                     {addButton(team)}
                                 </Card.Body>
