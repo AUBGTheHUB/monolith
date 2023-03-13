@@ -103,7 +103,7 @@ const TeamActions = () => {
                             edit_team();
                         }}
                     >
-                        Edit member
+                        Edit team
                     </Button>
                 </Form>
             </div>

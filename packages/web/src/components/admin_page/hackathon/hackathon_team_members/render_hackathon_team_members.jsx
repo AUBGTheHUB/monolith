@@ -10,6 +10,7 @@ const RenderTeamMembers = () => {
     const history = useNavigate();
     const [teamMembers, setTeamMembers] = useState();
     const team_data = location.state.team_data;
+    const [isVerified, setVerified] = useState(false);
 
     const deleteTeam = () => {
         console.log(team_data['id']);
@@ -163,7 +164,14 @@ const RenderTeamMembers = () => {
                 <Button
                     variant="danger"
                     onClick={() => {
-                        deleteTeam();
+                        if (!isVerified) {
+                            window.alert(
+                                "Are you sure you want to delete this team?\nIf that's the case, press the button again."
+                            );
+                            setVerified(true);
+                        } else {
+                            deleteTeam();
+                        }
                     }}
                 >
                     DELETE TEAM
