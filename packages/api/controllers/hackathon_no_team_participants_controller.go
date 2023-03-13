@@ -254,6 +254,75 @@ func GetNoTeamParticipantsCount(c *fiber.Ctx) error {
 	)
 
 }
+
+func MoveNoTeamParticipantToTeam(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	no_team_participant_key := c.Params("key", "key was not provided")
+	team_key := c.Params("team_key", "team key was not provided")
+
+	bearer_token := c.Get("BEARER-TOKEN")
+	defer cancel()
+
+	if bearer_token != configs.ReturnAuthToken() {
+		return c.Status(http.StatusUnauthorized).JSON(responses.MemberResponse{Status: http.StatusUnauthorized, Message: "error", Data: &fiber.Map{"Reason": "Authentication failed"}})
+	}
+
+	participant_key_from_hex, _ := primitive.ObjectIDFromHex(no_team_participant_key)
+	team_key_from_hex, _ := primitive.ObjectIDFromHex(team_key)
+
+	var team models.Team
+	var no_team_participant models.TeamMember
+
+	var err error
+	var result *mongo.DeleteResult
+
+	err = hackathonTeamCollection.FindOne(ctx, bson.M{"_id": team_key_from_hex}).Decode(&team)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	err = noTeamParticipantsCollection.FindOne(ctx, bson.M{"_id": participant_key_from_hex}).Decode(&no_team_participant)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": err.Error()}})
+	}
+
+	no_team_participant.TeamName = team.TeamName
+	*(no_team_participant.HasTeam) = true
+
+	team.TeamMembers = append(team.TeamMembers, no_team_participant_key)
+
+	
+	_, err = teamMembersCollection.InsertOne(ctx, no_team_participant)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": no_team_participant_key}})
+	}
+
+	_, err = hackathonTeamCollection.UpdateOne(ctx, bson.M{"_id": team_key_from_hex}, bson.M{"$set": bson.M{"teammembers": team.TeamMembers}})
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": no_team_participant_key}})
+	}
+
+	result, err = noTeamParticipantsCollection.DeleteOne(ctx, bson.M{"_id": participant_key_from_hex})
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(responses.MemberResponse{Status: http.StatusInternalServerError, Message: "Error", Data: &fiber.Map{"Reason": err.Error(), "Key": no_team_participant_key}})
+	}
+
+	if result.DeletedCount < 1 {
+		return c.Status(http.StatusNotFound).JSON(
+			responses.MemberResponse{Status: http.StatusNotFound, Message: "error", Data: &fiber.Map{"data": "User with specified ID not found!"}},
+		)
+	}
+
+	return c.Status(http.StatusOK).JSON(
+		responses.MemberResponse{Status: http.StatusOK, Message: "success", Data: &fiber.Map{"data": "Participant successfully moved to team!"}},
+	)
+}
+
 func CheckIfNoTeamParticipantExists(newNoTeamParticipant models.TeamMember) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
