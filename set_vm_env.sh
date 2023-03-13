@@ -8,7 +8,7 @@
 
 yes | sudo apt install python3-pip
 yes | sudo apt install docker-compose
-yes | sudo snap install certbot
+yes | sudo snap install certbot --classic
 
 pip install schedule
 

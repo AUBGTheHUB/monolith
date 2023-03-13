@@ -3,7 +3,7 @@
 current_directory=${PWD##*/} 
 
 set_vm_ip () {
-    if [[ ! -z "${HUB_VM}" ]]; then
+    if [[ HUB_VM ]]; then
         echo "A default $(gum style --foreground 212 "public ip") has been previously set up. Do you wish to $(gum style --foreground 212 "reuse") it?"
         USE_DEFAULT=$(gum choose --limit 1 "yes" "no")
         if [ "$USE_DEFAULT" == "yes" ]; then
@@ -19,6 +19,12 @@ set_vm_ip () {
     read IP
 
     VM_IP="$USER@$IP"
+
+    echo "Would you like to remember the $(gum style --foreground 212 "Virtual Machine")?"
+    USE_DEFAULT=$(gum choose --limit 1 "yes" "no")
+    if [ $USE_DEFAULT == "yes" ]; then
+        echo "export HUB_VM=\"$VM_IP\"" >> ~/.bashrc
+    fi
 }
 
 if [[ $current_directory != "spa-website-2022" ]]
@@ -46,16 +52,19 @@ if [ $ACTIONS == $START ]; then
     clear
     echo -e "What instance do you want to spin up?"
 
-    LOCAL_CLIENT="Client (requests towards local api)"
-    DEPLOYED_CLIENT="Client (requests towards deployed api)"
+    WEB_CLIENT="Client (local)"
+    PROD_CLIENT="Client (dev)"
+    DEV_CLIENT="Client (prod)"
     LOCAL_API="Run Api"
-    ACTIONS=$(gum choose --limit 1 "$LOCAL_CLIENT" "$DEPLOYED_CLIENT" "$LOCAL_API")
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$PROD_CLIENT" "$DEV_CLIENT" "$LOCAL_API")
 
     clear
 
-    if [ "$ACTIONS" == "$LOCAL_CLIENT" ]; then 
+    if [ "$ACTIONS" == "$WEB_CLIENT" ]; then 
         make run-web
-    elif [ "$ACTIONS" == "$DEPLOYED_CLIENT" ]; then
+    elif [ "$ACTIONS" == "$PROD_CLIENT" ]; then
+        make run-prod
+    elif [ "$ACTIONS" == "$DEV_CLIENT" ]; then
         make run-dev
     elif [ "$ACTIONS" == "$LOCAL_API" ]; then
         make reload-api
@@ -76,4 +85,9 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
         set_vm_ip
         ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
     fi
+fi
+
+if [ -z $HUB_VM ] && [ $VM_IP ]; then
+    echo "Saving the $(gum style --foreground 212 "Virtual Machine")..."
+    exec $SHELL
 fi
