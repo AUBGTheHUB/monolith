@@ -2,7 +2,7 @@
 const FEATURE_SWITCHES = {
     jobs: false,
     team: true,
-    regForm: false
+    regForm: true
     // TODO: add feature switches for important components such as the registration form
 };
 

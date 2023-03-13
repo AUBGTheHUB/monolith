@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strings"
 	"time"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -152,6 +153,7 @@ func EditNoTeamParticipant(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Empty Body"})
 	}
 
+
 	if validationErr := validateNoTeamParticipants.Struct(&no_team_participant); validationErr != nil {
 		return c.Status(http.StatusBadRequest).JSON(responses.MemberResponse{Status: http.StatusBadRequest, Message: "Body is not compatible"})
 	}
@@ -178,6 +180,18 @@ func EditNoTeamParticipant(c *fiber.Ctx) error {
 	}
 	if no_team_participant.ShirtSize != "" {
 		no_team_participant_map.ShirtSize = no_team_participant.ShirtSize
+	}
+	if no_team_participant.HeardAboutUs!= "" {
+		no_team_participant_map.HeardAboutUs = no_team_participant.HeardAboutUs
+	}
+	if no_team_participant.ProgrammingLevel != "" {
+		no_team_participant_map.ProgrammingLevel = no_team_participant.ProgrammingLevel
+	}
+	if no_team_participant.StrongSides != "" {
+		no_team_participant_map.StrongSides = no_team_participant.StrongSides
+	}
+	if no_team_participant.JobInterests != "" {
+		no_team_participant_map.JobInterests = no_team_participant.JobInterests
 	}
 
 	update := bson.M{}

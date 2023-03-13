@@ -153,6 +153,18 @@ func EditHackathonMember(c *fiber.Ctx) error {
 	if member.ShirtSize != "" {
 		member_map.ShirtSize = member.ShirtSize
 	}
+	if member.HeardAboutUs!= "" {
+		member_map.HeardAboutUs = member.HeardAboutUs
+	}
+	if member.ProgrammingLevel != "" {
+		member_map.ProgrammingLevel = member.ProgrammingLevel
+	}
+	if member.StrongSides != "" {
+		member_map.StrongSides = member.StrongSides
+	}
+	if member.JobInterests != "" {
+		member_map.JobInterests = member.JobInterests
+	}
 
 	update := bson.M{}
 	v := reflect.ValueOf(member_map)

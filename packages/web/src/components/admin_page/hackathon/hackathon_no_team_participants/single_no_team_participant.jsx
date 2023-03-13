@@ -65,6 +65,7 @@ const NoTeamParticipantsActions = () => {
     };
 
     const edit_team_member = () => {
+        console.log(formState);
         axios({
             method: 'put',
             url:

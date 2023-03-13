@@ -44,6 +44,7 @@ import AddTeamMember from './components/admin_page/hackathon/hackathon_team_memb
 import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
 import RenderNoTeamParticipants from './components/admin_page/hackathon/hackathon_no_team_participants/render_no_team_participants';
 import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
+import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -152,6 +153,10 @@ function App() {
             <Route
                 path="/admin/dashboard/hackathon/teams/add"
                 element={<AddNewTeam />}
+            />
+            <Route
+                path="/admin/dashboard/hackathon/noteamparticipants/add"
+                element={<AddNoTeamParticipant />}
             />
             <Route
                 path="/admin/dashboard/hackathon/teams/actions"
