@@ -19,7 +19,9 @@ const RenderNoTeamParticipants = () => {
                 setTeamMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
@@ -91,6 +93,21 @@ const RenderNoTeamParticipants = () => {
                                     }}
                                 >
                                     Actions
+                                </Button>
+                                <Button
+                                    variant="success"
+                                    onClick={() => {
+                                        history(
+                                            '/admin/dashboard/hackathon/teams',
+                                            {
+                                                state: {
+                                                    member_data: person
+                                                }
+                                            }
+                                        );
+                                    }}
+                                >
+                                    Add to team
                                 </Button>
                             </Card.Body>
                         </Card>

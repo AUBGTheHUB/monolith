@@ -152,7 +152,14 @@ const Dash = () => {
                             <Button
                                 variant="primary"
                                 onClick={() => {
-                                    history('/admin/dashboard/hackathon/teams');
+                                    history(
+                                        '/admin/dashboard/hackathon/teams',
+                                        {
+                                            state: {
+                                                member_data: {}
+                                            }
+                                        }
+                                    );
                                 }}
                             >
                                 See current teams
