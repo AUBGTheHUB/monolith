@@ -6,9 +6,9 @@
 
 data @asynchroza
 
-packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov
+packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov @DemonHashira
 
-packages/api @nikolayninov @IvanObreshkov @asynchroza
+packages/api @nikolayninov @IvanObreshkov @asynchroza @peti-krl
 
 **/Dockerfile @asynchroza
 
