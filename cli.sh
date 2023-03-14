@@ -3,7 +3,7 @@
 current_directory=${PWD##*/} 
 
 set_vm_ip () {
-    if [[ HUB_VM ]]; then
+    if [[ $HUB_VM ]]; then
         echo "A default $(gum style --foreground 212 "public ip") has been previously set up. Do you wish to $(gum style --foreground 212 "reuse") it?"
         USE_DEFAULT=$(gum choose --limit 1 "yes" "no")
         if [ "$USE_DEFAULT" == "yes" ]; then
