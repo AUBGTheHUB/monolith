@@ -63,6 +63,7 @@ gum:
 
 .PHONY: install-env
 install-env:
+	cp -n .env.sample .env && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/web/.env.development && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/api/.env && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/mailer_service/.env && \
