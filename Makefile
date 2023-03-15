@@ -61,3 +61,7 @@ reload-api:
 gum:
 	bash ./cli.sh
 
+.PHONY: install-env
+install-env:
+	cp .env.sample .env
+
