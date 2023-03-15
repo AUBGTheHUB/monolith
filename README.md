@@ -13,6 +13,13 @@ Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugi
 ##### Recommended Text Editor: `VSCode`
 ##### Recommended Plugins: `GitLens`
 ---
+### ENVIRONMENT VARIABLES:
+* GLOBAL .env file for easy management of environment variables within services
+```bash
+make install-env  # ask the team for the .env contents
+```
+#### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March. 
+---
 
 ### Adding your SSH key to the ssh-agent and GitHub
 ⚠️ This step is a prerequisite for the installation scripts
@@ -38,12 +45,6 @@ And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-osx
 ```
-
-⚠️  If you are getting the following exceptions:
-
-* `nvm command not found` - you have to log out of your current user and log in again.
-* golang packages not found - run the make scripts with `sudo`
-
 ---
 ### WSL installation
 * For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
@@ -89,11 +90,11 @@ dev api -> https://dev.thehub-aubg.com
 ### Backend
 
 * __Static BEARER-TOKEN__:
-Add this in the .env file
+Add this in the .env file (update root .env)
 ```bash
 MONGO_URI=<uri>    # Ask NOSYNCDEV for the uri
 
-IS_OFFLINE="true"  # IS_TEST="true" overwrites this
+IS_OFFLINE=true    # IS_TEST=true overwrites this
                    # so make sure that you set IS_TEST to false
                    # after you're done running integration/unit tests
 ```
@@ -141,6 +142,10 @@ make reload-api
 
 ---
 ### Frontend 
+Notes: 
+* No need to run any of this if you installed the project using either one of the installation scripts.
+* Object Uploader (S3 admin panel) won't work if you don't update your .env file with the appropriate content (ask the team)
+
 * Installation from `root` (needed when there are new packages added to `package.json`): 
 ```shell
 # update node to 16.16.0
@@ -194,16 +199,20 @@ docker-compose up --build
 ```
 .
 └── packages
-    │   └── api
-    │       ├── controllers
-    │       ├── models
-    │       ├── configs
-    │       ├── responses
-    │       └── routes
+    ├── api
+    │   ├── controllers
+    │   ├── models
+    │   ├── configs
+    │   ├── responses
+    │   └── routes
+    └── services
+    │   ├── mailer_service
+    │   └── object_uploader_service
     └── web
         ├── public
         └── src
 ```
+
 ---
 ## How to work on a feature and open a Pull Request?
 1. Choose an issue you want to work on (e.g. [#11 - Optimizations](https://github.com/AUBGTheHUB/spa-website-2022/issues/11))
