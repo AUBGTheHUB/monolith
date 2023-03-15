@@ -46,6 +46,8 @@ const S3Panel = () => {
             ...formState,
             [name]: value
         });
+
+        // <div className="lds-dual-ring"></div>;
     };
 
     if (Validate()) {
@@ -69,7 +71,6 @@ const S3Panel = () => {
                             onChange={handleFileSelect}
                         />
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>File Name</Form.Label>
                         <Form.Control
