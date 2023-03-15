@@ -15,7 +15,7 @@ Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugi
 ---
 ### ENVIRONMENT VARIABLES:
 * GLOBAL .env file for easy management of environment variables within services
-```
+```bash
 make install-env  # ask the team for the .env contents
 ```
 #### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March. 
@@ -45,12 +45,6 @@ And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-osx
 ```
-
-⚠️  If you are getting the following exceptions:
-
-* `nvm command not found` - you have to log out of your current user and log in again.
-* golang packages not found - run the make scripts with `sudo`
-
 ---
 ### WSL installation
 * For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
