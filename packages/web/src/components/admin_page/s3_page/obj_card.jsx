@@ -8,10 +8,13 @@ export const ObjectCard = ({ url }) => {
     };
 
     return (
-        <div className="s3-object-card" onClick={saveToClipboard}>
+        <div className="s3-object-card">
             <h3>{filename}</h3>
             <img src={url} />
-            <Button variant="primary">Get image url</Button>
+            <Button variant="primary" onClick={saveToClipboard}>
+                {' '}
+                Get image url
+            </Button>
             <Button variant="primary">Delete image</Button>
         </div>
     );
