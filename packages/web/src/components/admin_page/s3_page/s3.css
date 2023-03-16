@@ -26,6 +26,13 @@
     margin: 10px;
 }
 
+.s3-object-card button {
+    align-items: center;
+    width: fit-content;
+    height: 5vh;
+    margin-bottom: 4px;
+}
+
 .s3-space-around {
     display: flex;
     flex-direction: row;
