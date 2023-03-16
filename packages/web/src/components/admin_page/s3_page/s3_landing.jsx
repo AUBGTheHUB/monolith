@@ -46,8 +46,6 @@ const S3Panel = () => {
             ...formState,
             [name]: value
         });
-
-        // <div className="lds-dual-ring"></div>;
     };
 
     if (Validate()) {
@@ -89,6 +87,7 @@ const S3Panel = () => {
                     >
                         Add new object
                     </Button>
+                    {/* <div className="lds-dual-ring"></div> */}
                 </div>
             </div>
         );

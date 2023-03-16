@@ -13,15 +13,17 @@
 .s3-object-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     background: linear-gradient(rgb(21, 76, 121), rgb(118, 181, 197));
+    border: 3px solid darkcyan;
 }
 
 .s3-object-card img {
-    object-fit: cover;
-    width: 20vw;
-    height: 20vh;
+    object-fit: scale-down;
+    width: 23vw;
+    height: 25vh;
+    margin: 10px;
 }
 
 .s3-space-around {
