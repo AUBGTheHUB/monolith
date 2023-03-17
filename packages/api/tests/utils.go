@@ -11,9 +11,8 @@ import (
 func IsTestEnv() {
 	if !configs.IsTestENV() {
 		log.Fatalf("IS_TEST is missing or false!")
+		os.Exit(1)
 	}
-
-	os.Exit(1)
 }
 
 func CleanUpCollection() {
