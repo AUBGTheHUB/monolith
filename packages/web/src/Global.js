@@ -11,8 +11,7 @@ const gcpToken = process.env.REACT_APP_GCP_TOKEN;
 let url =
     process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
         ? process.env.REACT_APP_API_URL // eslint-disable-line
-        : location.origin.substring(0, location.origin.indexOf(':', 6)) +
-          ':8000';
+        : origin.replace(/(^[^:]*:[^:]*):.*$/, '$1') + ':8000';
 
 const checkBrowserValid = () => {
     const browsers = [
