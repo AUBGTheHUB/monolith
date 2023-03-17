@@ -21,9 +21,10 @@ func SetHeaders(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 }
 
-func TestTeamEndpoint(t *testing.T) {
+func TestCreateTeam(t *testing.T) {
 	// Set up
 	t.Cleanup(CleanUpCollection)
+	IsTestEnv()
 	go app.StartApp()
 
 	time.Sleep(5 * time.Second)
