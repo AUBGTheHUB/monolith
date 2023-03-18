@@ -41,5 +41,13 @@ using make:
 make func-debug
 ```
 
+<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/pyenv.png">
+
+## Making requests towards endpoint:
+
+```bash
+curl -X POST http://127.0.0.1:8080  # endpoint accepts only POST requests by default
+```
+
 ## Deploying a cloud function:
 *TBD*
