@@ -24,7 +24,7 @@ func SetHeaders(req *http.Request) {
 func TestCreateTeam(t *testing.T) {
 	// Set up
 	t.Cleanup(CleanUpCollection)
-	IsTestEnv()
+	CheckEnv()
 	go app.StartApp()
 
 	time.Sleep(5 * time.Second)

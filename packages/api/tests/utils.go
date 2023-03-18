@@ -8,7 +8,8 @@ import (
 	"time"
 )
 
-func IsTestEnv() {
+func CheckEnv() {
+	// exit test case if not in correct env
 	if !configs.IsTestENV() {
 		log.Fatalf("IS_TEST is missing or false!")
 		os.Exit(1)
