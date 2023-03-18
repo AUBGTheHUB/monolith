@@ -32,6 +32,7 @@ else
     make install-web
     make install-env
     make install-code-plugins
+    make install-python
 
     echo "alias spa=\"cd ${PWD}\"" >> $HOME/.bashrc
 fi
