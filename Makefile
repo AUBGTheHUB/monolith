@@ -69,3 +69,11 @@ install-env:
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/mailer_service/.env && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env
 
+.PHONY: install-python
+install-python:
+	if [ $(shell uname -s) = Linux ]; \
+	then \
+		curl https://pyenv.run | bash; \
+	else \
+		brew pyenv; \
+	fi
