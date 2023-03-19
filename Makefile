@@ -70,3 +70,13 @@ install-env:
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/url_shortener/.env
 
+.PHONY: install-python
+install-python:
+	if [ $(shell uname -s) = Linux ]; \
+	then \
+		curl https://pyenv.run | bash; \
+		git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv; \
+	else \
+		brew pyenv; \
+		brew install pyenv-virtualenv; \
+	fi
