@@ -1,5 +1,11 @@
 # Test Setup
-## .env file in `/tests`
+## How to run the tests
+```
+# .env
+IS_TEST=true
+```
+
+## .env file in `/tests` (old)
 ```
 MONGOURI=...
 IS_TEST=true

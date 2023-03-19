@@ -44,6 +44,8 @@ curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/instal
 And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-osx
+
+# make sure to check the output towards the end as certain installations may require manual intervention.
 ```
 ---
 ### WSL installation
@@ -55,6 +57,8 @@ curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/instal
 And then run:
 ```bash
 cd ~/go/src/spa-website-2022 && make post-wsl
+
+# make sure to check the output towards the end as certain installations may require manual intervention.
 ```
 
 ### Easy access to repo
