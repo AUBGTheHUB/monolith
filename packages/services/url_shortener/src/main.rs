@@ -92,11 +92,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     unsafe { COLLECTION = Some(db.collection("shortened_urls")) }
 
-    let redirection = warp::path!("short" / String)
+    let redirection = warp::path!("s" / String)
         .and(warp::get())
         .and_then(redirect_to_site);
 
-    let create_short = warp::path!("short")
+    let create_short = warp::path!("s")
         .and(warp::post())
         .and(warp::body::json())
         .and_then(create_short);
