@@ -1,10 +1,9 @@
+use mongodb::{bson::doc, Client, Database};
 use serde::{Deserialize, Serialize};
-use warp::{reply::json, Filter, Rejection, Reply, redirect, http::Uri, http::StatusCode, reject};
-use mongodb::{Client, Database, Collection, bson::doc};
-use mongodb::bson::{Bson, Document};
-use std::borrow::Borrow;
 use std::env;
 use std::error::Error;
+use std::str::FromStr;
+use warp::{http::StatusCode, http::Uri, redirect, reject, reply::json, Filter, Rejection, Reply};
 
 async fn get_database() -> Result<Database, Box<dyn Error>> {
     // Load the MONGO_URI environment variable from the .env file
@@ -17,55 +16,61 @@ async fn get_database() -> Result<Database, Box<dyn Error>> {
     Ok(db)
 }
 
-
 pub async fn redirect_to_site(path: String) -> Result<impl Reply, Rejection> {
+    let filter = doc! {"endpoint": &path};
 
-    let location = Uri::from_static("https://facebook.com");
-    println!("{:?}", path);
+    unsafe {
+        if let Ok(document) = COLLECTION.clone().unwrap().find_one(filter, None).await {
+            if let Some(document) = document {
+                let location = Uri::from_str(&document.url).unwrap();
+                return Ok(redirect(location));
+            }
+        }
+    }
 
-    Ok(redirect(location))
+    Err(warp::reject::not_found())
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Data {
     url: String,
-    endpoint: String
+    endpoint: String,
 }
-
 
 #[derive(Debug)]
 struct CustomError(StatusCode);
 
 impl reject::Reject for CustomError {}
 
-pub async fn create_short(data: Data, collection: Collection<Data>) -> Result<impl Reply, Rejection> {
-
+pub async fn create_short(data: Data) -> Result<impl Reply, Rejection> {
     println!("{:?}", data);
 
-    if let Err(e) = collection.insert_one(data, None).await {
-        eprintln!("Error inserting document: {}", e);
-        reject::custom(CustomError(StatusCode::INTERNAL_SERVER_ERROR));
-    } 
+    unsafe {
+        if let Err(e) = COLLECTION.clone().unwrap().insert_one(data, None).await {
+            eprintln!("Error inserting document: {}", e);
+            reject::custom(CustomError(StatusCode::INTERNAL_SERVER_ERROR));
+        }
+    }
 
     Ok("endpoint succesfully setup!")
 }
 
+static mut COLLECTION: Option<mongodb::Collection<Data>> = None;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-
     let db = get_database().await.unwrap();
 
-    let collection: Collection<Data>= db.collection("shortened_urls");
+    unsafe { COLLECTION = Some(db.collection("shortened_urls")) }
 
     let redirection = warp::path!("short" / String)
         .and(warp::get())
         .and_then(redirect_to_site);
 
     let create_short = warp::path!("short")
-    .and(warp::post())
-    .and(warp::body::json())
-    .and(warp::any().map(move || collection.clone()))
-    .and_then(create_short);
+        .and(warp::post())
+        .and(warp::body::json())
+        .and_then(create_short);
 
     let routes = warp::any().and(redirection.or(create_short));
 
