@@ -40,9 +40,8 @@ pub struct Data {
 #[derive(Debug)]
 struct CustomError(StatusCode);
 
-
 #[derive(Debug, Serialize)]
-struct ResponseMessage{
+struct ResponseMessage {
     message: String,
 }
 
@@ -53,31 +52,36 @@ pub async fn create_short(data: Data) -> Result<impl Reply, Rejection> {
     println!("{:?}", data);
 
     unsafe {
-
         let collection = COLLECTION.clone().unwrap();
-         let filter = doc! {"endpoint": &data.endpoint};
+        let filter = doc! {"endpoint": &data.endpoint};
         let result = COLLECTION.clone().unwrap().find_one(filter, None).await;
 
         if let Ok(Some(_)) = result {
-            let json = warp::reply::json(&ResponseMessage { message: "Endpoint already exists!".to_owned() });
+            let json = warp::reply::json(&ResponseMessage {
+                message: "Endpoint already exists!".to_owned(),
+            });
 
             return Ok(warp::reply::with_status(json, StatusCode::BAD_REQUEST));
         }
 
-
         if let Err(e) = collection.insert_one(data, None).await {
             eprintln!("Error inserting document: {}", e);
 
-            let json = warp::reply::json(&ResponseMessage { message: "Couldn't insert new endpoint".to_owned() });
+            let json = warp::reply::json(&ResponseMessage {
+                message: "Couldn't insert new endpoint".to_owned(),
+            });
 
-            return Ok(warp::reply::with_status(json, StatusCode::INTERNAL_SERVER_ERROR));
+            return Ok(warp::reply::with_status(
+                json,
+                StatusCode::INTERNAL_SERVER_ERROR,
+            ));
         }
-        
-        
-        let json = warp::reply::json(&ResponseMessage { message: "Document was successfully inserted".to_owned() });
+
+        let json = warp::reply::json(&ResponseMessage {
+            message: "Document was successfully inserted".to_owned(),
+        });
         Ok(warp::reply::with_status(json, StatusCode::ACCEPTED))
     }
-
 }
 
 static mut COLLECTION: Option<mongodb::Collection<Data>> = None;
