@@ -68,4 +68,5 @@ install-env:
 	ln -s --force ${PWD}/.env ${PWD}/packages/api/.env && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/mailer_service/.env && \
 	ln -s --force ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env
+	ln -s --force ${PWD}/.env ${PWD}/packages/services/url_shortener/.env
 
