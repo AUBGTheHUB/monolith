@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
 use std::str::FromStr;
-use warp::{http::StatusCode, http::Uri, redirect, reject, reply::json, Filter, Rejection, Reply};
+use warp::{http::StatusCode, http::Uri, redirect, reject, Filter, Rejection, Reply};
 
 async fn get_database() -> Result<Database, Box<dyn Error>> {
     // Load the MONGO_URI environment variable from the .env file
@@ -40,19 +40,44 @@ pub struct Data {
 #[derive(Debug)]
 struct CustomError(StatusCode);
 
+
+#[derive(Debug, Serialize)]
+struct ResponseMessage{
+    message: String,
+}
+
 impl reject::Reject for CustomError {}
+impl reject::Reject for ResponseMessage {}
 
 pub async fn create_short(data: Data) -> Result<impl Reply, Rejection> {
     println!("{:?}", data);
 
     unsafe {
-        if let Err(e) = COLLECTION.clone().unwrap().insert_one(data, None).await {
-            eprintln!("Error inserting document: {}", e);
-            reject::custom(CustomError(StatusCode::INTERNAL_SERVER_ERROR));
+
+        let collection = COLLECTION.clone().unwrap();
+         let filter = doc! {"endpoint": &data.endpoint};
+        let result = COLLECTION.clone().unwrap().find_one(filter, None).await;
+
+        if let Ok(Some(_)) = result {
+            let json = warp::reply::json(&ResponseMessage { message: "Endpoint already exists!".to_owned() });
+
+            return Ok(warp::reply::with_status(json, StatusCode::BAD_REQUEST));
         }
+
+
+        if let Err(e) = collection.insert_one(data, None).await {
+            eprintln!("Error inserting document: {}", e);
+
+            let json = warp::reply::json(&ResponseMessage { message: "Couldn't insert new endpoint".to_owned() });
+
+            return Ok(warp::reply::with_status(json, StatusCode::INTERNAL_SERVER_ERROR));
+        }
+        
+        
+        let json = warp::reply::json(&ResponseMessage { message: "Document was successfully inserted".to_owned() });
+        Ok(warp::reply::with_status(json, StatusCode::ACCEPTED))
     }
 
-    Ok("endpoint succesfully setup!")
 }
 
 static mut COLLECTION: Option<mongodb::Collection<Data>> = None;
