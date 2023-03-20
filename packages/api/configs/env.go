@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"log"
 	"math/rand"
 	"os"
 	"time"
@@ -55,11 +54,6 @@ func SetToken() string {
 }
 
 func EnvMongoURI() string {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Panic("No .env file found!")
-	}
-
+	godotenv.Load()
 	return os.Getenv("MONGOURI")
 }

@@ -8,6 +8,8 @@ services:
       context: ./packages/api
       target: final 
     container_name: api
+    env_file:
+      - ".env"
     depends_on: 
       - client
     expose: 
@@ -24,6 +26,8 @@ services:
   client:
     build: ./packages/web
     container_name: web
+    env_file:
+      - ".env"
     expose:
       - 443
     ports:
@@ -33,6 +37,20 @@ services:
     volumes: 
       - ./data/certs:/etc/nginx/certs
     networks:
+      - front-back
+
+# URL_SHORTENER
+  shortener:
+    build: ./packages/services/url_shortener
+    container_name: shortener
+    env_file:
+      - ".env"
+    expose: 
+      - 8001
+    ports:
+      - 8001:8001
+    command: ./target/release/url_shortener
+    networks: 
       - front-back
 
 networks:
