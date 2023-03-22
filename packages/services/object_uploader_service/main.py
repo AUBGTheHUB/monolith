@@ -26,7 +26,7 @@ def upload_to_s3(file, file_name):
 
         saved_file = file_name + "." + file.filename.rsplit('.')[1]
         s3.upload_file(f'{tmpdir}/{file.filename}',
-                       AWS_BUCKET_NAME, saved_file)
+                       AWS_BUCKET_NAME, saved_file, ExtraArgs={'ContentType': 'image/jpeg'})
 
         location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)[
             'LocationConstraint']
