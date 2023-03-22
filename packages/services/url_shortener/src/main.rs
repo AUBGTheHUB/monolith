@@ -48,7 +48,18 @@ struct ResponseMessage {
 impl reject::Reject for CustomError {}
 impl reject::Reject for ResponseMessage {}
 
-pub async fn create_short(data: Data) -> Result<impl Reply, Rejection> {
+
+
+pub async fn create_short(data: Data,header: String) -> Result<impl Reply, Rejection> {
+
+    if header != env::var("BEARER").unwrap() {
+        let json = warp::reply::json(&ResponseMessage{
+            message: "Authorization header is incorrect".to_owned()
+        });
+
+        return Ok(warp::reply::with_status(json, StatusCode::UNAUTHORIZED));
+    }
+
     println!("{:?}", data);
 
     unsafe {
@@ -99,6 +110,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let create_short = warp::path!("s")
         .and(warp::post())
         .and(warp::body::json())
+        .and(warp::header::<String>("authorization"))
         .and_then(create_short);
 
     let routes = warp::any().and(redirection.or(create_short));
