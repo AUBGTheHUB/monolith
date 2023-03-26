@@ -23,7 +23,7 @@ export const JobsCard = (props) => {
             <div className="job-description">{displayDescription()}</div>
 
             <div className="job-button">
-                <a href={props.link}>Apply Now</a>
+                <a href={props.link}>Read more</a>
             </div>
         </div>
     );
