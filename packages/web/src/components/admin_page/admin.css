@@ -113,9 +113,10 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    width: 80vw;
-    margin-left: 10vw;
+    align-items: flex-start;
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .member-card {
