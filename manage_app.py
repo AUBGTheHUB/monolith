@@ -306,11 +306,14 @@ def cron_git_check_for_updates():
 
     if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
-        pull_remote = subprocess.run(
+        subprocess.run(
             ['git', 'fetch'], capture_output=True, text=True)
-        reset_local = subprocess.run(
-            ['git', 'reset', '--hard', 'origin/master'])
-        pull_remote = subprocess.run(
+        branch_name = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True, text=True
+        )
+        subprocess.run(
+            ['git', 'reset', '--hard', f'origin/{branch_name.stdout}'])
+        subprocess.run(
             ['git', 'pull'], capture_output=True, text=True)
 
         print("STARTING BUILD")
