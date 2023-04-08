@@ -172,7 +172,6 @@ func CompareTeamNames(passedTeamName string, storedTeamName string) bool {
 
 func IsRegistrationAvailable(c *fiber.Ctx) error {
 
-	SendEmailToNewParticipant("Viktor", "vikinaskotinka@gmail.com", "false")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
