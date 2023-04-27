@@ -30,9 +30,9 @@ if [ "$1" != "--post" ]; then
     
     cd $HOME/go/src
 
-	git clone git@github.com:AUBGTheHUB/spa-website-2022.git
+	git clone git@github.com:AUBGTheHUB/monolith.git
 
-    cd spa-website-2022
+    cd monolith
 
 	chsh -s /bin/zsh # set zsh as default
 
@@ -49,7 +49,7 @@ else
 
 	source $HOME/.nvm/nvm.sh
 	nvm install --lts
-	cd $HOME/go/src/spa-website-2022
+	cd $HOME/go/src/monolith
 
 	make install-hooks 
 	make install-web

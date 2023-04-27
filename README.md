@@ -1,12 +1,12 @@
-# @AUBGTheHUB's Single-Page Application
+# @AUBGTheHUB's Monolith
 
-[![Integration Tests](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/integration_tests.yml)
+[![Integration Tests](https://github.com/AUBGTheHUB/monolith/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/integration_tests.yml)
 
-[![Build Frontend](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/build_frontend.yml)
+[![Build Frontend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml)
 
-[![Notify Discord - New Issue](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_issue.yml)
+[![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
-[![Notify Discord - New PR](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/spa-website-2022/actions/workflows/discord_pr.yml)
+[![Notify Discord - New PR](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml)
 ## How to set up the project
 
 Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
@@ -38,12 +38,12 @@ Install brew and follow the instructions (sometimes it asks you to run some addi
 ```
 
 ```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_osx.sh | bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_osx.sh | bash
 ```
 
 And then run:
 ```bash
-cd ~/go/src/spa-website-2022 && make post-osx
+cd ~/go/src/monolith && make post-osx
 
 # make sure to check the output towards the end as certain installations may require manual intervention.
 ```
@@ -51,12 +51,12 @@ cd ~/go/src/spa-website-2022 && make post-osx
 ### WSL installation
 * For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
 ```bash
-curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/install_wsl.sh | bash
+curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_wsl.sh | bash
 ```
 
 And then run:
 ```bash
-cd ~/go/src/spa-website-2022 && make post-wsl
+cd ~/go/src/monolith && make post-wsl
 
 # make sure to check the output towards the end as certain installations may require manual intervention.
 ```
@@ -64,7 +64,7 @@ cd ~/go/src/spa-website-2022 && make post-wsl
 ### Easy access to repo
 
 ```bash
-alias spa="cd ~/go/src/spa-website-2022"
+alias spa="cd ~/go/src/monolith"
 ```
 ---
 ### __GUM__:
@@ -219,7 +219,7 @@ docker-compose up --build
 
 ---
 ## How to work on a feature and open a Pull Request?
-1. Choose an issue you want to work on (e.g. [#11 - Optimizations](https://github.com/AUBGTheHUB/spa-website-2022/issues/11))
+1. Choose an issue you want to work on (e.g. [#11 - Optimizations](https://github.com/AUBGTheHUB/monolith/issues/11))
 2. Create a new branch by running the following command:
 ```shell
 git checkout -b "11-specific-optimizations"
