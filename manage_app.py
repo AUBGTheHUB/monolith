@@ -28,7 +28,7 @@ WEB_URL = os.environ["HUB_WEB_URL"]
 CERT_DOMAIN = os.environ["HUB_DOMAIN"]
 DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
 
-REPO_URL = "https://github.com/AUBGTheHUB/spa-website-2022"  # remove last backlash
+REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
 class bcolors:

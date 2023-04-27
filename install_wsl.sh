@@ -16,7 +16,7 @@ if [ "$1" != "--post" ]; then
 
     echo "export PATH=\$PATH:/$HOME/go/bin" >> ~/.bashrc
 
-    git clone git@github.com:AUBGTheHUB/spa-website-2022.git $HOME/go/src/spa-website-2022
+    git clone git@github.com:AUBGTheHUB/monolith.git $HOME/go/src/monolith
     chsh -s /bin/bash
     
     echo "REBOOT WSL!"
@@ -26,7 +26,7 @@ else
     sudo apt install make
     . ~/.nvm/nvm.sh
     nvm install --lts
-    cd $HOME/go/src/spa-website-2022
+    cd $HOME/go/src/monolith
 
     make install-hooks
     make install-web
