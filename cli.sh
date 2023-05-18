@@ -27,7 +27,7 @@ set_vm_ip () {
     fi
 }
 
-if [[ $current_directory != "spa-website-2022" ]]
+if [[ $current_directory != "spa-website-2022" && $current_directory != "monolith" ]]
 then
     echo "Run this script from the root of the SPA project"
     exit 1
