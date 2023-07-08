@@ -11,3 +11,9 @@ Anything useful or informative that can be found on the internet, including arti
 * [mCoding](https://www.youtube.com/@mCoding) - Python
 * [Luke Smith](https://www.youtube.com/@LukeSmithxyz) - Linux, Shells, Life
 * [Hussein Nassar](https://www.youtube.com/@hnasr) - Backend System Design
+* [Honeypot](https://www.youtube.com/@Honeypotio) - Interesting documentaries about different technologies
+* [Fireship.io](https://www.youtube.com/@Fireship) - JS, TS, Code Reports, 100s
+* [Computerphile](https://www.youtube.com/@Computerphile/featured) - Networking, Algorithms, Complex CS topics explained.
+* [sentdex](https://www.youtube.com/@sentdex) - Python, ML
+* [CodeBullet](https://www.youtube.com/@CodeBullet) - Funny videos about recreating games
+* [Coding with John](https://www.youtube.com/@CodingWithJohn) - Java
