@@ -3,7 +3,7 @@ const FEATURE_SWITCHES = {
     jobs: false,
     team: true,
     regForm: false
-    // TODO: add feature switches for important components such as the registration form
+    // TODO: Make these feature switches dynamic. To be controlled from Admin Panel
 };
 
 export { FEATURE_SWITCHES };
