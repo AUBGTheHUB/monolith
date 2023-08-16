@@ -63,9 +63,9 @@ func CreateJob(c *fiber.Ctx) error {
 			continue
 		}
 
-		empty_body_check := EmptyStringBody(v.Field(i).Interface().(string))
+		empty_body_check := HasEmptyStringBody(v.Field(i).Interface().(string))
 		if empty_body_check {
-			return isEmptyException(c, type_of_v.Field(i).Name)
+			return EmptyFieldResponse(c, type_of_v.Field(i).Name)
 		}
 
 		print(v.Field(i).Interface().(string))
