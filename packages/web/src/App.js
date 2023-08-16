@@ -9,12 +9,6 @@ import AddMember from './components/admin_page/members_page/new_member';
 import RenderJobs from './components/admin_page/jobs_page/render_jobs';
 import JobActions from './components/admin_page/jobs_page/actions_jobs';
 import AddJobs from './components/admin_page/jobs_page/add_jobs';
-import RenderEvents from './components/admin_page/events_page/render_events';
-import AddEvent from './components/admin_page/events_page/add_event';
-import EventActions from './components/admin_page/events_page/actions_events';
-import RenderArticles from './components/admin_page/articles_page/render_articles';
-import AddArticle from './components/admin_page/articles_page/add_article';
-import ArticleActions from './components/admin_page/articles_page/actions_articles';
 import RenderMentors from './components/admin_page/hackathon/hackathon_mentors/render_mentors';
 import AddMentors from './components/admin_page/hackathon/hackathon_mentors/add_mentors';
 import MentorsActions from './components/admin_page/hackathon/hackathon_mentors/actions_mentors';
@@ -72,25 +66,6 @@ function App() {
             <Route
                 path="/admin/dashboard/jobs/actions"
                 element={<JobActions />}
-            />
-            <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
-            <Route path="/admin/dashboard/events" element={<RenderEvents />} />
-            <Route path="/admin/dashboard/events/add" element={<AddEvent />} />
-            <Route
-                path="/admin/dashboard/events/actions"
-                element={<EventActions />}
-            />
-            <Route
-                path="/admin/dashboard/articles"
-                element={<RenderArticles />}
-            />
-            <Route
-                path="/admin/dashboard/articles/add"
-                element={<AddArticle />}
-            />
-            <Route
-                path="/admin/dashboard/articles/actions"
-                element={<ArticleActions />}
             />
             <Route
                 path="/admin/dashboard/mentors"
@@ -170,6 +145,12 @@ function App() {
                 path="/admin/dashboard/hackathon/noteamparticipants/actions"
                 element={<NoTeamParticipantsActions />}
             />
+            <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
+            <Route
+                path="/admin/dashboard/jobs/actions"
+                element={<JobActions />}
+            />
+            <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
 
             <Route path="/hackaubg" element={<HackAUBG />} />
             {FEATURE_SWITCHES.jobs ? (

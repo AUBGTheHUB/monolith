@@ -1,0 +1,44 @@
+[
+    {
+        "title": "Members",
+        "text": "Add, edit or remove members of the club.",
+        "url": "/admin/dashboard/members",
+        "description": "See current members"
+    },
+    {
+        "title": "Jobs",
+        "text": "Add or remove job positions provided by our sponsors",
+        "url": "/admin/dashboard/jobs",
+        "description": "See current job positions"
+    },
+    {
+        "title": "Hackathon Mentors",
+        "text": "Add or remove hackathon mentors.",
+        "url": "/admin/dashboard/mentors",
+        "description": "See hackathon mentors"
+    },
+    {
+        "title": "Hackathon Jury",
+        "text": "Add or remove current hackathon jury.",
+        "url": "/admin/dashboard/jury",
+        "description": "See current hackathon jury"
+    },
+    {
+        "title": "Hackathon Sponsors",
+        "text": "Add or remove hackathon sponsors.",
+        "url": "/admin/dashboard/sponsors",
+        "description": "See current sponsors"
+    },
+    {
+        "title": "Hackathon Partners",
+        "text": "Add or remove hackathon partners.",
+        "url": "/admin/dashboard/partners",
+        "description": "See current partners"
+    },
+    {
+        "title": "Image Management",
+        "text": "Management window for S3 objects",
+        "url": "/admin/dashboard/s3",
+        "description": "Manage images"
+    }
+]
