@@ -77,6 +77,6 @@ install-python:
 		curl https://pyenv.run | bash; \
 		git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv; \
 	else \
-		brew pyenv; \
+		brew install pyenv; \
 		brew install pyenv-virtualenv; \
 	fi
