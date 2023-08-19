@@ -12,7 +12,7 @@ Anything useful or informative that can be found on the internet, including arti
 * [Luke Smith](https://www.youtube.com/@LukeSmithxyz) - Linux, Shells, Life
 * [Hussein Nassar](https://www.youtube.com/@hnasr) - Backend System Design
 * [Honeypot](https://www.youtube.com/@Honeypotio) - Documentaries about different technologies, Career and life advice by different developers, Interviews with creators of famous tools and technologies (Thomas Dohmke - GitHub CEO, Bjarne Stroustrup - Creator of C++)
-* [Fireship.io](https://www.youtube.com/@Fireship) - JavaScript, TypeScript, Code Reports, TypeScript, Code Report (Rubric about latest tech related news)
+* [Fireship.io](https://www.youtube.com/@Fireship) - Code Report (Rubric about latest tech related news), short educational videos (100 seconds) videos about different programming languages, frameworks or software development approaches
 * [Computerphile](https://www.youtube.com/@Computerphile/featured) - Networking, Algorithms, Complex CS topics explained.
 * [sentdex](https://www.youtube.com/@sentdex) - Python, ML
 * [CodeBullet](https://www.youtube.com/@CodeBullet) - Funny and insightful videos on automating games with AI, for example Jump King and Donkey Kong.
