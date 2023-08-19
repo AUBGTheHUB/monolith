@@ -11,7 +11,7 @@ Anything useful or informative that can be found on the internet, including arti
 * [mCoding](https://www.youtube.com/@mCoding) - Python
 * [Luke Smith](https://www.youtube.com/@LukeSmithxyz) - Linux, Shells, Life
 * [Hussein Nassar](https://www.youtube.com/@hnasr) - Backend System Design
-* [Honeypot](https://www.youtube.com/@Honeypotio) - Documentaries about different technologies, Carrer  and Life advice by different developers, Interviews with creators of famous tools and technologies (Thomas Dohmke - GitHub CEO, Bjarne Stroustrup - Creator of C++)
+* [Honeypot](https://www.youtube.com/@Honeypotio) - Documentaries about different technologies, Career and life advice by different developers, Interviews with creators of famous tools and technologies (Thomas Dohmke - GitHub CEO, Bjarne Stroustrup - Creator of C++)
 * [Fireship.io](https://www.youtube.com/@Fireship) - JavaScript, TypeScript, Code Reports, TypeScript, Code Report (Rubric about latest tech related news)
 * [Computerphile](https://www.youtube.com/@Computerphile/featured) - Networking, Algorithms, Complex CS topics explained.
 * [sentdex](https://www.youtube.com/@sentdex) - Python, ML
