@@ -2,7 +2,7 @@
 
 # In case we decide not to use the Make phony
 current_directory=${PWD##*/} 
-if [[ $current_directory != "spa-website-2022" ]]
+if [[ $current_directory != "spa-website-2022" && $current_directory != "monolith" ]]
 then
     echo "Please run this script from the spa-website-2022 directory"
     exit 1

@@ -19,17 +19,11 @@ func StartApp() {
 	app.Use(cors.New(cors.ConfigDefault))
 	routes.MembersRoute(app)
 	routes.AdminRoute(app)
-	routes.EventsRoute(app)
 	routes.JobsRoute(app)
-	routes.ArticlesRoutes(app)
 	routes.JuryRoute(app)
 	routes.MentorsRoute(app)
 	routes.SponsorsRoute(app)
 	routes.PartnersRoute(app)
-	routes.HackathonTeamMemberRoute(app)
-	routes.HackathonTeamsRoutes(app)
-	routes.HackathonRegisterRoutes(app)
-	routes.NoTeamParticipantsRoute(app)
 	configs.RunCronJobs()
 
 	// ln -s ../../data/certs ./certs

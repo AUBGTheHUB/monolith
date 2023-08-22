@@ -63,12 +63,12 @@ gum:
 
 .PHONY: install-env
 install-env:
-	cp -n .env.sample .env && \
-	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development && \
-	ln -sf ${PWD}/.env ${PWD}/packages/api/.env && \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/mailer_service/.env && \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env
-	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env
+	cp -n .env.sample .env; \
+	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
+	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
+	ln -sf ${PWD}/.env ${PWD}/packages/services/mailer_service/.env;  \
+	ln -sf ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env; \
+	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env;
 
 .PHONY: install-python
 install-python:
@@ -77,6 +77,6 @@ install-python:
 		curl https://pyenv.run | bash; \
 		git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv; \
 	else \
-		brew pyenv; \
+		brew install pyenv; \
 		brew install pyenv-virtualenv; \
 	fi
