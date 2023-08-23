@@ -1,14 +1,12 @@
-.githooks @asynchroza @SuelaCark @nikolayninov
-
 .github/workflows @asynchroza
 
 .vscode @asynchroza
 
 data @asynchroza
 
-packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov @DemonHashira
+packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov @DemonHashira @r-mishev
 
-packages/api @nikolayninov @IvanObreshkov @asynchroza @peti-krl
+packages/api @nikolayninov @IvanObreshkov @asynchroza
 
 **/Dockerfile @asynchroza
 
@@ -16,7 +14,7 @@ packages/api @nikolayninov @IvanObreshkov @asynchroza @peti-krl
 
 manage_app.py @asynchroza
 
-**/*.sh @asynchroza @SuelaCark @r-mishev
+**/*.sh @asynchroza @SuelaCark @r-mishev @IvanObreshkov
 
 Makefile @asynchroza
 
