@@ -27,7 +27,8 @@ lint:
 
 .PHONY: install-hooks
 install-hooks:
-	./.githooks/install_hooks.sh
+	npm install; \
+	npm run prepare;
 
 .PHONY: post-osx
 post-osx:
