@@ -42,10 +42,7 @@ import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
-    window.addEventListener('load', () => {
-        handleUrlDependantStyling();
-    });
-
+    window.addEventListener('load', handleUrlDependantStyling);
     useEffect(handleUrlDependantStyling, []);
 
     goBackIfActionsAreStateless();
