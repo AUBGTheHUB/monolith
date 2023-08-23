@@ -72,8 +72,13 @@ install-env:
 
 .PHONY: install-python
 install-python:
-	if [ $(shell uname -s) != Linux ]; \
+	if [ $(shell uname -s) == Linux ]; \
 	then \
+		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
+		export PATH="/$(shell whoami)/.local/bin:$$PATH
+	else \
+		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
+		export PATH="/Users/$(shell whoami)/.local/bin:$$PATH
 		brew install python; \
 	fi \
 
