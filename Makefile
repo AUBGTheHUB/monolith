@@ -75,11 +75,10 @@ install-python:
 	if [ $(shell uname -s) = Linux ]; \
 	then \
 		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
-		export PATH=/$(shell whoami)/.local/bin:$$PATH; \
 	else \
 		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		export PATH=/Users/$(shell whoami)/.local/bin:$$PATH; \
 		brew install python; \
 	fi \
 
 	curl -sSL https://install.python-poetry.org | python3 -
+	echo "Please, reload your shell!"
