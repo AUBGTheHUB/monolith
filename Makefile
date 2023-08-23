@@ -72,11 +72,9 @@ install-env:
 
 .PHONY: install-python
 install-python:
-	if [ $(shell uname -s) = Linux ]; \
+	if [ $(shell uname -s) != Linux ]; \
 	then \
-		curl https://pyenv.run | bash; \
-		git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv; \
-	else \
-		brew install pyenv; \
-		brew install pyenv-virtualenv; \
-	fi
+		brew install python; \
+	fi \
+
+	curl -sSL https://install.python-poetry.org | python3 -
