@@ -9,7 +9,7 @@ const Dash = () => {
         return (
             <div className="dash">
                 <div className="dash-box">
-                    {landingEntries.map((entry) => (
+                    {landingEntries.map(entry => (
                         <LandingCard
                             text={entry.text}
                             url={entry.url}
