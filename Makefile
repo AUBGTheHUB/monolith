@@ -72,7 +72,7 @@ install-env:
 
 .PHONY: install-python
 install-python:
-	if [ $(shell uname -s) == Linux ]; \
+	if [ $(shell uname -s) = Linux ]; \
 	then \
 		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
 		export PATH="/$(shell whoami)/.local/bin:$$PATH"; \
