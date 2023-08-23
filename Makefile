@@ -74,9 +74,11 @@ install-env:
 install-python:
 	if [ $(shell uname -s) = Linux ]; \
 	then \
-		curl https://pyenv.run | bash; \
-		git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv; \
+		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
 	else \
-		brew install pyenv; \
-		brew install pyenv-virtualenv; \
-	fi
+		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
+		brew install python; \
+	fi \
+
+	curl -sSL https://install.python-poetry.org | python3 -
+	echo "Please, reload your shell!"
