@@ -67,9 +67,8 @@ install-env:
 	cp -n .env.sample .env; \
 	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
 	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/mailer_service/.env;  \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/object_uploader_service/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env;
+	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env; \
+	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env
 
 .PHONY: install-python
 install-python:
