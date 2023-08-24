@@ -4,32 +4,31 @@ from fastapi.encoders import jsonable_encoder
 from typing import Final
 from requests import post
 
+# add endpoints which need to bypass the request verification in this dict
+# with their appropriate method type or "*" in order to allow all types
+BYPASSED_ENDPOINTS: Final = {"/health": ["GET"]}
+
 
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
-    # add endpoints which need to bypass the request verification in this dict
-    # with their appropriate method type or "*" in order to allow all types
-    BYPASSED_ENDPOINTS: Final = {"/health": ["GET"]}
-
-    def __init__(self, app):
+    @classmethod
+    def bind(cls, app):
         @app.middleware("http")
         async def verify_request(request: Request, call_next):
-
-            for endpoint, methods in self.BYPASSED_ENDPOINTS.items():
+            for endpoint, methods in BYPASSED_ENDPOINTS.items():
                 if endpoint not in str(request.url) or (
-                    request.method not in methods
-                    and methods[0] != "*"
+                    request.method not in methods and methods[0] != "*"
                 ):
                     validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
 
                     try:
                         res = post(url=validate_url, headers=request.headers)
                     except Exception as e:
-                        return self._generate_bad_auth_response(exception=e)
+                        return cls._generate_bad_auth_response(exception=e)
 
                     if res.status_code != 200:
-                        return self._generate_bad_auth_response()
+                        return cls._generate_bad_auth_response()
 
             response = await call_next(request)
             return response

@@ -1,5 +1,6 @@
 class UtilityRoutes:
-    def __init__(self, app):
+    @staticmethod
+    def bind(app):
         @app.get('/health')
         async def health():
             return {"status": "healthy"}

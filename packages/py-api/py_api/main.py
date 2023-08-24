@@ -5,8 +5,8 @@ from py_api.middleware import AuthMiddleware
 from py_api.routes import Routes
 
 app = FastAPI()
-AuthMiddleware(app)
-Routes(app)
+AuthMiddleware.bind(app)
+Routes.bind(app)
 
 
 def start():
