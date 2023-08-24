@@ -1,5 +1,15 @@
 # Python API
 
+## Prerequisites
+
+Check your python version:
+```bash
+python --version
+```
+If your version is not `3.11.*` please follow the guides below:
+* For [Linux/WSL](https://www.itsupportwale.com/blog/how-to-upgrade-to-python-3-11-on-ubuntu-20-04-and-22-04-lts/)
+* For [MacOS](https://apple.stackexchange.com/questions/201612/keeping-python-3-up-to-date-on-a-mac#:~:text=to%20update%20python%20run%20brew,also%20take%20care%20of%20R)
+
 ## Installation
 1. Navigate to `py-api` directory
 2. Run `poetry config virtualenvs.in-project true`

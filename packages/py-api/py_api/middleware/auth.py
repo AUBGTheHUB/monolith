@@ -40,7 +40,8 @@ class AuthMiddleware:
             response = await call_next(request)
             return response
 
-    def _generate_bad_auth_response(self, exception=None):
+    @classmethod
+    def _generate_bad_auth_response(cls, exception=None):
         content = {
             "message": "User doesn't have permissions to access this resource!",
         }
