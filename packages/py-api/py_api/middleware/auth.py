@@ -3,7 +3,6 @@ from typing import Any, Callable, Final
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from py_api.database import db
 from requests import post
 
 # add endpoints which need to bypass the request verification in this dict
@@ -23,7 +22,6 @@ class AuthMiddleware:
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
-        db.jobs.find_one()
 
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
