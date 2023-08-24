@@ -6,6 +6,7 @@ from typing import Any, Dict
 import boto3
 from dotenv import load_dotenv
 from fastapi import Request, UploadFile
+from fastapi.responses import JSONResponse
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ class UploaderControllers:
         return "https://s3-%s.amazonaws.com/%s/%s" % (location, bucket_name, url_name)
 
     @classmethod
-    def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any]:
+    def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any] | JSONResponse:
         s3 = boto3.client(
             's3', aws_access_key_id=AWS_PUB_KEY,
             aws_secret_access_key=AWS_PRIV_KEY,
@@ -45,7 +46,8 @@ class UploaderControllers:
                 'LocationConstraint'
             ]
 
-            return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
+            # return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
+            return JSONResponse()
 
         # TODO: Transform in JSON response in order to pass appropriate status code
         # except NoCredentialsError:
