@@ -1,7 +1,10 @@
 from uvicorn import run
 from fastapi import FastAPI
 
+from py_api.middleware import AuthMiddleware 
+
 app = FastAPI()
+AuthMiddleware(app)
 
 @app.get('/health')
 async def root():
