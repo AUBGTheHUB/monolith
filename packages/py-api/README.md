@@ -15,7 +15,7 @@ If your version is not `3.11.*`, follow the guides below:
 2. Run `poetry config virtualenvs.in-project true`
 3. Run `poetry install`
 4. Copy the path of the newly generated `.venv` folder in `py-api`
-5. `Ctrl + Shift + P` and search for `Python: Select Interpreter` in VSCode (`Cmd` instead of `Shift` for Mac users) - [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette)
+5. `Ctrl + Shift + P` and search for `Python: Select Interpreter` in VSCode (`Cmd` instead of `Ctrl` for Mac users) - [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette)
 6. Paste the copied path
 
 ## How to run
