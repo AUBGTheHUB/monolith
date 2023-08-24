@@ -24,3 +24,8 @@
       rev: v2.4.0
       hooks:
         - id: add-trailing-comma
+
+    -   repo: https://github.com/pre-commit/mirrors-mypy
+        rev: 'v1.5.1'  # Use the sha / tag you want to point at
+        hooks:
+        - id: mypy
