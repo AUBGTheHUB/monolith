@@ -1,7 +1,8 @@
-from fastapi import Request
-from fastapi.responses import JSONResponse
+from typing import Any, Callable, Final
+
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
-from typing import Final
+from fastapi.responses import JSONResponse
 from requests import post
 
 # add endpoints which need to bypass the request verification in this dict
@@ -20,9 +21,9 @@ class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
     @classmethod
-    def bind(cls, app):
+    def bind(cls, app: FastAPI) -> None:
         @app.middleware("http")
-        async def verify_request(request: Request, call_next):
+        async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             for endpoint, methods in BYPASSED_ENDPOINTS.items():
                 if endpoint not in str(request.url) or (
                     request.method not in methods and methods[0] != "*"
@@ -48,7 +49,8 @@ class AuthMiddleware:
             return response
 
     @classmethod
-    def _generate_bad_auth_response(cls, exception=None):
+    def _generate_bad_auth_response(cls, exception: Exception | None = None) -> JSONResponse:
+
         content = {
             "message": "User doesn't have permissions to access this resource!",
         }
