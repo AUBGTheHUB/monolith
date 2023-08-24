@@ -7,11 +7,11 @@ from requests import post
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
 
-# an endpoint which allows all methods will be declared
+# an endpoint which allows all methods to bypass verification will be declared
 # as follows: "/users": ["*"]
 
-# an endpoint which allows only GET and PUT methods will be declared
-# as follows: "/users": ["GET", "PUT"]
+# an endpoint which allows only GET and PUT methods to bypass verification
+# will be declared as follows: "/users": ["GET", "PUT"]
 
 BYPASSED_ENDPOINTS: Final = {"/health": ["GET"]}
 
