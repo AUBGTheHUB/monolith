@@ -1,4 +1,4 @@
-from fastapi import Request 
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from logging import getLogger
@@ -12,25 +12,6 @@ class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
     BYPASSED_ENDPOINTS: Final = ["/health"]
-
-    def generate_response_for_unauthenticated_users(self, exception=None):
-        content = {
-            "message": "User doesn't have required permissions to access this resource!",
-        }
-        status_code = 401
-
-        if exception:
-            content = {
-                "message": "Something went wrong when verifying the request!",
-                "exception": str(exception),
-            }
-
-            status_code = 500
-
-        return JSONResponse(
-            content=jsonable_encoder(content),
-            status_code=status_code
-        )
 
     def __init__(self, app):
         @app.middleware("http")
@@ -50,3 +31,20 @@ class AuthMiddleware:
 
             response = await call_next(request)
             return response
+
+    def generate_response_for_unauthenticated_users(self, exception=None):
+        content = {
+            "message": "User doesn't have permissions to access this resource!",
+        }
+        status_code = 401
+
+        if exception:
+            content = {
+                "message": "Something went wrong when verifying the request!",
+                "exception": str(exception),
+            }
+
+            status_code = 500
+
+        return JSONResponse(content=jsonable_encoder(content),
+                            status_code=status_code)
