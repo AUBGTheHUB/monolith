@@ -4,11 +4,8 @@ from tempfile import gettempdir
 from typing import Any, Dict
 
 import boto3
-from dotenv import load_dotenv
-from fastapi import Request, UploadFile
+from fastapi import UploadFile
 from fastapi.responses import JSONResponse
-
-load_dotenv()
 
 AWS_PUB_KEY = getenv("AWS_PUB_KEY", "")
 AWS_PRIV_KEY = getenv("AWS_PRIV_KEY", "")
