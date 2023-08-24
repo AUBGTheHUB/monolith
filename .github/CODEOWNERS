@@ -1,5 +1,3 @@
-.githooks @asynchroza @SuelaCark @nikolayninov
-
 .github/workflows @asynchroza
 
 .vscode @asynchroza
@@ -22,4 +20,6 @@ Makefile @asynchroza
 
 **/*.conf @asynchroza
 
-packages/services @asynchroza @nikolayninov
+packages/services @asynchroza
+
+packages/qb-api @asynchroza @IvanObreshkov
