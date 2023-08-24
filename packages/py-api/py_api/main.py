@@ -1,3 +1,4 @@
+import multipart
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware

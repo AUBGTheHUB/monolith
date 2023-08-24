@@ -1,4 +1,5 @@
 from os import getenv, path
+from shutil import copyfileobj
 from tempfile import gettempdir
 from typing import Any, Dict
 
@@ -19,38 +20,42 @@ class UploaderControllers:
         return "https://s3-%s.amazonaws.com/%s/%s" % (location, bucket_name, url_name)
 
     @classmethod
-    def upload_object(cls, request: Request, file: UploadFile) -> Dict[str, Any]:
+    def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any]:
         s3 = boto3.client(
             's3', aws_access_key_id=AWS_PUB_KEY,
             aws_secret_access_key=AWS_PRIV_KEY,
         )
 
-        file_name = request.body["filename"]
-
         try:
+            # TODO: Schedule more frequent temp dir cleanups on the server
             tmpdir = gettempdir()
-            file.save(path.join(tmpdir, file.filename))
+            with open(path.join(tmpdir, file.filename), "wb+") as file_object:
+                copyfileobj(file.file, file_object)
 
             saved_file = file_name + "." + file.filename.rsplit('.')[1]
+
             s3.upload_file(
                 f'{tmpdir}/{file.filename}',
-                AWS_BUCKET_NAME, saved_file, ExtraArgs={'ContentType': 'image/jpeg'},
+                AWS_BUCKET_NAME, saved_file, ExtraArgs={
+                    'ContentType': 'image/jpeg',
+                },
             )
 
             location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)[
                 'LocationConstraint'
             ]
 
-            return {"message": "Upload Successful", "url": cls.get_url_of_obj(location, AWS_BUCKET_NAME, saved_file)}
+            return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
 
+        # TODO: Transform in JSON response in order to pass appropriate status code
         # except NoCredentialsError:
-        #     return json.dumps({"message": "Process authentication failed"}), 500
+        #     return {"message": "Process authentication failed"}
 
         # except FileNotFoundError:
         #     return json.dumps({"message": "File upload failed"}), 500
 
-        except:
-            pass
+        except Exception as e:
+            return {"message": str(e)}
 
     @classmethod
     def dump_objects(cls) -> Dict[str, Any]:

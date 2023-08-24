@@ -38,7 +38,12 @@ class AuthMiddleware:
                     )
 
                     try:
-                        res = post(url=validate_url, headers=request.headers)
+                        # passing all headers breaks the APIs when using formdata
+                        header_key = 'BEARER-TOKEN'
+                        headers = {
+                            header_key: request.headers.get(header_key, ''),
+                        }
+                        res = post(url=validate_url, headers=headers)
                     except Exception as e:
                         return cls._generate_bad_auth_response(exception=e)
 
