@@ -24,15 +24,15 @@ class AuthMiddleware:
                 try:
                     res = post(url=validate_url, headers=request.headers)
                 except Exception as e:
-                    return self.generate_response_for_unauthenticated_users(exception=e)
+                    return self._generate_bad_auth_response(exception=e)
 
                 if res.status_code != 200:
-                    return self.generate_response_for_unauthenticated_users()
+                    return self._generate_bad_auth_response()
 
             response = await call_next(request)
             return response
 
-    def generate_response_for_unauthenticated_users(self, exception=None):
+    def _generate_bad_auth_response(self, exception=None):
         content = {
             "message": "User doesn't have permissions to access this resource!",
         }
