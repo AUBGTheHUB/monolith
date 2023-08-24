@@ -5,23 +5,6 @@
             "label": "Hot Reload Go API",
             "command": "make reload-api",
             "type": "shell"
-        },
-        {
-            "label": "Hot Reload Python API",
-            "type": "shell",
-            "command": "poetry",
-            "args": ["run", "start"],
-            "options": {
-                "cwd": "${workspaceFolder}/packages/py-api"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
         }
     ]
 }
