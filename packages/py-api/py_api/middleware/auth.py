@@ -22,6 +22,7 @@ class AuthMiddleware:
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
+
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             for endpoint, methods in BYPASSED_ENDPOINTS.items():

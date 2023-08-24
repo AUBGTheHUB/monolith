@@ -16,6 +16,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 echo -e  "\n\n${YELLOW}Set global shell environment variables in ~/.bashrc - https://pastebin.com/WyVVeUJ2\n"
-echo -e  "Set API .env file in repo/packages/api/.env - https://pastebin.com/Y8NE96w4\n"
-echo -e  "Set WEB .env.production file in repo/packages/web/.env.production - https://pastebin.com/qFXCqe6g\n"
+echo -e  "\n\As per the latest updates, docker-compose is loading an environment file from the root of the project.\n"
+echo -e  "This environment file should be called '.env' and should have the following contents - https://pastebin.com/dN0XLuR3\n"
+echo -e  "You will need to ask a member with Principal permissions on Discord to give you the password\n\n"
 echo -e  "Initialize SSL certs by running 'certbot certonly' (option 1)${NC}\n"

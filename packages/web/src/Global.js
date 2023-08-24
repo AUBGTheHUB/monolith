@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+// TODO: Deprecate this - it will be abstracted in python api
 // eslint-disable-next-line
 const gcpToken = process.env.REACT_APP_GCP_TOKEN;
 
@@ -46,11 +47,11 @@ const Validate = () => {
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then(res => {
+            .then(() => {
                 setValidated(true);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch(err => {
+            .catch(() => {
                 setValidated(false);
             });
     }, []);
@@ -120,6 +121,19 @@ const navigateTo = endpoint => {
     document.dispatchEvent(new Event('locationChange'));
 };
 
+const goBackIfActionsAreStateless = () => {
+    /**
+     * @description Fix for https://github.com/AUBGTheHUB/monolith/issues/98
+     */
+
+    if (location.href.includes('actions')) {
+        const currentLocation = useLocation();
+        if (!currentLocation.state) {
+            location.href = location.href.replace(/\/[^/]+$/, '');
+        }
+    }
+};
+
 export {
     url,
     checkHashAndScroll,
@@ -130,6 +144,7 @@ export {
     navigateTo,
     objUploaderURL,
     gcpToken,
+    goBackIfActionsAreStateless,
     parseToNewAPI,
 };
 export default Validate;
