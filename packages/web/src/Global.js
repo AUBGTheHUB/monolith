@@ -3,15 +3,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line
-const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
-
-// eslint-disable-next-line
 const gcpToken = process.env.REACT_APP_GCP_TOKEN;
 
-let url =
+const url =
     process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
         ? process.env.REACT_APP_API_URL // eslint-disable-line
         : origin.replace(/(^[^:]*:[^:]*):.*$/, '$1') + ':8000';
+
+const parseToNewAPI = url => url.replace('8000', '6969');
+
+const objUploaderURL = `${url}/v2/uploader`;
 
 const checkBrowserValid = () => {
     const browsers = [
@@ -21,13 +22,13 @@ const checkBrowserValid = () => {
         'Chrome',
         'Safari',
         'Firefox',
-        'Chromium'
+        'Chromium',
         // No IE
     ];
 
     let isValid = false;
 
-    browsers.forEach((x) => {
+    browsers.forEach(x => {
         if (navigator.userAgent.indexOf(x) != -1) {
             isValid = true;
         }
@@ -42,14 +43,14 @@ const Validate = () => {
         axios({
             method: 'post',
             url: url + '/api/validate',
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 setValidated(true);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {
+            .catch(err => {
                 setValidated(false);
             });
     }, []);
@@ -61,14 +62,12 @@ const checkHashAndScroll = () => {
     let hasHash = !!location.hash;
     if (hasHash) {
         setTimeout(() => {
-            document
-                .getElementById(location.hash.replace('#', ''))
-                .scrollIntoView();
+            document.getElementById(location.hash.replace('#', '')).scrollIntoView();
         }, 600);
     }
 };
 
-const openNewTab = (url) => {
+const openNewTab = url => {
     window.open(url, '_blank');
 };
 
@@ -106,7 +105,7 @@ const handleUrlDependantStyling = () => {
 
 const History = {
     navigate: null,
-    push: (page, ...rest) => History.navigate(page, ...rest)
+    push: (page, ...rest) => History.navigate(page, ...rest),
 };
 
 const NavigateSetter = () => {
@@ -115,7 +114,7 @@ const NavigateSetter = () => {
     return null;
 };
 
-const navigateTo = (endpoint) => {
+const navigateTo = endpoint => {
     History.navigate(endpoint);
 
     document.dispatchEvent(new Event('locationChange'));
@@ -130,7 +129,8 @@ export {
     NavigateSetter,
     navigateTo,
     objUploaderURL,
-    gcpToken
+    gcpToken,
+    parseToNewAPI,
 };
 export default Validate;
 

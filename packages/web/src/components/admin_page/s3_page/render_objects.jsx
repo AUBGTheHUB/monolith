@@ -1,4 +1,4 @@
-import Validate, { gcpToken, objUploaderURL } from '../../../Global';
+import Validate, { objUploaderURL, parseToNewAPI } from '../../../Global';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -10,18 +10,18 @@ export const RenderStorageObjects = () => {
 
     const getObjects = () => {
         axios({
-            method: 'post',
+            method: 'get',
             headers: {
-                Authorization: gcpToken
+                'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
-            url: objUploaderURL + '?show=true'
+            url: parseToNewAPI(objUploaderURL),
         })
-            .then((res) => {
+            .then(res => {
                 console.log(res);
-                setObjects(res.data.message);
+                setObjects(res.data.objects);
             })
             // eslint-disable-next-line
-            .catch((err) => {
+            .catch(err => {
                 // do nothing
             });
     };

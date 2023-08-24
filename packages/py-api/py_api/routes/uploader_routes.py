@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
 from fastapi import APIRouter
+from py_api.controllers import UploaderControllers
 
 
 class UploaderRoutes:
@@ -12,4 +13,4 @@ class UploaderRoutes:
 
         @router.get('/uploader')
         async def get_objects() -> Dict[str, Any]:
-            return {}
+            return UploaderControllers.dump_objects()

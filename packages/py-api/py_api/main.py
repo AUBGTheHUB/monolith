@@ -1,4 +1,5 @@
 from fastapi import APIRouter, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware
 from py_api.routes import Routes
 from uvicorn import run
@@ -6,8 +7,17 @@ from uvicorn import run
 router = APIRouter(prefix='/v2')
 Routes.bind(router)
 
+origins = ['*']
+
 app = FastAPI()
 AuthMiddleware.bind(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    # allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(router)
 
 
