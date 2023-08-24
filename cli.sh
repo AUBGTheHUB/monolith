@@ -55,8 +55,9 @@ if [ $ACTIONS == $START ]; then
     WEB_CLIENT="Client (local)"
     DEV_CLIENT="Client (dev)"
     PROD_CLIENT="Client (prod)"
-    LOCAL_API="Run Api"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API")
+    LOCAL_API="Run Go Api"
+    LOCAL_PY_API="Run Python Api"
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API")
 
     clear
 
@@ -68,6 +69,8 @@ if [ $ACTIONS == $START ]; then
         make run-prod
     elif [ "$ACTIONS" == "$LOCAL_API" ]; then
         make reload-api
+    elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
+        make run-py-api
     fi
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
