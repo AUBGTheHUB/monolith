@@ -12,7 +12,7 @@ fastapi = "^0.101.1"
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
 requests = "^2.31.0"
 
-[virtualenvs]
+[tool.poetry.virtualenvs]
 create = true
 in-project = true
 
