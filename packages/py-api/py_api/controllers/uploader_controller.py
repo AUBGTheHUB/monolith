@@ -46,8 +46,7 @@ class UploaderControllers:
                 'LocationConstraint'
             ]
 
-            # return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
-            return JSONResponse()
+            return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
 
         # TODO: Transform in JSON response in order to pass appropriate status code
         # except NoCredentialsError:
