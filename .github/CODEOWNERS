@@ -20,4 +20,6 @@ Makefile @asynchroza
 
 **/*.conf @asynchroza
 
-packages/services @asynchroza @nikolayninov
+packages/services @asynchroza
+
+packages/qb-api @asynchroza @IvanObreshkov
