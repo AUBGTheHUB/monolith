@@ -1,11 +1,11 @@
 from typing import Any, Dict
 
-from fastapi import FastAPI
+from fastapi import APIRouter
 
 
 class UtilityRoutes:
     @staticmethod
-    def bind(app: FastAPI) -> None:
-        @app.get('/health')
+    def bind(router: APIRouter) -> None:
+        @router.get('/health')
         async def health() -> Dict[str, Any]:
             return {"status": "healthy"}

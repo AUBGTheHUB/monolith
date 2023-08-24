@@ -1,11 +1,14 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from py_api.middleware import AuthMiddleware
 from py_api.routes import Routes
 from uvicorn import run
 
+router = APIRouter(prefix='/v2')
+AuthMiddleware.bind(router)
+Routes.bind(router)
+
 app = FastAPI()
-AuthMiddleware.bind(app)
-Routes.bind(app)
+app.include_router(router)
 
 
 def start() -> None:

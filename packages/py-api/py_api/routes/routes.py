@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from py_api.routes.utility import UtilityRoutes
 
 """
@@ -10,5 +10,5 @@ from py_api.routes.utility import UtilityRoutes
 
 class Routes:
     @staticmethod
-    def bind(app: FastAPI) -> None:
-        UtilityRoutes.bind(app)
+    def bind(router: APIRouter) -> None:
+        UtilityRoutes.bind(router)
