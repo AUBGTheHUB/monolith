@@ -17,6 +17,7 @@ start = "py_api.main:start"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^68.1.2"
+pre-commit = "^3.3.3"
 
 [build-system]
 requires = ["poetry-core"]
