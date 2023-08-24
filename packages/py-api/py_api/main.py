@@ -4,10 +4,10 @@ from py_api.routes import Routes
 from uvicorn import run
 
 router = APIRouter(prefix='/v2')
-AuthMiddleware.bind(router)
 Routes.bind(router)
 
 app = FastAPI()
+AuthMiddleware.bind(app)
 app.include_router(router)
 
 

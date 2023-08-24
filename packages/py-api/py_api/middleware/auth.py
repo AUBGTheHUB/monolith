@@ -1,6 +1,6 @@
 from typing import Any, Callable, Final
 
-from fastapi import APIRouter, Request
+from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from requests import post
@@ -21,8 +21,8 @@ class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
     @classmethod
-    def bind(cls, router: APIRouter) -> None:
-        @router.middleware("http")
+    def bind(cls, app: FastAPI) -> None:
+        @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             for endpoint, methods in BYPASSED_ENDPOINTS.items():
                 if endpoint not in str(request.url) or (
