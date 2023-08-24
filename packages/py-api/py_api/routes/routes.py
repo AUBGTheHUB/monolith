@@ -1,3 +1,4 @@
+from fastapi import FastAPI
 from py_api.routes.utility import UtilityRoutes
 
 """
@@ -9,5 +10,5 @@ from py_api.routes.utility import UtilityRoutes
 
 class Routes:
     @staticmethod
-    def bind(app):
+    def bind(app: FastAPI) -> None:
         UtilityRoutes.bind(app)
