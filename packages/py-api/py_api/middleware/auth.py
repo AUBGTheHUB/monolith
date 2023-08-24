@@ -11,7 +11,7 @@ logger = getLogger("auth")
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
-    BYPASSED_ENDPOINTS: Final = ["/healt"]
+    BYPASSED_ENDPOINTS: Final = ["/health"]
 
     def generate_response_for_unauthenticated_users(self, exception=None):
         content = {
@@ -25,6 +25,8 @@ class AuthMiddleware:
                 "exception": str(exception),
             }
 
+            status_code = 500
+
         return JSONResponse(
             content=jsonable_encoder(content),
             status_code=status_code
@@ -37,7 +39,6 @@ class AuthMiddleware:
 
             if current_endpoint not in self.BYPASSED_ENDPOINTS:
                 validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
-                logger.warning(validate_url)
 
                 try:
                     res = post(url=validate_url, headers=request.headers)
