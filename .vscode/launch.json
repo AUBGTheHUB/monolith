@@ -7,6 +7,15 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/packages/api/main.go"
+        },
+        {
+            "name": "Debug Python API",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "module": "py_api.main",
+            "python": "${workspaceFolder}/packages/py-api/.venv/bin/python",
+            "console": "integratedTerminal"
         }
     ]
 }
