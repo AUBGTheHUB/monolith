@@ -20,7 +20,14 @@ class AuthMiddleware:
                 if endpoint not in str(request.url) or (
                     request.method not in methods and methods[0] != "*"
                 ):
-                    validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
+                    if not request.base_url.netloc.find(":"):
+                        host = request.base_url
+                    else:
+                        host = request.base_url.netloc.split(":")[0] + ":8000"
+
+                    validate_url = (
+                        f"{request.url.components.scheme}://{host}/api/validate"
+                    )
 
                     try:
                         res = post(url=validate_url, headers=request.headers)
