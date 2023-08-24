@@ -4,15 +4,8 @@
     "eslint.useESLintClass": true,
     "eslint.format.enable": true,
     "eslint.packageManager": "npm",
-    "eslint.validate": [
-        "javascript",
-        "typescript",
-        "javascriptreact",
-        "typescriptreact"
-    ],
-    "eslint.workingDirectories": [
-        "packages/web",
-    ],
+    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+    "eslint.workingDirectories": ["packages/web"],
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "eslint.alwaysShowStatus": true,
     "[javascriptreact]": {
@@ -78,9 +71,5 @@
     },
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
-    },
-    "python.formatting.provider": "autopep8"
+    }
 }

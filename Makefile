@@ -86,4 +86,8 @@ install-python:
 		PATH=/Users/$(shell whoami)/.local/bin:$$PATH poetry install; \
 	fi \
 
-	@echo -e "\nPlease, reload your shell!"
+	echo "Please, reload your shell!"
+
+.PHONY: run-py-api
+run-py-api:
+	cd packages/py-api && poetry run start

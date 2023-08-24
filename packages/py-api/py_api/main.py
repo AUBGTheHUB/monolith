@@ -10,3 +10,7 @@ Routes.bind(app)
 
 def start() -> None:
     run("py_api.main:app", host="0.0.0.0", port=6969, reload=True)
+
+
+if __name__ == "__main__":
+    start()
