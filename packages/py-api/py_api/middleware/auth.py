@@ -11,6 +11,7 @@ logger = getLogger("auth")
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
+    # add endpoints which need to bypass the request verification in this list
     BYPASSED_ENDPOINTS: Final = ["/health"]
 
     def __init__(self, app):
