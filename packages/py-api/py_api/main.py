@@ -1,13 +1,12 @@
-# isort: skip_file
 from dotenv import load_dotenv  # noqa
+
 load_dotenv()  # noqa
 
 from fastapi import APIRouter, FastAPI
-from uvicorn import run
-from py_api.routes import Routes
-from py_api.middleware import AuthMiddleware
 from fastapi.middleware.cors import CORSMiddleware
-
+from py_api.middleware import AuthMiddleware
+from py_api.routes import Routes
+from uvicorn import run
 
 router = APIRouter(prefix='/v2')
 Routes.bind(router)
