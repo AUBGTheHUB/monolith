@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pyapi"
+name = "py-api"
 version = "0.1.0"
 description = ""
 authors = ["Michael Bozhilov <michaelbozhilov@gmail.com>"]
@@ -11,6 +11,8 @@ python = "^3.11"
 fastapi = "^0.101.1"
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
 
+[tool.poetry.scripts]
+start = "py_api.main:start"
 
 [build-system]
 requires = ["poetry-core"]
