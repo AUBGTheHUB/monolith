@@ -15,22 +15,21 @@ class AuthMiddleware:
     def __init__(self, app):
         @app.middleware("http")
         async def verify_request(request: Request, call_next):
-            current_endpoint = f"/{str(request.url).rsplit('/', 1)[-1]}"
-            print(request.method)
 
-            if current_endpoint not in self.BYPASSED_ENDPOINTS.keys() or (
-                request.method not in self.BYPASSED_ENDPOINTS[current_endpoint]
-                and self.BYPASSED_ENDPOINTS[current_endpoint][0] != "*"
-            ):
-                validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
+            for endpoint in self.BYPASSED_ENDPOINTS.keys():
+                if endpoint not in str(request.url) or (
+                    request.method not in self.BYPASSED_ENDPOINTS[endpoint]
+                    and self.BYPASSED_ENDPOINTS[endpoint][0] != "*"
+                ):
+                    validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
 
-                try:
-                    res = post(url=validate_url, headers=request.headers)
-                except Exception as e:
-                    return self._generate_bad_auth_response(exception=e)
+                    try:
+                        res = post(url=validate_url, headers=request.headers)
+                    except Exception as e:
+                        return self._generate_bad_auth_response(exception=e)
 
-                if res.status_code != 200:
-                    return self._generate_bad_auth_response()
+                    if res.status_code != 200:
+                        return self._generate_bad_auth_response()
 
             response = await call_next(request)
             return response
