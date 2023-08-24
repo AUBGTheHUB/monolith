@@ -83,3 +83,7 @@ install-python:
 
 	curl -sSL https://install.python-poetry.org | python3 -
 	echo "Please, reload your shell!"
+
+.PHONY: run-py-api
+run-py-api:
+	cd packages/py-api && poetry run start
