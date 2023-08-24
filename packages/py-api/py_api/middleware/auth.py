@@ -8,15 +8,20 @@ from requests import post
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
 
-    # add endpoints which need to bypass the request verification in this list
-    BYPASSED_ENDPOINTS: Final = ["/health"]
+    # add endpoints which need to bypass the request verification in this dict
+    # with their appropriate method type or "*" in order to allow all types
+    BYPASSED_ENDPOINTS: Final = {"/health": ["GET"]}
 
     def __init__(self, app):
         @app.middleware("http")
         async def verify_request(request: Request, call_next):
             current_endpoint = f"/{str(request.url).rsplit('/', 1)[-1]}"
+            print(request.method)
 
-            if current_endpoint not in self.BYPASSED_ENDPOINTS:
+            if current_endpoint not in self.BYPASSED_ENDPOINTS.keys() or (
+                request.method not in self.BYPASSED_ENDPOINTS[current_endpoint]
+                and self.BYPASSED_ENDPOINTS[current_endpoint][0] != "*"
+            ):
                 validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
 
                 try:
@@ -44,5 +49,4 @@ class AuthMiddleware:
 
             status_code = 500
 
-        return JSONResponse(content=jsonable_encoder(content),
-                            status_code=status_code)
+        return JSONResponse(content=jsonable_encoder(content), status_code=status_code)
