@@ -28,7 +28,7 @@ lint:
 .PHONY: install-hooks
 install-hooks:
 	npm install; \
-	npm run prepare;
+	npm run prepare; \
 
 .PHONY: post-osx
 post-osx:
@@ -40,10 +40,10 @@ post-wsl:
 
 .PHONY: install-code-plugins
 install-code-plugins:
-	code --install-extension aaron-bond.better-comments \ 
+	code --install-extension aaron-bond.better-comments \
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode \
-	code --install-extension golang.Go 
+	code --install-extension golang.Go
 
 
 .PHONY: install-gum
@@ -58,7 +58,7 @@ install-air:
 reload-api:
 	cd packages/api && bash ./reload.sh
 
-.SILENT: gum 
+.SILENT: gum
 gum:
 	bash ./cli.sh
 
@@ -75,11 +75,15 @@ install-env:
 install-python:
 	if [ $(shell uname -s) = Linux ]; \
 	then \
-		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
+		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
+		curl -sSL https://install.python-poetry.org | python3 - ;\
+		cd ./packages/py-api && \
+		PATH=/$(shell whoami)/.local/bin:$$PATH poetry install; \
 	else \
 		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		brew install python; \
+		curl -sSL https://install.python-poetry.org | python3 - ;\
+		cd ./packages/py-api && \
+		PATH=/Users/$(shell whoami)/.local/bin:$$PATH poetry install; \
 	fi \
 
-	curl -sSL https://install.python-poetry.org | python3 -
-	echo "Please, reload your shell!"
+	@echo -e "\nPlease, reload your shell!"
