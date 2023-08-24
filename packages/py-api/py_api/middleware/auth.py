@@ -3,7 +3,7 @@ from typing import Any, Callable, Final
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from requests import post  # type: ignore
+from requests import post
 
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
@@ -22,7 +22,7 @@ class AuthMiddleware:
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
-        @app.middleware("http")  # type: ignore
+        @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             for endpoint, methods in BYPASSED_ENDPOINTS.items():
                 if endpoint not in str(request.url) or (
