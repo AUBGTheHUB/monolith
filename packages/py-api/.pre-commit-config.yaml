@@ -29,3 +29,4 @@
         rev: 'v1.5.1'  # Use the sha / tag you want to point at
         hooks:
         - id: mypy
+          args: [--ignore-missing-imports, --strict, --show-error-codes]
