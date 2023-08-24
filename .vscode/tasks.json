@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Hot Reload API",
+            "label": "Hot Reload Go API",
             "command": "make reload-api",
-            "type": "shell",
+            "type": "shell"
         }
     ]
 }
