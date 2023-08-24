@@ -11,6 +11,8 @@ python = "^3.11"
 fastapi = "^0.101.1"
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
 requests = "^2.31.0"
+pymongo = "^4.5.0"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.scripts]
 start = "py_api.main:start"
