@@ -11,6 +11,10 @@ python = "^3.11"
 fastapi = "^0.101.1"
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
 
+[virtualenvs]
+create = true
+in-project = true
+
 [tool.poetry.scripts]
 start = "py_api.main:start"
 
