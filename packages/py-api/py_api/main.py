@@ -1,9 +1,12 @@
-import multipart
+# isort: skip_file
 from fastapi import APIRouter, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from py_api.middleware import AuthMiddleware
-from py_api.routes import Routes
 from uvicorn import run
+from py_api.routes import Routes
+from py_api.middleware import AuthMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+load_dotenv()
+
 
 router = APIRouter(prefix='/v2')
 Routes.bind(router)
