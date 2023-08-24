@@ -16,10 +16,10 @@ class AuthMiddleware:
         @app.middleware("http")
         async def verify_request(request: Request, call_next):
 
-            for endpoint in self.BYPASSED_ENDPOINTS.keys():
+            for endpoint, methods in self.BYPASSED_ENDPOINTS.items():
                 if endpoint not in str(request.url) or (
-                    request.method not in self.BYPASSED_ENDPOINTS[endpoint]
-                    and self.BYPASSED_ENDPOINTS[endpoint][0] != "*"
+                    request.method not in methods
+                    and methods[0] != "*"
                 ):
                     validate_url = f"{request.url.components.scheme}://{request.base_url if not request.base_url.netloc.find(':') else request.base_url.netloc.split(':')[0]}:8000/api/validate"
 
