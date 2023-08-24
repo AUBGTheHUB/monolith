@@ -1,11 +1,8 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from logging import getLogger
 from typing import Final
 from requests import post
-
-logger = getLogger("auth")
 
 
 class AuthMiddleware:
