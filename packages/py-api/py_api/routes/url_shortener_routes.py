@@ -7,6 +7,7 @@ from py_api.models import ShortenedURL
 router = APIRouter(prefix="/shortener")
 
 
+@router.get("")
 def get_shortened_urls() -> Dict[str, Any]:
     return c.fetch_shortened_urls()
 
