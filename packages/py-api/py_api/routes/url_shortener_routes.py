@@ -16,7 +16,7 @@ class UrlShortenerRoutes(RoutesBase):
     @staticmethod
     @bind_router(router)
     def bind(app: FastAPI) -> None:
-        @router.get("/")
+        @router.get("")
         def get_shortened_urls() -> Dict[str, Any]:
             return c.fetch_shortened_urls()
 
@@ -24,6 +24,6 @@ class UrlShortenerRoutes(RoutesBase):
         def delete_shortened_url(endpoint: str) -> Dict[str, Any]:
             return c.delete_shortened_url(endpoint)
 
-        @router.put("/")
+        @router.put("")
         async def upsert_shortener_url(body: ShortenedURL) -> Dict[str, Any]:
             return c.upsert_shortened_url(body)

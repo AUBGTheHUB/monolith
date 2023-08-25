@@ -16,11 +16,11 @@ class UploaderRoutes(RoutesBase):
     @bind_router(router)
     def bind(app: FastAPI) -> None:
 
-        @router.get('/')
+        @router.get("")
         async def get_objects() -> Dict[str, Any]:
             return c.dump_objects()
 
-        @router.post('/')
+        @router.post("")
         async def upload_object(file: UploadFile, filename: Annotated[str, Form()]) -> Dict[str, Any]:
             """
                 MyPy's capabilities are insufficient to detect the possibility that the
@@ -35,6 +35,6 @@ class UploaderRoutes(RoutesBase):
             """
             return c.upload_object(file, filename)
 
-        @router.delete('/')
+        @router.delete("")
         async def delete_object() -> Dict[str, Any]:  # type: ignore
             pass
