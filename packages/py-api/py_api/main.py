@@ -1,3 +1,5 @@
+import pathlib
+
 from dotenv import load_dotenv  # noqa
 
 load_dotenv()  # noqa
@@ -28,8 +30,19 @@ app.add_middleware(
 app.include_router(router)
 
 
+prod_log_config = {}
+
+cwd = pathlib.Path(__file__).parent.resolve()
+prod_log_config = {"log_config": f"{cwd}/log.ini"}
+
+
 def start() -> None:
-    run("py_api.main:app", host="0.0.0.0", port=6969, reload=True)
+    prod_log_config
+
+    run(
+        "py_api.main:app", host="0.0.0.0", port=6969, reload=True,
+        *prod_log_config if not bool("IS_OFFLINE") else {}
+    )
 
 
 if __name__ == "__main__":
