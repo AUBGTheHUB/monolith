@@ -75,11 +75,11 @@ make gum
 **For developers**:
 Spin up local server instances:
 
-<img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/gum_development_options.png" alt="image" border="0">
+<img width="429" alt="image" src="https://github.com/AUBGTheHUB/monolith/assets/104720011/0f8e96f8-3931-4eaf-a72d-54a784b75971">
 
 Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made.
 ```
-local api -> localhost:8000
+local api -> localhost:8000 / :6969
 prod api -> https://thehub-aubg.com
 dev api -> https://dev.thehub-aubg.com
 ```
