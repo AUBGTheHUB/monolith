@@ -24,36 +24,25 @@ class UploaderController:
             aws_secret_access_key=AWS_PRIV_KEY,
         )
 
-        try:
-            # TODO: Schedule more frequent temp dir cleanups on the server
-            tmpdir = gettempdir()
-            with open(path.join(tmpdir, file.filename), "wb+") as file_object:
-                copyfileobj(file.file, file_object)
+        # TODO: Schedule more frequent temp dir cleanups on the server
+        tmpdir = gettempdir()
+        with open(path.join(tmpdir, file.filename), "wb+") as file_object:
+            copyfileobj(file.file, file_object)
 
-            saved_file = file_name + "." + file.filename.rsplit('.')[1]
+        saved_file = file_name + "." + file.filename.rsplit('.')[1]
 
-            s3.upload_file(
-                f'{tmpdir}/{file.filename}',
-                AWS_BUCKET_NAME, saved_file, ExtraArgs={
-                    'ContentType': 'image/jpeg',
-                },
-            )
+        s3.upload_file(
+            f'{tmpdir}/{file.filename}',
+            AWS_BUCKET_NAME, saved_file, ExtraArgs={
+                'ContentType': 'image/jpeg',
+            },
+        )
 
-            location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)[
-                'LocationConstraint'
-            ]
+        location = s3.get_bucket_location(Bucket=AWS_BUCKET_NAME)[
+            'LocationConstraint'
+        ]
 
-            return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
-
-        # TODO: Transform in JSON response in order to pass appropriate status code
-        # except NoCredentialsError:
-        #     return {"message": "Process authentication failed"}
-
-        # except FileNotFoundError:
-        #     return json.dumps({"message": "File upload failed"}), 500
-
-        except Exception as e:
-            return {"message": str(e)}
+        return {"message": "Upload was successful", "url": cls.get_url_of_object(location, AWS_BUCKET_NAME, saved_file)}
 
     @classmethod
     def dump_objects(cls) -> Dict[str, Any]:

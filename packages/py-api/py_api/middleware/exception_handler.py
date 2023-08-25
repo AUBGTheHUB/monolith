@@ -20,6 +20,10 @@ class ExceptionHandler:
                     "exception": str(exc),
                     "stacktrace": str(format_exc()) if bool(getenv("IS_OFFLINE")) else "<REDACTED>",
                 }
+            else:
+                # TODO: write exception in file used for logging
+                # this will help with debugging failing deployed APIs
+                pass
 
             return JSONResponse(
                 status_code=500,
