@@ -3,11 +3,16 @@ from typing import Any, Dict
 from fastapi import APIRouter, FastAPI
 from py_api.controllers import UrlShortenerController as c
 from py_api.models import ShortenedURL
+from py_api.routes.base import RoutesBase
 from py_api.utilities.decorators import bind_router
 
 router = APIRouter(prefix="/shortener")
 
-class UrlShortenerRoutes:
+
+class UrlShortenerRoutes(RoutesBase):
+    def __init__(self, app: FastAPI):
+        self.bind(app)
+
     @staticmethod
     @bind_router(router)
     def bind(app: FastAPI) -> None:

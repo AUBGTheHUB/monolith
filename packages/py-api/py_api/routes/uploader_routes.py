@@ -2,11 +2,16 @@ from typing import Annotated, Any, Dict
 
 from fastapi import APIRouter, FastAPI, Form, UploadFile
 from py_api.controllers import UploaderController as c
+from py_api.routes.base import RoutesBase
 from py_api.utilities.decorators import bind_router
 
 router = APIRouter(prefix="/uploader")
 
-class UploaderRoutes:
+
+class UploaderRoutes(RoutesBase):
+    def __init__(self, app: FastAPI):
+        self.bind(app)
+
     @staticmethod
     @bind_router(router)
     def bind(app: FastAPI) -> None:

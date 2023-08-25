@@ -1,12 +1,16 @@
 from typing import Any, Dict
 
 from fastapi import APIRouter, FastAPI, Request
+from py_api.routes.base import RoutesBase
 from py_api.utilities.decorators import bind_router
 from py_api.utilities.memory import get_current_memory_usage_in_mbs
 
 router = APIRouter()
 
-class UtilityRoutes:
+
+class UtilityRoutes(RoutesBase):
+    def __init__(self, app: FastAPI):
+        self.bind(app)
 
     @staticmethod
     @bind_router(router)

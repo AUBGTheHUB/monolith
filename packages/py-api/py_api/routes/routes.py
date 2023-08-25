@@ -13,6 +13,6 @@ from py_api.routes.utility_routes import UtilityRoutes
 class Routes:
     @staticmethod
     def bind(app: FastAPI) -> None:
-        UtilityRoutes.bind(app)
-        UploaderRoutes.bind(app)
-        UrlShortenerRoutes.bind(app)
+        UploaderRoutes(app)
+        UtilityRoutes(app)
+        UrlShortenerRoutes(app)
