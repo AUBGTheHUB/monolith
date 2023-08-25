@@ -8,13 +8,12 @@ from py_api.middleware.exception_handler import ExceptionHandler
 from py_api.routes import Routes
 from uvicorn import run
 
-router = APIRouter(prefix='/v2')
-Routes.bind(router)
-
 origins = ['*']
 
+main_app = FastAPI()
 app = FastAPI()
 
+Routes.bind(app)
 AuthMiddleware.bind(app)
 ExceptionHandler.bind(app)
 
@@ -25,16 +24,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(router)
 
-# paths = {}
-
-# print([paths[route.path]route.methods for route in app.routes])
-# print([{route.keys: route.methods} for route in app.routes])
+main_app.mount("/v2", app)
 
 
 def start() -> None:
-    run("py_api.main:app", host="0.0.0.0", port=6969, reload=True)
+    run("py_api.main:main_app", host="0.0.0.0", port=6969, reload=True)
 
 
 if __name__ == "__main__":

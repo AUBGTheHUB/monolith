@@ -1,18 +1,21 @@
 from typing import Annotated, Any, Dict
 
-from fastapi import APIRouter, Form, UploadFile
+from fastapi import APIRouter, FastAPI, Form, UploadFile
 from py_api.controllers import UploaderController as c
+from py_api.utilities.decorators import bind_router
 
+router = APIRouter(prefix="/uploader")
 
 class UploaderRoutes:
     @staticmethod
-    def bind(router: APIRouter) -> None:
+    @bind_router(router)
+    def bind(app: FastAPI) -> None:
 
-        @router.get('/uploader')
+        @router.get('/')
         async def get_objects() -> Dict[str, Any]:
             return c.dump_objects()
 
-        @router.post('/uploader')
+        @router.post('/')
         async def upload_object(file: UploadFile, filename: Annotated[str, Form()]) -> Dict[str, Any]:
             """
                 MyPy's capabilities are insufficient to detect the possibility that the
@@ -27,6 +30,6 @@ class UploaderRoutes:
             """
             return c.upload_object(file, filename)
 
-        @router.delete('/uploader')
+        @router.delete('/')
         async def delete_object() -> Dict[str, Any]:  # type: ignore
             pass

@@ -1,12 +1,16 @@
 from typing import Any, Dict
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, FastAPI, Request
+from py_api.utilities.decorators import bind_router
 from py_api.utilities.memory import get_current_memory_usage_in_mbs
 
+router = APIRouter()
 
 class UtilityRoutes:
+
     @staticmethod
-    def bind(router: APIRouter) -> None:
+    @bind_router(router)
+    def bind(app: FastAPI) -> None:
         @router.get('/health')
         async def health() -> Dict[str, Any]:
             return {
