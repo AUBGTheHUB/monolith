@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 from py_api.controllers import UrlShortenerController as c
-from py_api.utilities.parsers import parse_request_body
+from py_api.models import ShortenedURL
 
 
 class UrlShortenerRoutes:
@@ -17,5 +17,5 @@ class UrlShortenerRoutes:
             return c.delete_shortened_url(endpoint)
 
         @router.put("/shortener")
-        async def upsert_shortener_url(request: Request) -> Dict[str, Any]:
-            return c.upsert_shortened_url(await parse_request_body(request.body))
+        async def upsert_shortener_url(body: ShortenedURL) -> Dict[str, Any]:
+            return c.upsert_shortened_url(body)
