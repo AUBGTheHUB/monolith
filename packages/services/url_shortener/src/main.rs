@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
 use std::str::FromStr;
-use warp::{http::StatusCode, http::Uri, redirect, reject, Filter, Rejection, Reply};
+use warp::{http::Uri, redirect, Filter, Rejection, Reply};
 
 async fn get_database() -> Result<Database, Box<dyn Error>> {
     // Load the MONGO_URI environment variable from the .env file
@@ -37,64 +37,6 @@ pub struct Data {
     endpoint: String,
 }
 
-#[derive(Debug)]
-struct CustomError(StatusCode);
-
-#[derive(Debug, Serialize)]
-struct ResponseMessage {
-    message: String,
-}
-
-impl reject::Reject for CustomError {}
-impl reject::Reject for ResponseMessage {}
-
-
-
-pub async fn create_short(data: Data,header: String) -> Result<impl Reply, Rejection> {
-
-    if header != env::var("BEARER").unwrap() {
-        let json = warp::reply::json(&ResponseMessage{
-            message: "Authorization header is incorrect".to_owned()
-        });
-
-        return Ok(warp::reply::with_status(json, StatusCode::UNAUTHORIZED));
-    }
-
-    println!("{:?}", data);
-
-    unsafe {
-        let collection = COLLECTION.clone().unwrap();
-        let filter = doc! {"endpoint": &data.endpoint};
-        let result = COLLECTION.clone().unwrap().find_one(filter, None).await;
-
-        if let Ok(Some(_)) = result {
-            let json = warp::reply::json(&ResponseMessage {
-                message: "Endpoint already exists!".to_owned(),
-            });
-
-            return Ok(warp::reply::with_status(json, StatusCode::BAD_REQUEST));
-        }
-
-        if let Err(e) = collection.insert_one(data, None).await {
-            eprintln!("Error inserting document: {}", e);
-
-            let json = warp::reply::json(&ResponseMessage {
-                message: "Couldn't insert new endpoint".to_owned(),
-            });
-
-            return Ok(warp::reply::with_status(
-                json,
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ));
-        }
-
-        let json = warp::reply::json(&ResponseMessage {
-            message: "Document was successfully inserted".to_owned(),
-        });
-        Ok(warp::reply::with_status(json, StatusCode::ACCEPTED))
-    }
-}
-
 static mut COLLECTION: Option<mongodb::Collection<Data>> = None;
 
 #[tokio::main]
@@ -107,13 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .and(warp::get())
         .and_then(redirect_to_site);
 
-    let create_short = warp::path!("s")
-        .and(warp::post())
-        .and(warp::body::json())
-        .and(warp::header::<String>("authorization"))
-        .and_then(create_short);
-
-    let routes = warp::any().and(redirection.or(create_short));
+    let routes = warp::any().and(redirection);
 
     println!("🚀 Server started successfully");
     warp::serve(routes).run(([0, 0, 0, 0], 8001)).await;
