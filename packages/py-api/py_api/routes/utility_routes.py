@@ -13,8 +13,6 @@ class UtilityRoutes:
         @router.get('/health')
         async def health() -> Dict[str, Any]:
 
-            logger.warn("HEREHEREHERE")
-
             return {
                 "status": "healthy",
                 "currentMemoryUsage": f"{get_current_memory_usage_in_mbs()} MB",
