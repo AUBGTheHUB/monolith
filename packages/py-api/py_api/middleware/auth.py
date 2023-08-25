@@ -1,7 +1,6 @@
 from typing import Any, Callable, Final
 
 from fastapi import FastAPI, Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from requests import post
 
@@ -70,4 +69,4 @@ class AuthMiddleware:
 
             status_code = 500
 
-        return JSONResponse(content=jsonable_encoder(content), status_code=status_code)
+        return JSONResponse(content=content, status_code=status_code)
