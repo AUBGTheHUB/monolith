@@ -3,6 +3,7 @@
       rev: v2.0.1
       hooks:
         - id: autopep8
+          args: ['--verbose']
 
   # Automatically fixes imports' order
     - repo: https://github.com/pycqa/isort
