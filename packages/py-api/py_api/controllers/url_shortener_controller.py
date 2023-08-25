@@ -18,5 +18,6 @@ class UrlShortenerController:
         return {"message": "Endpoint has been deleted!"}
 
     @classmethod
-    def upsert_shortened_url(cls, endpoint: str) -> Dict[str, str]:
+    def upsert_shortened_url(cls, body: Dict[str, str]) -> Dict[str, str]:
+        print(body)
         return {"message": "Shortened url has been successfully created/updated!"}
