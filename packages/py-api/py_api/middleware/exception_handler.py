@@ -18,7 +18,7 @@ class ExceptionHandler:
                 content = {
                     "message": "Hey there, bud! Don't be sad! Here's some info which might help you debug your issue 🎉",
                     "exception": str(exc),
-                    "stacktrace": str(format_exc()) if bool(getenv("IS_OFFLINE")) else "<REDACTED>",
+                    "stacktrace": format_exc(),
                 }
             else:
                 # TODO: write exception in file used for logging
