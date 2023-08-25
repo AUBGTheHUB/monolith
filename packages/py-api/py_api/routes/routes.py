@@ -1,7 +1,7 @@
-from fastapi import FastAPI
-from py_api.routes.uploader_routes import UploaderRoutes
-from py_api.routes.url_shortener_routes import UrlShortenerRoutes
-from py_api.routes.utility_routes import UtilityRoutes
+from fastapi import APIRouter, FastAPI
+from py_api.routes.uploader_routes import router as uploader_router
+from py_api.routes.url_shortener_routes import router as url_shortener_router
+from py_api.routes.utility_routes import router as utility_router
 
 """
     If you need to disable request verification for a particular endpoint,
@@ -9,10 +9,14 @@ from py_api.routes.utility_routes import UtilityRoutes
     by adding them to the BYPASSED_ENDPOINTS dictionary.
 """
 
+routers: APIRouter = [
+    uploader_router,
+    url_shortener_router,
+    utility_router,
+]
+
 
 class Routes:
-    @staticmethod
     def bind(app: FastAPI) -> None:
-        UploaderRoutes(app)
-        UtilityRoutes(app)
-        UrlShortenerRoutes(app)
+        for router in routers:
+            app.include_router(router)
