@@ -27,6 +27,11 @@ app.add_middleware(
 )
 app.include_router(router)
 
+# paths = {}
+
+# print([paths[route.path]route.methods for route in app.routes])
+# print([{route.keys: route.methods} for route in app.routes])
+
 
 def start() -> None:
     run("py_api.main:app", host="0.0.0.0", port=6969, reload=True)
