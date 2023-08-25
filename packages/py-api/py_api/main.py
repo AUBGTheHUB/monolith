@@ -1,12 +1,10 @@
-from dotenv import load_dotenv
-from fastapi.responses import JSONResponse
-from py_api.middleware.exception_handler import ExceptionHandler  # noqa
+from dotenv import load_dotenv  # noqa
 
 load_dotenv()  # noqa
-
 from fastapi import APIRouter, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware
+from py_api.middleware.exception_handler import ExceptionHandler
 from py_api.routes import Routes
 from uvicorn import run
 
