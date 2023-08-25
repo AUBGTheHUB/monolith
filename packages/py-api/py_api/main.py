@@ -42,7 +42,7 @@ def start() -> None:
 
     run(
         "py_api.main:app", host="0.0.0.0", port=6969, reload=True,
-        *prod_log_config if not eval_bool(getenv("IS_OFFLINE", False)) else {}
+        **prod_log_config if not eval_bool(getenv("IS_OFFLINE", False)) else {}
     )
 
 

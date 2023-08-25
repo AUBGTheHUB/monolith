@@ -12,3 +12,14 @@
 [2023-08-25 13:51:29,557.557] INFO [8631279104] - Application shutdown complete.
 [2023-08-25 13:51:29,557.557] INFO [8631279104] - Finished server process [87185]
 [2023-08-25 13:51:30,011.011] INFO [8631279104] - Stopping reloader process [87180]
+[2023-08-25 19:11:52,241.241] INFO [8631279104] - Will watch for changes in these directories: ['/Users/mbozhilov/Documents/Other/monolith/packages/py-api']
+[2023-08-25 19:11:52,241.241] INFO [8631279104] - Uvicorn running on http://0.0.0.0:6969 (Press CTRL+C to quit)
+[2023-08-25 19:11:52,242.242] INFO [8631279104] - Started reloader process [17520] using WatchFiles
+[2023-08-25 19:11:52,797.797] INFO [8631279104] - Started server process [17525]
+[2023-08-25 19:11:52,798.798] INFO [8631279104] - Waiting for application startup.
+[2023-08-25 19:11:52,798.798] INFO [8631279104] - Application startup complete.
+[2023-08-25 19:11:53,708.708] INFO [8631279104] - Shutting down
+[2023-08-25 19:11:53,809.809] INFO [8631279104] - Waiting for application shutdown.
+[2023-08-25 19:11:53,810.810] INFO [8631279104] - Application shutdown complete.
+[2023-08-25 19:11:53,810.810] INFO [8631279104] - Finished server process [17525]
+[2023-08-25 19:11:54,380.380] INFO [8631279104] - Stopping reloader process [17520]
