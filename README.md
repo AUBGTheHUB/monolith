@@ -1,7 +1,5 @@
 # @AUBGTheHUB's Monolith
 
-[![Integration Tests](https://github.com/AUBGTheHUB/monolith/actions/workflows/integration_tests.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/integration_tests.yml)
-
 [![Build Frontend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml)
 
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
@@ -18,7 +16,7 @@ Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugi
 ```bash
 make install-env  # ask the team for the .env contents
 ```
-#### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March. 
+#### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March.
 ---
 
 ### Adding your SSH key to the ssh-agent and GitHub
@@ -67,7 +65,7 @@ cd ~/go/src/monolith && make post-wsl
 alias spa="cd ~/go/src/monolith"
 ```
 ---
-### __GUM__:
+### __HOW TO RUN PROJECT__ or so called __GUM__:
 
 ```bash
 make gum
@@ -79,7 +77,7 @@ Spin up local server instances:
 
 <img src="https://s3-eu-central-1.amazonaws.com/hubarskibucket/gum_development_options.png" alt="image" border="0">
 
-Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made. 
+Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made.
 ```
 local api -> localhost:8000
 prod api -> https://thehub-aubg.com
@@ -105,7 +103,8 @@ IS_OFFLINE=true    # IS_TEST=true overwrites this
 
 * __Run__:
 ```shell
-make run-api
+make run-api # Golang API
+make run-py-api # Python API
 ```
 
 * __Run (hot reload)__:
@@ -119,20 +118,20 @@ make reload-api
 
 * or:
     * `ctrl + shift + P` (for mac keybindings might differ)
-    * type `Tasks: Run Task` and find `Hot Reload API`  
+    * type `Tasks: Run Task` and find `Hot Reload API`
 
 ---
 
 
 * #### __Debug__:
 1. Put breakpoints:
-<img src="https://i.ibb.co/5vW0H6N/image.png" border="0">  
+<img src="https://i.ibb.co/5vW0H6N/image.png" border="0">
 
 2. Go to `main.go`, open `Run and Debug` and choose the `Debug API` task:
-<img src="https://i.ibb.co/K0GnCY9/image.png" border="0">  
+<img src="https://i.ibb.co/K0GnCY9/image.png" border="0">
 
 3. Click the green arrow icon:
-<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">  
+<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">
 
 
 * #### __How to resolve `could not import module ...`__:
@@ -145,12 +144,12 @@ make reload-api
 * Open VSCode directly from within `packages/api` (e.g. `spa && cd packages/api && code .`)
 
 ---
-### Frontend 
-Notes: 
+### Frontend
+Notes:
 * No need to run any of this if you installed the project using either one of the installation scripts.
 * Object Uploader (S3 admin panel) won't work if you don't update your .env file with the appropriate content (ask the team)
 
-* Installation from `root` (needed when there are new packages added to `package.json`): 
+* Installation from `root` (needed when there are new packages added to `package.json`):
 ```shell
 # update node to 16.16.0
 make install-web
@@ -176,14 +175,14 @@ make lint  # makes your code more readable 🥰
 ### Git hooks
 
 * Install pre-commit hook:
-```shell 
+```shell
 make install-hooks  # POSIX compliant shells only
 ```
 Do not install the hooks if you are going to be using `Powershell`
 
-This is going to execute a script which will <em>install</em> git commit hooks.  
-The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.  
-The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!   
+This is going to execute a script which will <em>install</em> git commit hooks.
+The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.
+The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!
 
 ---
 ### VSCode plugins
@@ -195,26 +194,19 @@ make install-code-plugins # linters and better comments
 ### Docker
 
 ```shell
-docker-compose up --build 
+docker-compose up --build
 ```
 
---- 
+---
 ## Directory structure
 ```
 .
 └── packages
     ├── api
-    │   ├── controllers
-    │   ├── models
-    │   ├── configs
-    │   ├── responses
-    │   └── routes
+    ├── py-api
     └── services
-    │   ├── mailer_service
-    │   └── object_uploader_service
+    │   └── url_shortener
     └── web
-        ├── public
-        └── src
 ```
 
 ---
@@ -229,16 +221,16 @@ git checkout -b "11-specific-optimizations"
 git add .                               # be careful if something important is not gitignored
 git commit -m "#11 Added a new feature"
 ```
-4. Push your updates to the remote branch 
-```
-git push --set-upstream origin #11-Optimizations
+4. Push your updates to the remote branch
+```bash
+git push --set-upstream origin 11-Optimizations
 ```
 5. Contribute 😎 (Open a Pull Request towards the main branch)
 - Reference the issue in the title
-- Write a brief discription of what you have worked on  
+- Write a brief discription of what you have worked on
 
 ---
-### Important: 
+### Important:
 * If you encounter any issues setting up the project, ping the team in Discord or Messenger
 * If you are stuck and you need help, ping the dev group chat in facebook 🤼
 * Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
@@ -246,7 +238,7 @@ git push --set-upstream origin #11-Optimizations
 ### Possible problems:
 
 MONGO DNS issue:
-```bash 
+```bash
 make run-api
 cd ./packages/api/ && go run main.go
 2022/10/03 01:57:24 error parsing uri: lookup thehubwebsite.h9aqj.mongodb.net on 192.168.68.1:53: cannot unmarshal DNS message
@@ -261,4 +253,4 @@ make: *** [Makefile:11: run-api] Error 1
 
 ---
 #### CODEOWNERS: [NOSYNCDEV](https://github.com/orgs/AUBGTheHUB/teams/nosyncdev)
-After you are done working on a feature, you may add yourself to the `CODEOWNERS` file. 
+After you are done working on a feature, you may add yourself to the `CODEOWNERS` file.
