@@ -1,7 +1,7 @@
 from typing import Annotated, Any, Dict
 
 from fastapi import APIRouter, Form, UploadFile
-from py_api.controllers import UploaderControllers
+from py_api.controllers import UploaderController as c
 
 
 class UploaderRoutes:
@@ -10,7 +10,7 @@ class UploaderRoutes:
 
         @router.get('/uploader')
         async def get_objects() -> Dict[str, Any]:
-            return UploaderControllers.dump_objects()
+            return c.dump_objects()
 
         @router.post('/uploader')
         async def upload_object(file: UploadFile, filename: Annotated[str, Form()]) -> Dict[str, Any]:
@@ -25,7 +25,7 @@ class UploaderRoutes:
                 However, due to our enforcement of rigorous --strict checking,
                 we must manage with typed dictionaries.
             """
-            return UploaderControllers.upload_object(file, filename)
+            return c.upload_object(file, filename)
 
         @router.delete('/uploader')
         async def delete_object() -> Dict[str, Any]:  # type: ignore

@@ -12,7 +12,7 @@ AWS_PRIV_KEY = getenv("AWS_PRIV_KEY", "")
 AWS_BUCKET_NAME = getenv("AWS_BUCKET_NAME", "")
 
 
-class UploaderControllers:
+class UploaderController:
     @classmethod
     def get_url_of_object(cls, location: str, bucket_name: str, url_name: str) -> str:
         return "https://s3-%s.amazonaws.com/%s/%s" % (location, bucket_name, url_name)

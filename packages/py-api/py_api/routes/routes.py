@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from py_api.routes.uploader_routes import UploaderRoutes
+from py_api.routes.url_shortener_routes import UrlShortenerRoutes
 from py_api.routes.utility_routes import UtilityRoutes
 
 """
@@ -14,3 +15,4 @@ class Routes:
     def bind(router: APIRouter) -> None:
         UtilityRoutes.bind(router)
         UploaderRoutes.bind(router)
+        UrlShortenerRoutes.bind(router)
