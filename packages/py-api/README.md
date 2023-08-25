@@ -20,3 +20,18 @@ If your version is not `3.11.*`, follow the guides below:
 
 ## How to run
 `poetry run start` will start the server on port `6969`
+
+## Utilities:
+### Parsing:
+
+Parse **request bodies** before passing them to controllers:
+```python
+from py_api.utilities.parsers import parse_request_body
+
+async def route(request: Request):
+    body = await parse_request_body(request.body)
+
+    return controller.operation(body)
+```
+
+If you need to pass the full context of the request to the controller and do the body parsing in the controller itself, you need to declare both route and the controller as async and await them.

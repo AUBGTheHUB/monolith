@@ -1,7 +1,6 @@
 from typing import Any, Callable, Final
 
 from fastapi import FastAPI, Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from requests import post
 
@@ -39,7 +38,12 @@ class AuthMiddleware:
                     )
 
                     try:
-                        res = post(url=validate_url, headers=request.headers)
+                        # passing all headers breaks the APIs when using formdata
+                        header_key = 'BEARER-TOKEN'
+                        headers = {
+                            header_key: request.headers.get(header_key, ''),
+                        }
+                        res = post(url=validate_url, headers=headers)
                     except Exception as e:
                         return cls._generate_bad_auth_response(exception=e)
 
@@ -65,4 +69,4 @@ class AuthMiddleware:
 
             status_code = 500
 
-        return JSONResponse(content=jsonable_encoder(content), status_code=status_code)
+        return JSONResponse(content=content, status_code=status_code)

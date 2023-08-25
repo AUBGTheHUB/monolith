@@ -12,13 +12,13 @@ export const JudgesSection = () => {
     const getJury = () => {
         axios({
             method: 'get',
-            url: url + '/api/jury'
+            url: url + '/api/jury',
         })
-            .then((res) => {
+            .then(res => {
                 setJury(res.data.data.data);
             })
             // eslint-disable-next-line
-            .catch((err) => {
+            .catch(err => {
                 // do nothing
             });
     };

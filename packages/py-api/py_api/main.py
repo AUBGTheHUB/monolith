@@ -1,25 +1,33 @@
-from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi.responses import JSONResponse
+from py_api.middleware.exception_handler import ExceptionHandler  # noqa
+
+load_dotenv()  # noqa
+
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware
 from py_api.routes import Routes
 from uvicorn import run
 
-"""
-    Currently, environment variables are loaded initially in the file
-    packages/py-api/py_api/database/initialize.py.
+router = APIRouter(prefix='/v2')
+Routes.bind(router)
 
-    If, due to any reason, you require all custom environment variables
-    to be set before initializing the database module, you should relocate
-    the 'load_dotenv' invocation to a different location.
-
-    It's important to note that we are intentionally not placing it at the
-    top level in the main.py file.
-    This decision is in line with the styling rules of autopep
-    and follows the PEP guidelines for consistency.
-"""
+origins = ['*']
 
 app = FastAPI()
+
 AuthMiddleware.bind(app)
-Routes.bind(app)
+ExceptionHandler.bind(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    # allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(router)
 
 
 def start() -> None:

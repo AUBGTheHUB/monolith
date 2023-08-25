@@ -2,18 +2,18 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// TODO: Deprecate this - it will be handled by a request to python api
-// eslint-disable-next-line
-const objUploaderURL = process.env.REACT_APP_OBJ_UPLOADER_URL;
-
 // TODO: Deprecate this - it will be abstracted in python api
 // eslint-disable-next-line
 const gcpToken = process.env.REACT_APP_GCP_TOKEN;
 
-let url =
+const url =
     process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
         ? process.env.REACT_APP_API_URL // eslint-disable-line
         : origin.replace(/(^[^:]*:[^:]*):.*$/, '$1') + ':8000';
+
+const parseToNewAPI = url => url.replace('8000', '6969');
+
+const objUploaderURL = `${url}/v2/uploader`;
 
 const checkBrowserValid = () => {
     const browsers = [
@@ -145,6 +145,7 @@ export {
     objUploaderURL,
     gcpToken,
     goBackIfActionsAreStateless,
+    parseToNewAPI,
 };
 export default Validate;
 

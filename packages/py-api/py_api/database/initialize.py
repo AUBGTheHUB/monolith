@@ -1,9 +1,6 @@
 from os import getenv
 
-from dotenv import load_dotenv
 from pymongo import MongoClient
-
-load_dotenv()
 
 # * How to use - https://pymongo.readthedocs.io/en/stable/tutorial.html
 # e.g. db.jobs.find() where jobs is a collection in the database
@@ -14,3 +11,6 @@ load_dotenv()
 
 client = MongoClient(getenv("MONGOURI"))
 db = client["TheHubDB"]
+
+# * use this collection when working within the UrlShortener controller
+su_col = client["ShortenedUrlsDB"].shortened_urls

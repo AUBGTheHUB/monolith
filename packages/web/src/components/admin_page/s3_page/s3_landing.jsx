@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Validate, { gcpToken, objUploaderURL } from '../../../Global';
+import Validate, { parseToNewAPI, objUploaderURL } from '../../../Global';
 import { useNavigate } from 'react-router-dom';
 import InvalidClient from '../invalid_client';
 import { Button, Form } from 'react-bootstrap';
@@ -11,7 +11,7 @@ const S3Panel = () => {
     const [formState, setFormState] = useState({});
     const [file, setFile] = useState();
 
-    const handleFileSelect = (event) => {
+    const handleFileSelect = event => {
         setFile(event.target.files[0]);
     };
 
@@ -22,29 +22,29 @@ const S3Panel = () => {
 
         axios({
             method: 'post',
-            url: objUploaderURL,
+            url: parseToNewAPI(objUploaderURL),
             headers: {
-                Authorization: gcpToken
+                'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
-            data: formData
+            data: formData,
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 alert(res['data']['url']);
             })
-            .catch((err) => {
+            .catch(err => {
                 alert(err['response']['data']['message']);
             });
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const target = e.target;
         const value = target.value;
         const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -55,19 +55,13 @@ const S3Panel = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/s3/objects');
-                    }}
-                >
+                    }}>
                     See All Objects
                 </Button>
                 <div className="s3-upload-image">
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>File</Form.Label>
-                        <Form.Control
-                            type="file"
-                            placeholder="upload file"
-                            name="file"
-                            onChange={handleFileSelect}
-                        />
+                        <Form.Control type="file" placeholder="upload file" name="file" onChange={handleFileSelect} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
@@ -84,8 +78,7 @@ const S3Panel = () => {
                         type="button"
                         onClick={() => {
                             addObject();
-                        }}
-                    >
+                        }}>
                         Add new object
                     </Button>
                 </div>
