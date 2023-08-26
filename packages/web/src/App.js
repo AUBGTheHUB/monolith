@@ -31,8 +31,8 @@ import TeamActions from './components/admin_page/hackathon/hackathon_teams/actio
 
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
-import { goBackIfActionsAreStateless, handleUrlDependantStyling, loadFeatureSwitches } from './Global';
-import { FsContext, parseFeatureSwitches } from './feature_switches';
+import { goBackIfActionsAreStateless, handleUrlDependantStyling } from './Global';
+import { FsContext, loadFeatureSwitches, parseFeatureSwitches } from './feature_switches';
 import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
 import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
 import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
@@ -48,6 +48,7 @@ function App() {
     goBackIfActionsAreStateless();
     // eslint-disable-next-line
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
+    console.log(featureSwitches);
 
     useEffect(() => {
         const handleFsUpdate = async () => {

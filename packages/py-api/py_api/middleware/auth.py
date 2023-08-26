@@ -13,7 +13,9 @@ from requests import post
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
 
-BYPASSED_ENDPOINTS: Final = {"/health": ["GET"], "/routes": ["GET"]}
+BYPASSED_ENDPOINTS: Final = {
+    "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
+}
 
 
 class AuthMiddleware:
@@ -27,8 +29,10 @@ class AuthMiddleware:
             endpoint, is_bypassed = cls.check_bypassed_endpoint(request.url)
 
             if not is_bypassed or (
+                # autopep8: off
                 request.method not in BYPASSED_ENDPOINTS[endpoint]  # type: ignore
                 and BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
+                # autopep8: on
             ):
 
                 if not request.base_url.netloc.find(":"):

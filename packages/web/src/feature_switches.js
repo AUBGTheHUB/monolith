@@ -1,4 +1,6 @@
+import axios from 'axios';
 import { createContext, useState } from 'react';
+import { parseToNewAPI, url } from './Global';
 
 // Easily disable sections globally
 
@@ -8,6 +10,22 @@ const FEATURE_SWITCHES = {
     jobs: false,
     team: true,
     regForm: false,
+};
+
+const featureSwitchesURL = `${url}/v2/fswitches`;
+
+export const loadFeatureSwitches = () => {
+    const result = axios(parseToNewAPI(featureSwitchesURL), {
+        method: 'get',
+    })
+        .then(res => {
+            return res.data.documents;
+        })
+        .catch(() => {
+            return [];
+        });
+
+    return result;
 };
 
 export const parseFeatureSwitches = featureSwitches => {
