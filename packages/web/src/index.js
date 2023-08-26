@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavigateSetter } from './Global';
+import { Store } from './feature_switches';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -12,9 +13,11 @@ root.render(
     <React.StrictMode>
         <BrowserRouter>
             <NavigateSetter />
-            <App />
+            <Store>
+                <App />
+            </Store>
         </BrowserRouter>
-    </React.StrictMode>
+    </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

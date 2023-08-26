@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, FastAPI
+from py_api.routes.feature_switches_routes import router as feature_switches_router
 from py_api.routes.uploader_routes import router as uploader_router
 from py_api.routes.url_shortener_routes import router as url_shortener_router
 from py_api.routes.utility_routes import router as utility_router
@@ -15,6 +16,7 @@ routers: List[APIRouter] = [
     uploader_router,
     url_shortener_router,
     utility_router,
+    feature_switches_router,
 ]
 
 

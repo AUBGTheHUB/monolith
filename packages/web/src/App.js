@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/MainPage';
 import NotFound from './components/other/NotFound';
@@ -32,7 +32,7 @@ import TeamActions from './components/admin_page/hackathon/hackathon_teams/actio
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
 import { goBackIfActionsAreStateless, handleUrlDependantStyling } from './Global';
-import { FEATURE_SWITCHES } from './feature_switches';
+import { FsContext, loadFeatureSwitches, parseFeatureSwitches } from './feature_switches';
 import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
 import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
 import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
@@ -46,6 +46,17 @@ function App() {
     useEffect(handleUrlDependantStyling, []);
 
     goBackIfActionsAreStateless();
+    // eslint-disable-next-line
+    const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
+    console.log(featureSwitches);
+
+    useEffect(() => {
+        const handleFsUpdate = async () => {
+            const fs = await loadFeatureSwitches();
+            setFeatureSwitches({ ...featureSwitches, ...parseFeatureSwitches(fs) });
+        };
+        handleFsUpdate();
+    }, []);
 
     return (
         <Routes>
@@ -86,7 +97,7 @@ function App() {
             <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
 
             <Route path="/hackaubg" element={<HackAUBG />} />
-            {FEATURE_SWITCHES.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
+            {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
             <Route path="/*" element={<NotFound />} />
             <Route path="/admin/dashboard/s3" element={<S3Panel />} />
             <Route path="/admin/dashboard/s3/objects" element={<RenderStorageObjects />} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavBar } from '../Navigation/NavBar';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -7,37 +7,39 @@ import { url } from '../../../Global';
 import { JobsCard } from './JobsCard';
 import { Footer } from '../Footer/Footer';
 import './jobs_section.css';
-import { FEATURE_SWITCHES } from '../../../feature_switches';
-
-const anchorList = [
-    new Anchor('About', '/#about'),
-    new Anchor('Team', '/#team', true, FEATURE_SWITCHES.team),
-    new Anchor('Jobs', '/jobs', false, FEATURE_SWITCHES.jobs)
-];
+import { FsContext } from '../../../feature_switches';
 
 export const JobsSection = () => {
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
+
+    const anchorList = [
+        new Anchor('About', '/#about'),
+        new Anchor('Team', '/#team', true, featureSwitches.team),
+        new Anchor('Jobs', '/jobs', false, featureSwitches.jobs),
+    ];
     const [jobs, setJobs] = useState();
     const [isFetching, setIsFetching] = useState(true);
 
     const getJobs = () => {
         axios({
             method: 'get',
-            url: url + '/api/job'
+            url: url + '/api/job',
         })
-            .then((res) => {
+            .then(res => {
                 setJobs(res.data.data.data);
                 setTimeout(() => {
                     setIsFetching(false);
                 }, 750);
 
                 // force earlier download
-                res.data.data.data.forEach((element) => {
+                res.data.data.data.forEach(element => {
                     let img = new Image();
                     img.src = element.logo;
                 });
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {
+            .catch(err => {
                 setIsFetching(false);
             });
     };
@@ -89,11 +91,7 @@ export const JobsSection = () => {
                 <NavBar props={new Props(anchorList, true)} />
                 {DisplayJobs()}
             </div>
-            <Footer
-                color={'rgb(21, 76, 121)'}
-                iconColor={'rgb(255, 255, 255)'}
-                iconBgColor={'rgb(120, 120, 120)'}
-            />
+            <Footer color={'rgb(21, 76, 121)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
         </>
     );
 };
