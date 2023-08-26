@@ -1,18 +1,21 @@
-import React, { useEffect } from 'react'; // eslint-disable-line
+import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 import './registration_form.css';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import axios from 'axios';
 import { url } from '../../../../Global';
 import { BsExclamationCircleFill } from 'react-icons/bs';
-import { FEATURE_SWITCHES } from '../../../../feature_switches';
+import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors } // eslint-disable-line
+        formState: { errors }, // eslint-disable-line
     } = useForm({ mode: 'all' });
+
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
 
     const [loadingAnimation, setLoadingAnimation] = useState(false);
     const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
@@ -25,7 +28,7 @@ const RegistrationForm = () => {
     const checkRegistrationAvailability = () => {
         axios({
             method: 'get',
-            url: url + '/api/hackathon/register/available'
+            url: url + '/api/hackathon/register/available',
         })
             .then(() => {
                 setIsFormAvailable(true);
@@ -39,21 +42,21 @@ const RegistrationForm = () => {
         checkRegistrationAvailability();
     }, []);
 
-    const registerMember = (data) => {
+    const registerMember = data => {
         axios({
             method: 'post',
 
             // * /api/hackathon/register?testing=true -> if you want to test the endpoint without sending an email upon registration
             url: url + '/api/hackathon/register',
-            data
+            data,
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 setLoadingAnimation(false);
                 setApiError(false);
                 console.log(res['response']['data']['message']);
             })
-            .catch((err) => {
+            .catch(err => {
                 setLoadingAnimation(false);
                 setErrorMessage(err);
                 setApiError(true); // put button in error state
@@ -63,7 +66,7 @@ const RegistrationForm = () => {
 
     function parseVars(data) {
         //getting all data from form and converting True/False string to boolean
-        Object.entries(data).forEach((field) => {
+        Object.entries(data).forEach(field => {
             if (field[1] === 'True' || field[1] === 'False') {
                 data[field[0]] = field[1] === 'True' ? true : false;
             }
@@ -81,7 +84,7 @@ const RegistrationForm = () => {
     }
 
     //send data to registerMember function
-    const onSubmit = (data) => {
+    const onSubmit = data => {
         setLoadingAnimation(true);
         data = parseVars(data);
         data = checkTeamname(data);
@@ -89,12 +92,10 @@ const RegistrationForm = () => {
     };
 
     // useEffect will always initialize this with the correct state
-    const [buttonState, setButtonState] = useState(
-        'hackaubg-register-btn disabled'
-    );
+    const [buttonState, setButtonState] = useState('hackaubg-register-btn disabled');
 
     //handleDisabledFields will blur teamname inout field if they answer no
-    const handleDisabledFields = (e) => {
+    const handleDisabledFields = e => {
         if (e.target.name === 'hasteam') {
             if (e.target.value === 'False') {
                 setDisableTeamNameField(true);
@@ -136,13 +137,7 @@ const RegistrationForm = () => {
 
     const showButton = () => {
         if (loadingAnimation) {
-            return (
-                <input
-                    type="submit"
-                    value="LOADING"
-                    className="hackaubg-register-btn"
-                />
-            );
+            return <input type="submit" value="LOADING" className="hackaubg-register-btn" />;
         } else {
             return (
                 <input
@@ -156,15 +151,11 @@ const RegistrationForm = () => {
             );
         }
     };
-    if (isFormAvailable && FEATURE_SWITCHES.regForm) {
+    if (isFormAvailable && featureSwitches.regForm) {
         return (
             <div className="registration-main" id="registration">
                 <h1>Register for HackAUBG 5.0</h1>
-                <form
-                    className="reg-form"
-                    onSubmit={handleSubmit(onSubmit)}
-                    onChange={handleDisabledFields}
-                >
+                <form className="reg-form" onSubmit={handleSubmit(onSubmit)} onChange={handleDisabledFields}>
                     <fieldset className="from-personal-info">
                         <div className="send-info">
                             <label>
@@ -175,29 +166,24 @@ const RegistrationForm = () => {
                                     {...register('fullname', {
                                         required: {
                                             value: true,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         minLength: {
-                                            message:
-                                                '*Minimum length is 4 characters',
-                                            value: 4
+                                            message: '*Minimum length is 4 characters',
+                                            value: 4,
                                         },
                                         maxLength: {
-                                            message:
-                                                'Maximum length is 50 characters',
-                                            value: 50
+                                            message: 'Maximum length is 50 characters',
+                                            value: 50,
                                         },
                                         pattern: {
                                             value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
-                                            message:
-                                                'No special characters and trailing spaces'
-                                        }
+                                            message: 'No special characters and trailing spaces',
+                                        },
                                     })}
                                 />
                             </label>
-                            <p className="error-msg">
-                                {errors.fullname?.message}
-                            </p>
+                            <p className="error-msg">{errors.fullname?.message}</p>
                         </div>
                         <div className="send-info">
                             <label>
@@ -208,22 +194,19 @@ const RegistrationForm = () => {
                                     {...register('email', {
                                         required: {
                                             value: true,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         pattern: {
                                             value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
-                                            message: '*Please enter valid email'
+                                            message: '*Please enter valid email',
                                         },
                                         minLength: {
-                                            message:
-                                                '*Minimum length is 4 characters',
-                                            value: 4
-                                        }
+                                            message: '*Minimum length is 4 characters',
+                                            value: 4,
+                                        },
                                     })}
                                 />
-                                <p className="error-msg">
-                                    {errors.email?.message}
-                                </p>
+                                <p className="error-msg">{errors.email?.message}</p>
                             </label>
                         </div>
                         <div className="send-info">
@@ -235,23 +218,21 @@ const RegistrationForm = () => {
                                     {...register('age', {
                                         required: {
                                             value: true,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         min: {
                                             message: 'Minimum age is 16',
-                                            value: 16
+                                            value: 16,
                                         },
                                         max: {
-                                            message:
-                                                'Maximum length is 3 symbols',
-                                            value: 99
+                                            message: 'Maximum length is 3 symbols',
+                                            value: 99,
                                         },
                                         pattern: {
                                             value: /^\d{2}$/,
-                                            message:
-                                                'No special characters and trailing spaces'
+                                            message: 'No special characters and trailing spaces',
                                         },
-                                        valueAsNumber: true
+                                        valueAsNumber: true,
                                     })}
                                 />
                             </label>
@@ -266,29 +247,24 @@ const RegistrationForm = () => {
                                     {...register('location', {
                                         required: {
                                             value: true,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         minLength: {
-                                            message:
-                                                'Minimum length is 2 characters',
-                                            value: 2
+                                            message: 'Minimum length is 2 characters',
+                                            value: 2,
                                         },
                                         maxLength: {
-                                            message:
-                                                'Maximum length is 50 characters',
-                                            value: 50
+                                            message: 'Maximum length is 50 characters',
+                                            value: 50,
                                         },
                                         pattern: {
                                             value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
-                                            message:
-                                                'No special characters and trailing spaces'
-                                        }
+                                            message: 'No special characters and trailing spaces',
+                                        },
                                     })}
                                 />
                             </label>
-                            <p className="error-msg">
-                                {errors.location?.message}
-                            </p>
+                            <p className="error-msg">{errors.location?.message}</p>
                         </div>
                         <div className="send-info">
                             <label>
@@ -297,32 +273,21 @@ const RegistrationForm = () => {
                                     defaultValue={'default'}
                                     className="select"
                                     {...register('university', {
-                                        required: true
-                                    })}
-                                >
+                                        required: true,
+                                    })}>
                                     <option value="default" disabled>
                                         Choose an School/University
                                     </option>
 
                                     <option value="AUBG">AUBG</option>
-                                    <option value="Sofia University">
-                                        Sofia University
-                                    </option>
-                                    <option value="Technical University - Sofia">
-                                        Technical University - Sofia
-                                    </option>
-                                    <option value="Plovdiv University">
-                                        Plovdiv University
-                                    </option>
+                                    <option value="Sofia University">Sofia University</option>
+                                    <option value="Technical University - Sofia">Technical University - Sofia</option>
+                                    <option value="Plovdiv University">Plovdiv University</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </label>
                             <p className="error-msg">
-                                {errors.university && (
-                                    <p className="error-text">
-                                        *University/School is required
-                                    </p>
-                                )}
+                                {errors.university && <p className="error-text">*University/School is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
@@ -332,29 +297,20 @@ const RegistrationForm = () => {
                                     className="select"
                                     defaultValue={'default'}
                                     {...register('shirtsize', {
-                                        required: true
-                                    })}
-                                >
+                                        required: true,
+                                    })}>
                                     <option value="default" disabled>
                                         Choose a size
                                     </option>
 
                                     <option value="Small (S)">Small (S)</option>
-                                    <option value="Medium (M)">
-                                        Medium (M)
-                                    </option>
+                                    <option value="Medium (M)">Medium (M)</option>
                                     <option value="Large (L)">Large (L)</option>
-                                    <option value="Extra Large (XL)">
-                                        Extra Large (XL)
-                                    </option>
+                                    <option value="Extra Large (XL)">Extra Large (XL)</option>
                                 </select>
                             </label>
                             <p className="error-msg">
-                                {errors.shirtsize && (
-                                    <p className="error-text">
-                                        *Shirt size is required
-                                    </p>
-                                )}
+                                {errors.shirtsize && <p className="error-text">*Shirt size is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
@@ -364,29 +320,20 @@ const RegistrationForm = () => {
                                     className="select"
                                     defaultValue={'default'}
                                     {...register('heardaboutus', {
-                                        required: true
-                                    })}
-                                >
+                                        required: true,
+                                    })}>
                                     <option value="default" disabled>
                                         Choose one option
                                     </option>
 
-                                    <option value="University">
-                                        University
-                                    </option>
+                                    <option value="University">University</option>
                                     <option value="Friends">Friends</option>
-                                    <option value="prevHackAUBG">
-                                        I was on a previous edition of Hack AUBG
-                                    </option>
+                                    <option value="prevHackAUBG">I was on a previous edition of Hack AUBG</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </label>
                             <p className="error-msg">
-                                {errors.heardaboutus && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.heardaboutus && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
@@ -396,39 +343,24 @@ const RegistrationForm = () => {
                                     className="select"
                                     defaultValue={'default'}
                                     {...register('strongsides', {
-                                        required: true
-                                    })}
-                                >
+                                        required: true,
+                                    })}>
                                     <option value="default" disabled>
                                         Choose one option
                                     </option>
 
-                                    <option value="Frontend Programming">
-                                        Frontend Programming
-                                    </option>
-                                    <option value="Backend Programming">
-                                        Backend Programming
-                                    </option>
-                                    <option value="Programming in C#">
-                                        Programming in C#
-                                    </option>
-                                    <option value="Programming in Java">
-                                        Programming in Java
-                                    </option>
-                                    <option value="Programming in Python">
-                                        Programming in Python
-                                    </option>
+                                    <option value="Frontend Programming">Frontend Programming</option>
+                                    <option value="Backend Programming">Backend Programming</option>
+                                    <option value="Programming in C#">Programming in C#</option>
+                                    <option value="Programming in Java">Programming in Java</option>
+                                    <option value="Programming in Python">Programming in Python</option>
                                     <option value="Marketing">Marketing</option>
                                     <option value="UI/UX">UI/UX</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </label>
                             <p className="error-msg">
-                                {errors.strongsides && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.strongsides && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
@@ -440,24 +372,20 @@ const RegistrationForm = () => {
                                     {...register('jobinterests', {
                                         required: {
                                             value: true,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         minLength: {
-                                            message:
-                                                '*Minimum length is 4 characters',
-                                            value: 4
+                                            message: '*Minimum length is 4 characters',
+                                            value: 4,
                                         },
                                         maxLength: {
-                                            message:
-                                                'Maximum length is 100 characters',
-                                            value: 100
-                                        }
+                                            message: 'Maximum length is 100 characters',
+                                            value: 100,
+                                        },
                                     })}
                                 />
                             </label>
-                            <p className="error-msg">
-                                {errors.jobinterests?.message}
-                            </p>
+                            <p className="error-msg">{errors.jobinterests?.message}</p>
                         </div>
                         <div className="send-info">
                             <label>
@@ -466,42 +394,31 @@ const RegistrationForm = () => {
                                     className="select"
                                     defaultValue={'default'}
                                     {...register('programminglevel', {
-                                        required: true
-                                    })}
-                                >
+                                        required: true,
+                                    })}>
                                     <option value="default" disabled>
                                         Choose one option
                                     </option>
 
                                     <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">
-                                        Intermediate
-                                    </option>
+                                    <option value="Intermediate">Intermediate</option>
                                     <option value="Advanced">Advanced</option>
-                                    <option value="NotProgrammer">
-                                        I am not participating as a programmer
-                                    </option>
+                                    <option value="NotProgrammer">I am not participating as a programmer</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </label>
                             <p className="error-msg">
-                                {errors.programminglevel && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.programminglevel && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Do you have a team?
-                            </label>
+                            <label className="radio-label">Do you have a team?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
                                         {...register('hasteam', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="True"
@@ -513,7 +430,7 @@ const RegistrationForm = () => {
                                     <input
                                         // onClick={teamToggle}
                                         {...register('hasteam', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="False"
@@ -522,11 +439,7 @@ const RegistrationForm = () => {
                                 </div>
                             </div>
                             <p className="error-msg">
-                                {errors.hasteam && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.hasteam && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
@@ -543,39 +456,30 @@ const RegistrationForm = () => {
                                     {...register('teamname', {
                                         required: {
                                             value: !disableTeamNameField,
-                                            message: '*This field is required'
+                                            message: '*This field is required',
                                         },
                                         minLength: {
-                                            message:
-                                                '*Minimum length is 4 characters',
-                                            value: 4
+                                            message: '*Minimum length is 4 characters',
+                                            value: 4,
                                         },
                                         maxLength: {
-                                            message:
-                                                'Maximum length is 100 characters',
-                                            value: 100
-                                        }
+                                            message: 'Maximum length is 100 characters',
+                                            value: 100,
+                                        },
                                     })}
                                 />
                             </label>
-                            <p className="error-msg">
-                                {errors.teamname?.message}
-                            </p>
+                            <p className="error-msg">{errors.teamname?.message}</p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Have you participated in Hack AUBG before?
-                            </label>
+                            <label className="radio-label">Have you participated in Hack AUBG before?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
-                                        {...register(
-                                            'prevhackaubgparticipation',
-                                            {
-                                                required: true
-                                            }
-                                        )}
+                                        {...register('prevhackaubgparticipation', {
+                                            required: true,
+                                        })}
                                         type="radio"
                                         value="True"
                                         className="radio"
@@ -584,12 +488,9 @@ const RegistrationForm = () => {
                                 <div className="radio-btn">
                                     <label>No</label>
                                     <input
-                                        {...register(
-                                            'prevhackaubgparticipation',
-                                            {
-                                                required: true
-                                            }
-                                        )}
+                                        {...register('prevhackaubgparticipation', {
+                                            required: true,
+                                        })}
                                         type="radio"
                                         value="False"
                                         className="radio"
@@ -598,22 +499,18 @@ const RegistrationForm = () => {
                             </div>
                             <p className="error-msg">
                                 {errors.prevhackaubgparticipation && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
+                                    <p className="error-text">*This field is required</p>
                                 )}
                             </p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Are you looking for an internship?
-                            </label>
+                            <label className="radio-label">Are you looking for an internship?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
                                         {...register('wantinternship', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="True"
@@ -624,7 +521,7 @@ const RegistrationForm = () => {
                                     <label>No</label>
                                     <input
                                         {...register('wantinternship', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="False"
@@ -633,27 +530,18 @@ const RegistrationForm = () => {
                                 </div>
                             </div>
                             <p className="error-msg">
-                                {errors.wantinternship && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.wantinternship && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Have you participated in other Hackathons?
-                            </label>
+                            <label className="radio-label">Have you participated in other Hackathons?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
-                                        {...register(
-                                            'prevhackathonparticipation',
-                                            {
-                                                required: true
-                                            }
-                                        )}
+                                        {...register('prevhackathonparticipation', {
+                                            required: true,
+                                        })}
                                         type="radio"
                                         value="True"
                                         className="radio"
@@ -662,12 +550,9 @@ const RegistrationForm = () => {
                                 <div className="radio-btn">
                                     <label>No</label>
                                     <input
-                                        {...register(
-                                            'prevhackathonparticipation',
-                                            {
-                                                required: true
-                                            }
-                                        )}
+                                        {...register('prevhackathonparticipation', {
+                                            required: true,
+                                        })}
                                         type="radio"
                                         value="False"
                                         className="radio"
@@ -676,22 +561,18 @@ const RegistrationForm = () => {
                             </div>
                             <p className="error-msg">
                                 {errors.prevhackathonparticipation && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
+                                    <p className="error-text">*This field is required</p>
                                 )}
                             </p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Do you want to share you info with sponsors?
-                            </label>
+                            <label className="radio-label">Do you want to share you info with sponsors?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
                                         {...register('shareinfowithsponsors', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="True"
@@ -702,7 +583,7 @@ const RegistrationForm = () => {
                                     <label>No</label>
                                     <input
                                         {...register('shareinfowithsponsors', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="False"
@@ -711,23 +592,17 @@ const RegistrationForm = () => {
                                 </div>
                             </div>
                             <p className="error-msg">
-                                {errors.shareinfowithsponsors && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.shareinfowithsponsors && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
-                            <label className="radio-label">
-                                Do you have previous coding experience?
-                            </label>
+                            <label className="radio-label">Do you have previous coding experience?</label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
                                         {...register('hasexperience', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="True"
@@ -738,7 +613,7 @@ const RegistrationForm = () => {
                                     <label>No</label>
                                     <input
                                         {...register('hasexperience', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="False"
@@ -747,24 +622,19 @@ const RegistrationForm = () => {
                                 </div>
                             </div>
                             <p className="error-msg">
-                                {errors.hasexperience && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.hasexperience && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                         <div className="send-info">
                             <label className="radio-label">
-                                Do you want to receive our newsletter with
-                                potential job offerings?
+                                Do you want to receive our newsletter with potential job offerings?
                             </label>
                             <div className="radio-select">
                                 <div className="radio-btn">
                                     <label>Yes</label>
                                     <input
                                         {...register('wantjoboffers', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="True"
@@ -775,7 +645,7 @@ const RegistrationForm = () => {
                                     <label>No</label>
                                     <input
                                         {...register('wantjoboffers', {
-                                            required: true
+                                            required: true,
                                         })}
                                         type="radio"
                                         value="False"
@@ -784,11 +654,7 @@ const RegistrationForm = () => {
                                 </div>
                             </div>
                             <p className="error-msg">
-                                {errors.wantjoboffers && (
-                                    <p className="error-text">
-                                        *This field is required
-                                    </p>
-                                )}
+                                {errors.wantjoboffers && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
                     </fieldset>

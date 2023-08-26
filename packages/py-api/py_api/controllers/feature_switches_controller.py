@@ -24,7 +24,10 @@ class FeatureSwitchesController:
             {"switch_id": dumped_fs["switch_id"]}, {
                 "$set": dumped_fs,
             }, upsert=True,
+            projection={"_id": 0},
+            return_document=True,
         )
+
         return {"document": document}
 
     @classmethod

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './main.css';
 import { MembersSection } from './MembersSection/MembersSection';
 import { NavBar } from './Navigation/NavBar';
@@ -9,15 +9,18 @@ import { AboutSection } from './AboutSection/AboutSection';
 import '../../../node_modules/react-hovering-cards-carousel/dist/style.css';
 import { useEffect } from 'react';
 import { checkHashAndScroll } from '../../Global';
-import { FEATURE_SWITCHES } from '../../feature_switches';
+import { FsContext } from '../../feature_switches';
 
 const LandingHome = () => {
     document.body.className = 'main-body';
 
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
+
     const anchorList = [
         new Anchor('About', '#about', false),
-        new Anchor('Team', '#team', false, FEATURE_SWITCHES.team),
-        new Anchor('Jobs', 'jobs', true, FEATURE_SWITCHES.jobs)
+        new Anchor('Team', '#team', false, featureSwitches.team),
+        new Anchor('Jobs', 'jobs', true, featureSwitches.jobs),
     ];
 
     useEffect(checkHashAndScroll, []);
@@ -28,11 +31,7 @@ const LandingHome = () => {
             <LandingSection />
             <AboutSection />
             <MembersSection />
-            <Footer
-                color={'rgb(21, 76, 121)'}
-                iconColor={'rgb(255, 255, 255)'}
-                iconBgColor={'rgb(120, 120, 120)'}
-            />
+            <Footer color={'rgb(21, 76, 121)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
         </div>
     );
 };

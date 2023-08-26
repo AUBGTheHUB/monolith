@@ -14,6 +14,24 @@ const url =
 const parseToNewAPI = url => url.replace('8000', '6969');
 
 const objUploaderURL = `${url}/v2/uploader`;
+const featureSwitchesURL = `${url}/v2/fswitches`;
+
+const loadFeatureSwitches = () => {
+    const result = axios(parseToNewAPI(featureSwitchesURL), {
+        method: 'get',
+        headers: {
+            'BEARER-TOKEN': localStorage.getItem('auth_token'),
+        },
+    })
+        .then(res => {
+            return res.data.documents;
+        })
+        .catch(() => {
+            return [];
+        });
+
+    return result;
+};
 
 const checkBrowserValid = () => {
     const browsers = [
@@ -146,6 +164,7 @@ export {
     gcpToken,
     goBackIfActionsAreStateless,
     parseToNewAPI,
+    loadFeatureSwitches,
 };
 export default Validate;
 
