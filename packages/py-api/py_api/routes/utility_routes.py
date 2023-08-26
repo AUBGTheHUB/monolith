@@ -1,14 +1,16 @@
-from logging import getLogger
+import logging
 from typing import Any, Dict
 
-from fastapi import APIRouter, FastAPI, Request
+from fastapi import APIRouter, Request
 from py_api.utilities.memory import get_current_memory_usage_in_mbs
 
 router = APIRouter()
+logger = logging.getLogger("health")
 
 
 @router.get('/health')
 async def health() -> Dict[str, Any]:
+    logger.warning("test")
     return {
         "status": "healthy",
         "currentMemoryUsage": f"{get_current_memory_usage_in_mbs()} MB",
