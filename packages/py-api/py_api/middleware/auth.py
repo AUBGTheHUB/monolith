@@ -26,7 +26,7 @@ class AuthMiddleware:
 
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
-            endpoint, is_bypassed = cls.check_bypassed_endpoint(request.url)
+            endpoint, is_bypassed = cls._check_bypassed_endpoint(request.url)
 
             if not is_bypassed or (
                 # autopep8: off
@@ -79,7 +79,7 @@ class AuthMiddleware:
         return JSONResponse(content=content, status_code=status_code)
 
     @classmethod
-    def check_bypassed_endpoint(cls, url: Request.url) -> Tuple[str, Literal[True]] | Tuple[None, Literal[False]]:
+    def _check_bypassed_endpoint(cls, url: Request.url) -> Tuple[str, Literal[True]] | Tuple[None, Literal[False]]:
         for endpoint in BYPASSED_ENDPOINTS.keys():
             if endpoint in str(url):
                 return endpoint, True
