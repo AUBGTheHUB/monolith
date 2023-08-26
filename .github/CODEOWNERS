@@ -22,4 +22,4 @@ Makefile @asynchroza
 
 packages/services @asynchroza
 
-packages/qb-api @asynchroza @IvanObreshkov
+packages/py-api @asynchroza @IvanObreshkov
