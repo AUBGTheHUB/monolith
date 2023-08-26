@@ -26,6 +26,33 @@ If your version is not `3.11.*`, follow the guides below:
 ## Utilities:
 ### Parsing:
 
+#### Request Bodies:
+
+It's **recommended** that you use pydantic in order to easily validate and create parsable bodies to controllers. Read more about it [here](https://fastapi.tiangolo.com/tutorial/body-multiple-params/).
+
+```python
+class FeatureSwitch(BaseModel):
+    switch_id: str
+    is_enabled: bool
+```
+
+How to overwrite inherited `model_dump()` method in order to produce serializable dictionaries:
+
+```python
+    # model_dump will return the following dict
+    # {"endpoint": "something", "url": Url("https://something.com")}
+    # which is not serializable
+
+ def model_dump(self) -> Dict[str, str]:
+    dumped_model: Dict[str, Any] = super().model_dump()
+
+    dumped_model["url"] = str(dumped_model["url"])
+    return dumped_model
+
+```
+
+If for some reason you need to parse the body, but you don't have a pydantic class for it, you can do it the following way:
+
 Parse **request bodies** before passing them to controllers:
 ```python
 from py_api.utilities.parsers import parse_request_body

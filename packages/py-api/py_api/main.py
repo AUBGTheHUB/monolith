@@ -1,6 +1,4 @@
-from dotenv import load_dotenv
 
-load_dotenv()  # noqa
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware, ExceptionHandler

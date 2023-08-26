@@ -1,6 +1,7 @@
 from os import getenv
 from typing import Any, Dict
 
+from py_api.environment import IS_OFFLINE
 from py_api.utilities.parsers import eval_bool
 from uvicorn.config import LOGGING_CONFIG
 
@@ -34,7 +35,7 @@ PROD_LOGGING_CONFIG: Dict[str, Any] = {
 
 def get_log_config() -> Dict[str, Any]:
     log_config: Dict[str, Any] = PROD_LOGGING_CONFIG if not eval_bool(
-        getenv("IS_OFFLINE", False),
+        IS_OFFLINE,
     ) else LOGGING_CONFIG
 
     return log_config

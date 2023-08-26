@@ -1,5 +1,4 @@
-from os import getenv
-
+from py_api.environment import MONGO_URI
 from pymongo import MongoClient
 
 # * How to use - https://pymongo.readthedocs.io/en/stable/tutorial.html
@@ -9,7 +8,7 @@ from pymongo import MongoClient
 # you should import the db variable as follows:
 # * from qb_api.database import db
 
-client = MongoClient(getenv("MONGOURI"))
+client = MongoClient(MONGO_URI)
 db = client["TheHubDB"]
 
 # * use this collection when working within the UrlShortener controller
