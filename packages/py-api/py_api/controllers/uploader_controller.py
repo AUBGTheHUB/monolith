@@ -18,7 +18,7 @@ class UploaderController:
         return "https://s3-%s.amazonaws.com/%s/%s" % (location, bucket_name, url_name)
 
     @classmethod
-    def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any] | JSONResponse:
+    def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any]:
         s3 = boto3.client(
             's3', aws_access_key_id=AWS_PUB_KEY,
             aws_secret_access_key=AWS_PRIV_KEY,
