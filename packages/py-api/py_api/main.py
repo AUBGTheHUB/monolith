@@ -1,11 +1,11 @@
-from dotenv import load_dotenv  # noqa
+from dotenv import load_dotenv
 
 load_dotenv()  # noqa
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from py_api.middleware import AuthMiddleware
-from py_api.middleware.exception_handler import ExceptionHandler
+from py_api.middleware import AuthMiddleware, ExceptionHandler
 from py_api.routes import Routes
+from py_api.utilities.logging import get_log_config
 from uvicorn import run
 
 origins = ['*']
@@ -29,7 +29,10 @@ main_app.mount("/v2", app)
 
 
 def start() -> None:
-    run("py_api.main:main_app", host="0.0.0.0", port=6969, reload=True)
+    run(
+        "py_api.main:main_app", host="0.0.0.0", port=6969,
+        reload=True, log_config=get_log_config(),
+    )
 
 
 if __name__ == "__main__":

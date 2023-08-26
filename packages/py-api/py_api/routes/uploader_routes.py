@@ -1,6 +1,6 @@
 from typing import Annotated, Any, Dict
 
-from fastapi import APIRouter, FastAPI, Form, UploadFile
+from fastapi import APIRouter, Form, UploadFile
 from py_api.controllers import UploaderController as c
 
 router = APIRouter(prefix="/uploader")

@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter
 from py_api.controllers import UrlShortenerController as c
 from py_api.models import ShortenedURL
 

@@ -20,10 +20,6 @@ class ExceptionHandler:
                     "exception": str(exc),
                     "stacktrace": format_exc(),
                 }
-            else:
-                # TODO: write exception in file used for logging
-                # this will help with debugging failing deployed APIs
-                pass
 
             return JSONResponse(
                 status_code=500,
