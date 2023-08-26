@@ -21,6 +21,8 @@ If your version is not `3.11.*`, follow the guides below:
 ## How to run
 `poetry run start` will start the server on port `6969`
 
+## Get a list of all endpoints
+
 ## Utilities:
 ### Parsing:
 

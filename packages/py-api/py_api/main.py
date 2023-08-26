@@ -12,13 +12,12 @@ from py_api.middleware.exception_handler import ExceptionHandler
 from py_api.routes import Routes
 from uvicorn import run
 
-router = APIRouter(prefix='/v2')
-Routes.bind(router)
-
 origins = ['*']
 
+main_app = FastAPI()
 app = FastAPI()
 
+Routes.bind(app)
 AuthMiddleware.bind(app)
 ExceptionHandler.bind(app)
 
@@ -29,7 +28,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(router)
+
+main_app.mount("/v2", app)
 
 
 prod_log_config = {}
@@ -46,7 +46,7 @@ def start() -> None:
     # - offline - no writing to file, colors - level - INFO
 
     run(
-        "py_api.main:app", host="0.0.0.0", port=6969, reload=True,
+        "py_api.main:main_app", host="0.0.0.0", port=6969, reload=True,
         **prod_log_config if not eval_bool(getenv("IS_OFFLINE", False)) else {}
     )
 
