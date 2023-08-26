@@ -1,12 +1,11 @@
 from dotenv import load_dotenv
-from py_api.utilities.logging import get_log_config
-from py_api.utilities.parsers import eval_bool  # noqa
 
 load_dotenv()  # noqa
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import AuthMiddleware, ExceptionHandler
 from py_api.routes import Routes
+from py_api.utilities.logging import get_log_config
 from uvicorn import run
 
 origins = ['*']

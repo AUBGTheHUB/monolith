@@ -1,7 +1,6 @@
 from typing import Any, Dict
 
 from pydantic import AnyHttpUrl, BaseModel
-from pydantic_core import Url
 
 
 class ShortenedURL(BaseModel):

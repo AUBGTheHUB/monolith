@@ -17,5 +17,3 @@ def eval_bool(bl: str | bool) -> bool:
             return True
         else:
             return False
-
-        # TODO: Add error handling, possibility of non boolean value

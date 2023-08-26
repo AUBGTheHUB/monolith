@@ -5,7 +5,6 @@ from typing import Any, Dict
 
 import boto3
 from fastapi import UploadFile
-from fastapi.responses import JSONResponse
 
 AWS_PUB_KEY = getenv("AWS_PUB_KEY", "")
 AWS_PRIV_KEY = getenv("AWS_PRIV_KEY", "")
