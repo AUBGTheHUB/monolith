@@ -39,6 +39,7 @@ import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_te
 import RenderNoTeamParticipants from './components/admin_page/hackathon/hackathon_no_team_participants/render_no_team_participants';
 import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
 import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
+import UrlsTable from './components/admin_page/url_shortener/table';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -48,7 +49,6 @@ function App() {
     goBackIfActionsAreStateless();
     // eslint-disable-next-line
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
-    console.log(featureSwitches);
 
     useEffect(() => {
         const handleFsUpdate = async () => {
@@ -101,6 +101,7 @@ function App() {
             <Route path="/*" element={<NotFound />} />
             <Route path="/admin/dashboard/s3" element={<S3Panel />} />
             <Route path="/admin/dashboard/s3/objects" element={<RenderStorageObjects />} />
+            <Route path="/admin/dashboard/shortener" element={<UrlsTable />} />
         </Routes>
     );
 }

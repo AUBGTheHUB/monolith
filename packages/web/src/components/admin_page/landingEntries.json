@@ -40,5 +40,11 @@
         "text": "Management window for S3 objects",
         "url": "/admin/dashboard/s3",
         "description": "Manage images"
+    },
+    {
+        "title": "URL Shortener",
+        "text": "Add or remove shortened urls",
+        "url": "/admin/dashboard/shortener",
+        "description": "Manage URLs"
     }
 ]
