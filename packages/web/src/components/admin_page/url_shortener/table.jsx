@@ -7,6 +7,11 @@ import UrlRow from './row';
 const UrlsTable = () => {
     const [shortenedUrls, setShortenedUrls] = useState([]);
     const [selected, setSelected] = useState('');
+    const [trigger, setTrigger] = useState(0);
+
+    const triggerFetch = () => {
+        setTrigger(prev => prev + 1);
+    };
 
     useEffect(() => {
         axios(parseToNewAPI(urlShortenerURL), {
@@ -16,7 +21,7 @@ const UrlsTable = () => {
         }).then(res => {
             setShortenedUrls(res.data.urls);
         });
-    }, []);
+    }, [trigger]);
 
     return (
         <Table style={{ color: 'white' }}>
@@ -34,6 +39,7 @@ const UrlsTable = () => {
                         key={item.endpoint}
                         selected={selected}
                         setSelected={setSelected}
+                        triggerFetch={triggerFetch}
                     />
                 ))}
             </tbody>
