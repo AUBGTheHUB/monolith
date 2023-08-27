@@ -9,9 +9,7 @@ const popover = (onUpdate, errorMessage) => {
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
             <Popover.Body>
-                {errorMessage !== undefined ? (
-                    <Alert variant="warning">Not a viable URL - {errorMessage}!</Alert>
-                ) : null}
+                {errorMessage !== undefined ? <Alert variant="warning">{errorMessage}</Alert> : null}
                 <UpdateUrlForm onUpdate={onUpdate} />
             </Popover.Body>
         </Popover>
@@ -81,7 +79,11 @@ const UrlsTable = () => {
                 setShowAddOverlay(false);
             })
             .catch(err => {
-                setErrorMessage(err?.response?.data?.detail[0]?.ctx?.error);
+                if (err.code === 'ERR_NETWORK') {
+                    setErrorMessage('API is not responding!');
+                } else {
+                    setErrorMessage('Not a viable URL - ' + err?.response?.data?.detail[0]?.ctx?.error + '!');
+                }
             });
     };
 
@@ -90,9 +92,13 @@ const UrlsTable = () => {
             headers: {
                 'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
-        }).then(res => {
-            setShortenedUrls(res.data.urls);
-        });
+        })
+            .then(res => {
+                setShortenedUrls(res.data.urls);
+            })
+            .catch(() => {
+                window.alert('API is not responding!');
+            });
     }, [trigger]);
 
     useEffect(() => {
