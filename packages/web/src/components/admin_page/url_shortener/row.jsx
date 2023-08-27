@@ -82,19 +82,25 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
 
     return (
         <>
-            <OverlayTrigger show={isShown} placement="bottom" overlay={popover(onDelete, onUpdate, errorMessage)}>
-                <tr
-                    onClick={() => {
-                        if (selected === '' || endpoint !== selected) {
-                            setSelected(endpoint);
-                        } else {
-                            setSelected('');
-                        }
-                    }}>
-                    <td>https://thehub-aubg.com/s/{endpoint}</td>
-                    <td>{url}</td>
-                </tr>
-            </OverlayTrigger>
+            <tr>
+                <td>https://thehub-aubg.com/s/{endpoint}</td>
+                <td>{url}</td>
+                <td>
+                    <OverlayTrigger show={isShown} placement="left" overlay={popover(onDelete, onUpdate, errorMessage)}>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                if (selected === '' || endpoint !== selected) {
+                                    setSelected(endpoint);
+                                } else {
+                                    setSelected('');
+                                }
+                            }}>
+                            Edit
+                        </Button>
+                    </OverlayTrigger>
+                </td>
+            </tr>
         </>
     );
 };
