@@ -46,7 +46,6 @@ const UpdateUrlForm = ({ onUpdate }) => {
 };
 
 const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
-    console.log(endpoint);
     const isShown = endpoint === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
 
@@ -58,8 +57,9 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
             .then(() => {
                 triggerFetch();
             })
-            .catch(() => {
-                setErrorMessage('Something went wrong!');
+            .catch(err => {
+                const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
+                setErrorMessage(message);
             });
     };
 
@@ -84,7 +84,8 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
                 } else if (err?.response?.data?.detail[0]?.ctx?.error) {
                     setErrorMessage('Not a viable URL - ' + err?.response?.data?.detail[0]?.ctx?.error + '!');
                 } else {
-                    setErrorMessage('Something went wrong!');
+                    const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
+                    setErrorMessage(message);
                 }
             });
     };

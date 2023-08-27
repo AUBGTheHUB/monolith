@@ -84,7 +84,8 @@ const UrlsTable = () => {
                 } else if (err?.response?.data?.detail[0]?.ctx?.error) {
                     setErrorMessage('Not a viable URL - ' + err?.response?.data?.detail[0]?.ctx?.error + '!');
                 } else {
-                    setErrorMessage('Something went wrong!');
+                    const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
+                    setErrorMessage(message);
                 }
             });
     };
