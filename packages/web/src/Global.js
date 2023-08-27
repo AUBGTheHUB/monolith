@@ -14,6 +14,7 @@ const url =
 const parseToNewAPI = url => url.replace('8000', '6969');
 
 const objUploaderURL = `${url}/v2/uploader`;
+const urlShortenerURL = `${url}/v2/shortener`;
 
 const checkBrowserValid = () => {
     const browsers = [
@@ -146,6 +147,7 @@ export {
     gcpToken,
     goBackIfActionsAreStateless,
     parseToNewAPI,
+    urlShortenerURL,
 };
 export default Validate;
 
