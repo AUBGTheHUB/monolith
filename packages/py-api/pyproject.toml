@@ -19,6 +19,7 @@ psutil = "^5.9.5"
 
 [tool.poetry.scripts]
 start = "py_api.main:start"
+rename_collection = "py_api.scripts.rename_collection:rename_collection"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^68.1.2"

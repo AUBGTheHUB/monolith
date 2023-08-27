@@ -21,7 +21,18 @@ If your version is not `3.11.*`, follow the guides below:
 ## How to run
 `poetry run start` will start the server on port `6969`
 
-## Get a list of all endpoints
+## Get a list of all endpoints and allowed methods
+```bash
+# GET /v2/routes HTTP/1.1
+
+curl --location 'localhost:6969/v2/routes'
+```
+
+
+
+## Scripts
+### Renaming a collection
+![rename collection script](./docs/images/rename_collection_script.png)
 
 ## Utilities:
 ### Parsing:
