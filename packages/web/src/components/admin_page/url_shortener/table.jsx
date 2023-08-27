@@ -95,6 +95,18 @@ const UrlsTable = () => {
         });
     }, [trigger]);
 
+    useEffect(() => {
+        if (selected) {
+            setShowAddOverlay(false);
+        }
+    }, [selected]);
+
+    useEffect(() => {
+        if (showAddOverlay) {
+            setSelected(undefined);
+        }
+    }, [showAddOverlay]);
+
     return (
         <>
             <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>
