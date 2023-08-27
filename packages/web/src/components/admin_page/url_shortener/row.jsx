@@ -46,6 +46,7 @@ const UpdateUrlForm = ({ onUpdate }) => {
 };
 
 const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
+    console.log(endpoint);
     const isShown = endpoint === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
 
@@ -53,9 +54,13 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
         axios(parseToNewAPI(urlShortenerURL + `/${endpoint}`), {
             headers: HEADERS,
             method: 'delete',
-        }).then(() => {
-            triggerFetch();
-        });
+        })
+            .then(() => {
+                triggerFetch();
+            })
+            .catch(() => {
+                setErrorMessage('Something went wrong!');
+            });
     };
 
     const onUpdate = newUrl => {
@@ -76,8 +81,10 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
             .catch(err => {
                 if (err.code === 'ERR_NETWORK') {
                     setErrorMessage('API is not responding!');
-                } else {
+                } else if (err?.response?.data?.detail[0]?.ctx?.error) {
                     setErrorMessage('Not a viable URL - ' + err?.response?.data?.detail[0]?.ctx?.error + '!');
+                } else {
+                    setErrorMessage('Something went wrong!');
                 }
             });
     };
