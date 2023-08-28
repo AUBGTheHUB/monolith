@@ -1,0 +1,41 @@
+import pathlib
+from os.path import exists
+from typing import Final
+
+from fastapi import APIRouter
+from py_api.environment import IS_OFFLINE
+from starlette.responses import FileResponse, JSONResponse
+
+router = APIRouter()
+LOGFILE_PATH: Final = f"{pathlib.Path(__file__).parent.resolve().parent}/shared/logfile.log"
+
+
+class GettingLogsController:
+    @classmethod
+    def return_files(cls) -> JSONResponse | FileResponse:
+
+        if IS_OFFLINE:
+            content = {
+                "message": "You should be in a prod environment. Log files are not present in a local one.",
+            }
+            status_code = 400
+
+            return JSONResponse(content=content, status_code=status_code)
+
+        return cls.get_log_file()
+
+    @classmethod
+    def get_log_file(cls) -> JSONResponse | FileResponse:
+        try:
+            if not exists(LOGFILE_PATH):
+                return JSONResponse(content={"error": "The logs folder is empty"}, status_code=404)
+
+            return FileResponse(
+                LOGFILE_PATH, headers={
+                    "Content-Disposition": f"attachment; filename=logfile.log",
+                },
+                media_type="text/plain",
+            )
+
+        except Exception as e:
+            return JSONResponse(content={"error": f"{e}"}, status_code=500)
