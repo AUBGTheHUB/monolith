@@ -13,16 +13,17 @@ from py_api.routes.utility_routes import router as utility_router
     by adding them to the BYPASSED_ENDPOINTS dictionary.
 """
 
-routers: List[APIRouter] = [
-    uploader_router,
-    url_shortener_router,
-    utility_router,
-    feature_switches_router,
-    logs_router,
-]
-
 
 class Routes:
-    def bind(app: FastAPI) -> None:
-        for router in routers:
+    _routers: List[APIRouter] = [
+        uploader_router,
+        url_shortener_router,
+        utility_router,
+        feature_switches_router,
+        logs_router,
+    ]
+
+    @classmethod
+    def bind(cls, app: FastAPI) -> None:
+        for router in cls._routers:
             app.include_router(router)

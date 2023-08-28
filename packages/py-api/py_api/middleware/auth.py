@@ -1,4 +1,3 @@
-from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
@@ -6,8 +5,6 @@ from fastapi.responses import JSONResponse
 from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
-
-logger = getLogger("auth")
 
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
@@ -18,13 +15,12 @@ logger = getLogger("auth")
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
 
-BYPASSED_ENDPOINTS: Final = {
-    "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
-}
-
 
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
+    _BYPASSED_ENDPOINTS: Final = {
+        "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
+    }
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
@@ -34,10 +30,10 @@ class AuthMiddleware:
             endpoint, is_bypassed = cls._check_bypassed_endpoint(request.url)
 
             if not is_bypassed or (
-                # autopep8: off
-                request.method not in BYPASSED_ENDPOINTS[endpoint]  # type: ignore
-                and BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
-                # autopep8: on
+                    # autopep8: off
+                    request.method not in cls._BYPASSED_ENDPOINTS[endpoint]  # type: ignore
+                    and cls._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
+                    # autopep8: on
             ):
 
                 if not request.base_url.netloc.find(":"):
@@ -92,7 +88,7 @@ class AuthMiddleware:
 
     @classmethod
     def _check_bypassed_endpoint(cls, url: Request.url) -> Tuple[str, Literal[True]] | Tuple[None, Literal[False]]:
-        for endpoint in BYPASSED_ENDPOINTS.keys():
+        for endpoint in cls._BYPASSED_ENDPOINTS.keys():
             if endpoint in str(url):
                 return endpoint, True
         return None, False

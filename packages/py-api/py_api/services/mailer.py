@@ -16,11 +16,7 @@ async def send_mail(receiver: str, subject: str, html: str) -> None:
     mime_msg.attach(MIMEText(html, "html"))
 
     server = SMTP_SSL('smtp.gmail.com', port)
-    try:
-        server.login(email, password)
-        server.sendmail(email, receiver, mime_msg.as_string())
+    server.login(email, password)
+    server.sendmail(email, receiver, mime_msg.as_string())
 
-        server.close()
-    except Exception as e:
-        # TODO: Swap for logger once implemented
-        print(e)
+    server.close()
