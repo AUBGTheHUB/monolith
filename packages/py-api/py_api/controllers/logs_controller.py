@@ -21,7 +21,7 @@ class LogsController:
             return JSONResponse(content=content, status_code=status_code)
 
         if not exists(cls.LOGFILE_PATH):
-            return JSONResponse(content={"error": "The logs folder is empty"}, status_code=404)
+            return JSONResponse(content={"message": "The logs folder is empty"}, status_code=404)
 
         return FileResponse(
             cls.LOGFILE_PATH, headers={
