@@ -36,7 +36,7 @@ class AuthMiddleware:
             if not is_bypassed or (
                     # autopep8: off
                     request.method not in cls._BYPASSED_ENDPOINTS[endpoint]  # type: ignore
-                    and BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
+                    and cls._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
 
