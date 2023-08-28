@@ -14,14 +14,14 @@ class LogsController:
 
         if IS_OFFLINE:
             content = {
-                "message": "Log files are not available in local environments.",
+                "message": "Log files are not available in local environments",
             }
             status_code = 400
 
             return JSONResponse(content=content, status_code=status_code)
 
         if not exists(cls.LOGFILE_PATH):
-            return JSONResponse(content={"message": "The logs folder is empty"}, status_code=404)
+            return JSONResponse(content={"message": "Log file doesn't exist"}, status_code=404)
 
         return FileResponse(
             cls.LOGFILE_PATH, headers={
