@@ -1,6 +1,6 @@
 from json import loads
 from re import escape, search
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List, Self
 
 
 async def parse_request_body(body: Callable[..., bytes]) -> Dict[Any, Any]:
@@ -23,3 +23,9 @@ def eval_bool(bl: str | bool) -> bool:
 def has_prohibited_characters(input_string: str, prohibited_pattern: str) -> bool:
     prohibited_pattern = f"[{escape(prohibited_pattern)}]"
     return bool(search(prohibited_pattern, input_string))
+
+
+class AttrDict(dict[Any, Any]):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
