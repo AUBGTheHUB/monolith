@@ -1,10 +1,7 @@
-import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from os import getenv
 from smtplib import SMTP_SSL
-
-logger = logging.getLogger("mailer")
 
 
 async def send_mail(receiver: str, subject: str, html: str) -> None:
@@ -19,10 +16,7 @@ async def send_mail(receiver: str, subject: str, html: str) -> None:
     mime_msg.attach(MIMEText(html, "html"))
 
     server = SMTP_SSL('smtp.gmail.com', port)
-    try:
-        server.login(email, password)
-        server.sendmail(email, receiver, mime_msg.as_string())
+    server.login(email, password)
+    server.sendmail(email, receiver, mime_msg.as_string())
 
-        server.close()
-    except Exception as e:
-        logger.error(e)
+    server.close()
