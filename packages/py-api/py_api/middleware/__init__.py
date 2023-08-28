@@ -1,7 +1,5 @@
-from py_api.middleware.auth import AuthMiddleware
-from py_api.middleware.exception_handler import ExceptionHandler
+from py_api.middleware.middleware import Middleware
 
 __all__ = [
-    "AuthMiddleware",
-    "ExceptionHandler",
+    "Middleware",
 ]
