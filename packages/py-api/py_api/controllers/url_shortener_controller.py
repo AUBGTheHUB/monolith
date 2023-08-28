@@ -28,9 +28,10 @@ class UrlShortenerController:
     @classmethod
     def upsert_shortened_url(cls, body: ShortenedURL) -> Dict[str, str] | JSONResponse:
         dumped_body = body.model_dump()
+        prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
 
-        if has_prohibited_characters(dumped_body["endpoint"], "/:!@#$%\\[]^*()_-+{}=?.,§~`"):
-            return JSONResponse(content={"message": "Provided endpoint includes a probited characters - /:!@#$%\\[]^*()_-+{}=?.,§~`"}, status_code=400)
+        if has_prohibited_characters(dumped_body["endpoint"], prohibited_chars):
+            return JSONResponse(content={"message": f"Provided endpoint includes a probited character - {prohibited_chars}"}, status_code=400)
 
         su_col.find_one_and_update(
             filter={"endpoint": dumped_body["endpoint"]},
