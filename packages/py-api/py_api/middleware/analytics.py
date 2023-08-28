@@ -45,12 +45,12 @@ class AnalyticsMiddleware:
         ).json()
         return (response["country_name"], response["city"])
 
-    def create_update_operation(common_locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    def create_update_operation(locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         update_operation: Dict[str, Dict[str, Any]] = {
             "$set": {},
         }
 
-        for key, item in common_locations.items():
+        for key, item in locations.items():
             update_operation["$set"][key] = item
 
         return update_operation
@@ -59,18 +59,18 @@ class AnalyticsMiddleware:
         if not analytics:
             analytics = {
                 "total_requests": 0,
-                "common_locations": {},
+                "locations": {},
             }
 
         analytics["total_requests"] = analytics["total_requests"] + 1
 
-        if country_dict := analytics["common_locations"].get(country):
+        if country_dict := analytics["locations"].get(country):
             if current_count := country_dict.get(city):
-                analytics["common_locations"][country][city] = current_count + 1
+                analytics["locations"][country][city] = current_count + 1
             else:
-                analytics["common_locations"][country][city] = 1
+                analytics["locations"][country][city] = 1
         else:
-            analytics["common_locations"][country] = {
+            analytics["locations"][country] = {
                 city: 1,
             }
 
