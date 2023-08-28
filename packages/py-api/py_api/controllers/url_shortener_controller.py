@@ -3,6 +3,7 @@ from typing import Dict, List
 from fastapi.responses import JSONResponse
 from py_api.database import su_col
 from py_api.models import ShortenedURL
+from py_api.utilities.parsers import has_prohibited_characters
 
 
 class UrlShortenerController:
@@ -25,8 +26,13 @@ class UrlShortenerController:
             return JSONResponse(content={"message": "Endpoint wasn't found!"}, status_code=404)
 
     @classmethod
-    def upsert_shortened_url(cls, body: ShortenedURL) -> Dict[str, str]:
+    def upsert_shortened_url(cls, body: ShortenedURL) -> Dict[str, str] | JSONResponse:
         dumped_body = body.model_dump()
+        prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
+
+        if has_prohibited_characters(dumped_body["endpoint"], prohibited_chars):
+            return JSONResponse(content={"message": f"Provided endpoint includes a probited character - {prohibited_chars}"}, status_code=400)
+
         su_col.find_one_and_update(
             filter={"endpoint": dumped_body["endpoint"]},
             update={"$set": dumped_body},
