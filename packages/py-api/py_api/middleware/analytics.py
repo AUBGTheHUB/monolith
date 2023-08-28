@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, Tuple
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from py_api.database import db
+from py_api.environment import IS_PROD
 from requests import get
 from starlette.background import BackgroundTask
 
@@ -17,7 +18,11 @@ class AnalyticsMiddleware:
         @app.middleware('http')
         async def run_analytics(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             response = await call_next(request)
-            response.background = BackgroundTask(self.update_entries, request)
+            if IS_PROD:
+                response.background = BackgroundTask(
+                    self.update_entries, request,
+                )
+
             return response
 
     @classmethod
