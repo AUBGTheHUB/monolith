@@ -14,7 +14,7 @@ class LogsController:
 
         if IS_OFFLINE:
             content = {
-                "message": "You should be in a prod environment. Log files are not present in a local one.",
+                "message": "Log files are not available in local environments.",
             }
             status_code = 400
 
