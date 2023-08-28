@@ -1,11 +1,11 @@
-import pathlib
 from os.path import exists
+from pathlib import Path
 from typing import Final
 
 from fastapi.responses import FileResponse, JSONResponse
 from py_api.environment import IS_OFFLINE
 
-LOGFILE_PATH: Final = f"{pathlib.Path(__file__).parent.resolve().parent}/shared/logfile.log"
+LOGFILE_PATH: Final = f"{Path(__file__).parent.resolve().parent}/shared/logfile.log"
 
 
 class LogsController:
