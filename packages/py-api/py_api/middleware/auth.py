@@ -1,4 +1,3 @@
-from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
@@ -6,9 +5,6 @@ from fastapi.responses import JSONResponse
 from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
-
-logger = getLogger("auth")
-
 
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
