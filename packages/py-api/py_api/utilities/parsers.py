@@ -1,4 +1,5 @@
 from json import loads
+from re import escape, search
 from typing import Any, Callable, Dict
 
 
@@ -17,3 +18,8 @@ def eval_bool(bl: str | bool) -> bool:
             return True
         else:
             return False
+
+
+def has_prohibited_characters(input_string: str, prohibited_pattern: str) -> bool:
+    prohibited_pattern = f"[{escape(prohibited_pattern)}]"
+    return bool(search(prohibited_pattern, input_string))
