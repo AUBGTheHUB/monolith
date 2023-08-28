@@ -13,7 +13,7 @@ class UploaderController:
     _AWS_BUCKET_NAME = getenv("AWS_BUCKET_NAME", "")
 
     @classmethod
-    def get_url_of_object(cls, location: str, bucket_name: str, url_name: str) -> str:
+    def _get_url_of_object(cls, location: str, bucket_name: str, url_name: str) -> str:
         return "https://s3-%s.amazonaws.com/%s/%s" % (location, bucket_name, url_name)
 
     @classmethod
@@ -43,7 +43,7 @@ class UploaderController:
 
         return {
             "message": "Upload was successful",
-            "url": cls.get_url_of_object(location, cls._AWS_BUCKET_NAME, saved_file),
+            "url": cls._get_url_of_object(location, cls._AWS_BUCKET_NAME, saved_file),
         }
 
     @classmethod
@@ -63,7 +63,7 @@ class UploaderController:
 
         for obj in bucket.objects.all():
             objects.append(
-                cls.get_url_of_object(
+                cls._get_url_of_object(
                     location, cls._AWS_BUCKET_NAME, obj.key,
                 ),
             )
