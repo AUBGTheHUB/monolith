@@ -25,6 +25,6 @@ class LogsController:
 
         return FileResponse(
             cls._LOGFILE_PATH, headers={
-                "Content-Disposition": f"attachment; filename=logfile.log",
+                "Content-Disposition": "attachment; filename=logfile.log",
             },
         )
