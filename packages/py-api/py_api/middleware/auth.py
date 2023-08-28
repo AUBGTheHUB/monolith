@@ -1,8 +1,13 @@
+from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
+from py_api.utilities.parsers import AttrDict
 from requests import post
+
+logger = getLogger("auth")
 
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
@@ -47,26 +52,33 @@ class AuthMiddleware:
                 try:
                     # passing all headers breaks the APIs when using formdata
                     header_key = 'BEARER-TOKEN'
-                    headers = {
-                        header_key: request.headers.get(header_key, ''),
-                    }
-                    res = post(url=validate_url, headers=headers)
+                    request_token = request.headers.get(header_key, '')
+
+                    if not IS_OFFLINE:
+                        headers = {
+                            header_key: request_token,
+                        }
+                        res = post(url=validate_url, headers=headers)
+                    else:
+                        res = AttrDict(
+                            status_code=200 if request_token == OFFLINE_TOKEN else 401,
+                        )
+
                 except Exception as e:
                     return cls._generate_bad_auth_response(exception=e)
 
                 if res.status_code != 200:
-                    return cls._generate_bad_auth_response()
+                    return cls._generate_bad_auth_response(res.status_code)
 
             response = await call_next(request)
             return response
 
     @classmethod
-    def _generate_bad_auth_response(cls, exception: Exception | None = None) -> JSONResponse:
+    def _generate_bad_auth_response(cls, status_code: int = 401, exception: Exception | None = None) -> JSONResponse:
 
         content = {
             "message": "User doesn't have permissions to access this resource!",
         }
-        status_code = 401
 
         if exception:
             content = {
