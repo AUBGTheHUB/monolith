@@ -4,7 +4,7 @@ if [ "$1" != "--post" ]; then
  
 	brew install nvm
 
-    echo -e 'export NVM_DIR="$HOME/.nvm"
+    echo -e '\nexport NVM_DIR="$HOME/.nvm"
     [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
     [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
 
@@ -47,7 +47,7 @@ else
     echo -e "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh\n"
     echo -e "The first step of the project intialization has already set up a new login shell\n${NC}"
 
-	source $HOME/.nvm/nvm.sh
+	source $HOME/.nvm/nvm.sh || source $(brew --prefix nvm)/nvm.sh
 	nvm install --lts
 	cd $HOME/go/src/monolith
 
