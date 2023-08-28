@@ -1,5 +1,6 @@
 import pathlib
 from os.path import exists
+from traceback import format_exc
 from typing import Final
 
 from fastapi import APIRouter
@@ -26,6 +27,9 @@ class GettingLogsController:
 
     @classmethod
     def get_log_file(cls) -> JSONResponse | FileResponse:
+        # As this endpoint is used only for internal use, here we have an exception handler,
+        # so that we could see in postman or wherever if there is a problem with downloading the file
+        # This is done because when we are in prod env the errors are written to the logfile we are downloading
         try:
             if not exists(LOGFILE_PATH):
                 return JSONResponse(content={"error": "The logs folder is empty"}, status_code=404)
@@ -34,8 +38,7 @@ class GettingLogsController:
                 LOGFILE_PATH, headers={
                     "Content-Disposition": f"attachment; filename=logfile.log",
                 },
-                media_type="text/plain",
             )
 
         except Exception as e:
-            return JSONResponse(content={"error": f"{e}"}, status_code=500)
+            return JSONResponse(content={"error": f"{e}", "stacktrace": format_exc()}, status_code=500)
