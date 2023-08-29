@@ -27,6 +27,7 @@ class AnalyticsMiddleware:
 
     @classmethod
     async def update_entries(cls, request: Request) -> None:
+        country, city = None, None
         projection = {"_id": 0}
         analytics = cls.an_col.find_one({}, projection)
 
@@ -57,7 +58,7 @@ class AnalyticsMiddleware:
 
         return update_operation
 
-    def update_analytics(analytics: Dict[str, Any] | None, country: str | None = None, city: str | None = None) -> Dict[str, Any]:
+    def update_analytics(analytics: Dict[str, Any] | None, country: str | None, city: str | None) -> Dict[str, Any]:
         if not analytics:
             analytics = {
                 "total_requests": 0,
@@ -66,7 +67,7 @@ class AnalyticsMiddleware:
 
         analytics["total_requests"] = analytics["total_requests"] + 1
 
-        if not country and not city:
+        if not country or not city:
             return analytics
 
         if country_dict := analytics["locations"].get(country):
