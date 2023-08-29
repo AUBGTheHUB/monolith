@@ -20,13 +20,13 @@ class AnalyticsMiddleware:
             response = await call_next(request)
             if IS_PROD:
                 response.background = BackgroundTask(
-                    self.update_entries, request,
+                    self._update_entries, request,
                 )
 
             return response
 
     @classmethod
-    async def update_entries(cls, request: Request) -> None:
+    async def _update_entries(cls, request: Request) -> None:
         country, city = None, None
         projection = {"_id": 0}
         analytics = cls.an_col.find_one({}, projection)
@@ -34,9 +34,9 @@ class AnalyticsMiddleware:
         if request.client:
             country, city = cls.get_country_and_city_from_ip(request.client)
 
-        analytics = cls.update_analytics(analytics, country, city)
+        analytics = cls._update_analytics(analytics, country, city)
 
-        update_operation = cls.create_update_operation(analytics)
+        update_operation = cls._create_update_operation(analytics)
         status = cls.an_col.update_one({}, update_operation, upsert=True)
 
         if status.modified_count != 1 and not status.acknowledged:
@@ -50,7 +50,7 @@ class AnalyticsMiddleware:
         return response["country_name"], response["city"]
 
     @staticmethod
-    def create_update_operation(locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    def _create_update_operation(locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         update_operation: Dict[str, Dict[str, Any]] = {
             "$set": {},
         }
@@ -61,7 +61,7 @@ class AnalyticsMiddleware:
         return update_operation
 
     @staticmethod
-    def update_analytics(analytics: Dict[str, Any] | None, country: str | None, city: str | None) -> Dict[str, Any]:
+    def _update_analytics(analytics: Dict[str, Any] | None, country: str | None, city: str | None) -> Dict[str, Any]:
         if not analytics:
             analytics = {
                 "total_requests": 0,
