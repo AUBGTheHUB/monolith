@@ -29,7 +29,9 @@ class AnalyticsMiddleware:
     async def update_entries(cls, request: Request) -> None:
         projection = {"_id": 0}
         analytics = cls.an_col.find_one({}, projection)
-        country, city = cls.get_country_and_city_from_ip(request.client)
+
+        if request.client:
+            country, city = cls.get_country_and_city_from_ip(request.client)
 
         analytics = cls.update_analytics(analytics, country, city)
 
@@ -43,7 +45,7 @@ class AnalyticsMiddleware:
         response = get(
             "https://geolocation-db.com/json/{ip_address}&position=false",
         ).json()
-        return (response["country_name"], response["city"])
+        return response["country_name"], response["city"]
 
     def create_update_operation(locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         update_operation: Dict[str, Dict[str, Any]] = {
@@ -55,7 +57,7 @@ class AnalyticsMiddleware:
 
         return update_operation
 
-    def update_analytics(analytics: Dict[str, Any] | None, country: str, city: str) -> Dict[str, Any]:
+    def update_analytics(analytics: Dict[str, Any] | None, country: str | None = None, city: str | None = None) -> Dict[str, Any]:
         if not analytics:
             analytics = {
                 "total_requests": 0,
@@ -63,6 +65,9 @@ class AnalyticsMiddleware:
             }
 
         analytics["total_requests"] = analytics["total_requests"] + 1
+
+        if not country and not city:
+            return analytics
 
         if country_dict := analytics["locations"].get(country):
             if current_count := country_dict.get(city):
