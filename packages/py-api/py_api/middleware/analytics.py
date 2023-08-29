@@ -42,12 +42,14 @@ class AnalyticsMiddleware:
         if status.modified_count != 1 and not status.acknowledged:
             logger.error("Couldn't update analytics")
 
+    @staticmethod
     def get_country_and_city_from_ip(ip_address: str) -> Tuple[str, str]:
         response = get(
             "https://geolocation-db.com/json/{ip_address}&position=false",
         ).json()
         return response["country_name"], response["city"]
 
+    @staticmethod
     def create_update_operation(locations: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         update_operation: Dict[str, Dict[str, Any]] = {
             "$set": {},
@@ -58,6 +60,7 @@ class AnalyticsMiddleware:
 
         return update_operation
 
+    @staticmethod
     def update_analytics(analytics: Dict[str, Any] | None, country: str | None, city: str | None) -> Dict[str, Any]:
         if not analytics:
             analytics = {
