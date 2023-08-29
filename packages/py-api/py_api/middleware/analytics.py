@@ -45,7 +45,7 @@ class AnalyticsMiddleware:
     @staticmethod
     def get_country_and_city_from_ip(ip_address: str) -> Tuple[str, str]:
         response = get(
-            "https://geolocation-db.com/json/{ip_address}&position=false",
+            f"https://geolocation-db.com/json/{ip_address}",
         ).json()
         return response["country_name"], response["city"]
 
