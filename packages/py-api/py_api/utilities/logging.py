@@ -1,6 +1,5 @@
-import logging
 from copy import copy
-from logging import Formatter
+from logging import Formatter, LogRecord
 from typing import Any, Dict
 
 from py_api.environment import IS_OFFLINE
@@ -35,8 +34,7 @@ PROD_LOGGING_CONFIG: Dict[str, Any] = {
     },
 }
 
-# Overwrite uvicorn's default logging config in order to be able to log INFO level messages
-# from within our app
+# Overwrites uvicorn's default logging config in order to enable INFO level when using our own logger handlers
 LOGGING_CONFIG["loggers"]["root"] = {
     "handlers": [
         "default",
@@ -55,7 +53,7 @@ def get_log_config() -> Dict[str, Any]:
 fmt = Formatter(fmt="[%(levelprefix)s] [%(name)s]: %(message)s")
 
 
-def formatMessage(self: ColourizedFormatter, record: logging.LogRecord) -> str:
+def formatMessage(self: ColourizedFormatter, record: LogRecord) -> str:
     recordcopy = copy(record)
     levelname = recordcopy.levelname
     if self.use_colors:
