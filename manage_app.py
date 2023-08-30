@@ -1,22 +1,55 @@
 #!/usr/bin/env python3
-import subprocess
-import requests
-import time
 import os
 import smtplib as smtp
 import ssl
-import os
+import subprocess
+import sys
+import threading
+import time
+import typing
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import typing
-import threading
+
+import requests
 import schedule
+from dotenv import load_dotenv
 
 BUILD_RUNNING = threading.Event()
 CURRENTLY_BUILDING = threading.Event()
 BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
+
+arguments = sys.argv[1:]
+print(arguments)
+
+IS_SANDBOX = False
+
+
+def generate_self_signed_cert(subject="/CN=localhost"):
+    cert_path = "./data/certs/devenv.crt"
+    key_path = "./data/certs/devenv.key"
+    subprocess.run(
+        ["openssl", "genpkey", "-algorithm", "RSA", "-out", key_path],
+    )
+
+    subprocess.run([
+        "openssl", "req", "-new", "-key", key_path,
+        "-out", cert_path + ".csr", "-subj", subject,
+    ])
+
+    subprocess.run([
+        "openssl", "x509", "-req", "-in", cert_path +
+        ".csr", "-signkey", key_path, "-out", cert_path,
+    ])
+
+    os.remove(cert_path + ".csr")
+
+
+if '--sandbox' in arguments:
+    load_dotenv('.env')
+    IS_SANDBOX = True
+    generate_self_signed_cert()
 
 # DEV, PROD, STAGING - this is the identifier of the environment in the emails
 ENV = os.environ["DOCK_ENV"]
@@ -56,30 +89,52 @@ def send_mail(msg):
 
 def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e: Exception, discord: bool):
     if not discord:
-        msg.attach(MIMEText(
-            '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html'))
+        msg.attach(
+            MIMEText(
+            '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html',
+            ),
+        )
         send_mail(msg)
     else:
-        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```"})
-    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-          service, str(url)) + bcolors.CEND)
+        requests.post(
+            DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+            "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
+            },
+        )
+    print(
+        bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
+            ENV,
+            service, str(url),
+        ) + bcolors.CEND,
+    )
     return e
 
 
 def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, service: str, status_code: int, discord: bool):
     if not discord:
         # send email that the website is down
-        msg.attach(MIMEText('<h3>{}: {} Request to {} failed with status code {}'.format(
-            ENV, method, url, str(status_code)) + '</h3>', 'html'))
+        msg.attach(
+            MIMEText(
+                '<h3>{}: {} Request to {} failed with status code {}'.format(
+                ENV, method, url, str(status_code),
+                ) + '</h3>', 'html',
+            ),
+        )
         send_mail(msg)
     else:
         # send discord notification that the website is down
-        requests.post(DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-                      "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**"})
+        requests.post(
+            DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+            "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
+            },
+        )
 
-    print(bcolors.RED_IN + "{}:{} IS DOWN - {}".format(ENV,
-          service, str(url)) + bcolors.CEND)
+    print(
+        bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
+            ENV,
+            service, str(url),
+        ) + bcolors.CEND,
+    )
 
     return status_code
 
@@ -107,21 +162,26 @@ def start_docker_compose():
 
     def get_current_commit():
         current_commit = subprocess.run(
-            ["git", "log", "-1", "--pretty=%B"], check=True, capture_output=True)
+            ["git", "log", "-1", "--pretty=%B"], check=True, capture_output=True,
+        )
 
         current_commit = subprocess.run(
-            ["sed", "1q"], input=current_commit.stdout, capture_output=True)
+            ["sed", "1q"], input=current_commit.stdout, capture_output=True,
+        )
 
         return current_commit.stdout.decode('utf-8').strip()
 
     def get_commit_url():
 
-        hash = subprocess.run(['git', 'rev-parse', 'HEAD'],
-                              capture_output=True, text=True)
+        hash = subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            capture_output=True, text=True,
+        )
         return f"{REPO_URL}/commit/{hash.stdout}"
 
     dc_start = subprocess.run(
-        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"])
+        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"],
+    )
 
     if dc_start.returncode == 0:
         print()
@@ -148,10 +208,13 @@ def start_docker_compose():
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
 
-            requests.post(DISCORD_WH, headers={
-                          "Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed "
-            })
+            requests.post(
+                DISCORD_WH, headers={
+                              "Content-Type": "application/x-www-form-urlencoded",
+                }, data={
+                    "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
+                },
+            )
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
             CURRENTLY_BUILDING.clear()
@@ -169,7 +232,8 @@ def start_docker_compose():
             errors['API'] = get_api
 
     build_err = subprocess.run(
-        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"], capture_output=True)
+        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"], capture_output=True,
+    )
 
     errors["BUILD"] = build_err.stderr.decode('utf-8')
 
@@ -182,10 +246,13 @@ def start_docker_compose():
     errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
     if BUILD_TRY <= 1:
-        requests.post(DISCORD_WH, headers={
-            "Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```"
-        })
+        requests.post(
+            DISCORD_WH, headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+            }, data={
+                "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```",
+            },
+        )
 
     CURRENTLY_BUILDING.clear()
 
@@ -236,8 +303,10 @@ def check_service_up(url: str, service: str, discord=False):
     """
 
     print()
-    print(bcolors.YELLOW_IN +
-          "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND)
+    print(
+        bcolors.YELLOW_IN +
+        "CHECKING SERVICE {}:{} ".format(ENV, service) + bcolors.CEND,
+    )
 
     req_method = ""
 
@@ -251,7 +320,8 @@ def check_service_up(url: str, service: str, discord=False):
 
         if web_request.status_code != 200:
             return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord)
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
 
     elif service == "API":
 
@@ -264,7 +334,8 @@ def check_service_up(url: str, service: str, discord=False):
 
         if web_request.status_code != 400:
             return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord)
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
@@ -290,7 +361,8 @@ def cron_local_test():
 def cron_git_check_for_updates():
     # only >= 3.7
     remote_update = subprocess.run(
-        ['git', 'remote', 'update'], capture_output=True, text=True)
+        ['git', 'remote', 'update'], capture_output=True, text=True,
+    )
     if remote_update.returncode != 0:
         print("GIT REMOTE UPDATE FAILED: \n{}".format(remote_update.stdout))
         return
@@ -299,7 +371,8 @@ def cron_git_check_for_updates():
 
     # only >= 3.7
     status_uno = subprocess.run(
-        ['git', 'status'], capture_output=True, text=True)
+        ['git', 'status'], capture_output=True, text=True,
+    )
     if status_uno.returncode != 0:
         print("GIT STATE FAILED: \n{}".format(status_uno.stdout))
         return
@@ -307,14 +380,17 @@ def cron_git_check_for_updates():
     if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
         subprocess.run(
-            ['git', 'fetch'], capture_output=True, text=True)
+            ['git', 'fetch'], capture_output=True, text=True,
+        )
         branch_name = subprocess.run(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True, text=True
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True, text=True,
         )
         subprocess.run(
-            ['git', 'reset', '--hard', f'origin/{branch_name.stdout}'])
+            ['git', 'reset', '--hard', f'origin/{branch_name.stdout}'],
+        )
         subprocess.run(
-            ['git', 'pull'], capture_output=True, text=True)
+            ['git', 'pull'], capture_output=True, text=True,
+        )
 
         print("STARTING BUILD")
         start_docker_compose()
@@ -328,8 +404,10 @@ def cron_self_healing():
 
 
 def cron_start_with_new_certs():
-    print(bcolors.YELLOW_IN +
-          "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND)
+    print(
+        bcolors.YELLOW_IN +
+        "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND,
+    )
     # BUILD_RUNNING.clear()
 
     # MAKE SURE NEW CERTS ARE INSTALLED
@@ -348,10 +426,14 @@ def cron_start_with_new_certs():
     CURRENTLY_BUILDING.set()
     subprocess.run(['certbot', 'renew', '--force-renewal'])
 
-    subprocess.run(['cp', '/etc/letsencrypt/live/' +
-                   CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt'])
-    subprocess.run(['cp', '/etc/letsencrypt/live/' +
-                   CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key'])
+    subprocess.run([
+        'cp', '/etc/letsencrypt/live/' +
+        CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt',
+    ])
+    subprocess.run([
+        'cp', '/etc/letsencrypt/live/' +
+        CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key',
+    ])
 
     CURRENTLY_BUILDING.clear()
     start_docker_compose()

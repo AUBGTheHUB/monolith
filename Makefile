@@ -90,3 +90,11 @@ install-python:
 .PHONY: run-py-api
 run-py-api:
 	cd packages/py-api && poetry run start
+
+.PHONY: build-sandbox
+build-sandbox:
+	docker build -t alpine-python-docker .
+
+.PHONY: run-sandbox
+run-sandbox:
+	docker run -it -v "$$(pwd)":/app alpine-python-docker
