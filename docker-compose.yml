@@ -1,61 +1,78 @@
 version: '3'
 
 services:
-
-# API
+# PY_API
   server:
-    build: 
-      context: ./packages/api
-      target: final 
-    container_name: api
-    env_file:
-      - ".env"
-    depends_on: 
-      - client
-    expose: 
-      - 8000
-    ports:
-      - 8000:8000
-    command: /api
-    volumes:
-      - ./data/certs:/app/certs
-    networks:
-      - front-back
-
-# WEB
-  client:
-    build: 
-      context: ./packages/web
-      args:
-        REACT_APP_OBJ_UPLOADER_URL: ${REACT_APP_OBJ_UPLOADER_URL}
-        REACT_APP_GCP_TOKEN: ${REACT_APP_GCP_TOKEN}
-    container_name: web
+    build:
+      context: ./packages/py-api
+      target: final
+    container_name: python-api
     env_file:
       - ".env"
     expose:
-      - 443
+      - 6969
     ports:
-      - 80:80
-      - 443:443
-    command: nginx -g 'daemon off';
-    volumes: 
-      - ./data/certs:/etc/nginx/certs
+      - 6969:6969
+    # command: /py-api
+    # volumes:
+    #   - spa-website-22/packages/py-api/pyapi/shared
     networks:
       - front-back
 
-# URL_SHORTENER
-  shortener:
-    build: ./packages/services/url_shortener
-    container_name: shortener
-    env_file:
-      - ".env"
-    expose: 
-      - 8001
-    ports:
-      - 8001:8001
-    command: ./target/release/url_shortener
-    networks: 
-      - front-back
+# # API
+#   server:
+#     build:
+#       context: ./packages/api
+#       target: final
+#     container_name: api
+#     env_file:
+#       - ".env"
+#     depends_on:
+#       - client
+#     expose:
+#       - 8000
+#     ports:
+#       - 8000:8000
+#     command: /api
+#     volumes:
+#       - ./data/certs:/app/certs
+#     networks:
+#       - front-back
+
+# # WEB
+#   client:
+#     build:
+#       context: ./packages/web
+#       args:
+#         REACT_APP_OBJ_UPLOADER_URL: ${REACT_APP_OBJ_UPLOADER_URL}
+#         REACT_APP_GCP_TOKEN: ${REACT_APP_GCP_TOKEN}
+#     container_name: web
+#     env_file:
+#       - ".env"
+#     expose:
+#       - 443
+#     ports:
+#       - 80:80
+#       - 443:443
+#     command: nginx -g 'daemon off';
+#     volumes:
+#       - ./data/certs:/etc/nginx/certs
+#     networks:
+#       - front-back
+
+# # URL_SHORTENER
+#   shortener:
+#     build: ./packages/services/url_shortener
+#     container_name: shortener
+#     env_file:
+#       - ".env"
+#     expose:
+#       - 8001
+#     ports:
+#       - 8001:8001
+#     command: ./target/release/url_shortener
+#     networks:
+#       - front-back
 
 networks:
   front-back:
