@@ -1,19 +1,44 @@
-# Use the official Alpine Linux image as the base
-FROM python:3.9-alpine
+# # Use the official Alpine Linux image as the base
+# FROM ubuntu:latest
 
-RUN apk update && apk add --no-cache \
-    curl \
-    docker \
+
+# RUN apt update 
+
+# WORKDIR /app
+
+# # systemctl start docker
+# # !dockerd --iptables=false
+
+# COPY . /app
+
+# RUN pip install -r requirements.txt
+# # RUN !dockerd --iptables=false
+# # rm rf /var/lib/docker/network
+
+# VOLUME /app
+
+# CMD ["/bin/bash"]
+
+FROM docker:latest
+
+# Install Docker Compose
+RUN apk update
+
+RUN apk --no-cache add \
     docker-compose \
-    git \
-    openssl
+    python3 \
+    py3-pip \
+    sudo \
+    git
 
 WORKDIR /app
 
 COPY . /app
 
-RUN pip install -r requirements.txt
-
 VOLUME /app
 
+RUN pip install -r requirements.txt
+
+# This entrypoint starts the Docker daemon and runs your command
+ENTRYPOINT ["dockerd-entrypoint.sh"]
 CMD ["/bin/sh"]

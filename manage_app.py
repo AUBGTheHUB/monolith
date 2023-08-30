@@ -75,6 +75,9 @@ class bcolors:
 
 
 def send_mail(msg):
+    if IS_SANDBOX:
+        return
+
     port = 465  # SSL
     email = os.environ['HUB_MAIL_USERNAME']
     password = os.environ['HUB_MAIL_PASSWORD']
@@ -208,13 +211,14 @@ def start_docker_compose():
             msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
             send_mail(msg)
 
-            requests.post(
-                DISCORD_WH, headers={
-                              "Content-Type": "application/x-www-form-urlencoded",
-                }, data={
-                    "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
-                },
-            )
+            if not IS_SANDBOX:
+                requests.post(
+                    DISCORD_WH, headers={
+                                "Content-Type": "application/x-www-form-urlencoded",
+                    }, data={
+                        "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
+                    },
+                )
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
             CURRENTLY_BUILDING.clear()
@@ -245,7 +249,8 @@ def start_docker_compose():
 
     errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
-    if BUILD_TRY <= 1:
+
+    if BUILD_TRY <= 1 and not IS_SANDBOX:
         requests.post(
             DISCORD_WH, headers={
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -404,38 +409,39 @@ def cron_self_healing():
 
 
 def cron_start_with_new_certs():
-    print(
-        bcolors.YELLOW_IN +
-        "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND,
-    )
-    # BUILD_RUNNING.clear()
+    if not IS_SANDBOX:
+        print(
+            bcolors.YELLOW_IN +
+            "RESTARTING SERVICES SO THAT THE NEW CERTS COULD BE APPLIED" + bcolors.CEND,
+        )
+        # BUILD_RUNNING.clear()
 
-    # MAKE SURE NEW CERTS ARE INSTALLED
-    # Could be done with symbolic links
-    pwd = subprocess.check_output(['pwd'])
-    pwd = pwd.decode('utf-8').replace('\n', '')
-    pwd += '/data/certs/'
+        # MAKE SURE NEW CERTS ARE INSTALLED
+        # Could be done with symbolic links
+        pwd = subprocess.check_output(['pwd'])
+        pwd = pwd.decode('utf-8').replace('\n', '')
+        pwd += '/data/certs/'
 
-    print(bcolors.RED_IN + pwd + bcolors.CEND)
+        print(bcolors.RED_IN + pwd + bcolors.CEND)
 
-    subprocess.run(['mv', '-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'])
-    subprocess.run(['mv', '-f', pwd + 'devenv.key', pwd + 'devenv_old.key'])
+        subprocess.run(['mv', '-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'])
+        subprocess.run(['mv', '-f', pwd + 'devenv.key', pwd + 'devenv_old.key'])
 
-    # we need to unbind the port
-    stop_docker_compose()
-    CURRENTLY_BUILDING.set()
-    subprocess.run(['certbot', 'renew', '--force-renewal'])
+        # we need to unbind the port
+        stop_docker_compose()
+        CURRENTLY_BUILDING.set()
+        subprocess.run(['certbot', 'renew', '--force-renewal'])
 
-    subprocess.run([
-        'cp', '/etc/letsencrypt/live/' +
-        CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt',
-    ])
-    subprocess.run([
-        'cp', '/etc/letsencrypt/live/' +
-        CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key',
-    ])
+        subprocess.run([
+            'cp', '/etc/letsencrypt/live/' +
+            CERT_DOMAIN + "/fullchain.pem", pwd + 'devenv.crt',
+        ])
+        subprocess.run([
+            'cp', '/etc/letsencrypt/live/' +
+            CERT_DOMAIN + "/privkey.pem", pwd + 'devenv.key',
+        ])
 
-    CURRENTLY_BUILDING.clear()
+        CURRENTLY_BUILDING.clear()
     start_docker_compose()
 
 

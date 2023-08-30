@@ -93,8 +93,14 @@ run-py-api:
 
 .PHONY: build-sandbox
 build-sandbox:
-	docker build -t alpine-python-docker .
+	docker build -t docker-sandbox .
 
 .PHONY: run-sandbox
 run-sandbox:
-	docker run -it -v "$$(pwd)":/app alpine-python-docker
+	docker run -it --rm --privileged \
+  	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v "$$(pwd):/app" \
+	-v "$$(pwd)/data/certs:/app/data/certs" \
+	-p 80:80 -p 443:443 -p 8080:8080 \
+  	docker-sandbox
+
