@@ -6,8 +6,7 @@ from fastapi.responses import JSONResponse
 
 
 class ExceptionHandler:
-    @staticmethod
-    def bind(app: FastAPI) -> None:
+    def __init__(self, app: FastAPI) -> None:
         @app.exception_handler(Exception)
         async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
             content = {

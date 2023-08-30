@@ -22,17 +22,15 @@ class AuthMiddleware:
         "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
     }
 
-    @classmethod
-    def bind(cls, app: FastAPI) -> None:
-
+    def __init__(self, app: FastAPI) -> None:
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
-            endpoint, is_bypassed = cls._check_bypassed_endpoint(request.url)
+            endpoint, is_bypassed = self._check_bypassed_endpoint(request.url)
 
             if not is_bypassed or (
                     # autopep8: off
-                    request.method not in cls._BYPASSED_ENDPOINTS[endpoint]  # type: ignore
-                    and cls._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
+                    request.method not in self._BYPASSED_ENDPOINTS[endpoint]  # type: ignore
+                    and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
 
@@ -61,10 +59,10 @@ class AuthMiddleware:
                         )
 
                 except Exception as e:
-                    return cls._generate_bad_auth_response(exception=e)
+                    return self._generate_bad_auth_response(exception=e)
 
                 if res.status_code != 200:
-                    return cls._generate_bad_auth_response(res.status_code)
+                    return self._generate_bad_auth_response(res.status_code)
 
             response = await call_next(request)
             return response

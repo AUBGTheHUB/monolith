@@ -1,7 +1,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from py_api.middleware import AuthMiddleware, ExceptionHandler
+from py_api.middleware import Middleware
 from py_api.routes import Routes
 from py_api.utilities.logging import get_log_config
 from uvicorn import run
@@ -12,8 +12,7 @@ main_app = FastAPI()
 app = FastAPI()
 
 Routes.bind(app)
-AuthMiddleware.bind(app)
-ExceptionHandler.bind(app)
+Middleware.bind(app)
 
 app.add_middleware(
     CORSMiddleware,
