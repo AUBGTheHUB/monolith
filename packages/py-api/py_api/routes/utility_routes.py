@@ -7,6 +7,7 @@ from py_api.utilities.memory import get_current_memory_usage_in_mbs
 router = APIRouter()
 logger = getLogger("health")
 
+
 def handle_exception(func):
     def wrapper(*arg, **kwargs):
         print("here")
@@ -21,13 +22,15 @@ def handle_exception(func):
 
     return wrapper
 
-@handle_exception        
+
+@handle_exception
 def health_controller(request: Request):
     raise Exception('/health')
     return {
         "status": "healthy",
         "currentMemoryUsage": f"{get_current_memory_usage_in_mbs()} MB",
     }
+
 
 @router.get('/health')
 # @handle_exception

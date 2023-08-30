@@ -12,7 +12,7 @@ class ExceptionHandler:
         async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
             content = {
                 "message": "Something went wrong! Please, contact The Hub!",
-            }   
+            }
 
             body = {}
 
