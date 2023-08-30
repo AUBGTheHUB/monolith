@@ -4,15 +4,15 @@ services:
 
 # API
   server:
-    build: 
+    build:
       context: ./packages/api
-      target: final 
+      target: final
     container_name: api
     env_file:
       - ".env"
-    depends_on: 
+    depends_on:
       - client
-    expose: 
+    expose:
       - 8000
     ports:
       - 8000:8000
@@ -24,7 +24,7 @@ services:
 
 # WEB
   client:
-    build: 
+    build:
       context: ./packages/web
     container_name: web
     env_file:
@@ -35,7 +35,7 @@ services:
       - 80:80
       - 443:443
     command: nginx -g 'daemon off';
-    # volumes: 
+    # volumes:
       # - ./data/certs:/etc/nginx/certs
     networks:
       - front-back
@@ -46,12 +46,12 @@ services:
   #   container_name: shortener
   #   env_file:
   #     - ".env"
-  #   expose: 
+  #   expose:
   #     - 8001
   #   ports:
   #     - 8001:8001
   #   command: ./target/release/url_shortener
-  #   networks: 
+  #   networks:
   #     - front-back
 
 networks:

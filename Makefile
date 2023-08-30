@@ -103,4 +103,3 @@ run-sandbox:
 	-v "$$(pwd)/data/certs:/app/data/certs" \
 	-p 80:80 -p 443:443 -p 8080:8080 \
   	docker-sandbox
-

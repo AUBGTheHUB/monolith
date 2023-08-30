@@ -94,14 +94,16 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
     if not discord:
         msg.attach(
             MIMEText(
-            '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(ENV, method, url, str(e)) + '</p>', 'html',
+                '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(
+                    ENV, method, url, str(e),
+                ) + '</p>', 'html',
             ),
         )
         send_mail(msg)
     else:
         requests.post(
             DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
+                "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
             },
         )
     print(
@@ -119,7 +121,7 @@ def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, serv
         msg.attach(
             MIMEText(
                 '<h3>{}: {} Request to {} failed with status code {}'.format(
-                ENV, method, url, str(status_code),
+                    ENV, method, url, str(status_code),
                 ) + '</h3>', 'html',
             ),
         )
@@ -128,7 +130,7 @@ def handle_status_code_exception(msg: MIMEMultipart, method: str, url: str, serv
         # send discord notification that the website is down
         requests.post(
             DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-            "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
+                "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
             },
         )
 
@@ -183,7 +185,10 @@ def start_docker_compose():
         return f"{REPO_URL}/commit/{hash.stdout}"
 
     dc_start = subprocess.run(
-        ["sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1", "docker-compose", "up", "--build", "-d"],
+        [
+            "sudo", "COMPOSE_DOCKER_CLI_BUILD=1", "DOCKER_BUILDKIT=1",
+            "docker-compose", "up", "--build", "-d",
+        ],
     )
 
     if dc_start.returncode == 0:
@@ -214,7 +219,7 @@ def start_docker_compose():
             if not IS_SANDBOX:
                 requests.post(
                     DISCORD_WH, headers={
-                                "Content-Type": "application/x-www-form-urlencoded",
+                        "Content-Type": "application/x-www-form-urlencoded",
                     }, data={
                         "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
                     },
@@ -248,7 +253,6 @@ def start_docker_compose():
     send_mail(msg)
 
     errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
-
 
     if BUILD_TRY <= 1 and not IS_SANDBOX:
         requests.post(
@@ -424,8 +428,12 @@ def cron_start_with_new_certs():
 
         print(bcolors.RED_IN + pwd + bcolors.CEND)
 
-        subprocess.run(['mv', '-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'])
-        subprocess.run(['mv', '-f', pwd + 'devenv.key', pwd + 'devenv_old.key'])
+        subprocess.run(
+            ['mv', '-f', pwd + 'devenv.crt', pwd + 'devenv_old.crt'],
+        )
+        subprocess.run(
+            ['mv', '-f', pwd + 'devenv.key', pwd + 'devenv_old.key'],
+        )
 
         # we need to unbind the port
         stop_docker_compose()
