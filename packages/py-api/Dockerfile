@@ -1,0 +1,26 @@
+FROM python:3.11 as build
+
+# For some reason when installing poetry with curl, after that poetry is not found
+RUN pip install poetry
+
+WORKDIR /app
+
+COPY . .
+
+RUN poetry install
+
+ENV MONGOURI=${MONGOURI}
+ENV IS_OFFLINE=${IS_OFFLINE}
+ENV IS_PROD=${IS_PROD}
+ENV IS_TEST=${IS_TEST}
+ENV HUB_MAIL=${HUB_MAIL}
+ENV HUB_PSW=${HUB_PSW}
+ENV AWS_PUB_KEY=${AWS_PUB_KEY}
+ENV AWS_PRIV_KEY=${AWS_PRIV_KEY}
+ENV AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+
+FROM build as final
+
+EXPOSE 6969
+
+CMD ["poetry", "run", "start"]
