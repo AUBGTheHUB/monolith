@@ -2,7 +2,7 @@ from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
+from py_api.environment import IS_LOCAL_COMPOSE, IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
@@ -36,7 +36,7 @@ class AuthMiddleware:
 
                 if not request.base_url.netloc.find(":"):
                     host = request.base_url
-                elif not IS_OFFLINE:
+                elif IS_LOCAL_COMPOSE:
                     host = "api:8000"
                 else:
                     host = request.base_url.netloc.split(":")[0] + ":8000"
@@ -52,7 +52,10 @@ class AuthMiddleware:
                         headers = {
                             header_key: request_token,
                         }
-                        res = post(url=validate_url, headers=headers)
+                        res = post(
+                            url=validate_url, headers=headers,
+                            verify=not IS_LOCAL_COMPOSE,
+                        )
                     else:
                         res = AttrDict(
                             status_code=200 if request_token == OFFLINE_TOKEN else 401,
