@@ -36,12 +36,12 @@ class AuthMiddleware:
 
                 if not request.base_url.netloc.find(":"):
                     host = request.base_url
+                elif not IS_OFFLINE:
+                    host = "api:8000"
                 else:
                     host = request.base_url.netloc.split(":")[0] + ":8000"
 
-                validate_url = (
-                    f"{request.url.components.scheme}://{host}/api/validate"
-                )
+                validate_url = f"{request.url.components.scheme}://{host}/api/validate"
 
                 try:
                     # passing all headers breaks the APIs when using formdata
