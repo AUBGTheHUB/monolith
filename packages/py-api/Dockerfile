@@ -1,6 +1,5 @@
 FROM python:3.11 as build
 
-# For some reason when installing poetry with curl, after that poetry is not found
 RUN pip install poetry
 
 WORKDIR /app
