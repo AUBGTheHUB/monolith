@@ -28,7 +28,7 @@ main_app.mount("/v2", app)
 def start() -> None:
     run(
         "py_api.main:main_app", host="0.0.0.0", port=6969,
-        reload=True, log_config=get_log_config(),
+        reload=True, log_config=get_log_config(), ssl_keyfile="certs/devenv.key", ssl_certfile="certs/devenv.crt",
     )
 
 
