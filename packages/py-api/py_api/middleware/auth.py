@@ -19,7 +19,7 @@ from requests import post
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
     _BYPASSED_ENDPOINTS: Final = {
-        "/health": ["POST"], "/routes": ["GET"], "/fswitches": ["GET"],
+        "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
     }
 
     def __init__(self, app: FastAPI) -> None:
