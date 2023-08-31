@@ -1,9 +1,6 @@
 
 
-from logging import getLogger
 from typing import Final, List
-
-logger = getLogger("CORS")
 
 
 def construct_origins() -> List[str]:
