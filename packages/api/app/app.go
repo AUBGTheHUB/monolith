@@ -8,7 +8,6 @@ import (
 	"crypto/tls"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	//fmt, encoding/json, strconv
 )
 
@@ -16,7 +15,7 @@ func StartApp() {
 
 	app := fiber.New()
 	configs.ConnectDB()
-	app.Use(cors.New(cors.ConfigDefault))
+	app.Use(configs.GenerateCORSConfig())
 	routes.MembersRoute(app)
 	routes.AdminRoute(app)
 	routes.JobsRoute(app)
