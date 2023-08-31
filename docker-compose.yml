@@ -16,6 +16,7 @@ services:
     # command: /py-api
     volumes:
       - ./packages/py-api/py-api/shared:/app/py-api/py-api/shared
+      - ./data/certs:/app/certs
     networks:
       - front-back
 
