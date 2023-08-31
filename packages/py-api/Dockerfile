@@ -1,5 +1,7 @@
 FROM python:3.11 as build
 
+RUN apt update
+
 RUN pip install poetry
 
 WORKDIR /app

@@ -29,7 +29,7 @@ services:
     ports:
       - 6969:6969
     volumes:
-      - ./packages/py-api/py_api/shared:/app/py-api/py_api/shared
+      - ./packages/py-api/py_api/shared:/app/py_api/shared
       - ./data/certs:/app/certs
     networks:
       - front-back
