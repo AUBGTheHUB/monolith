@@ -1,7 +1,22 @@
 version: '3'
 
 services:
-# PY_API
+  server:
+    build:
+      context: ./packages/api
+      target: final
+    container_name: api
+    env_file:
+      - ".env"
+    expose:
+      - 8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ./data/certs:/app/certs
+    networks:
+      - front-back
+
   py_api_server:
     build:
       context: ./packages/py-api
@@ -13,34 +28,25 @@ services:
       - 6969
     ports:
       - 6969:6969
-    # command: /py-api
     volumes:
       - ./packages/py-api/py-api/shared:/app/py-api/py-api/shared
       - ./data/certs:/app/certs
     networks:
       - front-back
 
-# API
-  server:
-    build:
-      context: ./packages/api
-      target: final
-    container_name: api
+  shortener:
+    build: ./packages/services/url_shortener
+    container_name: shortener
     env_file:
       - ".env"
-    depends_on:
-      - client
     expose:
-      - 8000
+      - 8001
     ports:
-      - 8000:8000
-    # command: /api
-    volumes:
-      - ./data/certs:/app/certs
+      - 8001:8001
+    command: ./target/release/url_shortener
     networks:
       - front-back
 
-# WEB
   client:
     build:
       context: ./packages/web
@@ -52,23 +58,12 @@ services:
     ports:
       - 80:80
       - 443:443
-    # command: nginx -g 'daemon off';
+    depends_on:
+      - server
+      - py_api_server
+      - shortener
     volumes:
       - ./data/certs:/etc/nginx/certs
-    networks:
-      - front-back
-
-# URL_SHORTENER
-  shortener:
-    build: ./packages/services/url_shortener
-    container_name: shortener
-    env_file:
-      - ".env"
-    expose:
-      - 8001
-    ports:
-      - 8001:8001
-    command: ./target/release/url_shortener
     networks:
       - front-back
 
