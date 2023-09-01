@@ -14,4 +14,4 @@ jobs:
       - name: Build Python Backend
         run: cd ./packages/py-api && docker build -t api . --build-arg CON_STR=$CON_STR
       - name: Run Python Backend
-        run: docker run -p 6969:6969 api& && ./packages/py-api/health_check.sh && kill %1
+        run: ./packages/py-api/health_check.sh
