@@ -10,7 +10,7 @@ RUN poetry install
 
 ARG CON_STR=${CON_STR}
 ENV CON_STR=${CON_STR}
-RUN rm .env
+RUN rm .env || true
 RUN echo "MONGOURI=${CON_STR}\nIS_OFFLINE=true" > /app/.env
 
 FROM build as final
