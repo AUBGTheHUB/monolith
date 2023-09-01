@@ -4,12 +4,14 @@ RUN apt update
 RUN pip install poetry
 
 WORKDIR /app
+
 COPY . .
 RUN poetry install
 
 ARG CON_STR=${CON_STR}
 ENV CON_STR=${CON_STR}
-RUN echo -e "MONGOURI=${CON_STR}\nIS_OFFLINE=true" > /app/.env
+RUN rm .env
+RUN echo "MONGOURI=${CON_STR}\nIS_OFFLINE=true" > /app/.env
 
 FROM build as final
 
