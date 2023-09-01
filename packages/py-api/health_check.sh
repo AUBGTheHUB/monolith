@@ -1,8 +1,9 @@
 #!/bin/bash
 
-docker run -p 6969:6969 api &> /dev/null &
+# docker run -p 6969:6969 api &> /dev/null &
+docker run -p 6969:6969 api &
 
-sleep 4
+sleep 10
 
 URL="http://localhost:6969/v2/health"
 response=$(curl -s -w "%{http_code}" $URL)
