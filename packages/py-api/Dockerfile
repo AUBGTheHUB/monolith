@@ -1,24 +1,15 @@
 FROM python:3.11 as build
 
 RUN apt update
-
 RUN pip install poetry
 
 WORKDIR /app
-
 COPY . .
-
 RUN poetry install
 
-ENV MONGOURI=${MONGOURI}
-ENV IS_OFFLINE=${IS_OFFLINE}
-ENV IS_PROD=${IS_PROD}
-ENV IS_TEST=${IS_TEST}
-ENV HUB_MAIL=${HUB_MAIL}
-ENV HUB_PSW=${HUB_PSW}
-ENV AWS_PUB_KEY=${AWS_PUB_KEY}
-ENV AWS_PRIV_KEY=${AWS_PRIV_KEY}
-ENV AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+ARG CON_STR=${CON_STR}
+ENV CON_STR=${CON_STR}
+RUN echo -e "MONGOURI=${CON_STR}\nIS_OFFLINE=true" > tests/.env
 
 FROM build as final
 
