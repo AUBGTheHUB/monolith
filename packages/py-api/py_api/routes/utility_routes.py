@@ -10,8 +10,7 @@ logger = getLogger("health")
 
 @router.get('/health')
 async def health(request: Request) -> Dict[str, Any]:
-    result: Dict[str, Any] = c.health(request)
-    return result
+    return c.health(request)
 
 
 @router.get('/routes')
