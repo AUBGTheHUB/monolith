@@ -22,6 +22,7 @@ func GenerateOrigins() string {
 	ALLOWED_PUBLIC_DOMAINS := []string{
 		"https://dev.thehub-aubg.com",
 		"https://thehub-aubg.com",
+		"http://local.thehub-aubg.com",
 	}
 
 	var origins []string

@@ -90,3 +90,11 @@ install-python:
 .PHONY: run-py-api
 run-py-api:
 	cd packages/py-api && poetry run start
+
+.PHONY: build-nginx
+build-nginx:
+	cd nginx && docker build -t local-nginx .
+
+.PHONY: run-nginx
+run-nginx:
+	docker run -p 80:80 local-nginx
