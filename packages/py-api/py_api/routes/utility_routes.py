@@ -16,5 +16,4 @@ async def health(request: Request) -> Dict[str, Any]:
 
 @router.get('/routes')
 async def get_routes(request: Request) -> Dict[str, Dict[str, Any]]:
-    result: Dict[str, Dict[str, Any]] = c.get_routes(request)
-    return result
+    return c.get_routes(request)

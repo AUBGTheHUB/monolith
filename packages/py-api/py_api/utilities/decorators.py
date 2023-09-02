@@ -1,5 +1,9 @@
+from typing import Any, Callable, TypeVar, cast
 
-def handle_exception(func):  # type: ignore
+FuncT = TypeVar('FuncT', bound=Callable[..., Any])
+
+
+def handle_exception(func: FuncT) -> FuncT:
     def wrapper(*arg, **kwargs):  # type: ignore
         request = arg[0]
         try:
@@ -9,4 +13,4 @@ def handle_exception(func):  # type: ignore
             e.handle_body = request.body  # type: ignore
             raise e
 
-    return wrapper
+    return cast(FuncT, wrapper)
