@@ -91,10 +91,11 @@ install-python:
 run-py-api:
 	cd packages/py-api && poetry run start
 
-.PHONY: build-nginx
-build-nginx:
-	cd nginx && docker build -t local-nginx .
-
 .PHONY: run-nginx
 run-nginx:
-	docker run -p 80:80 local-nginx
+	cd nginx && docker-compose up --build
+
+.PHONY: run-svelte
+run-svelte:
+	## "dev": "vite dev --port 3001 --host",
+	cd packages/svelte && npm install && npm run dev -- --open
