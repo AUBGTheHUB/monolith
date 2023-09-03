@@ -95,7 +95,6 @@ run-py-api:
 run-nginx:
 	cd nginx && docker-compose up --build
 
-.PHONY: run-svelte
-run-svelte:
-	## "dev": "vite dev --port 3001 --host",
-	cd packages/svelte && npm install && npm run dev -- --open
+.PHONY: run-rust-api
+run-rust-api:
+	cd packages/services/url_shortener && make watch

@@ -57,8 +57,9 @@ if [ $ACTIONS == $START ]; then
     PROD_CLIENT="Admin Panel (thehub-aubg.com)"
     LOCAL_API="Golang backend"
     LOCAL_PY_API="Python backend"
+    LOCAL_RUST_API="Rust backend"
     NGINX="Reverse Proxy"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$NGINX")
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$NGINX")
 
     clear
 
@@ -72,6 +73,8 @@ if [ $ACTIONS == $START ]; then
         make reload-api
     elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
         make run-py-api
+    elif [ "$ACTIONS" == "$LOCAL_RUST_API" ]; then
+        make run-rust-api
     elif [ "$ACTIONS" == "$NGINX" ]; then
         make run-nginx
     fi
