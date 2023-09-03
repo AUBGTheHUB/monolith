@@ -13,6 +13,7 @@ def construct_origins() -> List[str]:
     ALLOWED_PUBLIC_DOMAINS = [
         "https://dev.thehub-aubg.com",
         "https://thehub-aubg.com",
+        "http://local.thehub-aubg.com",
     ]
 
     origins.extend(ALLOWED_PUBLIC_DOMAINS)
