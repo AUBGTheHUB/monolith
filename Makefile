@@ -98,3 +98,7 @@ run-nginx:
 .PHONY: run-rust-api
 run-rust-api:
 	cd packages/services/url_shortener && make watch
+
+.PHONY: run-svelte-quest
+run-svelte-quest:
+	cd packages/services/questionnaire && npm run dev -- --open

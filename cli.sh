@@ -57,11 +57,14 @@ if [ $ACTIONS == $START ]; then
     PROD_CLIENT="React frontend (thehub-aubg.com)"
     LOCAL_API="Golang backend"
     LOCAL_PY_API="Python backend"
-    LOCAL_RUST_API="Rust backend"
+    LOCAL_QUESTIONNAIRE="Questionnaire"
+    LOCAL_RUST_API="URL Shortener"
     NGINX="Reverse Proxy"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$NGINX")
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX")
 
     clear
+
+    echo "$(tput setaf 3)You might need to pull the latest dependencies if the service is unable to start$(tput sgr0)!"
 
     if [ "$ACTIONS" == "$WEB_CLIENT" ]; then
         make run-web
@@ -73,6 +76,8 @@ if [ $ACTIONS == $START ]; then
         make reload-api
     elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
         make run-py-api
+    elif [ "$ACTIONS" == "$LOCAL_QUESTIONNAIRE" ]; then
+        make run-svelte-quest
     elif [ "$ACTIONS" == "$LOCAL_RUST_API" ]; then
         make run-rust-api
     elif [ "$ACTIONS" == "$NGINX" ]; then
