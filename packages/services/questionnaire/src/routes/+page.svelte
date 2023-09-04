@@ -8,6 +8,10 @@
     import Input from "$lib/inputs/input.svelte";
 
     const answers: Record<string, string> = {}
+
+    // function below is being passed down to components in order for them to be able
+    // to append their answers to the object which is then to be used as the body for
+    // the POST request --- TIP: do console.log(answers) in order to see what the function does
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 </script>
 
