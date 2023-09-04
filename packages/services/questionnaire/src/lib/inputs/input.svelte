@@ -4,16 +4,21 @@
     import type { Question} from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
 
-
     export let question: Question;
     export let appendToAnswers: Function;
+
     let answer = ""
+
+    const handleInput = (e: Event) => {
+        answer = (e.currentTarget as HTMLInputElement).value;
+    }
+
+    const isImage = (content: string) => content.includes("http")
 
     $: {
         appendToAnswers(question.title, answer)
     }
 
-    const isImage = (content: string) => content.includes("http")
 </script>
 
 <Step stepTerm="Question">
@@ -35,7 +40,7 @@
         {#if question.type === InputType.TextArea}
             <textarea bind:value={answer}/>
         {:else}
-            <input type={question.type}/>
+            <input type={question.type} on:input={handleInput}/>
         {/if}
     </div>
 </Step>
