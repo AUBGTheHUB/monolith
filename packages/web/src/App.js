@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingHome from './components/spa/MainPage';
 import NotFound from './components/other/NotFound';
@@ -40,6 +40,7 @@ import RenderNoTeamParticipants from './components/admin_page/hackathon/hackatho
 import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
 import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
 import UrlsTable from './components/admin_page/url_shortener/table';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -59,50 +60,53 @@ function App() {
     }, []);
 
     return (
-        <Routes>
-            <Route path="/" element={<LandingHome />} />
-            <Route path="/admin" element={<LandingAdminPage />} />
-            <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/dashboard/members" element={<RenderMembers />} />
-            <Route path="/admin/dashboard/members/actions" element={<MemberActions />} />
-            <Route path="/admin/dashboard/members/add" element={<AddMember />} />
-            <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
-            <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
-            <Route path="/admin/dashboard/mentors" element={<RenderMentors />} />
-            <Route path="/admin/dashboard/mentors/add" element={<AddMentors />} />
-            <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions />} />
-            <Route path="/admin/dashboard/jury" element={<RenderJury />} />
-            <Route path="/admin/dashboard/jury/add" element={<AddJury />} />
-            <Route path="/admin/dashboard/jury/actions" element={<JuryActions />} />
-            <Route path="/admin/dashboard/sponsors" element={<RenderSponsors />} />
-            <Route path="/admin/dashboard/sponsors/add" element={<AddSponsors />} />
-            <Route path="/admin/dashboard/sponsors/actions" element={<SponsorsActions />} />
-            <Route path="/admin/dashboard/partners" element={<RenderPartners />} />
-            <Route path="/admin/dashboard/partners/add" element={<AddPartners />} />
-            <Route path="/admin/dashboard/partners/actions" element={<PartnersActions />} />
-            <Route path="/admin/dashboard/hackathon/teams" element={<RenderTeams />} />
-            <Route path="/admin/dashboard/hackathon/teams/members" element={<RenderTeamMembers />} />
-            <Route path="/admin/dashboard/hackathon/teams/members/actions" element={<TeamMemberActions />} />
-            <Route path="/admin/dashboard/hackathon/teams/members/add" element={<AddTeamMember />} />
-            <Route path="/admin/dashboard/hackathon/teams/add" element={<AddNewTeam />} />
-            <Route path="/admin/dashboard/hackathon/noteamparticipants/add" element={<AddNoTeamParticipant />} />
-            <Route path="/admin/dashboard/hackathon/teams/actions" element={<TeamActions />} />
-            <Route path="/admin/dashboard/hackathon/noteamparticipants" element={<RenderNoTeamParticipants />} />
-            <Route
-                path="/admin/dashboard/hackathon/noteamparticipants/actions"
-                element={<NoTeamParticipantsActions />}
-            />
-            <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
-            <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
-            <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
+        <Fragment>
+            <Toaster />
+            <Routes>
+                <Route path="/" element={<LandingHome />} />
+                <Route path="/admin" element={<LandingAdminPage />} />
+                <Route path="/admin/dashboard" element={<Dashboard />} />
+                <Route path="/admin/dashboard/members" element={<RenderMembers />} />
+                <Route path="/admin/dashboard/members/actions" element={<MemberActions />} />
+                <Route path="/admin/dashboard/members/add" element={<AddMember />} />
+                <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
+                <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
+                <Route path="/admin/dashboard/mentors" element={<RenderMentors />} />
+                <Route path="/admin/dashboard/mentors/add" element={<AddMentors />} />
+                <Route path="/admin/dashboard/mentors/actions" element={<MentorsActions />} />
+                <Route path="/admin/dashboard/jury" element={<RenderJury />} />
+                <Route path="/admin/dashboard/jury/add" element={<AddJury />} />
+                <Route path="/admin/dashboard/jury/actions" element={<JuryActions />} />
+                <Route path="/admin/dashboard/sponsors" element={<RenderSponsors />} />
+                <Route path="/admin/dashboard/sponsors/add" element={<AddSponsors />} />
+                <Route path="/admin/dashboard/sponsors/actions" element={<SponsorsActions />} />
+                <Route path="/admin/dashboard/partners" element={<RenderPartners />} />
+                <Route path="/admin/dashboard/partners/add" element={<AddPartners />} />
+                <Route path="/admin/dashboard/partners/actions" element={<PartnersActions />} />
+                <Route path="/admin/dashboard/hackathon/teams" element={<RenderTeams />} />
+                <Route path="/admin/dashboard/hackathon/teams/members" element={<RenderTeamMembers />} />
+                <Route path="/admin/dashboard/hackathon/teams/members/actions" element={<TeamMemberActions />} />
+                <Route path="/admin/dashboard/hackathon/teams/members/add" element={<AddTeamMember />} />
+                <Route path="/admin/dashboard/hackathon/teams/add" element={<AddNewTeam />} />
+                <Route path="/admin/dashboard/hackathon/noteamparticipants/add" element={<AddNoTeamParticipant />} />
+                <Route path="/admin/dashboard/hackathon/teams/actions" element={<TeamActions />} />
+                <Route path="/admin/dashboard/hackathon/noteamparticipants" element={<RenderNoTeamParticipants />} />
+                <Route
+                    path="/admin/dashboard/hackathon/noteamparticipants/actions"
+                    element={<NoTeamParticipantsActions />}
+                />
+                <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
+                <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
+                <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
 
-            <Route path="/hackaubg" element={<HackAUBG />} />
-            {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
-            <Route path="/*" element={<NotFound />} />
-            <Route path="/admin/dashboard/s3" element={<S3Panel />} />
-            <Route path="/admin/dashboard/s3/objects" element={<RenderStorageObjects />} />
-            <Route path="/admin/dashboard/shortener" element={<UrlsTable />} />
-        </Routes>
+                <Route path="/hackaubg" element={<HackAUBG />} />
+                {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
+                <Route path="/*" element={<NotFound />} />
+                <Route path="/admin/dashboard/s3" element={<S3Panel />} />
+                <Route path="/admin/dashboard/s3/objects" element={<RenderStorageObjects />} />
+                <Route path="/admin/dashboard/shortener" element={<UrlsTable />} />
+            </Routes>
+        </Fragment>
     );
 }
 
