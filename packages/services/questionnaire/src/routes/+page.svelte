@@ -5,6 +5,8 @@
         3. add a submit button for making the POST request
     */
     import { LightSwitch } from '@skeletonlabs/skeleton';
+    import { Stepper} from '@skeletonlabs/skeleton';
+
     import questions from "$lib/inputs/questions.json"
     import Input from "$lib/inputs/input.svelte";
 
@@ -18,7 +20,11 @@
 
 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
     <LightSwitch/>
-    {#each questions as question}
-        <Input {question} {appendToAnswers}/>
-    {/each}
+    <Stepper>
+        <!-- if you wonder how you need to handle the POST method here -->
+        <!-- check the events section here - https://www.skeleton.dev/components/steppers -->
+        {#each questions as question}
+            <Input {question} {appendToAnswers}/>
+        {/each}
+    </Stepper>
 </div>
