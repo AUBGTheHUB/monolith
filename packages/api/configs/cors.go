@@ -18,7 +18,7 @@ func GenerateCORSConfig() func(*fiber.Ctx) error {
 func GenerateOrigins() string {
 	ALLOWED_LOCALHOST_PROTOCOLS := []string{"http", "https"}
 	ALLOWED_LOCALHOST_DOMAINS := []string{"localhost", "127.0.0.1"}
-	ALLOWED_LOCALHOST_PORTS := []string{"3000", "3001", "6969"}
+	ALLOWED_LOCALHOST_PORTS := []string{"80", "3000", "3001"}
 	ALLOWED_PUBLIC_DOMAINS := []string{
 		"https://dev.thehub-aubg.com",
 		"https://thehub-aubg.com",
