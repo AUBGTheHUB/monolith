@@ -18,7 +18,7 @@
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 </script>
 
-<div style="display: flex; flex-direction: column; justify-content: center; align-items: center">
+<div class="flex flex-col justify-center items-center">
     <LightSwitch/>
     <Stepper>
         <!-- if you wonder how you need to handle the POST method here -->
