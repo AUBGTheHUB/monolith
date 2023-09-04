@@ -2,6 +2,59 @@
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
+## Adding questionnaires
+```bash
+curl --location 'localhost:5173' \
+--header 'Content-Type: application/json' \
+--data '{
+    "department": "pr",
+    "questions": [
+        {
+            "title": "Who Am IIIIIII??????",
+            "type": "textarea",
+            "structure": [
+                [
+                    "Tell us a bit about yourself. What do you like doing in your free time? How did you get into programming?"
+                ]
+            ]
+        },
+        {
+            "title": "Have you ever seen code like this?",
+            "type": "textarea",
+            "structure": [
+                [
+                    "This is React:",
+                    "https://code.visualstudio.com/assets/docs/nodejs/reactjs/intellisense.png",
+                    "https://code.visualstudio.com/assets/docs/nodejs/reactjs/bracket-matching.png"
+                ],
+                [
+                    "This is Angular:",
+                    "https://code.visualstudio.com/assets/docs/nodejs/angular/breakpoint.png",
+                    "https://code.visualstudio.com/assets/docs/nodejs/angular/suggestions.png"
+                ]
+            ]
+        },
+        {
+            "title": "What does this code do?",
+            "type": "textarea",
+            "structure": [
+                [
+                    "This some OOP code which is used for filtering out new developers:",
+                    "https://www.freecodecamp.org/news/content/images/2020/02/2-1.png"
+                ]
+            ]
+        },
+        {
+            "title": "What'\''s your AUBG email?",
+            "type": "text",
+            "structure": []
+        }
+    ]
+}
+
+'
+```
+
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
