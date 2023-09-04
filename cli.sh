@@ -62,9 +62,12 @@ if [ $ACTIONS == $START ]; then
     NGINX="Reverse Proxy"
     ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX")
 
+    ACTIONS_EXIT_STATUS=$?
     clear
 
-    echo "$(tput setaf 3)You might need to pull the latest dependencies if the service is unable to start$(tput sgr0)!"
+    if [ $ACTIONS_EXIT_STATUS -eq 0 ]; then
+        gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "You might need to pull the latest dependencies if the service is unable to start."
+    fi
 
     if [ "$ACTIONS" == "$WEB_CLIENT" ]; then
         make run-web
