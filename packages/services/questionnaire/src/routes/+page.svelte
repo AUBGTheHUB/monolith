@@ -1,8 +1,7 @@
 <script lang="ts">
     /* TODO:
-        1. add a database connection - https://github.com/stolinski/svelte-kit-mongodb-example
-        2. add post endpoint in +server.js - https://learn.svelte.dev/tutorial/post-handlers
-        3. add a submit button for making the POST request
+        * Add a submit button for making the POST request
+        * Add a new input component for taking the user's name, email and bio on the same screen - type "about"
     */
     import Input from "$lib/inputs/input.svelte";
     import { page } from '$app/stores';
@@ -18,8 +17,6 @@
 <div class="flex flex-col justify-center items-center">
     <LightSwitch/>
     <Stepper>
-        <!-- if you wonder how you need to handle the POST method here -->
-        <!-- check the events section here - https://www.skeleton.dev/components/steppers -->
         {#each questions as question}
             <Input {question} {appendToAnswers}/>
         {/each}
