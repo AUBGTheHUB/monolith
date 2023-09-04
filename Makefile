@@ -68,7 +68,8 @@ install-env:
 	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
 	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
 	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env
+	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
+	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
 
 .PHONY: install-python
 install-python:
