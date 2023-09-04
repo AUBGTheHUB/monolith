@@ -28,7 +28,8 @@ main_app.mount("/v2", app)
 def start() -> None:
     run(
         "py_api.main:main_app", host="0.0.0.0", port=6969,
-        reload=True, log_config=get_log_config(), **SSL_FILES if not IS_OFFLINE else {},
+        reload=True if IS_OFFLINE else False,
+        log_config=get_log_config(), **SSL_FILES if not IS_OFFLINE else {},
     )
 
 
