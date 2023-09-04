@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { parseToNewAPI, urlShortenerURL } from '../../../Global';
 import UrlRow from './row';
+import { updateErrorMessage } from './requests';
 
 const popover = (onUpdate, errorMessage) => {
     return (
@@ -79,14 +80,7 @@ const UrlsTable = () => {
                 setShowAddOverlay(false);
             })
             .catch(err => {
-                if (err.code === 'ERR_NETWORK') {
-                    setErrorMessage('API is not responding!');
-                } else if (err?.response?.data?.detail[0]?.ctx?.error) {
-                    setErrorMessage('Not a viable URL - ' + err?.response?.data?.detail[0]?.ctx?.error + '!');
-                } else {
-                    const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
-                    setErrorMessage(message);
-                }
+                updateErrorMessage(err, setErrorMessage);
             });
     };
 
