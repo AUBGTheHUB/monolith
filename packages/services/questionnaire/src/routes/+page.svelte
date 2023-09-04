@@ -4,6 +4,7 @@
         * Add a new input component for taking the user's name, email and bio on the same screen - type "about"
         * Make textareas and text inputs wider
         * Fix bug with text not showing on dark mode
+        * (Optionally) add schema validation for POST request
     */
     import Input from "$lib/inputs/input.svelte";
     import { page } from '$app/stores';
