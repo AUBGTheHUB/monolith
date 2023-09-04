@@ -7,10 +7,13 @@
     import { LightSwitch } from '@skeletonlabs/skeleton';
     import { Stepper} from '@skeletonlabs/skeleton';
 
-    import questions from "$lib/inputs/questions.json"
+    import questionsData from "$lib/inputs/questions.json"
     import Input from "$lib/inputs/input.svelte";
+    import type { Question } from '$lib/inputs/types';
+
 
     const answers: Record<string, string> = {}
+    const questions: Question[] = questionsData as Question[]
 
     // function below is being passed down to components in order for them to be able
     // to append their answers to the object which is then to be used as the body for

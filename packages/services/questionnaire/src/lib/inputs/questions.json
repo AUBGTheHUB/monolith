@@ -1,6 +1,16 @@
 [
     {
+        "title": "Who are you?",
+        "type": "textarea",
+        "structure": [
+            [
+                "Tell us a bit about yourself. What do you like doing in your free time? How did you get into programming?"
+            ]
+        ]
+    },
+    {
         "title": "Have you ever seen code like this?",
+        "type": "textarea",
         "structure": [
             [
                 "This is React:",
@@ -16,11 +26,17 @@
     },
     {
         "title": "What does this code do?",
+        "type": "textarea",
         "structure": [
             [
                 "This some OOP code which is used for filtering out new developers:",
                 "https://www.freecodecamp.org/news/content/images/2020/02/2-1.png"
             ]
         ]
+    },
+    {
+        "title": "What's your AUBG email?",
+        "type": "text",
+        "structure": []
     }
 ]

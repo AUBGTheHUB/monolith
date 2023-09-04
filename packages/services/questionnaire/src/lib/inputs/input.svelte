@@ -1,10 +1,9 @@
 <script lang="ts">
     import { Step } from "@skeletonlabs/skeleton";
 
-    type Question = {
-        title: string,
-        structure: string[][]
-    }
+    import type { Question} from '$lib/inputs/types';
+    import { InputType } from "$lib/inputs/types";
+
 
     export let question: Question;
     export let appendToAnswers: Function;
@@ -33,6 +32,10 @@
         {/each}
 
         <!-- there's a bug here on dark mode, characters won't show up -->
-        <input bind:value={answer}/>
+        {#if question.type === InputType.TextArea}
+            <textarea bind:value={answer}/>
+        {:else}
+            <input type={question.type}/>
+        {/if}
     </div>
 </Step>
