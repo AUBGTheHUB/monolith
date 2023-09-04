@@ -1,6 +1,6 @@
 #!/bin/bash
 
-current_directory=${PWD##*/} 
+current_directory=${PWD##*/}
 
 set_vm_ip () {
     if [[ $HUB_VM ]]; then
@@ -29,7 +29,7 @@ set_vm_ip () {
 
 if [[ $current_directory != "spa-website-2022" && $current_directory != "monolith" ]]
 then
-    echo "Run this script from the root of the SPA project"
+    echo "Run this script from the root of the monolith"
     exit 1
 fi
 
@@ -39,7 +39,7 @@ then
     make install-gum
 fi
 
-gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Hello, there! Welcome to The Hub's $(gum style --foreground 212 'SPA project')."
+gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Hello, there! Welcome to The Hub's $(gum style --foreground 212 'monolith')."
 
 echo -e "What would you like to do?"
 
@@ -52,16 +52,24 @@ if [ $ACTIONS == $START ]; then
     clear
     echo -e "What instance do you want to spin up?"
 
-    WEB_CLIENT="Client (local)"
-    DEV_CLIENT="Client (dev)"
-    PROD_CLIENT="Client (prod)"
-    LOCAL_API="Run Go Api"
-    LOCAL_PY_API="Run Python Api"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API")
+    WEB_CLIENT="React frontend"
+    DEV_CLIENT="React frontend (dev.thehub-aubg.com)"
+    PROD_CLIENT="React frontend (thehub-aubg.com)"
+    LOCAL_API="Golang backend"
+    LOCAL_PY_API="Python backend"
+    LOCAL_QUESTIONNAIRE="Questionnaire"
+    LOCAL_RUST_API="URL Shortener"
+    NGINX="Reverse Proxy"
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX")
 
+    ACTIONS_EXIT_STATUS=$?
     clear
 
-    if [ "$ACTIONS" == "$WEB_CLIENT" ]; then 
+    if [ $ACTIONS_EXIT_STATUS -eq 0 ]; then
+        gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "You might need to pull the latest dependencies if the service is unable to start."
+    fi
+
+    if [ "$ACTIONS" == "$WEB_CLIENT" ]; then
         make run-web
     elif [ "$ACTIONS" == "$DEV_CLIENT" ]; then
         make run-dev
@@ -71,6 +79,12 @@ if [ $ACTIONS == $START ]; then
         make reload-api
     elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
         make run-py-api
+    elif [ "$ACTIONS" == "$LOCAL_QUESTIONNAIRE" ]; then
+        make run-svelte-quest
+    elif [ "$ACTIONS" == "$LOCAL_RUST_API" ]; then
+        make run-rust-api
+    elif [ "$ACTIONS" == "$NGINX" ]; then
+        make run-nginx
     fi
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then
@@ -83,7 +97,7 @@ elif [ "$ACTIONS" == "$DEPLOY" ]; then
     if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
         set_vm_ip
         ssh $VM_IP
-    
+
     elif [ "$ACTIONS" == "$SET_VM_ENV" ]; then
         set_vm_ip
         ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"

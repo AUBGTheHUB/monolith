@@ -90,3 +90,15 @@ install-python:
 .PHONY: run-py-api
 run-py-api:
 	cd packages/py-api && poetry run start
+
+.PHONY: run-nginx
+run-nginx:
+	cd nginx && docker-compose up --build
+
+.PHONY: run-rust-api
+run-rust-api:
+	cd packages/services/url_shortener && make watch
+
+.PHONY: run-svelte-quest
+run-svelte-quest:
+	cd packages/services/questionnaire && npm run dev -- --open

@@ -6,7 +6,7 @@ data @asynchroza
 
 packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov @DemonHashira @r-mishev
 
-packages/api @nikolayninov @IvanObreshkov @asynchroza
+packages/api @IvanObreshkov @asynchroza
 
 **/Dockerfile @asynchroza
 
@@ -21,5 +21,7 @@ Makefile @asynchroza
 **/*.conf @asynchroza
 
 packages/services @asynchroza
+
+packages/services/questionnaire @asynchroza @Aleks1908
 
 packages/py-api @asynchroza @IvanObreshkov
