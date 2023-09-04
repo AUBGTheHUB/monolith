@@ -2,11 +2,7 @@ import { questions } from '$lib/database/mongo';
 import type { Question } from '$lib/inputs/types';
 import { error } from '@sveltejs/kit';
 import { ReturnDocument } from 'mongodb';
-
-type DepartmentQuestions = {
-    department: string;
-    questions: Question[];
-};
+import type { DepartmentQuestions } from './types';
 
 export async function POST({ request }: { request: any }) {
     let body = {} as DepartmentQuestions;

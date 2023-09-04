@@ -4,20 +4,14 @@
         2. add post endpoint in +server.js - https://learn.svelte.dev/tutorial/post-handlers
         3. add a submit button for making the POST request
     */
+    import Input from "$lib/inputs/input.svelte";
+    import { page } from '$app/stores';
     import { LightSwitch } from '@skeletonlabs/skeleton';
     import { Stepper} from '@skeletonlabs/skeleton';
 
-    import questionsData from "$lib/inputs/questions.json"
-    import Input from "$lib/inputs/input.svelte";
-    import type { Question } from '$lib/inputs/types';
-
-
+    const questions = $page.data.questions;
     const answers: Record<string, string> = {}
-    const questions: Question[] = questionsData as Question[]
 
-    // function below is being passed down to components in order for them to be able
-    // to append their answers to the object which is then to be used as the body for
-    // the POST request --- TIP: do console.log(answers) in order to see what the function does
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 </script>
 
