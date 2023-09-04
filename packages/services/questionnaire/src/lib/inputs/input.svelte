@@ -32,6 +32,7 @@
             {/each}
         {/each}
 
+        <!-- there's a bug here on dark mode, characters won't show up -->
         <input bind:value={answer}/>
     </div>
 </Step>
