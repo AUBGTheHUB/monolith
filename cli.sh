@@ -52,9 +52,9 @@ if [ $ACTIONS == $START ]; then
     clear
     echo -e "What instance do you want to spin up?"
 
-    WEB_CLIENT="Admin Panel"
-    DEV_CLIENT="Admin Panel (dev.thehub-aubg.com)"
-    PROD_CLIENT="Admin Panel (thehub-aubg.com)"
+    WEB_CLIENT="React frontend"
+    DEV_CLIENT="React frontend (dev.thehub-aubg.com)"
+    PROD_CLIENT="React frontend (thehub-aubg.com)"
     LOCAL_API="Golang backend"
     LOCAL_PY_API="Python backend"
     LOCAL_RUST_API="Rust backend"
