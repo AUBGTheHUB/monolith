@@ -3,14 +3,11 @@
 
     import type { Question } from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
-    import { afterUpdate, onMount } from "svelte";
-    import { getHighlighter, type Highlighter } from "shiki";
 
     export let question: Question;
     export let appendToAnswers: Function;
 
     let answer = ""
-    let highlighter: Highlighter | null = null;
 
     const handleInput = (e: Event) => {
         answer = (e.currentTarget as HTMLInputElement).value;
