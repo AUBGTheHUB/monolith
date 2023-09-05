@@ -90,3 +90,8 @@ install-python:
 .PHONY: run-py-api
 run-py-api:
 	cd packages/py-api && poetry run start
+
+.PHONY: install-signed-certs
+install-signed-certs:
+	cp data/certs/local.crt data/certs/devenv.crt
+	cp data/certs/local.key data/certs/devenv.key
