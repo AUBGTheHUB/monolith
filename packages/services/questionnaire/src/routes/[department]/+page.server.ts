@@ -1,10 +1,10 @@
 import { questions } from '$lib/database/mongo';
-import type { DepartmentQuestions } from './types';
+import type { DepartmentQuestions } from '../types';
 import { marked } from 'marked';
 
 /** @type {import('./$types').PageLoad} */
-export async function load({ url }: { url: any }) {
-    const department = url.searchParams.get('department');
+export async function load({ params }: { params: Record<string, any> }) {
+    const department = params?.department;
     const result = (await questions.find({ department }).toArray()) as unknown as DepartmentQuestions[];
 
     result[0].questions.forEach(async ({ body }, index) => {

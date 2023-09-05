@@ -4,5 +4,6 @@ export function handleError({ error }: { error: any }) {
 
     return {
         message: 'Something went wrong! Are you missing a query parameter?',
+        error,
     };
 }
