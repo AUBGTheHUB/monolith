@@ -20,9 +20,10 @@
 </script>
 
 <Step>
-    <svelte:fragment slot="header">{question.title}</svelte:fragment>
+    <svelte:fragment slot="header">{""}</svelte:fragment>
     <div class="flex flex-col justify-center items-center h-max w-96">
         <div class="flex flex-col justify-center items-center space-y-10">
+            <h1 class="text-2xl">{question.title}</h1>
             {@html question.body}
             {#if question.type === InputType.TextArea}
                 <textarea bind:value={answer} class="hub-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your response here:"/>
