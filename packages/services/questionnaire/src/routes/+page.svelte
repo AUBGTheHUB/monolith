@@ -10,15 +10,15 @@
     import { page } from '$app/stores';
     import { LightSwitch } from '@skeletonlabs/skeleton';
     import { Stepper} from '@skeletonlabs/skeleton';
-    import { onMount } from "svelte";
     import { getHighlighter, type Highlighter } from "shiki";
+    import { onMount } from "svelte";
 
     const questions = $page.data.questions;
     const answers: Record<string, string> = {}
 
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 
-    const formatCode = (highlighter: Highlighter, parser: DOMParser) => {
+    const formatCode = (highlighter: Highlighter) => {
         const codeElements = document.querySelectorAll('code');
         codeElements.forEach(code => {
             // primitive language support for the club's most used languages
@@ -28,15 +28,16 @@
         })
     }
 
-    onMount(async ()=> {
-        const parser = new DOMParser();
-        formatCode(await getHighlighter({theme: "nord", langs: ["js", "python"]}), parser)
+    onMount(async () => {
+        const highlighter = await getHighlighter({theme: "nord", langs: ["js", "python"]})
+        formatCode(highlighter)
     })
+
 </script>
 
 <div class="flex flex-col justify-center items-center">
     <LightSwitch/>
-    <Stepper>
+    <Stepper stepTerm="Question" justify="justify-around">
         {#each questions as question}
             <Input {question} {appendToAnswers}/>
         {/each}
