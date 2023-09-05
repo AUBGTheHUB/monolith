@@ -10,10 +10,10 @@ function _loadWasmModule (sync, filepath, src, imports) {
     }
   }
 
-  
+
 var buf = null;
 if (filepath) {
-  
+
 return _instantiateOrCompile(fetch(filepath), imports, true);
 
 }
