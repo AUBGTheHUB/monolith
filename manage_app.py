@@ -183,7 +183,15 @@ def start_docker_compose():
         get_api = check_service_up(os.getenv("HUB_API_URL"), "API", False)
 
         ##### PY-API #####
-        py_api = check_service_up(os.getenv("HUB_API_URL"), "PY-API", False)
+        get_py_api = check_service_up(
+            os.getenv("HUB_PY_API_URL"), "PY-API", False,
+        )
+
+        # URL-SHORTENER
+        get_url_shortener = check_service_up(
+            os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", False,
+        )
+
         print()
         if (get_web == 200 and get_api == 400):
             print(
@@ -218,6 +226,8 @@ def start_docker_compose():
             # docker-compose keeps running when there is a failed container
             errors['WEB'] = get_web
             errors['API'] = get_api
+            errors['PY-API'] = get_py_api
+            errors['URL-SHORTENER'] = get_url_shortener
 
     build_err = subprocess.run(
         [
@@ -342,7 +352,17 @@ def check_service_up(url: str, service: str, discord=False):
             return handle_status_code_exception(
                 msg, req_method, url, service, web_request.status_code, discord,
             )
+    elif service == "URL-SHORTENER":
 
+        try:
+            # TODO: Add post to Golang API to get token
+            web_request = requests.get(url=url)
+        except Exception as e:
+            return handle_exception(msg, req_method, url, service, e, discord)
+        if web_request.status_code != 200:
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
     return web_request.status_code
@@ -358,9 +378,12 @@ def cron_local_test():
 
     local_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", True)
     local_api = check_service_up(os.getenv("HUB_API_URL"), "API", True)
-
+    local_py_api = check_service_up(os.getenv("HUB_PY_API_URL"), "API", True)
+    local_url_shortener = check_service_up(
+        os.getenv("HUB_URL_SHORTENER"), "API", True,
+    )
     # build is not running
-    if local_web != 200 or local_api != 400:
+    if local_web != 200 or local_api != 400 or local_py_api != 200 or local_url_shortener != 200:
         BUILD_RUNNING.clear()
 
 
