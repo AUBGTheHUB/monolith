@@ -6,5 +6,5 @@ export enum InputType {
 export type Question = {
     title: string;
     type: InputType;
-    structure: string[][];
+    body: string;
 };

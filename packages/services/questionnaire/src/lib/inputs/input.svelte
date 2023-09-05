@@ -1,7 +1,9 @@
 <script lang="ts">
     import { Step } from "@skeletonlabs/skeleton";
+    import { compile } from 'mdsvex';
 
-    import type { Question} from '$lib/inputs/types';
+
+    import type { Question } from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
 
     export let question: Question;
@@ -13,8 +15,6 @@
         answer = (e.currentTarget as HTMLInputElement).value;
     }
 
-    const isImage = (content: string) => content.includes("http")
-
     $: {
         appendToAnswers(question.title, answer)
     }
@@ -25,16 +25,9 @@
 
     <div class="flex flex-col justify-center items-center">
         <h1 class="text-center text-lg">{question.title}</h1>
-        {#each question.structure as section}
-            {#each section as content}
-                {#if isImage(content)}
-                    <!-- svelte-ignore a11y-missing-attribute -->
-                    <img src={content} width="500px"/>
-                {:else}
-                    <h2>{content}</h2>
-                {/if}
-            {/each}
-        {/each}
+            <div class="prose">
+                {@html question.body}
+            </div>
 
         <!-- there's a bug here on dark mode, characters won't show up -->
         {#if question.type === InputType.TextArea}
@@ -44,3 +37,31 @@
         {/if}
     </div>
 </Step>
+
+<style>
+    .prose :is(h2, h3, h4, h5, h6) {
+	/* margin-top: var(--size-8); */
+	/* margin-bottom: var(--size-3); */
+    }
+
+    .prose p:not(:is(h2, h3, h4, h5, h6) + p) {
+        /* margin-top: var(--size-7); */
+    }
+
+    .prose :is(ul, ol) {
+        /* list-style-type: '🔥'; */
+        /* padding-left: var(--size-5); */
+    }
+
+    .prose :is(ul, ol) li {
+        /* margin-block: var(--size-2); */
+        /* padding-inline-start: var(--size-2); */
+    }
+
+    .prose pre {
+        max-inline-size: 100%;
+        padding: 1rem;
+        border-radius: 8px;
+        tab-size: 2;
+    }
+</style>
