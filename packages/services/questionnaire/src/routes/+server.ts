@@ -1,5 +1,4 @@
 import { questions } from '$lib/database/mongo';
-import type { Question } from '$lib/inputs/types';
 import { error } from '@sveltejs/kit';
 import { ReturnDocument } from 'mongodb';
 import type { DepartmentQuestions } from './types';
