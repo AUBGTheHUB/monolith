@@ -2,57 +2,29 @@
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-## Adding questionnaires
-```bash
-curl --location 'localhost:5173' \
---header 'Content-Type: application/json' \
---data '{
-    "department": "pr",
+## Adding a questionnaire
+
+You can add questionnaires by making POST requests to `/`.
+### Example payload
+* If you don't want to render a title or a body you may leave them as empty strings.
+* `body` property is markdown parsable text.
+* `type` defines the input type. Big/small input box or selectable options: `"textarea", "text"`.
+```json
+{
+    "department": "demo",
     "questions": [
         {
-            "title": "Who Am IIIIIII??????",
+            "title": "What is this javascript snippet doing?",
             "type": "textarea",
-            "structure": [
-                [
-                    "Tell us a bit about yourself. What do you like doing in your free time? How did you get into programming?"
-                ]
-            ]
+            "body": "```javascript\ndocument.getElementById('testBox').onkeypress = function(e) {\n\tvar evt = e ? e : window.event;\n\tif (evt.keyCode == 13) {\n\t\tdocument.getElementById('enterButton').click();\n\treturn false;\n\t}\n}\n```"
         },
         {
-            "title": "Have you ever seen code like this?",
+            "title": "Can you explain the difference between null and undefined in javascript?",
             "type": "textarea",
-            "structure": [
-                [
-                    "This is React:",
-                    "https://code.visualstudio.com/assets/docs/nodejs/reactjs/intellisense.png",
-                    "https://code.visualstudio.com/assets/docs/nodejs/reactjs/bracket-matching.png"
-                ],
-                [
-                    "This is Angular:",
-                    "https://code.visualstudio.com/assets/docs/nodejs/angular/breakpoint.png",
-                    "https://code.visualstudio.com/assets/docs/nodejs/angular/suggestions.png"
-                ]
-            ]
-        },
-        {
-            "title": "What does this code do?",
-            "type": "textarea",
-            "structure": [
-                [
-                    "This some OOP code which is used for filtering out new developers:",
-                    "https://www.freecodecamp.org/news/content/images/2020/02/2-1.png"
-                ]
-            ]
-        },
-        {
-            "title": "What'\''s your AUBG email?",
-            "type": "text",
-            "structure": []
+            "body": ""
         }
     ]
 }
-
-'
 ```
 
 ## Creating a project
