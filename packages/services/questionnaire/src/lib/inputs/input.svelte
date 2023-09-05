@@ -5,7 +5,7 @@
     import { InputType } from "$lib/inputs/types";
 
     export let question: Question;
-    export let answers: Record<string, string>;
+    export let appendToAnswers: Function;
 
     let answer = ""
 
@@ -14,8 +14,9 @@
     }
 
     $: {
-        answers[question.title] = answer;
+        appendToAnswers(question.title, answer)
     }
+
 </script>
 
 <Step>
@@ -28,16 +29,9 @@
 
             {@html question.body}
             {#if question.type === InputType.TextArea}
-                <textarea
-                class="hub-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Write your response here:"
-                value={answers[question.title]}
-                on:input={handleInput}/>
+                <textarea bind:value={answer} class="hub-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your response here:"/>
             {:else}
-                <input
-                type="text"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                on:input={handleInput}/>
+                <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
             {/if}
         </div>
     </div>
