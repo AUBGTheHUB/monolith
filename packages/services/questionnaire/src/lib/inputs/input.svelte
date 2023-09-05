@@ -17,7 +17,6 @@
         appendToAnswers(question.title, answer)
     }
 
-
 </script>
 
 <Step>

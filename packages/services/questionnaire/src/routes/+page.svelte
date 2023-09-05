@@ -18,6 +18,8 @@
 
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 
+    let highlighter = null;
+
     const formatCode = (highlighter: Highlighter) => {
         const codeElements = document.querySelectorAll('code');
         codeElements.forEach(code => {
@@ -28,16 +30,19 @@
         })
     }
 
-    onMount(async () => {
-        const highlighter = await getHighlighter({theme: "nord", langs: ["js", "python"]})
+    const handleFormatting = async () => {
+        highlighter = await getHighlighter({theme: "nord", langs: ["js", "python"]})
         formatCode(highlighter)
-    })
+    }
 
+    onMount(async () => {
+        handleFormatting()
+    })
 </script>
 
 <div class="flex flex-col justify-center items-center">
     <LightSwitch/>
-    <Stepper stepTerm="Question" justify="justify-around">
+    <Stepper stepTerm="Question" justify="justify-around" on:step={handleFormatting}>
         {#each questions as question}
             <Input {question} {appendToAnswers}/>
         {/each}
