@@ -6,7 +6,7 @@ Everything you need to build a Svelte project, powered by [`create-svelte`](http
 
 You can add questionnaires by making POST requests to `/`.
 ### Example payload
-* If you don't want to render a title or a body you may leave them as empty strings.
+* If you don't want to render a body you may leave the `body` property as an empty string. The `title` property is required!
 * `body` property is markdown parsable text.
 * `type` defines the input type. Big/small input box or selectable options: `"textarea", "text"`.
 ```json
