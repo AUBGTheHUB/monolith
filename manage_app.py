@@ -21,6 +21,39 @@ BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
 
+args_parser = ArgumentParser(description="CLI args for the script")
+
+args_parser.add_argument(
+    '--load_env', action='store_true',
+    help='Load environment variables from a dotenv file',
+)
+args_parser.add_argument(
+    "--no_cd", action='store_true',
+    help="Disable checking for new changes in the git repo",
+)
+args_parser.add_argument(
+    "--no_renewal", action='store_true',
+    help="Disable the renewal of certificates",
+)
+args_parser.add_argument(
+    "--no_health_checks", action="store_true", help="Disables all health checks",
+)
+args = args_parser.parse_args()
+
+if args.load_env:
+    load_dotenv()
+
+# DEV, PROD, STAGING - this is the identifier of the environment in the emails
+ENV = os.environ["DOCK_ENV"]
+# e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
+API_URL = os.environ["HUB_API_URL"]
+# e.g. dev.thehub-aubg.com or localhost:3000
+WEB_URL = os.environ["HUB_WEB_URL"]
+PY_API = os.environ["HUB_PY_API_URL"]
+# dev.thehub-aubg.com (without http) --> used for cert renewal
+CERT_DOMAIN = os.environ["HUB_DOMAIN"]
+DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
+
 REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
@@ -32,29 +65,6 @@ class bcolors:
     RED_OUT = '\033[41m'
     OKGREEN = '\033[92m'
     CEND = '\033[0m'
-
-
-args_parser = ArgumentParser(description="CLI args for the script")
-
-args_parser.add_argument(
-    '--load_env', action='store_true',
-    help='Load environment variables from a dotenv file',
-)
-args_parser.add_argument(
-    "--no_cd", action='store_false',
-    help="Disable checking for new changes in the git repo",
-)
-args_parser.add_argument(
-    "--no_renewal", action='store_false',
-    help="Disable the renewal of certificates",
-)
-args_parser.add_argument(
-    "--no_health_checks", action="store_false", help="Disables all health checks",
-)
-args = args_parser.parse_args()
-
-if args.load_env:
-    load_dotenv()
 
 
 def send_mail(msg):
@@ -420,7 +430,7 @@ def cron_git_check_for_updates():
         print("GIT STATE FAILED: \n{}".format(status_uno.stdout))
         return
 
-    if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
+    if "Your branch is behind" in status_uno.stdoutq or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
         subprocess.run(
             ['git', 'fetch'], capture_output=True, text=True,
@@ -491,14 +501,17 @@ def run_thread(job):
     thread.start()
 
 
-cron_start_with_new_certs()
+if args.no_renewal:
+    start_docker_compose()
+else:
+    cron_start_with_new_certs()
 
 schedule.every(1).minutes.do(run_thread, cron_local_test)
 
 schedule.every(200).seconds.do(run_thread, cron_self_healing)
-if args.no_cd:
+if not args.no_cd:
     schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
-if args.no_renewal:
+if not args.no_renewal:
     schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
 
 while True:
