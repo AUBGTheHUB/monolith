@@ -29,6 +29,7 @@
     "type": "module",
     "dependencies": {
         "marked": "^8.0.0",
-        "mongodb": "^6.0.0"
+        "mongodb": "^6.0.0",
+        "shiki": "^0.14.4"
     }
 }

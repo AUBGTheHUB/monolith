@@ -10,11 +10,26 @@
     import { page } from '$app/stores';
     import { LightSwitch } from '@skeletonlabs/skeleton';
     import { Stepper} from '@skeletonlabs/skeleton';
+    import { onMount } from "svelte";
+    import { getHighlighter, type Highlighter } from "shiki";
 
     const questions = $page.data.questions;
     const answers: Record<string, string> = {}
 
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
+
+    const formatCode = (highlighter: Highlighter, parser: DOMParser) => {
+        const codeElements = document.querySelectorAll('code');
+        codeElements.forEach(code => {
+            const highlightedCode = highlighter.codeToHtml(code.textContent as string, {lang: 'js'})
+            code.innerHTML = highlightedCode;
+        })
+    }
+
+    onMount(async ()=> {
+        const parser = new DOMParser();
+        formatCode(await getHighlighter({theme: "nord", langs: ["js"]}), parser)
+    })
 </script>
 
 <div class="flex flex-col justify-center items-center">

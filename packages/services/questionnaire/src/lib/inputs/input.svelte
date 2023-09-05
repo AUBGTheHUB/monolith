@@ -1,10 +1,9 @@
 <script lang="ts">
     import { Step } from "@skeletonlabs/skeleton";
-    import { compile } from 'mdsvex';
-
 
     import type { Question } from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
+    import type { Highlighter } from "shiki";
 
     export let question: Question;
     export let appendToAnswers: Function;
@@ -25,7 +24,7 @@
 
     <div class="flex flex-col justify-center items-center">
         <h1 class="text-center text-lg">{question.title}</h1>
-            <div class="prose">
+            <div class="prose list-disc">
                 {@html question.body}
             </div>
 
@@ -39,29 +38,8 @@
 </Step>
 
 <style>
-    .prose :is(h2, h3, h4, h5, h6) {
-	/* margin-top: var(--size-8); */
-	/* margin-bottom: var(--size-3); */
-    }
-
-    .prose p:not(:is(h2, h3, h4, h5, h6) + p) {
-        /* margin-top: var(--size-7); */
-    }
-
-    .prose :is(ul, ol) {
-        /* list-style-type: '🔥'; */
-        /* padding-left: var(--size-5); */
-    }
-
-    .prose :is(ul, ol) li {
-        /* margin-block: var(--size-2); */
-        /* padding-inline-start: var(--size-2); */
-    }
-
-    .prose pre {
-        max-inline-size: 100%;
-        padding: 1rem;
-        border-radius: 8px;
-        tab-size: 2;
+    /* TODO: Add additional stylings */
+    :global(ul) {
+        list-style-type: '•';
     }
 </style>
