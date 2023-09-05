@@ -1,4 +1,0 @@
-{
-    "department": "development",
-    "questions": ["## TEST MARKDOWN\n```python\nprint('HELLO WORLD')\n```"]
-}

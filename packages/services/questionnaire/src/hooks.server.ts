@@ -1,7 +1,9 @@
 /** @type {import('@sveltejs/kit').HandleServerError} */
 export function handleError({ error }: { error: any }) {
-    console.log(error);
+    console.error(error);
+
     return {
-        message: 'Something went wrong!',
+        message: 'Something went wrong! Are you missing a query parameter?',
+        error,
     };
 }
