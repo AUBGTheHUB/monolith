@@ -37,10 +37,20 @@ class bcolors:
 args_parser = ArgumentParser(description="CLI args for the script")
 
 args_parser.add_argument(
-    '--load-env', action='store_true',
+    '--load_env', action='store_true',
     help='Load environment variables from a dotenv file',
 )
-
+args_parser.add_argument(
+    "--no_cd", action='store_false',
+    help="Disable checking for new changes in the git repo",
+)
+args_parser.add_argument(
+    "--no_renewal", action='store_false',
+    help="Disable the renewal of certificates",
+)
+args_parser.add_argument(
+    "--no_health_checks", action="store_false", help="Disables all health checks",
+)
 args = args_parser.parse_args()
 
 if args.load_env:
@@ -166,68 +176,72 @@ def start_docker_compose():
         ],
     )
 
-    if dc_start.returncode == 0:
-        print()
+    if args.no_health_checks:
 
-        time.sleep(10)
-        print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
+        if dc_start.returncode == 0:
+            print()
 
-        ###### WEB ######
-        get_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", False)
+            time.sleep(10)
+            print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
-        # "connection reset by peer"
-        print()
-        time.sleep(10)
+            ###### WEB ######
+            get_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", False)
 
-        ###### API ######
-        get_api = check_service_up(os.getenv("HUB_API_URL"), "API", False)
+            # "connection reset by peer"
+            print()
+            time.sleep(10)
 
-        ##### PY-API #####
-        get_py_api = check_service_up(
-            os.getenv("HUB_PY_API_URL"), "PY-API", False,
-        )
+            ###### API ######
+            get_api = check_service_up(os.getenv("HUB_API_URL"), "API", False)
 
-        # URL-SHORTENER
-        get_url_shortener = check_service_up(
-            os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", False,
-        )
-
-        print()
-        if (get_web == 200 and get_api == 400):
-            print(
-                bcolors.OKGREEN +
-                f"{os.getenv('DOCK_ENV')} BUILD SUCCESSFUL" + bcolors.CEND,
-            )
-            BUILD_RUNNING.set()
-
-            msg['Subject'] = f'{os.getenv("DOCK_ENV")}:SPA BUILD SUCCESSFUL'
-            msg.attach(MIMEText('<h3>All services are working!</h3>', 'html'))
-            send_mail(msg)
-
-            requests.post(
-                os.getenv("DISCORD_WH"), headers={
-                    "Content-Type": "application/x-www-form-urlencoded",
-                }, data={
-                    "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
-                },
+            ##### PY-API #####
+            get_py_api = check_service_up(
+                os.getenv("HUB_PY_API_URL"), "PY-API", False,
             )
 
-            # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
-            CURRENTLY_BUILDING.clear()
+            # URL-SHORTENER
+            get_url_shortener = check_service_up(
+                os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", False,
+            )
 
-            # THIS INDICATES THAT THE BUILD HAS BEEN SUCCESSFUL
-            BUILD_RUNNING.set()
+            print()
+            if (get_web == 200 and get_api == 400):
+                print(
+                    bcolors.OKGREEN +
+                    f"{os.getenv('DOCK_ENV')} BUILD SUCCESSFUL" + bcolors.CEND,
+                )
+                BUILD_RUNNING.set()
 
-            with lock:
-                BUILD_TRY = 0
-            return
+                msg['Subject'] = f'{os.getenv("DOCK_ENV")}:SPA BUILD SUCCESSFUL'
+                msg.attach(
+                    MIMEText('<h3>All services are working!</h3>', 'html'),
+                )
+                send_mail(msg)
 
-        else:
-            # docker-compose keeps running when there is a failed container
-            errors['WEB'] = get_web
-            errors['API'] = get_api
-            errors['PY-API'] = get_py_api
-            errors['URL-SHORTENER'] = get_url_shortener
+                requests.post(
+                    os.getenv("DISCORD_WH"), headers={
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    }, data={
+                        "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
+                    },
+                )
+
+                # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
+                CURRENTLY_BUILDING.clear()
+
+                # THIS INDICATES THAT THE BUILD HAS BEEN SUCCESSFUL
+                BUILD_RUNNING.set()
+
+                with lock:
+                    BUILD_TRY = 0
+                return
+
+            else:
+                # docker-compose keeps running when there is a failed container
+                errors['WEB'] = get_web
+                errors['API'] = get_api
+                errors['PY-API'] = get_py_api
+                errors['URL-SHORTENER'] = get_url_shortener
 
     build_err = subprocess.run(
         [
@@ -482,10 +496,10 @@ cron_start_with_new_certs()
 schedule.every(1).minutes.do(run_thread, cron_local_test)
 
 schedule.every(200).seconds.do(run_thread, cron_self_healing)
-
-schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
-
-schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
+if args.no_cd:
+    schedule.every(60).seconds.do(run_thread, cron_git_check_for_updates)
+if args.no_renewal:
+    schedule.every(75).days.do(run_thread, cron_start_with_new_certs)
 
 while True:
     schedule.run_pending()
