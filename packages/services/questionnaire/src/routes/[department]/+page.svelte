@@ -13,6 +13,8 @@
     const questions = $page.data.questions;
     const answers: Record<string, string> = {}
 
+    const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
+
     let highlighter = null;
 
     const formatCode = (highlighter: Highlighter) => {
@@ -38,7 +40,7 @@
 <div class="flex flex-col justify-center items-center">
     <Stepper stepTerm="Question" justify="justify-around" on:step={handleFormatting}>
         {#each questions as question}
-            <Input {question} {answers}/>
+            <Input {question} {appendToAnswers}/>
         {/each}
     </Stepper>
 </div>
