@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Step } from "@skeletonlabs/skeleton";
 
-    import type { Question} from '$lib/inputs/types';
+    import type { Question } from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
 
     export let question: Question;
@@ -13,8 +13,6 @@
         answer = (e.currentTarget as HTMLInputElement).value;
     }
 
-    const isImage = (content: string) => content.includes("http")
-
     $: {
         appendToAnswers(question.title, answer)
     }
@@ -25,16 +23,9 @@
 
     <div class="flex flex-col justify-center items-center">
         <h1 class="text-center text-lg">{question.title}</h1>
-        {#each question.structure as section}
-            {#each section as content}
-                {#if isImage(content)}
-                    <!-- svelte-ignore a11y-missing-attribute -->
-                    <img src={content} width="500px"/>
-                {:else}
-                    <h2>{content}</h2>
-                {/if}
-            {/each}
-        {/each}
+            <div class="prose list-disc">
+                {@html question.body}
+            </div>
 
         <!-- there's a bug here on dark mode, characters won't show up -->
         {#if question.type === InputType.TextArea}
@@ -44,3 +35,10 @@
         {/if}
     </div>
 </Step>
+
+<style>
+    /* TODO: Add additional stylings */
+    :global(ul) {
+        list-style-type: '•';
+    }
+</style>
