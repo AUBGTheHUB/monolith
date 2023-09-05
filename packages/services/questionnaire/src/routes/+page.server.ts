@@ -1,5 +1,4 @@
 import { questions } from '$lib/database/mongo';
-import { getHighlighter, type Highlighter } from 'shiki';
 import type { DepartmentQuestions } from './types';
 import { marked } from 'marked';
 

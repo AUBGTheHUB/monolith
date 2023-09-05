@@ -21,14 +21,16 @@
     const formatCode = (highlighter: Highlighter, parser: DOMParser) => {
         const codeElements = document.querySelectorAll('code');
         codeElements.forEach(code => {
-            const highlightedCode = highlighter.codeToHtml(code.textContent as string, {lang: 'js'})
+            // primitive language support for the club's most used languages
+            const language = code.className?.includes("python") ? "python" : "js";
+            const highlightedCode = highlighter.codeToHtml(code.textContent as string, {lang: language})
             code.innerHTML = highlightedCode;
         })
     }
 
     onMount(async ()=> {
         const parser = new DOMParser();
-        formatCode(await getHighlighter({theme: "nord", langs: ["js"]}), parser)
+        formatCode(await getHighlighter({theme: "nord", langs: ["js", "python"]}), parser)
     })
 </script>
 

@@ -3,7 +3,6 @@
 
     import type { Question } from '$lib/inputs/types';
     import { InputType } from "$lib/inputs/types";
-    import type { Highlighter } from "shiki";
 
     export let question: Question;
     export let appendToAnswers: Function;
