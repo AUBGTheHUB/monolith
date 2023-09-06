@@ -26,19 +26,19 @@ logger = getLogger("manage-app-logger")
 args_parser = ArgumentParser(description="CLI args for the script")
 
 args_parser.add_argument(
-    '--load_env', action='store_true',
+    '--load-env', action='store_true',
     help='Load environment variables from a dotenv file',
 )
 args_parser.add_argument(
-    "--no_cd", action='store_true',
+    "--no-cd", action='store_true',
     help="Disable checking for new changes in the git repo",
 )
 args_parser.add_argument(
-    "--no_renewal", action='store_true',
+    "--no-renewal", action='store_true',
     help="Disable the renewal of certificates",
 )
 args_parser.add_argument(
-    "--no_health_checks", action="store_true", help="Disables all health checks",
+    "--no-health-checks", action="store_true", help="Disables all health checks",
 )
 args = args_parser.parse_args()
 
