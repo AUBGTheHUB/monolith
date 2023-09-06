@@ -1,6 +1,11 @@
-// src/routes/api/[file].js
+/**
+ * To enable hosting the app through our nginx reverse proxy,
+ * it's necessary for us to manage the hosting of our static files independently.
+ * When we proxy an endpoint like /questionnaires, the static path / becomes inaccessible
+ * because it's already used by the primary frontend.
+ */
+
 import fs from 'fs';
-import path from 'path';
 
 export async function GET({ params }: { params: any }) {
     const { folder, filename }: { folder: string; filename: string } = params;
@@ -10,17 +15,12 @@ export async function GET({ params }: { params: any }) {
         try {
             const buffer = await fs.promises.readFile(filePath);
 
-            let headers = {
-                'Content-Type': `application/wasm`,
-                'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
+            const headers = {
+                'Content-Type': filename.includes('wasm') ? 'application/wasm' : 'application/octet-stream',
+                'Content-Disposition': filename.includes('wasm')
+                    ? `attachment; filename="${encodeURIComponent(filename)}"`
+                    : `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
             };
-
-            if (!filename.includes('wasm')) {
-                headers = {
-                    'Content-Type': 'application/octet-stream',
-                    'Content-Disposition': `'attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-                };
-            }
 
             return new Response(buffer, {
                 status: 200,
