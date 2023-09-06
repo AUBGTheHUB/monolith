@@ -36,6 +36,12 @@
     };
 
     const submitAnswers = async () => {
+        const badToast: ToastSettings = {
+            message: 'Something went wrong! Please, contact The Hub!',
+            autohide: false,
+            background: 'variant-filled-warning',
+        };
+
         try {
             const body = JSON.stringify({ answers });
             const response = await fetch(`/questionnaires/answers`, {
@@ -44,22 +50,19 @@
             });
 
             if (response.ok) {
-                const t: ToastSettings = {
+                const goodToast: ToastSettings = {
                     message:
                         'Answers were submitted! Thank you for participating! We hope we see you at the interviews!',
                     autohide: false,
                     background: 'variant-filled-primary',
                 };
-                toastStore.trigger(t);
+                toastStore.trigger(goodToast);
             } else {
-                const t: ToastSettings = {
-                    message: 'Something went wrong! Please, contact The Hub!',
-                    autohide: false,
-                    background: 'variant-filled-warning',
-                };
+                toastStore.trigger(badToast);
             }
         } catch (e) {
             console.error(e);
+            toastStore.trigger(badToast);
         }
     };
 
