@@ -83,6 +83,14 @@ def send_mail(msg):
 
 
 def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e: Exception, discord: bool):
+    if args.no_health_checks:
+        print(
+            bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
+                ENV,
+                service, str(url),
+            ) + bcolors.CEND, e,
+        )
+        return e
     if not discord:
         msg.attach(
             MIMEText(
@@ -100,19 +108,22 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
                 "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
             },
         )
-    print(
-        bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
-            os.getenv("DOCK_ENV"),
-            service, str(url),
-        ) + bcolors.CEND,
-    )
-    return e
 
 
 def handle_status_code_exception(
         msg: MIMEMultipart, method: str, url: str, service: str, status_code: int,
         discord: bool,
 ):
+    if args.no_health_checks:
+        print(
+            bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
+                os.getenv("DOCK_ENV"),
+                service, str(url),
+            ) + bcolors.CEND,
+        )
+
+        return status_code
+
     if not discord:
         # send email that the website is down
         msg.attach(
@@ -130,15 +141,6 @@ def handle_status_code_exception(
                 "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
             },
         )
-
-    print(
-        bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
-            os.getenv("DOCK_ENV"),
-            service, str(url),
-        ) + bcolors.CEND,
-    )
-
-    return status_code
 
 
 def start_docker_compose():
@@ -215,7 +217,7 @@ def start_docker_compose():
         )
 
         print()
-        if (get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200):
+        if get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200:
             print(
                 bcolors.OKGREEN +
                 f"{os.getenv('DOCK_ENV')} BUILD SUCCESSFUL" + bcolors.CEND,
@@ -227,14 +229,14 @@ def start_docker_compose():
                 MIMEText('<h3>All services are working!</h3>', 'html'),
             )
             send_mail(msg)
-
-            requests.post(
-                os.getenv("DISCORD_WH"), headers={
-                    "Content-Type": "application/x-www-form-urlencoded",
-                }, data={
-                    "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
-                },
-            )
+            if not args.no_health_checks:
+                requests.post(
+                    os.getenv("DISCORD_WH"), headers={
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    }, data={
+                        "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
+                    },
+                )
 
             # THIS SIGNIFIES THAT A NEW BUILD CAN BE STARTED IF THERE IS AN ERROR
             CURRENTLY_BUILDING.clear()
@@ -272,13 +274,14 @@ def start_docker_compose():
     errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
     if BUILD_TRY <= 1:
-        requests.post(
-            os.getenv("DISCORD_WH"), headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            }, data={
-                "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```",
-            },
-        )
+        if not args.no_health_checks:
+            requests.post(
+                os.getenv("DISCORD_WH"), headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }, data={
+                    "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```",
+                },
+            )
 
     CURRENTLY_BUILDING.clear()
 
@@ -345,23 +348,12 @@ def check_service_up(url: str, service: str, discord=False):
             req_method = "GET"
 
         except Exception as e:
-            if not args.no_health_checks:
-                return handle_exception(msg, req_method, url, service, e, discord)
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
-                )
+            return handle_exception(msg, req_method, url, service, e, discord)
 
         if web_request.status_code != 200:
-            if not args.no_health_checks:
-                return handle_status_code_exception(
-                    msg, req_method, url, service, web_request.status_code, discord,
-                )
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
-                    f"\nStatus code: {web_request.status_code}",
-                )
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
 
     elif service == "API":
         try:
@@ -369,67 +361,35 @@ def check_service_up(url: str, service: str, discord=False):
             req_method = "POST"
 
         except Exception as e:
-            if not args.no_health_checks:
-                return handle_exception(msg, req_method, url, service, e, discord)
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
-                )
-
+            return handle_exception(msg, req_method, url, service, e, discord)
         if web_request.status_code != 400:
-            if not args.no_health_checks:
-                return handle_status_code_exception(
-                    msg, req_method, url, service, web_request.status_code, discord,
-                )
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
-                    f"\nStatus code: {web_request.status_code}",
-                )
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
 
     elif service == "PY-API":
         try:
             web_request = requests.get(url=url)
 
         except Exception as e:
-            if not args.no_health_checks:
-                return handle_exception(msg, req_method, url, service, e, discord)
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
-                )
+            return handle_exception(msg, req_method, url, service, e, discord)
 
         if web_request.status_code != 200:
-            if not args.no_health_checks:
-                return handle_status_code_exception(
-                    msg, req_method, url, service, web_request.status_code, discord,
-                )
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
-                    f"\nStatus code: {web_request.status_code}",
-                )
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
 
     elif service == "URL-SHORTENER":
         try:
             web_request = requests.get(url=url)
         except Exception as e:
-            if not args.no_health_checks:
-                return handle_exception(msg, req_method, url, service, e, discord)
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
-                )
+            return handle_exception(msg, req_method, url, service, e, discord)
+
         if web_request.status_code != 200:
-            if not args.no_health_checks:
-                return handle_status_code_exception(
-                    msg, req_method, url, service, web_request.status_code, discord,
-                )
-            else:
-                logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
-                    f"\nStatus code: {web_request.status_code}",
-                )
+            return handle_status_code_exception(
+                msg, req_method, url, service, web_request.status_code, discord,
+            )
+
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
     return web_request.status_code
