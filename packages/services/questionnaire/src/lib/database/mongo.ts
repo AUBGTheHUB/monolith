@@ -8,5 +8,6 @@ export function start_mongo() {
     return client.connect();
 }
 
-export const db = client.db();
+const db = client.db('questionnaires');
 export const questions = db.collection('questions');
+export const answers = db.collection('answers');
