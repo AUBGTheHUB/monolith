@@ -3,18 +3,28 @@ import fs from 'fs';
 import path from 'path';
 
 export async function GET({ params }: { params: any }) {
-    const { folder, filename } = params;
+    const { folder, filename }: { folder: string; filename: string } = params;
 
     try {
         const filePath = `src/routes/questionnaires/shiki/${folder}/${filename}`;
         try {
             const buffer = await fs.promises.readFile(filePath);
-            return new Response(buffer, {
-                status: 200,
-                headers: {
+
+            let headers = {
+                'Content-Type': `application/wasm`,
+                'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
+            };
+
+            if (!filename.includes('wasm')) {
+                headers = {
                     'Content-Type': 'application/octet-stream',
                     'Content-Disposition': `'attachment; filename*=UTF-8''${encodeURIComponent(filename)}`,
-                },
+                };
+            }
+
+            return new Response(buffer, {
+                status: 200,
+                headers,
             });
         } catch (error) {
             const response = JSON.stringify({ message: error });
