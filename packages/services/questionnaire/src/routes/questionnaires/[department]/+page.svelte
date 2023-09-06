@@ -67,11 +67,6 @@
     };
 
     onMount(async () => {
-        // Having Shiki on the client side requires us to host the static files ourselves.
-        // Additionally, setting up a reverse proxy will
-        // disable access to the static folder endpoint.
-        // Therefore, we need to be explicit with where exactly we host our files.
-
         setCDN('/questionnaires/shiki');
         highlighter = await getHighlighter({ theme: 'nord', langs: ['js', 'python'] });
         handleFormatting();
