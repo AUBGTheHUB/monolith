@@ -359,7 +359,8 @@ def check_service_up(url: str, service: str, discord=False):
                 )
             else:
                 logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
+                    f"\nStatus code: {web_request.status_code}",
                 )
 
     elif service == "API":
@@ -382,7 +383,8 @@ def check_service_up(url: str, service: str, discord=False):
                 )
             else:
                 logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
+                    f"\nStatus code: {web_request.status_code}",
                 )
 
     elif service == "PY-API":
@@ -404,7 +406,8 @@ def check_service_up(url: str, service: str, discord=False):
                 )
             else:
                 logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
+                    f"\nStatus code: {web_request.status_code}",
                 )
 
     elif service == "URL-SHORTENER":
@@ -424,7 +427,8 @@ def check_service_up(url: str, service: str, discord=False):
                 )
             else:
                 logger.error(
-                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, "
+                    f"\nStatus code: {web_request.status_code}",
                 )
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
