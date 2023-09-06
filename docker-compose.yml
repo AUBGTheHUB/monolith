@@ -56,7 +56,9 @@ services:
     expose:
       - 3000
     ports:
-      - 6420:3000
+      - 5173:3000
+    volumes:
+      - ./data/certs:/etc/nginx/certs
     networks:
       - front-back
 
