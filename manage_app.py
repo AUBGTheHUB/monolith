@@ -10,6 +10,7 @@ import typing
 from argparse import ArgumentParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from logging import getLogger
 
 import requests
 import schedule
@@ -20,6 +21,7 @@ CURRENTLY_BUILDING = threading.Event()
 BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
+logger = getLogger("manage-app-logger")
 
 args_parser = ArgumentParser(description="CLI args for the script")
 
@@ -213,7 +215,7 @@ def start_docker_compose():
         )
 
         print()
-        if (get_web == 200 and get_api == 400):
+        if (get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200):
             print(
                 bcolors.OKGREEN +
                 f"{os.getenv('DOCK_ENV')} BUILD SUCCESSFUL" + bcolors.CEND,
@@ -343,48 +345,87 @@ def check_service_up(url: str, service: str, discord=False):
             req_method = "GET"
 
         except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
+            if not args.no_health_checks:
+                return handle_exception(msg, req_method, url, service, e, discord)
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
+                )
 
         if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
+            if not args.no_health_checks:
+                return handle_status_code_exception(
+                    msg, req_method, url, service, web_request.status_code, discord,
+                )
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                )
 
     elif service == "API":
-
         try:
             web_request = requests.post(url=url)
             req_method = "POST"
 
         except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
+            if not args.no_health_checks:
+                return handle_exception(msg, req_method, url, service, e, discord)
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
+                )
 
         if web_request.status_code != 400:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
+            if not args.no_health_checks:
+                return handle_status_code_exception(
+                    msg, req_method, url, service, web_request.status_code, discord,
+                )
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                )
 
     elif service == "PY-API":
-
         try:
             web_request = requests.get(url=url)
+
         except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
+            if not args.no_health_checks:
+                return handle_exception(msg, req_method, url, service, e, discord)
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
+                )
+
         if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
+            if not args.no_health_checks:
+                return handle_status_code_exception(
+                    msg, req_method, url, service, web_request.status_code, discord,
+                )
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                )
+
     elif service == "URL-SHORTENER":
-
         try:
-            # TODO: Add post to Golang API to get token
             web_request = requests.get(url=url)
         except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
+            if not args.no_health_checks:
+                return handle_exception(msg, req_method, url, service, e, discord)
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nExc: {e}",
+                )
         if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
+            if not args.no_health_checks:
+                return handle_status_code_exception(
+                    msg, req_method, url, service, web_request.status_code, discord,
+                )
+            else:
+                logger.error(
+                    f"Message: {msg}, \nRequest method: {req_method}, \nURL: {url}, \nService: {service}, \nStatus code: {web_request.status_code}",
+                )
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
     return web_request.status_code
