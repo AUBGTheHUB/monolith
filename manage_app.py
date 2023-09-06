@@ -38,7 +38,7 @@ args_parser.add_argument(
     help="Disable the renewal of certificates",
 )
 args_parser.add_argument(
-    "--no-health-checks", action="store_true", help="Disables all health checks",
+    "--disable-notifications", action="store_true", help="Disables Discord notifications",
 )
 args = args_parser.parse_args()
 
@@ -52,10 +52,10 @@ API_URL = os.environ["HUB_API_URL"]
 # e.g. dev.thehub-aubg.com or localhost:3000
 WEB_URL = os.environ["HUB_WEB_URL"]
 PY_API = os.environ["HUB_PY_API_URL"]
+SHORTENER = os.environ["HUB_URL_SHORTENER"]
 # dev.thehub-aubg.com (without http) --> used for cert renewal
 CERT_DOMAIN = os.environ["HUB_DOMAIN"]
 DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
-
 REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
@@ -83,7 +83,7 @@ def send_mail(msg):
 
 
 def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e: Exception, discord: bool):
-    if args.no_health_checks:
+    if args.disable_notifications:
         print(
             bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
                 ENV,
@@ -95,7 +95,7 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
         msg.attach(
             MIMEText(
                 '<h3>{}: {} Request to {} failed with the following exception: </h3> </p> {}'.format(
-                    os.getenv("DOCK_ENV"), method, url,
+                    ENV, method, url,
                     str(e),
                 ) + '</p>',
                 'html',
@@ -104,8 +104,8 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
         send_mail(msg)
     else:
         requests.post(
-            os.getenv("DISCORD_WH"), headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
+            DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with the following exception:\n```text\n{str(e)}\n```",
             },
         )
 
@@ -114,10 +114,10 @@ def handle_status_code_exception(
         msg: MIMEMultipart, method: str, url: str, service: str, status_code: int,
         discord: bool,
 ):
-    if args.no_health_checks:
+    if args.disable_notifications:
         print(
             bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
-                os.getenv("DOCK_ENV"),
+                ENV,
                 service, str(url),
             ) + bcolors.CEND,
         )
@@ -129,7 +129,7 @@ def handle_status_code_exception(
         msg.attach(
             MIMEText(
                 '<h3>{}: {} Request to {} failed with status code {}'.format(
-                    os.getenv("DOCK_ENV"), method, url, str(status_code),
+                    ENV, method, url, str(status_code),
                 ) + '</h3>', 'html',
             ),
         )
@@ -137,8 +137,8 @@ def handle_status_code_exception(
     else:
         # send discord notification that the website is down
         requests.post(
-            os.getenv("DISCORD_WH"), headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
-                "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
+            DISCORD_WH, headers={"Content-Type": "application/x-www-form-urlencoded"}, data={
+                "content": f"🏗️: **{ENV}**\n❌: @here {method} Request to {url} failed with status code: **{str(status_code)}**",
             },
         )
 
@@ -197,44 +197,44 @@ def start_docker_compose():
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
 
         ###### WEB ######
-        get_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", False)
+        get_web = check_service_up(WEB_URL, "WEB", False)
 
         # "connection reset by peer"
         print()
         time.sleep(10)
 
         ###### API ######
-        get_api = check_service_up(os.getenv("HUB_API_URL"), "API", False)
+        get_api = check_service_up(API_URL, "API", False)
 
         ##### PY-API #####
         get_py_api = check_service_up(
-            os.getenv("HUB_PY_API_URL"), "PY-API", False,
+            PY_API, "PY-API", False,
         )
 
         # URL-SHORTENER
         get_url_shortener = check_service_up(
-            os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", False,
+            SHORTENER, "URL-SHORTENER", False,
         )
 
         print()
         if get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200:
             print(
                 bcolors.OKGREEN +
-                f"{os.getenv('DOCK_ENV')} BUILD SUCCESSFUL" + bcolors.CEND,
+                f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND,
             )
             BUILD_RUNNING.set()
 
-            msg['Subject'] = f'{os.getenv("DOCK_ENV")}:SPA BUILD SUCCESSFUL'
+            msg['Subject'] = f'{ENV}:SPA BUILD SUCCESSFUL'
             msg.attach(
                 MIMEText('<h3>All services are working!</h3>', 'html'),
             )
             send_mail(msg)
-            if not args.no_health_checks:
+            if not args.disable_notifications:
                 requests.post(
-                    os.getenv("DISCORD_WH"), headers={
+                    DISCORD_WH, headers={
                         "Content-Type": "application/x-www-form-urlencoded",
                     }, data={
-                        "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
+                        "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n✅: Successfully Deployed ",
                     },
                 )
 
@@ -267,19 +267,19 @@ def start_docker_compose():
 
     print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
 
-    msg['Subject'] = f'{os.getenv("DOCK_ENV")}:SPA BUILD FAILED'
+    msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
     send_mail(msg)
 
     errors["BUILD"] = errors["BUILD"].splitlines()[-10:]
 
     if BUILD_TRY <= 1:
-        if not args.no_health_checks:
+        if not args.disable_notifications:
             requests.post(
-                os.getenv("DISCORD_WH"), headers={
+                DISCORD_WH, headers={
                     "Content-Type": "application/x-www-form-urlencoded",
                 }, data={
-                    "content": f"🏗️: **{os.getenv('DOCK_ENV')}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```",
+                    "content": f"🏗️: **{ENV}**\n🔔: [{get_current_commit()}]({get_commit_url()})\n❌: @here Build Failed\n```python\n{beautify_errors(errors)}```",
                 },
             )
 
@@ -322,7 +322,7 @@ def stop_docker_compose():
 def check_service_up(url: str, service: str, discord=False):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(
-        os.getenv("DOCK_ENV"), service,
+        ENV, service,
     )
 
     web_request = None
@@ -344,7 +344,9 @@ def check_service_up(url: str, service: str, discord=False):
 
     if service == "WEB":
         try:
-            web_request = requests.get(url, verify=False)
+            web_request = requests.get(
+                url, verify=False if ENV != "PROD" else True,
+            )
             req_method = "GET"
 
         except Exception as e:
@@ -357,7 +359,9 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "API":
         try:
-            web_request = requests.post(url=url, verify=False)
+            web_request = requests.post(
+                url=url, verify=False if ENV != "PROD" else True,
+            )
             req_method = "POST"
 
         except Exception as e:
@@ -369,7 +373,9 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "PY-API":
         try:
-            web_request = requests.get(url=url, verify=False)
+            web_request = requests.get(
+                url=url, verify=False if ENV != "PROD" else True,
+            )
 
         except Exception as e:
             return handle_exception(msg, req_method, url, service, e, discord)
@@ -381,7 +387,9 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "URL-SHORTENER":
         try:
-            web_request = requests.get(url=url, verify=False)
+            web_request = requests.get(
+                url=url, verify=False if ENV != "PROD" else True,
+            )
         except Exception as e:
             return handle_exception(msg, req_method, url, service, e, discord)
 
@@ -403,13 +411,13 @@ def cron_local_test():
     if CURRENTLY_BUILDING.is_set() or BUILD_FAILED.is_set():
         return
 
-    local_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", True)
-    local_api = check_service_up(os.getenv("HUB_API_URL"), "API", True)
+    local_web = check_service_up(WEB_URL, "WEB", True)
+    local_api = check_service_up(API_URL, "API", True)
     local_py_api = check_service_up(
-        os.getenv("HUB_PY_API_URL"), "PY-API", True,
+        PY_API, "PY-API", True,
     )
     local_url_shortener = check_service_up(
-        os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", True,
+        SHORTENER, "URL-SHORTENER", True,
     )
     # build is not running
     if local_web != 200 or local_api != 400 or local_py_api != 200 or local_url_shortener != 200:
