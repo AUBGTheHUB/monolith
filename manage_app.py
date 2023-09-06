@@ -344,7 +344,7 @@ def check_service_up(url: str, service: str, discord=False):
 
     if service == "WEB":
         try:
-            web_request = requests.get(url)
+            web_request = requests.get(url, verify=False)
             req_method = "GET"
 
         except Exception as e:
@@ -357,7 +357,7 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "API":
         try:
-            web_request = requests.post(url=url)
+            web_request = requests.post(url=url, verify=False)
             req_method = "POST"
 
         except Exception as e:
@@ -369,7 +369,7 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "PY-API":
         try:
-            web_request = requests.get(url=url)
+            web_request = requests.get(url=url, verify=False)
 
         except Exception as e:
             return handle_exception(msg, req_method, url, service, e, discord)
@@ -381,7 +381,7 @@ def check_service_up(url: str, service: str, discord=False):
 
     elif service == "URL-SHORTENER":
         try:
-            web_request = requests.get(url=url)
+            web_request = requests.get(url=url, verify=False)
         except Exception as e:
             return handle_exception(msg, req_method, url, service, e, discord)
 
@@ -405,9 +405,11 @@ def cron_local_test():
 
     local_web = check_service_up(os.getenv("HUB_WEB_URL"), "WEB", True)
     local_api = check_service_up(os.getenv("HUB_API_URL"), "API", True)
-    local_py_api = check_service_up(os.getenv("HUB_PY_API_URL"), "API", True)
+    local_py_api = check_service_up(
+        os.getenv("HUB_PY_API_URL"), "PY-API", True,
+    )
     local_url_shortener = check_service_up(
-        os.getenv("HUB_URL_SHORTENER"), "API", True,
+        os.getenv("HUB_URL_SHORTENER"), "URL-SHORTENER", True,
     )
     # build is not running
     if local_web != 200 or local_api != 400 or local_py_api != 200 or local_url_shortener != 200:
@@ -433,7 +435,7 @@ def cron_git_check_for_updates():
         print("GIT STATE FAILED: \n{}".format(status_uno.stdout))
         return
 
-    if "Your branch is behind" in status_uno.stdoutq or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
+    if "Your branch is behind" in status_uno.stdout or "Your branch is ahead" in status_uno.stdout or "diverged" in status_uno.stdout:
         print("BRANCH IS BEHIND!")
         subprocess.run(
             ['git', 'fetch'], capture_output=True, text=True,
