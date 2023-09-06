@@ -43,7 +43,20 @@ services:
       - 8001
     ports:
       - 8001:8001
-    command: ./target/release/url_shortener
+    networks:
+      - front-back
+
+  questionnaire:
+    build:
+      context: ./
+      dockerfile: ./packages/services/questionnaire/Dockerfile
+    container_name: questionnaire
+    env_file:
+      - ".env"
+    expose:
+      - 3000
+    ports:
+      - 6420:3000
     networks:
       - front-back
 
