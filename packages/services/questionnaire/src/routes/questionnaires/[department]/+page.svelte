@@ -9,11 +9,13 @@
     import { Stepper, type ToastSettings } from '@skeletonlabs/skeleton';
     import { getToastStore } from '@skeletonlabs/skeleton';
     import { getHighlighter, setCDN, type Highlighter } from 'shiki';
-    import { onMount } from 'svelte';
+    import { onMount, tick } from 'svelte';
 
     const questions = $page.data.questions;
     const answers: Record<string, string> = {};
     const toastStore = getToastStore();
+
+    setCDN('/questionnaires/shiki');
 
     const appendToAnswers = (title: string, answer: string) => {
         answers[title] = answer;
@@ -32,8 +34,14 @@
     };
 
     const handleFormatting = async () => {
+        await tick();
         formatCode(highlighter as Highlighter);
     };
+
+    onMount(async () => {
+        highlighter = await getHighlighter({ theme: 'nord', langs: ['js', 'python'] });
+        handleFormatting();
+    });
 
     const submitAnswers = async () => {
         const badToast: ToastSettings = {
@@ -57,6 +65,10 @@
                     background: 'variant-filled-primary',
                 };
                 toastStore.trigger(goodToast);
+
+                setTimeout(() => {
+                    location.href = 'https://thehub-aubg.com';
+                }, 3000);
             } else {
                 toastStore.trigger(badToast);
             }
@@ -65,12 +77,6 @@
             toastStore.trigger(badToast);
         }
     };
-
-    onMount(async () => {
-        setCDN('/questionnaires/shiki');
-        highlighter = await getHighlighter({ theme: 'nord', langs: ['js', 'python'] });
-        handleFormatting();
-    });
 </script>
 
 <div class="flex flex-col justify-center items-center">
