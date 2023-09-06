@@ -1,5 +1,5 @@
 import { questions } from '$lib/database/mongo';
-import type { DepartmentQuestions } from '../types';
+import type { DepartmentQuestions } from '../../types';
 import { marked } from 'marked';
 
 /** @type {import('./$types').PageLoad} */

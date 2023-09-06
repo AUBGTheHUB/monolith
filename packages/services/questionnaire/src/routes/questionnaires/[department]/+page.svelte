@@ -7,7 +7,7 @@
     import Input from "$lib/inputs/input.svelte";
     import { page } from '$app/stores';
     import { Stepper} from '@skeletonlabs/skeleton';
-    import { getHighlighter, type Highlighter } from "shiki";
+    import { getHighlighter, setCDN, type Highlighter } from "shiki";
     import { onMount } from "svelte";
 
     const questions = $page.data.questions;
@@ -15,7 +15,7 @@
 
     const appendToAnswers = (title: string, answer: string) => {answers[title] = answer}
 
-    let highlighter = null;
+    let highlighter: Highlighter | null = null;
 
     const formatCode = (highlighter: Highlighter) => {
         const codeElements = document.querySelectorAll('code');
@@ -28,11 +28,17 @@
     }
 
     const handleFormatting = async () => {
-        highlighter = await getHighlighter({theme: "nord", langs: ["js", "python"]})
-        formatCode(highlighter)
+        formatCode(highlighter as Highlighter)
     }
 
     onMount(async () => {
+        // Having Shiki on the client side requires us to host the static files ourselves.
+        // Additionally, setting up a reverse proxy will
+        // disable access to the static folder endpoint.
+        // Therefore, we need to be explicit with where exactly we host our files.
+
+        setCDN("/questionnaires/shiki")
+        highlighter = await getHighlighter({theme: "nord", langs: ["js", "python"]})
         handleFormatting()
     })
 </script>
