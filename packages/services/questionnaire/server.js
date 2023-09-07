@@ -9,6 +9,11 @@ const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
+
 const httpsServer = https.createServer(credentials, app);
 
 const SSLPORT = 6420;
