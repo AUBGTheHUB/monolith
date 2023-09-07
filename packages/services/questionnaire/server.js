@@ -9,7 +9,7 @@ const certificate = fs.readFileSync('./certs/devenv.crt', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: '*' }));
 
 const httpsServer = https.createServer(credentials, app);
 
