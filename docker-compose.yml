@@ -54,11 +54,11 @@ services:
     env_file:
       - ".env"
     expose:
-      - 3000
+      - 6420
     ports:
-      - 5173:3000
+      - 6420:6420
     volumes:
-      - ./data/certs:/etc/nginx/certs
+      - ./data/certs:/app/certs
     networks:
       - front-back
 
