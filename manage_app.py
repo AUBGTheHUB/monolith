@@ -21,14 +21,10 @@ CURRENTLY_BUILDING = threading.Event()
 BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
-logger = getLogger("manage-app-logger")
+load_dotenv()
 
 args_parser = ArgumentParser(description="CLI args for the script")
 
-args_parser.add_argument(
-    '--load-env', action='store_true',
-    help='Load environment variables from a dotenv file',
-)
 args_parser.add_argument(
     "--no-cd", action='store_true',
     help="Disable checking for new changes in the git repo",
@@ -42,20 +38,17 @@ args_parser.add_argument(
 )
 args = args_parser.parse_args()
 
-if args.load_env:
-    load_dotenv()
-
 # DEV, PROD, STAGING - this is the identifier of the environment in the emails
-ENV = os.environ["DOCK_ENV"]
+ENV = os.getenv("DOCK_ENV")
 # e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
-API_URL = os.environ["HUB_API_URL"]
+API_URL = os.getenv("HUB_API_URL")
 # e.g. dev.thehub-aubg.com or localhost:3000
-WEB_URL = os.environ["HUB_WEB_URL"]
-PY_API = os.environ["HUB_PY_API_URL"]
-SHORTENER = os.environ["HUB_URL_SHORTENER"]
+WEB_URL = os.getenv("HUB_WEB_URL")
+PY_API = os.getenv("HUB_PY_API_URL")
+SHORTENER = os.getenv("HUB_URL_SHORTENER")
 # dev.thehub-aubg.com (without http) --> used for cert renewal
-CERT_DOMAIN = os.environ["HUB_DOMAIN"]
-DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
+CERT_DOMAIN = os.getenv("HUB_DOMAIN")
+DISCORD_WH = os.getenv("DISCORD_WH")  # url of webhook (discord channel)
 REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
@@ -71,12 +64,12 @@ class bcolors:
 
 def send_mail(msg):
     port = 465  # SSL
-    email = os.environ['HUB_MAIL_USERNAME']
-    password = os.environ['HUB_MAIL_PASSWORD']
+    email = os.getenv('HUB_MAIL_USERNAME')
+    password = os.getenv('HUB_MAIL_PASSWORD')
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port)
     server.login(email, password)
-    server.sendmail(email, os.environ['HUB_MAIL_RECEIVER'], msg.as_string())
+    server.sendmail(email, os.getenv('HUB_MAIL_RECEIVER'), msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
