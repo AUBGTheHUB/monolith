@@ -22,6 +22,7 @@
     };
 
     let highlighter: Highlighter | null = null;
+    let isDisabled = false;
 
     const formatCode = (highlighter: Highlighter) => {
         const codeElements = document.querySelectorAll('code');
@@ -65,6 +66,7 @@
                     background: 'variant-filled-primary',
                 };
                 toastStore.trigger(goodToast);
+                isDisabled = true;
 
                 setTimeout(() => {
                     location.href = 'https://thehub-aubg.com';
@@ -82,7 +84,7 @@
 <div class="flex flex-col justify-center items-center">
     <Stepper stepTerm="Question" justify="justify-around" on:step={handleFormatting} on:complete={submitAnswers}>
         {#each questions as question}
-            <Input {question} {appendToAnswers} />
+            <Input {question} {appendToAnswers} {isDisabled} />
         {/each}
     </Stepper>
 </div>
