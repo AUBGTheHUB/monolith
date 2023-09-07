@@ -2,15 +2,12 @@
 # mypy: ignore-errors
 import os
 import smtplib as smtp
-import ssl
 import subprocess
 import threading
 import time
-import typing
 from argparse import ArgumentParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from logging import getLogger
 
 import requests
 import schedule
@@ -289,15 +286,15 @@ def beautify_errors(errors: dict) -> str:
     try:
         output_string = ""
 
-        if (build_errors := errors.get("BUILD", None)):
+        if (build_errors := errors.get("BUILD", [])):
             output_string += "BUILD:\n\t"
             output_string += '\n\t'.join(build_errors)
 
-        if (build_errors := errors.get("WEB", None)):
+        if (build_errors := errors.get("WEB", [])):
             output_string += "WEB:\n\t"
             output_string += '\n\t'.join(build_errors)
 
-        if (build_errors := errors.get("API", None)):
+        if (build_errors := errors.get("API", [])):
             output_string += "API:\n\t"
             output_string += '\n\t'.join(build_errors)
 
@@ -312,6 +309,10 @@ def stop_docker_compose():
     BUILD_RUNNING.clear()
 
 
+def make_request(services, method_type):
+    pass
+
+
 def check_service_up(url: str, service: str, discord=False):
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(
@@ -319,11 +320,6 @@ def check_service_up(url: str, service: str, discord=False):
     )
 
     web_request = None
-
-    """
-    This could be heavily restructured if there are more services to be checked
-    As of now, the replicated code is not an issue - it's easy to read
-    """
 
     print()
     print(
