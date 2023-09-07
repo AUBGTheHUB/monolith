@@ -9,11 +9,6 @@ type Body = {
     answers: Record<string, string>;
 };
 
-type Answer = {
-    title: string;
-    answer: string;
-};
-
 const verifyAnswers = (answers: Record<string, string> | null, questionnaire: DepartmentQuestions | null) => {
     if (!questionnaire) {
         throw new Error('Questionnaire was not found');
