@@ -9,12 +9,12 @@ type Body = {
     answers: Record<string, string>;
 };
 
-type Answers = {
+type Answer = {
     title: string;
     answer: string;
 };
 
-const verifyAnswers = (answers: Answers[] | null, questionnaire: DepartmentQuestions | null) => {
+const verifyAnswers = (answers: Record<string, string> | null, questionnaire: DepartmentQuestions | null) => {
     if (!questionnaire) {
         throw new Error('Questionnaire was not found');
     }
