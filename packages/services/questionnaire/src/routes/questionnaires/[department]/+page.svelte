@@ -51,7 +51,7 @@
         };
 
         try {
-            const body = JSON.stringify({ answers });
+            const body = JSON.stringify({ department: $page.data.department, answers });
             const response = await fetch(`/questionnaires/answers`, {
                 body,
                 method: 'POST',

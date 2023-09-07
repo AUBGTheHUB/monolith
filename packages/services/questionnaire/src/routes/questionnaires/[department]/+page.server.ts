@@ -13,5 +13,6 @@ export async function load({ params }: { params: Record<string, any> }) {
 
     return {
         questions: result[0].questions,
+        department,
     };
 }
