@@ -18,6 +18,15 @@ CURRENTLY_BUILDING = threading.Event()
 BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
+
+SERVICE_CONFIG = {
+    "WEB": {"method": "GET", "expected_status": 200},
+    "API": {"method": "POST", "expected_status": 400},
+    "PY-API": {"method": "GET", "expected_status": 200},
+    "URL-SHORTENER": {"method": "GET", "expected_status": 200},
+    "QUESTIONNAIRE": {"method": "GET", "expected_status": 200},
+}
+
 load_dotenv()
 
 args_parser = ArgumentParser(description="CLI args for the script")
@@ -43,6 +52,7 @@ API_URL = os.getenv("HUB_API_URL")
 WEB_URL = os.getenv("HUB_WEB_URL")
 PY_API = os.getenv("HUB_PY_API_URL")
 SHORTENER = os.getenv("HUB_URL_SHORTENER")
+QUESTIONNAIRE = os.getenv("HUB_QUESTIONNAIRE")
 # dev.thehub-aubg.com (without http) --> used for cert renewal
 CERT_DOMAIN = os.getenv("HUB_DOMAIN")
 DISCORD_WH = os.getenv("DISCORD_WH")  # url of webhook (discord channel)
@@ -206,8 +216,14 @@ def start_docker_compose():
             SHORTENER, "URL-SHORTENER", False,
         )
 
+        get_qustionnaire = check_service_up(
+            QUESTIONNAIRE, "QUESTIONNAIRE", False,
+        )
+
+        are_status_codes_eligible = get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200 and get_qustionnaire == 200
+
         print()
-        if get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200:
+        if are_status_codes_eligible:
             print(
                 bcolors.OKGREEN +
                 f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND,
@@ -244,6 +260,7 @@ def start_docker_compose():
             errors['API'] = get_api
             errors['PY-API'] = get_py_api
             errors['URL-SHORTENER'] = get_url_shortener
+            errors['QUESTIONNAIRE'] = get_qustionnaire
 
     build_err = subprocess.run(
         [
@@ -319,7 +336,12 @@ def check_service_up(url: str, service: str, discord=False):
         ENV, service,
     )
 
-    web_request = None
+    if service not in SERVICE_CONFIG:
+        print(bcolors.RED_IN + "Add service to the service config" + bcolors.CEND)
+        return
+
+    service_info = SERVICE_CONFIG[service]
+    req_method = service_info["method"]
 
     print()
     print(
@@ -329,63 +351,19 @@ def check_service_up(url: str, service: str, discord=False):
         ) + bcolors.CEND,
     )
 
-    req_method = ""
+    try:
+        web_request = requests.request(
+            method=req_method,
+            url=url,
+            verify=True if ENV != "LOCAL" else False,
+        )
+    except Exception as e:
+        return handle_exception(msg, req_method, url, service, e, discord)
 
-    if service == "WEB":
-        try:
-            web_request = requests.get(
-                url, verify=False if ENV != "PROD" else True,
-            )
-            req_method = "GET"
-
-        except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
-
-        if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
-
-    elif service == "API":
-        try:
-            web_request = requests.post(
-                url=url, verify=False if ENV != "PROD" else True,
-            )
-            req_method = "POST"
-
-        except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
-        if web_request.status_code != 400:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
-
-    elif service == "PY-API":
-        try:
-            web_request = requests.get(
-                url=url, verify=False if ENV != "PROD" else True,
-            )
-
-        except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
-
-        if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
-
-    elif service == "URL-SHORTENER":
-        try:
-            web_request = requests.get(
-                url=url, verify=False if ENV != "PROD" else True,
-            )
-        except Exception as e:
-            return handle_exception(msg, req_method, url, service, e, discord)
-
-        if web_request.status_code != 200:
-            return handle_status_code_exception(
-                msg, req_method, url, service, web_request.status_code, discord,
-            )
+    if web_request.status_code != service_info["expected_status"]:
+        return handle_status_code_exception(
+            msg, req_method, url, service, web_request.status_code, discord,
+        )
 
     print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
 
