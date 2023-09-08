@@ -8,10 +8,12 @@ import time
 from argparse import ArgumentParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Any, Dict, Tuple
 
 import requests
 import schedule
 from dotenv import load_dotenv
+from requests import Response
 
 BUILD_RUNNING = threading.Event()
 CURRENTLY_BUILDING = threading.Event()
@@ -19,15 +21,34 @@ BUILD_FAILED = threading.Event()
 lock = threading.Lock()
 BUILD_TRY = 0
 
-SERVICE_CONFIG = {
-    "WEB": {"method": "GET", "expected_status": 200},
-    "API": {"method": "POST", "expected_status": 400},
-    "PY-API": {"method": "GET", "expected_status": 200},
-    "URL-SHORTENER": {"method": "GET", "expected_status": 200},
-    "QUESTIONNAIRE": {"method": "GET", "expected_status": 200},
-}
-
 load_dotenv()
+
+# DEV, PROD, STAGING - this is the identifier of the environment in the emails
+ENV = os.environ["DOCK_ENV"]
+# e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
+API_URL = os.environ["HUB_API_URL"]
+# e.g. dev.thehub-aubg.com or localhost:3000
+WEB_URL = os.environ["HUB_WEB_URL"]
+PY_API = os.environ["HUB_PY_API_URL"]
+SHORTENER = os.environ["HUB_URL_SHORTENER"]
+QUESTIONNAIRE = os.environ["HUB_QUESTIONNAIRE"]
+# dev.thehub-aubg.com (without http) --> used for cert renewal
+CERT_DOMAIN = os.environ["HUB_DOMAIN"]
+DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
+REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
+
+SERVICES: Dict[str, Dict[str, Any]] = {
+    "WEB": {"http_method": "GET", "expected_code": 200, "url": WEB_URL},
+    "API": {"http_method": "GET", "expected_code": 400, "url": API_URL},
+    "URL-SHORTENER": {
+        "http_method": "GET", "expected_code": 200,
+        "url": SHORTENER,
+    },
+    "QUESTIONNAIRE": {
+        "http_method": "GET", "expected_code": 200,
+        "url": QUESTIONNAIRE,
+    },
+}
 
 args_parser = ArgumentParser(description="CLI args for the script")
 
@@ -43,21 +64,6 @@ args_parser.add_argument(
     "--disable-notifications", action="store_true", help="Disables Discord notifications",
 )
 args = args_parser.parse_args()
-
-# TODO: environ
-# DEV, PROD, STAGING - this is the identifier of the environment in the emails
-ENV = os.environ["DOCK_ENV"]
-# e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
-API_URL = os.environ["HUB_API_URL"]
-# e.g. dev.thehub-aubg.com or localhost:3000
-WEB_URL = os.environ["HUB_WEB_URL"]
-PY_API = os.environ["HUB_PY_API_URL"]
-SHORTENER = os.environ["HUB_URL_SHORTENER"]
-QUESTIONNAIRE = os.environ["HUB_QUESTIONNAIRE"]
-# dev.thehub-aubg.com (without http) --> used for cert renewal
-CERT_DOMAIN = os.environ["HUB_DOMAIN"]
-DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
-REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
 class bcolors:
@@ -196,35 +202,16 @@ def start_docker_compose():
 
         time.sleep(10)
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
+        services_status_codes: Dict[str, int] = {}
+        for service in SERVICES:
+            status_code = check_service_up(service, False)
+            services_status_codes[service] = status_code
 
-        ###### WEB ######
-        get_web = check_service_up(WEB_URL, "WEB", False)
-
-        # "connection reset by peer"
-        print()
-        time.sleep(10)
-
-        ###### API ######
-        get_api = check_service_up(API_URL, "API", False)
-
-        ##### PY-API #####
-        get_py_api = check_service_up(
-            PY_API, "PY-API", False,
-        )
-
-        # URL-SHORTENER
-        get_url_shortener = check_service_up(
-            SHORTENER, "URL-SHORTENER", False,
-        )
-
-        get_qustionnaire = check_service_up(
-            QUESTIONNAIRE, "QUESTIONNAIRE", False,
-        )
-
-        are_status_codes_eligible = get_web == 200 and get_api == 400 and get_py_api == 200 and get_url_shortener == 200 and get_qustionnaire == 200
+            print()
+            time.sleep(10)
 
         print()
-        if are_status_codes_eligible:
+        if check_status_codes(services_status_codes):
             print(
                 bcolors.OKGREEN +
                 f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND,
@@ -256,12 +243,13 @@ def start_docker_compose():
             return
 
         else:
+            pass
             # docker-compose keeps running when there is a failed container
-            errors['WEB'] = get_web
-            errors['API'] = get_api
-            errors['PY-API'] = get_py_api
-            errors['URL-SHORTENER'] = get_url_shortener
-            errors['QUESTIONNAIRE'] = get_qustionnaire
+            # errors['WEB'] = get_web
+            # errors['API'] = get_api
+            # errors['PY-API'] = get_py_api
+            # errors['URL-SHORTENER'] = get_url_shortener
+            # errors['QUESTIONNAIRE'] = get_qustionnaire
 
     build_err = subprocess.run(
         [
@@ -300,6 +288,18 @@ def start_docker_compose():
     return
 
 
+def check_status_codes(services_status_codes: Dict[str, int]) -> bool:
+    """Checks the received status code from the service against the expected one
+    Returns:
+        False if one of the services responded with unexpected status code
+        True if all services returned expected status codes
+    """
+    for service, status_code in services_status_codes:
+        if status_code != SERVICES[service][status_code]:
+            return False
+    return True
+
+
 def beautify_errors(errors: dict) -> str:
     try:
         # TODO: For over errors
@@ -328,48 +328,53 @@ def stop_docker_compose():
     BUILD_RUNNING.clear()
 
 
-def make_request(services, method_type):
-    pass
+def make_service_request(service_details) -> tuple[None, str] | tuple[None, Exception] | tuple[Response, None]:
+    try:
+        if service_details["http_method"] == "GET":
+            response = requests.get(
+                service_details["url"], verify=ENV != "LOCAL",
+            )
+        elif service_details["http_method"] == "POST":
+            response = requests.post(
+                service_details["url"], verify=ENV != "LOCAL",
+            )
+        else:
+            return None, "Invalid method type"
+    except Exception as e:
+        return None, e
+
+    return response, None
 
 
-def check_service_up(url: str, service: str, discord=False):
+def check_service_up(service: str, discord=False) -> int:
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(
         ENV, service,
     )
-
-    if service not in SERVICE_CONFIG:
-        print(bcolors.RED_IN + "Add service to the service config" + bcolors.CEND)
-        return
-
-    service_info = SERVICE_CONFIG[service]
-    req_method = service_info["method"]
-
     print()
     print(
         bcolors.YELLOW_IN +
         "CHECKING SERVICE {}:{} ".format(
-            os.environ["DOCK_ENV"], service,
+            os.getenv("DOCK_ENV"), service,
         ) + bcolors.CEND,
     )
 
-    try:
-        web_request = requests.request(
-            method=req_method,
-            url=url,
-            verify=ENV != "LOCAL",
-        )
-    except Exception as e:
-        return handle_exception(msg, req_method, url, service, e, discord)
+    for service, details in SERVICES.items():
 
-    if web_request.status_code != service_info["expected_status"]:
-        return handle_status_code_exception(
-            msg, req_method, url, service, web_request.status_code, discord,
-        )
+        response, error = make_service_request(details)
+        if error is not None:
+            handle_exception(
+                msg, details["http_method"], details["url"], service, response.status_code, discord,
+            )
 
-    print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+        elif response.status_code != details["expected_code"]:
+            handle_status_code_exception(
+                msg, details["http_method"], details["url"], service, response.status_code, discord,
+            )
 
-    return web_request.status_code
+        print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+
+        return response.status_code
 
 
 """ definitions of cron jobs """
