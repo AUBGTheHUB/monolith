@@ -8,7 +8,7 @@ import time
 from argparse import ArgumentParser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
 import requests
 import schedule
@@ -39,7 +39,8 @@ REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 SERVICES: Dict[str, Dict[str, Any]] = {
     "WEB": {"http_method": "GET", "expected_code": 200, "url": WEB_URL},
-    "API": {"http_method": "GET", "expected_code": 400, "url": API_URL},
+    "API": {"http_method": "POST", "expected_code": 400, "url": API_URL},
+    "PY-API": {"http_method": "GET", "expected_code": 200, "url": PY_API},
     "URL-SHORTENER": {
         "http_method": "GET", "expected_code": 200,
         "url": SHORTENER,
@@ -78,12 +79,12 @@ class bcolors:
 
 def send_mail(msg):
     port = 465  # SSL
-    email = os.environ('HUB_MAIL_USERNAME')
-    password = os.environ('HUB_MAIL_PASSWORD')
+    email = os.environ['HUB_MAIL_USERNAME']
+    password = os.environ['HUB_MAIL_PASSWORD']
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port)
     server.login(email, password)
-    server.sendmail(email, os.environ('HUB_MAIL_RECEIVER'), msg.as_string())
+    server.sendmail(email, os.environ['HUB_MAIL_RECEIVER'], msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -97,7 +98,7 @@ def handle_exception(msg: MIMEMultipart, method: str, url: str, service: str, e:
                 service, str(url),
             ) + bcolors.CEND, e,
         )
-        return e
+        return
     if not discord:
         msg.attach(
             MIMEText(
@@ -128,9 +129,7 @@ def handle_status_code_exception(
                 service, str(url),
             ) + bcolors.CEND,
         )
-
-        return status_code
-
+        return
     if not discord:
         # send email that the website is down
         msg.attach(
@@ -169,7 +168,7 @@ def start_docker_compose():
 
         BUILD_TRY = BUILD_TRY + 1
 
-    errors = {}
+    errors: Dict[str, Any] = {}
 
     def get_current_commit():
         current_commit = subprocess.run(
@@ -202,16 +201,17 @@ def start_docker_compose():
 
         time.sleep(10)
         print(bcolors.CYAN_IN + "BUILD HEALTH CHECK:" + bcolors.CEND)
-        services_status_codes: Dict[str, int] = {}
-        for service in SERVICES:
-            status_code = check_service_up(service, False)
-            services_status_codes[service] = status_code
+        services_received_status_codes: Dict[str, int] = {}
+        for service, details in SERVICES.items():
+            status_code = check_service_up(service, details, False)
+
+            services_received_status_codes[service] = status_code
 
             print()
             time.sleep(10)
 
         print()
-        if check_status_codes(services_status_codes):
+        if check_status_codes(services_received_status_codes):
             print(
                 bcolors.OKGREEN +
                 f"{ENV} BUILD SUCCESSFUL" + bcolors.CEND,
@@ -243,13 +243,8 @@ def start_docker_compose():
             return
 
         else:
-            pass
             # docker-compose keeps running when there is a failed container
-            # errors['WEB'] = get_web
-            # errors['API'] = get_api
-            # errors['PY-API'] = get_py_api
-            # errors['URL-SHORTENER'] = get_url_shortener
-            # errors['QUESTIONNAIRE'] = get_qustionnaire
+            errors = services_received_status_codes
 
     build_err = subprocess.run(
         [
@@ -261,7 +256,7 @@ def start_docker_compose():
 
     errors["BUILD"] = build_err.stderr.decode('utf-8')
 
-    print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
+    print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND + str(errors))
 
     msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
@@ -288,34 +283,24 @@ def start_docker_compose():
     return
 
 
-def check_status_codes(services_status_codes: Dict[str, int]) -> bool:
-    """Checks the received status code from the service against the expected one
+def check_status_codes(services_received_status_codes: Dict[str, int]) -> bool:
+    """Checks the received status codes from the services against the expected ones
     Returns:
         False if one of the services responded with unexpected status code
         True if all services returned expected status codes
     """
-    for service, status_code in services_status_codes:
-        if status_code != SERVICES[service][status_code]:
+    for service, status_code in services_received_status_codes.items():
+        if status_code != SERVICES[service]["expected_code"]:
             return False
     return True
 
 
-def beautify_errors(errors: dict) -> str:
+def beautify_errors(errors: Dict[str, Any]) -> str:
     try:
-        # TODO: For over errors
         output_string = ""
-
-        if (build_errors := errors.get("BUILD", [])):
-            output_string += "BUILD:\n\t"
-            output_string += '\n\t'.join(build_errors)
-
-        if (build_errors := errors.get("WEB", [])):
-            output_string += "WEB:\n\t"
-            output_string += '\n\t'.join(build_errors)
-
-        if (build_errors := errors.get("API", [])):
-            output_string += "API:\n\t"
-            output_string += '\n\t'.join(build_errors)
+        for service, error in errors.items():
+            output_string += f"{service}:\n\t"
+            output_string += '\n\t'.join(error)
 
     except Exception as e:
         return str(e)
@@ -328,25 +313,27 @@ def stop_docker_compose():
     BUILD_RUNNING.clear()
 
 
-def make_service_request(service_details) -> tuple[None, str] | tuple[None, Exception] | tuple[Response, None]:
+def make_service_request(service_details) -> tuple[None, Exception] | tuple[Response, None]:
     try:
         if service_details["http_method"] == "GET":
             response = requests.get(
                 service_details["url"], verify=ENV != "LOCAL",
             )
         elif service_details["http_method"] == "POST":
+            print("service_details", service_details)
+
             response = requests.post(
                 service_details["url"], verify=ENV != "LOCAL",
             )
         else:
-            return None, "Invalid method type"
+            raise Exception("Invalid method type")
     except Exception as e:
         return None, e
 
     return response, None
 
 
-def check_service_up(service: str, discord=False) -> int:
+def check_service_up(service: str, details: Dict[str, Any], discord=False) -> Any | None:
     msg = MIMEMultipart('alternative')
     msg['Subject'] = '{}:{} - SERVICE IS DOWN!'.format(
         ENV, service,
@@ -359,22 +346,21 @@ def check_service_up(service: str, discord=False) -> int:
         ) + bcolors.CEND,
     )
 
-    for service, details in SERVICES.items():
-
-        response, error = make_service_request(details)
-        if error is not None:
-            handle_exception(
-                msg, details["http_method"], details["url"], service, response.status_code, discord,
-            )
-
-        elif response.status_code != details["expected_code"]:
-            handle_status_code_exception(
-                msg, details["http_method"], details["url"], service, response.status_code, discord,
-            )
-
-        print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
-
+    response, error = make_service_request(details)
+    if error:
+        handle_exception(
+            msg, details["http_method"], details["url"], service, error, discord,
+        )
+        return 500
+    elif response.status_code != details["expected_code"]:
+        handle_status_code_exception(
+            msg, details["http_method"], details["url"], service, response.status_code, discord,
+        )
         return response.status_code
+
+    print(bcolors.OKGREEN + "Nothing unusual!" + bcolors.CEND)
+
+    return response.status_code
 
 
 """ definitions of cron jobs """
