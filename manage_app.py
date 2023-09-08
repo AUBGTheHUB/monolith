@@ -44,18 +44,19 @@ args_parser.add_argument(
 )
 args = args_parser.parse_args()
 
+# TODO: environ
 # DEV, PROD, STAGING - this is the identifier of the environment in the emails
-ENV = os.getenv("DOCK_ENV")
+ENV = os.environ["DOCK_ENV"]
 # e.g. dev.thehub-aubg.com/api/validate or localhost:3000/api/validate
-API_URL = os.getenv("HUB_API_URL")
+API_URL = os.environ["HUB_API_URL"]
 # e.g. dev.thehub-aubg.com or localhost:3000
-WEB_URL = os.getenv("HUB_WEB_URL")
-PY_API = os.getenv("HUB_PY_API_URL")
-SHORTENER = os.getenv("HUB_URL_SHORTENER")
-QUESTIONNAIRE = os.getenv("HUB_QUESTIONNAIRE")
+WEB_URL = os.environ["HUB_WEB_URL"]
+PY_API = os.environ["HUB_PY_API_URL"]
+SHORTENER = os.environ["HUB_URL_SHORTENER"]
+QUESTIONNAIRE = os.environ["HUB_QUESTIONNAIRE"]
 # dev.thehub-aubg.com (without http) --> used for cert renewal
-CERT_DOMAIN = os.getenv("HUB_DOMAIN")
-DISCORD_WH = os.getenv("DISCORD_WH")  # url of webhook (discord channel)
+CERT_DOMAIN = os.environ["HUB_DOMAIN"]
+DISCORD_WH = os.environ["DISCORD_WH"]  # url of webhook (discord channel)
 REPO_URL = "https://github.com/AUBGTheHUB/monolith"  # remove last backlash
 
 
@@ -71,12 +72,12 @@ class bcolors:
 
 def send_mail(msg):
     port = 465  # SSL
-    email = os.getenv('HUB_MAIL_USERNAME')
-    password = os.getenv('HUB_MAIL_PASSWORD')
+    email = os.environ('HUB_MAIL_USERNAME')
+    password = os.environ('HUB_MAIL_PASSWORD')
 
     server = smtp.SMTP_SSL('smtp.gmail.com', port)
     server.login(email, password)
-    server.sendmail(email, os.getenv('HUB_MAIL_RECEIVER'), msg.as_string())
+    server.sendmail(email, os.environ('HUB_MAIL_RECEIVER'), msg.as_string())
     server.close()
 
     print(bcolors.OKGREEN + "An email has been sent!" + bcolors.CEND)
@@ -301,6 +302,7 @@ def start_docker_compose():
 
 def beautify_errors(errors: dict) -> str:
     try:
+        # TODO: For over errors
         output_string = ""
 
         if (build_errors := errors.get("BUILD", [])):
@@ -347,7 +349,7 @@ def check_service_up(url: str, service: str, discord=False):
     print(
         bcolors.YELLOW_IN +
         "CHECKING SERVICE {}:{} ".format(
-            os.getenv("DOCK_ENV"), service,
+            os.environ["DOCK_ENV"], service,
         ) + bcolors.CEND,
     )
 
@@ -355,7 +357,7 @@ def check_service_up(url: str, service: str, discord=False):
         web_request = requests.request(
             method=req_method,
             url=url,
-            verify=True if ENV != "LOCAL" else False,
+            verify=ENV != "LOCAL",
         )
     except Exception as e:
         return handle_exception(msg, req_method, url, service, e, discord)
@@ -461,11 +463,11 @@ def cron_start_with_new_certs():
 
     subprocess.run([
         'cp', '/etc/letsencrypt/live/' +
-              os.getenv("HUB_DOMAIN") + "/fullchain.pem", pwd + 'devenv.crt',
+              os.environ["HUB_DOMAIN"] + "/fullchain.pem", pwd + 'devenv.crt',
     ])
     subprocess.run([
         'cp', '/etc/letsencrypt/live/' +
-              os.getenv("HUB_DOMAIN") + "/privkey.pem", pwd + 'devenv.key',
+              os.environ["HUB_DOMAIN"] + "/privkey.pem", pwd + 'devenv.key',
     ])
 
     CURRENTLY_BUILDING.clear()
