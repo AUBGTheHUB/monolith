@@ -371,16 +371,13 @@ def cron_local_test():
     if CURRENTLY_BUILDING.is_set() or BUILD_FAILED.is_set():
         return
 
-    local_web = check_service_up(WEB_URL, "WEB", True)
-    local_api = check_service_up(API_URL, "API", True)
-    local_py_api = check_service_up(
-        PY_API, "PY-API", True,
-    )
-    local_url_shortener = check_service_up(
-        SHORTENER, "URL-SHORTENER", True,
-    )
+    services_received_status_codes: Dict[str, int] = {}
+    for service, details in SERVICES.items():
+        status_code = check_service_up(service, details, False)
+
+        services_received_status_codes[service] = status_code
     # build is not running
-    if local_web != 200 or local_api != 400 or local_py_api != 200 or local_url_shortener != 200:
+    if not check_status_codes(services_received_status_codes):
         BUILD_RUNNING.clear()
 
 
