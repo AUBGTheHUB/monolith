@@ -36,7 +36,10 @@
                 <h1 class="text-2xl">{question.title}</h1>
             {/if}
 
-            {@html question.body}
+            <p class="question-description">
+                {@html question.body}
+            </p>
+
             {#if question.type === InputType.TextArea}
                 <textarea
                     bind:value={answer}
@@ -67,12 +70,18 @@
         color: greenyellow;
     }
 
+    .question-description {
+        width: 85%;
+        font-size: 13px;
+        text-align: justify;
+    }
+
     .hub-input {
         width: 500px;
         height: 100px;
     }
 
-    @media only screen and (max-device-width: 800px) {
+    @media only screen and (max-width: 800px) {
         .hub-input {
             width: 300px;
             height: 200px;
