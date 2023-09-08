@@ -320,8 +320,6 @@ def make_service_request(service_details) -> tuple[None, Exception] | tuple[Resp
                 service_details["url"], verify=ENV != "LOCAL",
             )
         elif service_details["http_method"] == "POST":
-            print("service_details", service_details)
-
             response = requests.post(
                 service_details["url"], verify=ENV != "LOCAL",
             )
