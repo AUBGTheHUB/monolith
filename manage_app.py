@@ -124,9 +124,10 @@ def handle_status_code_exception(
 ):
     if args.disable_notifications:
         print(
-            bcolors.RED_IN + "{}:{} IS DOWN - {}".format(
+            bcolors.RED_IN + "{}:{} IS DOWN - {} {}".format(
                 ENV,
                 service, str(url),
+                status_code,
             ) + bcolors.CEND,
         )
         return
@@ -299,9 +300,7 @@ def beautify_errors(errors: Dict[str, Any]) -> str:
     try:
         output_string = ""
         for service, error in errors.items():
-            output_string += f"{service}:\n\t"
-            output_string += '\n\t'.join(error)
-
+            output_string += f"\n{service}:{error}"
     except Exception as e:
         return str(e)
 
@@ -467,6 +466,7 @@ def run_thread(job):
     print("\nSTARTING CRON JOB - {}".format(job.__name__))
     thread = threading.Thread(target=job)
     thread.start()
+    print()
 
 
 if args.no_renewal:
