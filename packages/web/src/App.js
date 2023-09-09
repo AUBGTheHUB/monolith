@@ -44,20 +44,20 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
-    window.addEventListener('load', handleUrlDependantStyling);
-    useEffect(handleUrlDependantStyling, []);
-
-    goBackIfActionsAreStateless();
-    // eslint-disable-next-line
-    const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
-
-    useEffect(() => {
-        const handleFsUpdate = async () => {
-            const fs = await loadFeatureSwitches();
-            setFeatureSwitches({ ...featureSwitches, ...parseFeatureSwitches(fs) });
-        };
-        handleFsUpdate();
-    }, []);
+    // window.addEventListener('load', handleUrlDependantStyling);
+    // useEffect(handleUrlDependantStyling, []);
+    //
+    // goBackIfActionsAreStateless();
+    // // eslint-disable-next-line
+    // const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
+    //
+    // useEffect(() => {
+    //     const handleFsUpdate = async () => {
+    //         const fs = await loadFeatureSwitches();
+    //         setFeatureSwitches({ ...featureSwitches, ...parseFeatureSwitches(fs) });
+    //     };
+    //     handleFsUpdate();
+    // }, []);
 
     return (
         <Fragment>
