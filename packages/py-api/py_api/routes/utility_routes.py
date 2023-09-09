@@ -10,6 +10,7 @@ logger = getLogger("health")
 
 @router.get('/health')
 async def health() -> Dict[str, Any]:
+    raise Exception("test exception")
     return {
         "status": "healthy",
         "currentMemoryUsage": f"{get_current_memory_usage_in_mbs()} MB",
