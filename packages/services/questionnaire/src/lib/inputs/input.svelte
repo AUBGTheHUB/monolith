@@ -87,7 +87,7 @@
     }
     @media only screen and (max-width: 700px) {
         .hub-input {
-            width: 300px;
+            width: 330px;
             height: 200px;
         }
 
