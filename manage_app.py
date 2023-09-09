@@ -325,7 +325,6 @@ def make_service_request(service_details) -> tuple[None, Exception] | tuple[Resp
             response = requests.post(
                 service_details["url"], verify=ENV != "LOCAL",
             )
-            raise Exception("Test exception")
         else:
             raise Exception("Invalid method type")
     except Exception as e:
