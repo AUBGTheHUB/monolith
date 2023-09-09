@@ -36,14 +36,14 @@
                 <h1 class="text-2xl">{question.title}</h1>
             {/if}
 
-            <div class="w-full md:w-80 xl:w-full custom-width">
+            <div class="w-full md:w-90 lg:w-90 xl:w-full custom-width">
                 {@html question.body}
             </div>
 
             {#if question.type === InputType.TextArea}
                 <textarea
                     bind:value={answer}
-                    class="custom-width hub-input block p-2.5 w-full sm:w-95 md:w-85 lg:w-96 xl:w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="custom-width block p-2.5 w-full sm:w-95 md:w-85 lg:w-96 xl:w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write your response here:" />
             {:else if question.type === InputType.Email}
                 <input
