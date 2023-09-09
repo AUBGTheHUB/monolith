@@ -20,7 +20,6 @@ class ExceptionHandler:
                     "exception": str(exc),
                     "http_method": request.method,
                     "url": str(request.url),
-                    # "body": str(),
                     "stacktrace": format_exc(),
 
                 }
