@@ -37,26 +37,26 @@ const checkBrowserValid = () => {
     return isValid;
 };
 
-// const Validate = () => {
-//     const [validated, setValidated] = useState(false);
-//     useEffect(() => {
-//         axios({
-//             method: 'post',
-//             url: url + '/api/validate',
-//             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-//         })
-//             // eslint-disable-next-line no-unused-vars
-//             .then(() => {
-//                 setValidated(true);
-//             })
-//             // eslint-disable-next-line no-unused-vars
-//             .catch(() => {
-//                 setValidated(false);
-//             });
-//     }, []);
-//
-//     return validated;
-// };
+const Validate = () => {
+    const [validated, setValidated] = useState(false);
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: url + '/api/validate',
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
+        })
+            // eslint-disable-next-line no-unused-vars
+            .then(() => {
+                setValidated(true);
+            })
+            // eslint-disable-next-line no-unused-vars
+            .catch(() => {
+                setValidated(false);
+            });
+    }, []);
+
+    return validated;
+};
 
 const checkHashAndScroll = () => {
     let hasHash = !!location.hash;
