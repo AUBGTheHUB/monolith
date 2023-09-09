@@ -300,7 +300,11 @@ def beautify_errors(errors: Dict[str, Any]) -> str:
     try:
         output_string = ""
         for service, error in errors.items():
-            output_string += f"\n{service}:{error}"
+            if isinstance(error, int):
+                error = f"Status code is: {error}"
+            elif isinstance(error, list):
+                error = "\n\t".join(error).strip()
+            output_string += f"\n{service}:\n\t{error}"
     except Exception as e:
         return str(e)
 
@@ -318,6 +322,7 @@ def make_service_request(service_details) -> tuple[None, Exception] | tuple[Resp
             response = requests.get(
                 service_details["url"], verify=ENV != "LOCAL",
             )
+            raise Exception("Test exception")
         elif service_details["http_method"] == "POST":
             response = requests.post(
                 service_details["url"], verify=ENV != "LOCAL",
