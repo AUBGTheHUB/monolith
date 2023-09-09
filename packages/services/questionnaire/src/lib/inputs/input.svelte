@@ -80,8 +80,12 @@
         height: 100px;
         margin-bottom: 50px;
     }
-
     @media only screen and (max-width: 800px) {
+        .hub-input {
+            width: 475px;
+        }
+    }
+    @media only screen and (max-width: 700px) {
         .hub-input {
             width: 300px;
             height: 200px;
