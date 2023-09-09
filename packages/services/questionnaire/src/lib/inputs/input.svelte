@@ -30,15 +30,13 @@
 
 <Step locked={isDisabled}>
     <svelte:fragment slot="header">{''}</svelte:fragment>
-    <div class="flex flex-col justify-center items-center h-max w-96 md:self-center">
+    <div class="flex flex-col justify-center items-center h-max w-49 md:self-center">
         <div class="flex flex-col justify-center items-center space-y-10">
             {#if question.title !== ''}
-                <h1 class="text-2xl">{question.title}</h1>
+                <h1 class="text-2xl text-center">{question.title}</h1>
             {/if}
 
-            <div class="w-full md:w-90 lg:w-90 xl:w-full custom-width">
-                {@html question.body}
-            </div>
+            {@html question.body}
 
             {#if question.type === InputType.TextArea}
                 <textarea
@@ -72,7 +70,7 @@
 
     @media (max-width: 399px) {
         .custom-width {
-            width: 80%;
+            width: 100%;
         }
     }
 </style>

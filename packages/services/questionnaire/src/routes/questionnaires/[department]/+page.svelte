@@ -81,10 +81,18 @@
     };
 </script>
 
-<div class="flex flex-col justify-center items-center">
-    <Stepper stepTerm="Question" justify="justify-around" on:step={handleFormatting} on:complete={submitAnswers}>
+<div class="custom-width sm:w-96 md:w-80 xl:w-100 mx-auto">
+    <Stepper stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
         {#each questions as question}
             <Input {question} {appendToAnswers} {isDisabled} />
         {/each}
     </Stepper>
 </div>
+
+<style>
+    @media (max-width: 640px) {
+        .custom-width {
+            width: 80%;
+        }
+    }
+</style>
