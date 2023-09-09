@@ -50,8 +50,6 @@ SERVICES: Dict[str, Dict[str, Any]] = {
         "url": QUESTIONNAIRE,
     },
 }
-# Test
-
 args_parser = ArgumentParser(description="CLI args for the script")
 
 args_parser.add_argument(
@@ -323,11 +321,11 @@ def make_service_request(service_details) -> tuple[None, Exception] | tuple[Resp
             response = requests.get(
                 service_details["url"], verify=ENV != "LOCAL",
             )
-            raise Exception("Test exception")
         elif service_details["http_method"] == "POST":
             response = requests.post(
                 service_details["url"], verify=ENV != "LOCAL",
             )
+            raise Exception("Test exception")
         else:
             raise Exception("Invalid method type")
     except Exception as e:
