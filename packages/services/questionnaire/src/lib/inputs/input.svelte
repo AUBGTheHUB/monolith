@@ -71,20 +71,26 @@
     }
 
     .question-description {
-        width: 85%;
-        font-size: 13px;
+        width: 100%;
         text-align: justify;
     }
 
     .hub-input {
         width: 500px;
         height: 100px;
+        margin-bottom: 50px;
     }
 
     @media only screen and (max-width: 800px) {
         .hub-input {
             width: 300px;
             height: 200px;
+        }
+
+        .question-description {
+            font-size: 13px;
+            width: 85%;
+            margin-bottom: 50px;
         }
     }
 </style>
