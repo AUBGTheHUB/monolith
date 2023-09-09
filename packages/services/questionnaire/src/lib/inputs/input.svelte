@@ -30,20 +30,20 @@
 
 <Step locked={isDisabled}>
     <svelte:fragment slot="header">{''}</svelte:fragment>
-    <div class="flex flex-col justify-center items-center h-max w-96">
+    <div class="flex flex-col justify-center items-center h-max w-96 md:self-center">
         <div class="flex flex-col justify-center items-center space-y-10">
             {#if question.title !== ''}
                 <h1 class="text-2xl">{question.title}</h1>
             {/if}
 
-            <p class="question-description">
+            <div class="w-full md:w-80 xl:w-full custom-width">
                 {@html question.body}
-            </p>
+            </div>
 
             {#if question.type === InputType.TextArea}
                 <textarea
                     bind:value={answer}
-                    class="hub-input block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class="custom-width hub-input block p-2.5 w-full sm:w-95 md:w-85 lg:w-96 xl:w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write your response here:" />
             {:else if question.type === InputType.Email}
                 <input
@@ -70,31 +70,9 @@
         color: greenyellow;
     }
 
-    .question-description {
-        width: 100%;
-        text-align: justify;
-    }
-
-    .hub-input {
-        width: 500px;
-        height: 100px;
-        margin-bottom: 50px;
-    }
-    @media only screen and (max-width: 800px) {
-        .hub-input {
-            width: 475px;
-        }
-    }
-    @media only screen and (max-width: 700px) {
-        .hub-input {
-            width: 330px;
-            height: 200px;
-        }
-
-        .question-description {
-            font-size: 13px;
-            width: 85%;
-            margin-bottom: 50px;
+    @media (max-width: 399px) {
+        .custom-width {
+            width: 80%;
         }
     }
 </style>
