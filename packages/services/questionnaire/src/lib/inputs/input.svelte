@@ -31,7 +31,7 @@
 <Step locked={isDisabled}>
     <svelte:fragment slot="header">{''}</svelte:fragment>
     <div class="flex flex-col justify-center items-center h-max w-49 md:self-center">
-        <div class="flex flex-col justify-center items-center space-y-10">
+        <div class="flex flex-col justify-center items-center space-y-10 sm:h-full">
             {#if question.title !== ''}
                 <h1 class="text-2xl text-center">{question.title}</h1>
             {/if}
