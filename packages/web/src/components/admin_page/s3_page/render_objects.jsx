@@ -15,15 +15,9 @@ export const RenderStorageObjects = () => {
                 'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
             url: parseToNewAPI(objUploaderURL),
-        })
-            .then(res => {
-                console.log(res);
-                setObjects(res.data.objects);
-            })
-            // eslint-disable-next-line
-            .catch(err => {
-                // do nothing
-            });
+        }).then(res => {
+            setObjects(res.data.objects);
+        });
     };
 
     useEffect(getObjects, []);

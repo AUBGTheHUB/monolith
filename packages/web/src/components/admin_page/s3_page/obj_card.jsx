@@ -1,7 +1,10 @@
+import toast from 'react-hot-toast';
+
 export const ObjectCard = ({ url }) => {
     const filename = url.slice(url.lastIndexOf('/') + 1);
 
     const saveToClipboard = () => {
+        toast('Link is saved in clipboard');
         navigator.clipboard.writeText(url);
     };
 

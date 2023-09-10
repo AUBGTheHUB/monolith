@@ -1,12 +1,15 @@
 
+from typing import Final
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from py_api.middleware import Middleware
 from py_api.routes import Routes
+from py_api.utilities.cors import construct_origins
 from py_api.utilities.logging import get_log_config
 from uvicorn import run
 
-origins = ['*']
+ORIGINS: Final = construct_origins()
 
 main_app = FastAPI()
 app = FastAPI()
@@ -16,7 +19,7 @@ Middleware.bind(app)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=ORIGINS,
     # allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
