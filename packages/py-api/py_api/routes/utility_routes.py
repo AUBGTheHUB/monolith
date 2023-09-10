@@ -7,7 +7,6 @@ from py_api.controllers import UtilityController as c
 from py_api.utilities.memory import get_current_memory_usage_in_mbs
 
 router = APIRouter()
-logger = getLogger("health")
 
 
 @router.get('/health')
