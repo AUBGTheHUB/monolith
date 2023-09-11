@@ -2,7 +2,7 @@ from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
+from py_api.environment import IS_LOCAL_COMPOSE, IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
@@ -33,15 +33,16 @@ class AuthMiddleware:
                     and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
-
+                # thehub-aubg.com or dev.thehub-aubg.com
                 if not request.base_url.netloc.find(":"):
                     host = request.base_url
+                elif IS_LOCAL_COMPOSE:  # when running docker-compose on local machine
+                    host = "api:8000"
                 else:
+                    # localhost or hostname aliases such as local.thehub-aubg.com
                     host = request.base_url.netloc.split(":")[0] + ":8000"
 
-                validate_url = (
-                    f"{request.url.components.scheme}://{host}/api/validate"
-                )
+                validate_url = f"{request.url.components.scheme}://{host}/api/validate"
 
                 try:
                     # passing all headers breaks the APIs when using formdata
@@ -52,7 +53,10 @@ class AuthMiddleware:
                         headers = {
                             header_key: request_token,
                         }
-                        res = post(url=validate_url, headers=headers)
+                        res = post(
+                            url=validate_url, headers=headers,
+                            verify=not IS_LOCAL_COMPOSE,
+                        )
                     else:
                         res = AttrDict(
                             status_code=200 if request_token == OFFLINE_TOKEN else 401,

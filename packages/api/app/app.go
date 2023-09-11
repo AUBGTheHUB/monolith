@@ -31,7 +31,9 @@ func StartApp() {
 	cer, err := tls.LoadX509KeyPair("certs/devenv.crt", "certs/devenv.key")
 
 	if err != nil {
-		// local development
+		// ! this might bite us in the ass
+		// we should check whether we're in production and fail the build
+		// if certs are not found!
 		log.Fatal(app.Listen(":8000"))
 	}
 

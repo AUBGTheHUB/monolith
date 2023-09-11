@@ -1,34 +1,70 @@
 version: '3'
 
 services:
-
-# API
   server:
-    build: 
+    build:
       context: ./packages/api
-      target: final 
+      target: final
     container_name: api
     env_file:
       - ".env"
-    depends_on: 
-      - client
-    expose: 
+    expose:
       - 8000
     ports:
       - 8000:8000
-    command: /api
     volumes:
       - ./data/certs:/app/certs
     networks:
       - front-back
 
-# WEB
+  py_api_server:
+    build:
+      context: ./packages/py-api
+      target: final
+    container_name: py-api
+    env_file:
+      - ".env"
+    expose:
+      - 6969
+    ports:
+      - 6969:6969
+    volumes:
+      - ./packages/py-api/py_api/shared:/app/py_api/shared
+      - ./data/certs:/app/certs
+    networks:
+      - front-back
+
+  shortener:
+    build: ./packages/services/url_shortener
+    container_name: shortener
+    env_file:
+      - ".env"
+    expose:
+      - 8001
+    ports:
+      - 8001:8001
+    networks:
+      - front-back
+
+  questionnaire:
+    build:
+      context: ./
+      dockerfile: ./packages/services/questionnaire/Dockerfile
+    container_name: questionnaire
+    env_file:
+      - ".env"
+    expose:
+      - 6420
+    ports:
+      - 6420:6420
+    volumes:
+      - ./data/certs:/app/certs
+    networks:
+      - front-back
+
   client:
-    build: 
+    build:
       context: ./packages/web
-      args:
-        REACT_APP_OBJ_UPLOADER_URL: ${REACT_APP_OBJ_UPLOADER_URL}
-        REACT_APP_GCP_TOKEN: ${REACT_APP_GCP_TOKEN}
     container_name: web
     env_file:
       - ".env"
@@ -37,24 +73,13 @@ services:
     ports:
       - 80:80
       - 443:443
-    command: nginx -g 'daemon off';
-    volumes: 
+    depends_on:
+      - server
+      - py_api_server
+      - shortener
+    volumes:
       - ./data/certs:/etc/nginx/certs
     networks:
-      - front-back
-
-# URL_SHORTENER
-  shortener:
-    build: ./packages/services/url_shortener
-    container_name: shortener
-    env_file:
-      - ".env"
-    expose: 
-      - 8001
-    ports:
-      - 8001:8001
-    command: ./target/release/url_shortener
-    networks: 
       - front-back
 
 networks:
