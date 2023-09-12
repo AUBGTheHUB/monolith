@@ -92,6 +92,11 @@ install-python:
 run-py-api:
 	cd packages/py-api && poetry run start
 
+.PHONY: install-signed-certs
+install-signed-certs:
+	cp data/certs/local.crt data/certs/devenv.crt
+	cp data/certs/local.key data/certs/devenv.key
+
 .PHONY: run-nginx
 run-nginx:
 	cd nginx && docker-compose up --build

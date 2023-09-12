@@ -2,14 +2,12 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// TODO: Deprecate this - it will be abstracted in python api
-// eslint-disable-next-line
-const gcpToken = process.env.REACT_APP_GCP_TOKEN;
+const hasPort = url => {
+    const portRegex = /:\d+/;
+    return portRegex.test(url);
+};
 
-const url =
-    process.env.REACT_APP_API_URL !== undefined // eslint-disable-line
-        ? process.env.REACT_APP_API_URL // eslint-disable-line
-        : origin.replace(/(^[^:]*:[^:]*):.*$/, '$1') + ':8000';
+const url = !hasPort(origin) ? origin : origin.replace(/(^[^:]*:[^:]*):.*$/, '$1') + ':8000';
 
 const parseToNewAPI = url => url.replace('8000', '6969');
 
@@ -144,7 +142,6 @@ export {
     NavigateSetter,
     navigateTo,
     objUploaderURL,
-    gcpToken,
     goBackIfActionsAreStateless,
     parseToNewAPI,
     urlShortenerURL,

@@ -2,6 +2,8 @@
 
 [![Build Frontend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml)
 
+[![Build Python Backend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml)
+
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
 [![Notify Discord - New PR](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml)
