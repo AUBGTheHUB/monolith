@@ -15,7 +15,9 @@
     }
 
     const onEmailChange = (e: any) => {
+        answer = e.target.value;
         const regex = /^[A-Za-z0-9._%+-]+@aubg\.edu$/;
+
         if (regex.test(e.target.value)) {
             isDisabled = false;
         } else {
