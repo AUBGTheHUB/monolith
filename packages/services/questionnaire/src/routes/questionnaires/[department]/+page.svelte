@@ -83,9 +83,11 @@
 
 <div class="custom-width sm:w-1/2 md:w-1/3 xl:w-1/4 mx-auto">
     <Stepper stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
-        {#each questions as question}
-            <Input {question} {appendToAnswers} {isDisabled} />
-        {/each}
+        <div class="custom-height">
+            {#each questions as question}
+                <Input {question} {appendToAnswers} {isDisabled} />
+            {/each}
+        </div>
     </Stepper>
 </div>
 
@@ -93,6 +95,15 @@
     @media (max-width: 640px) {
         .custom-width {
             width: 80%;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .custom-height {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
     }
 </style>
