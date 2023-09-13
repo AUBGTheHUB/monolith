@@ -81,7 +81,7 @@
     };
 </script>
 
-<div class="custom-width sm:w-1/2 md:w-1/3 xl:w-1/4 mx-auto">
+<div class="custom-width sm:w-1/2 md:w-1/3 xl:w-1/4 mx-auto mb-6">
     <Stepper stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
         <div class="custom-height">
             {#each questions as question}
