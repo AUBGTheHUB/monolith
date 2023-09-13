@@ -63,6 +63,10 @@ args_parser.add_argument(
 args_parser.add_argument(
     "--disable-notifications", action="store_true", help="Disables Discord notifications",
 )
+args_parser.add_argument(
+    "--disable-emails", action="store_true",
+    help="Disable emails",
+)
 args = args_parser.parse_args()
 
 
@@ -77,6 +81,9 @@ class bcolors:
 
 
 def send_mail(msg):
+    if args.disable_emails:
+        return
+
     port = 465  # SSL
     email = os.environ['HUB_MAIL_USERNAME']
     password = os.environ['HUB_MAIL_PASSWORD']

@@ -34,8 +34,8 @@ class AuthMiddleware:
                     # autopep8: on
             ):
                 # thehub-aubg.com or dev.thehub-aubg.com
-                if not request.base_url.netloc.find(":"):
-                    host = request.base_url
+                if not ':' in request.base_url.hostname:
+                    host = request.base_url.hostname
                 elif IS_LOCAL_COMPOSE:  # when running docker-compose on local machine
                     host = "api:8000"
                 else:
