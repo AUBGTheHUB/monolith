@@ -17,4 +17,4 @@ OFFLINE_TOKEN = "OFFLINE_TOKEN"
 SSL_FILES: Dict[str, str] = {
     "ssl_keyfile": "certs/devenv.key",
     "ssl_certfile": "certs/devenv.crt",
-}
+} if not IS_OFFLINE else {}

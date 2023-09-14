@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
@@ -14,6 +15,8 @@ from requests import post
 
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
+
+logger = getLogger('auth')
 
 
 class AuthMiddleware:

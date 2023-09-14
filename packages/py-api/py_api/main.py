@@ -32,7 +32,8 @@ def start() -> None:
     run(
         "py_api.main:main_app", host="0.0.0.0", port=6969,
         reload=IS_OFFLINE,
-        log_config=get_log_config(), **SSL_FILES if not IS_OFFLINE else {},
+        log_config=get_log_config(),
+        **SSL_FILES
     )
 
 
