@@ -25,23 +25,18 @@ PROD_LOGGING_CONFIG: Dict[str, Any] = {
             'backupCount': 2,  # 2 backup files
         },
     },
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['logfile'],
+    },
     'loggers': {
-        'root': {
-            'level': 'DEBUG',
-            'handlers': ['logfile'],
-        },
         "uvicorn.error": {"level": "DEBUG"},
-        # "uvicorn.access": {"level": "DEBUG"},
-        # "uvicorn": {"level": "DEBUG"}
+        "py_api": {
+            'level': 'WARNING',
+            'propagate': True,
+        },
     },
 }
-
-# PROD_LOGGING_CONFIG['handlers']['default'] = LOGGING_CONFIG['handlers']['default']
-# PROD_LOGGING_CONFIG['handlers']['access'] = LOGGING_CONFIG['handlers']['access']
-# PROD_LOGGING_CONFIG['handlers']['default']['formatter'] = PROD_LOGGING_CONFIG['handlers']['logfile']['formatter']
-# PROD_LOGGING_CONFIG['handlers']['access']['formatter'] = PROD_LOGGING_CONFIG['handlers']['logfile']['formatter']
-# PROD_LOGGING_CONFIG['loggers']['root']['handlers'].append('default')
-# PROD_LOGGING_CONFIG['loggers']['root']['handlers'].append('access')
 
 # Overwrites uvicorn's default logging config in order to enable INFO level when using our own logger handlers
 LOGGING_CONFIG["loggers"]["root"] = {
