@@ -1,3 +1,4 @@
+from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
@@ -15,6 +16,8 @@ from requests import post
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
 
+logger = getLogger("test")
+
 
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
@@ -26,6 +29,7 @@ class AuthMiddleware:
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             endpoint, is_bypassed = self._check_bypassed_endpoint(request.url)
+            logger.warning("test")
 
             if not is_bypassed or (
                     # autopep8: off
@@ -33,14 +37,10 @@ class AuthMiddleware:
                     and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
-                # thehub-aubg.com or dev.thehub-aubg.com
-                if not request.base_url.netloc.find(":"):
-                    host = request.base_url
-                elif IS_LOCAL_COMPOSE:  # when running docker-compose on local machine
-                    host = "api:8000"
+                if IS_OFFLINE:
+                    host = "localhost:8000"
                 else:
-                    # localhost or hostname aliases such as local.thehub-aubg.com
-                    host = request.base_url.netloc.split(":")[0] + ":8000"
+                    host = "api:8000"
 
                 validate_url = f"{request.url.components.scheme}://{host}/api/validate"
 
@@ -53,6 +53,7 @@ class AuthMiddleware:
                         headers = {
                             header_key: request_token,
                         }
+                        logger.warning(f"url is {validate_url}")
                         res = post(
                             url=validate_url, headers=headers,
                             verify=not IS_LOCAL_COMPOSE,
