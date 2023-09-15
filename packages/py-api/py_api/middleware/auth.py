@@ -29,7 +29,6 @@ class AuthMiddleware:
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
             endpoint, is_bypassed = self._check_bypassed_endpoint(request.url)
-            logger.warning("test")
 
             if not is_bypassed or (
                     # autopep8: off
@@ -56,7 +55,9 @@ class AuthMiddleware:
                         }
                         res = post(
                             url=validate_url, headers=headers,
-                            verify=not IS_OFFLINE,
+                            # since request's hostname doesn't match the server's certificates
+                            # we need to explicitly pass the certificates
+                            verify=False if IS_OFFLINE else "./certs/devenv.crt",
                         )
                     else:
                         res = AttrDict(
