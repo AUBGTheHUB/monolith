@@ -3,7 +3,7 @@ from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from py_api.environment import IS_LOCAL_COMPOSE, IS_OFFLINE, OFFLINE_TOKEN
+from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
@@ -56,7 +56,7 @@ class AuthMiddleware:
                         logger.warning(f"url is {validate_url}")
                         res = post(
                             url=validate_url, headers=headers,
-                            verify=not IS_LOCAL_COMPOSE,
+                            verify=not IS_OFFLINE,
                         )
                     else:
                         res = AttrDict(
