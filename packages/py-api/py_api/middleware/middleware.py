@@ -10,7 +10,7 @@ from py_api.middleware.exception_handler import ExceptionHandler
 class Middleware:
     _middlewares: List[Any] = [
         AuthMiddleware,
-        ExceptionHandler,
+        AnalyticsMiddleware, ExceptionHandler,
     ]
 
     @classmethod
