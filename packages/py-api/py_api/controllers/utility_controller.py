@@ -1,7 +1,6 @@
-from logging import getLogger
 from typing import Any, Dict
 
-from fastapi import APIRouter, Request
+from fastapi import Request
 from py_api.utilities.memory import get_current_memory_usage_in_mbs
 
 
