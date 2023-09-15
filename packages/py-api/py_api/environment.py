@@ -10,7 +10,6 @@ MONGO_URI = getenv("MONGOURI", "")
 
 IS_OFFLINE = eval_bool(getenv("IS_OFFLINE", False))
 ENABLE_ANALYTICS = eval_bool(getenv("ENABLE_ANALYTICS", False))
-IS_LOCAL_COMPOSE = eval_bool(getenv("IS_LOCAL_COMPOSE", False))
 
 OFFLINE_TOKEN = "OFFLINE_TOKEN"
 
