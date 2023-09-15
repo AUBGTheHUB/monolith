@@ -57,7 +57,7 @@ class AuthMiddleware:
                             url=validate_url, headers=headers,
                             # since request's hostname doesn't match the server's certificates
                             # we need to explicitly pass the certificates
-                            verify=False if IS_OFFLINE else "./certs/devenv.crt",
+                            verify=True if IS_OFFLINE else "./certs/devenv.crt",
                         )
                     else:
                         res = AttrDict(
