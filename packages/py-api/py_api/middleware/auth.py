@@ -9,6 +9,7 @@ from requests import post
 
 logger = getLogger(__name__)
 
+
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
 
@@ -17,9 +18,6 @@ logger = getLogger(__name__)
 
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
-
-logger = getLogger("test")
-
 
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
@@ -39,8 +37,9 @@ class AuthMiddleware:
                     and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
-                if IS_OFFLINE:
-                    host = "localhost:8000"
+                # localhost or hostname aliases such as local.thehub-aubg.com
+                if ':' in request.base_url.hostname:
+                    host = request.base_url.netloc.split(":")[0] + ":8000"
                 else:
                     host = "api:8000"
 
@@ -55,7 +54,6 @@ class AuthMiddleware:
                         headers = {
                             header_key: request_token,
                         }
-                        logger.warning(f"url is {validate_url}")
                         res = post(
                             url=validate_url, headers=headers,
                             verify=not IS_OFFLINE,
