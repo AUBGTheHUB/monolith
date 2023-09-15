@@ -25,12 +25,16 @@ PROD_LOGGING_CONFIG: Dict[str, Any] = {
             'backupCount': 2,  # 2 backup files
         },
     },
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['logfile'],
+    },
     'loggers': {
-        'root': {
+        "uvicorn.error": {"level": "DEBUG"},
+        "py_api": {
             'level': 'WARNING',
-            'handlers': ['logfile'],
+            'propagate': True,
         },
-        "uvicorn.error": {"level": "ERROR"},
     },
 }
 
