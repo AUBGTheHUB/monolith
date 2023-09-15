@@ -7,6 +7,8 @@ from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
+logger = getLogger(__name__)
+
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
 
@@ -86,6 +88,9 @@ class AuthMiddleware:
             }
 
             status_code = 500
+            logger.error(
+                f"Validation request failed with status code: {status_code} and exception: {str(exception)}",
+            )
 
         return JSONResponse(content=content, status_code=status_code)
 
