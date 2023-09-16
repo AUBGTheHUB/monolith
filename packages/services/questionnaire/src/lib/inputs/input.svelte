@@ -79,7 +79,7 @@
     }
     @media (max-width: 900px) {
         :global(pre) {
-            width: 100%;
+            width: 95%;
             align-self: center;
             display: flex;
             justify-content: center;
