@@ -3,11 +3,12 @@ from typing import Any, Callable, Final, Literal, Tuple
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from py_api.environment import IS_LOCAL_COMPOSE, IS_OFFLINE, OFFLINE_TOKEN
+from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
 logger = getLogger(__name__)
+
 
 # add endpoints which need to bypass the request verification in this dict
 # with their appropriate method type or "*" in order to allow all types
@@ -17,7 +18,6 @@ logger = getLogger(__name__)
 
 # an endpoint which allows only GET and PUT methods to bypass verification
 # will be declared as follows: "/users": ["GET", "PUT"]
-
 
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
@@ -36,14 +36,11 @@ class AuthMiddleware:
                     and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
-                # thehub-aubg.com or dev.thehub-aubg.com
-                if not ':' in request.base_url.hostname:
-                    host = request.base_url.hostname
-                elif IS_LOCAL_COMPOSE:  # when running docker-compose on local machine
-                    host = "api:8000"
-                else:
-                    # localhost or hostname aliases such as local.thehub-aubg.com
+                # localhost or hostname aliases such as local.thehub-aubg.com
+                if ':' in request.base_url.hostname:
                     host = request.base_url.netloc.split(":")[0] + ":8000"
+                else:
+                    host = "api:8000"
 
                 validate_url = f"{request.url.components.scheme}://{host}/api/validate"
 
@@ -58,7 +55,9 @@ class AuthMiddleware:
                         }
                         res = post(
                             url=validate_url, headers=headers,
-                            verify=not IS_LOCAL_COMPOSE,
+                            # since request's hostname doesn't match the server's certificates
+                            # we need to explicitly pass the certificates
+                            verify="./certs/devenv.crt",
                         )
                     else:
                         res = AttrDict(
