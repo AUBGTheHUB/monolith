@@ -71,9 +71,32 @@
         color: greenyellow;
     }
 
-    @media (max-width: 399px) {
+    :global(pre) {
+        width: 100%;
+        align-self: center;
+        display: flex;
+    }
+
+    :global(code pre) {
+        align-self: center;
+        display: flex;
+        overflow-x: auto;
+        align-self: center;
+        width: 300px;
+    }
+    :global(textarea) {
+        width: 100%;
+    }
+    :global(h1) {
+        width: 100%;
+    }
+
+    @media (max-width: 290px) {
         .custom-width {
             width: 100%;
+        }
+        :global(code pre) {
+            width: 5px;
         }
     }
 </style>
