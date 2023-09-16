@@ -77,7 +77,7 @@
 
     @media (max-width: 900px) {
         :global(pre) {
-            width: 95%;
+            width: 100%;
             align-self: center;
             display: flex;
             justify-content: center;
@@ -88,7 +88,7 @@
             display: flex;
             overflow-x: auto;
             align-self: center;
-            width: 300px;
+            width: 95vw;
             justify-content: flex-start;
         }
     }
@@ -96,12 +96,6 @@
     @media (max-width: 399px) {
         .custom-width {
             width: 100%;
-        }
-    }
-
-    @media (max-width: 290px) {
-        :global(code pre) {
-            width: 250px;
         }
     }
 </style>
