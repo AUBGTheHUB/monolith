@@ -75,14 +75,17 @@
         width: 100%;
         align-self: center;
         display: flex;
+        justify-content: center;
     }
-
+    :global(code) {
+    }
     :global(code pre) {
         align-self: center;
         display: flex;
         overflow-x: auto;
         align-self: center;
         width: 300px;
+        justify-content: flex-start;
     }
     :global(textarea) {
         width: 100%;
@@ -91,12 +94,15 @@
         width: 100%;
     }
 
-    @media (max-width: 290px) {
+    @media (max-width: 399px) {
         .custom-width {
             width: 100%;
         }
+    }
+
+    @media (max-width: 290px) {
         :global(code pre) {
-            width: 5px;
+            width: 250px;
         }
     }
 </style>
