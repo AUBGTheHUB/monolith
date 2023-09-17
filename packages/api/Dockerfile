@@ -15,19 +15,6 @@ WORKDIR /app
 
 RUN go build -o /api
 
-
-
-FROM build as test
-
-ARG CON_STR=${CON_STR}
-
-ENV CON_STR=${CON_STR}
-
-RUN echo -e "IS_TEST=true\nMONGOURI=${CON_STR}" > tests/.env
-
-RUN export CGO_ENABLED=0 && go test ./tests -v
-
-
 FROM build as final
 
 EXPOSE 8000
