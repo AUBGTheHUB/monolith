@@ -1,9 +1,10 @@
 from logging import getLogger
 from typing import Any, Callable, Final, Literal, Tuple
 
+import certifi
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from py_api.environment import IS_OFFLINE, OFFLINE_TOKEN
+from py_api.environment import IS_LOCAL_COMPOSE, IS_OFFLINE, OFFLINE_TOKEN
 from py_api.utilities.parsers import AttrDict
 from requests import post
 
@@ -36,11 +37,17 @@ class AuthMiddleware:
                     and self._BYPASSED_ENDPOINTS[endpoint][0] != "*"  # type: ignore
                     # autopep8: on
             ):
-                # localhost or hostname aliases such as local.thehub-aubg.com
+                # thehub-aubg.com or dev.thehub-aubg.com
                 if ':' in request.base_url.hostname:
                     host = request.base_url.netloc.split(":")[0] + ":8000"
-                else:
+                elif IS_LOCAL_COMPOSE:
                     host = "api:8000"
+                else:
+                    # Since certbot certificates yield an "unable to get issuer" exception
+                    # when making cross-container requests,
+                    # redirect the request outside of the network and pass it
+                    # through the proxy
+                    host = request.base_url.hostname
 
                 validate_url = f"{request.url.components.scheme}://{host}/api/validate"
 
@@ -53,11 +60,12 @@ class AuthMiddleware:
                         headers = {
                             header_key: request_token,
                         }
+
                         res = post(
                             url=validate_url, headers=headers,
                             # since request's hostname doesn't match the server's certificates
                             # we need to explicitly pass the certificates
-                            verify="./certs/devenv.crt",
+                            verify="./certs/devenv.crt" if IS_LOCAL_COMPOSE else True,
                         )
                     else:
                         res = AttrDict(
