@@ -263,7 +263,7 @@ def start_docker_compose():
 
     errors["BUILD"] = build_err.stderr.decode('utf-8')
 
-    print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND + str(errors))
+    print(bcolors.RED_IN + "BUILD FAILED" + bcolors.CEND)
 
     msg['Subject'] = f'{ENV}:SPA BUILD FAILED'
     msg.attach(MIMEText('<p>' + str(errors) + '</p>', 'html'))
