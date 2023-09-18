@@ -13,3 +13,7 @@ db = client["TheHubDB"]
 
 # * use this collection when working within the UrlShortener controller
 su_col = client["ShortenedUrlsDB"].shortened_urls
+
+# * use these collections when working within the Questionnaire controller
+q_col = client["questionnaires"].questions
+a_col = client["questionnaires"].answers
