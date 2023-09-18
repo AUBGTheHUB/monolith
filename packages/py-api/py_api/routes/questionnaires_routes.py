@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from py_api.controllers import QuestionnaireController as c
+from py_api.controllers import QuestionnairesController as c
 
 router = APIRouter(prefix='/questionnaires')
 

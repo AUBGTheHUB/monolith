@@ -5,10 +5,10 @@ import pandas as pd
 import io
 
 
-class QuestionnaireController:
+class QuestionnairesController:
 
-    @classmethod
-    def get_csv(cls, dep: str) -> JSONResponse | StreamingResponse:
+    @staticmethod
+    def get_csv(dep: str) -> JSONResponse | StreamingResponse:
         questions = q_col.find_one({'department': dep})
 
         if questions is None:
