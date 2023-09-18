@@ -6,6 +6,7 @@ from py_api.routes.logs_routes import router as logs_router
 from py_api.routes.uploader_routes import router as uploader_router
 from py_api.routes.url_shortener_routes import router as url_shortener_router
 from py_api.routes.utility_routes import router as utility_router
+from py_api.routes.questionnaire_routes import router as questionnaire_router
 
 """
     If you need to disable request verification for a particular endpoint,
@@ -21,6 +22,7 @@ class Routes:
         utility_router,
         feature_switches_router,
         logs_router,
+        questionnaire_router,
     ]
 
     @classmethod

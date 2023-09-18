@@ -2,10 +2,12 @@ from py_api.controllers.feature_switches_controller import FeatureSwitchesContro
 from py_api.controllers.uploader_controller import UploaderController
 from py_api.controllers.url_shortener_controller import UrlShortenerController
 from py_api.controllers.utility_controller import UtilityController
+from py_api.controllers.questionnaire_controller import QuestionnaireController
 
 __all__ = [
     "UploaderController",
     "UrlShortenerController",
     "FeatureSwitchesController",
     "UtilityController",
+    "QuestionnaireController",
 ]
