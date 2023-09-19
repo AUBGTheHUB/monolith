@@ -81,8 +81,8 @@
     };
 </script>
 
-<div class="custom-width sm:w-1/2 md:w-1/3 xl:w-1/4 mx-auto mb-6">
-    <Stepper stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
+<div class="custom-width sm:w-4/5 md:w-3/4 lg:w-1/2 xl:w-1/1 mx-auto mb-6">
+    <Stepper class="stepper" stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
         <div class="custom-height">
             {#each questions as question}
                 <Input {question} {appendToAnswers} {isDisabled} />
@@ -94,7 +94,7 @@
 <style>
     @media (max-width: 640px) {
         .custom-width {
-            width: 80%;
+            width: 90%;
         }
     }
 
