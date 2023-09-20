@@ -95,9 +95,9 @@
         gap: 0.3rem !important;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 800px) {
         .custom-width {
-            width: 90%;
+            width: 95%;
         }
     }
 
