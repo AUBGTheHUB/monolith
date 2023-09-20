@@ -92,7 +92,7 @@
 
 <style>
     :global(header) {
-        gap: 0.5rem !important;
+        gap: 0.3rem !important;
     }
 
     @media (max-width: 640px) {
