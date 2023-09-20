@@ -95,6 +95,7 @@
         :global(span) {
             font-size: 10px !important;
         }
+
         :global(button span) {
             font-size: 15px !important;
         }
@@ -105,10 +106,4 @@
             width: 100%;
         }
     }
-
-    /* @media (max-width: 290px) {
-        :global(header) {
-            display: none !important;
-        }
-    } */
 </style>
