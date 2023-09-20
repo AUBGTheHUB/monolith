@@ -16,7 +16,6 @@
     const toastStore = getToastStore();
 
     setCDN('/questionnaires/shiki');
-
     const appendToAnswers = (title: string, answer: string) => {
         answers[title] = answer;
     };
@@ -81,7 +80,7 @@
     };
 </script>
 
-<div class="custom-width sm:w-4/5 md:w-3/4 lg:w-1/2 xl:w-1/1 mx-auto mb-6">
+<div class="custom-width sm:w-4/5 md:w-3/4 lg:w-1/2 xl:w-1/3 mx-auto mb-6">
     <Stepper class="stepper" stepTerm="Question" on:step={handleFormatting} on:complete={submitAnswers}>
         <div class="custom-height">
             {#each questions as question}
@@ -92,6 +91,10 @@
 </div>
 
 <style>
+    :global(header) {
+        gap: 0.5rem !important;
+    }
+
     @media (max-width: 640px) {
         .custom-width {
             width: 90%;
@@ -104,6 +107,12 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .custom-width {
+            overflow: hidden;
         }
     }
 </style>

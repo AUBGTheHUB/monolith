@@ -106,9 +106,9 @@
         }
     }
 
-    @media (max-width: 290px) {
+    /* @media (max-width: 290px) {
         :global(header) {
             display: none !important;
         }
-    }
+    } */
 </style>
