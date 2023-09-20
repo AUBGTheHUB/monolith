@@ -97,7 +97,7 @@
 
     @media (max-width: 640px) {
         .custom-width {
-            width: 90%;
+            width: 95%;
         }
     }
 
