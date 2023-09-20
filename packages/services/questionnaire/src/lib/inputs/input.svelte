@@ -91,6 +91,14 @@
             width: 95vw;
             justify-content: flex-start;
         }
+
+        :global(span) {
+            font-size: 10px !important;
+        }
+
+        :global(button span) {
+            font-size: 15px !important;
+        }
     }
 
     @media (max-width: 399px) {
