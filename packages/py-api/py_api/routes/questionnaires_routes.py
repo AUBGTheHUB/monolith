@@ -8,5 +8,5 @@ router = APIRouter(prefix='/questionnaires')
 
 
 @router.get("/csv/{dep}")
-async def get_csv(dep) -> StreamingResponse:
+async def get_csv(dep) -> StreamingResponse:  # type: ignore
     return c.get_csv(dep)

@@ -16,6 +16,6 @@ async def upload_object(file: UploadFile, filename: Annotated[str, Form()]) -> D
     return c.upload_object(file, filename)
 
 
-@router.delete("")
-async def delete_object() -> Dict[str, Any]:  # type: ignore
-    pass
+@router.delete("/{image_url}")
+async def delete_object(image_url) -> Dict[str, Any]:  # type: ignore
+    return c.delete_object(image_url)

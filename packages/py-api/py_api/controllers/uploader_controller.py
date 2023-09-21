@@ -69,3 +69,24 @@ class UploaderController:
             )
 
         return {'objects': objects}
+
+    @classmethod
+    def delete_object(cls, image_url: str) -> Dict[str, Any]:
+        try:
+            parts = image_url.split('/')
+            if len(parts) < 4:
+                return {"error": "Invalid URL format"}
+
+            object_key = '/'.join(parts[3:])
+
+            s3 = boto3.client(
+                's3', aws_access_key_id=cls._AWS_PUB_KEY,
+                aws_secret_access_key=cls._AWS_PRIV_KEY,
+            )
+
+            s3.delete_object(Bucket=cls._AWS_BUCKET_NAME, Key=object_key)
+
+            return {"message": f"Object '{object_key}' deleted successfully."}
+
+        except Exception as e:
+            return {"error": f"Failed to delete object: {str(e)}"}
