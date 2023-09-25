@@ -56,7 +56,6 @@ const UpdateSwitch = ({ onUpdate }) => {
                 variant="primary"
                 onClick={() => {
                     onUpdate(newSwitch);
-                    console.log(newSwitch);
                 }}>
                 Add
             </Button>
@@ -81,7 +80,7 @@ const RenderSwitches = () => {
                 setSwitches(res.data.documents);
             })
             .catch(err => {
-                console.log(err);
+                // console.log(err);
             });
     };
 
@@ -92,6 +91,20 @@ const RenderSwitches = () => {
     const triggerFetch = () => {
         setTrigger(prev => prev + 1);
     };
+
+    useEffect(() => {
+        axios(parseToNewAPI(featureSwictchesURL), {
+            headers: {
+                'BEARER-TOKEN': localStorage.getItem('auth_token'),
+            },
+        })
+            .then(res => {
+                setSwitches(res.data.documents);
+            })
+            .catch(() => {
+                window.alert('API is not responding!');
+            });
+    }, [trigger]);
 
     const onUpdate = data => {
         axios(parseToNewAPI(featureSwictchesURL), {
