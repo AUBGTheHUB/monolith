@@ -39,7 +39,7 @@ const UpdateSwitch = ({ onUpdate }) => {
     return (
         <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Set a url:</Form.Label>
+                <Form.Label>Set a feature:</Form.Label>
                 <Form.Control type="text" placeholder="Paste the url" onChange={handleChange} name="switch_id" />
                 <Form.Text className="text-muted">Add a new feature</Form.Text>
             </Form.Group>
@@ -123,7 +123,7 @@ const RenderSwitches = () => {
                         onClick={() => {
                             setShowAddOverlay(prev => !prev);
                         }}>
-                        Create a shortened URL
+                        Create a Feature Switch
                     </Button>
                 </OverlayTrigger>
 
