@@ -9,6 +9,7 @@ import axios from 'axios';
 import { parseToNewAPI, featureSwictchesURL } from '../../../Global';
 import FeatureRow from './row_switch';
 import { OverlayTrigger, Popover, Form, Alert } from 'react-bootstrap';
+import featureSwitchesArray from '../../../feature_switches';
 
 const popover = (onUpdate, errorMessage) => {
     return (
@@ -72,16 +73,7 @@ const RenderSwitches = () => {
     const [errorMessage, setErrorMessage] = useState(undefined);
 
     const getSwitches = () => {
-        axios(parseToNewAPI(featureSwictchesURL), {
-            method: 'get',
-            url: url + '/v2/fswitches',
-        })
-            .then(res => {
-                setSwitches(res.data.documents);
-            })
-            .catch(err => {
-                // console.log(err);
-            });
+        setSwitches(featureSwitchesArray);
     };
 
     useEffect(() => {

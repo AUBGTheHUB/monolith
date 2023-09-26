@@ -48,7 +48,7 @@ function App() {
     useEffect(handleUrlDependantStyling, []);
 
     goBackIfActionsAreStateless();
-    // eslint-disable-next-line
+
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
 
     useEffect(() => {

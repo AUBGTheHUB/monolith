@@ -11,6 +11,12 @@ const FEATURE_SWITCHES = {
     team: true,
     regForm: false,
 };
+const featureSwitchesArray = Object.entries(FEATURE_SWITCHES).map(([fswitch, value]) => ({
+    switch_id: fswitch,
+    is_enabled: value,
+}));
+
+export default featureSwitchesArray;
 
 const featureSwitchesURL = `${url}/v2/fswitches`;
 
