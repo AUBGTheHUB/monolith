@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Card, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import Validate from '../../../Global';
-import { url } from '../../../Global';
 import InvalidClient from '../invalid_client';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
