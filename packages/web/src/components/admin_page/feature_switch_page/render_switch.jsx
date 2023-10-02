@@ -8,7 +8,8 @@ import axios from 'axios';
 import { parseToNewAPI, featureSwictchesURL } from '../../../Global';
 import FeatureRow from './row_switch';
 import { OverlayTrigger, Popover, Form, Alert } from 'react-bootstrap';
-import featureSwitchesArray from '../../../feature_switches';
+import { FsContext } from '../../../feature_switches';
+import { useContext } from 'react';
 
 const popover = (onUpdate, errorMessage) => {
     return (
@@ -21,10 +22,9 @@ const popover = (onUpdate, errorMessage) => {
         </Popover>
     );
 };
-
 const UpdateSwitch = ({ onUpdate }) => {
     const [newSwitch, setNewSwitch] = useState({
-        is_enabled: 'true', // Default value for the dropdown
+        is_enabled: 'true',
     });
 
     const handleChange = e => {
@@ -62,39 +62,42 @@ const UpdateSwitch = ({ onUpdate }) => {
         </>
     );
 };
-
 const RenderSwitches = () => {
     const history = useNavigate();
-    const [swicthes, setSwitches] = useState([]);
+    const [switches, setSwitches] = useState([]);
     const [trigger, setTrigger] = useState(0);
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
 
-    const getSwitches = () => {
-        setSwitches(featureSwitchesArray);
-    };
+    const [featureSwitches] = useContext(FsContext);
 
     useEffect(() => {
-        getSwitches();
-    }, []);
+        const featureSwitchesArray = Object.entries(featureSwitches).map(([switch_id, is_enabled]) => ({
+            switch_id,
+            is_enabled,
+        }));
+        setSwitches(featureSwitchesArray);
+    }, [featureSwitches]);
 
     const triggerFetch = () => {
         setTrigger(prev => prev + 1);
     };
 
     useEffect(() => {
-        axios(parseToNewAPI(featureSwictchesURL), {
-            headers: {
-                'BEARER-TOKEN': localStorage.getItem('auth_token'),
-            },
-        })
-            .then(res => {
-                setSwitches(res.data.documents);
+        if (trigger > 0) {
+            axios(parseToNewAPI(featureSwictchesURL), {
+                headers: {
+                    'BEARER-TOKEN': localStorage.getItem('auth_token'),
+                },
             })
-            .catch(() => {
-                window.alert('API is not responding!');
-            });
+                .then(res => {
+                    setSwitches(res.data.documents);
+                })
+                .catch(() => {
+                    window.alert('API is not responding!');
+                });
+        }
     }, [trigger]);
 
     const onUpdate = data => {
@@ -131,7 +134,7 @@ const RenderSwitches = () => {
                     </Button>
                 </OverlayTrigger>
 
-                {swicthes.map(item => (
+                {switches.map(item => (
                     <FeatureRow
                         switch_id={item.switch_id}
                         is_enabled={item.is_enabled}

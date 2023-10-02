@@ -8,15 +8,9 @@ import { parseToNewAPI, url } from './Global';
 // These values will be replaced after a successful execution of a fetch
 const FEATURE_SWITCHES = {
     jobs: false,
-    team: true,
     regForm: false,
+    team: true,
 };
-const featureSwitchesArray = Object.entries(FEATURE_SWITCHES).map(([fswitch, value]) => ({
-    switch_id: fswitch,
-    is_enabled: value,
-}));
-
-export default featureSwitchesArray;
 
 const featureSwitchesURL = `${url}/v2/fswitches`;
 
@@ -39,13 +33,11 @@ export const parseFeatureSwitches = featureSwitches => {
     featureSwitches.forEach(fs => {
         mappedResult[fs.switch_id] = fs.is_enabled;
     });
-
     return mappedResult;
 };
 
 export const FsContext = createContext();
 export const Store = ({ children }) => {
-    // eslint-disable-next-line
     const [featureSwitches, setFeatureSwitches] = useState(FEATURE_SWITCHES);
     return <FsContext.Provider value={[featureSwitches, setFeatureSwitches]}>{children}</FsContext.Provider>;
 };
