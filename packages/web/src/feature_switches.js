@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createContext, useState } from 'react';
-import { parseToNewAPI, url } from './Global';
+import { parseToNewAPI } from './Global';
+import { featureSwitchesURL } from './Global';
 
 // Easily disable sections globally
 
@@ -11,8 +12,6 @@ const FEATURE_SWITCHES = {
     regForm: false,
     team: true,
 };
-
-const featureSwitchesURL = `${url}/v2/fswitches`;
 
 export const loadFeatureSwitches = () => {
     const result = axios(parseToNewAPI(featureSwitchesURL), {

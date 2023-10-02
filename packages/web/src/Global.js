@@ -13,7 +13,7 @@ const parseToNewAPI = url => url.replace('8000', '6969');
 
 const objUploaderURL = `${url}/v2/uploader`;
 const urlShortenerURL = `${url}/v2/shortener`;
-const featureSwictchesURL = `${url}/v2/fswitches`;
+const featureSwitchesURL = `${url}/v2/fswitches`;
 
 const checkBrowserValid = () => {
     const browsers = [
@@ -146,7 +146,7 @@ export {
     goBackIfActionsAreStateless,
     parseToNewAPI,
     urlShortenerURL,
-    featureSwictchesURL,
+    featureSwitchesURL,
 };
 export default Validate;
 

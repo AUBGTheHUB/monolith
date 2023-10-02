@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
 import { useState } from 'react';
-import { parseToNewAPI, featureSwictchesURL } from '../../../Global';
+import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
 
 const popover = (onDelete, onUpdate, errorMessage) => {
@@ -51,7 +51,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, triggerFetch
     const [errorMessage, setErrorMessage] = useState(undefined);
 
     const onDelete = () => {
-        axios(parseToNewAPI(featureSwictchesURL + `/${switch_id}`), {
+        axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
             headers: HEADERS,
             method: 'delete',
         })
@@ -66,7 +66,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, triggerFetch
     };
 
     const onUpdate = newSwitch => {
-        axios(parseToNewAPI(featureSwictchesURL), {
+        axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
             method: 'put',
             data: {

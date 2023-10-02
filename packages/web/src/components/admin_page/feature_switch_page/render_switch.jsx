@@ -5,7 +5,7 @@ import Validate from '../../../Global';
 import InvalidClient from '../invalid_client';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { parseToNewAPI, featureSwictchesURL } from '../../../Global';
+import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import FeatureRow from './row_switch';
 import { OverlayTrigger, Popover, Form, Alert } from 'react-bootstrap';
 import { FsContext } from '../../../feature_switches';
@@ -86,7 +86,7 @@ const RenderSwitches = () => {
 
     useEffect(() => {
         if (trigger > 0) {
-            axios(parseToNewAPI(featureSwictchesURL), {
+            axios(parseToNewAPI(featureSwitchesURL), {
                 headers: {
                     'BEARER-TOKEN': localStorage.getItem('auth_token'),
                 },
@@ -101,7 +101,7 @@ const RenderSwitches = () => {
     }, [trigger]);
 
     const onUpdate = data => {
-        axios(parseToNewAPI(featureSwictchesURL), {
+        axios(parseToNewAPI(featureSwitchesURL), {
             headers: {
                 'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
