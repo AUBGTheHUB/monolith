@@ -3,6 +3,9 @@ import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
+import { FsContext } from '../../../feature_switches';
+
+import { useContext } from 'react';
 
 const popover = (onDelete, onUpdate, errorMessage) => {
     return (
@@ -45,20 +48,28 @@ const UpdateSwitch = ({ onUpdate }) => {
         </>
     );
 };
+const deleteSwitches = (switches, setSwitches) => switch_to_remove => {
+    const updatedSwitches = { ...switches };
+    delete updatedSwitches[switch_to_remove];
+    setSwitches(updatedSwitches);
+};
 
-const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, triggerFetch }) => {
+const FeatureRow = ({ switch_id, is_enabled, selected, setSelected }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
+    const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
+    const handleUpdateSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
 
     const onDelete = () => {
         axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
-            headers: HEADERS,
+            headers: {
+                'BEARER-TOKEN': localStorage.getItem('auth_token'),
+            },
             method: 'delete',
         })
             .then(() => {
-                triggerFetch();
+                handleUpdateSwitches(switch_id);
             })
-            // eslint-disable-next-line no-unused-vars
             .catch(err => {
                 const message = err;
                 setErrorMessage(message);
@@ -66,19 +77,23 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, triggerFetch
     };
 
     const onUpdate = newSwitch => {
+        const is_enabled = JSON.parse(newSwitch);
+        console.log(is_enabled);
+
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
             method: 'put',
             data: {
                 switch_id,
-                is_enabled: newSwitch,
+                is_enabled,
             },
         })
             .then(() => {
-                triggerFetch();
                 if (errorMessage) {
                     setErrorMessage(undefined);
                 }
+                console.log();
+                handleUpdateSwitches({ switch_id, is_enabled });
             })
             .catch(err => {
                 updateErrorMessage(err, setErrorMessage);
@@ -89,7 +104,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, triggerFetch
         <div>
             <h1>
                 {switch_id} : {String(is_enabled)}
-                <OverlayTrigger show={isShown} placement="left" overlay={popover(onDelete, onUpdate, errorMessage)}>
+                <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
                     <Button
                         variant="primary"
                         onClick={() => {
