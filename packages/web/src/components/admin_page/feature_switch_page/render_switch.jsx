@@ -53,7 +53,7 @@ const UpdateSwitch = ({ onUpdate }) => {
     );
 };
 
-const updateSwitches = (switches, setSwitches) => data => {
+export const updateSwitches = (switches, setSwitches) => data => {
     setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
 };
 

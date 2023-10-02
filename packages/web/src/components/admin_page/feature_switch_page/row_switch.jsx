@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
 import { FsContext } from '../../../feature_switches';
-
+import { updateSwitches } from './render_switch';
 import { useContext } from 'react';
 
 const popover = (onDelete, onUpdate, errorMessage) => {
@@ -58,7 +59,8 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
-    const handleUpdateSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
+    const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
+    const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
 
     const onDelete = () => {
         axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
@@ -68,7 +70,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected }) => {
             method: 'delete',
         })
             .then(() => {
-                handleUpdateSwitches(switch_id);
+                handleDeleteSwitches(switch_id);
             })
             .catch(err => {
                 const message = err;
@@ -78,7 +80,6 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected }) => {
 
     const onUpdate = newSwitch => {
         const is_enabled = JSON.parse(newSwitch);
-        console.log(is_enabled);
 
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
@@ -92,13 +93,40 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected }) => {
                 if (errorMessage) {
                     setErrorMessage(undefined);
                 }
-                console.log();
                 handleUpdateSwitches({ switch_id, is_enabled });
             })
             .catch(err => {
                 updateErrorMessage(err, setErrorMessage);
             });
     };
+
+    // const onUpdate = newSwitch => {
+    //     const switch_id = newSwitch.switch_id;
+    //     const is_enabled = newSwitch.is_enabled;
+
+    //     axios({
+    //         method: 'put',
+    //         url: parseToNewAPI(featureSwitchesURL),
+    //         headers: {
+    //             'BEARER-TOKEN': localStorage.getItem('auth_token'),
+    //         },
+    //         newSwitch: {
+    //             switch_id,
+    //             is_enabled,
+    //         },
+    //     })
+    //         .then(res => {
+    //             console.log(is_enabled);
+    //             if (errorMessage) {
+    //                 setErrorMessage(undefined);
+    //             }
+    //             setShowAddOverlay(false);
+    //             handleUpdateSwitches({ switch_id, is_enabled });
+    //         })
+    //         .catch(err => {
+    //             // Handle error
+    //         });
+    // };
 
     return (
         <div>
