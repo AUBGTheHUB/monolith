@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createContext, useState } from 'react';
-import { parseToNewAPI } from './Global';
 import { featureSwitchesURL } from './Global';
 
 // Easily disable sections globally
@@ -14,7 +13,7 @@ const FEATURE_SWITCHES = {
 };
 
 export const loadFeatureSwitches = () => {
-    const result = axios(parseToNewAPI(featureSwitchesURL), {
+    const result = axios(featureSwitchesURL, {
         method: 'get',
     })
         .then(res => {

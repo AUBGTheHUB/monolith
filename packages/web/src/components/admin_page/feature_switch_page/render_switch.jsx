@@ -53,11 +53,7 @@ const UpdateSwitch = ({ onUpdate }) => {
     );
 };
 
-export const updateSwitches = (switches, setSwitches) => data => {
-    setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
-};
-
-const popover = (onUpdate, errorMessage) => {
+export const popover = (onUpdate, errorMessage) => {
     return (
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
@@ -69,13 +65,22 @@ const popover = (onUpdate, errorMessage) => {
     );
 };
 
+const updateSwitches = (switches, setSwitches) => data => {
+    setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
+};
+
+const deleteSwitches = (switches, setSwitches) => switchToRemove => {
+    const { [switchToRemove]: _, ...updatedSwitches } = { ...switches };
+    setSwitches(updatedSwitches);
+};
+
 const RenderSwitches = () => {
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
-
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
     const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
+    const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
 
     const onUpdate = data => {
         const switch_id = data.switch_id;
@@ -87,10 +92,7 @@ const RenderSwitches = () => {
             headers: {
                 'BEARER-TOKEN': localStorage.getItem('auth_token'),
             },
-            data: {
-                switch_id,
-                is_enabled,
-            },
+            data,
         })
             .then(res => {
                 if (errorMessage) {
@@ -127,6 +129,8 @@ const RenderSwitches = () => {
                         setSelected={setSelected}
                         triggerFetch={() => {}} // TODO: Remove
                         setFeatureSwitches={setFeatureSwitches}
+                        handleDeleteSwitches={handleDeleteSwitches}
+                        handleUpdateSwitches={handleUpdateSwitches}
                     />
                 ))}
             </>

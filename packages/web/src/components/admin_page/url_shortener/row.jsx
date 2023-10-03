@@ -3,6 +3,7 @@ import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
 import { parseToNewAPI, urlShortenerURL } from '../../../Global';
 import { useState } from 'react';
 import { updateErrorMessage } from './requests';
+import { HEADERS } from '../../../Global';
 
 const popover = (onDelete, onUpdate, errorMessage) => {
     return (
@@ -18,8 +19,6 @@ const popover = (onDelete, onUpdate, errorMessage) => {
         </Popover>
     );
 };
-
-const HEADERS = { 'BEARER-TOKEN': localStorage.getItem('auth_token') };
 
 const UpdateUrlForm = ({ onUpdate }) => {
     const [newUrl, setNewUrl] = useState(undefined);
