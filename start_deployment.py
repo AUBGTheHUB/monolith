@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import sys
+from gc import collect
+from time import sleep
 
 import paramiko
 
@@ -70,8 +72,8 @@ try:
     CMD = f"cd ~/monolith && git fetch origin && git reset --hard origin/{BRANCH} && nohup ./deployment.sh &"
 
     _, stdout, stderr = ssh_client.exec_command(CMD)
-    print(stdout.read().decode('utf-8'))
-    print(stderr.read().decode('utf-8'))
+    # print(stdout.read().decode('utf-8'))
+    # print(stderr.read().decode('utf-8'))
 
     print("Execution of deployment script started")
 except paramiko.AuthenticationException:
@@ -79,4 +81,5 @@ except paramiko.AuthenticationException:
 except paramiko.SSHException as e:
     print("SSH connection failed:", str(e))
 finally:
+    collect()
     ssh_client.close()
