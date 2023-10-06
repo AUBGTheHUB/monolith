@@ -9,10 +9,11 @@ fi
 docker-compose up --build -d
 
 if [ $? -eq 0 ]; then
-    result_string="branch ${BRANCH} deployment is ok"
-    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${result_string}\"}"
+    FAILURE_OUTPUT=$(tail -n 20 ./deployment.logs)
+    RESULT_STRING="branch ${BRANCH} deployment is ok\nsukablyat: ${FAILURE_OUTPUT}"
+    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
 else
-    # FAILURE_OUTPUT=$(tail -n 20 ./nohup.out)
-    result_string="branch ${BRANCH} deployment is bad bad stuff\nExit Code: ${$?}"
-    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${result_string}\"}"
+    FAILURE_OUTPUT=$(tail -n 20 ./deployment.logs)
+    RESULT_STRING="branch ${BRANCH} deployment is bad bad stuff\nLast 20 Lines: ${FAILURE_OUTPUT}"
+    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
 fi
