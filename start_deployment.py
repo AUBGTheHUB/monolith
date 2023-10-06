@@ -67,8 +67,11 @@ try:
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname=VM_IP, username=VM_USER, password=VM_PSWD)
 
-    CMD = f"cd ~/monolith && git fetch origin && git checkout {BRANCH} && git reset --hard origin/{BRANCH} && nohup ./deployment.sh {BRANCH} {DISCORD_WH} > deployment.logs 2>&1 &"
-    _, _, _ = ssh_client.exec_command(CMD)
+    CHECKOUT_BRANCH = f"cd ~/monolith && git checkout -f {BRANCH} && git reset --hard && git pull"
+    _, _, _ = ssh_client.exec_command(CHECKOUT_BRANCH)
+
+    RUN_DEPLOYMENT_SCRIPT = f"cd ~/monolith && nohup ./deployment.sh {BRANCH} {DISCORD_WH} > deployment.logs 2>&1 &"
+    _, _, _ = ssh_client.exec_command(RUN_DEPLOYMENT_SCRIPT)
 
 except paramiko.AuthenticationException:
     print("Authentication failed. Please check your credentials.")
