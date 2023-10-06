@@ -5,8 +5,9 @@ docker-compose up --build -d
 
 if [[ $? == 0 ]]; then
     # FAILURE_OUTPUT=$(tail -n 20 ./nohup.out)
-    curl -X POST ${WEBHOOK} -d "content="${BRANCH} deployment: ok\n\nexit_code:${$?}""
+    result_string="branch ${BRANCH} deployment is ok\nExit Code: ${$?}"
+    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${result_string}\"}"
 else
-    # FAILURE_OUTPUT=$(tail -n 20 ./nohup.out)
-    curl -X POST ${WEBHOOK} -d "content="${BRANCH} deployment: failed\n\nexit_code:${$?}""
+    result_string="branch ${BRANCH} deployment is bad bad stuff\nExit Code: ${$?}"
+    curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${result_string}\"}"
 fi
