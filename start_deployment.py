@@ -61,33 +61,22 @@ if not BRANCH:
     print("Error: Missing required option --branch.", file=sys.stderr)
     sys.exit(1)
 
-ATTACH_TMUX = f"tmux attach || tmux"
-RUN_DEPLOYMENT_SCRIPT_CMD = f"cd ~/monolith && git reset --hard origin/{BRANCH} && ./deployment.sh && tmux detach"
-
 ssh_client = paramiko.SSHClient()
 
 try:
-    # Automatically add the server's host key (this is insecure and should be improved)
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    # Connect to the SSH server
     ssh_client.connect(hostname=VM_IP, username=VM_USER, password=VM_PSWD)
 
-    # Execute the command
-    _, stdout, stderr = ssh_client.exec_command(ATTACH_TMUX)
+    CMD = f"cd ~/monolith && git fetch origin && git reset --hard origin/{BRANCH} && nohup ./deployment.sh &"
 
+    _, stdout, stderr = ssh_client.exec_command(CMD)
     print(stdout.read().decode('utf-8'))
-    _, stdout, stderr = ssh_client.exec_command(RUN_DEPLOYMENT_SCRIPT_CMD)
-
-    # Print the command's output
     print(stderr.read().decode('utf-8'))
 
+    print("Execution of deployment script started")
 except paramiko.AuthenticationException:
     print("Authentication failed. Please check your credentials.")
-    sys.exit(1)
 except paramiko.SSHException as e:
     print("SSH connection failed:", str(e))
-    sys.exit(1)
-
-ssh_client.close()
-print("Execution of deployment script started")
+finally:
+    ssh_client.close()
