@@ -68,8 +68,7 @@ try:
     ssh_client.connect(hostname=VM_IP, username=VM_USER, password=VM_PSWD)
 
     CMD = f"cd ~/monolith && git fetch origin && git checkout {BRANCH} && git reset --hard origin/{BRANCH} && nohup ./deployment.sh {BRANCH} {DISCORD_WH} > deployment.logs 2>&1 &"
-    _, _, err = ssh_client.exec_command(CMD)
-    print(err.read())
+    _, _, _ = ssh_client.exec_command(CMD)
 
 except paramiko.AuthenticationException:
     print("Authentication failed. Please check your credentials.")

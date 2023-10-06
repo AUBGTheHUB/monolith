@@ -9,11 +9,9 @@ fi
 docker-compose up --build -d
 
 if [ $? -eq 0 ]; then
-    TAILED_LOGS=$(tail -n 20 ./deployment.logs)
-    RESULT_STRING="branch ${BRANCH} deployment is ok\nsukablyat: ${TAILED_LOGS}"
+    RESULT_STRING="${BRANCH} deployment is ok"
     curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
 else
-    FAILURE_OUTPUT=$(tail -n 20 ./deployment.logs)
-    RESULT_STRING="branch ${BRANCH} deployment is bad bad stuff\nLast 20 Lines: ${FAILURE_OUTPUT}"
+    RESULT_STRING="${BRANCH} deployment failed"
     curl -X POST ${WEBHOOK} -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
 fi
