@@ -9,3 +9,4 @@ if [[ $? == 0 ]]; then
 else
     FAILURE_OUTPUT=$(tail -n 20 ./nohup.out)
     curl -X POST ${WEBHOOK} -d "content=${BRANCH} deployment: failed\noutput:${FAILURE_OUTPUT}"
+fi
