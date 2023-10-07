@@ -4,6 +4,7 @@ from typing import Any, Dict, Final
 from fastapi.responses import JSONResponse
 from py_api.database import db
 from py_api.models import FeatureSwitch
+from py_api.utilities.parsers import has_prohibited_characters
 
 
 class FeatureSwitchesController:
@@ -18,8 +19,13 @@ class FeatureSwitchesController:
     )
 
     @classmethod
-    def upsert_switch(cls, fs: FeatureSwitch) -> Dict[str, Any]:
+    def upsert_switch(cls, fs: FeatureSwitch) -> Dict[str, str] | JSONResponse:
         dumped_fs = fs.model_dump()
+        prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
+
+        if has_prohibited_characters(dumped_fs["endpoint"], prohibited_chars):
+            return JSONResponse(content={"message": "Provided endpoint includes a probited character - {prohibited_chars}"}, status_code=400)
+
         document = cls.fs_col.find_one_and_update(
             {"switch_id": dumped_fs["switch_id"]}, {
                 "$set": dumped_fs,

@@ -83,6 +83,14 @@ const RenderSwitches = () => {
     const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
 
     useEffect(() => {
+        axios(featureSwitchesURL, {
+            method: 'get',
+        }).catch(() => {
+            window.alert('API is not responding!');
+        });
+    }, []);
+
+    useEffect(() => {
         if (selected) {
             setShowAddOverlay(false);
         }

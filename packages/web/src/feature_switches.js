@@ -20,7 +20,6 @@ export const loadFeatureSwitches = () => {
             return res.data.documents;
         })
         .catch(() => {
-            window.alert('API is not responding!');
             return [];
         });
 
