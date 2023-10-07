@@ -58,8 +58,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
                 handleDeleteSwitches(switch_id);
             })
             .catch(err => {
-                const message = err;
-                console.log(err?.message);
+                const message = err?.message;
                 setErrorMessage(message);
             });
     };
