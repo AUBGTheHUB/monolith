@@ -58,8 +58,8 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
                 triggerFetch();
             })
             .catch(err => {
-                const message = err?.message ? err.message : 'Something went wrong!';
-                setErrorMessage(message?.message);
+                const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
+                setErrorMessage(message);
             });
     };
 

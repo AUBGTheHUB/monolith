@@ -109,7 +109,7 @@ const UrlsTable = () => {
             setSelected(undefined);
         }
     }, [showAddOverlay]);
-    console.log(shortenedUrls);
+
     return (
         <>
             <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>

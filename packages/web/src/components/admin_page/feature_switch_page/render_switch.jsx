@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Form, OverlayTrigger, Popover, Alert } from 'react-bootstrap';
 import axios from 'axios';
@@ -70,6 +69,7 @@ const updateSwitches = (switches, setSwitches) => data => {
 };
 
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
+    // eslint-disable-next-line no-unused-vars
     const { [switchToRemove]: _, ...updatedSwitches } = { ...switches };
     setSwitches(updatedSwitches);
 };
@@ -112,7 +112,7 @@ const RenderSwitches = () => {
             headers: HEADERS,
             data,
         })
-            .then(res => {
+            .then(() => {
                 if (errorMessage) {
                     setErrorMessage(undefined);
                 }
