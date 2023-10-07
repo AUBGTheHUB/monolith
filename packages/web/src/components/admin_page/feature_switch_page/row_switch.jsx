@@ -1,4 +1,4 @@
-import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
+import { OverlayTrigger, Popover, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
@@ -11,7 +11,9 @@ const popover = (onDelete, onUpdate, errorMessage) => {
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
             <Popover.Body>
                 {errorMessage !== undefined ? <Alert variant="warning">{errorMessage}</Alert> : null}
-                <UpdateSwitch onUpdate={onUpdate} />
+                <Button variant="primary" onClick={onUpdate}>
+                    Toggle
+                </Button>
                 <Button variant="danger" onClick={onDelete}>
                     Remove
                 </Button>
@@ -20,34 +22,10 @@ const popover = (onDelete, onUpdate, errorMessage) => {
     );
 };
 
-const UpdateSwitch = ({ onUpdate }) => {
-    const [newFeature, setNewFeature] = useState(undefined);
-
-    const handleChange = e => {
-        setNewFeature(e.target.value);
-    };
-
-    return (
-        <>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Set a new url:</Form.Label>
-                <Form.Control type="text" placeholder="Paste the url" onChange={handleChange} />
-                <Form.Text className="text-muted">Add the new url you want this endpoint to redirect to</Form.Text>
-            </Form.Group>
-            <Button
-                variant="primary"
-                onClick={() => {
-                    onUpdate(newFeature);
-                }}>
-                Update
-            </Button>
-        </>
-    );
-};
-
 const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDeleteSwitches, handleUpdateSwitches }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
+    const [isEnabled, setIsEnabled] = useState(is_enabled);
 
     const onDelete = () => {
         axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
@@ -59,26 +37,27 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             })
             .catch(err => {
                 const message = err?.message;
-                setErrorMessage(message);
+                setErrorMessage(message?.message);
             });
     };
 
-    const onUpdate = isEnabled => {
-        const is_enabled = JSON.parse(isEnabled);
+    const onUpdate = () => {
+        const updatedIsEnabled = !isEnabled; // Toggle the value
+        setIsEnabled(updatedIsEnabled); // Update the state
 
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
             method: 'put',
             data: {
                 switch_id,
-                is_enabled,
+                is_enabled: updatedIsEnabled,
             },
         })
             .then(() => {
                 if (errorMessage) {
                     setErrorMessage(undefined);
                 }
-                handleUpdateSwitches({ switch_id, is_enabled });
+                handleUpdateSwitches({ switch_id, is_enabled: updatedIsEnabled });
             })
             .catch(err => {
                 setErrorMessage(err);
@@ -88,7 +67,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     return (
         <div>
             <h1>
-                {switch_id} : {String(is_enabled)}
+                {switch_id} : {String(isEnabled)} {/* Use isEnabled state */}
                 <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
                     <Button
                         variant="primary"
