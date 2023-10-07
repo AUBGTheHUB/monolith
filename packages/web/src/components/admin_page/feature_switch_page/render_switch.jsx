@@ -28,11 +28,11 @@ const UpdateSwitch = ({ onUpdate }) => {
                     placeholder="Enter new feature switch"
                     onChange={handleChange}
                     name="switch_id"
-                    value={newSwitch.switch_id} // Ensure switch_id is controlled
+                    value={newSwitch.switch_id}
                 />
                 <Form.Text className="text-muted">Add a new feature</Form.Text>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Group className="mb-3" controlId="formBasicIsEnabled">
                 <Form.Label>Set it to true or false:</Form.Label>
                 <Form.Select onChange={handleChange} name="is_enabled" value={newSwitch.is_enabled.toString()}>
                     <option value="true">True</option>
