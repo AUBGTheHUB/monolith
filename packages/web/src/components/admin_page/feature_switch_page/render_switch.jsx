@@ -135,19 +135,20 @@ const RenderSwitches = () => {
                         Create a Feature Switch
                     </Button>
                 </OverlayTrigger>
-
-                {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
-                    <FeatureRow
-                        switch_id={switch_id}
-                        is_enabled={is_enabled} // Use the boolean value directly
-                        key={switch_id}
-                        selected={selected}
-                        setSelected={setSelected}
-                        setFeatureSwitches={setFeatureSwitches}
-                        handleDeleteSwitches={handleDeleteSwitches}
-                        handleUpdateSwitches={handleUpdateSwitches}
-                    />
-                ))}
+                <div className="test2">
+                    {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
+                        <FeatureRow
+                            switch_id={switch_id}
+                            is_enabled={is_enabled}
+                            key={switch_id}
+                            selected={selected}
+                            setSelected={setSelected}
+                            setFeatureSwitches={setFeatureSwitches}
+                            handleDeleteSwitches={handleDeleteSwitches}
+                            handleUpdateSwitches={handleUpdateSwitches}
+                        />
+                    ))}
+                </div>
             </>
         );
     };

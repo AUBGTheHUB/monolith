@@ -2,6 +2,7 @@ import { OverlayTrigger, Popover, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
+import './featureSwitch.css';
 
 import { HEADERS } from '../../../Global';
 
@@ -63,23 +64,22 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     };
 
     return (
-        <div>
-            <h1>
-                {switch_id} : {String(is_enabled)}
-                <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
-                    <Button
-                        variant="primary"
-                        onClick={() => {
-                            if (selected === '' || switch_id !== selected) {
-                                setSelected(switch_id);
-                            } else {
-                                setSelected('');
-                            }
-                        }}>
-                        Edit
-                    </Button>
-                </OverlayTrigger>
-            </h1>
+        <div className="test">
+            <p>{switch_id}</p>
+            <p>state: {String(is_enabled)}</p>
+            <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        if (selected === '' || switch_id !== selected) {
+                            setSelected(switch_id);
+                        } else {
+                            setSelected('');
+                        }
+                    }}>
+                    Edit
+                </Button>
+            </OverlayTrigger>
         </div>
     );
 };
