@@ -19,7 +19,7 @@ class FeatureSwitchesController:
     )
 
     @classmethod
-    def upsert_switch(cls, fs: FeatureSwitch) -> Dict[str, bool] | JSONResponse:
+    def upsert_switch(cls, fs: FeatureSwitch) -> Dict[str, Any] | JSONResponse:
         dumped_fs = fs.model_dump()
         prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
 
