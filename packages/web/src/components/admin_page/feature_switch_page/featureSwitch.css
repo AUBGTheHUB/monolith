@@ -12,6 +12,7 @@
 }
 
 .feature-switch p {
+    text-transform: capitalize;
     width: 100%;
     text-align: center;
     font-size: 25px;
