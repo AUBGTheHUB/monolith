@@ -25,7 +25,6 @@ const popover = (onDelete, onUpdate, errorMessage) => {
 const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDeleteSwitches, handleUpdateSwitches }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
-    const [isEnabled, setIsEnabled] = useState(is_enabled);
 
     const onDelete = () => {
         axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
@@ -37,13 +36,12 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             })
             .catch(err => {
                 const message = err?.message;
-                setErrorMessage(message?.message);
+                setErrorMessage(message);
             });
     };
 
     const onUpdate = () => {
-        const updatedIsEnabled = !isEnabled; // Toggle the value
-        setIsEnabled(updatedIsEnabled); // Update the state
+        const updatedIsEnabled = !is_enabled; // Toggle the value
 
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
@@ -67,7 +65,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     return (
         <div>
             <h1>
-                {switch_id} : {String(isEnabled)} {/* Use isEnabled state */}
+                {switch_id} : {String(is_enabled)}
                 <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
                     <Button
                         variant="primary"
