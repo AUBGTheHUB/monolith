@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 import { OverlayTrigger, Popover, Button, Form, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
-import { FsContext } from '../../../feature_switches';
-import { updateSwitches } from './render_switch';
-import { useContext } from 'react';
+
 import { HEADERS } from '../../../Global';
 
 const popover = (onDelete, onUpdate, errorMessage) => {
@@ -55,9 +51,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
 
     const onDelete = () => {
         axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
-            headers: {
-                'BEARER-TOKEN': localStorage.getItem('auth_token'),
-            },
+            headers: HEADERS,
             method: 'delete',
         })
             .then(() => {
@@ -65,6 +59,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             })
             .catch(err => {
                 const message = err;
+                console.log(err?.message);
                 setErrorMessage(message);
             });
     };
@@ -87,7 +82,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
                 handleUpdateSwitches({ switch_id, is_enabled });
             })
             .catch(err => {
-                updateErrorMessage(err, setErrorMessage);
+                setErrorMessage(err);
             });
     };
 

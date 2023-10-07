@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Button, Form, OverlayTrigger, Popover, Alert } from 'react-bootstrap';
 import axios from 'axios';
-import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
+import { parseToNewAPI, featureSwitchesURL, HEADERS } from '../../../Global';
 import FeatureRow from './row_switch';
 import { FsContext } from '../../../feature_switches';
 
@@ -77,21 +77,33 @@ const deleteSwitches = (switches, setSwitches) => switchToRemove => {
 const RenderSwitches = () => {
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(undefined);
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
+    const [errorMessage, setErrorMessage] = useState(undefined);
     const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
     const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
+
+    useEffect(() => {
+        if (selected) {
+            setShowAddOverlay(false);
+        }
+    }, [selected]);
+
+    useEffect(() => {
+        if (showAddOverlay) {
+            setSelected(undefined);
+        }
+    }, [showAddOverlay]);
 
     const onUpdate = data => {
         const switch_id = data.switch_id;
         const is_enabled = data.is_enabled;
 
+        useEffect(() => {});
+
         axios({
             method: 'put',
             url: parseToNewAPI(featureSwitchesURL),
-            headers: {
-                'BEARER-TOKEN': localStorage.getItem('auth_token'),
-            },
+            headers: HEADERS,
             data,
         })
             .then(res => {
@@ -101,9 +113,7 @@ const RenderSwitches = () => {
                 setShowAddOverlay(false);
                 handleUpdateSwitches({ switch_id, is_enabled });
             })
-            .catch(err => {
-                // Handle error
-            });
+            .catch(() => {});
     };
 
     const renderSwitch = () => {
@@ -127,7 +137,6 @@ const RenderSwitches = () => {
                         key={switch_id}
                         selected={selected}
                         setSelected={setSelected}
-                        triggerFetch={() => {}} // TODO: Remove
                         setFeatureSwitches={setFeatureSwitches}
                         handleDeleteSwitches={handleDeleteSwitches}
                         handleUpdateSwitches={handleUpdateSwitches}
