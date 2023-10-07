@@ -106,8 +106,6 @@ const RenderSwitches = () => {
         const switch_id = data.switch_id;
         const is_enabled = data.is_enabled;
 
-        useEffect(() => {});
-
         axios({
             method: 'put',
             url: parseToNewAPI(featureSwitchesURL),

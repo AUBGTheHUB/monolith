@@ -23,8 +23,8 @@ class FeatureSwitchesController:
         dumped_fs = fs.model_dump()
         prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
 
-        if has_prohibited_characters(dumped_fs["endpoint"], prohibited_chars):
-            return JSONResponse(content={"message": "Provided endpoint includes a probited character - {prohibited_chars}"}, status_code=400)
+        if has_prohibited_characters(dumped_fs["switch_id"], prohibited_chars):
+            return JSONResponse(content={"message": f"Provided endpoint includes a prohibited character - {prohibited_chars}"}, status_code=400)
 
         document = cls.fs_col.find_one_and_update(
             {"switch_id": dumped_fs["switch_id"]}, {
