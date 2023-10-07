@@ -135,7 +135,7 @@ const RenderSwitches = () => {
                         Create a Feature Switch
                     </Button>
                 </OverlayTrigger>
-                <div className="test2">
+                <div className="switches-container">
                     {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
                         <FeatureRow
                             switch_id={switch_id}

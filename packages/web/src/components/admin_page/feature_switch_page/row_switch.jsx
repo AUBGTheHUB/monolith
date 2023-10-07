@@ -64,10 +64,10 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     };
 
     return (
-        <div className="test">
+        <div className="feature-switch">
             <p>{switch_id}</p>
             <p>state: {String(is_enabled)}</p>
-            <OverlayTrigger show={isShown} placement="right" overlay={popover(onDelete, onUpdate, errorMessage)}>
+            <OverlayTrigger show={isShown} placement="bottom" overlay={popover(onDelete, onUpdate, errorMessage)}>
                 <Button
                     variant="primary"
                     onClick={() => {

@@ -1,4 +1,4 @@
-.test {
+.feature-switch {
     display: flex;
     background-color: #181a1b !important;
     width: 275px;
@@ -11,7 +11,7 @@
     color: #fff;
 }
 
-.test p {
+.feature-switch p {
     width: 100%;
     text-align: center;
     font-size: 25px;
@@ -19,12 +19,12 @@
     margin-top: 5px !important;
 }
 
-.test button {
+.feature-switch button {
     margin-top: 15px;
     width: 90%;
 }
 
-.test2 {
+.switches-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -32,9 +32,3 @@
     height: 90vh;
     align-content: center;
 }
-/*
-@media only screen and (max-width: 900px) {
-    .test {
-        width: 2%;
-    }
-} */
