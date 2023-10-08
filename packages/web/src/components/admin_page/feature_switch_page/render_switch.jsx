@@ -92,7 +92,7 @@ const RenderSwitches = () => {
         axios(featureSwitchesURL, {
             method: 'get',
         }).catch(() => {
-            window.alert('API is not responding!');
+            toast.error('API IS NOT RESPONDING');
         });
     }, []);
 
