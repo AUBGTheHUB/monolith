@@ -8,8 +8,8 @@ import toast from 'react-hot-toast';
 
 const UpdateSwitch = ({ onUpdate }) => {
     const [newSwitch, setNewSwitch] = useState({
-        switch_id: '', // Initialize with an empty string
-        is_enabled: true, // Default value for the dropdown as a boolean
+        switch_id: '',
+        is_enabled: true,
     });
 
     const handleChange = e => {
@@ -76,7 +76,7 @@ const updateSwitches = (switches, setSwitches) => data => {
 
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     // eslint-disable-next-line no-unused-vars
-    const { [switchToRemove]: _, ...updatedSwitches } = { ...switches }; //creates a new object updatedSwitches that is a copy of switches with the siwtchToRemove, removed
+    const { [switchToRemove]: _, ...updatedSwitches } = switches; //creates a new object updatedSwitches that is a copy of switches with the siwtchToRemove, removed
     setSwitches(updatedSwitches);
 };
 
