@@ -4,7 +4,7 @@ from typing import Final, List
 
 
 def construct_origins() -> List[str]:
-    ALLOWED_LOCALHOST_PORTS: Final = [80, 3000, 3001, 6969]
+    ALLOWED_LOCALHOST_PORTS: Final = [80, 3000, 3001]
     ALLOWED_LOCALHOST_DOMAINS: Final = ["localhost", "127.0.0.1"]
     ALLOWED_LOCALHOST_PROTOCOLS: Final = ["http", "https"]
     origins = [f"{protocol}://{domain}:{port}" for protocol in ALLOWED_LOCALHOST_PROTOCOLS for domain in ALLOWED_LOCALHOST_DOMAINS for port in ALLOWED_LOCALHOST_PORTS]
