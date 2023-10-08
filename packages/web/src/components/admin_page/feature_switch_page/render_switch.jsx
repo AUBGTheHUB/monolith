@@ -20,8 +20,7 @@ const UpdateSwitch = ({ onUpdate }) => {
     };
 
     const handleSubmit = e => {
-        e.preventDefault(); // Prevent the default form submission behavior
-        // Check if the input is empty or not, and then call onUpdate accordingly
+        e.preventDefault();
         if (newSwitch.switch_id.trim() !== '') {
             onUpdate(newSwitch);
         }
