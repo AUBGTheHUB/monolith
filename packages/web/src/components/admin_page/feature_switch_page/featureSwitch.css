@@ -25,6 +25,11 @@
     width: 90%;
 }
 
+form .mb-3 input[type='text']:focus,
+form .mb-3 input[type='text']:required {
+    color: #000 !important;
+}
+
 .switches-container {
     display: flex;
     flex-direction: row;
