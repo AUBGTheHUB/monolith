@@ -30,6 +30,9 @@ form .mb-3 input[type='text']:required {
     color: #000 !important;
 }
 
+.popover-body button {
+    margin: 0 10px;
+}
 .switches-container {
     display: flex;
     flex-direction: row;
