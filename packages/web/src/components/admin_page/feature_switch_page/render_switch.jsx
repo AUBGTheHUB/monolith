@@ -71,24 +71,30 @@ export const popover = (onUpdate, errorMessage) => {
     );
 };
 
+// Creates a new object updateSwitches that makes a copy of switches and updates a specific switch's is_enabled property
 const updateSwitches = (switches, setSwitches) => data => {
     setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
 };
 
+//creates a new object updatedSwitches that is equal to switches with the siwtchToRemove, removed
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     // eslint-disable-next-line no-unused-vars
-    const { [switchToRemove]: _, ...updatedSwitches } = switches; //creates a new object updatedSwitches that is a copy of switches with the siwtchToRemove, removed
+    const { [switchToRemove]: _, ...updatedSwitches } = switches;
     setSwitches(updatedSwitches);
 };
 
 const RenderSwitches = () => {
+    //We need to pass what is selected to the child element to track if a switch is selected so that we dont display two messages for editing and adding switch
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
     const [errorMessage, setErrorMessage] = useState(undefined);
+
+    // Create functions to update and delete feature switches and call it by the handleUpdateSwitches/handleDeleteSwitches
     const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
     const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
 
+    //Check if the API is working
     useEffect(() => {
         axios(featureSwitchesURL, {
             method: 'get',
@@ -97,12 +103,14 @@ const RenderSwitches = () => {
         });
     }, []);
 
+    // Hide the overlay when an item is selected
     useEffect(() => {
         if (selected) {
             setShowAddOverlay(false);
         }
     }, [selected]);
 
+    // Clear the selected state when "showAddOverlay" becomes true
     useEffect(() => {
         if (showAddOverlay) {
             setSelected(undefined);
