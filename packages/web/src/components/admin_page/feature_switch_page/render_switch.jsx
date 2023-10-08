@@ -19,8 +19,16 @@ const UpdateSwitch = ({ onUpdate }) => {
         }));
     };
 
+    const handleSubmit = e => {
+        e.preventDefault(); // Prevent the default form submission behavior
+        // Check if the input is empty or not, and then call onUpdate accordingly
+        if (newSwitch.switch_id.trim() !== '') {
+            onUpdate(newSwitch);
+        }
+    };
+
     return (
-        <>
+        <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Set a feature:</Form.Label>
                 <Form.Control
@@ -29,6 +37,7 @@ const UpdateSwitch = ({ onUpdate }) => {
                     onChange={handleChange}
                     name="switch_id"
                     value={newSwitch.switch_id}
+                    required
                 />
                 <Form.Text className="text-muted">Add a new feature</Form.Text>
             </Form.Group>
@@ -41,14 +50,10 @@ const UpdateSwitch = ({ onUpdate }) => {
                 <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
 
-            <Button
-                variant="primary"
-                onClick={() => {
-                    onUpdate(newSwitch);
-                }}>
+            <Button type="submit" variant="primary">
                 Add
             </Button>
-        </>
+        </Form>
     );
 };
 
@@ -119,7 +124,10 @@ const RenderSwitches = () => {
                 setShowAddOverlay(false);
                 handleUpdateSwitches({ switch_id, is_enabled });
             })
-            .catch(() => {});
+            .catch(err => {
+                const message = err?.message;
+                setErrorMessage(message);
+            });
     };
 
     const renderSwitch = () => {
