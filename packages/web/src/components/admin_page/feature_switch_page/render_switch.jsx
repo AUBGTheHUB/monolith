@@ -65,7 +65,6 @@ const UpdateSwitch = ({ onUpdate }) => {
 };
 
 export const popover = (onUpdate, errorMessage) => {
-    console.log(errorMessage);
     return (
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
