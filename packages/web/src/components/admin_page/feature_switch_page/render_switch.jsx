@@ -4,8 +4,7 @@ import axios from 'axios';
 import { parseToNewAPI, featureSwitchesURL, HEADERS } from '../../../Global';
 import FeatureRow from './row_switch';
 import { FsContext } from '../../../feature_switches';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 
 const UpdateSwitch = ({ onUpdate }) => {
     const [newSwitch, setNewSwitch] = useState({
@@ -24,8 +23,7 @@ const UpdateSwitch = ({ onUpdate }) => {
     const handleSubmit = e => {
         e.preventDefault();
         if (newSwitch.switch_id.trim() === '') {
-            // Use toast to display a notification
-            toast.error('Please enter a value for the feature switch.');
+            toast.error('Please enter switch name');
         } else {
             onUpdate(newSwitch);
         }
