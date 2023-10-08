@@ -23,9 +23,14 @@ const UpdateSwitch = ({ onUpdate }) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        if (newSwitch.switch_id.trim() === '') {
+        const trimmedSwitchId = newSwitch.switch_id.trim();
+
+        if (trimmedSwitchId === '') {
             toast.error('Please enter switch name');
+        } else if (trimmedSwitchId.length > 10) {
+            toast.error('Switch name must be 10 characters or less');
         } else {
+            newSwitch.switch_id = trimmedSwitchId;
             onUpdate(newSwitch);
         }
     };
