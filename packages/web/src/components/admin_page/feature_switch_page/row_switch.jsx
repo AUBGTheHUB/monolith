@@ -2,6 +2,7 @@ import { OverlayTrigger, Popover, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import styles from './featureSwitch.module.css';
 
 import { HEADERS } from '../../../Global';
@@ -22,7 +23,7 @@ const popover = (onDelete, onUpdate, errorMessage) => {
         </Popover>
     );
 };
-console.log(styles);
+
 const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDeleteSwitches, handleUpdateSwitches }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
@@ -38,11 +39,12 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             .catch(err => {
                 const message = err?.message;
                 setErrorMessage(message);
+                toast.error('API IS NOT RESPONDING');
             });
     };
 
     const onUpdate = () => {
-        const updatedIsEnabled = !is_enabled; // Toggle the value
+        const updatedIsEnabled = !is_enabled; //change the value of the specific switch to the oposite of the current value
 
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,
@@ -59,7 +61,9 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
                 handleUpdateSwitches({ switch_id, is_enabled: updatedIsEnabled });
             })
             .catch(err => {
-                setErrorMessage(err);
+                const message = err?.message;
+                setErrorMessage(message);
+                toast.error('API IS NOT RESPONDING');
             });
     };
 

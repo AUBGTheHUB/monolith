@@ -76,12 +76,13 @@ export const popover = (onUpdate, errorMessage) => {
     );
 };
 
-// Creates a new object updateSwitches that makes a copy of switches and updates a specific switch's is_enabled property
+// Update the "switches" state object by creating a new object, modifying a specific switch's "is_enabled" property using the provided "data" object
 const updateSwitches = (switches, setSwitches) => data => {
     setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
 };
 
-//creates a new object updatedSwitches that is equal to switches with the siwtchToRemove, removed
+//Modifies the state of the switches by destructuring their current state into two objects - switch to be removed and leftover switches.
+//We use the leftover switches to update the state.
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     // eslint-disable-next-line no-unused-vars
     const { [switchToRemove]: _, ...updatedSwitches } = switches;
@@ -89,7 +90,8 @@ const deleteSwitches = (switches, setSwitches) => switchToRemove => {
 };
 
 const RenderSwitches = () => {
-    //We need to pass what is selected to the child element to track if a switch is selected so that we dont display two messages for editing and adding switch
+    //We need to pass the selected switch (switch_id) as a prop to children components in order to maintain state information about whether a switch is currently selected.
+    //This allows us to avoid displaying two popovers (menu's for editing or creating switches) at the same time.
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
@@ -98,15 +100,6 @@ const RenderSwitches = () => {
     // Create functions to update and delete feature switches and call it by the handleUpdateSwitches/handleDeleteSwitches
     const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
     const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
-
-    //Check if the API is working
-    useEffect(() => {
-        axios(featureSwitchesURL, {
-            method: 'get',
-        }).catch(() => {
-            toast.error('API IS NOT RESPONDING');
-        });
-    }, []);
 
     // Hide the overlay when an item is selected
     useEffect(() => {
@@ -142,6 +135,7 @@ const RenderSwitches = () => {
             .catch(err => {
                 const message = err?.response?.data?.message;
                 setErrorMessage(message);
+                toast.error('API IS NOT RESPONDING');
             });
     };
 
