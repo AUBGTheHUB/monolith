@@ -146,37 +146,33 @@ const RenderSwitches = () => {
             });
     };
 
-    const renderSwitch = () => {
-        return (
-            <>
-                <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>
-                    <Button
-                        variant="primary"
-                        style={{ width: '100vw' }}
-                        onClick={() => {
-                            setShowAddOverlay(prev => !prev);
-                        }}>
-                        Create a Feature Switch
-                    </Button>
-                </OverlayTrigger>
-                <div className={styles.switches_container}>
-                    {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
-                        <FeatureRow
-                            switch_id={switch_id}
-                            is_enabled={is_enabled}
-                            key={switch_id}
-                            selected={selected}
-                            setSelected={setSelected}
-                            handleDeleteSwitches={handleDeleteSwitches}
-                            handleUpdateSwitches={handleUpdateSwitches}
-                        />
-                    ))}
-                </div>
-            </>
-        );
-    };
-
-    return <div className="members-box-add-button">{renderSwitch()}</div>;
+    return (
+        <div className="members-box-add-button">
+            <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>
+                <Button
+                    variant="primary"
+                    style={{ width: '100vw' }}
+                    onClick={() => {
+                        setShowAddOverlay(prev => !prev);
+                    }}>
+                    Create a Feature Switch
+                </Button>
+            </OverlayTrigger>
+            <div className={styles.switches_container}>
+                {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
+                    <FeatureRow
+                        switch_id={switch_id}
+                        is_enabled={is_enabled}
+                        key={switch_id}
+                        selected={selected}
+                        setSelected={setSelected}
+                        handleDeleteSwitches={handleDeleteSwitches}
+                        handleUpdateSwitches={handleUpdateSwitches}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 };
 
 export default RenderSwitches;
