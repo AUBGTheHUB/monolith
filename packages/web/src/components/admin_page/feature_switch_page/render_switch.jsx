@@ -5,6 +5,7 @@ import { parseToNewAPI, featureSwitchesURL, HEADERS } from '../../../Global';
 import FeatureRow from './row_switch';
 import { FsContext } from '../../../feature_switches';
 import toast from 'react-hot-toast';
+import styles from './featureSwitch.module.css';
 
 const UpdateSwitch = ({ onUpdate }) => {
     const [newSwitch, setNewSwitch] = useState({
@@ -63,7 +64,7 @@ export const popover = (onUpdate, errorMessage) => {
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
             <Popover.Body>
-                {errorMessage !== undefined ? <Alert variant="warning">{errorMessage}</Alert> : null}
+                {errorMessage ? <Alert variant="warning">{errorMessage}</Alert> : null}
                 <UpdateSwitch onUpdate={onUpdate} />
             </Popover.Body>
         </Popover>
@@ -144,7 +145,7 @@ const RenderSwitches = () => {
                         Create a Feature Switch
                     </Button>
                 </OverlayTrigger>
-                <div className="switches-container">
+                <div className={styles.switches_container}>
                     {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
                         <FeatureRow
                             switch_id={switch_id}
@@ -152,7 +153,6 @@ const RenderSwitches = () => {
                             key={switch_id}
                             selected={selected}
                             setSelected={setSelected}
-                            setFeatureSwitches={setFeatureSwitches}
                             handleDeleteSwitches={handleDeleteSwitches}
                             handleUpdateSwitches={handleUpdateSwitches}
                         />

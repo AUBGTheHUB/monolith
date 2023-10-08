@@ -1,4 +1,4 @@
-.feature-switch {
+.feature_switch {
     display: flex;
     background-color: #181a1b !important;
     width: 275px;
@@ -11,7 +11,7 @@
     color: #fff;
 }
 
-.feature-switch p {
+.feature_switch p {
     text-transform: capitalize;
     width: 100%;
     text-align: center;
@@ -20,20 +20,15 @@
     margin-top: 5px !important;
 }
 
-.feature-switch button {
+.feature_switch button {
     margin-top: 15px;
     width: 90%;
 }
 
-form .mb-3 input[type='text']:focus,
-form .mb-3 input[type='text']:required {
-    color: #000 !important;
-}
-
-.popover-body button {
+.button {
     margin: 0 10px;
 }
-.switches-container {
+.switches_container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

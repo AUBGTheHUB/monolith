@@ -2,7 +2,7 @@ import { OverlayTrigger, Popover, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
 import { parseToNewAPI, featureSwitchesURL } from '../../../Global';
 import axios from 'axios';
-import './featureSwitch.css';
+import styles from './featureSwitch.module.css';
 
 import { HEADERS } from '../../../Global';
 
@@ -12,7 +12,7 @@ const popover = (onDelete, onUpdate, errorMessage) => {
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
             <Popover.Body>
                 {errorMessage !== undefined ? <Alert variant="warning">{errorMessage}</Alert> : null}
-                <Button variant="primary" onClick={onUpdate}>
+                <Button variant="primary" onClick={onUpdate} className={styles.button}>
                     Toggle
                 </Button>
                 <Button variant="danger" onClick={onDelete}>
@@ -22,7 +22,7 @@ const popover = (onDelete, onUpdate, errorMessage) => {
         </Popover>
     );
 };
-
+console.log(styles);
 const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDeleteSwitches, handleUpdateSwitches }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
@@ -64,7 +64,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     };
 
     return (
-        <div className="feature-switch">
+        <div className={styles.feature_switch}>
             <p>{switch_id}</p>
             <p>state: {String(is_enabled)}</p>
             <OverlayTrigger show={isShown} placement="bottom" overlay={popover(onDelete, onUpdate, errorMessage)}>
