@@ -71,7 +71,8 @@ try:
     _, _, _ = ssh_client.exec_command(CHECKOUT_BRANCH)
 
     RUN_DEPLOYMENT_SCRIPT = f"cd ~/monolith && nohup ./deployment.sh {BRANCH} {DISCORD_WH} > deployment.logs 2>&1 &"
-    _, _, _ = ssh_client.exec_command(RUN_DEPLOYMENT_SCRIPT)
+    _, _, err = ssh_client.exec_command(RUN_DEPLOYMENT_SCRIPT)
+    print(err.read())
 
 except paramiko.AuthenticationException:
     print("Authentication failed. Please check your credentials.")
