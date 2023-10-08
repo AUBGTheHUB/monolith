@@ -75,7 +75,7 @@ const updateSwitches = (switches, setSwitches) => data => {
 
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     // eslint-disable-next-line no-unused-vars
-    const { [switchToRemove]: _, ...updatedSwitches } = { ...switches };
+    const { [switchToRemove]: _, ...updatedSwitches } = { ...switches }; //creates a new object updatedSwitches that is a copy of switches with the siwtchToRemove, removed
     setSwitches(updatedSwitches);
 };
 
