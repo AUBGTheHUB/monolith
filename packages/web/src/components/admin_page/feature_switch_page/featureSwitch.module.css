@@ -33,6 +33,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    height: 90vh;
     align-content: center;
+    height: 90vh;
+}
+
+@media only screen and (max-width: 900px) {
+    .switches_container {
+        margin-top: 20px;
+        align-content: flex-start;
+        height: 100%;
+    }
 }
