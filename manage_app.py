@@ -415,9 +415,8 @@ def cron_git_check_for_updates():
         branch_name = subprocess.run(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True, text=True,
         )
-        branch_name = branch_name.stdout.replace("\n", "")
         subprocess.run(
-            ['git', 'reset', '--hard', f'origin/{branch_name}'],
+            ['git', 'reset', '--hard', f'origin/{branch_name.stdout}'],
         )
         subprocess.run(
             ['git', 'pull'], capture_output=True, text=True,
