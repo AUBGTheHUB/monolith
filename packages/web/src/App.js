@@ -28,7 +28,7 @@ import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
 import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
 import TeamActions from './components/admin_page/hackathon/hackathon_teams/actions_teams';
-
+import RenderSwitches from './components/admin_page/feature_switch_page/render_switch';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
 import { goBackIfActionsAreStateless, handleUrlDependantStyling } from './Global';
@@ -48,7 +48,7 @@ function App() {
     useEffect(handleUrlDependantStyling, []);
 
     goBackIfActionsAreStateless();
-    // eslint-disable-next-line
+
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
 
     useEffect(() => {
@@ -98,13 +98,13 @@ function App() {
                 <Route path="/admin/dashboard/jobs" element={<RenderJobs />} />
                 <Route path="/admin/dashboard/jobs/actions" element={<JobActions />} />
                 <Route path="/admin/dashboard/jobs/add" element={<AddJobs />} />
-
                 <Route path="/hackaubg" element={<HackAUBG />} />
                 {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
                 <Route path="/*" element={<NotFound />} />
                 <Route path="/admin/dashboard/s3" element={<S3Panel />} />
                 <Route path="/admin/dashboard/s3/objects" element={<RenderStorageObjects />} />
                 <Route path="/admin/dashboard/shortener" element={<UrlsTable />} />
+                <Route path="/admin/dashboard/fswitches" element={<RenderSwitches />} />
             </Routes>
         </Fragment>
     );
