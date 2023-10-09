@@ -3,6 +3,8 @@ from traceback import format_exc
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from py_api.environment import IS_OFFLINE
+from py_api.utilities.parsers import eval_bool
 
 
 class ExceptionHandler:
@@ -14,7 +16,7 @@ class ExceptionHandler:
                 "message": "Something went wrong! Please, contact The Hub!",
             }
 
-            if bool(getenv("IS_OFFLINE")):
+            if eval_bool(IS_OFFLINE):
                 content = {
                     "message": "Hey there, bud! Don't be sad! Here's some info which might help you debug your issue 🎉",
                     "exception": str(exc),
