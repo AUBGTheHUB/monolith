@@ -39,7 +39,6 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             .catch(err => {
                 const message = err?.message;
                 setErrorMessage(message);
-                console.log(err);
                 if (err.code == 'ERR_NETWORK') {
                     toast.error('API IS NOT RESPONDING');
                 }
