@@ -46,7 +46,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
     };
 
     const onUpdate = () => {
-        const updatedIsEnabled = !is_enabled; //change the value of the specific switch to the oposite of the current value
+        const updatedIsEnabled = !is_enabled;
 
         axios(parseToNewAPI(featureSwitchesURL), {
             headers: HEADERS,

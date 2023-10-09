@@ -76,17 +76,23 @@ export const popover = (onUpdate, errorMessage) => {
     );
 };
 
-// Define a function that updates the "switches" state object by creating a new object.
-// The new object includes the existing "switches" data while also updating a specific
-// switch's "is_enabled" property based on the provided "data" object.
+/*
+    Enable or disable a switch by appending the state of the switch to
+    the current state of all switches. If the provided switch is present
+    in the state object, it will overwrite its old value with the new one.
+    If not, a new entry will be created with the provided id and is_enabled value.
+*/
 const updateSwitches = (switches, setSwitches) => data => {
     setSwitches({ ...switches, [data.switch_id]: data.is_enabled });
 };
 
-// Define a function to remove a specific switch from the "switches" state.
-// Create an updated state object by excluding the specified switch.
-// The "_", though unused, is a placeholder for the removed switch.
-// Update the state with the new "updatedSwitches" object.
+/*
+    Deletes a switch by desctructuring the state object and extracting
+    two variables - one is the switch we want to delete and the other is
+    the switches without the switch we want to delete.
+    We update the state by passing the new object which excludes
+    the soon-to-be considered deleted switch
+*/
 const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     // eslint-disable-next-line no-unused-vars
     const { [switchToRemove]: _, ...updatedSwitches } = switches;
@@ -94,30 +100,28 @@ const deleteSwitches = (switches, setSwitches) => switchToRemove => {
 };
 
 const RenderSwitches = () => {
-    //We need to pass the selected switch (switch_id) as a prop to
-    //children components in order to maintain state information about whether a switch is currently selected.
-    //This allows us to avoid displaying two popovers (menu's for editing or creating switches) at the same time.
+    // selected holds the id of the switch which is currently selected for editing
     const [selected, setSelected] = useState('');
     const [showAddOverlay, setShowAddOverlay] = useState(false);
     const [featureSwitches, setFeatureSwitches] = useContext(FsContext);
     const [errorMessage, setErrorMessage] = useState(undefined);
 
-    // Create functions to update and delete feature switches and call it by the handleUpdateSwitches/handleDeleteSwitches
     const handleUpdateSwitches = updateSwitches(featureSwitches, setFeatureSwitches);
     const handleDeleteSwitches = deleteSwitches(featureSwitches, setFeatureSwitches);
 
-    //This useEffect is triggered on whenever "selected" state changes (selected is true when we have selected the
-    //edit on a certain switch) and if we have selected a switch it hides the showAddOverlay (if opened) for adding new switches
-    //Both useEffects serves the purpouse to not have two overlays shown at the same time
+    /*
+        This useEffect closes opened overlays if there's no currently selected switch
+    */
     useEffect(() => {
         if (selected) {
             setShowAddOverlay(false);
         }
     }, [selected]);
 
-    //This useEffect is triggered on whenever "showAddOverlay" state changes (showAddOverlay is true when we start creating a new switch)
-    //and if we have started making a new switch the selected switch overlay (if opened) for editing existing switches
-    //This useEffects serveres the purpouse to not have two overlays shown at the same time
+    /*
+        Remove all currently selected switches if the user opens the menu for creating a new switch.
+        This will close all leftover open menus.
+    */
     useEffect(() => {
         if (showAddOverlay) {
             setSelected(undefined);
