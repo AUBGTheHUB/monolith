@@ -144,7 +144,9 @@ const RenderSwitches = () => {
             .catch(err => {
                 const message = err?.response?.data?.message;
                 setErrorMessage(message);
-                toast.error('API IS NOT RESPONDING');
+                if (err.code == 'ERR_NETWORK') {
+                    toast.error('API IS NOT RESPONDING');
+                }
             });
     };
 

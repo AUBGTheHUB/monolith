@@ -39,7 +39,10 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             .catch(err => {
                 const message = err?.message;
                 setErrorMessage(message);
-                toast.error('API IS NOT RESPONDING');
+                console.log(err);
+                if (err.code == 'ERR_NETWORK') {
+                    toast.error('API IS NOT RESPONDING');
+                }
             });
     };
 
@@ -63,7 +66,9 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
             .catch(err => {
                 const message = err?.message;
                 setErrorMessage(message);
-                toast.error('API IS NOT RESPONDING');
+                if (err.code == 'ERR_NETWORK') {
+                    toast.error('API IS NOT RESPONDING');
+                }
             });
     };
 
