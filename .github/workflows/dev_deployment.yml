@@ -32,4 +32,4 @@ jobs:
 
             - name: Start deployment
               run: |
-                ./start_deployment.py --$DEV_VM_IP --$DEV_VM_PSWD --$DISCORD_WH --branch ${{ steps.extract_branch_name.outputs.branch }}
+                ./start_deployment.py --${DEV_VM_IP} --${DEV_VM_PSWD} --${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
