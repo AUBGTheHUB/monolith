@@ -15,19 +15,21 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
+
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v4
               with:
                 python-version: ${{ matrix.python-version }}
+
             - name: Install dependencies
               run: |
                 python3 -m pip install --upgrade pip
                 pip3 install paramiko
 
-            - name: Get branch name
-              id: get_branch_name
+            - name: Extract branch name
+              id: extract_branch_name
               run: echo "BRANCH_NAME=$(echo $GITHUB_REF | awk 'BEGIN{FS="/"} {print $3}')" >> $GITHUB_ENV
 
             - name: Start deployment
               run: |
-                ./start_deployment.py --$DEV_VM_IP --$DEV_VM_PSWD --$DISCORD_WH --branch $BRANCH_NAME
+                ./start_deployment.py --$DEV_VM_IP --$DEV_VM_PSWD --$DISCORD_WH --branch ${{ steps.extract_branch_name.outputs.branch }}
