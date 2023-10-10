@@ -1,9 +1,7 @@
 name: Deployment
 
 on:
-    push:
-        branches:
-            - master
+    push: #Add
 env:
     DEV_VM_IP: '${{secrets.DEV_VM_IP}}'
     DEV_VM_PSWD: '${{secrets.DEV_VM_PSWD}}'
