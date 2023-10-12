@@ -67,6 +67,13 @@ try:
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh_client.connect(hostname=VM_IP, username=VM_USER, password=VM_PSWD)
 
+    CURRENT_BRANCH = f"cd ~/monolith && git rev-parse --abbrev-ref HEAD"
+    _, stdout, _ = ssh_client.exec_command(CURRENT_BRANCH)
+    current_branch = stdout.read().strip().decode('utf-8')
+    if current_branch != BRANCH:
+        PULL_ALL_BRANCHES = f"cd ~/monolith && git pull --all"
+        _, _, _ = ssh_client.exec_command(PULL_ALL_BRANCHES)
+
     CHECKOUT_BRANCH = f"cd ~/monolith && git checkout -f {BRANCH} && git reset --hard origin/{BRANCH} && git pull"
     _, _, _ = ssh_client.exec_command(CHECKOUT_BRANCH)
 
