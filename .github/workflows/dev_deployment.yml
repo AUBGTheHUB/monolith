@@ -5,7 +5,7 @@ on:
 env:
     DEV_VM_IP: '${{secrets.DEV_VM_IP}}'
     DEV_VM_PSWD: '${{secrets.DEV_VM_PSWD}}'
-    DISCORD_WH: '${{secrets.DISCORD_WEBHOOK}}'
+    DISCORD_WH: '${{secrets.DEPLOYMENT_CHANNEL_WEBHOOK}}'
 jobs:
     deploy:
         runs-on: ubuntu-latest
