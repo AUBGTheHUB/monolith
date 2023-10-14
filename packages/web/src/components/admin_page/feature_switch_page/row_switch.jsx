@@ -7,7 +7,7 @@ import styles from './featureSwitch.module.css';
 
 import { HEADERS } from '../../../Global';
 
-const AddSwitchPopover = ({ onDelete, onUpdate, errorMessage }) => {
+const getPopover = ({ onDelete, onUpdate, errorMessage }) => {
     return (
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
@@ -75,10 +75,7 @@ const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDelete
         <div className={styles.feature_switch}>
             <p>{switch_id}</p>
             <p>state: {String(is_enabled)}</p>
-            <OverlayTrigger
-                show={isShown}
-                placement="bottom"
-                overlay={<AddSwitchPopover onDelete={onDelete} onUpdate={onUpdate} errorMessage={errorMessage} />}>
+            <OverlayTrigger show={isShown} placement="bottom" overlay={getPopover(onDelete, onUpdate, errorMessage)}>
                 <Button
                     variant="primary"
                     onClick={() => {
