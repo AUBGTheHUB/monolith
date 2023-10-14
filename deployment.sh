@@ -17,6 +17,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+sleep 20
+
 #----------------------------HEALTH CHECKS----------------------------------------
 # ! subdomain should include all periods, including the one before the domain
 # we assume all non-prod deployments are tested on dev machine
