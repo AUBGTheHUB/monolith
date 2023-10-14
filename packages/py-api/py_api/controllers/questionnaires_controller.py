@@ -15,7 +15,7 @@ class QuestionnairesController:
             return JSONResponse(content={"message": "Questionnaire doesn't exist"}, status_code=404)
 
         questions = [q['title'] for q in questions['questions']]
-        questions.append("Submition time")
+        questions.append("Submission time")
 
         answers = a_col.find({'department': dep})
         answers = [list(a['answers'].values()) for a in answers]
