@@ -48,7 +48,7 @@ for ((i = 0; i < ${#services[@]}; i++)); do
     url="${services[i]}"
     method="${methods[i]}"
     expected_status="${status_codes[i]}"
-    actual_status=$(curl -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
+    actual_status=$(curl -m 5 -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
         RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
