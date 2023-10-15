@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 import styles from './featureSwitch.module.css';
 
 const handleChange = (e, setNewSwitch) => {
-    console.log('hello2');
     const { name, value } = e.target;
     setNewSwitch(prevState => ({
         ...prevState,
@@ -17,10 +16,8 @@ const handleChange = (e, setNewSwitch) => {
 };
 
 const handleSubmit = (e, newSwitch, onUpdate) => {
-    console.log('hello');
     e.preventDefault();
     const trimmedSwitchId = newSwitch.switch_id.trim();
-
     if (trimmedSwitchId === '') {
         toast.error('Please enter switch name');
     } else if (trimmedSwitchId.length > 10) {

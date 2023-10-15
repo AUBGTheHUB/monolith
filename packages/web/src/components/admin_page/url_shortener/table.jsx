@@ -123,6 +123,8 @@ const UrlsTable = () => {
             <OverlayTrigger
                 show={showAddOverlay}
                 placement="bottom"
+                //In order to move the functiono away from the component and not rerender it every time,
+                //we use an anonymous function that is going to accept "data" and call onUpdate
                 overlay={popover(
                     data => onUpdate(data, triggerFetch, errorMessage, setErrorMessage, setShowAddOverlay),
                     errorMessage,
