@@ -1,0 +1,43 @@
+name: Initiate Dev Environmnet Deployment
+
+on:
+    push:
+       branches:
+          - master
+          - production
+env:
+    DEV_VM_IP: '${{secrets.DEV_VM_IP}}'
+    DEV_VM_PSWD: '${{secrets.DEV_VM_PSWD}}'
+    PROD_VM_IP: '${{secrets.PROD_VM_IP}}'
+    PROD_VM_PSWD: '${{secrets.PROD_VM_PSWD}}'
+    DISCORD_WH: '${{secrets.DEPLOYMENT_CHANNEL_WEBHOOK}}'
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.10"]
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v4
+              with:
+                python-version: ${{ matrix.python-version }}
+
+            - name: Install dependencies
+              run: |
+                python3 -m pip install --upgrade pip
+                pip3 install paramiko
+
+            - name: Extract branch name
+              id: extract_branch_name
+              run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+            - name: Start deployment
+              run: |
+                if [ "${{ steps.extract_branch_name.outputs.branch }}" == "master" ]; then
+                  ./start_deployment.py --ip ${DEV_VM_IP} --pswd ${DEV_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
+                elif [ "${{ steps.extract_branch_name.outputs.branch }}" == "production" ]; then
+                  ./start_deployment.py --ip ${PROD_VM_IP} --pswd ${PROD_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
