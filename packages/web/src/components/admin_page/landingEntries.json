@@ -46,5 +46,11 @@
         "text": "Add or remove shortened urls",
         "url": "/admin/dashboard/shortener",
         "description": "Manage URLs"
+    },
+    {
+        "title": "Feature Switches",
+        "text": "Change feature switches states",
+        "url": "/admin/dashboard/fswitches",
+        "description": "Manage feature switches"
     }
 ]

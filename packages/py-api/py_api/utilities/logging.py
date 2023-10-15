@@ -12,7 +12,7 @@ PROD_LOGGING_CONFIG: Dict[str, Any] = {
     'formatters': {
         'logformatter': {
             'format': '[%(asctime)s][%(levelname)s][%(name)s]: %(message)s',
-            'datefmt': '%H:%M',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
     'handlers': {
