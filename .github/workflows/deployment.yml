@@ -1,4 +1,4 @@
-name: Initiate Dev Environmnet Deployment
+name: Initiate Dev or Prod Environmnet Deployment
 
 on:
     push:
