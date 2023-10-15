@@ -1,7 +1,10 @@
 name: Initiate Dev Environmnet Deployment
 
 on:
-    push: #Add back master branch after testing
+    push:
+       branches:
+          - master
+          - production
 env:
     DEV_VM_IP: '${{secrets.DEV_VM_IP}}'
     DEV_VM_PSWD: '${{secrets.DEV_VM_PSWD}}'
@@ -34,4 +37,7 @@ jobs:
 
             - name: Start deployment
               run: |
-                ./start_deployment.py --ip ${DEV_VM_IP} --pswd ${DEV_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
+                if [ "${{ steps.extract_branch_name.outputs.branch }}" == "master" ]; then
+                  ./start_deployment.py --ip ${DEV_VM_IP} --pswd ${DEV_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
+                elif [ "${{ steps.extract_branch_name.outputs.branch }}" == "production" ]; then
+                  ./start_deployment.py --ip ${PROD_VM_IP} --pswd ${PROD_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
