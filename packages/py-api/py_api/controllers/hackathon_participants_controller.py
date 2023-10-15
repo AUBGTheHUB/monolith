@@ -1,30 +1,21 @@
-from typing import Any, Dict, Final
+import json
 
 from bson.json_util import dumps
-from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col
 
 
 class PartcipantsController:
 
-    COMMON_PARTICIPANTS_NOT_FOUND_ERROR: Final = JSONResponse(
-        content={
-            "message": "No participants were found!",
-        },
-        status_code=404,
-    )
-
     @classmethod
     def get_all_participants(cls) -> JSONResponse:
-        cursor = participants_col.find({})
-        list_cur = list(cursor)
+        participants = list(participants_col.find())
 
-        if not cursor:
-            return cls.COMMON_PARTICIPANTS_NOT_FOUND_ERROR
+        if not participants:
+            return JSONResponse(content={"message": "No participants were found!"}, status_code=404)
 
-        else:
-            return JSONResponse(content=dumps(list_cur), status_code=200)
+        # the dumps funtion from bson.json_util returns a string
+        return JSONResponse(content={"participants": json.loads(dumps(participants))}, status_code=200)
 
         # projecetion = {"_id": 0}
         # cursor = cls.participants_col.find({}, projecetion)
