@@ -1,5 +1,6 @@
 from typing import Any, Dict
 
+from bson.objectid import ObjectId
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from py_api.controllers import PartcipantsController as c
@@ -12,8 +13,8 @@ async def get_participants() -> JSONResponse:
     return c.get_all_participants()
 
 
-# @router.get("/{objectID}")
-# async def get_participant(objectID: str) -> JSONResponse:
+# @router.get("/{ObjectId}")
+# async def get_participant(objectID: ObjectId) -> JSONResponse:
 #     return c.get_specific_participant(objectID)
 
 
