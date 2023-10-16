@@ -5,6 +5,7 @@ import InvalidClient from '../invalid_client';
 import { Button, Form } from 'react-bootstrap';
 import './s3.css';
 import axios from 'axios';
+import BackBtn from '../back_button';
 
 const S3Panel = () => {
     const history = useNavigate();
@@ -81,6 +82,7 @@ const S3Panel = () => {
                         }}>
                         Add new object
                     </Button>
+                    <BackBtn></BackBtn>
                 </div>
             </div>
         );

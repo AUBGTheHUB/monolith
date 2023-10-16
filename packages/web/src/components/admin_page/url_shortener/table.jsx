@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { parseToNewAPI, urlShortenerURL } from '../../../Global';
 import UrlRow from './row';
 import { updateErrorMessage } from './requests';
+import BackBtn from '../back_button';
 
 const popover = (onUpdate, errorMessage) => {
     return (
@@ -158,6 +159,7 @@ const UrlsTable = () => {
                     ))}
                 </tbody>
             </Table>
+            <BackBtn></BackBtn>
         </>
     );
 };

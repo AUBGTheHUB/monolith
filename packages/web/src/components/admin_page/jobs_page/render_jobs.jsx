@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { url } from '../../../Global';
 import InvalidClient from '../invalid_client';
+import BackBtn from '../back_button';
 
 const RenderJobs = () => {
     const history = useNavigate();
@@ -15,13 +16,13 @@ const RenderJobs = () => {
     const getJobs = () => {
         axios({
             method: 'get',
-            url: url + '/api/job'
+            url: url + '/api/job',
         })
-            .then((res) => {
+            .then(res => {
                 setJobs(res.data.data.data);
                 console.log(res.data.data.data);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -35,11 +36,7 @@ const RenderJobs = () => {
             return (
                 <div className="members-box">
                     {jobs.map((job, index) => (
-                        <Card
-                            style={{ width: '18rem' }}
-                            key={index}
-                            className="member-card"
-                        >
+                        <Card style={{ width: '18rem' }} key={index} className="member-card">
                             <Card.Img variant="top" src={job['logo']} />
                             <Card.Body>
                                 <Card.Title>{job['position']}</Card.Title>
@@ -50,23 +47,18 @@ const RenderJobs = () => {
                                     onClick={() => {
                                         window.open(job['link']);
                                     }}
-                                    className="linkedin-button"
-                                >
+                                    className="linkedin-button">
                                     LinkedIn
                                 </Button>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/jobs/actions',
-                                            {
-                                                state: {
-                                                    job_data: job
-                                                }
-                                            }
-                                        );
-                                    }}
-                                >
+                                        history('/admin/dashboard/jobs/actions', {
+                                            state: {
+                                                job_data: job,
+                                            },
+                                        });
+                                    }}>
                                     Actions
                                 </Button>
                             </Card.Body>
@@ -84,10 +76,10 @@ const RenderJobs = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/jobs/add', {});
-                    }}
-                >
+                    }}>
                     Add Job
                 </Button>
+                <BackBtn></BackBtn>
                 {renderMap()}
             </div>
         );

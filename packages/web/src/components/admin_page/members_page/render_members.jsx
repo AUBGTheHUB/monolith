@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import InvalidClient from '../invalid_client';
 import axios from 'axios';
 import { url } from '../../../Global';
+import BackBtn from '../back_button';
 
 const RenderMembers = () => {
     const history = useNavigate();
@@ -13,13 +14,13 @@ const RenderMembers = () => {
     const getMembers = () => {
         axios({
             method: 'get',
-            url: url + '/api/members'
+            url: url + '/api/members',
         })
-            .then((res) => {
+            .then(res => {
                 setMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch(err => {});
     };
 
     useEffect(() => {
@@ -31,49 +32,29 @@ const RenderMembers = () => {
             return (
                 <div className="members-box">
                     {members.map((person, index) => (
-                        <Card
-                            style={{ width: '18rem' }}
-                            key={index}
-                            className="member-card"
-                        >
-                            <Card.Img
-                                variant="top"
-                                src={person['profilepicture']}
-                            />
+                        <Card style={{ width: '18rem' }} key={index} className="member-card">
+                            <Card.Img variant="top" src={person['profilepicture']} />
                             <Card.Body>
-                                <Card.Title>
-                                    {person['firstname'] +
-                                        ' ' +
-                                        person['lastname']}
-                                </Card.Title>
-                                <Card.Text>
-                                    {'Position: ' + person['position']}
-                                </Card.Text>
-                                <Card.Text>
-                                    {'Department: ' + person['department']}
-                                </Card.Text>
+                                <Card.Title>{person['firstname'] + ' ' + person['lastname']}</Card.Title>
+                                <Card.Text>{'Position: ' + person['position']}</Card.Text>
+                                <Card.Text>{'Department: ' + person['department']}</Card.Text>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
                                         window.open(person['sociallink']);
                                     }}
-                                    className="linkedin-button"
-                                >
+                                    className="linkedin-button">
                                     LinkedIn
                                 </Button>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/members/actions',
-                                            {
-                                                state: {
-                                                    member_data: person
-                                                }
-                                            }
-                                        );
-                                    }}
-                                >
+                                        history('/admin/dashboard/members/actions', {
+                                            state: {
+                                                member_data: person,
+                                            },
+                                        });
+                                    }}>
                                     Actions
                                 </Button>
                             </Card.Body>
@@ -91,10 +72,10 @@ const RenderMembers = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/members/add', {});
-                    }}
-                >
+                    }}>
                     Add Member
                 </Button>
+                <BackBtn></BackBtn>
                 {renderMap()}
             </div>
         );

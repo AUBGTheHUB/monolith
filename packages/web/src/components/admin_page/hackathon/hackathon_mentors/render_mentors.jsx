@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { url } from '../../../../Global';
 import Validate from '../../../../Global';
 import InvalidClient from '../../invalid_client';
+import BackBtn from '../../back_button';
 
 const RenderMentors = () => {
     const history = useNavigate();
@@ -15,12 +16,12 @@ const RenderMentors = () => {
     const getMentors = () => {
         axios({
             method: 'get',
-            url: url + '/api/mentors'
+            url: url + '/api/mentors',
         })
-            .then((res) => {
+            .then(res => {
                 setMentors(res.data.data.data);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -30,21 +31,10 @@ const RenderMentors = () => {
             return (
                 <div className="members-box">
                     {mentors.map((mentor, index) => (
-                        <Card
-                            style={{ width: '18rem' }}
-                            key={index}
-                            className="member-card"
-                        >
-                            <Card.Img
-                                variant="top"
-                                src={mentor['profilepicture']}
-                            />
+                        <Card style={{ width: '18rem' }} key={index} className="member-card">
+                            <Card.Img variant="top" src={mentor['profilepicture']} />
                             <Card.Body>
-                                <Card.Title>
-                                    {mentor['firstname'] +
-                                        ' ' +
-                                        mentor['lastname']}
-                                </Card.Title>
+                                <Card.Title>{mentor['firstname'] + ' ' + mentor['lastname']}</Card.Title>
                                 <Card.Text>{mentor['position']}</Card.Text>
                                 <Card.Text>{mentor['company']}</Card.Text>
                                 <Button
@@ -52,24 +42,19 @@ const RenderMentors = () => {
                                     onClick={() => {
                                         window.open(mentor['sociallink']);
                                     }}
-                                    className="linkedin-button"
-                                >
+                                    className="linkedin-button">
                                     LinkedIn
                                 </Button>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/mentors/actions',
-                                            {
-                                                state: {
-                                                    mentor_data: mentor
-                                                }
-                                            }
-                                        );
+                                        history('/admin/dashboard/mentors/actions', {
+                                            state: {
+                                                mentor_data: mentor,
+                                            },
+                                        });
                                         console.log(mentor['id']);
-                                    }}
-                                >
+                                    }}>
                                     Actions
                                 </Button>
                             </Card.Body>
@@ -91,10 +76,10 @@ const RenderMentors = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/mentors/add', {});
-                    }}
-                >
+                    }}>
                     Add Mentor
                 </Button>
+                <BackBtn></BackBtn>
                 {renderMap()}
             </div>
         );

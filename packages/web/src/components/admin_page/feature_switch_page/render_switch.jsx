@@ -6,6 +6,7 @@ import FeatureRow from './row_switch';
 import { FsContext } from '../../../feature_switches';
 import toast from 'react-hot-toast';
 import styles from './featureSwitch.module.css';
+import BackBtn from '../back_button';
 
 const handleChange = (e, setNewSwitch) => {
     const { name, value } = e.target;
@@ -173,6 +174,7 @@ const RenderSwitches = () => {
                     Create a Feature Switch
                 </Button>
             </OverlayTrigger>
+            <BackBtn></BackBtn>
             <div className={styles.switches_container}>
                 {Object.entries(featureSwitches).map(([switch_id, is_enabled]) => (
                     <FeatureRow

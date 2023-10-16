@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { url } from '../../../../Global';
 import Validate from '../../../../Global';
 import InvalidClient from '../../invalid_client';
+import BackBtn from '../../back_button';
 
 const RenderSponsors = () => {
     const history = useNavigate();
@@ -15,12 +16,12 @@ const RenderSponsors = () => {
     const getSponsors = () => {
         axios({
             method: 'get',
-            url: url + '/api/sponsors'
+            url: url + '/api/sponsors',
         })
-            .then((res) => {
+            .then(res => {
                 setSponsors(res.data.data.data);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -30,15 +31,8 @@ const RenderSponsors = () => {
             return (
                 <div className="members-box">
                     {sponsors.map((sponsor, index) => (
-                        <Card
-                            style={{ width: '18rem' }}
-                            key={index}
-                            className="member-card"
-                        >
-                            <Card.Img
-                                variant="top"
-                                src={sponsor['profilepicture']}
-                            />
+                        <Card style={{ width: '18rem' }} key={index} className="member-card">
+                            <Card.Img variant="top" src={sponsor['profilepicture']} />
                             <Card.Body>
                                 <Card.Title>{sponsor['company']}</Card.Title>
                                 <Card.Text>{sponsor['category']}</Card.Text>
@@ -47,23 +41,18 @@ const RenderSponsors = () => {
                                     onClick={() => {
                                         window.open(sponsor['sociallink']);
                                     }}
-                                    className="linkedin-button"
-                                >
+                                    className="linkedin-button">
                                     Social Link
                                 </Button>
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/sponsors/actions',
-                                            {
-                                                state: {
-                                                    sponsor_data: sponsor
-                                                }
-                                            }
-                                        );
-                                    }}
-                                >
+                                        history('/admin/dashboard/sponsors/actions', {
+                                            state: {
+                                                sponsor_data: sponsor,
+                                            },
+                                        });
+                                    }}>
                                     Actions
                                 </Button>
                             </Card.Body>
@@ -85,10 +74,10 @@ const RenderSponsors = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/sponsors/add', {});
-                    }}
-                >
+                    }}>
                     Add Sponsor
                 </Button>
+                <BackBtn></BackBtn>
                 {renderMap()}
             </div>
         );
