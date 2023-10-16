@@ -7,7 +7,7 @@ import styles from './featureSwitch.module.css';
 
 import { HEADERS } from '../../../Global';
 
-const getPopover = ({ onDelete, onUpdate, errorMessage }) => {
+const getPopover = (onDelete, onUpdate, errorMessage) => {
     return (
         <Popover id="popover-basic">
             <Popover.Header as="h3">Want to update or remove?</Popover.Header>
@@ -23,59 +23,64 @@ const getPopover = ({ onDelete, onUpdate, errorMessage }) => {
         </Popover>
     );
 };
+const onDelete = (switch_id, handleDeleteSwitches, setErrorMessage) => {
+    axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
+        headers: HEADERS,
+        method: 'delete',
+    })
+        .then(() => {
+            handleDeleteSwitches(switch_id);
+        })
+        .catch(err => {
+            const message = err?.message;
+            setErrorMessage(message);
+            if (err.code == 'ERR_NETWORK') {
+                toast.error('API IS NOT RESPONDING');
+            }
+        });
+};
 
+const onUpdate = (is_enabled, switch_id, errorMessage, setErrorMessage, handleUpdateSwitches) => {
+    const updatedIsEnabled = !is_enabled;
+
+    axios(parseToNewAPI(featureSwitchesURL), {
+        headers: HEADERS,
+        method: 'put',
+        data: {
+            switch_id,
+            is_enabled: updatedIsEnabled,
+        },
+    })
+        .then(() => {
+            if (errorMessage) {
+                setErrorMessage(undefined);
+            }
+            handleUpdateSwitches({ switch_id, is_enabled: updatedIsEnabled });
+        })
+        .catch(err => {
+            const message = err?.message;
+            setErrorMessage(message);
+            if (err.code == 'ERR_NETWORK') {
+                toast.error('API IS NOT RESPONDING');
+            }
+        });
+};
 const FeatureRow = ({ switch_id, is_enabled, selected, setSelected, handleDeleteSwitches, handleUpdateSwitches }) => {
     const isShown = switch_id === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
-
-    const onDelete = () => {
-        axios(parseToNewAPI(featureSwitchesURL + `/${switch_id}`), {
-            headers: HEADERS,
-            method: 'delete',
-        })
-            .then(() => {
-                handleDeleteSwitches(switch_id);
-            })
-            .catch(err => {
-                const message = err?.message;
-                setErrorMessage(message);
-                if (err.code == 'ERR_NETWORK') {
-                    toast.error('API IS NOT RESPONDING');
-                }
-            });
-    };
-
-    const onUpdate = () => {
-        const updatedIsEnabled = !is_enabled;
-
-        axios(parseToNewAPI(featureSwitchesURL), {
-            headers: HEADERS,
-            method: 'put',
-            data: {
-                switch_id,
-                is_enabled: updatedIsEnabled,
-            },
-        })
-            .then(() => {
-                if (errorMessage) {
-                    setErrorMessage(undefined);
-                }
-                handleUpdateSwitches({ switch_id, is_enabled: updatedIsEnabled });
-            })
-            .catch(err => {
-                const message = err?.message;
-                setErrorMessage(message);
-                if (err.code == 'ERR_NETWORK') {
-                    toast.error('API IS NOT RESPONDING');
-                }
-            });
-    };
 
     return (
         <div className={styles.feature_switch}>
             <p>{switch_id}</p>
             <p>state: {String(is_enabled)}</p>
-            <OverlayTrigger show={isShown} placement="bottom" overlay={getPopover(onDelete, onUpdate, errorMessage)}>
+            <OverlayTrigger
+                show={isShown}
+                placement="bottom"
+                overlay={getPopover(
+                    () => onDelete(switch_id, handleDeleteSwitches, setErrorMessage),
+                    () => onUpdate(is_enabled, switch_id, errorMessage, setErrorMessage, handleUpdateSwitches),
+                    errorMessage,
+                )}>
                 <Button
                     variant="primary"
                     onClick={() => {

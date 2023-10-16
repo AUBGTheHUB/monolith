@@ -7,42 +7,40 @@ import { FsContext } from '../../../feature_switches';
 import toast from 'react-hot-toast';
 import styles from './featureSwitch.module.css';
 
+const handleChange = (e, setNewSwitch) => {
+    const { name, value } = e.target;
+    setNewSwitch(prevState => ({
+        ...prevState,
+        [name]: name === 'is_enabled' ? value === 'true' : value,
+    }));
+};
+
+const handleSubmit = (e, newSwitch, onUpdate) => {
+    e.preventDefault();
+    const trimmedSwitchId = newSwitch.switch_id.trim();
+    if (trimmedSwitchId === '') {
+        toast.error('Please enter switch name');
+    } else if (trimmedSwitchId.length > 10) {
+        toast.error('Switch name must be 10 characters or less');
+    } else {
+        newSwitch.switch_id = trimmedSwitchId;
+        onUpdate(newSwitch);
+    }
+};
+
 const UpdateSwitch = ({ onUpdate }) => {
     const [newSwitch, setNewSwitch] = useState({
         switch_id: '',
         is_enabled: true,
     });
-
-    const handleChange = e => {
-        const { name, value } = e.target;
-        setNewSwitch(prevState => ({
-            ...prevState,
-            [name]: name === 'is_enabled' ? value === 'true' : value,
-        }));
-    };
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        const trimmedSwitchId = newSwitch.switch_id.trim();
-
-        if (trimmedSwitchId === '') {
-            toast.error('Please enter switch name');
-        } else if (trimmedSwitchId.length > 10) {
-            toast.error('Switch name must be 10 characters or less');
-        } else {
-            newSwitch.switch_id = trimmedSwitchId;
-            onUpdate(newSwitch);
-        }
-    };
-
     return (
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={e => handleSubmit(e, newSwitch, onUpdate)}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Set a feature:</Form.Label>
                 <Form.Control
                     type="text"
                     placeholder="Enter new feature switch"
-                    onChange={handleChange}
+                    onChange={e => handleChange(e, setNewSwitch)}
                     name="switch_id"
                     value={newSwitch.switch_id}
                 />
@@ -50,7 +48,10 @@ const UpdateSwitch = ({ onUpdate }) => {
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicIsEnabled">
                 <Form.Label>Set it to true or false:</Form.Label>
-                <Form.Select onChange={handleChange} name="is_enabled" value={newSwitch.is_enabled.toString()}>
+                <Form.Select
+                    onChange={e => handleChange(e, setNewSwitch)}
+                    name="is_enabled"
+                    value={newSwitch.is_enabled.toString()}>
                     <option value="true">True</option>
                     <option value="false">False</option>
                 </Form.Select>
@@ -99,6 +100,32 @@ const deleteSwitches = (switches, setSwitches) => switchToRemove => {
     setSwitches(updatedSwitches);
 };
 
+const onUpdate = (data, errorMessage, setErrorMessage, setShowAddOverlay, handleUpdateSwitches) => {
+    const switch_id = data.switch_id;
+    const is_enabled = data.is_enabled;
+
+    axios({
+        method: 'put',
+        url: parseToNewAPI(featureSwitchesURL),
+        headers: HEADERS,
+        data,
+    })
+        .then(() => {
+            if (errorMessage) {
+                setErrorMessage(undefined);
+            }
+            setShowAddOverlay(false);
+            handleUpdateSwitches({ switch_id, is_enabled });
+        })
+        .catch(err => {
+            const message = err?.response?.data?.message;
+            setErrorMessage(message);
+            if (err.code == 'ERR_NETWORK') {
+                toast.error('API IS NOT RESPONDING');
+            }
+        });
+};
+
 const RenderSwitches = () => {
     // selected holds the id of the switch which is currently selected for editing
     const [selected, setSelected] = useState('');
@@ -128,35 +155,15 @@ const RenderSwitches = () => {
         }
     }, [showAddOverlay]);
 
-    const onUpdate = data => {
-        const switch_id = data.switch_id;
-        const is_enabled = data.is_enabled;
-
-        axios({
-            method: 'put',
-            url: parseToNewAPI(featureSwitchesURL),
-            headers: HEADERS,
-            data,
-        })
-            .then(() => {
-                if (errorMessage) {
-                    setErrorMessage(undefined);
-                }
-                setShowAddOverlay(false);
-                handleUpdateSwitches({ switch_id, is_enabled });
-            })
-            .catch(err => {
-                const message = err?.response?.data?.message;
-                setErrorMessage(message);
-                if (err.code == 'ERR_NETWORK') {
-                    toast.error('API IS NOT RESPONDING');
-                }
-            });
-    };
-
     return (
         <div className="members-box-add-button">
-            <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>
+            <OverlayTrigger
+                show={showAddOverlay}
+                placement="bottom"
+                overlay={popover(
+                    data => onUpdate(data, errorMessage, setErrorMessage, setShowAddOverlay, handleUpdateSwitches),
+                    errorMessage,
+                )}>
                 <Button
                     variant="primary"
                     style={{ width: '100vw' }}
