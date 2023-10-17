@@ -20,18 +20,17 @@ const popover = (onDelete, onUpdate, errorMessage) => {
     );
 };
 
+const handleChange = (e, setNewUrl) => {
+    setNewUrl(e.target.value);
+};
 const UpdateUrlForm = ({ onUpdate }) => {
     const [newUrl, setNewUrl] = useState(undefined);
-
-    const handleChange = e => {
-        setNewUrl(e.target.value);
-    };
 
     return (
         <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Set a new url:</Form.Label>
-                <Form.Control type="text" placeholder="Paste the url" onChange={handleChange} />
+                <Form.Control type="text" placeholder="Paste the url" onChange={e => handleChange(e, setNewUrl)} />
                 <Form.Text className="text-muted">Add the new url you want this endpoint to redirect to</Form.Text>
             </Form.Group>
             <Button
@@ -45,43 +44,42 @@ const UpdateUrlForm = ({ onUpdate }) => {
     );
 };
 
+const onDelete = (endpoint, triggerFetch, setErrorMessage) => {
+    axios(parseToNewAPI(urlShortenerURL + `/${endpoint}`), {
+        headers: HEADERS,
+        method: 'delete',
+    })
+        .then(() => {
+            triggerFetch();
+        })
+        .catch(err => {
+            const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
+            setErrorMessage(message);
+        });
+};
+
+const onUpdate = (newUrl, endpoint, triggerFetch, errorMessage, setErrorMessage) => {
+    axios(parseToNewAPI(urlShortenerURL), {
+        headers: HEADERS,
+        method: 'put',
+        data: {
+            endpoint,
+            url: newUrl,
+        },
+    })
+        .then(() => {
+            triggerFetch();
+            if (errorMessage) {
+                setErrorMessage(undefined);
+            }
+        })
+        .catch(err => {
+            updateErrorMessage(err, setErrorMessage);
+        });
+};
 const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
     const isShown = endpoint === selected;
     const [errorMessage, setErrorMessage] = useState(undefined);
-
-    const onDelete = () => {
-        axios(parseToNewAPI(urlShortenerURL + `/${endpoint}`), {
-            headers: HEADERS,
-            method: 'delete',
-        })
-            .then(() => {
-                triggerFetch();
-            })
-            .catch(err => {
-                const message = err?.response?.data?.message ? err.response.data.message : 'Something went wrong!';
-                setErrorMessage(message);
-            });
-    };
-
-    const onUpdate = newUrl => {
-        axios(parseToNewAPI(urlShortenerURL), {
-            headers: HEADERS,
-            method: 'put',
-            data: {
-                endpoint,
-                url: newUrl,
-            },
-        })
-            .then(() => {
-                triggerFetch();
-                if (errorMessage) {
-                    setErrorMessage(undefined);
-                }
-            })
-            .catch(err => {
-                updateErrorMessage(err, setErrorMessage);
-            });
-    };
 
     return (
         <>
@@ -89,7 +87,14 @@ const UrlRow = ({ endpoint, url, selected, setSelected, triggerFetch }) => {
                 <td>https://thehub-aubg.com/s/{endpoint}</td>
                 <td>{url}</td>
                 <td>
-                    <OverlayTrigger show={isShown} placement="left" overlay={popover(onDelete, onUpdate, errorMessage)}>
+                    <OverlayTrigger
+                        show={isShown}
+                        placement="left"
+                        overlay={popover(
+                            () => onDelete(endpoint, triggerFetch, setErrorMessage),
+                            newUrl => onUpdate(newUrl, endpoint, triggerFetch, errorMessage, setErrorMessage),
+                            errorMessage,
+                        )}>
                         <Button
                             variant="primary"
                             onClick={() => {
