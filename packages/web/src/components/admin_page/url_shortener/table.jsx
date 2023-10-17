@@ -17,26 +17,35 @@ const popover = (onUpdate, errorMessage) => {
     );
 };
 
+const handleChange = (e, setNewShortenedUrl, newShortenedUrl) => {
+    setNewShortenedUrl({
+        ...newShortenedUrl,
+        [e.target.name]: e.target.value,
+    });
+};
 const UpdateUrlForm = ({ onUpdate }) => {
     const [newShortenedUrl, setNewShortenedUrl] = useState({});
-
-    const handleChange = e => {
-        setNewShortenedUrl({
-            ...newShortenedUrl,
-            [e.target.name]: e.target.value,
-        });
-    };
 
     return (
         <>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Set a url:</Form.Label>
-                <Form.Control type="text" placeholder="Paste the url" onChange={handleChange} name="url" />
+                <Form.Control
+                    type="text"
+                    placeholder="Paste the url"
+                    onChange={e => handleChange(e, setNewShortenedUrl, newShortenedUrl)}
+                    name="url"
+                />
                 <Form.Text className="text-muted">Add the new url you want this endpoint to redirect to</Form.Text>
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Set an endpoint:</Form.Label>
-                <Form.Control type="text" placeholder="Add the endpoint" onChange={handleChange} name="endpoint" />
+                <Form.Control
+                    type="text"
+                    placeholder="Add the endpoint"
+                    onChange={e => handleChange(e, setNewShortenedUrl, newShortenedUrl)}
+                    name="endpoint"
+                />
                 <Form.Text className="text-muted">
                     For example `shorted` if you want it to be thehub-aubg.com/s/shorted
                 </Form.Text>
@@ -53,6 +62,25 @@ const UpdateUrlForm = ({ onUpdate }) => {
     );
 };
 
+const onUpdate = (data, triggerFetch, errorMessage, setErrorMessage, setShowAddOverlay) => {
+    axios(parseToNewAPI(urlShortenerURL), {
+        headers: {
+            'BEARER-TOKEN': localStorage.getItem('auth_token'),
+        },
+        method: 'put',
+        data,
+    })
+        .then(() => {
+            triggerFetch();
+            if (errorMessage) {
+                setErrorMessage(undefined);
+            }
+            setShowAddOverlay(false);
+        })
+        .catch(err => {
+            updateErrorMessage(err, setErrorMessage);
+        });
+};
 const UrlsTable = () => {
     const [shortenedUrls, setShortenedUrls] = useState([]);
     const [selected, setSelected] = useState('');
@@ -62,26 +90,6 @@ const UrlsTable = () => {
 
     const triggerFetch = () => {
         setTrigger(prev => prev + 1);
-    };
-
-    const onUpdate = data => {
-        axios(parseToNewAPI(urlShortenerURL), {
-            headers: {
-                'BEARER-TOKEN': localStorage.getItem('auth_token'),
-            },
-            method: 'put',
-            data,
-        })
-            .then(() => {
-                triggerFetch();
-                if (errorMessage) {
-                    setErrorMessage(undefined);
-                }
-                setShowAddOverlay(false);
-            })
-            .catch(err => {
-                updateErrorMessage(err, setErrorMessage);
-            });
     };
 
     useEffect(() => {
@@ -112,7 +120,15 @@ const UrlsTable = () => {
 
     return (
         <>
-            <OverlayTrigger show={showAddOverlay} placement="bottom" overlay={popover(onUpdate, errorMessage)}>
+            <OverlayTrigger
+                show={showAddOverlay}
+                placement="bottom"
+                //In order to move the functiono away from the component and not rerender it every time,
+                //we use an anonymous function that is going to accept "data" and call onUpdate
+                overlay={popover(
+                    data => onUpdate(data, triggerFetch, errorMessage, setErrorMessage, setShowAddOverlay),
+                    errorMessage,
+                )}>
                 <Button
                     variant="primary"
                     style={{ width: '100vw' }}
