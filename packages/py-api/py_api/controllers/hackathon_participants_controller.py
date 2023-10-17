@@ -4,6 +4,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col
+from py_api.models import RandomParticipant
 
 
 class PartcipantsController:
@@ -25,7 +26,7 @@ class PartcipantsController:
         )
 
         if not specified_participant:
-            return JSONResponse(content={"message": "Specified participant not found!"}, status_code=404)
+            return JSONResponse(content={"message": "The targeted participant was not found!"}, status_code=404)
 
         return JSONResponse(content={"participant": json.loads(dumps(specified_participant))}, status_code=200)
 
@@ -36,6 +37,20 @@ class PartcipantsController:
         )
 
         if not deleted_participant:
-            return JSONResponse(content={"message": "No such participant was found!"}, status_code=404)
+            return JSONResponse(content={"message": "The targeted participant was not found!"}, status_code=404)
 
         return JSONResponse(content={"message": "The participant was deletd successfully!"}, status_code=200)
+
+    @classmethod
+    def upsert_participant(cls, object_id: str, participant_form: RandomParticipant) -> JSONResponse:
+        # Creates a dictionary for participant_form
+        participant_form_dump = participant_form.model_dump()
+        # Queries the given participant and updates it
+        targeted_participant = participants_col.find_one_and_update(
+            {"_id": ObjectId(object_id)}, {
+                "$set": participant_form_dump,
+            }, upsert=True,
+            return_document=True,
+        )
+
+        return JSONResponse(content={"participant": json.loads(dumps(targeted_participant))}, status_code=200)
