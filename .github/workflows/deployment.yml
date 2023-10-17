@@ -37,7 +37,8 @@ jobs:
 
             - name: Start deployment
               run: |
-                if [ "${{ steps.extract_branch_name.outputs.branch }}" == "master" ]; then
+                if [ "${{ steps.extract_branch_name.outputs.branch }}" == "production" ]; then
+                  ./start_deployment.py --ip ${PROD_VM_IP} --pswd ${PROD_VM_PSWD} --discordwh ${DISCORD_WH} --branch production
+                else 
                   ./start_deployment.py --ip ${DEV_VM_IP} --pswd ${DEV_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
-                elif [ "${{ steps.extract_branch_name.outputs.branch }}" == "production" ]; then
-                  ./start_deployment.py --ip ${PROD_VM_IP} --pswd ${PROD_VM_PSWD} --discordwh ${DISCORD_WH} --branch ${{ steps.extract_branch_name.outputs.branch }}
+                fi
