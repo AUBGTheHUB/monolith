@@ -1,6 +1,5 @@
 from typing import Any, Dict
 
-from bson.objectid import ObjectId
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from py_api.controllers import PartcipantsController as c
@@ -23,6 +22,6 @@ async def get_participant(object_id: str) -> JSONResponse:
 #     return c.update_switch(feature_switch)
 
 
-# @router.delete("/{objectID}")
-# async def delete_participant(switch_id: str) -> Dict[str, Any]:
-#     return c.delete_switch(switch_id)
+@router.delete("/{object_id}")
+async def delete_participant(object_id: str) -> JSONResponse:
+    return c.delete_participant(object_id)

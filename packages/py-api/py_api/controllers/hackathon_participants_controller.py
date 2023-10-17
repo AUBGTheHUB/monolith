@@ -28,3 +28,14 @@ class PartcipantsController:
             return JSONResponse(content={"message": "Specified participant not found!"}, status_code=404)
 
         return JSONResponse(content={"participant": json.loads(dumps(specified_participant))}, status_code=200)
+
+    @classmethod
+    def delete_participant(cls, object_id: str) -> JSONResponse:
+        deleted_participant = participants_col.find_one_and_delete(
+            filter={"_id": ObjectId(object_id)},
+        )
+
+        if not deleted_participant:
+            return JSONResponse(content={"message": "No such participant was found!"}, status_code=404)
+
+        return JSONResponse(content={"message": "The participant was deletd successfully!"}, status_code=200)
