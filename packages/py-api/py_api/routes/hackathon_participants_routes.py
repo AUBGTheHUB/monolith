@@ -13,9 +13,9 @@ async def get_participants() -> JSONResponse:
     return c.get_all_participants()
 
 
-# @router.get("/{ObjectId}")
-# async def get_participant(objectID: ObjectId) -> JSONResponse:
-#     return c.get_specific_participant(objectID)
+@router.get("/{object_id}")
+async def get_participant(object_id: str) -> JSONResponse:
+    return c.get_specified_participant(object_id)
 
 
 # @router.put("/{objectID}")
