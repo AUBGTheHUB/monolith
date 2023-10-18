@@ -71,6 +71,7 @@ try:
     _, stdout, _ = ssh_client.exec_command(CURRENT_BRANCH)
     current_branch = stdout.read().strip().decode('utf-8')
     if current_branch != BRANCH:
+        # Fetches all remote branches, because the provided branch might not be avaliable on the machine.
         PULL_ALL_BRANCHES = f"cd ~/monolith && git pull --all"
         _, _, _ = ssh_client.exec_command(PULL_ALL_BRANCHES)
 
