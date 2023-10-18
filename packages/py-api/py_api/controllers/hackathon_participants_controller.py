@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col
 from py_api.models import RandomParticipant
+from py_api.utilities.parsers import has_prohibited_characters
 
 
 class PartcipantsController:
@@ -54,3 +55,15 @@ class PartcipantsController:
         )
 
         return JSONResponse(content={"participant": json.loads(dumps(targeted_participant))}, status_code=200)
+
+    @classmethod
+    def add_participant(cls, participant_form: RandomParticipant) -> JSONResponse:
+        participant_form_dump = participant_form.model_dump()
+        # prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
+
+        # for e in participant_form_dump:
+        #     if has_prohibited_characters(participant_form_dump[e], prohibited_chars):
+        #         return JSONResponse(content={"message": f"Provided endpoint includes a prohibited character - {prohibited_chars}"}, status_code=400)
+
+        participants_col.insert_one(participant_form_dump)
+        return JSONResponse(content={"message": "The participant was successfully added!"}, status_code=200)

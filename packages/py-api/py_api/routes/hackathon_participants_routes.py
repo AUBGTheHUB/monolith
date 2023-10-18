@@ -23,6 +23,11 @@ async def upsert_participant(object_id: str, participant_form: RandomParticipant
     return c.upsert_participant(object_id, participant_form)
 
 
+@router.post("")
+async def add_participant(participant_form: RandomParticipant) -> JSONResponse:
+    return c.add_participant(participant_form)
+
+
 @router.delete("/{object_id}")
 async def delete_participant(object_id: str) -> JSONResponse:
     return c.delete_participant(object_id)
