@@ -22,8 +22,7 @@ class PartcipantsController:
 
         return fields_to_be_updated
 
-    @classmethod
-    def get_all_participants(cls) -> JSONResponse:
+    def get_all_participants() -> JSONResponse:
         participants = list(participants_col.find())
 
         if not participants:
@@ -32,8 +31,7 @@ class PartcipantsController:
         # the dumps funtion from bson.json_util returns a string
         return JSONResponse(content={"participants": json.loads(dumps(participants))}, status_code=200)
 
-    @classmethod
-    def get_specified_participant(cls, object_id: str) -> JSONResponse:
+    def get_specified_participant(object_id: str) -> JSONResponse:
         try:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
@@ -46,8 +44,7 @@ class PartcipantsController:
 
         return JSONResponse(content={"participant": json.loads(dumps(specified_participant))}, status_code=200)
 
-    @classmethod
-    def delete_participant(cls, object_id: str) -> JSONResponse:
+    def delete_participant(object_id: str) -> JSONResponse:
         deleted_participant = participants_col.find_one_and_delete(
             filter={"_id": ObjectId(object_id)},
         )
@@ -73,8 +70,7 @@ class PartcipantsController:
 
         return JSONResponse(content={"participant": json.loads(dumps(to_be_updated_participant))}, status_code=200)
 
-    @classmethod
-    def add_participant(cls, participant_form: NewParticipant) -> JSONResponse:
+    def add_participant(participant_form: NewParticipant) -> JSONResponse:
         participant_form_dump = participant_form.model_dump()
         participant_email = participant_form_dump["email"]
 
