@@ -3,7 +3,7 @@ from typing import Any, Dict
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from py_api.controllers import PartcipantsController as c
-from py_api.models import RandomParticipant
+from py_api.models import NewParticipant
 
 router = APIRouter(prefix="/hackathon/participants")
 
@@ -19,12 +19,12 @@ async def get_participant(object_id: str) -> JSONResponse:
 
 
 @router.put("/{object_id}")
-async def upsert_participant(object_id: str, participant_form: RandomParticipant) -> JSONResponse:
+async def upsert_participant(object_id: str, participant_form: NewParticipant) -> JSONResponse:
     return c.upsert_participant(object_id, participant_form)
 
 
 @router.post("")
-async def add_participant(participant_form: RandomParticipant) -> JSONResponse:
+async def add_participant(participant_form: NewParticipant) -> JSONResponse:
     return c.add_participant(participant_form)
 
 

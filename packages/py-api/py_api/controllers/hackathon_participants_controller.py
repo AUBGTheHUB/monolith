@@ -62,6 +62,10 @@ class PartcipantsController:
     @classmethod
     def add_participant(cls, participant_form: NewParticipant) -> JSONResponse:
         participant_form_dump = participant_form.model_dump()
+        participant_email = participant_form_dump["email"]
+
+        if participants_col.find_one(filter={"email": participant_email}):
+            return JSONResponse(content={"message": "The email of the participant already exists!"}, status_code=409)
 
         participants_col.insert_one(participant_form_dump)
         return JSONResponse(content={"message": "The participant was successfully added!"}, status_code=200)
