@@ -18,6 +18,11 @@ class UploaderController:
         aws_secret_access_key=_AWS_PRIV_KEY,
     )
 
+    _s3_session = boto3.Session(
+        aws_access_key_id=_AWS_PUB_KEY,
+        aws_secret_access_key=_AWS_PRIV_KEY,
+    )
+
     _s3_resource = boto3.resource(
         's3',
         aws_access_key_id=_AWS_PUB_KEY,
@@ -30,8 +35,6 @@ class UploaderController:
 
     @classmethod
     def upload_object(cls, file: UploadFile, file_name: str) -> Dict[str, Any]:
-        s3 = cls._s3_client
-
         # TODO: Schedule more frequent temp dir cleanups on the server
         tmpdir = gettempdir()
         with open(path.join(tmpdir, file.filename), "wb+") as file_object:
@@ -39,14 +42,14 @@ class UploaderController:
 
         saved_file = file_name + "." + file.filename.rsplit('.')[1]
 
-        s3.upload_file(
+        cls._s3_client.upload_file(
             f'{tmpdir}/{file.filename}',
             cls._AWS_BUCKET_NAME, saved_file, ExtraArgs={
                 'ContentType': 'image/jpeg',
             },
         )
 
-        location = s3.get_bucket_location(Bucket=cls._AWS_BUCKET_NAME)[
+        location = cls._s3_client.get_bucket_location(Bucket=cls._AWS_BUCKET_NAME)[
             'LocationConstraint'
         ]
 
@@ -57,8 +60,8 @@ class UploaderController:
 
     @classmethod
     def dump_objects(cls) -> Dict[str, Any]:
-        s3 = cls._s3_resource
-        client = cls._s3_client
+        s3 = cls._s3_session.resource('s3')
+        client = cls._s3_session.client('s3')
         bucket = s3.Bucket(cls._AWS_BUCKET_NAME)
         location = client.get_bucket_location(Bucket=cls._AWS_BUCKET_NAME)[
             'LocationConstraint'
@@ -80,9 +83,9 @@ class UploaderController:
         try:
             object_key = filename
 
-            s3 = cls._s3_client
-
-            s3.delete_object(Bucket=cls._AWS_BUCKET_NAME, Key=object_key)
+            cls._s3_client.delete_object(
+                Bucket=cls._AWS_BUCKET_NAME, Key=object_key,
+            )
 
             return {"message": f"Object '{object_key}' deleted successfully."}
 
