@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
 
-class RandomParticipant(BaseModel):
+class NewParticipant(BaseModel):
     first_name: str
     last_name: str
     email: str
-    Tshirt_size: str
+    tshirt_size: str
