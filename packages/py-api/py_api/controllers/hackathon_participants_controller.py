@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -8,6 +9,18 @@ from py_api.models import NewParticipant, UpdateParticipant
 
 
 class PartcipantsController:
+
+    def filter_none_values(document: UpdateParticipant) -> Dict[str, Any]:
+        # Creates a dictionary for participant_form
+        participant_form_dump = document.model_dump()
+        fields_to_be_updated = {}
+
+        # It pushes the fields whose value is not null to the empty dictionary
+        for key, value in participant_form_dump.items():
+            if value:
+                fields_to_be_updated[key] = value
+
+        return fields_to_be_updated
 
     @classmethod
     def get_all_participants(cls) -> JSONResponse:
@@ -46,14 +59,9 @@ class PartcipantsController:
 
     @classmethod
     def update_participant(cls, object_id: str, participant_form: UpdateParticipant) -> JSONResponse:
-        # Creates a dictionary for participant_form
-        participant_form_dump = participant_form.model_dump()
-        fields_to_be_updated = {}
 
-        # It pushes the fields whose value is not null to the empty dictionary
-        for v in participant_form_dump:
-            if not participant_form_dump[v] == None:
-                fields_to_be_updated[v] = participant_form_dump[v]
+        # filters the values set to None in the model
+        fields_to_be_updated = cls.filter_none_values(participant_form)
 
         # Queries the given participant and updates it
         to_be_updated_participant = participants_col.find_one_and_update(
