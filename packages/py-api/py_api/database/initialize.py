@@ -17,3 +17,6 @@ su_col = client["ShortenedUrlsDB"].shortened_urls
 # * use these collections when working within the Questionnaire controller
 q_col = client["questionnaires"].questions
 a_col = client["questionnaires"].answers
+
+# * use these collections when working within the Teams controller
+t_col = client['hackathon'].normal_teams
