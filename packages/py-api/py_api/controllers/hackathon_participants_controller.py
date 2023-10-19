@@ -52,7 +52,7 @@ class PartcipantsController:
         if not deleted_participant:
             return JSONResponse(content={"message": "The targeted participant was not found!"}, status_code=404)
 
-        return JSONResponse(content={"message": "The participant was deletd successfully!"}, status_code=200)
+        return JSONResponse(content={"message": "The participant was deleted successfully!"}, status_code=200)
 
     @classmethod
     def update_participant(cls, object_id: str, participant_form: UpdateParticipant) -> JSONResponse:
