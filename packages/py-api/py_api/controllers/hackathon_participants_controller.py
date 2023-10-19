@@ -4,8 +4,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col
-from py_api.models import NewParticipant
-from py_api.utilities.parsers import has_prohibited_characters
+from py_api.models import NewParticipant, UpdateParticipant
 
 
 class PartcipantsController:
@@ -46,13 +45,20 @@ class PartcipantsController:
         return JSONResponse(content={"message": "The participant was deletd successfully!"}, status_code=200)
 
     @classmethod
-    def upsert_participant(cls, object_id: str, participant_form: NewParticipant) -> JSONResponse:
+    def update_participant(cls, object_id: str, participant_form: UpdateParticipant) -> JSONResponse:
         # Creates a dictionary for participant_form
         participant_form_dump = participant_form.model_dump()
+        fields_to_be_updated = {}
+
+        # It pushes the fields whose value is not null to the empty dictionary
+        for v in participant_form_dump:
+            if not participant_form_dump[v] == None:
+                fields_to_be_updated[v] = participant_form_dump[v]
+
         # Queries the given participant and updates it
         to_be_updated_participant = participants_col.find_one_and_update(
             {"_id": ObjectId(object_id)}, {
-                "$set": participant_form_dump,
+                "$set": fields_to_be_updated,
             },
             return_document=True,
         )
