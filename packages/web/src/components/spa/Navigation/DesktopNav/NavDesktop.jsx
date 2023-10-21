@@ -13,7 +13,7 @@ export const NavDesktop = ({ props }) => {
                     onClick={() => {
                         navigateTo('/hackaubg');
                     }}>
-                    <p>HackAUB</p>
+                    <p>HackAUBG</p>
                 </button>
             );
         }
