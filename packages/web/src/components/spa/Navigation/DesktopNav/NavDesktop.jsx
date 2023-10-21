@@ -12,9 +12,8 @@ export const NavDesktop = ({ props }) => {
                     type="button"
                     onClick={() => {
                         navigateTo('/hackaubg');
-                    }}
-                >
-                    <p>HackAUBG</p>
+                    }}>
+                    <p>HackAUB</p>
                 </button>
             );
         }
@@ -32,12 +31,12 @@ export const NavDesktop = ({ props }) => {
                 position: 'fixed',
                 top: 0,
                 width: '100vw',
-                zIndex: 1
+                zIndex: 1,
             };
         }
 
         return {
-            backgroundColor: props.bgColor
+            backgroundColor: props.bgColor,
         };
     };
 
@@ -45,19 +44,18 @@ export const NavDesktop = ({ props }) => {
         e.target.style.color = color;
     };
 
-    const buildDesktopAnchor = (anchor) => {
+    const buildDesktopAnchor = anchor => {
         if (anchor.isLink) {
             return (
                 <Link
                     to={anchor.endpoint}
-                    onMouseEnter={(e) => {
+                    onMouseEnter={e => {
                         changeAnchorColor(e, props.anchorHoverColor);
                     }}
-                    onMouseLeave={(e) => {
+                    onMouseLeave={e => {
                         changeAnchorColor(e, props.anchorColor);
                     }}
-                    style={{ color: props.anchorColor }}
-                >
+                    style={{ color: props.anchorColor }}>
                     {anchor.name}
                 </Link>
             );
@@ -66,14 +64,13 @@ export const NavDesktop = ({ props }) => {
         return (
             <a
                 href={anchor.endpoint}
-                onMouseEnter={(e) => {
+                onMouseEnter={e => {
                     changeAnchorColor(e, props.anchorHoverColor);
                 }}
-                onMouseLeave={(e) => {
+                onMouseLeave={e => {
                     changeAnchorColor(e, props.anchorColor);
                 }}
-                style={{ color: props.anchorColor }}
-            >
+                style={{ color: props.anchorColor }}>
                 {anchor.name}
             </a>
         );
@@ -82,11 +79,7 @@ export const NavDesktop = ({ props }) => {
     return (
         <div className="navdesktop-container" style={stickyProps()}>
             <div className="navdesktop-logo" onClick={openHome}>
-                <img
-                    src="hublogo.png"
-                    className="navdesktop-logo-image"
-                    alt="The Hub AUBG"
-                />
+                <img src="hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
                 <p>The Hub</p>
             </div>
             <div className="navdesktop-flex-buttons">
@@ -96,9 +89,8 @@ export const NavDesktop = ({ props }) => {
                             className="navdesktop-navdivs"
                             key={index}
                             style={{
-                                display: !anchor.featureSwitch ? 'none' : ''
-                            }}
-                        >
+                                display: !anchor.featureSwitch ? 'none' : '',
+                            }}>
                             {buildDesktopAnchor(anchor)}
                         </div>
                     ))}
