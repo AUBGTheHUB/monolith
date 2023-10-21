@@ -43,7 +43,7 @@ services=($MAIN_FE $GO_API $PY_API $SHORTENER)
 methods=("GET" "POST" "GET" "GET")
 
 # * define expected status codes
-status_codes=(200 400 200 302)
+status_codes=(200 400 200 301)
 
 # TODO: Even if there's a failing request, finish up for loop and then exit
 for ((i = 0; i < ${#services[@]}; i++)); do
