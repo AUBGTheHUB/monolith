@@ -33,7 +33,7 @@ DOMAIN="thehub-aubg.com"
 MAIN_FE="${SUBDOMAIN}${DOMAIN}"
 GO_API="${SUBDOMAIN}${DOMAIN}/api/validate"
 PY_API="${SUBDOMAIN}${DOMAIN}/v2/health"
-SHORTENER="${SUBDOMAIN}${DOMAIN}.com/s/mono"
+SHORTENER="${SUBDOMAIN}${DOMAIN}/s/mono"
 
 # ? declare -A services was BuGgInG, g :/
 # * define services' urls
