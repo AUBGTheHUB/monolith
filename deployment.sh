@@ -17,6 +17,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+sleep 20
+
 #----------------------------HEALTH CHECKS----------------------------------------
 # ! subdomain should include all periods, including the one before the domain
 # we assume all non-prod deployments are tested on dev machine
@@ -31,7 +33,7 @@ DOMAIN="thehub-aubg.com"
 MAIN_FE="${SUBDOMAIN}${DOMAIN}"
 GO_API="${SUBDOMAIN}${DOMAIN}/api/validate"
 PY_API="${SUBDOMAIN}${DOMAIN}/v2/health"
-SHORTENER="${SUBDOMAIN}${DOMAIN}.com/s/mono"
+SHORTENER="${SUBDOMAIN}${DOMAIN}/s/mono"
 
 # ? declare -A services was BuGgInG, g :/
 # * define services' urls
@@ -41,14 +43,14 @@ services=($MAIN_FE $GO_API $PY_API $SHORTENER)
 methods=("GET" "POST" "GET" "GET")
 
 # * define expected status codes
-status_codes=(200 400 200 302)
+status_codes=(200 400 200 301)
 
 # TODO: Even if there's a failing request, finish up for loop and then exit
 for ((i = 0; i < ${#services[@]}; i++)); do
     url="${services[i]}"
     method="${methods[i]}"
     expected_status="${status_codes[i]}"
-    actual_status=$(curl -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
+    actual_status=$(curl -m 5 -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
         RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
