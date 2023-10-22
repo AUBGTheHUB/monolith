@@ -5,7 +5,6 @@
 
 .s3-upload-image {
     background-color: gray;
-    padding-top: 4vw;
     height: 100vh;
     display: flex;
     flex-direction: column;

@@ -10,7 +10,7 @@ import { JobsSection } from './components/spa/JobsSection/JobsSection';
 import { goBackIfActionsAreStateless, handleUrlDependantStyling } from './Global';
 import { FsContext, loadFeatureSwitches, parseFeatureSwitches } from './feature_switches';
 import { Toaster } from 'react-hot-toast';
-import BackBtnAdmin from './Admin_dashboard_routes';
+import AdminRoutesWithBackButton from './AdminRoutesWithBackButton';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -39,7 +39,7 @@ function App() {
                 {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
                 <Route path="/admin" element={<LandingAdminPage />} />
                 <Route path="/admin/dashboard" element={<Dashboard />} />
-                <Route path="/admin/dashboard/*" element={<BackBtnAdmin />} />
+                <Route path="/admin/dashboard/*" element={<AdminRoutesWithBackButton />} />
             </Routes>
         </Fragment>
     );
