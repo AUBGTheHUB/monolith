@@ -138,7 +138,7 @@ const UrlsTable = () => {
                     Create a shortened URL
                 </Button>
             </OverlayTrigger>
-            <Table style={{ color: 'white' }}>
+            <Table style={{ color: 'white', marginTop: '4vw' }}>
                 <thead>
                     <tr>
                         <th>entry</th>
