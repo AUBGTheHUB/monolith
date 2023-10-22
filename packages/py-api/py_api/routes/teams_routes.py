@@ -12,6 +12,11 @@ def get_all_teams() -> JSONResponse:
     return c.fetch_teams()
 
 
+@router.get("/count")
+def team_count() -> JSONResponse:
+    return c.team_count()
+
+
 @router.get("/{objectID}")
 def get_team(objectID: str) -> JSONResponse:
     return c.get_team(objectID)
@@ -25,8 +30,3 @@ def get_team(objectID: str) -> JSONResponse:
 @router.delete("/{objectID}")
 def delete_team(objectID: str) -> JSONResponse:
     return c.delete_team(objectID)
-
-
-# @router.get("/count/{objectID}")
-# def team_count(objectID: str) -> JSONResponse:
-#     return c.team_count(objectID)

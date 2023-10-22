@@ -22,7 +22,7 @@ class TeamsController:
             specified_team = t_col.find_one(
                 filter={"_id": ObjectId(object_id)},
             )
-        except (InvalidId, TypeError) as e:
+        except (InvalidId, TypeError):
             return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
 
         if not specified_team:
@@ -39,3 +39,11 @@ class TeamsController:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
 
         return JSONResponse(content={"message": json.loads(dumps(delete_team))}, status_code=200)
+
+    def team_count() -> JSONResponse:
+        count = t_col.count_documents({})
+
+        if not count:
+            return JSONResponse(content={"message": "No teams were found"}, status_code=404)
+
+        return JSONResponse(content={"teams": count})
