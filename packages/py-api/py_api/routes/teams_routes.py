@@ -12,9 +12,9 @@ def get_all_teams() -> JSONResponse:
     return c.fetch_teams()
 
 
-# @router.get("/{objectID}")
-# def delete_team(endpoint: str) -> JSONResponse:
-#     return c.delete_team(endpoint)
+@router.get("/{objectID}")
+def get_team(objectID: str) -> JSONResponse:
+    return c.get_team(objectID)
 
 
 # @router.put("/{objectID}")
@@ -22,9 +22,9 @@ def get_all_teams() -> JSONResponse:
 #     return c.update_team(objectID)
 
 
-# @router.delete("/{objectID}")
-# def delete_team(objectID: str) -> JSONResponse:
-#     return c.delete_team(objectID)
+@router.delete("/{objectID}")
+def delete_team(objectID: str) -> JSONResponse:
+    return c.delete_team(objectID)
 
 
 # @router.get("/count/{objectID}")
