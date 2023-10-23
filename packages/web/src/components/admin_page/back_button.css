@@ -1,6 +1,9 @@
 .top{display: none !important;}
+
 .middle{display:none !important;}
+
 @media only screen and (min-width: 768px){
+
     .middle{
         display: block !important;
         width: 3em;
@@ -12,6 +15,7 @@
         left: 1em;
         z-index: 1;
      }
+
     .top{
         display: block !important;
          width: 3em;

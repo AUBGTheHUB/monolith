@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import './back_button.css';
-const BackBtn = ({ style }) => {
+
+const BackBtn = ({ positionButtonOnTop }) => {
     const history = useNavigate();
+    const className = positionButtonOnTop ? 'top' : 'middle';
     return (
-        <Button className={style} variant="primary" onClick={() => history(-1)}>
+        <Button className={className} variant="primary" onClick={() => history(-1)}>
             &#8249;
         </Button>
     );
 };
+
 export default BackBtn;

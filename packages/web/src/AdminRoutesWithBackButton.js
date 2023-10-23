@@ -158,6 +158,7 @@ const adminRoutes = [
         element: <RenderSwitches />,
     },
 ];
+
 const AdminRoutesWithBackButton = () => (
     <Routes>
         {adminRoutes.map(route => (
@@ -169,15 +170,14 @@ const AdminRoutesWithBackButton = () => (
         ))}
     </Routes>
 );
+
 const AdminContainerWithButton = ({ component, path }) => {
-    var position = 'middle';
-    console.log(path);
-    if (path == 'shortener') position = 'top';
     return (
         <>
-            <BackBtn style={position} />
+            <BackBtn positionButtonOnTop={path == 'shortener'} />
             {component}
         </>
     );
 };
+
 export default AdminRoutesWithBackButton;
