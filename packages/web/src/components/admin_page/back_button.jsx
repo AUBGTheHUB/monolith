@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import './back_button.css';
 
-const BackBtn = ({ positionButtonOnTop }) => {
+const BackBtn = ({ positionButtonOnTop = false }) => {
     const history = useNavigate();
     const className = positionButtonOnTop ? 'top' : 'middle';
     return (

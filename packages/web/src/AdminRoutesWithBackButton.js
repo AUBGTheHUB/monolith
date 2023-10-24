@@ -174,7 +174,7 @@ const AdminRoutesWithBackButton = () => (
 const AdminContainerWithButton = ({ component, path }) => {
     return (
         <>
-            <BackBtn positionButtonOnTop={path == 'shortener'} />
+            <BackBtn positionButtonOnTop={path === 'shortener'} />
             {component}
         </>
     );
