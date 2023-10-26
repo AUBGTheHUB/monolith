@@ -33,7 +33,7 @@ DOMAIN="thehub-aubg.com"
 MAIN_FE="${SUBDOMAIN}${DOMAIN}"
 GO_API="${SUBDOMAIN}${DOMAIN}/api/validate"
 PY_API="${SUBDOMAIN}${DOMAIN}/v2/health"
-SHORTENER="${SUBDOMAIN}${DOMAIN}.com/s/mono"
+SHORTENER="${SUBDOMAIN}${DOMAIN}/s/mono"
 
 # ? declare -A services was BuGgInG, g :/
 # * define services' urls
@@ -43,7 +43,7 @@ services=($MAIN_FE $GO_API $PY_API $SHORTENER)
 methods=("GET" "POST" "GET" "GET")
 
 # * define expected status codes
-status_codes=(200 400 200 302)
+status_codes=(200 400 200 301)
 
 # TODO: Even if there's a failing request, finish up for loop and then exit
 for ((i = 0; i < ${#services[@]}; i++)); do
