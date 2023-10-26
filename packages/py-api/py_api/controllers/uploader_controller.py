@@ -60,10 +60,8 @@ class UploaderController:
 
     @classmethod
     def dump_objects(cls) -> Dict[str, Any]:
-        s3 = cls._s3_session.resource('s3')
-        client = cls._s3_session.client('s3')
-        bucket = s3.Bucket(cls._AWS_BUCKET_NAME)
-        location = client.get_bucket_location(Bucket=cls._AWS_BUCKET_NAME)[
+        bucket = cls._s3_session.resource('s3').Bucket(cls._AWS_BUCKET_NAME)
+        location = cls._s3_session.client('s3').get_bucket_location(Bucket=cls._AWS_BUCKET_NAME)[
             'LocationConstraint'
         ]
 
@@ -80,14 +78,15 @@ class UploaderController:
 
     @classmethod
     def delete_object_by_filename(cls, filename: str) -> Dict[str, Any]:
+        # Check whether the image exists
         try:
-            object_key = filename
-
-            cls._s3_client.delete_object(
-                Bucket=cls._AWS_BUCKET_NAME, Key=object_key,
+            cls._s3_client.head_object(
+                Bucket=cls._AWS_BUCKET_NAME, Key=filename,
             )
+        except cls._s3_client.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                return {"error": f"Object '{filename}' not found in the storage."}
 
-            return {"message": f"Object '{object_key}' deleted successfully."}
-
-        except Exception as e:
-            return {"error": f"Failed to delete object: {str(e)}"}
+        # If the object exists, proceed with the deletion
+        cls._s3_client.delete_object(Bucket=cls._AWS_BUCKET_NAME, Key=filename)
+        return {"message": f"Object '{filename}' deleted successfully."}
