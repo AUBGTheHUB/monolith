@@ -10,6 +10,8 @@ class NewParticipant(BaseModel):
     last_name: str
     email: str
     tshirt_size: TSHIRT_SIZE
+    team_name: Optional[str] = None
+    verified: Optional[bool] = False
 
 
 class UpdateParticipant(BaseModel):
@@ -17,3 +19,5 @@ class UpdateParticipant(BaseModel):
     last_name: Optional[str] = None
     email: Optional[str] = None
     tshirt_size: Optional[TSHIRT_SIZE] = None
+    team_name: Optional[str] = None
+    verified: Optional[bool] = False
