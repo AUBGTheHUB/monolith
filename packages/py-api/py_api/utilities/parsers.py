@@ -1,8 +1,8 @@
 from json import loads
 from re import escape, search
-from typing import Any, Callable, Dict, List, Self
+from typing import Any, Callable, Dict
 
-from py_api.models import UpdateParticipant
+from pydantic import BaseModel
 
 
 async def parse_request_body(body: Callable[..., bytes]) -> Dict[Any, Any]:
@@ -33,7 +33,7 @@ class AttrDict(dict[Any, Any]):
         self.__dict__ = self
 
 
-def filter_none_values(document: UpdateParticipant) -> Dict[str, Any]:
+def filter_none_values(document: BaseModel) -> Dict[str, Any]:
     # Creates a dictionary for participant_form
     participant_form_dump = document.model_dump()
     fields_to_be_updated = {}

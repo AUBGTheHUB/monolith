@@ -1,8 +1,6 @@
-from typing import Any, Dict
-
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from py_api.controllers import PartcipantsController as c
+from py_api.controllers import ParticipantsController as c
 from py_api.models import NewParticipant, UpdateParticipant
 
 router = APIRouter(prefix="/hackathon/participants")

@@ -1,5 +1,4 @@
 import json
-from typing import Any, Dict
 
 from bson.errors import InvalidId
 from bson.json_util import dumps
@@ -10,7 +9,7 @@ from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
 
 
-class PartcipantsController:
+class ParticipantsController:
 
     def get_all_participants() -> JSONResponse:
         participants = list(participants_col.find())
