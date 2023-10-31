@@ -74,5 +74,9 @@
     },
     "[svelte]": {
         "editor.defaultFormatter": "svelte.svelte-vscode"
-    }
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
 }
