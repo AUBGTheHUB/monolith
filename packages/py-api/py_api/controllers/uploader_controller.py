@@ -4,7 +4,7 @@ from tempfile import gettempdir
 from typing import Any, Dict
 
 import boto3
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile
 
 
 class UploaderController:
@@ -85,7 +85,9 @@ class UploaderController:
             )
         except cls._s3_client.exceptions.ClientError as e:
             if e.response['Error']['Code'] == '404':
-                return {"error": f"Object '{filename}' not found in the storage."}
+                raise HTTPException(
+                    status_code=404, detail=f"Object '{filename}' not found in the storage",
+                )
 
         # If the object exists, proceed with the deletion
         cls._s3_client.delete_object(Bucket=cls._AWS_BUCKET_NAME, Key=filename)
