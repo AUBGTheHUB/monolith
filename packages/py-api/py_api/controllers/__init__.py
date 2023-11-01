@@ -1,4 +1,5 @@
 from py_api.controllers.feature_switches_controller import FeatureSwitchesController
+from py_api.controllers.hackathon_participants_controller import ParticipantsController
 from py_api.controllers.questionnaires_controller import QuestionnairesController
 from py_api.controllers.teams_controller import TeamsController
 from py_api.controllers.uploader_controller import UploaderController
@@ -12,4 +13,5 @@ __all__ = [
     "UtilityController",
     "QuestionnairesController",
     "TeamsController",
+    "ParticipantsController",
 ]

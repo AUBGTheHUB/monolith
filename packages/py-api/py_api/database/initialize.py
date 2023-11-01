@@ -20,3 +20,5 @@ a_col = client["questionnaires"].answers
 
 # * use these collections when working within the Teams controller
 t_col = client['hackathon'].teams
+# * use these collections when working within the Hackathon_Participants controller
+participants_col = client["hackathon"].participants

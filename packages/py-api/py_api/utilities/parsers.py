@@ -1,6 +1,8 @@
 from json import loads
 from re import escape, search
-from typing import Any, Callable, Dict, List, Self
+from typing import Any, Callable, Dict
+
+from pydantic import BaseModel
 
 
 async def parse_request_body(body: Callable[..., bytes]) -> Dict[Any, Any]:
@@ -29,3 +31,16 @@ class AttrDict(dict[Any, Any]):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
+
+def filter_none_values(document: BaseModel) -> Dict[str, Any]:
+    # Creates a dictionary for participant_form
+    participant_form_dump = document.model_dump()
+    fields_to_be_updated = {}
+
+    # It pushes the fields whose value is not null to the empty dictionary
+    for key, value in participant_form_dump.items():
+        if value:
+            fields_to_be_updated[key] = value
+
+    return fields_to_be_updated
