@@ -2,7 +2,7 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel
 
-TEAM_TYPE = Literal["known", "unknown"]
+TEAM_TYPE = Literal["normal", "random"]
 
 
 class NewTeams(BaseModel):
