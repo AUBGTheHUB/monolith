@@ -89,6 +89,10 @@ class UploaderController:
                     status_code=404, detail=f"Object '{filename}' not found in the storage",
                 )
 
+            raise HTTPException(
+                status_code=500, detail=f"Internal error!",
+            )
+
         # If the object exists, proceed with the deletion
         cls._s3_client.delete_object(Bucket=cls._AWS_BUCKET_NAME, Key=filename)
         return {"message": f"Object '{filename}' deleted successfully."}
