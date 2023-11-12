@@ -33,6 +33,17 @@ class TeamsController:
     def get_team(object_id: str) -> JSONResponse:
         specified_team = t_col.find_one(filter={"_id": ObjectId(object_id)})
 
+        team_name = specified_team.get("team_name")
+        participants = list(
+            participants_col.find(
+                {"team_name": team_name}, {"_id": 1},
+            ),
+        )
+        specified_team["team_members"] = [
+            str(participant["_id"])
+            for participant in participants
+        ]
+
         if not specified_team:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
 
