@@ -22,8 +22,8 @@ async def update_participant(object_id: str, participant_form: UpdateParticipant
 
 
 @router.post("")
-async def add_participant(participant_form: NewParticipant) -> JSONResponse:
-    return c.add_participant(participant_form)
+async def add_participant(update_form: NewParticipant) -> JSONResponse:
+    return c.add_participant(update_form)
 
 
 @router.delete("/{object_id}")

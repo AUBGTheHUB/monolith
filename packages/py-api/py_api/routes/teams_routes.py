@@ -3,6 +3,7 @@ from typing import Any, Dict
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from py_api.controllers import TeamsController as c
+from py_api.models import UpdateTeam
 
 router = APIRouter(prefix="/teams")
 
@@ -22,9 +23,9 @@ def get_team(objectID: str) -> JSONResponse:
     return c.get_team(objectID)
 
 
-# @router.put("/{objectID}")
-# def update_team(objectID: str) -> JSONResponse:
-#     return c.update_team(objectID)
+@router.put("/{objectID}")
+def update_team(objectID: str, update_form: UpdateTeam) -> JSONResponse:
+    return c.update_team(objectID, update_form)
 
 
 @router.delete("/{objectID}")

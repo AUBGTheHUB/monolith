@@ -34,12 +34,12 @@ class AttrDict(dict[Any, Any]):
 
 
 def filter_none_values(document: BaseModel) -> Dict[str, Any]:
-    # Creates a dictionary for participant_form
-    participant_form_dump = document.model_dump()
+    # Creates a dictionary for the specific form
+    form_dump = document.model_dump()
     fields_to_be_updated = {}
 
     # It pushes the fields whose value is not null to the empty dictionary
-    for key, value in participant_form_dump.items():
+    for key, value in form_dump.items():
         if value:
             fields_to_be_updated[key] = value
 

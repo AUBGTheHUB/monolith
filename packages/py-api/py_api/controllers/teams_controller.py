@@ -5,6 +5,8 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col, t_col
+from py_api.models import UpdateTeam
+from py_api.utilities.parsers import filter_none_values
 
 
 class TeamsController:
@@ -53,3 +55,14 @@ class TeamsController:
             return JSONResponse(content={"message": "No teams were found"}, status_code=404)
 
         return JSONResponse(content={"teams": count})
+
+    def update_team(object_id: str, update_form: UpdateTeam) -> JSONResponse:
+        fields_to_be_updated = filter_none_values(update_form)
+
+        to_be_updated_participant = t_col.find_one_and_update(
+            {"_id": ObjectId(object_id)}, {
+                "$set": fields_to_be_updated,
+            },
+            return_document=True,
+        )
+        return JSONResponse(content={"teams": json.loads(dumps(to_be_updated_participant))}, status_code=200)
