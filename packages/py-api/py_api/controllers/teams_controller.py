@@ -67,8 +67,8 @@ class TeamsController:
 
         return JSONResponse(content={"teams": count})
 
-    def update_team(object_id: str, update_form: UpdateTeam) -> JSONResponse:
-        fields_to_be_updated = filter_none_values(update_form)
+    def update_team(object_id: str, update_table: UpdateTeam) -> JSONResponse:
+        fields_to_be_updated = filter_none_values(update_table)
 
         to_be_updated_participant = t_col.find_one_and_update(
             {"_id": ObjectId(object_id)}, {

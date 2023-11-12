@@ -58,8 +58,8 @@ class ParticipantsController:
 
         return JSONResponse(content={"participant": json.loads(dumps(to_be_updated_participant))}, status_code=200)
 
-    def add_participant(update_form: NewParticipant) -> JSONResponse:
-        participant_form_dump = update_form.model_dump()
+    def add_participant(update_table: NewParticipant) -> JSONResponse:
+        participant_form_dump = update_table.model_dump()
 
         if participants_col.find_one(filter={"email": participant_form_dump["email"]}):
             return JSONResponse(content={"message": "The email of the participant already exists!"}, status_code=409)
