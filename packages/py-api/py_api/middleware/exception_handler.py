@@ -1,6 +1,7 @@
 from os import getenv
 from traceback import format_exc
 
+from bson.errors import InvalidId
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from py_api.environment import IS_OFFLINE
@@ -15,6 +16,9 @@ class ExceptionHandler:
             content = {
                 "message": "Something went wrong! Please, contact The Hub!",
             }
+
+            if isinstance(exc, (InvalidId, TypeError)):
+                return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
 
             if eval_bool(IS_OFFLINE):
                 content = {

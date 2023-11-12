@@ -29,12 +29,7 @@ class TeamsController:
         return JSONResponse(content={"teams": json.loads(dumps(teams))}, status_code=201)
 
     def get_team(object_id: str) -> JSONResponse:
-        try:
-            specified_team = t_col.find_one(
-                filter={"_id": ObjectId(object_id)},
-            )
-        except (InvalidId, TypeError):
-            return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
+        specified_team = t_col.find_one(filter={"_id": ObjectId(object_id)})
 
         if not specified_team:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
