@@ -90,7 +90,7 @@ class UploaderController:
                 )
 
             raise HTTPException(
-                status_code=500, detail=f"Internal error!",
+                status_code=500, detail=str(e),
             )
 
         # If the object exists, proceed with the deletion
