@@ -1,4 +1,3 @@
-from os import getenv
 from traceback import format_exc
 
 from bson.errors import InvalidId
