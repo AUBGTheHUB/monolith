@@ -10,15 +10,11 @@ from py_api.utilities.parsers import eval_bool
 
 class ExceptionHandler:
     def __init__(self, app: FastAPI) -> None:
-
         @app.exception_handler(Exception)
         async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
             content = {
                 "message": "Something went wrong! Please, contact The Hub!",
             }
-
-            # if isinstance(exc, (InvalidId, TypeError)):
-            #     return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
 
             if eval_bool(IS_OFFLINE):
                 content = {
@@ -34,3 +30,7 @@ class ExceptionHandler:
                 status_code=500,
                 content=content,
             )
+
+        @app.exception_handler(InvalidId)
+        async def handle_invalid_object_id(request: Request, exc: InvalidId) -> JSONResponse:
+            return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
