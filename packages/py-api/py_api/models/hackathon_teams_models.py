@@ -3,7 +3,7 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel
 
 # normal team is a team where the admin sends link
-# random team is team where all participants are randomly alocated
+# random team is team where all participants are randomly allocated
 TEAM_TYPE = Literal["normal", "random"]
 
 
