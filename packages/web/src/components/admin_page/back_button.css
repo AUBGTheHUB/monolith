@@ -1,0 +1,30 @@
+.top{display: none !important;}
+
+.middle{display:none !important;}
+
+@media only screen and (min-width: 768px){
+
+    .middle{
+        display: block !important;
+        width: 3em;
+        height: 3em;
+        font-size: 100%;
+        border-radius: 50% !important;
+        position: fixed;
+        top: 50%;
+        left: 1em;
+        z-index: 1;
+     }
+
+    .top{
+        display: block !important;
+         width: 3em;
+        height: 3em;
+        font-size: 100%;
+        border-radius: 50% !important;
+        position: absolute;
+        left: 1em;
+        z-index: 1;
+        top: 3em !important;
+    }
+}
