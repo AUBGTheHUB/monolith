@@ -80,4 +80,8 @@ class TeamsController:
             },
             return_document=True,
         )
+
+        if not to_be_updated_team:
+            return JSONResponse(content={"message": "The team was not found"}, status_code=404)
+
         return JSONResponse(content={"teams": json.loads(dumps(to_be_updated_team))}, status_code=200)
