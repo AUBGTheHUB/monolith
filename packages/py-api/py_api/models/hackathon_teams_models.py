@@ -6,7 +6,7 @@ from pydantic import BaseModel
 # A "normal" team consists of the first participant (admin) who registered with a
 # specific team_name and participants invited by the admin through a shareable link.
 
-# A "random" team is consists of participants who registered individually without
+# A "random" team consists of participants who registered individually without
 # specifying a team_name during registration.
 
 
@@ -27,6 +27,6 @@ class UpdateTeam(BaseModel):
 
 
 class MoveTeamMembers(BaseModel):
-    old_team_name: str
-    new_team_name: str
+    from_team: str
+    to_team: str
     team_members: List[str]
