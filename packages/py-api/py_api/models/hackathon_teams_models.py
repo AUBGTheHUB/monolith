@@ -2,12 +2,15 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel
 
-# normal team is a team where the admin sends link
-# random team is team where all participants are randomly allocated
+# A "normal" team consists of the first participant (admin) who registered with a
+# specific team_name and participants invited by the admin through a shareable link.
+
+# A "random" team is consists of participants who registered individually without
+# specifying a team_name during registration.
 TEAM_TYPE = Literal["normal", "random"]
 
 
-class NewTeams(BaseModel):
+class HackathonTeam(BaseModel):
     team_name: str
     team_members: List[str]
     team_type: TEAM_TYPE
