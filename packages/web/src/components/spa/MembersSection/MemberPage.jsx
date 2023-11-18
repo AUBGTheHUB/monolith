@@ -14,7 +14,9 @@ export const MembersSection = () => {
     const [members, setMembers] = useState();
     // eslint-disable-next-line
 
-    const isMobile = useMediaQuery({ query: '(max-width: 1000px)' });
+    const three = useMediaQuery({ query: '(max-width: 1400px)' });
+    const two = useMediaQuery({ query: '(max-width: 1000px)' });
+    const one = useMediaQuery({ query: '(max-width: 800px)' });
     //const isFoldRes = useMediaQuery({ query: '(max-width: 350px)' });
 
     const getMembers = () => {
@@ -41,7 +43,7 @@ export const MembersSection = () => {
             <>
                 <div className={style.test}>
                     <h1 className={style['header-for-container']}>Hubbers</h1>
-                    <SampleSlider pictures={members} view={isMobile ? 'mobile' : 'desktop'} />
+                    <SampleSlider pictures={members} view={one ? 1 : two ? 2 : three ? 3 : 4} />
                 </div>
             </>
         );
