@@ -8,8 +8,19 @@ if [ -z "$BRANCH" ] || [ -z "$WEBHOOK" ]; then
   exit 1
 fi
 
+REPO_URL="https://github.com/AUBGTheHUB/monolith"
+COMMIT_ID=$(git rev-pase HEAD)
+COMMIT_TITLE=$(git log -1 --pretty=%B)
+COMMIT_URL="$REPO_URL/commit/$COMMIT_ID"
+
+if [ "$BRANCH" = "production" ]; then
+    DEPLOYMENT_ENV="PROD"
+else
+    DEPLOYMENT_ENV="DEV"
+fi
+
 #----------------------------BUILD SERVICES---------------------------------------
-docker-compose up --build -d
+ERROR_MESSAGE = $(docker-compose up --build -d 2>&1) #Stores the error message if something goes wrong
 
 if [ $? -ne 0 ]; then
     RESULT_STRING="Running docker-compose on ${BRANCH} deployment failed!"
@@ -61,5 +72,5 @@ done
 
 #----------------------------HEALTH CHECKS DONE-----------------------------------
 
-RESULT_STRING="Deployment was successful for branch: ${BRANCH}"
-curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+COMMIT_TITLE_URL="🔔:[$COMMIT_TITLE]($COMMIT_URL)"
+curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"🏗️:${DEPLOYMENT_ENV}\\n${COMMIT_TITLE_URL}\\n✅:Build Successful\"}"
