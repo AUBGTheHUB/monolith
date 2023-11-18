@@ -7,6 +7,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
+from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import (
     HackathonTeam,
     MoveTeamMembers,
@@ -18,9 +19,10 @@ from py_api.utilities.parsers import filter_none_values
 
 class TeamsController:
     @classmethod
-    def create_team(cls, team_name: str, user_id: str = "", members_list: Optional[List[str]] = None) -> (
-            Dict[str, Any] | None
-    ):
+    def create_team(
+        cls, team_name: str, user_id: str = "",
+        members_list: Optional[List[str]] = None,
+    ) -> HackathonTeam | None:
 
         team_type = TeamType.NORMAL
 
@@ -28,10 +30,8 @@ class TeamsController:
             # If no team_name is provided during registration, the participant is registering individually.
             # We create a team of type RANDOM which should be filled with such participants
             team_type = TeamType.RANDOM
-
             team_name = cls.generate_random_team_name()
 
-        team = cls.check_if_team_exists(team_name)
         team_members = []
 
         if user_id:
@@ -41,37 +41,43 @@ class TeamsController:
             team_members = members_list
             team_type = TeamType.RANDOM
 
-        if not team:
-            new_team = HackathonTeam(
-                team_name=team_name,
-                team_type=team_type, team_members=team_members,
-            )
-            t_col.insert_one(new_team.model_dump())
-
+        if cls.fetch_team(team_name):
             return None
 
-        return team
+        new_team = HackathonTeam(
+            team_name=team_name,
+            team_type=team_type, team_members=team_members,
+        )
+        t_col.insert_one(new_team.model_dump())
+        return new_team
 
     @classmethod
     def add_team_participant(cls, team_name: str, user_id: str) -> List[str] | None:
-        team = cls.check_if_team_exists(team_name)
-
+        team = cls.fetch_team(team_name=team_name)
         if not team:
             return None
 
-        team_members: List[str] = team["team_members"]
-        team_members.append(user_id)
+        team = HackathonTeam(
+            team_name=team_name,
+            team_members=team["team_members"],
+        )
+        team.team_members.append(user_id)
 
         t_col.update_one(
-            {"team_name": team_name}, {
-                "$set": {"team_members": team_members},
+            {"team_name": team.team_name}, {
+                "$set": {"team_members": team.team_members},
             }, )
 
-        return team_members
+        return team.team_members
 
     @classmethod
-    def check_if_team_exists(cls, team_name: str) -> Dict[str, Any] | None:
+    def fetch_team(cls, team_name: str = "", team_id: str = "") -> Dict[str, Any] | None:
         team: Dict[str, Any] = t_col.find_one(filter={"team_name": team_name})
+
+        if team_id:
+            team = t_col.find_one(filter={"_id": team_id})
+            return team
+
         return team
 
     @staticmethod
@@ -83,9 +89,9 @@ class TeamsController:
 
         return JSONResponse(content={"teams": json.loads(dumps(teams))}, status_code=200)
 
-    @staticmethod
-    def get_team(object_id: str) -> JSONResponse:
-        specified_team = t_col.find_one(filter={"_id": ObjectId(object_id)})
+    @classmethod
+    def get_team(cls, object_id: str) -> JSONResponse:
+        specified_team = cls.fetch_team(team_id=object_id)
 
         if not specified_team:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
@@ -135,7 +141,7 @@ class TeamsController:
         new_team_name = move_members_dump["new_team_name"]
         team_members_to_move = move_members_dump["team_members"]
 
-        old_team = cls.check_if_team_exists(old_team_name)
+        old_team = cls.fetch_team(old_team_name)
         if not old_team:
             return JSONResponse(
                 content={
@@ -144,7 +150,7 @@ class TeamsController:
                 status_code=404,
             )
 
-        new_team = cls.check_if_team_exists(new_team_name)
+        new_team = cls.fetch_team(new_team_name)
         if not new_team:
             cls.create_team(new_team_name, members_list=team_members_to_move)
             if content := cls.update_old_team_members_list(old_team, team_members_to_move):
