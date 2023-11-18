@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Literal, Optional
 
 from pydantic import BaseModel
@@ -7,19 +8,22 @@ from pydantic import BaseModel
 
 # A "random" team is consists of participants who registered individually without
 # specifying a team_name during registration.
-TEAM_TYPE = Literal["normal", "random"]
+
+
+class TeamType(str, Enum):
+    NORMAL = "normal"
+    RANDOM = "random"
 
 
 class HackathonTeam(BaseModel):
     team_name: str
     team_members: List[str]
-    team_type: TEAM_TYPE
+    team_type: TeamType
 
 
 class UpdateTeam(BaseModel):
     team_name: Optional[str] = None
     team_members: Optional[List[str]] = None
-    team_type: Optional[TEAM_TYPE] = None
 
 
 class MoveTeamMembers(BaseModel):
