@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import participants_col
 from py_api.models import NewParticipant, UpdateParticipant
-from py_api.utilities.jwt_creation import create_verification_jwt_token
 from py_api.utilities.parsers import filter_none_values
+from py_api.utilities.verification import create_verification_jwt_token
 
 
 class ParticipantsController:
@@ -26,6 +26,7 @@ class ParticipantsController:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
             )
+            print(create_verification_jwt_token(specified_participant))
 
         except (InvalidId, TypeError) as e:
             return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)

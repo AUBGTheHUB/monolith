@@ -1,23 +1,34 @@
-from typing import Tuple
+# In your VerificationController
+from typing import Dict, Tuple
 
 import jwt
+from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
+from py_api.database.initialize import participants_col
 from py_api.environment import SECRET_KEY
 
 
 class VerificationController:
     @classmethod
-    def verify_participant(cls, token: str) -> JSONResponse:
+    def verify_participant(cls, token: str) -> Tuple[Dict[str, str], int]:
         response, status_code = cls.verify_token(token)
 
         if status_code != 200:
-            return JSONResponse(content=response, status_code=status_code)
+            return {"message": response.get("Message", "Verification failed")}, status_code
 
         participant_id = response.get("participant_id")
         if not participant_id:
-            return JSONResponse(content={"Message": "Participant ID not found in the response."}, status_code=404)
+            return {"message": "Participant ID not found in the response."}, 404
 
-        return JSONResponse(content={"Message": "Participant ID is verified."}, status_code=200)
+        try:
+            participants_col.update_one(
+                {"_id": ObjectId(participant_id)},
+                {"$set": {"is_verified": True}},
+            )
+        except Exception as e:
+            return {"message": f"Failed to update participant status. Error: {str(e)}"}, 500
+
+        return {"message": "Participant ID is verified."}, 200
 
     @classmethod
     def verify_token(cls, token: str) -> JSONResponse:
@@ -36,4 +47,4 @@ class VerificationController:
         if not participant_id:
             return JSONResponse(content={"Message": "No participant_id provided."}, status_code=403)
 
-        return JSONResponse(content={"participant_id": participant_id}, status_code=200)
+        return {"participant_id": participant_id}, 200
