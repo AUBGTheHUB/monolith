@@ -8,7 +8,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
-from py_api.models import UpdateTeam
+from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
 from py_api.utilities.parsers import filter_none_values
 
 
@@ -24,8 +24,9 @@ class TeamsController:
         team_type = TeamType.NORMAL
 
         if not team_name:
-            # Generates a random string of 8 characters if team_name is ""
-            # which means that the participant is random
+            # If no team_name is provided during registration, the participant is registering individually.
+            # We create a team of type RANDOM which should be filled with such participants
+
             team_name = ''.join(
                 random.choice(string.ascii_letters)
                 for _ in range(8)
@@ -35,11 +36,12 @@ class TeamsController:
         team: Dict[str, Any] = t_col.find_one(filter={"team_name": team_name})
 
         if not team:
-            t_col.insert_one({
-                "team_name": team_name,
-                "team_type": team_type,
-                "team_members": [user_id],
-            })
+            new_team = HackathonTeam(
+                team_name=team_name,
+                team_type=team_type, team_members=[user_id],
+            )
+            t_col.insert_one(new_team.model_dump())
+
             return None
 
         return team
