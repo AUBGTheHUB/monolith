@@ -12,7 +12,6 @@ def create_verification_jwt_token(particiapnt: Dict[str, Any]) -> str:
         "is_admin": is_admin,
         "exp": datetime.utcnow() + timedelta(hours=24),
     }
-
     return str(encode(payload, SECRET_KEY, algorithm="HS256"))
 
 
