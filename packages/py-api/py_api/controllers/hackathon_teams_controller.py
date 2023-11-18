@@ -1,7 +1,8 @@
 import json
 import random
 import string
-from typing import Literal
+from enum import Enum
+from typing import Any, Dict, Literal
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -11,23 +12,16 @@ from py_api.models import UpdateTeam
 from py_api.utilities.parsers import filter_none_values
 
 
+class TeamType(Enum):
+    NORMAL = "normal"
+    RANDOM = "random"
+
+
 class TeamsController:
     @classmethod
-    def create_team(cls, team_name: str, user_id: str) -> Literal[True] | Literal[False]:
-        """Creates a new team in the db with one team member.
-        This method should be used when a new participant is created.
+    def create_team(cls, team_name: str, user_id: str) -> Dict[str, Any] | None:
 
-        Examples:
-
-        >>>result = participants_col.insert_one(participant_form_dump)
-        >>>TeamsController.create_team(participant_form_dump["team_name"], str(result.inserted_id))
-
-        Returns:
-             - True if the team was created
-             - False if such team exists
-        """
-
-        team_type = "normal"
+        team_type = TeamType.NORMAL
 
         if not team_name:
             # Generates a random string of 8 characters if team_name is ""
@@ -36,9 +30,9 @@ class TeamsController:
                 random.choice(string.ascii_letters)
                 for _ in range(8)
             )
-            team_type = "random"
+            team_type = TeamType.RANDOM
 
-        team = t_col.find_one(filter={"team_name": team_name})
+        team: Dict[str, Any] = t_col.find_one(filter={"team_name": team_name})
 
         if not team:
             t_col.insert_one({
@@ -46,9 +40,9 @@ class TeamsController:
                 "team_type": team_type,
                 "team_members": [user_id],
             })
-            return True
+            return None
 
-        return False
+        return team
 
     @classmethod
     def append_team_members(cls, team_name: str, user_id: str) -> Literal[True] | Literal[False]:
