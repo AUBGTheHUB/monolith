@@ -20,3 +20,9 @@ class UpdateTeam(BaseModel):
     team_name: Optional[str] = None
     team_members: Optional[List[str]] = None
     team_type: Optional[TEAM_TYPE] = None
+
+
+class MoveTeamMembers(BaseModel):
+    old_team_name: str
+    new_team_name: str
+    team_members: List[str]

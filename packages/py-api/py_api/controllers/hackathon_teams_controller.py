@@ -8,7 +8,11 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
-from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
+from py_api.models.hackathon_teams_models import (
+    HackathonTeam,
+    MoveTeamMembers,
+    UpdateTeam,
+)
 from py_api.utilities.parsers import filter_none_values
 
 
@@ -120,3 +124,20 @@ class TeamsController:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
 
         return JSONResponse(content={"teams": json.loads(dumps(to_be_updated_team))}, status_code=200)
+
+    @classmethod
+    def move_team_members(cls, move_members_model: MoveTeamMembers) -> JSONResponse:
+        move_members_dump: Dict[str, Any] = move_members_model.model_dump()
+        old_team_name = move_members_dump["old_team_name"]
+        new_team_name = move_members_dump["new_team_name"]
+
+        if not cls.check_if_team_exists(old_team_name):
+            return JSONResponse(
+                content={
+                    "message": f"The team {old_team_name} was not found, please check the spelling!",
+                },
+                status_code=404,
+            )
+
+        if not cls.check_if_team_exists(new_team_name):
+            pass
