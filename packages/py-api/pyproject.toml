@@ -17,6 +17,7 @@ pymongo = "^4.5.0"
 python-dotenv = "^1.0.0"
 psutil = "^5.9.5"
 pandas = "^2.1.0"
+pyjwt = "^2.8.0"
 
 [tool.poetry.scripts]
 start = "py_api.main:start"

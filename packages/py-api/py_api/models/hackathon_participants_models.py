@@ -12,6 +12,7 @@ class NewParticipant(BaseModel):
     tshirt_size: TSHIRT_SIZE
     team_name: Optional[str] = None
     verified: Optional[bool] = False
+    is_admin: Optional[bool] = False
 
 
 class UpdateParticipant(BaseModel):
