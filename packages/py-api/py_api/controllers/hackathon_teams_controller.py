@@ -2,7 +2,7 @@ import json
 import random
 import string
 from enum import Enum
-from typing import Any, Dict, Literal
+from typing import Any, Dict, List
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -20,7 +20,6 @@ class TeamType(Enum):
 class TeamsController:
     @classmethod
     def create_team(cls, team_name: str, user_id: str) -> Dict[str, Any] | None:
-
         team_type = TeamType.NORMAL
 
         if not team_name:
@@ -47,15 +46,13 @@ class TeamsController:
         return team
 
     @classmethod
-    def add_team_participant(cls, team_name: str, user_id: str) -> Literal[True] | Literal[False]:
+    def add_team_participant(cls, team_name: str, user_id: str) -> List[str] | None:
         team = cls.check_if_team_exists(team_name)
 
-        # If this method is used to a register participants via the sharable link,
-        # the next 2 lines might be redundant
         if not team:
-            return False
+            return None
 
-        team_members = team["team_members"]
+        team_members: List[str] = team["team_members"]
         team_members.append(user_id)
 
         t_col.update_one(
@@ -63,7 +60,7 @@ class TeamsController:
                 "$set": {"team_members": team_members},
             }, )
 
-        return True
+        return team_members
 
     @classmethod
     def check_if_team_exists(cls, team_name: str) -> Dict[str, Any] | None:
