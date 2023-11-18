@@ -33,18 +33,17 @@ class VerificationController:
     @classmethod
     def verify_token(cls, token: str) -> JSONResponse:
         if not token:
-            return JSONResponse(content={"Message": "No verification token provided"}, status_code=401)
+            return {'message': "No verification token provided"}, 401
         try:
             decoded_token = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         except jwt.exceptions.ExpiredSignatureError:
-            return JSONResponse(content={"Message": "Verification link expired"}, status_code=498)
+            return {'message': "Verification link expired"}, 498
         except jwt.exceptions.InvalidSignatureError:
-            return JSONResponse(content={"Message": "Invalid verification token signature."}, status_code=401)
+            return {'message': "Invalid verification token signature."}, 401
         except jwt.exceptions.DecodeError:
-            return JSONResponse(content={"Message": "Invalid or missing verification token."}, status_code=401)
-
+            return {'message': "Invalid or missing verification token."}, 401
         participant_id = decoded_token.get("sub", None)
         if not participant_id:
-            return JSONResponse(content={"Message": "No participant_id provided."}, status_code=403)
+            return {'message': "No participant_id provided."}, 403
 
         return {"participant_id": participant_id}, 200
