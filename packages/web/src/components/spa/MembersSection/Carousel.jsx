@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import style from './carousel.module.css';
+import './carousel.css';
 import { FaLinkedin } from 'react-icons/fa';
 
 export default class SimpleSlider extends Component {
@@ -22,15 +22,15 @@ export default class SimpleSlider extends Component {
         return this.state.sliders.map(data => {
             console.log(data.sociallink);
             return (
-                <div className={style.container} key={data.id}>
-                    <div className={style.overlay}></div>
+                <div className="tedko-container" key={data.id}>
+                    <div className="tedko-overlay"></div>
                     {data.sociallink ? (
                         <a href={data.sociallink}>
-                            <FaLinkedin className={style.socialmedia} />
+                            <FaLinkedin className="socialmedia" />
                         </a>
                     ) : null}
                     <img
-                        className={style.image}
+                        className={'tedko-image'}
                         style={{
                             height: '200px',
                             width: '200px',
@@ -40,10 +40,10 @@ export default class SimpleSlider extends Component {
                         }}
                         src={data.profilepicture}
                     />
-                    <div className={style.textbottom}>
+                    <div className="text-bottom">
                         {data.firstname} {data.lastname}
                     </div>
-                    <div className={style.textdepartment}>{data.department}</div>
+                    <div className="text-department">{data.department}</div>
                 </div>
             );
         });
@@ -55,7 +55,7 @@ export default class SimpleSlider extends Component {
             slidesToShow: this.state.slides,
             slidesToScroll: this.state.slides,
             arrows: true,
-            autoplay: false,
+            autoplay: true,
             centerMode: false,
             centerPadding: 30,
             autoplaySpeed: 3000,
@@ -63,7 +63,7 @@ export default class SimpleSlider extends Component {
         };
         return (
             <>
-                <Slider className={style.carousel} {...settings}>
+                <Slider className="carousel" {...settings}>
                     {this.sliders()}
                 </Slider>
             </>

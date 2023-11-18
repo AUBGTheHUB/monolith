@@ -8,7 +8,7 @@
     margin:auto;
   }
 }
-.textbottom{
+.text-bottom{
     text-align: left;
   position: absolute;
   top: 85%;
@@ -21,7 +21,8 @@
   font-weight: bold;
   z-index: 5;
 }
-.textdepartment{
+
+.text-department{
   text-align: left;
   position: absolute;
   top: 95%;
@@ -35,29 +36,26 @@
   opacity: 80%;
   font-weight: bold;
 }
-.container{
+
+.tedko-container{
     position: relative;
   text-align: center;
-  width: 180px !important;
+  width: 200px !important;
   height: 200px;
   margin:0;
   padding: 0;
   display:flex;
+  justify-content: center;
 }
-/* .container:hover{
-    opacity: 0.65;
-}  */
-/* .image:hover{
-    opacity: 0.65;
-}  */
-.image{
+
+.tedko-image{
       transition: .5s ease;
   backface-visibility: hidden;
   margin:0;
   overflow: hidden;
    padding: 0;
 }
-.container:hover .socialmedia{
+.tedko-container:hover .socialmedia{
     opacity: 1;
     width: 30px;
   height: auto;
@@ -79,12 +77,12 @@
     color:white
 }
 
-.overlay{
+.tedko-overlay{
     transition: .5s ease;
   backface-visibility: hidden;
 }
 
-.container:hover  .overlay{
+.tedko-container:hover  .tedko-overlay{
     width:200px;
     height:200px;
     border-radius: 10px;
@@ -95,5 +93,6 @@
 }
 
 .slick-slide{
-    margin:0px;
+    display: flex !important;
+    justify-content: center !important;
 }
