@@ -27,8 +27,6 @@ class ParticipantsController:
                 filter={"_id": ObjectId(object_id)},
             )
             print(create_verification_jwt_token(specified_participant))
-
-            print(create_verification_jwt_token(specified_participant))
         except (InvalidId, TypeError) as e:
             return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
 

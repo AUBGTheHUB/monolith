@@ -7,7 +7,5 @@ router = APIRouter(prefix="/hackathon/verify")
 
 
 @router.get("", response_model=Tuple[Dict[str, str], int])
-def verify_user_route(request: Request) -> Tuple[Dict[str, str], int]:
-    verification_token = request.query_params.get("token")
-    print(verification_token)
+def verify_user_route(verification_token: str) -> Tuple[Dict[str, str], int]:
     return c.verify_participant(verification_token)
