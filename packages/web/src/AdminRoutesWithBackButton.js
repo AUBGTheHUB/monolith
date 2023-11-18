@@ -30,7 +30,7 @@ import NoTeamParticipantsActions from './components/admin_page/hackathon/hackath
 import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
 import UrlsTable from './components/admin_page/url_shortener/table';
 import { Routes, Route } from 'react-router-dom';
-import BackBtn from './components/admin_page/back_button';
+import BackBtn from './components/admin_page/back_button/back_button.jsx';
 
 const adminRoutes = [
     {
