@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { checkBrowserValid, url } from '../../../Global';
 import { Carousel, Custom } from 'react-hovering-cards-carousel';
-import { MembersCard } from './MembersCard';
+import { MembersCard } from './MembersCard.old';
 import { useMediaQuery } from 'react-responsive';
 import './members.css';
 
@@ -17,22 +17,17 @@ export const MembersSection = () => {
     const getMembers = () => {
         axios({
             method: 'get',
-            url: url + '/api/members'
+            url: url + '/api/members',
         })
-            .then((res) => {
+            .then(res => {
                 let localMembers = [];
-                res.data.data.data.map((member) => {
-                    localMembers.push(
-                        new Custom(
-                            member.profilepicture,
-                            <MembersCard prop={member} />
-                        )
-                    );
+                res.data.data.data.map(member => {
+                    localMembers.push(new Custom(member.profilepicture, <MembersCard prop={member} />));
                 });
                 setMembers(localMembers);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch(err => {});
     };
 
     useEffect(() => {
@@ -45,16 +40,11 @@ export const MembersSection = () => {
                 <div
                     className="members-section-container"
                     style={{
-                        transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`
+                        transform: `scale(${isMobile && !isFoldRes ? 1.1 : 1})`,
                     }}
-                    id="team"
-                >
+                    id="team">
                     <h1 className="header-for-container">Hubbers</h1>
-                    <Carousel
-                        cards={members}
-                        scale={1.25}
-                        buttonSpacing={isMobile ? (isFoldRes ? 10 : 30) : 40}
-                    />
+                    <Carousel cards={members} scale={1.25} buttonSpacing={isMobile ? (isFoldRes ? 10 : 30) : 40} />
                 </div>
             </>
         );

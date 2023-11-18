@@ -23,20 +23,11 @@ export const MobileCarousel = ({ props }) => {
 
     return (
         <div className="mobile-carousel-container">
-            <ArrowIcon
-                className="carousel-arrow-left mobile"
-                onClick={getLeftMember}
-            />
+            <ArrowIcon className="carousel-arrow-left mobile" onClick={getLeftMember} />
             <div className="mobile-carousel-container-moving">
-                <MemberCard
-                    props={props[currentIndex]}
-                    animationClassname={'members-card-hover-overlay'}
-                />
+                <MemberCard props={props[currentIndex]} animationClassname={'members-card-hover-overlay'} />
             </div>
-            <ArrowIcon
-                className="carousel-arrow-right mobile"
-                onClick={getRightMember}
-            />
+            <ArrowIcon className="carousel-arrow-right mobile" onClick={getRightMember} />
         </div>
     );
 };

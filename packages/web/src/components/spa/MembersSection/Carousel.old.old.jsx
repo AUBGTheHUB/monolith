@@ -8,52 +8,34 @@ export const Carousel = ({ props }) => {
     if (props && props.length != 0) {
         const [sliceIndex, setSliceIndex] = useState(3);
 
-        const [firstSlide, setFirstSlide] = useState(
-            'carousel-container-slider'
-        );
+        const [firstSlide, setFirstSlide] = useState('carousel-container-slider');
 
-        const [hoverEffectEnabled, setHoverEffect] = useState(
-            'members-card-hover-overlay'
-        );
+        const [hoverEffectEnabled, setHoverEffect] = useState('members-card-hover-overlay');
 
-        const [secondSlide, setSecondSlide] = useState(
-            'carousel-container-slider-hidden'
-        );
+        const [secondSlide, setSecondSlide] = useState('carousel-container-slider-hidden');
 
-        const [firstMap, setFirstMap] = useState(
-            props.slice(sliceIndex - 3, sliceIndex)
-        );
+        const [firstMap, setFirstMap] = useState(props.slice(sliceIndex - 3, sliceIndex));
 
-        const [secondMap, setSecondMap] = useState(
-            props.slice(sliceIndex, sliceIndex + 3)
-        );
+        const [secondMap, setSecondMap] = useState(props.slice(sliceIndex, sliceIndex + 3));
 
         const increaseSlice = (currentPosIndex, setter) => {
             if (currentPosIndex === props.length) {
                 setter(props.slice(0, 3));
                 return 0;
             } else if (currentPosIndex + 1 === props.length) {
-                let slicedList = [props[props.length - 1]].concat(
-                    props.slice(0, 2)
-                );
+                let slicedList = [props[props.length - 1]].concat(props.slice(0, 2));
                 setter(slicedList);
                 return -1;
             } else if (currentPosIndex + 2 === props.length) {
-                let slicedList = props
-                    .slice(props.length - 2, props.length)
-                    .concat(props[0]);
+                let slicedList = props.slice(props.length - 2, props.length).concat(props[0]);
                 setter(slicedList);
                 return -2;
             } else if (currentPosIndex === -4) {
-                let slicedList = [props[props.length - 1]].concat(
-                    props.slice(0, 2)
-                );
+                let slicedList = [props[props.length - 1]].concat(props.slice(0, 2));
                 setter(slicedList);
                 return 2;
             } else if (currentPosIndex === -5) {
-                let slicedList = props
-                    .slice(props.length - 2, props.length)
-                    .concat(props[0]);
+                let slicedList = props.slice(props.length - 2, props.length).concat(props[0]);
                 setter(slicedList);
                 return 1;
             } else {
@@ -98,20 +80,12 @@ export const Carousel = ({ props }) => {
                 <div className="carousel-container-slider-holder">
                     <div className={firstSlide}>
                         {firstMap.map((member, index) => (
-                            <MemberCard
-                                props={member}
-                                key={index}
-                                animationClassname={hoverEffectEnabled}
-                            />
+                            <MemberCard props={member} key={index} animationClassname={hoverEffectEnabled} />
                         ))}
                     </div>
                     <div className={secondSlide}>
                         {secondMap.map((member, index) => (
-                            <MemberCard
-                                props={member}
-                                key={index}
-                                animationClassname={hoverEffectEnabled}
-                            />
+                            <MemberCard props={member} key={index} animationClassname={hoverEffectEnabled} />
                         ))}
                     </div>
                 </div>
