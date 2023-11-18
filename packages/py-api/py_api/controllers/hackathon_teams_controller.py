@@ -27,12 +27,9 @@ class TeamsController:
         if not team_name:
             # If no team_name is provided during registration, the participant is registering individually.
             # We create a team of type RANDOM which should be filled with such participants
-
-            team_name = ''.join(
-                random.choice(string.ascii_letters)
-                for _ in range(8)
-            )
             team_type = TeamType.RANDOM
+
+            team_name = cls.generate_random_team_name()
 
         team = cls.check_if_team_exists(team_name)
         team_members = []
@@ -209,3 +206,8 @@ class TeamsController:
             {"team_name": team_name}, {
                 "$set": {"team_members": members_list},
             }, )
+
+    @classmethod
+    def generate_random_team_name(cls) -> str:
+        count = t_col.count_documents({"team_name": "random"})
+        return f"RandomTeam {count + 1}"
