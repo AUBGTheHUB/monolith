@@ -52,12 +52,12 @@ export default class SimpleSlider extends Component {
         const settings = {
             infinite: true,
             speed: 700,
-            slidesToShow: 2,
-            slidesToScroll: 2,
+            slidesToShow: this.state.slides,
+            slidesToScroll: this.state.slides,
             arrows: true,
             autoplay: false,
             centerMode: false,
-            centerPadding: 20,
+            centerPadding: 30,
             autoplaySpeed: 3000,
             pauseOnHover: true,
         };

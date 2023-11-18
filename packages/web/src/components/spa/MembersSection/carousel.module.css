@@ -1,5 +1,5 @@
 .carousel{
-    width:55%;
+    width:60%;
     margin:auto;
 }
 @media only screen and (max-width: 600px) {
@@ -38,7 +38,7 @@
 .container{
     position: relative;
   text-align: center;
-  width: 1000px;
+  width: 180px !important;
   height: 200px;
   margin:0;
   padding: 0;
@@ -83,6 +83,7 @@
     transition: .5s ease;
   backface-visibility: hidden;
 }
+
 .container:hover  .overlay{
     width:200px;
     height:200px;
@@ -91,4 +92,8 @@
     background-color:#000;
     opacity:0.4;
     z-index: 4;
+}
+
+.slick-slide{
+    margin:0px;
 }
