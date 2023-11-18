@@ -1,13 +1,10 @@
 import json
-import random
-import string
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
-from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import (
     HackathonTeam,
     MoveTeamMembers,
@@ -15,15 +12,15 @@ from py_api.models.hackathon_teams_models import (
     UpdateTeam,
 )
 from py_api.utilities.parsers import filter_none_values
+from pymongo.results import UpdateResult
 
 
 class TeamsController:
     @classmethod
     def create_team(
-        cls, team_name: str, user_id: str = "",
-        members_list: Optional[List[str]] = None,
+            cls, team_name: str, user_id: str = "",
+            members_list: Optional[List[str]] = None,
     ) -> HackathonTeam | None:
-
         team_type = TeamType.NORMAL
 
         if not team_name:
@@ -38,10 +35,12 @@ class TeamsController:
             team_members = [user_id]
 
         if members_list:
-            team_members = members_list
+            team_members = list(members_list)
+            # Assumes that we are creating a random team when moving members from existing team to a non-existing one
             team_type = TeamType.RANDOM
 
         if cls.fetch_team(team_name):
+            # A name with this team_name exist so no new team is created
             return None
 
         new_team = HackathonTeam(
@@ -49,6 +48,7 @@ class TeamsController:
             team_type=team_type, team_members=team_members,
         )
         t_col.insert_one(new_team.model_dump())
+
         return new_team
 
     @classmethod
@@ -58,30 +58,26 @@ class TeamsController:
             return None
 
         team = HackathonTeam(
-            team_name=team_name,
-            team_members=team["team_members"],
+            team_name=team_name, team_members=team["team_members"], team_type=team["team_type"],
         )
         team.team_members.append(user_id)
 
-        t_col.update_one(
-            {"team_name": team.team_name}, {
-                "$set": {"team_members": team.team_members},
-            }, )
+        cls.update_team_fields(team)
 
         return team.team_members
 
     @classmethod
-    def fetch_team(cls, team_name: str = "", team_id: str = "") -> Dict[str, Any] | None:
+    def fetch_team(cls, team_name: str = "", team_id: str = "") -> Dict[str, Any]:
         team: Dict[str, Any] = t_col.find_one(filter={"team_name": team_name})
 
         if team_id:
-            team = t_col.find_one(filter={"_id": team_id})
+            team = t_col.find_one(filter={"_id": ObjectId(team_id)})
             return team
 
         return team
 
-    @staticmethod
-    def fetch_teams() -> JSONResponse:
+    @classmethod
+    def fetch_teams(cls) -> JSONResponse:
         teams = list(t_col.find())
 
         if not teams:
@@ -118,100 +114,115 @@ class TeamsController:
 
         return JSONResponse(content={"teams": count})
 
-    @staticmethod
-    def update_team(object_id: str, update_table_model: UpdateTeam) -> JSONResponse:
-        fields_to_be_updated = filter_none_values(update_table_model)
+    @classmethod
+    def update_team(cls, object_id: str, update_table_model: UpdateTeam) -> JSONResponse:
+        team = cls.fetch_team(team_id=object_id)
 
-        to_be_updated_team = t_col.find_one_and_update(
-            {"_id": ObjectId(object_id)}, {
-                "$set": fields_to_be_updated,
-            },
-            return_document=True,
-        )
-
-        if not to_be_updated_team:
+        if not team:
             return JSONResponse(content={"message": "The team was not found"}, status_code=404)
 
-        return JSONResponse(content={"teams": json.loads(dumps(to_be_updated_team))}, status_code=200)
+        result = cls.update_team_fields(
+            update_table_model, object_id=object_id,
+        )
+
+        return JSONResponse(content={"teams": json.loads(dumps(result))}, status_code=200)
 
     @classmethod
     def move_team_members(cls, move_members_model: MoveTeamMembers) -> JSONResponse:
         move_members_dump: Dict[str, Any] = move_members_model.model_dump()
-        old_team_name = move_members_dump["old_team_name"]
-        new_team_name = move_members_dump["new_team_name"]
-        team_members_to_move = move_members_dump["team_members"]
+        from_team: str = move_members_dump["from_team"]
+        target_team: str = move_members_dump["to_team"]
+        team_members_to_move: List[str] = list(
+            set(move_members_dump["team_members"]),
+        )
 
-        old_team = cls.fetch_team(old_team_name)
-        if not old_team:
+        from_team_obj = cls.fetch_team(team_name=from_team)
+        if not from_team_obj:
             return JSONResponse(
                 content={
-                    "message": f"The team {old_team_name} was not found, please check the spelling!",
+                    "message": f"The team {from_team} was not found, please check the spelling!",
                 },
                 status_code=404,
             )
 
-        new_team = cls.fetch_team(new_team_name)
-        if not new_team:
-            cls.create_team(new_team_name, members_list=team_members_to_move)
-            if content := cls.update_old_team_members_list(old_team, team_members_to_move):
-                return JSONResponse(content={"message": content}, status_code=404)
+        if cls.create_team(team_name=target_team, members_list=team_members_to_move):
+
+            if error := cls.update_members_for_from_team(from_team_obj, team_members_to_move):
+                return JSONResponse(content={"message": error}, status_code=404)
 
             return JSONResponse(
                 content={
-                    "message": f"Created a new team with participants {team_members_to_move}",
+                    "message": f"Created a new team {target_team} with participants {team_members_to_move}",
                 },
                 status_code=201,
             )
 
-        if content := cls.update_old_team_members_list(old_team, team_members_to_move):
-            return JSONResponse(content={"message": content}, status_code=404)
+        if error := cls.update_members_for_from_team(from_team_obj, team_members_to_move):
+            return JSONResponse(content={"message": error}, status_code=404)
 
-        cls.update_new_team_members_list(new_team, team_members_to_move)
+        cls.update_members_for_target_team(
+            cls.fetch_team(team_name=target_team), team_members_to_move,
+        )
 
         return JSONResponse(
             content={
-                "message": f"Team members {team_members_to_move} moved successfully from team {old_team_name}"
-                           f" to team {new_team_name}",
+                "message": f"Team members {team_members_to_move} moved successfully from team {from_team}"
+                           f" to team {target_team}",
             },
         )
 
     @classmethod
-    def update_old_team_members_list(
-            cls, old_team: Dict[str, Any],
-            team_members_to_move: List[str],
-    ) -> str | None:
-        old_team_members: List[str] = old_team["team_members"]
-
+    def update_members_for_from_team(cls, from_team: Dict[str, Any], team_members_to_move: List[str]) -> str | None:
+        from_team_current_members: List[str] = from_team["team_members"]
         # Remove the passed team_members from their original team
         for team_member in team_members_to_move:
-            if team_member in old_team_members:
-                old_team_members.remove(team_member)
+            if team_member in from_team_current_members:
+                from_team_current_members.remove(team_member)
             else:
                 return f"Team member with id {team_member} doesn't exist"
 
-        cls.update_team_current_members(
-            old_team["team_name"], old_team_members,
+        update_team_obj = HackathonTeam(
+            team_name=from_team["team_name"], team_members=from_team_current_members,
+            team_type=from_team["team_type"],
         )
+        cls.update_team_fields(update_team_obj)
+
         return None
 
     @classmethod
-    def update_new_team_members_list(cls, new_team: Dict[str, Any], team_members_to_move: List[str]) -> None:
-        new_team_current_members: List[str] = new_team["team_members"]
+    def update_members_for_target_team(cls, target_team: Dict[str, Any], team_members_to_move: List[str]) -> None:
+        target_team_current_members: List[str] = target_team["team_members"]
 
         # Add the passed team_members to the new team
-        for new_team_member in team_members_to_move:
-            new_team_current_members.append(new_team_member)
+        target_team_current_members.extend(team_members_to_move)
 
-        cls.update_team_current_members(
-            new_team["team_name"], new_team_current_members,
+        target_team_obj = HackathonTeam(
+            team_name=target_team["team_name"], team_members=target_team_current_members,
+            team_type=target_team["team_type"],
         )
+        cls.update_team_fields(target_team_obj)
 
     @classmethod
-    def update_team_current_members(cls, team_name: str, members_list: List[str]) -> None:
-        t_col.update_one(
-            {"team_name": team_name}, {
-                "$set": {"team_members": members_list},
-            }, )
+    def update_team_fields(cls, update_model: UpdateTeam | HackathonTeam, object_id: str = "") -> UpdateResult:
+        if isinstance(update_model, UpdateTeam):
+            fields_to_be_updated = filter_none_values(update_model)
+        else:
+            fields_to_be_updated = update_model.model_dump()
+
+        if object_id:
+            updated_team = t_col.find_one_and_update(
+                {"_id": ObjectId(object_id)}, {
+                    "$set": fields_to_be_updated,
+                }, return_document=True,
+            )
+        else:
+            updated_team = t_col.find_one_and_update(
+                {"team_name": update_model.team_name}, {
+                    "$set": fields_to_be_updated,
+                }, return_document=True,
+            )
+
+        return updated_team
 
     @classmethod
     def generate_random_team_name(cls) -> str:
