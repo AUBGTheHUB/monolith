@@ -49,12 +49,19 @@ class ParticipantsController:
         fields_to_be_updated = filter_none_values(participant_form)
 
         # Queries the given participant and updates it
-        to_be_updated_participant = participants_col.find_one_and_update(
-            {"_id": ObjectId(object_id)}, {
-                "$set": fields_to_be_updated,
-            },
-            return_document=True,
-        )
+        try:
+            to_be_updated_participant = participants_col.find_one_and_update(
+                {"_id": ObjectId(object_id)}, {
+                    "$set": fields_to_be_updated,
+                },
+                return_document=True,
+            )
+
+        except (InvalidId, TypeError) as e:
+            return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
+
+        if not to_be_updated_participant:
+            return JSONResponse(content={"message": "The targeted participant was not found!"}, status_code=404)
 
         return JSONResponse(content={"participant": json.loads(dumps(to_be_updated_participant))}, status_code=200)
 
