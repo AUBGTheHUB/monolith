@@ -21,7 +21,7 @@ else
 fi
 
 #----------------------------BUILD SERVICES---------------------------------------
-ERROR_MESSAGE = $(docker-compose up --build -d 2>&1) #Stores the error message if something goes wrong
+ERROR_MESSAGE = $(docker-compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
 
 if [ $? -ne 0 ]; then
     content="🏗️: $DEPLOYMENT_ENV
@@ -70,7 +70,13 @@ for ((i = 0; i < ${#services[@]}; i++)); do
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
         RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
-        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+
+        content="🏗️: $DEPLOYMENT_ENV
+        $COMMIT_TITLE_URL
+        ❌: Build Failed"
+
+        json_payload=$(jq -n --arg ERR "$RESULT_STRING" --arg CONTENT "$content" '{"content": $CONTENT, "embeds":[{"title": "BUILD",  "description": $ERR}]}')
+        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
         exit 1
     fi
 done
