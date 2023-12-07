@@ -8,10 +8,8 @@ import { FaLinkedin } from 'react-icons/fa';
 export default class SimpleSlider extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props.view);
         const slides = this.props.view;
         const pictures = this.props.pictures;
-        console.log(pictures);
         this.state = {
             sliders: pictures,
             slides: slides,
@@ -19,7 +17,6 @@ export default class SimpleSlider extends Component {
     }
     sliders() {
         return this.state.sliders.map(data => {
-            console.log(data.sociallink);
             return (
                 <div className="tedko-container" key={data.id}>
                     <div className="tedko-overlay"></div>

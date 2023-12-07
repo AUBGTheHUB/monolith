@@ -39,11 +39,25 @@ export const MembersSection = () => {
         getMembers();
     }, []);
     if (members) {
+        //const board=members.filter(a=>);
+        const dev = members.filter(a => a.department.includes('Development'));
+        const pr = members.filter(a => a.department.includes('PR'));
+        const marketing = members.filter(a => a.department.includes('Marketing'));
+        console.log(marketing);
         return (
             <>
+                <h1 className={style['header-for-container']}>Hubbers</h1>
                 <div className={style.test}>
-                    <h1 className={style['header-for-container']}>Hubbers</h1>
-                    <SampleSlider pictures={members} view={one ? 1 : two ? 2 : three ? 3 : 4} />
+                    <h1 className={style['header-for-container']}>Devers</h1>
+                    <SampleSlider pictures={dev} view={one ? 1 : two ? 2 : three ? 3 : 4} />
+                </div>
+                <div className={style.test}>
+                    <h1 className={style['header-for-container']}>PRers</h1>
+                    <SampleSlider pictures={pr} view={one ? 1 : two ? 2 : three ? 3 : 4} />
+                </div>
+                <div className={style.test}>
+                    <h1 className={style['header-for-container']}>Marketingers</h1>
+                    <SampleSlider pictures={marketing} view={one ? 1 : two ? 2 : three ? 3 : 4} />
                 </div>
             </>
         );
