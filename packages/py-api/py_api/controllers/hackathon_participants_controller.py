@@ -77,10 +77,20 @@ class ParticipantsController:
                 content={"message": "The targeted participant was not found!"},
                 status_code=404,
             )
-        team = TeamsUtilities.fetch_team(deleted_participant.team_name)
-        if (team):
-            team.team_members.remove(object_id)
-            TeamsUtilities.update_team_query(team.model_dump())
+        team = TeamsUtilities.fetch_team(deleted_participant["team_name"])
+        if not team:
+            return JSONResponse(
+                content={"message": "The participant is not in a team"},
+                status_code=404,
+            )
+        team.team_members.remove(object_id)
+        TeamsUtilities.update_team_query(team.model_dump())
+        return JSONResponse(
+            content={
+                "message": "The participant was deleted successfully from team!",
+            },
+            status_code=200,
+        )
 
     def update_participant(
             object_id: str,
