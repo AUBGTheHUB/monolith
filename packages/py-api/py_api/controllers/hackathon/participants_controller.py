@@ -7,13 +7,11 @@ from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.controllers.hackathon.teams_controller import TeamsController
 from py_api.database.initialize import participants_col, t_col
-from py_api.functionality.hackathon.teams.teams_base import TeamFunctionality
-from py_api.functionality.hackathon.verification.jwt_verification import (
-    JWTFunctionality,
-)
+from py_api.functionality.hackathon.jwt_verification import JWTFunctionality
+from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
+from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
-from pymongo.results import InsertOneResult
 from starlette.responses import JSONResponse
 
 
@@ -140,22 +138,19 @@ class ParticipantsController:
 
     @classmethod
     def add_participant(cls, participant: NewParticipant, jwt_token: str | None = None) -> JSONResponse:
+        if ParticipantsFunctionality.check_if_email_exists(participant.email):
+            return JSONResponse(status_code=400, content={"message": "User with such email already exists"})
 
         if jwt_token:
-            # TODO: implement logic for adding participant to team
-            # * verify team capacity
-            # * verify jwt
-            return
+            try:
+                decoded_token = JWTFunctionality.decode_token(jwt_token)
+            except:
+                return JSONResponse(status_code=401, content={"message": "JWT was provided, but is invalid"})
+            # TODO: check team's capacity
+            # TODO: if allz good, create participant and add to team
+            # TODO: update team
 
         if participant.team_name:
-            if participants_col.find_one(filter={"email": participant.email}):
-                return JSONResponse(
-                    content={
-                        "message": "The email of the participant already exists!",
-                    },
-                    status_code=409,
-                )
-
             # TODO: create unverified participant
             # TODO: create unverified team and append participant
 
