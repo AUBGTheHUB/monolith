@@ -4,9 +4,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
-from py_api.functionality.hackathon.teams.teams_utility_functions import (
-    TeamFunctionality,
-)
+from py_api.functionality.hackathon.teams.teams_base import TeamFunctionality
 from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
 
 
