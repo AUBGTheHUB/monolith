@@ -1,6 +1,6 @@
-from os import getenv
 from traceback import format_exc
 
+from bson.errors import InvalidId
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from py_api.environment import IS_OFFLINE
@@ -9,7 +9,6 @@ from py_api.utilities.parsers import eval_bool
 
 class ExceptionHandler:
     def __init__(self, app: FastAPI) -> None:
-
         @app.exception_handler(Exception)
         async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
             content = {
@@ -30,3 +29,7 @@ class ExceptionHandler:
                 status_code=500,
                 content=content,
             )
+
+        @app.exception_handler(InvalidId)
+        async def handle_invalid_object_id(request: Request, exc: InvalidId) -> JSONResponse:
+            return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
