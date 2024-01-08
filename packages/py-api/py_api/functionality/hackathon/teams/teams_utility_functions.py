@@ -40,11 +40,14 @@ class TeamsUtilities:
     def add_participant_to_team(
         cls, team_name: str,
         user_id: str,
-    ) -> HackathonTeam | None:
+    ) -> HackathonTeam | None | str:
         team = cls.fetch_team(team_name=team_name)
 
         if not team:
             return None
+
+        if len(team.team_members) == 6:
+            return "No space left"  # TODO: This should be fixed
 
         team.team_members.append(user_id)
 
