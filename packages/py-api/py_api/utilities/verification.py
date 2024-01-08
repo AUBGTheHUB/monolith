@@ -20,10 +20,9 @@ def create_verification_jwt_token(particiapnt: Dict[str, Any]) -> str:
     return str(encode(payload, SECRET_KEY, algorithm="HS256"))
 
 
-def create_invite_link(team: Dict[str, Any]) -> str:
+def create_invite_link(team_name: str) -> str:
     payload = {
-        "sub": team["_id"],
-        "team_name": team["team_name"],
+        "team_name": team_name,
         "exp": datetime.utcnow() + timedelta(hours=24),
     }
 

@@ -29,13 +29,13 @@ class TeamsController:
     @classmethod
     def get_team(cls, object_id: str) -> JSONResponse:
         specified_team = TeamsUtilities.fetch_team(team_id=object_id)
-        if specified_team is not None:
-            print(create_invite_link(specified_team.dict()))
         if not specified_team:
             return JSONResponse(
                 content={"message": "The team was not found"},
                 status_code=404,
             )
+
+        print(create_invite_link(specified_team.team_name))
 
         return JSONResponse(
             content={"team": specified_team.model_dump()},
