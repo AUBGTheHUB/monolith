@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, FastAPI
-from py_api.controllers import verification_controller
+from py_api.controllers.hackathon import verification_controller
 from py_api.routes.feature_switches_routes import router as feature_switches_router
 from py_api.routes.hackathon.participants_routes import (
     router as hackathon_participants_routes,
