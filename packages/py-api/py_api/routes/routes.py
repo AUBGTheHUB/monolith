@@ -6,6 +6,7 @@ from py_api.routes.feature_switches_routes import router as feature_switches_rou
 from py_api.routes.hackathon_participants_routes import (
     router as hackathon_participants_routes,
 )
+from py_api.routes.hackathon_teams_routes import router as teams_router
 from py_api.routes.logs_routes import router as logs_router
 from py_api.routes.questionnaires_routes import router as questionnaires_router
 from py_api.routes.uploader_routes import router as uploader_router
@@ -28,6 +29,7 @@ class Routes:
         feature_switches_router,
         logs_router,
         questionnaires_router,
+        teams_router,
         hackathon_participants_routes,
         verification_router,
     ]
