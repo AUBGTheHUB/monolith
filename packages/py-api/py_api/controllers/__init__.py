@@ -4,6 +4,7 @@ from py_api.controllers.questionnaires_controller import QuestionnairesControlle
 from py_api.controllers.uploader_controller import UploaderController
 from py_api.controllers.url_shortener_controller import UrlShortenerController
 from py_api.controllers.utility_controller import UtilityController
+from py_api.controllers.verification_controller import VerificationController
 
 __all__ = [
     "UploaderController",
@@ -12,4 +13,5 @@ __all__ = [
     "UtilityController",
     "QuestionnairesController",
     "ParticipantsController",
+    "VerificationController",
 ]

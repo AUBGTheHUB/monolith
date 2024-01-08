@@ -37,6 +37,7 @@ class ParticipantsController:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
             )
+
         except (InvalidId, TypeError) as e:
             return JSONResponse(
                 content={"message": "Invalid object_id format!"},
@@ -146,6 +147,10 @@ class ParticipantsController:
         insert_result: InsertOneResult = participants_col.insert_one(
             participant.model_dump(),
         )
+        # TODO:
+        #   - Add sending of verification email
+        #   - In the jwt add the team_name provided (
+        #   If not provided team_name should be None in the jwt)
 
         # A sample code snippet of how creation of team looks like
         # user_id = str(insert_result.inserted_id)

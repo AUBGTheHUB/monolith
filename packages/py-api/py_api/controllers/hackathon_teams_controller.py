@@ -28,7 +28,6 @@ class TeamsController:
     @classmethod
     def get_team(cls, object_id: str) -> JSONResponse:
         specified_team = TeamsUtilities.fetch_team(team_id=object_id)
-
         if not specified_team:
             return JSONResponse(
                 content={"message": "The team was not found"},
