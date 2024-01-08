@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from py_api.controllers.hackathon_teams_controller import TeamsController as c
+from py_api.controllers.hackathon.teams_controller import TeamsController as c
 from py_api.models import UpdateTeam
 
 router = APIRouter(prefix="/hackathon/teams")

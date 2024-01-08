@@ -5,10 +5,14 @@ from bson.errors import InvalidId
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
-from py_api.controllers.hackathon_teams_controller import TeamsController
+from py_api.controllers.hackathon.teams_controller import TeamsController
 from py_api.database.initialize import participants_col, t_col
-from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
-from py_api.functionality.hackathon.verification.jwt_verification import JWTVerification
+from py_api.functionality.hackathon.teams.teams_utility_functions import (
+    TeamFunctionality,
+)
+from py_api.functionality.hackathon.verification.jwt_verification import (
+    JWTFunctionality,
+)
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
 from pymongo.results import InsertOneResult
@@ -81,7 +85,9 @@ class ParticipantsController:
 
     @classmethod
     def delete_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
-        team = TeamsUtilities.fetch_team(deleted_participant.get("team_name"))
+        team = TeamFunctionality.fetch_team(
+            deleted_participant.get("team_name"),
+        )
         if not team:
             return {"message": "The participant is not in a team"}, 404
 
@@ -92,7 +98,7 @@ class ParticipantsController:
         else:
             return {"message": "The participant is not in the specified team"}, 404
 
-        TeamsUtilities.update_team_query(team.model_dump())
+        TeamFunctionality.update_team_query(team.model_dump())
 
         return {"message": "The participant was deleted successfully from team!"}, 200
 
@@ -155,7 +161,9 @@ class ParticipantsController:
             # TODO: create unverified participant
             # TODO: create unverified team and append participant
 
-            jwt_token = JWTVerification.create_jwt_token(participant.team_name)
+            jwt_token = JWTFunctionality.create_jwt_token(
+                participant.team_name,
+            )
             # TODO: verification_link = JWTVerification.create_admin_verification_link(jwt_token)
 
             # TODO: send_verification_email(to=participant.email, is_admin=True, verification_link=verification_link)

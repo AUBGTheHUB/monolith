@@ -7,7 +7,7 @@ from py_api.models.hackathon_teams_models import TeamType
 from pymongo.results import UpdateResult
 
 
-class TeamsUtilities:
+class TeamFunctionality:
 
     @classmethod
     def create_team(
