@@ -12,20 +12,21 @@ class TeamsUtilities:
     @classmethod
     def create_team(
             cls, user_id: str,
-            team_name: str, ) -> HackathonTeam | None:
+            team_name: str | None = None, generate_random_team: bool = False,
+    ) -> HackathonTeam | None:
+        """ add proper comment explaining the different types of teams -> use proper and easily understandable english ! """
         team_type = TeamType.NORMAL
 
-        if not team_name:
-            # If no team_name is provided during registration, the participant is registering individually.
-            # We create a team of type RANDOM which should be filled with such participants
+        if generate_random_team:
+            # Generate a team of type RANDOM for participants who are signing up themselves individually
             team_type = TeamType.RANDOM
             team_name = cls.generate_random_team_name()
 
         if cls.fetch_team(team_name=team_name):
-            # A name with this team_name exist so no new team is created
+            # Team with such name already exists
             return None
 
-        # The team is created with one person, and they are the admin of it
+        # Upon team initialization, we need at least one team member who is considered the admin
         team_members_ids = [user_id]
 
         new_team = HackathonTeam(
@@ -40,14 +41,14 @@ class TeamsUtilities:
     def add_participant_to_team(
             cls, team_name: str,
             user_id: str,
-    ) -> HackathonTeam | None | str:
+    ) -> HackathonTeam | None:
         team = cls.fetch_team(team_name=team_name)
 
         if not team:
             return None
 
         if len(team.team_members) == 6:
-            return "No space left"  # TODO: This should be fixed
+            raise Exception("Team is already at max capacity")
 
         team.team_members.append(user_id)
 
@@ -55,12 +56,11 @@ class TeamsUtilities:
 
     @classmethod
     def fetch_team(
-            cls, team_name: str = "",
-            team_id: str = "",
+            cls, team_name: str | None = None,
+            team_id: str | None = None,
     ) -> HackathonTeam | None:
-        """Fetches team by team_name or team_id"""
-
         team: Dict[str, Any] = {}
+
         if team_name:
             team = t_col.find_one(
                 filter={"team_name": team_name},
@@ -68,6 +68,7 @@ class TeamsUtilities:
 
         elif team_id:
             team = t_col.find_one(filter={"_id": ObjectId(team_id)})
+
         if not team:
             return None
 
@@ -76,7 +77,7 @@ class TeamsUtilities:
     @classmethod
     def update_team_query(
             cls, team_payload: Dict[str, Any],
-            object_id: str,
+            object_id: str = "",
     ) -> UpdateResult:
         query = {
             "$or": [
@@ -96,20 +97,12 @@ class TeamsUtilities:
         return updated_team
 
     @classmethod
-    def get_team_id_by_team_name(cls, team_name: str) -> str | None:
-        if find_one_result := t_col.find_one(
-                filter={"team_name": team_name},
-        ):
-            return str(find_one_result["_id"])
-        return None
-
-    @classmethod
     def generate_random_team_name(cls) -> str:
         count = t_col.count_documents({"team_name": "random"})
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def add_team_to_db(cls, team: HackathonTeam) -> None:
+    def insert_team(cls, team: HackathonTeam) -> None:
         t_col.insert_one(team.model_dump())
 
     @classmethod

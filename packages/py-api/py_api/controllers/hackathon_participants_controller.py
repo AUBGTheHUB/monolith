@@ -90,9 +90,9 @@ class ParticipantsController:
             status_code=200,
         )
 
-    def add_participant(paricipant: NewParticipant) -> JSONResponse:
+    def add_participant(participant: NewParticipant) -> JSONResponse:
 
-        if participants_col.find_one(filter={"email": paricipant.email}):
+        if participants_col.find_one(filter={"email": participant.email}):
             return JSONResponse(
                 content={
                     "message": "The email of the participant already exists!",
@@ -101,23 +101,32 @@ class ParticipantsController:
             )
 
         insert_result: InsertOneResult = participants_col.insert_one(
-            paricipant.model_dump(),
+            participant.model_dump(),
         )
 
-        # This is a code sample for how creating a team works
-        # new_team = TeamsUtilities.create_team(str(insert_result.inserted_id),
-        #                                       paricipant.team_name)
+        # if participant.team_name ?? handle accordingly
+        # create_team(random=true)
+        # else
+        # ...
+
+        # new_team = TeamsUtilities.create_team(
+        #     str(insert_result.inserted_id),
+        #     participant.team_name,
+        # )
         # if not new_team:
         #     updated_team = TeamsUtilities.add_participant_to_team(
-        #         paricipant.team_name,
-        #         str(insert_result.inserted_id))
-        #
-        #     TeamsController.update_team(
-        #         TeamsUtilities.get_team_id_by_team_name(
-        #             updated_team.team_name),
-        #         updated_team)
+        #         participant.team_name,
+        #         str(insert_result.inserted_id),
+        #     )
+
+        #     if not updated_team:
+        #         raise Exception("Some Exception")
+
+        # updated_team.team_name = paricipant.team_name
+
+        #     TeamsUtilities.update_team_query(updated_team.model_dump())
         # else:
-        #     TeamsUtilities.add_team_to_db(team=new_team)
+        #     TeamsUtilities.insert_team(team=new_team)
 
         return JSONResponse(
             content={"message": "The participant was successfully added!"},
