@@ -29,8 +29,3 @@ def update_team(object_id: str, update_form: UpdateTeam) -> JSONResponse:
 @router.delete("/{object_id}")
 def delete_team(object_id: str) -> JSONResponse:
     return c.delete_team(object_id)
-
-
-# @router.post("/move-members")
-# def move_team_members(move_members_model: MoveTeamMembers) -> JSONResponse:
-#     return c.move_team_members(move_members_model)

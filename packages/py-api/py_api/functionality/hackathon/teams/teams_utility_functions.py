@@ -44,7 +44,7 @@ class TeamsUtilities:
         team = cls.fetch_team(team_name=team_name)
 
         if not team:
-            return None
+            raise Exception("Team doesn't exist")
 
         if len(team.team_members) == 6:
             raise Exception("Team is already at max capacity")

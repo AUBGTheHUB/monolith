@@ -135,7 +135,7 @@ class ParticipantsController:
         )
 
     @classmethod
-    def add_participant(cls, participant: NewParticipant, jwt_token: str) -> JSONResponse:
+    def add_participant(cls, participant: NewParticipant, jwt_token: str | None = None) -> JSONResponse:
 
         if jwt_token:
             # TODO: implement logic for adding participant to team
