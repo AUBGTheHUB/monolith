@@ -68,8 +68,8 @@ class ParticipantsController:
         )
 
     def update_participant(
-        object_id: str,
-        participant_form: UpdateParticipant,
+            object_id: str,
+            participant_form: UpdateParticipant,
     ) -> JSONResponse:
 
         # filters the values set to None in the model
@@ -104,28 +104,33 @@ class ParticipantsController:
             participant.model_dump(),
         )
 
-        # if participant.team_name ?? handle accordingly
-        # create_team(random=true)
-        # else
-        # ...
-
-        # new_team = TeamsUtilities.create_team(
-        #     str(insert_result.inserted_id),
-        #     participant.team_name,
-        # )
-        # if not new_team:
-        #     updated_team = TeamsUtilities.add_participant_to_team(
+        # user_id = str(insert_result.inserted_id)
+        # if participant.team_name:
+        #     new_team = TeamsUtilities.create_team(
+        #         user_id,
         #         participant.team_name,
-        #         str(insert_result.inserted_id),
         #     )
-
-        #     if not updated_team:
-        #         raise Exception("Some Exception")
-
-        # updated_team.team_name = paricipant.team_name
-
-        #     TeamsUtilities.update_team_query(updated_team.model_dump())
+        #
+        #     if new_team:
+        #         TeamsUtilities.insert_team(team=new_team)
+        #
+        #     else:
+        #         # Team with such name already exists
+        #         updated_team = TeamsUtilities.add_participant_to_team(
+        #             participant.team_name,
+        #             user_id,
+        #         )
+        #
+        #         if not updated_team:
+        #             raise Exception("Some Exception")
+        #
+        #         TeamsUtilities.update_team_query(updated_team.model_dump())
+        #
         # else:
+        #     new_team = TeamsUtilities.create_team(
+        #         user_id,
+        #         generate_random_team=True
+        #     )
         #     TeamsUtilities.insert_team(team=new_team)
 
         return JSONResponse(

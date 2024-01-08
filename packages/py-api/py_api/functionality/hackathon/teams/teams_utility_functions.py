@@ -14,7 +14,7 @@ class TeamsUtilities:
             cls, user_id: str,
             team_name: str | None = None, generate_random_team: bool = False,
     ) -> HackathonTeam | None:
-        """ add proper comment explaining the different types of teams -> use proper and easily understandable english ! """
+
         team_type = TeamType.NORMAL
 
         if generate_random_team:
@@ -33,7 +33,6 @@ class TeamsUtilities:
             team_name=team_name,
             team_type=team_type, team_members=team_members_ids,
         )
-        t_col.insert_one(new_team.model_dump())
 
         return new_team
 
@@ -77,7 +76,7 @@ class TeamsUtilities:
     @classmethod
     def update_team_query(
             cls, team_payload: Dict[str, Any],
-            object_id: str = "",
+            object_id: str | None = None,
     ) -> UpdateResult:
         query = {
             "$or": [
@@ -98,7 +97,7 @@ class TeamsUtilities:
 
     @classmethod
     def generate_random_team_name(cls) -> str:
-        count = t_col.count_documents({"team_name": "random"})
+        count = t_col.count_documents({"team_type": "random"})
         return f"RandomTeam {count + 1}"
 
     @classmethod
