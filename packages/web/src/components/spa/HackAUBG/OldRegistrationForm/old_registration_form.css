@@ -1,0 +1,212 @@
+.registration-main {
+    background-color: #222222;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 6%;
+    padding-bottom: 5%;
+    width: 100%;
+    align-items: stretch;
+}
+
+.registration-main h1 {
+    margin-bottom: 4%;
+    color: #19b700;
+    font-weight: 900;
+    font-size: 2em;
+    text-align: center;
+}
+
+.reg-form {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.reg-form button {
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+.hackaubg-register-btn {
+    width: fit-content;
+    color: #19b700;
+    align-items: center;
+    display: flex;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: white;
+    padding: 0.8% 6% 0.8% 6%;
+    margin-top: 3%;
+}
+
+.hackaubg-register-btn:hover {
+    background-color: #19b700;
+    color: white;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.hackaubg-register-btn.error {
+    background-color: red;
+    color: white;
+}
+
+.hackaubg-register-btn.disabled {
+    background-color: #19b700;
+    color: white;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.from-personal-info {
+    display: flex;
+    flex-wrap: wrap;
+    width: 60%;
+}
+
+.send-info {
+    width: 40%;
+    height: 80px;
+    margin: 0 5% 6% 5%;
+}
+
+.send-info label {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+.radio-label {
+    height: 70%;
+}
+
+.send-info input,
+.send-info select {
+    height: 45px;
+    width: 100%;
+    border-radius: 7.5px;
+    margin-top: 2%;
+}
+
+.disabled {
+    color: red;
+}
+
+.radio-btn .radio {
+    width: 5%;
+    margin: 0 2%;
+}
+
+.radio-btn {
+    display: contents;
+}
+
+.radio-select {
+    display: flex;
+}
+
+.radio-select input {
+    accent-color: #19b700;
+}
+
+.radio-select label {
+    font-size: 1.05rem;
+}
+
+input[type='radio'] {
+    cursor: pointer;
+}
+
+input[type='text']:required {
+    color: red;
+}
+
+.select option {
+    background-color: #3e3b3b;
+    color: white;
+}
+
+option:checked {
+    color: #19b700;
+}
+
+input {
+    text-indent: 2%;
+}
+
+.invisible {
+    display: none;
+}
+
+.visible {
+    display: initial;
+}
+
+.db-error-msg {
+    color: red;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    background-color: #ffbcb8;
+    border-radius: 5px;
+    padding: 10px 30px;
+}
+.db-error-msg svg {
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 1300px) {
+    .send-info {
+        margin-bottom: 9%;
+    }
+    .from-personal-info {
+        display: flex;
+        flex-wrap: wrap;
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .send-info {
+        width: 100%;
+        height: initial;
+        margin-bottom: 5%;
+    }
+    .radio-label {
+        height: initial;
+        margin-bottom: 2%;
+    }
+    .from-personal-info {
+        display: flex;
+        flex-wrap: wrap;
+        width: 80%;
+    }
+}
+@media only screen and (max-width: 500px) {
+    .db-error-msg {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .db-error-msg {
+        font-size: 15px;
+    }
+    .radio-btn .radio {
+        width: 8%;
+    }
+}
+.reg-closed {
+    padding-top: 10%;
+    color: white;
+    text-align: center;
+}
