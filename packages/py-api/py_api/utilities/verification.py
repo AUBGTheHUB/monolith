@@ -4,6 +4,8 @@ from typing import Any, Dict
 from jwt import encode
 from py_api.environment import SECRET_KEY
 
+# TODO: Move to functionality folder
+
 
 def create_verification_jwt_token(particiapnt: Dict[str, Any]) -> str:
     is_admin: bool = particiapnt["is_admin"]

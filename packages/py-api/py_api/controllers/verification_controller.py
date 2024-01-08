@@ -9,7 +9,7 @@ from py_api.environment import SECRET_KEY
 
 class VerificationController:
     @classmethod
-    def invite(cls) -> None:
+    def invite(cls) -> JSONResponse:
         # TODO:
         #  - Check the cap of the team
         #  - If cap reached -> return proper message
@@ -18,7 +18,7 @@ class VerificationController:
         pass
 
     @classmethod
-    def verify(cls) -> None:
+    def verify(cls) -> JSONResponse:
         # This is when a participant is registering (Either with a team or without one)
         # TODO:
         #   - 1. Check the result of the verify_participant
@@ -27,6 +27,7 @@ class VerificationController:
         #   You can look at a sample code snippet in the ad_participant func in py_api/controllers/hackathon_participants_controller.py
         pass
 
+    # TODO: Move to functionality folder
     @classmethod
     def verify_participant(cls, token: str) -> Tuple[Dict[str, str], int]:
         response, status_code = cls.verify_token(token)
@@ -48,6 +49,7 @@ class VerificationController:
 
         return {"message": "Participant ID is verified."}, 200
 
+    # TODO: Move to functionality folder
     @classmethod
     def verify_token(cls, token: str) -> JSONResponse:
         if not token:
