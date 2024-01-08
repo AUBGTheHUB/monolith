@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
 from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
 from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
+from py_api.utilities.verification import create_invite_link
 
 
 class TeamsController:
@@ -28,7 +29,8 @@ class TeamsController:
     @classmethod
     def get_team(cls, object_id: str) -> JSONResponse:
         specified_team = TeamsUtilities.fetch_team(team_id=object_id)
-
+        if specified_team is not None:
+            print(create_invite_link(specified_team.dict()))
         if not specified_team:
             return JSONResponse(
                 content={"message": "The team was not found"},

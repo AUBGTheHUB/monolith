@@ -35,6 +35,7 @@ class ParticipantsController:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
             )
+            # For testing purposes must be called when creating the email
             print(create_verification_jwt_token(specified_participant))
 
         except (InvalidId, TypeError) as e:
