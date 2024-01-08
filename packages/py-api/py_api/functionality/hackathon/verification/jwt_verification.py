@@ -23,11 +23,6 @@ class JWTVerification:
         if not team_name:
             return {"message": "Team name not found in the response."}, 404
 
-        participants_col.update_one(
-            {"team_name": team_name},
-            {"$set": {"is_verified": True}},
-        )
-
         return {"team_name": team_name}, 200
 
     @classmethod
