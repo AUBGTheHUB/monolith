@@ -67,6 +67,21 @@ class ParticipantsController:
             status_code=200,
         )
 
+    def delete_participant_from_team(object_id: str) -> JSONResponse:
+        deleted_participant = participants_col.find_one(
+            filter={"_id": ObjectId(object_id)},
+        )
+
+        if not deleted_participant:
+            return JSONResponse(
+                content={"message": "The targeted participant was not found!"},
+                status_code=404,
+            )
+        team = TeamsUtilities.fetch_team(deleted_participant.team_name)
+        if (team):
+            team.team_members.remove(object_id)
+            TeamsUtilities.update_team_query(team.model_dump())
+
     def update_participant(
             object_id: str,
             participant_form: UpdateParticipant,
@@ -111,35 +126,36 @@ class ParticipantsController:
             participant.model_dump(),
         )
 
-        # A sample code snippet of how creation of team looks like
-        # user_id = str(insert_result.inserted_id)
-        # if participant.team_name:
-        #     new_team = TeamsUtilities.create_team(
-        #         user_id,
-        #         participant.team_name,
-        #     )
-        #
-        #     if new_team:
-        #         TeamsUtilities.insert_team(team=new_team)
-        #
-        #     else:
-        #         # Team with such name already exists
-        #         updated_team = TeamsUtilities.add_participant_to_team(
-        #             participant.team_name,
-        #             user_id,
-        #         )
-        #
-        #         if not updated_team:
-        #             raise Exception("Some Exception")
-        #
-        #         TeamsUtilities.update_team_query(updated_team.model_dump())
-        #
-        # else:
-        #     new_team = TeamsUtilities.create_team(
-        #         user_id,
-        #         generate_random_team=True
-        #     )
-        #     TeamsUtilities.insert_team(team=new_team)
+       # A sample code snippet of how creation of team looks like
+        user_id = str(insert_result.inserted_id)
+        if participant.team_name:
+            new_team = TeamsUtilities.create_team(
+                user_id,
+                participant.team_name,
+            )
+
+            if new_team:
+                TeamsUtilities.insert_team(team=new_team)
+
+            else:
+                # Team with such name already exists
+                updated_team = TeamsUtilities.add_participant_to_team(
+                    participant.team_name,
+                    user_id,
+                )
+
+                if not updated_team:
+                    raise Exception("Some Exception")
+
+                TeamsUtilities.update_team_query(updated_team.model_dump())
+
+        else:
+            new_team = TeamsUtilities.create_team(
+                user_id,
+                generate_random_team=True,
+            )
+            if (new_team):
+                TeamsUtilities.insert_team(team=new_team)
 
         return JSONResponse(
             content={"message": "The participant was successfully added!"},
