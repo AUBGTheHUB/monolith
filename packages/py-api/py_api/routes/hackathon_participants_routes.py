@@ -28,4 +28,4 @@ async def add_participant(update_form: NewParticipant) -> JSONResponse:
 
 @router.delete("/{object_id}")
 async def delete_participant(object_id: str) -> JSONResponse:
-    return {c.delete_participant_from_team(object_id), c.delete_participant(object_id)}
+    return c.delete_participant(object_id)

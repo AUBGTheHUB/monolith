@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict, Tuple
 
 from bson.errors import InvalidId
 from bson.json_util import dumps
@@ -10,11 +11,12 @@ from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUt
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
 from pymongo.results import InsertOneResult
+from starlette.responses import JSONResponse
 
 
 class ParticipantsController:
-
-    def get_all_participants() -> JSONResponse:
+    @classmethod
+    def get_all_participants(cls) -> JSONResponse:
         participants = list(participants_col.find())
 
         if not participants:
@@ -29,7 +31,8 @@ class ParticipantsController:
             status_code=200,
         )
 
-    def get_specified_participant(object_id: str) -> JSONResponse:
+    @classmethod
+    def get_specified_participant(cls, object_id: str) -> JSONResponse:
         try:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
@@ -51,8 +54,9 @@ class ParticipantsController:
             status_code=200,
         )
 
-    def delete_participant(object_id: str) -> JSONResponse:
-        deleted_participant = participants_col.find_one_and_delete(
+    @classmethod
+    def delete_participant(cls, object_id: str) -> JSONResponse:
+        deleted_participant: Dict[str, Any] = participants_col.find_one_and_delete(
             filter={"_id": ObjectId(object_id)},
         )
 
@@ -61,40 +65,40 @@ class ParticipantsController:
                 content={"message": "The targeted participant was not found!"},
                 status_code=404,
             )
+
+        response, status_code = cls.delete_participant_from_team(
+            deleted_participant,
+        )
+        if status_code != 200:
+            return JSONResponse(response, status_code)
 
         return JSONResponse(
             content={"message": "The participant was deleted successfully!"},
             status_code=200,
         )
 
-    def delete_participant_from_team(object_id: str) -> JSONResponse:
-        deleted_participant = participants_col.find_one(
-            filter={"_id": ObjectId(object_id)},
-        )
-
-        if not deleted_participant:
-            return JSONResponse(
-                content={"message": "The targeted participant was not found!"},
-                status_code=404,
-            )
-        team = TeamsUtilities.fetch_team(deleted_participant["team_name"])
+    @classmethod
+    def delete_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
+        team = TeamsUtilities.fetch_team(deleted_participant.get("team_name"))
         if not team:
-            return JSONResponse(
-                content={"message": "The participant is not in a team"},
-                status_code=404,
-            )
-        team.team_members.remove(object_id)
-        TeamsUtilities.update_team_query(team.model_dump())
-        return JSONResponse(
-            content={
-                "message": "The participant was deleted successfully from team!",
-            },
-            status_code=200,
-        )
+            return {"message": "The participant is not in a team"}, 404
 
+        deleted_participant_id = str(deleted_participant["_id"])
+
+        if deleted_participant_id in team.team_members:
+            team.team_members.remove(deleted_participant_id)
+        else:
+            return {"message": "The participant is not in the specified team"}, 404
+
+        TeamsUtilities.update_team_query(team.model_dump())
+
+        return {"message": "The participant was deleted successfully from team!"}, 200
+
+    @classmethod
     def update_participant(
-            object_id: str,
-            participant_form: UpdateParticipant,
+        cls,
+        object_id: str,
+        participant_form: UpdateParticipant,
     ) -> JSONResponse:
 
         # filters the values set to None in the model
@@ -110,10 +114,16 @@ class ParticipantsController:
             )
 
         except (InvalidId, TypeError) as e:
-            return JSONResponse(content={"message": "Invalid object_id format!"}, status_code=400)
+            return JSONResponse(
+                content={"message": "Invalid object_id format!"},
+                status_code=400,
+            )
 
         if not to_be_updated_participant:
-            return JSONResponse(content={"message": "The targeted participant was not found!"}, status_code=404)
+            return JSONResponse(
+                content={"message": "The targeted participant was not found!"},
+                status_code=404,
+            )
 
         return JSONResponse(
             content={
@@ -122,7 +132,8 @@ class ParticipantsController:
             status_code=200,
         )
 
-    def add_participant(participant: NewParticipant) -> JSONResponse:
+    @classmethod
+    def add_participant(cls, participant: NewParticipant) -> JSONResponse:
 
         if participants_col.find_one(filter={"email": participant.email}):
             return JSONResponse(
@@ -136,36 +147,36 @@ class ParticipantsController:
             participant.model_dump(),
         )
 
-       # A sample code snippet of how creation of team looks like
-        user_id = str(insert_result.inserted_id)
-        if participant.team_name:
-            new_team = TeamsUtilities.create_team(
-                user_id,
-                participant.team_name,
-            )
+        # A sample code snippet of how creation of team looks like
+        # user_id = str(insert_result.inserted_id)
+        # if participant.team_name:
+        #     new_team = TeamsUtilities.create_team(
+        #         user_id,
+        #         participant.team_name,
+        #     )
 
-            if new_team:
-                TeamsUtilities.insert_team(team=new_team)
+        #     if new_team:
+        #         TeamsUtilities.insert_team(team=new_team)
 
-            else:
-                # Team with such name already exists
-                updated_team = TeamsUtilities.add_participant_to_team(
-                    participant.team_name,
-                    user_id,
-                )
+        #     else:
+        #         # Team with such name already exists
+        #         updated_team = TeamsUtilities.add_participant_to_team(
+        #             participant.team_name,
+        #             user_id,
+        #         )
 
-                if not updated_team:
-                    raise Exception("Some Exception")
+        #         if not updated_team:
+        #             raise Exception("Some Exception")
 
-                TeamsUtilities.update_team_query(updated_team.model_dump())
+        #         TeamsUtilities.update_team_query(updated_team.model_dump())
 
-        else:
-            new_team = TeamsUtilities.create_team(
-                user_id,
-                generate_random_team=True,
-            )
-            if (new_team):
-                TeamsUtilities.insert_team(team=new_team)
+        # else:
+        #     new_team = TeamsUtilities.create_team(
+        #         user_id,
+        #         generate_random_team=True,
+        #     )
+        #     if (new_team):
+        #         TeamsUtilities.insert_team(team=new_team)
 
         return JSONResponse(
             content={"message": "The participant was successfully added!"},
