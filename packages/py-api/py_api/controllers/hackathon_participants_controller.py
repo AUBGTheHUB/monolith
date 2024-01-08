@@ -145,3 +145,51 @@ class ParticipantsController:
             content={"message": "The participant was successfully added!"},
             status_code=200,
         )
+
+    @classmethod
+    def assign_random_team_to_participant(cls, object_id: str) -> JSONResponse:
+        # Fetch the teams of type random
+        avaliable_teams = []
+        random_teams = TeamsUtilities.fetch_teams_by_condition(
+            {"team_type": "random"},
+        )
+
+        # Find the teams which can accept a new participant
+        for team in random_teams:
+            if not TeamsUtilities.team_has_reach_max_cap(team):
+                avaliable_teams.append(team)
+
+        if avaliable_teams:
+            # Since we are only creating new teams, when the max capacity of the existing ones is reached
+            # We only need to check the last team of the List for the capacity(all the others should have max cap)
+            next_avaliable_team = avaliable_teams[0]
+            updated_avaliable_team = TeamsUtilities.add_participant_to_team(
+                next_avaliable_team.team_name, object_id,
+            )
+            if updated_avaliable_team:
+                cls.update_participant(
+                    object_id, UpdateParticipant(
+                        **{"team_name": updated_avaliable_team.team_name}
+                    ),
+                )
+                TeamsUtilities.update_team_query(
+                    updated_avaliable_team.model_dump(),
+                )
+                return JSONResponse(content=updated_avaliable_team.model_dump(), status_code=200)
+
+        elif (TeamsUtilities.get_count_of_teams() < 15):
+            # Create New Team and assign the participant to it
+            newTeam = TeamsUtilities.create_team(
+                object_id, TeamsUtilities.generate_random_team_name(), True,
+            )
+            if newTeam:
+                cls.update_participant(
+                    object_id, UpdateParticipant(
+                        **{"team_name": newTeam.team_name}
+                    ),
+                )
+                TeamsUtilities.insert_team(newTeam)
+                return JSONResponse(content=newTeam.model_dump(), status_code=200)
+
+        else:
+            return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=404)

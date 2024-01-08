@@ -49,9 +49,12 @@ class TeamsUtilities:
         if len(team.team_members) == 6:
             raise Exception("Team is already at max capacity")
 
-        team.team_members.append(user_id)
-
-        return team
+        # checks if the user already exists in the team
+        if not user_id in team.team_members:
+            team.team_members.append(user_id)
+            return team
+        else:
+            raise Exception("The participant is already in this team")
 
     @classmethod
     def fetch_team(
@@ -72,6 +75,19 @@ class TeamsUtilities:
             return None
 
         return HackathonTeam(**team)
+
+    @classmethod
+    def fetch_teams_by_condition(cls, conditions: Dict[str, Any]) -> List[HackathonTeam]:
+        # if conditions are empty it will return all the teams
+        filtered_teams = list(t_col.find(conditions))
+        return [HackathonTeam(**team) for team in filtered_teams]
+
+    @classmethod
+    def team_has_reach_max_cap(cls, team: HackathonTeam) -> bool:
+        if (len(team.team_members) < 6):
+            return False
+        else:
+            return True
 
     @classmethod
     def update_team_query(
