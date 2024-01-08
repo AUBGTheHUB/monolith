@@ -104,6 +104,7 @@ class ParticipantsController:
             participant.model_dump(),
         )
 
+        # A sample code snippet of how creation of team looks like
         # user_id = str(insert_result.inserted_id)
         # if participant.team_name:
         #     new_team = TeamsUtilities.create_team(
