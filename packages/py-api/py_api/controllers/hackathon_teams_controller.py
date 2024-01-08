@@ -59,9 +59,9 @@ class TeamsController:
 
     @staticmethod
     def team_count() -> JSONResponse:
-        count = t_col.count_documents({})
+        count = TeamsUtilities.get_count_of_teams()
 
-        if not count:
+        if count == 0:
             return JSONResponse(
                 content={"message": "No teams were found"},
                 status_code=404,

@@ -38,8 +38,8 @@ class TeamsUtilities:
 
     @classmethod
     def add_participant_to_team(
-        cls, team_name: str,
-        user_id: str,
+            cls, team_name: str,
+            user_id: str,
     ) -> HackathonTeam | None | str:
         team = cls.fetch_team(team_name=team_name)
 
@@ -55,8 +55,8 @@ class TeamsUtilities:
 
     @classmethod
     def fetch_team(
-        cls, team_name: str = "",
-        team_id: str = "",
+            cls, team_name: str = "",
+            team_id: str = "",
     ) -> HackathonTeam | None:
         """Fetches team by team_name or team_id"""
 
@@ -75,8 +75,8 @@ class TeamsUtilities:
 
     @classmethod
     def update_team_query(
-        cls, team_payload: Dict[str, Any],
-        object_id: str,
+            cls, team_payload: Dict[str, Any],
+            object_id: str,
     ) -> UpdateResult:
         query = {
             "$or": [
@@ -111,3 +111,7 @@ class TeamsUtilities:
     @classmethod
     def add_team_to_db(cls, team: HackathonTeam) -> None:
         t_col.insert_one(team.model_dump())
+
+    @classmethod
+    def get_count_of_teams(cls) -> int:
+        return int(t_col.count_documents({}))
