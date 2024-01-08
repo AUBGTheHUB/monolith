@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from py_api.controllers.hackathon_teams_controller import TeamsController
 from py_api.database.initialize import participants_col, t_col
 from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
+from py_api.functionality.hackathon.verification.jwt_verification import JWTVerification
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
 from pymongo.results import InsertOneResult
@@ -134,54 +135,37 @@ class ParticipantsController:
         )
 
     @classmethod
-    def add_participant(cls, participant: NewParticipant) -> JSONResponse:
+    def add_participant(cls, participant: NewParticipant, jwt_token: str) -> JSONResponse:
 
-        if participants_col.find_one(filter={"email": participant.email}):
-            return JSONResponse(
-                content={
-                    "message": "The email of the participant already exists!",
-                },
-                status_code=409,
-            )
+        if jwt_token:
+            # TODO: implement logic for adding participant to team
+            # * verify team capacity
+            # * verify jwt
+            return
 
-        insert_result: InsertOneResult = participants_col.insert_one(
-            participant.model_dump(),
-        )
-        # TODO:
-        #   - Add sending of verification email
-        #   - In the jwt add the team_name provided (
-        #   If not provided team_name should be None in the jwt)
+        if participant.team_name:
+            if participants_col.find_one(filter={"email": participant.email}):
+                return JSONResponse(
+                    content={
+                        "message": "The email of the participant already exists!",
+                    },
+                    status_code=409,
+                )
 
-        # A sample code snippet of how creation of team looks like
-        # user_id = str(insert_result.inserted_id)
-        # if participant.team_name:
-        #     new_team = TeamsUtilities.create_team(
-        #         user_id,
-        #         participant.team_name,
-        #     )
+            # TODO: create unverified participant
+            # TODO: create unverified team and append participant
 
-        #     if new_team:
-        #         TeamsUtilities.insert_team(team=new_team)
+            jwt_token = JWTVerification.create_jwt_token(participant.team_name)
+            # TODO: verification_link = JWTVerification.create_admin_verification_link(jwt_token)
 
-        #     else:
-        #         # Team with such name already exists
-        #         updated_team = TeamsUtilities.add_participant_to_team(
-        #             participant.team_name,
-        #             user_id,
-        #         )
+            # TODO: send_verification_email(to=participant.email, is_admin=True, verification_link=verification_link)
+            # * is_admin will identify whether the used template should be for admins who have to verify their teams
+            # * or the one storing the link for inviting participants to the team
 
-        #         if not updated_team:
-        #             raise Exception("Some Exception")
-
-        #         TeamsUtilities.update_team_query(updated_team.model_dump())
-
-        # else:
-        #     new_team = TeamsUtilities.create_team(
-        #         user_id,
-        #         generate_random_team=True,
-        #     )
-        #     if (new_team):
-        #         TeamsUtilities.insert_team(team=new_team)
+        else:
+            # TODO: create participant
+            # TODO: assign to RANDOM team if there's one with free space or create new one
+            return
 
         return JSONResponse(
             content={"message": "The participant was successfully added!"},

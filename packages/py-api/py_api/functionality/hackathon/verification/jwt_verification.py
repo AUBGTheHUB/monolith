@@ -61,12 +61,12 @@ class JWTVerification:
 
         return decoded_token, 200
 
-
-# when create verification jwt token is called it creates the token with argunment the participant
-# must be called when email is being created to create the url
-def create_jwt_token(team_name: str) -> str:
-    payload = {
-        "team_name": team_name,
-        "exp": datetime.utcnow() + timedelta(hours=24),
-    }
-    return str(encode(payload, SECRET_KEY, algorithm="HS256"))
+    # when create verification jwt token is called it creates the token with argunment the participant
+    # must be called when email is being created to create the url
+    @classmethod
+    def create_jwt_token(cls, team_name: str) -> str:
+        payload = {
+            "team_name": team_name,
+            "exp": datetime.utcnow() + timedelta(hours=24),
+        }
+        return str(encode(payload, SECRET_KEY, algorithm="HS256"))
