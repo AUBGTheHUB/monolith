@@ -6,7 +6,6 @@ from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
 from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
 from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
-from py_api.utilities.verification import create_invite_link
 
 
 class TeamsController:
@@ -34,8 +33,6 @@ class TeamsController:
                 content={"message": "The team was not found"},
                 status_code=404,
             )
-
-        print(create_invite_link(specified_team.team_name))
 
         return JSONResponse(
             content={"team": specified_team.model_dump()},

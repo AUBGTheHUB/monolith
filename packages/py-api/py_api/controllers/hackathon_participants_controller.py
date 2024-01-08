@@ -9,7 +9,6 @@ from py_api.database.initialize import participants_col, t_col
 from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.utilities.parsers import filter_none_values
-from py_api.utilities.verification import create_verification_jwt_token
 from pymongo.results import InsertOneResult
 
 
@@ -35,8 +34,6 @@ class ParticipantsController:
             specified_participant = participants_col.find_one(
                 filter={"_id": ObjectId(object_id)},
             )
-            # For testing purposes must be called when creating the email
-            print(create_verification_jwt_token(specified_participant))
 
         except (InvalidId, TypeError) as e:
             return JSONResponse(
