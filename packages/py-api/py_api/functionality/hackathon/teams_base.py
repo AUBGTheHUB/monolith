@@ -41,7 +41,7 @@ class TeamFunctionality:
     def add_participant_to_team_object(
             cls, team_name: str,
             user_id: str,
-    ) -> HackathonTeam | None:
+    ) -> HackathonTeam:
         """ fetches a HackathonTeam object and updates it without inserting it back in the database """
         team = cls.fetch_team(team_name=team_name)
 
@@ -85,11 +85,11 @@ class TeamFunctionality:
         return [HackathonTeam(**team) for team in filtered_teams]
 
     @classmethod
-    def team_has_reach_max_cap(cls, team: HackathonTeam) -> bool:
+    def team_has_available_space(cls, team: HackathonTeam) -> bool:
         if (len(team.team_members) < 6):
-            return False
-        else:
             return True
+        else:
+            return False
 
     @classmethod
     def update_team_query(

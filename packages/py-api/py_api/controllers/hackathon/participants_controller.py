@@ -172,50 +172,51 @@ class ParticipantsController:
             status_code=200,
         )
 
-    # @classmethod
-    # def assign_random_team_to_participant(cls, object_id: str) -> JSONResponse:
-    #     # Fetch the teams of type random
-    #     avaliable_teams = []
-    #     random_teams = TeamFunctionality.fetch_teams_by_condition(
-    #         {"team_type": "random"},
-    #     )
+    @classmethod
+    def assign_random_team_to_participant(cls, participant_object_id: str) -> JSONResponse:
+        # Fetch the teams of type random
+        random_teams = TeamFunctionality.fetch_teams_by_condition(
+            {"team_type": "random"},
+        )
 
-    #     # Find the teams which can accept a new participant
-    #     for team in random_teams:
-    #         if not TeamFunctionality.team_has_reach_max_cap(team):
-    #             avaliable_teams.append(team)
+        # Find the teams which can accept a new participant
+        for team in random_teams:
 
-    #     if avaliable_teams:
-    #         # Since we are only creating new teams, when the max capacity of the existing ones is reached
-    #         # We only need to check the last team of the List for the capacity(all the others should have max cap)
-    #         next_avaliable_team = avaliable_teams[0]
-    #         updated_avaliable_team = TeamFunctionality.add_participant_to_team_object(
-    #             next_avaliable_team.team_name, object_id,
-    #         )
-    #         if updated_avaliable_team:
-    #             cls.update_participant(
-    #                 object_id, UpdateParticipant(
-    #                     **{"team_name": updated_avaliable_team.team_name}
-    #                 ),
-    #             )
-    #             TeamFunctionality.update_team_query(
-    #                 updated_avaliable_team.model_dump(),
-    #             )
-    #             return JSONResponse(content=updated_avaliable_team.model_dump(), status_code=200)
+            if TeamFunctionality.team_has_available_space(team):
+                avaliable_team = team
+                try:
+                    avaliable_team = TeamFunctionality.add_participant_to_team_object(
+                        avaliable_team.team_name, participant_object_id,
+                    )
+                    cls.update_participant(
+                        participant_object_id, UpdateParticipant(
+                            **{"team_name": avaliable_team.team_name}
+                        ),
+                    )
+                    TeamFunctionality.update_team_query(
+                        avaliable_team.model_dump(),
+                    )
+                    return JSONResponse(content=avaliable_team.model_dump(), status_code=200)
 
-    #     elif (TeamFunctionality.get_count_of_teams() < 15):
-    #         # Create New Team and assign the participant to it
-    #         newTeam = TeamFunctionality.create_team(
-    #             object_id, TeamFunctionality.generate_random_team_name(), True,
-    #         )
-    #         if newTeam:
-    #             cls.update_participant(
-    #                 object_id, UpdateParticipant(
-    #                     **{"team_name": newTeam.team_name}
-    #                 ),
-    #             )
-    #             TeamFunctionality.insert_team(newTeam)
-    #             return JSONResponse(content=newTeam.model_dump(), status_code=200)
+                except (Exception) as e:
+                    return JSONResponse(content={"message": e.args}, status_code=422)
 
-    #     else:
-    #         return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=404)
+        if (TeamFunctionality.get_count_of_teams() < 15):
+            # Create New Team and assign the participant to it
+            newTeam = TeamFunctionality.create_team_object_with_admin(
+                user_id=participant_object_id, team_name=TeamFunctionality.generate_random_team_name(), generate_random_team=True,
+            )
+
+            if newTeam:
+                cls.update_participant(
+                    participant_object_id, UpdateParticipant(
+                        **{"team_name": newTeam.team_name}
+                    ),
+                )
+                TeamFunctionality.insert_team(newTeam)
+                return JSONResponse(content=newTeam.model_dump(), status_code=200)
+            else:
+                return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
+
+        else:
+            return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
