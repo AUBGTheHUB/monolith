@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse
-from py_api.functionality.hackathon.jwt_verification import JWTFunctionality
+from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 
 
 class VerificationController:
