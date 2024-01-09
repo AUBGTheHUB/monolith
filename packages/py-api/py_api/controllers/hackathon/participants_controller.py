@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.controllers.hackathon.teams_controller import TeamsController
 from py_api.database.initialize import participants_col, t_col
-from py_api.functionality.hackathon.jwt_verification import JWTFunctionality
+from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
