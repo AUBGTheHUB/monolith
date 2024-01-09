@@ -5,6 +5,8 @@ from py_api.models import NewParticipant, UpdateParticipant
 
 router = APIRouter(prefix="/hackathon/participants")
 
+# ? Why are all these using only object id for fetching participants when you have emails defined as unique values
+
 
 @router.get("")
 async def get_participants() -> JSONResponse:
@@ -22,8 +24,8 @@ async def update_participant(object_id: str, participant_form: UpdateParticipant
 
 
 @router.post("")
-async def add_participant(update_form: NewParticipant) -> JSONResponse:
-    return c.add_participant(update_form)
+async def add_participant(update_form: NewParticipant, jwt_token: str | None) -> JSONResponse:
+    return c.add_participant(update_form, jwt_token)
 
 
 @router.delete("/{object_id}")

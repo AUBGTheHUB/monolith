@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from py_api.controllers.hackathon_teams_controller import TeamsController as c
+from py_api.controllers.hackathon.teams_controller import TeamsController as c
 from py_api.models import UpdateTeam
 
 router = APIRouter(prefix="/hackathon/teams")
@@ -29,8 +29,3 @@ def update_team(object_id: str, update_form: UpdateTeam) -> JSONResponse:
 @router.delete("/{object_id}")
 def delete_team(object_id: str) -> JSONResponse:
     return c.delete_team(object_id)
-
-
-# @router.post("/move-members")
-# def move_team_members(move_members_model: MoveTeamMembers) -> JSONResponse:
-#     return c.move_team_members(move_members_model)

@@ -7,13 +7,14 @@ from py_api.models.hackathon_teams_models import TeamType
 from pymongo.results import UpdateResult
 
 
-class TeamsUtilities:
+class TeamFunctionality:
 
     @classmethod
-    def create_team(
+    def create_team_object_with_admin(
             cls, user_id: str,
             team_name: str | None = None, generate_random_team: bool = False,
     ) -> HackathonTeam | None:
+        """ creates a new HackathonTeam object without inserting it in the database """
 
         team_type = TeamType.NORMAL
 
@@ -37,14 +38,15 @@ class TeamsUtilities:
         return new_team
 
     @classmethod
-    def add_participant_to_team(
+    def add_participant_to_team_object(
             cls, team_name: str,
             user_id: str,
     ) -> HackathonTeam | None:
+        """ fetches a HackathonTeam object and updates it without inserting it back in the database """
         team = cls.fetch_team(team_name=team_name)
 
         if not team:
-            return None
+            raise Exception("Team doesn't exist")
 
         if len(team.team_members) == 6:
             raise Exception("Team is already at max capacity")
