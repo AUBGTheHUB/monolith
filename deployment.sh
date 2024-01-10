@@ -8,12 +8,28 @@ if [ -z "$BRANCH" ] || [ -z "$WEBHOOK" ]; then
   exit 1
 fi
 
+REPO_URL="https://github.com/AUBGTheHUB/monolith"
+COMMIT_ID=$(git rev-pase HEAD)
+COMMIT_TITLE=$(git log -1 --pretty=%B)
+COMMIT_URL="$REPO_URL/commit/$COMMIT_ID"
+COMMIT_TITLE_URL="🔔:[$COMMIT_TITLE]($COMMIT_URL)"
+
+if [ "$BRANCH" = "production" ]; then
+    DEPLOYMENT_ENV="PROD"
+else
+    DEPLOYMENT_ENV="DEV"
+fi
+
 #----------------------------BUILD SERVICES---------------------------------------
-docker-compose up --build -d
+ERROR_MESSAGE = $(docker-compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
 
 if [ $? -ne 0 ]; then
-    RESULT_STRING="Running docker-compose on ${BRANCH} deployment failed!"
-    curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+    content="🏗️: $DEPLOYMENT_ENV
+    $COMMIT_TITLE_URL
+    ❌: Build Failed"
+
+    json_payload=$(jq -n --arg ERR "$ERROR_MESSAGE" --arg CONTENT "$content" '{"content": $CONTENT, "embeds":[{"title": "BUILD",  "description": $ERR}]}')
+    curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
     exit 1
 fi
 
@@ -54,12 +70,17 @@ for ((i = 0; i < ${#services[@]}; i++)); do
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
         RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
-        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+
+        content="🏗️: $DEPLOYMENT_ENV
+        $COMMIT_TITLE_URL
+        ❌: Build Failed"
+
+        json_payload=$(jq -n --arg ERR "$RESULT_STRING" --arg CONTENT "$content" '{"content": $CONTENT, "embeds":[{"title": "BUILD",  "description": $ERR}]}')
+        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
         exit 1
     fi
 done
 
 #----------------------------HEALTH CHECKS DONE-----------------------------------
 
-RESULT_STRING="Deployment was successful for branch: ${BRANCH}"
-curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"🏗️:${DEPLOYMENT_ENV}\\n${COMMIT_TITLE_URL}\\n✅:Build Successful\"}"
