@@ -144,8 +144,35 @@ class ParticipantsController:
         if jwt_token:
             try:
                 decoded_token = JWTFunctionality.decode_token(jwt_token)
-            except:
-                return JSONResponse(status_code=401, content={"message": "JWT was provided, but is invalid"})
+
+            except Exception as e:
+                return JSONResponse(status_code=401, content={"message": "JWT was provided, but is invalid", "reason": str(e)})
+
+            team_name = decoded_token.get("team_name")
+
+            team = TeamFunctionality.fetch_team(team_name=team_name)
+
+            if not team:
+                return JSONResponse(status_code=404, content={"message": "Can't find participant's team"})
+
+            if len(team.team_members) >= 6:
+                return JSONResponse(status_code=409, content={"message": "Can't register new team member. Team is at max capacity"})
+
+            inserted_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+
+            if not inserted_participant:
+                return JSONResponse(status_code=500, content={"message": "Failed inserting new participant"})
+
+            team.team_members.append(str(inserted_participant.inserted_id))
+            updatedTeam = TeamFunctionality.update_team_query(team)
+
+            if not updatedTeam:
+                return JSONResponse(status_code=500, content={"message": "Failed updating updated team in database"})
+
+            return {"message": "Participant was successfully verified and appended to corresponding team"}
+
             # TODO: check team's capacity
             # TODO: if allz good, create participant and add to team
             # TODO: update team

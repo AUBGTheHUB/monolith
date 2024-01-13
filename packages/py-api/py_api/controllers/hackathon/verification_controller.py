@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from fastapi.responses import JSONResponse
 from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 
@@ -20,3 +22,7 @@ class VerificationController:
         #     return {"message": "Team and admin were successfully verified"}
 
         # return JSONResponse(status_code=500, content={"message": "Something went wrong on our side"})
+
+    @classmethod
+    def test_controller(cls, team_name: str) -> Any:
+        return {"token": JWTFunctionality.create_jwt_token(team_name)}

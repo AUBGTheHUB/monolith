@@ -1,14 +1,21 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import TypedDict, cast
 
 import jwt
 from py_api.environment import IS_OFFLINE, SECRET_KEY
 
+JWTType = TypedDict('JWTType', {'exp': str, 'team_name': str})
+
 
 class JWTFunctionality:
+
     @classmethod
-    def decode_token(cls, token: str) -> Any:
-        return jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    def decode_token(cls, token: str) -> JWTType:
+        return cast(
+            JWTType, jwt.decode(
+                token, SECRET_KEY, algorithms=["HS256"],
+            ),
+        )
 
     @classmethod
     def create_jwt_token(cls, team_name: str) -> str:
@@ -16,11 +23,10 @@ class JWTFunctionality:
             "team_name": team_name,
             "exp": datetime.utcnow() + timedelta(hours=24),
         }
-        return str(jwt.encode(payload, SECRET_KEY, algorithm="HS256"))
+        return str(jwt.encode(payload, SECRET_KEY))
 
     @classmethod
     def get_verification_link(cls, jwt_token: str, domain: str = "https://thehub-aubg.com", for_frontend: bool = False) -> str:
-        IS_OFFLINE = False
         if IS_OFFLINE:
             domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
 

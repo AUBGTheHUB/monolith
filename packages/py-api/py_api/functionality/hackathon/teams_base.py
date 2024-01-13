@@ -60,7 +60,7 @@ class TeamFunctionality:
             cls, team_name: str | None = None,
             team_id: str | None = None,
     ) -> HackathonTeam | None:
-        team: Dict[str, Any] = {}
+        team: HackathonTeam
 
         if team_name:
             team = t_col.find_one(
