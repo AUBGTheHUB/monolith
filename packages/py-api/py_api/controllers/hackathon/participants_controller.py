@@ -189,9 +189,6 @@ class ParticipantsController:
             return {"message": "Participant was successfully verified and appended to corresponding team"}
 
         if participant.team_name:
-            # TODO: create unverified participant
-            # TODO: create unverified team and append participant
-
             participant.is_verified = False
             participant.is_admin = True
 
