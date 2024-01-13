@@ -73,7 +73,7 @@ class TeamsController:
         cls, object_id: str,
         team_payload: UpdateTeam | HackathonTeam,
     ) -> JSONResponse:
-        updated_team = TeamFunctionality.update_team_query(
+        updated_team = TeamFunctionality.update_team_query_using_dump(
             team_payload=team_payload.model_dump(), object_id=object_id,
         )
 

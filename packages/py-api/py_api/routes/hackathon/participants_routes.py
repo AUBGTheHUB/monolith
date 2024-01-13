@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from typing import Optional
+
+from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
 from py_api.controllers import ParticipantsController as c
 from py_api.models import NewParticipant, UpdateParticipant
@@ -24,7 +26,7 @@ async def update_participant(object_id: str, participant_form: UpdateParticipant
 
 
 @router.post("")
-async def add_participant(update_form: NewParticipant, jwt_token: str | None) -> JSONResponse:
+async def add_participant(update_form: NewParticipant, jwt_token: Optional[str] = None) -> JSONResponse:
     return c.add_participant(update_form, jwt_token)
 
 

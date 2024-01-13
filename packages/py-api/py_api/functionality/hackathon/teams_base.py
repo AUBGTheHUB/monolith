@@ -4,6 +4,7 @@ from bson import ObjectId
 from py_api.database.initialize import t_col
 from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import TeamType
+from pymongo import results
 from pymongo.results import UpdateResult
 
 
@@ -76,10 +77,10 @@ class TeamFunctionality:
         return HackathonTeam(**team)
 
     @classmethod
-    def update_team_query(
+    def update_team_query_using_dump(
             cls, team_payload: Dict[str, Any],
             object_id: str | None = None,
-    ) -> UpdateResult:
+    ) -> HackathonTeam:
         query = {
             "$or": [
                 {"_id": ObjectId(object_id)},
@@ -95,7 +96,7 @@ class TeamFunctionality:
             }, projection={"_id": 0}, return_document=True,
         )
 
-        return updated_team
+        return HackathonTeam(**updated_team)
 
     @classmethod
     def generate_random_team_name(cls) -> str:
@@ -103,8 +104,8 @@ class TeamFunctionality:
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def insert_team(cls, team: HackathonTeam) -> None:
-        t_col.insert_one(team.model_dump())
+    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult:
+        return t_col.insert_one(team.model_dump())
 
     @classmethod
     def get_count_of_teams(cls) -> int:
