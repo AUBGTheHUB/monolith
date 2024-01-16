@@ -25,7 +25,7 @@ class ParticipantsFunctionality:
         if new_participant.acknowledged:
             return new_participant
 
-        raise Exception("Could not add participant")
+        raise Exception("Could not create participant")
 
     @classmethod
     def delete_participant(cls, id: str) -> results.DeleteResult | None:

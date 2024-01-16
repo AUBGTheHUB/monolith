@@ -248,6 +248,7 @@ class ParticipantsController:
                         new_participant = ParticipantsFunctionality.create_participant(
                             participant,
                         )
+
                         new_participant_object_id = str(
                             new_participant.inserted_id,
                         )
@@ -266,14 +267,16 @@ class ParticipantsController:
                         return JSONResponse(content=avaliable_team.model_dump(), status_code=200)
 
                     except (Exception) as e:
-                        return JSONResponse(content={"message": e.args}, status_code=422)
+                        return JSONResponse(content={"message": str(e)}, status_code=500)
 
+            # If all the random teams are full, it checks if there is space for creating a new one
             if (TeamFunctionality.get_count_of_teams() < 15):
                 try:
                     # Creates new participant
                     new_participant = ParticipantsFunctionality.create_participant(
                         participant,
                     )
+
                     new_participant_object_id = str(
                         new_participant.inserted_id,
                     )
@@ -290,10 +293,11 @@ class ParticipantsController:
                         )
                         TeamFunctionality.insert_team(newTeam)
                         return JSONResponse(content=newTeam.model_dump(), status_code=200)
+                    else:
+                        return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
+
                 except (Exception) as e:
-                    return JSONResponse(content={"message": e.args}, status_code=422)
-                else:
-                    return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
+                    return JSONResponse(content={"message": str(3)}, status_code=500)
 
             else:
                 return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
