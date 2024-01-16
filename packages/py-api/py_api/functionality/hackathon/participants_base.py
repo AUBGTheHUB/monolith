@@ -20,8 +20,12 @@ class ParticipantsFunctionality:
         return False
 
     @classmethod
-    def create_participant(cls, participant: NewParticipant) -> results.InsertOneResult | None:
-        return cls.pcol.insert_one(participant.model_dump())
+    def create_participant(cls, participant: NewParticipant) -> results.InsertOneResult:
+        new_participant = cls.pcol.insert_one(participant.model_dump())
+        if new_participant.acknowledged:
+            return new_participant
+
+        raise Exception("Could not add participant")
 
     @classmethod
     def delete_participant(cls, id: str) -> results.DeleteResult | None:
