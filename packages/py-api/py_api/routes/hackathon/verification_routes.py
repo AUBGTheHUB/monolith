@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from py_api.controllers.hackathon.verification_controller import (
@@ -12,6 +14,6 @@ def verify_admin(jwt_token: str) -> JSONResponse:
     return c.verify_admin(jwt_token)
 
 
-# @router.get("/test")
-# def verify_url(jwt_token: str, is_frontend: bool, request: Request) -> JSONResponse:
-#     return {'url': JWTFunctionality.get_verification_link(jwt_token, domain=get_hostname_with_protocol(request), for_frontend=is_frontend)}
+@router.get("/test")
+def verify_url(team_name: str) -> Any:
+    return c.test_controller(team_name=team_name)

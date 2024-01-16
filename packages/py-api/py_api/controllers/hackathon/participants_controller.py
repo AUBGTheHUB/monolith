@@ -93,7 +93,8 @@ class ParticipantsController:
         else:
             return {"message": "The participant is not in the specified team"}, 404
 
-        TeamFunctionality.update_team_query(team.model_dump())
+        # ! You're not checking success state here!!!
+        TeamFunctionality.update_team_query_using_dump(team.model_dump())
 
         return {"message": "The participant was deleted successfully from team!"}, 200
 
@@ -143,24 +144,92 @@ class ParticipantsController:
         if jwt_token:
             try:
                 decoded_token = JWTFunctionality.decode_token(jwt_token)
-            except:
-                return JSONResponse(status_code=401, content={"message": "JWT was provided, but is invalid"})
-            # TODO: check team's capacity
-            # TODO: if allz good, create participant and add to team
-            # TODO: update team
+
+            except Exception as e:
+                return JSONResponse(status_code=401, content={"message": "JWT was provided, but is invalid", "reason": str(e)})
+
+            team_name = decoded_token.get("team_name")
+
+            team = TeamFunctionality.fetch_team(team_name=team_name)
+
+            if not team:
+                return JSONResponse(status_code=404, content={"message": "Can't find participant's team"})
+
+            if len(team.team_members) >= 6:
+                return JSONResponse(status_code=409, content={"message": "Can't register new team member. Team is at max capacity"})
+
+            participant.is_verified = True
+            participant.is_admin = False
+
+            inserted_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+
+            if not inserted_participant:
+                return JSONResponse(status_code=500, content={"message": "Failed inserting new participant"})
+
+            team.team_members.append(str(inserted_participant.inserted_id))
+            updatedTeam = TeamFunctionality.update_team_query_using_dump(
+                team.model_dump(),
+            )
+
+            if not updatedTeam:
+                return JSONResponse(status_code=500, content={"message": "Failed updating updated team in database"})
+
+            participant.team_name = updatedTeam.team_name
+
+            updated_participant = ParticipantsFunctionality.update_participant(
+                id=str(inserted_participant.inserted_id), participant=participant,
+            )
+
+            if not updated_participant:
+                return JSONResponse(status_code=500, content={"message": "Something went wrong updating the participant with new team"})
+
+            return {"message": "Participant was successfully verified and appended to corresponding team"}
 
         if participant.team_name:
-            # TODO: create unverified participant
-            # TODO: create unverified team and append participant
+            participant.is_verified = False
+            participant.is_admin = True
 
-            jwt_token = JWTFunctionality.create_jwt_token(
-                participant.team_name,
+            inserted_participant = ParticipantsFunctionality.create_participant(
+                participant,
             )
-            # TODO: verification_link = JWTVerification.create_admin_verification_link(jwt_token)
 
-            # TODO: send_verification_email(to=participant.email, is_admin=True, verification_link=verification_link)
-            # * is_admin will identify whether the used template should be for admins who have to verify their teams
-            # * or the one storing the link for inviting participants to the team
+            if not inserted_participant:
+                return JSONResponse(status_code=500, content={"message": "Failed inserting new participant"})
+
+            if TeamFunctionality.get_count_of_teams() > 15:
+                return JSONResponse(content={"message": "Hackathon is at max capacity"}, status_code=409)
+
+            team_object = TeamFunctionality.create_team_object_with_admin(
+                user_id=str(inserted_participant.inserted_id), team_name=participant.team_name,
+            )
+
+            if not team_object:
+                # or might be a bad transaction
+                return JSONResponse(content={"message": "Name is already taken"}, status_code=400)
+
+            new_team = TeamFunctionality.insert_team(team_object)
+
+            if not new_team:
+                # delete redundant participant document if team creation request has failed
+                ParticipantsFunctionality.delete_participant(
+                    str(inserted_participant.inserted_id),
+                )
+
+                return JSONResponse(status_code=500, content={"message": "Failed inserting new team. Participant entry was discarded."})
+
+            """
+                jwt_token = JWTFunctionality.create_jwt_token(
+                    participant.team_name,
+                )
+
+                * generate token and send verification link via email to the participant
+                # TODO: send_verification_email(to=participant.email, is_admin=True, verification_link=verification_link)
+
+            """
+
+            return {"message": "New admin participant was registered"}
 
         else:
             # TODO: create participant
@@ -182,7 +251,7 @@ class ParticipantsController:
         # Find the teams which can accept a new participant
         for team in random_teams:
 
-            if TeamFunctionality.team_has_available_space(team):
+            if (len(team.team_members) < 6):
                 avaliable_team = team
                 try:
                     avaliable_team = TeamFunctionality.add_participant_to_team_object(
@@ -193,7 +262,7 @@ class ParticipantsController:
                             **{"team_name": avaliable_team.team_name}
                         ),
                     )
-                    TeamFunctionality.update_team_query(
+                    TeamFunctionality.update_team_query_using_dump(
                         avaliable_team.model_dump(),
                     )
                     return JSONResponse(content=avaliable_team.model_dump(), status_code=200)

@@ -4,6 +4,7 @@ from bson import ObjectId
 from py_api.database.initialize import t_col
 from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import TeamType
+from pymongo import results
 from pymongo.results import UpdateResult
 
 
@@ -63,7 +64,7 @@ class TeamFunctionality:
             cls, team_name: str | None = None,
             team_id: str | None = None,
     ) -> HackathonTeam | None:
-        team: Dict[str, Any] = {}
+        team: HackathonTeam
 
         if team_name:
             team = t_col.find_one(
@@ -85,17 +86,10 @@ class TeamFunctionality:
         return [HackathonTeam(**team) for team in filtered_teams]
 
     @classmethod
-    def team_has_available_space(cls, team: HackathonTeam) -> bool:
-        if (len(team.team_members) < 6):
-            return True
-        else:
-            return False
-
-    @classmethod
-    def update_team_query(
+    def update_team_query_using_dump(
             cls, team_payload: Dict[str, Any],
             object_id: str | None = None,
-    ) -> UpdateResult:
+    ) -> HackathonTeam:
         query = {
             "$or": [
                 {"_id": ObjectId(object_id)},
@@ -111,7 +105,7 @@ class TeamFunctionality:
             }, projection={"_id": 0}, return_document=True,
         )
 
-        return updated_team
+        return HackathonTeam(**updated_team)
 
     @classmethod
     def generate_random_team_name(cls) -> str:
@@ -119,8 +113,8 @@ class TeamFunctionality:
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def insert_team(cls, team: HackathonTeam) -> None:
-        t_col.insert_one(team.model_dump())
+    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult:
+        return t_col.insert_one(team.model_dump())
 
     @classmethod
     def get_count_of_teams(cls) -> int:
