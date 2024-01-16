@@ -269,24 +269,29 @@ class ParticipantsController:
                         return JSONResponse(content={"message": e.args}, status_code=422)
 
             if (TeamFunctionality.get_count_of_teams() < 15):
-                # Creates new participant
-                new_participant = ParticipantsFunctionality.create_participant(
-                    participant,
-                )
-                new_participant_object_id = str(new_participant.inserted_id)
-                # Create New Team and assign the new participant to it
-                newTeam = TeamFunctionality.create_team_object_with_admin(
-                    user_id=new_participant_object_id, team_name=TeamFunctionality.generate_random_team_name(), generate_random_team=True,
-                )
-
-                if newTeam:
-                    cls.update_participant(
-                        new_participant_object_id, UpdateParticipant(
-                            **{"team_name": newTeam.team_name}
-                        ),
+                try:
+                    # Creates new participant
+                    new_participant = ParticipantsFunctionality.create_participant(
+                        participant,
                     )
-                    TeamFunctionality.insert_team(newTeam)
-                    return JSONResponse(content=newTeam.model_dump(), status_code=200)
+                    new_participant_object_id = str(
+                        new_participant.inserted_id,
+                    )
+                    # Create New Team and assign the new participant to it
+                    newTeam = TeamFunctionality.create_team_object_with_admin(
+                        user_id=new_participant_object_id, team_name=TeamFunctionality.generate_random_team_name(), generate_random_team=True,
+                    )
+
+                    if newTeam:
+                        cls.update_participant(
+                            new_participant_object_id, UpdateParticipant(
+                                **{"team_name": newTeam.team_name}
+                            ),
+                        )
+                        TeamFunctionality.insert_team(newTeam)
+                        return JSONResponse(content=newTeam.model_dump(), status_code=200)
+                except (Exception) as e:
+                    return JSONResponse(content={"message": e.args}, status_code=422)
                 else:
                     return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
 
