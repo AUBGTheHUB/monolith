@@ -258,7 +258,7 @@ class ParticipantsController:
                         )
                         cls.update_participant(
                             new_participant_object_id, UpdateParticipant(
-                                **{"team_name": avaliable_team.team_name}
+                                team_name=avaliable_team.team_name,
                             ),
                         )
                         TeamFunctionality.update_team_query_using_dump(
@@ -288,7 +288,7 @@ class ParticipantsController:
                     if newTeam:
                         cls.update_participant(
                             new_participant_object_id, UpdateParticipant(
-                                **{"team_name": newTeam.team_name}
+                                team_name=newTeam.team_name,
                             ),
                         )
                         TeamFunctionality.insert_team(newTeam)
@@ -297,7 +297,7 @@ class ParticipantsController:
                         return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
 
                 except (Exception) as e:
-                    return JSONResponse(content={"message": str(3)}, status_code=500)
+                    return JSONResponse(content={"message": str(e)}, status_code=500)
 
             else:
                 return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
