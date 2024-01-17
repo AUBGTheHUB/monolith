@@ -42,7 +42,7 @@ class TeamFunctionality:
     def add_participant_to_team_object(
             cls, team_name: str,
             user_id: str,
-    ) -> HackathonTeam | None:
+    ) -> HackathonTeam:
         """ fetches a HackathonTeam object and updates it without inserting it back in the database """
         team = cls.fetch_team(team_name=team_name)
 
@@ -75,6 +75,12 @@ class TeamFunctionality:
             return None
 
         return HackathonTeam(**team)
+
+    @classmethod
+    def fetch_teams_by_condition(cls, conditions: Dict[str, Any]) -> List[HackathonTeam]:
+        # if conditions are empty it will return all the teams
+        filtered_teams = list(t_col.find(conditions))
+        return [HackathonTeam(**team) for team in filtered_teams]
 
     @classmethod
     def update_team_query_using_dump(
