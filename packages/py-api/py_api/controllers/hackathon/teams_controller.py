@@ -4,7 +4,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from fastapi.responses import JSONResponse
 from py_api.database.initialize import t_col
-from py_api.functionality.hackathon.teams.teams_utility_functions import TeamsUtilities
+from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_teams_models import HackathonTeam, UpdateTeam
 
 
@@ -27,7 +27,7 @@ class TeamsController:
 
     @classmethod
     def get_team(cls, object_id: str) -> JSONResponse:
-        specified_team = TeamsUtilities.fetch_team(team_id=object_id)
+        specified_team = TeamFunctionality.fetch_team(team_id=object_id)
         if not specified_team:
             return JSONResponse(
                 content={"message": "The team was not found"},
@@ -58,7 +58,7 @@ class TeamsController:
 
     @staticmethod
     def team_count() -> JSONResponse:
-        count = TeamsUtilities.get_count_of_teams()
+        count = TeamFunctionality.get_count_of_teams()
 
         if count == 0:
             return JSONResponse(
@@ -73,7 +73,7 @@ class TeamsController:
         cls, object_id: str,
         team_payload: UpdateTeam | HackathonTeam,
     ) -> JSONResponse:
-        updated_team = TeamsUtilities.update_team_query(
+        updated_team = TeamFunctionality.update_team_query_using_dump(
             team_payload=team_payload.model_dump(), object_id=object_id,
         )
 

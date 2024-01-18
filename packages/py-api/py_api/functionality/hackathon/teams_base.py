@@ -1,19 +1,20 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from bson import ObjectId
 from py_api.database.initialize import t_col
 from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import TeamType
-from pymongo.results import UpdateResult
+from pymongo import results
 
 
-class TeamsUtilities:
+class TeamFunctionality:
 
     @classmethod
-    def create_team(
+    def create_team_object_with_admin(
             cls, user_id: str,
             team_name: str | None = None, generate_random_team: bool = False,
     ) -> HackathonTeam | None:
+        """ creates a new HackathonTeam object without inserting it in the database """
 
         team_type = TeamType.NORMAL
 
@@ -37,14 +38,15 @@ class TeamsUtilities:
         return new_team
 
     @classmethod
-    def add_participant_to_team(
+    def add_participant_to_team_object(
             cls, team_name: str,
             user_id: str,
-    ) -> HackathonTeam | None:
+    ) -> HackathonTeam:
+        """ fetches a HackathonTeam object and updates it without inserting it back in the database """
         team = cls.fetch_team(team_name=team_name)
 
         if not team:
-            return None
+            raise Exception("Team doesn't exist")
 
         if len(team.team_members) == 6:
             raise Exception("Team is already at max capacity")
@@ -58,7 +60,7 @@ class TeamsUtilities:
             cls, team_name: str | None = None,
             team_id: str | None = None,
     ) -> HackathonTeam | None:
-        team: Dict[str, Any] = {}
+        team: HackathonTeam
 
         if team_name:
             team = t_col.find_one(
@@ -74,10 +76,16 @@ class TeamsUtilities:
         return HackathonTeam(**team)
 
     @classmethod
-    def update_team_query(
+    def fetch_teams_by_condition(cls, conditions: Dict[str, Any]) -> List[HackathonTeam]:
+        # if conditions are empty it will return all the teams
+        filtered_teams = list(t_col.find(conditions))
+        return [HackathonTeam(**team) for team in filtered_teams]
+
+    @classmethod
+    def update_team_query_using_dump(
             cls, team_payload: Dict[str, Any],
             object_id: str | None = None,
-    ) -> UpdateResult:
+    ) -> HackathonTeam:
         query = {
             "$or": [
                 {"_id": ObjectId(object_id)},
@@ -93,7 +101,7 @@ class TeamsUtilities:
             }, projection={"_id": 0}, return_document=True,
         )
 
-        return updated_team
+        return HackathonTeam(**updated_team)
 
     @classmethod
     def generate_random_team_name(cls) -> str:
@@ -101,8 +109,8 @@ class TeamsUtilities:
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def insert_team(cls, team: HackathonTeam) -> None:
-        t_col.insert_one(team.model_dump())
+    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult:
+        return t_col.insert_one(team.model_dump())
 
     @classmethod
     def get_count_of_teams(cls) -> int:

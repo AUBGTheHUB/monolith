@@ -26,16 +26,15 @@ class UrlShortenerController:
             return JSONResponse(content={"message": "Endpoint wasn't found!"}, status_code=404)
 
     @classmethod
-    def upsert_shortened_url(cls, body: ShortenedURL) -> Dict[str, str] | JSONResponse:
-        dumped_body = body.model_dump()
+    def upsert_shortened_url(cls, shortened_url: ShortenedURL) -> Dict[str, str] | JSONResponse:
         prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
 
-        if has_prohibited_characters(dumped_body["endpoint"], prohibited_chars):
+        if has_prohibited_characters(shortened_url.endpoint, prohibited_chars):
             return JSONResponse(content={"message": f"Provided endpoint includes a probited character - {prohibited_chars}"}, status_code=400)
 
         su_col.find_one_and_update(
-            filter={"endpoint": dumped_body["endpoint"]},
-            update={"$set": dumped_body},
+            filter={"endpoint": shortened_url.endpoint},
+            update={"$set": shortened_url.model_dump()},
             upsert=True,
         )
 
