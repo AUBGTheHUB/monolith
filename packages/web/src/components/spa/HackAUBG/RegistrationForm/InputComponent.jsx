@@ -1,41 +1,22 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
-import { useForm } from 'react-hook-form';
 
-const InputComponent = props => {
-    const type = props.type;
-    const label = props.label;
-    const required = props.required;
+const InputComponent = ({ type, label, register, required }) => {
     let restrictions = '';
     let errorMessage = '';
-    const { register } = useForm({
-        defaultValues: {
-            example: '',
-            exampleRequired: '',
-        },
-    });
-    if (type === 'firstName' || type === 'lastName') {
-        restrictions = '/^[A-Za-z]{2,15}$/';
-        errorMessage = 'Name must be between 2 and 15 characters';
+    if (type === 'firstName' || type === 'lastName' || type == 'email') {
+        if (type == 'email') {
+            restrictions = /[a-zA-Z0-9._-]+@[a-zA-Z0-9]+.[a-zA-Z]{2,4}/;
+            errorMessage = 'Please enter a valid email';
+        } else {
+            errorMessage = 'Name must be between 2 and 15 characters';
+            restrictions = /^[A-Za-z]{2,15}$/;
+        }
         return (
             <div>
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
                     {...register(type, {
-                        required: required,
-                        pattern: { value: restrictions, message: errorMessage },
-                    })}></input>
-            </div>
-        );
-    } else if (type == 'email') {
-        restrictions = '/[a-zA-Z0-9._-]+@[a-zA-Z0-9]+.[a-zA-Z]{2,4}/';
-        errorMessage = 'Please enter a valid email';
-        return (
-            <div>
-                <label>Email address</label>
-                <input
-                    placeholder="Type here"
-                    {...register('email', {
                         required: required,
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
@@ -823,16 +804,12 @@ const InputComponent = props => {
         return (
             <div>
                 <label>{label}</label>
-                <input type="radio" {...register(type)}>
-                    Yes
-                </input>
-                <input type="radio" {...register(type)}>
-                    No
-                </input>
+                <input type="radio" name={label} value="yes" {...register(label)}></input>
+                <input type="radio" name={label} value="no" {...register(label)}></input>
             </div>
         );
     } else if (type == 'tshirt') {
-        restrictions = '/^(d*(?:M|X{0,2}[SsLl]))/i';
+        restrictions = /^(d*(?:M|X{0,2}[SsLl]))/i;
         errorMessage = 'Please use Universal Standart Sizing (XS,S,M,L...)';
     } else if (type === 'concent') {
         restrictions = 'true';

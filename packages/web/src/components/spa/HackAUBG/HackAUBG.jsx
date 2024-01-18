@@ -9,7 +9,7 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
-import RegistrationForm from './RegistrationForm/RegistrationForm';
+import RegistrationForm from './RegistrationForm/RegistrationForm.jsx';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
@@ -26,7 +26,7 @@ export const HackAUBG = () => {
         new Anchor('About', '#about'),
         new Anchor('Schedule', '#schedule'),
         new Anchor('Grading Criteria', '#grading'),
-        new Anchor('FAQ', '#faq')
+        new Anchor('FAQ', '#faq'),
     ];
 
     return (
@@ -42,14 +42,14 @@ export const HackAUBG = () => {
                         'gray', // mobile background color nav when opened
                         'white', // anchor color
                         'green', // desktop anchor hover color
-                        'dark gray' // mobile anchor hover color
+                        'dark gray', // mobile anchor hover color
                     )
                 }
             />
             <MatrixWindow />
+            <RegistrationForm />
             <AboutHackathon />
             <JourneySection />
-            <RegistrationForm />
             <MentorsSection />
             <JudgesSection />
             <VideoSection />
@@ -58,11 +58,7 @@ export const HackAUBG = () => {
             <AwardsSection />
             <Sponsors />
             <FaqSection />
-            <Footer
-                color={'rgb(25, 183, 0)'}
-                iconColor={'rgb(255, 255, 255)'}
-                iconBgColor={'rgb(120, 120, 120)'}
-            />
+            <Footer color={'rgb(25, 183, 0)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
         </div>
     );
 };

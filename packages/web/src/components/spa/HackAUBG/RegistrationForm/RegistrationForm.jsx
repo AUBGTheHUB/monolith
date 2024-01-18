@@ -8,7 +8,7 @@ import InputComponent from './InputComponent';
 //import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
-    const { handleSubmit } = useForm();
+    const { register, handleSubmit } = useForm();
 
     // const [loadingAnimation, setLoadingAnimation] = useState(false);
     // const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
@@ -37,15 +37,15 @@ const RegistrationForm = () => {
     // if(isFormAvailable)
     return (
         <form
+            id="registration"
             onSubmit={handleSubmit(data => {
+                console.log(data);
                 alert(JSON.stringify(data));
             })}>
             <label>Example</label>
-            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
-            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
-            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
-            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
-            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
+            <InputComponent label="First Name" type="firstName" required="true" register={register} />
+            <InputComponent label="Last Name" type="lastName" required="true" register={register} />
+            <InputComponent label="team?" type="yesNo" required="true" register={register} />
             <input type="submit" />
         </form>
     );
