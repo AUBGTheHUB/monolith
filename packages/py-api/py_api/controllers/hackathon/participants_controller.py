@@ -11,6 +11,7 @@ from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
+from py_api.models.hackathon_teams_models import HackathonTeam
 from py_api.utilities.parsers import filter_none_values
 from starlette.responses import JSONResponse
 
@@ -240,64 +241,71 @@ class ParticipantsController:
 
             # Find the teams which can accept a new participant
             for team in random_teams:
-
                 if (len(team.team_members) < 6):
-                    avaliable_team = team
-                    try:
-                        # Creates new participant
-                        new_participant = ParticipantsFunctionality.create_participant(
-                            participant,
-                        )
+                    return cls.add_participant_to_existing_random_team(team, participant)
 
-                        new_participant_object_id = str(
-                            new_participant.inserted_id,
-                        )
-                        # Adds the participant to the team
-                        avaliable_team = TeamFunctionality.add_participant_to_team_object(
-                            avaliable_team.team_name, new_participant_object_id,
-                        )
-                        cls.update_participant(
-                            new_participant_object_id, UpdateParticipant(
-                                team_name=avaliable_team.team_name,
-                            ),
-                        )
-                        TeamFunctionality.update_team_query_using_dump(
-                            avaliable_team.model_dump(),
-                        )
-                        return JSONResponse(content=avaliable_team.model_dump(), status_code=200)
-
-                    except (Exception) as e:
-                        return JSONResponse(content={"message": str(e)}, status_code=500)
-
-            # If all the random teams are full, it checks if there is space for creating a new one
+            # If all the random teams are full, check if there is space for creating a new one
             if (TeamFunctionality.get_count_of_teams() < 15):
-                try:
-                    # Creates new participant
-                    new_participant = ParticipantsFunctionality.create_participant(
-                        participant,
-                    )
-
-                    new_participant_object_id = str(
-                        new_participant.inserted_id,
-                    )
-                    # Create New Team and assign the new participant to it
-                    newTeam = TeamFunctionality.create_team_object_with_admin(
-                        user_id=new_participant_object_id, team_name=TeamFunctionality.generate_random_team_name(), generate_random_team=True,
-                    )
-
-                    if newTeam:
-                        cls.update_participant(
-                            new_participant_object_id, UpdateParticipant(
-                                team_name=newTeam.team_name,
-                            ),
-                        )
-                        TeamFunctionality.insert_team(newTeam)
-                        return JSONResponse(content=newTeam.model_dump(), status_code=200)
-                    else:
-                        return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
-
-                except (Exception) as e:
-                    return JSONResponse(content={"message": str(e)}, status_code=500)
+                return cls.add_participant_to_new_random_team(participant)
 
             else:
                 return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
+
+    @classmethod
+    def add_participant_to_existing_random_team(cls, available_team: HackathonTeam, participant: NewParticipant) -> JSONResponse:
+        try:
+            # Creates new participant
+            new_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+
+            new_participant_object_id = str(
+                new_participant.inserted_id,
+            )
+            # Adds the participant to the team
+            available_team = TeamFunctionality.add_participant_to_team_object(
+                available_team.team_name, new_participant_object_id,
+            )
+            ParticipantsFunctionality.update_participant(
+                new_participant_object_id, UpdateParticipant(
+                    team_name=available_team.team_name,
+                ),
+            )
+            TeamFunctionality.update_team_query_using_dump(
+                available_team.model_dump(),
+            )
+            return JSONResponse(content=available_team.model_dump(), status_code=200)
+
+        except (Exception) as e:
+            return JSONResponse(content={"message": str(e)}, status_code=500)
+
+    @classmethod
+    def add_participant_to_new_random_team(cls, participant: NewParticipant) -> JSONResponse:
+        try:
+            # Creates new participant
+            new_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+
+            new_participant_object_id = str(
+                new_participant.inserted_id,
+            )
+            # Create New Team and assign the new participant to it
+            newTeam = TeamFunctionality.create_team_object_with_admin(
+                user_id=new_participant_object_id, team_name=TeamFunctionality.generate_random_team_name(), generate_random_team=True,
+            )
+
+            if newTeam:
+                ParticipantsFunctionality.update_participant(
+                    new_participant_object_id, UpdateParticipant(
+                        team_name=newTeam.team_name,
+                    ),
+                )
+
+                TeamFunctionality.insert_team(newTeam)
+                return JSONResponse(content=newTeam.model_dump(), status_code=200)
+
+            return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
+
+        except (Exception) as e:
+            return JSONResponse(content={"message": str(e)}, status_code=500)
