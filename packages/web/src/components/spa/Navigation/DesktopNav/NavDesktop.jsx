@@ -72,6 +72,7 @@ export const NavDesktop = ({ props }) => {
                 }}
                 style={{ color: props.anchorColor }}>
                 {anchor.name}
+                <div className="anchor-icon">{anchor.image}</div>
             </a>
         );
     };

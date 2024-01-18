@@ -4,6 +4,7 @@
     color: white;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     padding-left: 10%;
     padding-right: 10%;
     align-items: center;
@@ -162,4 +163,14 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+.anchor-icon {
+    position: absolute;
+    margin-bottom: 20px;
+    margin-left: 75px;
+}
+
+.anchor-icon:hover {
+    color: white;
 }
