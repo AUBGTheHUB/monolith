@@ -21,6 +21,7 @@ export const NavDesktop = ({ props }) => {
         }
     };
 
+    // Test
     const openHome = () => {
         navigateTo('/');
         window.scrollTo(0, 0);
