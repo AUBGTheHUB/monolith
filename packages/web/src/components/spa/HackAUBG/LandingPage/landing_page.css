@@ -24,11 +24,6 @@ input[type='reset'] {
     align-items: center;
     justify-content: center;
     z-index: 1;
-    h1 h2 {
-        color: white;
-        font-family: 'Press Start 2P', cursive;
-        font-size: 25px;
-    }
 }
 .landing-page .title h1 {
     color: white;
@@ -38,20 +33,40 @@ input[type='reset'] {
 
 .landing-page .title h2 {
     color: white;
+    /* change-font */
     font-family: 'Press Start 2P', cursive;
-    font-size: 25px;
+    font-size: 20px;
+    margin-top: 10px;
 }
 
 .landing-page .register-button {
     margin-top: 50px;
     display: flex;
     align-items: center;
-    padding: 30px;
-    border: 2px solid red;
+    padding: 40px;
+    border: 3px solid rgb(216, 194, 251);
+    color: rgb(216 194 251);
 }
 
+.landing-page .register-button h1 {
+    color: rgb(216 194 251);
+    padding-right: 10px;
+    /* change-font */
+    /* font-family: ; */
+}
+
+.landing-page .register-button:hover {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    padding: 40px;
+    background-color: rgb(216, 194, 251);
+    border: 3px solid rgb(216, 194, 251);
+    h1 {
+        color: #fff;
+    }
+}
 .landing-page .register-button h1 {
     font-size: 30px;
     margin: 0;
 }
-/* .landing-page .register-button */

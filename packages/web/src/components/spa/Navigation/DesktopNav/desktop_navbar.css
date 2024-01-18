@@ -10,6 +10,7 @@
     align-items: center;
     font-family: 'Poppins';
     font-weight: 500;
+    z-index: 999 !important;
 
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -132,14 +133,7 @@
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
-    background-image: linear-gradient(
-        to right,
-        #32baf4,
-        #467edd,
-        #3f86ed,
-        #47acdf,
-        #24cc8e
-    );
+    background-image: linear-gradient(to right, #32baf4, #467edd, #3f86ed, #47acdf, #24cc8e);
     box-shadow: 0 2px 10px 0 rgb(70, 126, 221);
 }
 
