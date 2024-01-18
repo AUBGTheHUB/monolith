@@ -9,9 +9,9 @@ from py_api.controllers.hackathon.verification_controller import (
 router = APIRouter(prefix="/hackathon/verify")
 
 
-@router.get("/admin")
+@router.get("/participant")
 def verify_admin(jwt_token: str) -> JSONResponse:
-    return c.verify_admin(jwt_token)
+    return c.verify_participants(jwt_token)
 
 
 @router.get("/test")

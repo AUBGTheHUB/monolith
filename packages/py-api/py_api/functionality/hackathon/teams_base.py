@@ -110,12 +110,14 @@ class TeamFunctionality:
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult:
+    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult | None:
+        """Returns the insert MongoDB document or None if an error occurred during insertion"""
+
         new_team = t_col.insert_one(team.model_dump())
         if new_team.acknowledged:
             return new_team
 
-        raise Exception("Failed inserting new team")
+        raise None
 
     @classmethod
     def get_count_of_teams(cls) -> int:

@@ -5,38 +5,75 @@ from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import UpdateParticipant
+from py_api.services.mailer import send_mail
+from starlette.background import BackgroundTasks
 
 
 class VerificationController:
     @classmethod
-    def verify_admin(cls, jwt_token: str) -> JSONResponse:
-        try:
-            decoded_token = JWTFunctionality.decode_token(jwt_token)
-        except:
-            return JSONResponse(status_code=401)
+    def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
+        result = JWTFunctionality.decode_token(jwt_token)
+
+        if isinstance(result, dict):
+            decoded_token = result
+        else:
+            return JSONResponse(content=result[0], status_code=result[1])
 
         team = TeamFunctionality.fetch_team(
             team_name=decoded_token.get("team_name"),
         )
-
         if not team:
-            return JSONResponse(content={"message": "Cannot verify admin as such team doesn't exist"}, status_code=404)
+            return JSONResponse(
+                content={
+                    "message": "Cannot verify participant as such team doesn't exist",
+                },
+                status_code=404,
+            )
 
-        # TODO: verify expiration
-
-        verified_admin = ParticipantsFunctionality.update_participant(
-            id=team.team_members[0], participant=UpdateParticipant(
+        verified_participant = ParticipantsFunctionality.update_participant(
+            object_id=str(decoded_token.get("sub")), participant=UpdateParticipant(
                 is_verified=True,
             ),
         )
+        if not verified_participant:
+            return JSONResponse(
+                content={
+                    "message": "Something went wrong updating participant document",
+                },
+                status_code=500,
+            )
 
-        if not verified_admin:
-            return JSONResponse(content={"message": "Something went wrong updating admin document"}, status_code=500)
+        if team.is_verified is not True:
+            team.is_verified = True
+            verified_team = TeamFunctionality.update_team_query_using_dump(
+                team_payload=team.model_dump(),
+            )
 
-        # TODO: add is_verified property to teams so that you can later delete expired teams upon admin clean ups
-        # TODO: send email with jwt link for appending participants to now verified team
+            if not verified_team:
+                return JSONResponse(
+                    content={
+                        "message": "Something went wrong updating team document",
+                    },
+                    status_code=500,
+                )
 
-        return {"message": "Admin was successfully verified"}
+        if team.team_type == team.team_type.NORMAL:
+            token = JWTFunctionality.create_jwt_token(
+                team.team_name, is_invite=True,
+            )
+            try:
+                background_tasks = BackgroundTasks()
+                background_tasks.add_task(
+                    send_mail, verified_participant.get(
+                        "email",
+                    ), "Test", f"Token: {token}",
+                )
+            except Exception as e:
+                return JSONResponse(
+                    content={"error": str(e)},
+                    status_code=500,
+                )
+        return {"message": "Participant was successfully verified"}
 
     @classmethod
     def test_controller(cls, team_name: str) -> Any:
