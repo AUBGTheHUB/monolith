@@ -266,7 +266,7 @@ class ParticipantsController:
             available_team = TeamFunctionality.add_participant_to_team_object(
                 available_team.team_name, new_participant_object_id,
             )
-            cls.update_participant(
+            ParticipantsFunctionality.update_participant(
                 new_participant_object_id, UpdateParticipant(
                     team_name=available_team.team_name,
                 ),
@@ -296,15 +296,16 @@ class ParticipantsController:
             )
 
             if newTeam:
-                cls.update_participant(
+                ParticipantsFunctionality.update_participant(
                     new_participant_object_id, UpdateParticipant(
                         team_name=newTeam.team_name,
                     ),
                 )
+
                 TeamFunctionality.insert_team(newTeam)
                 return JSONResponse(content=newTeam.model_dump(), status_code=200)
-            else:
-                return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
+
+            return JSONResponse(content={"message": "Couldn't create team, because a team of the same name already exists!"}, status_code=422)
 
         except (Exception) as e:
             return JSONResponse(content={"message": str(e)}, status_code=500)
