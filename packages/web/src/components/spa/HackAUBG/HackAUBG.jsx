@@ -16,7 +16,7 @@ import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
-import { BackgroundImage } from '../Navigation/Background.jsx';
+import { LandingPage } from './LandingPage/LandingPage.jsx';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -48,7 +48,7 @@ export const HackAUBG = () => {
                 }
             />
             {/* <MatrixWindow /> */}
-            <BackgroundImage />
+            <LandingPage />
             <AboutHackathon />
             <JourneySection />
             <RegistrationForm />
