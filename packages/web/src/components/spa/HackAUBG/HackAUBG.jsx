@@ -24,9 +24,9 @@ export const HackAUBG = () => {
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
-        new Anchor('About', '#about'),
-        new Anchor('Schedule', '#schedule'),
-        new Anchor('Grading Criteria', '#grading'),
+        new Anchor('About', '#about', <FaRegLightbulb />),
+        new Anchor('Schedule', '#schedule', <FaRegLightbulb />),
+        new Anchor('Grading Criteria', '#grading', <FaRegLightbulb />),
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 

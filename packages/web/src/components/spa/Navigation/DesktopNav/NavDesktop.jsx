@@ -62,18 +62,20 @@ export const NavDesktop = ({ props }) => {
         }
 
         return (
-            <a
-                href={anchor.endpoint}
-                onMouseEnter={e => {
-                    changeAnchorColor(e, props.anchorHoverColor);
-                }}
-                onMouseLeave={e => {
-                    changeAnchorColor(e, props.anchorColor);
-                }}
-                style={{ color: props.anchorColor }}>
-                {anchor.name}
+            <div className="test">
+                <a
+                    href={anchor.endpoint}
+                    onMouseEnter={e => {
+                        changeAnchorColor(e, props.anchorHoverColor);
+                    }}
+                    onMouseLeave={e => {
+                        changeAnchorColor(e, props.anchorColor);
+                    }}
+                    style={{ color: props.anchorColor }}>
+                    {anchor.name}
+                </a>
                 <div className="anchor-icon">{anchor.image}</div>
-            </a>
+            </div>
         );
     };
 
