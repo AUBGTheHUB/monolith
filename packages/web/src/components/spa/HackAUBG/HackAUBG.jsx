@@ -17,6 +17,9 @@ import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { FaRegLightbulb } from 'react-icons/fa';
+import { TbFileInfo } from 'react-icons/tb';
+import { BsCalendar2Week } from 'react-icons/bs';
+import { MdGrading } from 'react-icons/md';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -24,9 +27,9 @@ export const HackAUBG = () => {
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
-        new Anchor('About', '#about', <FaRegLightbulb />),
-        new Anchor('Schedule', '#schedule', <FaRegLightbulb />),
-        new Anchor('Grading Criteria', '#grading', <FaRegLightbulb />),
+        new Anchor('About', '#about', <TbFileInfo />),
+        new Anchor('Schedule', '#schedule', <BsCalendar2Week />),
+        new Anchor('Grading Criteria', '#grading', <MdGrading />),
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 

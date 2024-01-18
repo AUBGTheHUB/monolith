@@ -62,7 +62,7 @@ export const NavDesktop = ({ props }) => {
         }
 
         return (
-            <div className="test">
+            <div className="anchor-navbar-buttons">
                 <a
                     href={anchor.endpoint}
                     onMouseEnter={e => {

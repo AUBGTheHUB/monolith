@@ -30,7 +30,7 @@
     font-family: 'Post No Bills Jaffna';
     line-height: 10px;
     letter-spacing: 0.1em;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin: 0;
 }
 
@@ -72,12 +72,11 @@
     display: flex;
     color: white;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     justify-content: center;
     align-items: center;
     margin-left: 1rem;
     margin-right: 1rem;
-    /* font-size: 20px; */
 }
 
 @media only screen and (max-width: 1087px) {
@@ -125,7 +124,7 @@
     height: 6vh;
     color: white;
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     padding: 0 2% 0 2%;
     width: fit-content;
     cursor: pointer;
@@ -176,10 +175,16 @@
     margin-right: 100px; */
 }
 
+.anchor-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
 .anchor-icon:hover {
     color: white;
 }
-.test {
+
+.anchor-navbar-buttons {
     display: flex;
     position: relative;
 }
