@@ -2,8 +2,10 @@ import React from 'react';
 import './desktop_navbar.css';
 import { navigateTo } from '../../../../Global';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 export const NavDesktop = ({ props }) => {
+    const location = useLocation();
     const renderHackButton = () => {
         if (props.hasHackButton) {
             return (
@@ -13,7 +15,7 @@ export const NavDesktop = ({ props }) => {
                     onClick={() => {
                         navigateTo('/hackaubg');
                     }}>
-                    <p>HackAUBG</p>
+                    <p className="main-font">HackAUBG</p>
                 </button>
             );
         }
@@ -81,7 +83,9 @@ export const NavDesktop = ({ props }) => {
 
     return (
         <div className="navdesktop-container" style={stickyProps()}>
-            <div className="navdesktop-logo" onClick={openHome}>
+            <div
+                className={`navdesktop-logo ${location.pathname === '/hackaubg' ? 'hackaubg-font' : 'main-font'}`}
+                onClick={openHome}>
                 <img src="hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
                 <p>The Hub</p>
             </div>
@@ -89,7 +93,9 @@ export const NavDesktop = ({ props }) => {
                 <div className="navdesktop-buttons">
                     {props.anchorList.map((anchor, index) => (
                         <div
-                            className="navdesktop-navdivs"
+                            className={`navdesktop-navdivs ${
+                                location.pathname === '/hackaubg' ? 'hackaubg-font' : 'main-font'
+                            }`}
                             key={index}
                             style={{
                                 display: !anchor.featureSwitch ? 'none' : '',

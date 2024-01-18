@@ -27,7 +27,6 @@
 }
 
 .navdesktop-logo p {
-    font-family: 'Post No Bills Jaffna';
     line-height: 10px;
     letter-spacing: 0.1em;
     font-size: 1.6rem;
@@ -171,8 +170,6 @@
     justify-content: flex-end;
     padding-bottom: 25px;
     margin-left: -15px;
-    /* top: 16px;
-    margin-right: 100px; */
 }
 
 .anchor-icon svg {
@@ -187,4 +184,12 @@
 .anchor-navbar-buttons {
     display: flex;
     position: relative;
+}
+
+.hackaubg-font {
+    font-family: 'Post No Bills Jaffna';
+}
+
+.main-font {
+    font-family: 'Poppins';
 }
