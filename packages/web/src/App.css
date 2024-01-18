@@ -3,6 +3,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Roboto:wght@200,300,400,500,600,700,900&display=swap');
 
+@font-face {
+    font-family: 'Post No Bills Jaffna';
+    src: url('../static/fonts/PostNoBillsJaffna-SemiBold.woff') format('woff');
+}
+
 body {
     width: 100vw !important;
     overflow-x: hidden !important;
