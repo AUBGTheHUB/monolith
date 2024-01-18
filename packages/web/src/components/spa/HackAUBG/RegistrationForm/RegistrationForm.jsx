@@ -1,19 +1,14 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 import './registration_form.css';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useState } from 'react';
-import axios from 'axios';
-import { url } from '../../../../Global';
-import { BsExclamationCircleFill } from 'react-icons/bs';
-import { FsContext } from '../../../../feature_switches';
+import { useForm } from 'react-hook-form';
+//import { useState } from 'react';
+import InputComponent from './InputComponent';
+//import axios from 'axios';
+//import { url } from '../../../../Global';
+//import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { errors },
-    } = useForm();
+    const { handleSubmit } = useForm();
 
     // const [loadingAnimation, setLoadingAnimation] = useState(false);
     // const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
@@ -23,34 +18,38 @@ const RegistrationForm = () => {
     // const [disableTeamNameField, setDisableTeamNameField] = useState(true);
     // const [isFormAvailable, setIsFormAvailable] = useState(false);
 
-    const checkRegistrationAvailability = () => {
-        axios({
-            method: 'get',
-            url: url + '/api/hackathon/register/available',
-        })
-            .then(() => {
-                setIsFormAvailable(true);
-            })
-            .catch(() => {
-                setIsFormAvailable(false);
-            });
-    };
+    // const checkRegistrationAvailability = () => {
+    //     axios({
+    //         method: 'get',
+    //         url: url + '/api/hackathon/register/available',
+    //     })
+    //         .then(() => {
+    //             setIsFormAvailable(true);
+    //         })
+    //         .catch(() => {
+    //             setIsFormAvailable(false);
+    //         });
+    // };
 
-    useEffect(() => {
-        checkRegistrationAvailability();
-    }, []);
-
+    // useEffect(() => {
+    //     checkRegistrationAvailability();
+    // }, []);
+    // if(isFormAvailable)
     return (
         <form
             onSubmit={handleSubmit(data => {
                 alert(JSON.stringify(data));
             })}>
             <label>Example</label>
-            <input {...register('example')} defaultValue="test" />
-            <label>ExampleRequired</label>
-            <input {...register('exampleRequired', { required: true, maxLength: 10 })} />
-            {errors.exampleRequired && <p>This field is required</p>}
+            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
+            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
+            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
+            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
+            <InputComponent {...{ label: 'First Name', type: 'firstName', required: true }} />
             <input type="submit" />
         </form>
     );
+    //  else return(<div>hello</div>);
 };
+
+export default RegistrationForm;
