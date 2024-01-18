@@ -1,11 +1,10 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from bson import ObjectId
 from py_api.database.initialize import t_col
 from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import TeamType
 from pymongo import results
-from pymongo.results import UpdateResult
 
 
 class TeamFunctionality:
