@@ -5,27 +5,40 @@ import { useEffect } from 'react';
 export const LandingBackground = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
-    const translations = {
-        element1: 'translate(113 118)',
-        element2: 'translate(200 200)',
-        element3: 'translate(400 400)',
-        element4: 'translate(600 600)',
-        element5: 'translate(800 800)',
-        element6: 'translate(1000 1000)',
-        element7: 'translate(1200 1200)',
-        element8: 'translate(1400 1400)',
-        element9: 'translate(1600 1600)',
+    const desktopCoords = {
+        github: 'translate(3200 600)',
+        design: 'translate(3300 900)',
+        starH: 'translate(3500 300)',
+        starF: 'translate(600 1900)',
+        chat: 'translate(550 1100)',
+        android: 'translate(3350 1500)',
+        dev: 'translate(200 300)',
+        perticipant: 'translate(3000 1700)',
+        marketing: 'translate(300 1400)',
+    };
+    const mobile = {
+        github: 'translate(3000 -100)',
+        design: 'translate(3100 1000)',
+        starH: 'translate(3300 -700)',
+        starF: 'translate(1600 2600)',
+        chat: 'translate(300 -400)',
+        android: 'translate(3150 2000)',
+        dev: 'translate(200 1200)',
+        perticipant: 'translate(2800 2800)',
+        marketing: 'translate(300 2600)',
     };
 
     useEffect(() => {
         const handleResize = () => {
             var width = window.innerWidth;
             setIsMobile(width < 900);
-            var scale = isMobile ? 8 : 3 + width / 5000;
+            var scale = isMobile ? 7 : 3 + width / 5000;
             var elements = document.querySelectorAll('.resizable');
 
             elements.forEach(function (element) {
-                var translate = translations[element.id] || 'translate(0 0)';
+                var translate = isMobile
+                    ? mobile[element.id] || 'translate(0 0)'
+                    : desktopCoords[element.id] || 'translate(0 0)';
                 element.setAttribute('transform', translate + ' scale(' + scale + ')');
             });
         };
@@ -44,7 +57,6 @@ export const LandingBackground = () => {
                 width="3840"
                 height="2160"
                 xmlns="http://www.w3.org/2000/svg"
-                // xmlns:xlink="http://www.w3.org/1999/xlink"
                 version="1.1">
                 <rect width="100%" height="2160" fill="#0c0c0c"></rect>
                 <g>
@@ -222,7 +234,7 @@ export const LandingBackground = () => {
                     </g>
                     {/* icons */}
                     {/* github */}
-                    <g transform="translate(665 463)" className="resizable" id="element1">
+                    <g transform="translate(665 463)" className="resizable" id="github">
                         <g clipPath="url(#clip0_76_9512)">
                             <path
                                 d="M27.5598 14.3259L26.3194 20.7064L25.2559 20.4997L24.8425 22.6265L23.779 22.4198L23.3656 24.5466L22.3022 24.3399L22.0954 25.4033L21.032 25.1966L20.8253 26.26L19.7618 26.0533L19.5551 27.1167L17.4282 26.7032L17.2215 27.7666L16.1581 27.5599L17.1918 22.2428L16.1283 22.0361L16.3351 20.9726L17.3985 21.1794L17.6052 20.1159L19.7321 20.5294L19.9388 19.466L21.0023 19.6727L21.209 18.6093L22.2724 18.816L23.3061 13.4989L22.2427 13.2922L22.8629 10.1019L20.736 9.68844L20.5293 10.7519L19.4659 10.5451L19.2591 11.6085L18.1957 11.4018L18.4025 10.3384L14.1488 9.51144L13.942 10.5749L12.8786 10.3681L13.0853 9.3047L12.0219 9.09797L12.2286 8.03454L10.1018 7.62107L9.48158 10.8113L8.41816 10.6046L7.38448 15.9217L8.4479 16.1285L8.24116 17.1919L9.30459 17.3986L9.09785 18.462L11.2247 18.8755L10.8112 21.0024L8.68438 20.5889L8.89111 19.5255L7.82769 19.3187L8.03443 18.2553L5.90758 17.8418L5.70084 18.9053L6.76426 19.112L6.35079 21.2388L7.41421 21.4456L7.20748 22.509L10.3977 23.1292L9.77754 26.3195L8.71411 26.1128L8.92085 25.0493L6.794 24.6359L7.00074 23.5724L5.93732 23.3657L6.14405 22.3023L5.08063 22.0955L5.28737 21.0321L4.22394 20.8254L4.63742 18.6985L3.57399 18.4918L3.98747 16.3649L2.92404 16.1582L4.16446 9.77766L5.22789 9.98439L5.64136 7.85754L6.70479 8.06428L7.11826 5.93743L8.18168 6.14417L8.38842 5.08075L9.45184 5.28748L9.65858 4.22406L11.7854 4.63753L11.9922 3.57411L14.119 3.98758L14.3258 2.92416L20.7063 4.16458L20.4996 5.22801L22.6264 5.64148L22.4197 6.7049L24.5465 7.11838L24.3398 8.1818L25.4032 8.38854L25.1965 9.45196L26.2599 9.6587L25.8464 11.7855L26.9098 11.9923L26.4964 14.1191L27.5598 14.3259Z"
@@ -241,7 +253,7 @@ export const LandingBackground = () => {
                         </defs>
                     </g>
                     {/* designer cursor */}
-                    <g filter="url(#filter0_d_76_5166)" className="resizable" id="element2">
+                    <g filter="url(#filter0_d_76_5166)" className="resizable" id="design">
                         <rect x="19" y="57" width="77" height="30" rx="15" fill="#FE69BA" />
                         <rect x="19.5" y="57.5" width="76" height="29" rx="14.5" stroke="#CE167A" />
                         <path
@@ -251,7 +263,7 @@ export const LandingBackground = () => {
                     </g>
                     <path
                         className="resizable"
-                        id="element2"
+                        id="design"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M2.8898 0H0V41.9021H2.8898V39.0123H5.7796V36.1225H8.6694V33.2327H11.5592V39.0123H14.449V44.7919H17.3388V50.5715H20.2286V52.7388H26.0082V50.5715H28.898V44.7919H26.0082V39.0123H23.1184V33.2327H20.2286V31.0653H31.0653V28.1755H28.898V25.2857H26.0082V22.3959H23.1184V19.5061H20.2286V16.6163H17.3388V13.7265H14.449V10.8367H11.5592V7.94695H8.6694V5.05715H5.7796V2.16735H2.8898V0ZM5.7796 5.05715V7.94695H8.6694V10.8367H11.5592V13.7265H14.449V16.6163H17.3388V19.5061H20.2286V22.3959H23.1184V25.2857H26.0082V28.1755H17.3388V33.2327H20.2286V39.0123H23.1184V44.7919H26.0082V50.5715H20.2286V44.7919H17.3388V39.0123H14.449V33.2327H11.5592V30.3429H8.6694V33.2327H5.7796V36.1225H2.8898V5.05715H5.7796Z"
@@ -259,7 +271,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element2"
+                        id="design"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M6.75 23V24.7778H9.5V26.5556H12.25V28.3333H15V30.1111H17.75V31.8889H20.5V33.6667H23.25V35.4444H26V37.2222H17.75V40.3333H20.5V43.8889H23.25V47.4444H26V51H20.5V47.4444H17.75V43.8889H15V40.3333H12.25V38.5556H9.5V40.3333H6.75V42.1111H4V23H6.75Z"
@@ -267,7 +279,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element2"
+                        id="design"
                         d="M6.75 24.7778V23H4V42.1111H6.75V40.3333H9.5V38.5556H12.25V40.3333H15V43.8889H17.75V47.4444H20.5V51H26V47.4444H23.25V43.8889H20.5V40.3333H17.75V37.2222H26V35.4444H23.25V33.6667H20.5V31.8889H17.75V30.1111H15V28.3333H12.25V26.5556H9.5V24.7778H6.75Z"
                         fill="#FE69BA"
                     />
@@ -300,7 +312,7 @@ export const LandingBackground = () => {
                     </defs>
                     {/* star hollow */}
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -308,7 +320,7 @@ export const LandingBackground = () => {
                         fill="white"
                     />
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -316,7 +328,7 @@ export const LandingBackground = () => {
                         fill="white"
                     />
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -324,7 +336,7 @@ export const LandingBackground = () => {
                         fill="white"
                     />
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -332,7 +344,7 @@ export const LandingBackground = () => {
                         fill="white"
                     />
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -340,7 +352,7 @@ export const LandingBackground = () => {
                         fill="white"
                     />
                     <path
-                        id="element3"
+                        id="starH"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
@@ -349,13 +361,13 @@ export const LandingBackground = () => {
                     />
                     {/* star filled */}
                     <path
-                        id="element4"
+                        id="starF"
                         d="M22.3841 2.52811L23.8597 13.2568C24.7625 19.8206 30.3145 24.5927 36.5877 24.1968L47.1406 23.5308L36.6702 25.0068C30.4461 25.8843 25.9707 31.6781 26.4103 38.2891L27.1288 49.0949L25.6532 38.3662C24.7504 31.8024 19.1984 27.0303 12.9253 27.4262L2.37236 28.0922L12.8427 26.6162C19.0668 25.7387 23.5423 19.9449 23.1027 13.3339L22.3841 2.52811Z"
                         fill="#FFEDED"
                         className="resizable"
                     />
                     {/* chat */}
-                    <g clipPath="url(#clip0_76_9523)" className="resizable" id="element5">
+                    <g clipPath="url(#clip0_76_9523)" className="resizable" id="chat">
                         <path
                             d="M28.7873 17.6566L27.2631 12.4588L26.2236 12.7636L25.6139 10.6845L23.5348 11.2941L23.2299 10.2546L21.1508 10.8643L20.846 9.82469L17.7273 10.7392L17.1176 8.66007L15.0385 9.26974L14.7337 8.23018L12.6545 8.83985L12.3497 7.80029L7.15191 9.32446L7.45674 10.364L5.37762 10.9737L5.68245 12.0133L3.60333 12.6229L4.213 14.702L3.17344 15.0069L4.69761 20.2047L5.73717 19.8998L6.34684 21.979L5.30728 22.2838L6.52662 26.442L9.6453 25.5275L9.34047 24.488L10.38 24.1831L10.0752 23.1436L14.2334 21.9243L14.8431 24.0034L16.9222 23.3937L17.2271 24.4333L19.3062 23.8236L19.611 24.8632L25.8484 23.0342L26.1532 24.0737L27.1928 23.7689L27.4976 24.8084L30.6163 23.8939L29.397 19.7357L28.3574 20.0405L27.7477 17.9614L28.7873 17.6566ZM9.46552 21.0645L9.77036 22.104L8.7308 22.4089L9.03563 23.4484L7.99607 23.7533L7.3864 21.6741L8.42596 21.3693L7.81629 19.2902L6.77673 19.595L5.25256 14.3972L6.29212 14.0924L5.98729 13.0528L8.06641 12.4431L7.76157 11.4036L12.9594 9.87941L13.2642 10.919L15.3433 10.3093L15.6482 11.3489L16.6877 11.044L18.2119 16.2418L17.1723 16.5467L17.4772 17.5862L15.3981 18.1959L15.7029 19.2355L9.46552 21.0645ZM26.7082 18.2662L25.6686 18.5711L26.2783 20.6502L27.3178 20.3454L27.9275 22.4245L26.8879 22.7293L26.5831 21.6898L25.5435 21.9946L25.2387 20.955L19.0013 22.784L18.6965 21.7445L16.6174 22.3541L16.0077 20.275L18.0868 19.6654L17.782 18.6258L19.8611 18.0161L19.2515 15.937L20.291 15.6322L19.3765 12.5135L21.4556 11.9038L21.7605 12.9434L23.8396 12.3337L24.1444 13.3733L25.184 13.0684L26.7082 18.2662Z"
                             fill="white"
@@ -376,22 +388,22 @@ export const LandingBackground = () => {
                         d="M6.49996 10.8333H5.41663V12.9999H6.49996V10.8333Z"
                         fill="white"
                         className="resizable"
-                        id="element6"
+                        id="android"
                     />
                     <path
                         d="M20.5833 10.8333H19.5V12.9999H20.5833V10.8333Z"
                         fill="white"
                         className="resizable"
-                        id="element6"
+                        id="android"
                     />
                     <path
                         d="M23.8334 21.6667V19.5H22.75V18.4167H21.6667V17.3333H20.5834V16.25H19.5V13H18.4167V15.1667H16.25V14.0833H9.75004V15.1667H7.58337V13H6.50004V16.25H5.41671V17.3333H4.33337V18.4167H3.25004V19.5H2.16671V21.6667H1.08337V24.9167H24.9167V21.6667H23.8334ZM8.66671 19.5V21.6667H6.50004V19.5H8.66671ZM17.3334 19.5H19.5V21.6667H17.3334V19.5Z"
                         fill="white"
                         className="resizable"
-                        id="element6"
+                        id="android"
                     />
                     {/* developer bulb */}
-                    <g filter="url(#filter0_d_76_5180)" className="resizable" id="element7">
+                    <g filter="url(#filter0_d_76_5180)" className="resizable" id="dev">
                         <rect x="2" y="59" width="77" height="30" rx="15" fill="#50D8FE" />
                         <rect x="2.5" y="59.5" width="76" height="29" rx="14.5" stroke="#00AFDF" />
                         <path
@@ -403,7 +415,7 @@ export const LandingBackground = () => {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
-                        id="element7"
+                        id="dev"
                         d="M93.1102 0H96V41.9021H93.1102V39.0123H90.2204V36.1225H87.3306V33.2327H84.4408V39.0123H81.551V44.7919H78.6612V50.5715H75.7714V52.7388H69.9918V50.5715H67.102V44.7919H69.9918V39.0123H72.8816V33.2327H75.7714V31.0653H64.9347V28.1755H67.102V25.2857H69.9918V22.3959H72.8816V19.5061H75.7714V16.6163H78.6612V13.7265H81.551V10.8367H84.4408V7.94695H87.3306V5.05715H90.2204V2.16735H93.1102V0ZM90.2204 5.05715V7.94695H87.3306V10.8367H84.4408V13.7265H81.551V16.6163H78.6612V19.5061H75.7714V22.3959H72.8816V25.2857H69.9918V28.1755H78.6612V33.2327H75.7714V39.0123H72.8816V44.7919H69.9918V50.5715H75.7714V44.7919H78.6612V39.0123H81.551V33.2327H84.4408V30.3429H87.3306V33.2327H90.2204V36.1225H93.1102V5.05715H90.2204Z"
                         fill="black"
                     />
@@ -411,7 +423,7 @@ export const LandingBackground = () => {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         className="resizable"
-                        id="element7"
+                        id="dev"
                         d="M89.25 23V24.7778H86.5V26.5556H83.75V28.3333H81V30.1111H78.25V31.8889H75.5V33.6667H72.75V35.4444H70V37.2222H78.25V40.3333H75.5V43.8889H72.75V47.4444H70V51H75.5V47.4444H78.25V43.8889H81V40.3333H83.75V38.5556H86.5V40.3333H89.25V42.1111H92V23H89.25Z"
                         fill="#50D8FE"
                     />
@@ -419,7 +431,7 @@ export const LandingBackground = () => {
                         d="M89.25 24.7778V23H92V42.1111H89.25V40.3333H86.5V38.5556H83.75V40.3333H81V43.8889H78.25V47.4444H75.5V51H70V47.4444H72.75V43.8889H75.5V40.3333H78.25V37.2222H70V35.4444H72.75V33.6667H75.5V31.8889H78.25V30.1111H81V28.3333H83.75V26.5556H86.5V24.7778H89.25Z"
                         fill="#50D8FE"
                         className="resizable"
-                        id="element7"
+                        id="dev"
                     />
                     <defs>
                         <filter
@@ -449,7 +461,7 @@ export const LandingBackground = () => {
                         </filter>
                     </defs>
                     {/* participant bulb */}
-                    <g filter="url(#filter0_d_76_5165)" className="resizable" id="element8">
+                    <g filter="url(#filter0_d_76_5165)" className="resizable" id="perticipant">
                         <rect x="14" y="59" width="88" height="30" rx="15" fill="#7FFF5B" />
                         <rect x="14.5" y="59.5" width="87" height="29" rx="14.5" stroke="#2AC100" />
                         <path
@@ -459,7 +471,7 @@ export const LandingBackground = () => {
                     </g>
                     <path
                         className="resizable"
-                        id="element8"
+                        id="perticipant"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M2.8898 0H0V41.9021H2.8898V39.0123H5.7796V36.1225H8.6694V33.2327H11.5592V39.0123H14.449V44.7919H17.3388V50.5715H20.2286V52.7388H26.0082V50.5715H28.898V44.7919H26.0082V39.0123H23.1184V33.2327H20.2286V31.0653H31.0653V28.1755H28.898V25.2857H26.0082V22.3959H23.1184V19.5061H20.2286V16.6163H17.3388V13.7265H14.449V10.8367H11.5592V7.94695H8.6694V5.05715H5.7796V2.16735H2.8898V0ZM5.7796 5.05715V7.94695H8.6694V10.8367H11.5592V13.7265H14.449V16.6163H17.3388V19.5061H20.2286V22.3959H23.1184V25.2857H26.0082V28.1755H17.3388V33.2327H20.2286V39.0123H23.1184V44.7919H26.0082V50.5715H20.2286V44.7919H17.3388V39.0123H14.449V33.2327H11.5592V30.3429H8.6694V33.2327H5.7796V36.1225H2.8898V5.05715H5.7796Z"
@@ -467,7 +479,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element8"
+                        id="perticipant"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M5.875 19V21.0317H8.75V23.0635H11.625V25.0952H14.5V27.127H17.375V29.1587H20.25V31.1905H23.125V33.2222H26V35.254H17.375V38.8095H20.25V42.873H23.125V46.9365H26V51H20.25V46.9365H17.375V42.873H14.5V38.8095H11.625V36.7778H8.75V38.8095H5.875V40.8413H3V19H5.875Z"
@@ -475,7 +487,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element8"
+                        id="perticipant"
                         d="M5.875 21.0317V19H3V40.8413H5.875V38.8095H8.75V36.7778H11.625V38.8095H14.5V42.873H17.375V46.9365H20.25V51H26V46.9365H23.125V42.873H20.25V38.8095H17.375V35.254H26V33.2222H23.125V31.1905H20.25V29.1587H17.375V27.127H14.5V25.0952H11.625V23.0635H8.75V21.0317H5.875Z"
                         fill="#7FFF5B"
                     />
@@ -507,7 +519,7 @@ export const LandingBackground = () => {
                         </filter>
                     </defs>
                     {/* marketing bulb */}
-                    <g filter="url(#filter0_d_76_5173)" className="resizable" id="element9">
+                    <g filter="url(#filter0_d_76_5173)" className="resizable" id="marketing">
                         <rect x="2" y="59" width="77" height="30" rx="15" fill="#A488EF" />
                         <rect x="2.5" y="59.5" width="76" height="29" rx="14.5" stroke="#602DEB" />
                         <path
@@ -517,7 +529,7 @@ export const LandingBackground = () => {
                     </g>
                     <path
                         className="resizable"
-                        id="element9"
+                        id="marketing"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M93.1102 0H96V41.9021H93.1102V39.0123H90.2204V36.1225H87.3306V33.2327H84.4408V39.0123H81.551V44.7919H78.6612V50.5715H75.7714V52.7388H69.9918V50.5715H67.102V44.7919H69.9918V39.0123H72.8816V33.2327H75.7714V31.0653H64.9347V28.1755H67.102V25.2857H69.9918V22.3959H72.8816V19.5061H75.7714V16.6163H78.6612V13.7265H81.551V10.8367H84.4408V7.94695H87.3306V5.05715H90.2204V2.16735H93.1102V0ZM90.2204 5.05715V7.94695H87.3306V10.8367H84.4408V13.7265H81.551V16.6163H78.6612V19.5061H75.7714V22.3959H72.8816V25.2857H69.9918V28.1755H78.6612V33.2327H75.7714V39.0123H72.8816V44.7919H69.9918V50.5715H75.7714V44.7919H78.6612V39.0123H81.551V33.2327H84.4408V30.3429H87.3306V33.2327H90.2204V36.1225H93.1102V5.05715H90.2204Z"
@@ -525,7 +537,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element9"
+                        id="marketing"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M89.25 23V24.7778H86.5V26.5556H83.75V28.3333H81V30.1111H78.25V31.8889H75.5V33.6667H72.75V35.4444H70V37.2222H78.25V40.3333H75.5V43.8889H72.75V47.4444H70V51H75.5V47.4444H78.25V43.8889H81V40.3333H83.75V38.5556H86.5V40.3333H89.25V42.1111H92V23H89.25Z"
@@ -533,7 +545,7 @@ export const LandingBackground = () => {
                     />
                     <path
                         className="resizable"
-                        id="element9"
+                        id="marketing"
                         d="M89.25 24.7778V23H92V42.1111H89.25V40.3333H86.5V38.5556H83.75V40.3333H81V43.8889H78.25V47.4444H75.5V51H70V47.4444H72.75V43.8889H75.5V40.3333H78.25V37.2222H70V35.4444H72.75V33.6667H75.5V31.8889H78.25V30.1111H81V28.3333H83.75V26.5556H86.5V24.7778H89.25Z"
                         fill="#A488EF"
                     />
