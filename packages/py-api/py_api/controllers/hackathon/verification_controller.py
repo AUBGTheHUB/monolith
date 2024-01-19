@@ -11,7 +11,7 @@ from starlette.background import BackgroundTasks
 
 class VerificationController:
     @classmethod
-    def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
+    async def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
         result = JWTFunctionality.decode_token(jwt_token)
 
         if isinstance(result, dict):
@@ -58,16 +58,17 @@ class VerificationController:
                 )
 
         if team.team_type == team.team_type.NORMAL:
-            token = JWTFunctionality.create_jwt_token(
-                team.team_name, is_invite=True,
-            )
             try:
-                background_tasks = BackgroundTasks()
-                background_tasks.add_task(
-                    send_mail, verified_participant.get(
-                        "email",
-                    ), "Test", f"Token: {token}",
+                jwt_token = JWTFunctionality.create_jwt_token(
+                    team_name=team.team_name, is_invite=True,
                 )
+                await send_mail(
+                    verified_participant.get("email"), "Test",
+                    f"Token: {JWTFunctionality.get_verification_link(jwt_token)}",
+                )
+                # background_tasks = BackgroundTasks()
+                # background_tasks.add_task(background_send_mail, verified_participant.get("email"), "Test",
+                #                           f"Url: {JWTFunctionality.get_verification_link(jwt_token)}")
             except Exception as e:
                 return JSONResponse(
                     content={"error": str(e)},

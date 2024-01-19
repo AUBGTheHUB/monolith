@@ -23,7 +23,7 @@ logger = getLogger(__name__)
 class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
     _BYPASSED_ENDPOINTS: Final = {
-        "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"],
+        "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"], "/hackathon/verify": ["GET"],
     }
 
     def __init__(self, app: FastAPI) -> None:
