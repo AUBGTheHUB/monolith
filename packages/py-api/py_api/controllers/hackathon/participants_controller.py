@@ -151,7 +151,7 @@ class ParticipantsController:
             # Find the teams which can accept a new participant
             for team in random_teams:
                 if len(team.team_members) < 6:
-                    return cls.add_participant_to_existing_team(team, participant)
+                    return await cls.add_participant_to_existing_team(team, participant)
 
             # If all the random teams are full, check if there is space for creating a new one
             if TeamFunctionality.get_count_of_teams() < 15:
