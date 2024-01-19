@@ -23,12 +23,12 @@ class Props {
 }
 
 class Anchor {
-    constructor(name, endpoint, image, isLink = false, featureSwitch = true) {
+    constructor(name, endpoint, icon = false, isLink = false, featureSwitch = true) {
         this.name = name;
         this.endpoint = endpoint;
         this.isLink = isLink;
         this.featureSwitch = featureSwitch;
-        this.image = image;
+        this.icon = icon;
     }
 }
 

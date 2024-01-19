@@ -70,7 +70,7 @@ export const NavDesktop = ({ props }) => {
                     style={{ color: props.anchorColor }}>
                     {anchor.name}
                 </a>
-                <div className="anchor-icon">{anchor.image}</div>
+                {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
             </div>
         );
     };
