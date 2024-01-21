@@ -1,3 +1,4 @@
+import asyncio
 import json
 from typing import Any, Dict, Tuple
 
@@ -11,7 +12,7 @@ from py_api.functionality.hackathon.participants_base import ParticipantsFunctio
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
-from py_api.services.mailer import send_mail
+from py_api.services.mailer import background_send_mail, send_mail
 
 
 class ParticipantsController:
@@ -137,7 +138,6 @@ class ParticipantsController:
         # The participant has provided a team name upon registration, so we assign them as admin to the newly
         # created team
         if participant.team_name:
-            participant.is_admin = True
             return await cls.add_participant_to_new_team(participant)
 
         # The participant hasn't provided a team name upon registration, so we follow the workflow for creating
@@ -195,21 +195,19 @@ class ParticipantsController:
                 existing_team.team_name, new_participant_object_id,
             )
 
-            # We assume that when the participant is registering via a link in the body of the request we
-            # will have the team_name passed
-            if not is_invite:
-                updated_participant = ParticipantsFunctionality.update_participant(
-                    new_participant_object_id, UpdateParticipant(
-                        team_name=existing_team.team_name,
-                    ),
+            updated_participant = ParticipantsFunctionality.update_participant(
+                new_participant_object_id, UpdateParticipant(
+                    team_name=existing_team.team_name,
+                ),
+            )
+
+            if not updated_participant:
+                return JSONResponse(
+                    content={
+                        "message": "Something went wrong updating participant document",
+                    },
+                    status_code=500,
                 )
-                if not updated_participant:
-                    return JSONResponse(
-                        content={
-                            "message": "Something went wrong updating participant document",
-                        },
-                        status_code=500,
-                    )
 
             existing_team = TeamFunctionality.update_team_query_using_dump(
                 existing_team.model_dump(),
@@ -217,13 +215,16 @@ class ParticipantsController:
             if not existing_team:
                 return JSONResponse(content={"message": "Something went wrong updating team document"}, status_code=500)
 
+            # The participant is random, so we should send them a verification email
             if not is_invite:
                 jwt_token = JWTFunctionality.create_jwt_token(
                     new_participant_object_id, existing_team.team_name,
                 )
-                await send_mail(
-                    participant.email, "Test",
-                    f"Token: {JWTFunctionality.get_verification_link(jwt_token)}",
+                await asyncio.create_task(
+                    background_send_mail(
+                        participant.email, "Test",
+                        f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
+                    ),
                 )
                 # background_tasks = BackgroundTasks()
                 # background_tasks.add_task(background_send_mail, participant.email, "Test",
@@ -240,10 +241,12 @@ class ParticipantsController:
             generate_random_team: bool = False,
     ) -> JSONResponse:
         try:
+            participant.is_admin = True
             # Creates new participant
             new_participant = ParticipantsFunctionality.insert_participant(
                 participant,
             )
+
             new_participant_object_id = str(new_participant.inserted_id)
 
             # Create New Random Team and assigns the new participant to it
@@ -253,6 +256,7 @@ class ParticipantsController:
                 ) if generate_random_team else participant.team_name,
                 generate_random_team=generate_random_team,
             )
+
             if not new_team:
                 return JSONResponse(
                     content={
@@ -266,6 +270,7 @@ class ParticipantsController:
                     team_name=new_team.team_name,
                 ),
             )
+
             if not updated_participant:
                 return JSONResponse(
                     content={
@@ -289,7 +294,12 @@ class ParticipantsController:
             jwt_token = JWTFunctionality.create_jwt_token(
                 new_participant_object_id, new_team.team_name,
             )
-            await send_mail(participant.email, "Test", f"Token: {JWTFunctionality.get_verification_link(jwt_token)}")
+            await asyncio.create_task(
+                background_send_mail(
+                    participant.email, "Test",
+                    f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
+                ),
+            )
             # background_tasks = BackgroundTasks()
             # background_tasks.add_task(background_send_mail, participant.email, "Test",
             #                           f"Url: {JWTFunctionality.get_verification_link(jwt_token)}")

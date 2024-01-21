@@ -50,15 +50,19 @@ class JWTFunctionality:
             return {"message": message}, 499
 
     @classmethod
-    def get_verification_link(
+    def get_email_link(
         cls, jwt_token: str, domain: str = "https://thehub-aubg.com",
-        for_frontend: bool = False,
+        for_frontend: bool = False, is_invite: bool = False,
     ) -> str:
         if IS_OFFLINE:
             domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
 
         if for_frontend:
             url = f"{domain}/hackaubg?jwt_token={jwt_token}"
+
+        elif is_invite:
+            url = f"{domain}/v2/hackathon/participants?jwt_token={jwt_token}"
+
         else:
             url = f"{domain}/v2/hackathon/verify/participant?jwt_token={jwt_token}"
 
