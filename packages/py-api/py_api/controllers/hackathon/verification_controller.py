@@ -6,7 +6,7 @@ from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import UpdateParticipant
-from py_api.services.mailer import background_send_mail, send_mail
+from py_api.services.mailer import send_email_background_task, send_mail
 from starlette.background import BackgroundTasks
 
 
@@ -65,7 +65,7 @@ class VerificationController:
                     team_name=team.team_name, is_invite=True,
                 )
                 await asyncio.create_task(
-                    background_send_mail(
+                    send_email_background_task(
                         verified_participant.get("email"), "Test",
                         f"Token: {JWTFunctionality.get_email_link(jwt_token, is_invite=True)}",
                     ),

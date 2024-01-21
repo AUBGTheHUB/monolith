@@ -12,7 +12,7 @@ from py_api.functionality.hackathon.participants_base import ParticipantsFunctio
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
-from py_api.services.mailer import background_send_mail, send_mail
+from py_api.services.mailer import send_email_background_task, send_mail
 
 
 class ParticipantsController:
@@ -140,8 +140,7 @@ class ParticipantsController:
         if participant.team_name:
             return await cls.add_participant_to_new_team(participant)
 
-        # The participant hasn't provided a team name upon registration, so we follow the workflow for creating
-        # and adding random patricians to teams
+        # The participant hasn't provided a team name upon registration, so we should add them to a random team
         else:
             # Fetch the teams of type random
             random_teams = TeamFunctionality.fetch_teams_by_condition(
@@ -190,7 +189,6 @@ class ParticipantsController:
             )
             new_participant_object_id = str(new_participant.inserted_id)
 
-            # Adds the participant to the team object
             existing_team = TeamFunctionality.add_participant_to_team_object(
                 existing_team.team_name, new_participant_object_id,
             )
@@ -221,7 +219,7 @@ class ParticipantsController:
                     new_participant_object_id, existing_team.team_name,
                 )
                 await asyncio.create_task(
-                    background_send_mail(
+                    send_email_background_task(
                         participant.email, "Test",
                         f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
                     ),
@@ -242,14 +240,12 @@ class ParticipantsController:
     ) -> JSONResponse:
         try:
             participant.is_admin = True
-            # Creates new participant
             new_participant = ParticipantsFunctionality.insert_participant(
                 participant,
             )
 
             new_participant_object_id = str(new_participant.inserted_id)
 
-            # Create New Random Team and assigns the new participant to it
             new_team = TeamFunctionality.create_team_object_with_admin(
                 user_id=new_participant_object_id,
                 team_name=TeamFunctionality.generate_random_team_name(
@@ -295,7 +291,7 @@ class ParticipantsController:
                 new_participant_object_id, new_team.team_name,
             )
             await asyncio.create_task(
-                background_send_mail(
+                send_email_background_task(
                     participant.email, "Test",
                     f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
                 ),

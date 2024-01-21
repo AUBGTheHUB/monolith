@@ -21,5 +21,5 @@ async def send_mail(receiver: str, subject: str, html: str) -> None:
         await server.sendmail(email, receiver, mime_msg.as_string())
 
 
-async def background_send_mail(receiver: str, subject: str, html: str) -> None:
+async def send_email_background_task(receiver: str, subject: str, html: str) -> None:
     await send_mail(receiver, subject, html)
