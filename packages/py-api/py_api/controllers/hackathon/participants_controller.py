@@ -60,7 +60,7 @@ class ParticipantsController:
                 status_code=404,
             )
 
-        response, status_code = cls.delete_participant_from_team(
+        response, status_code = cls.remove_participant_from_team(
             deleted_participant,
         )
         if status_code != 200:
@@ -72,7 +72,7 @@ class ParticipantsController:
         )
 
     @classmethod
-    def delete_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
+    def remove_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
         team = TeamFunctionality.fetch_team(
             deleted_participant.get("team_name"),
         )
