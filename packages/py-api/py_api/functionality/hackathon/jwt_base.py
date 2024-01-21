@@ -20,12 +20,9 @@ class JWTFunctionality:
         payload = {
             "sub": participant_obj_id,
             "team_name": team_name,
-            "invite": False,
+            "invite": is_invite,
             "exp": datetime.utcnow() + timedelta(hours=24),
         }
-
-        if is_invite:
-            payload["invite"] = True
 
         return str(encode(payload, SECRET_KEY, algorithm="HS256"))
 
@@ -51,8 +48,8 @@ class JWTFunctionality:
 
     @classmethod
     def get_email_link(
-        cls, jwt_token: str, domain: str = "https://thehub-aubg.com",
-        for_frontend: bool = False, is_invite: bool = False,
+            cls, jwt_token: str, domain: str = "https://thehub-aubg.com",
+            for_frontend: bool = False, is_invite: bool = False,
     ) -> str:
         if IS_OFFLINE:
             domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
