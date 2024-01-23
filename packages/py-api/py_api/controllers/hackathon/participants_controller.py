@@ -163,63 +163,14 @@ class ParticipantsController:
             participant.is_verified = True
             participant.is_admin = False
 
-            inserted_participant = ParticipantsFunctionality.create_participant(
-                participant,
-            )
-
-            if not inserted_participant:
-                return JSONResponse(status_code=500, content={"message": "Failed inserting new participant"})
-
-            team.team_members.append(str(inserted_participant.inserted_id))
-            updatedTeam = TeamFunctionality.update_team_query_using_dump(
-                team.model_dump(),
-            )
-
-            if not updatedTeam:
-                return JSONResponse(status_code=500, content={"message": "Failed updating updated team in database"})
-
-            participant.team_name = updatedTeam.team_name
-
-            updated_participant = ParticipantsFunctionality.update_participant(
-                id=str(inserted_participant.inserted_id), participant=participant,
-            )
-
-            if not updated_participant:
-                return JSONResponse(status_code=500, content={"message": "Something went wrong updating the participant with new team"})
-
-            return {"message": "Participant was successfully verified and appended to corresponding team"}
+            return cls.add_participant_to_targeted_team(team, participant)
 
         if participant.team_name:
             participant.is_verified = False
             participant.is_admin = True
 
-            inserted_participant = ParticipantsFunctionality.create_participant(
-                participant,
-            )
-
-            if not inserted_participant:
-                return JSONResponse(status_code=500, content={"message": "Failed inserting new participant"})
-
             if TeamFunctionality.get_count_of_teams() > 15:
                 return JSONResponse(content={"message": "Hackathon is at max capacity"}, status_code=409)
-
-            team_object = TeamFunctionality.create_team_object_with_admin(
-                user_id=str(inserted_participant.inserted_id), team_name=participant.team_name,
-            )
-
-            if not team_object:
-                # or might be a bad transaction
-                return JSONResponse(content={"message": "Name is already taken"}, status_code=400)
-
-            new_team = TeamFunctionality.insert_team(team_object)
-
-            if not new_team:
-                # delete redundant participant document if team creation request has failed
-                ParticipantsFunctionality.delete_participant(
-                    str(inserted_participant.inserted_id),
-                )
-
-                return JSONResponse(status_code=500, content={"message": "Failed inserting new team. Participant entry was discarded."})
 
             """
                 jwt_token = JWTFunctionality.create_jwt_token(
@@ -231,7 +182,7 @@ class ParticipantsController:
 
             """
 
-            return {"message": "New admin participant was registered"}
+            return cls.add_admin_participant_new_team_with_name(participant)
 
         else:
             # Fetch the teams of type random
@@ -250,6 +201,48 @@ class ParticipantsController:
 
             else:
                 return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
+
+    @classmethod
+    def add_admin_participant_new_team_with_name(cls, participant: NewParticipant) -> JSONResponse:
+        try:
+            inserted_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+
+            team_object = TeamFunctionality.create_team_object_with_admin(
+                user_id=str(inserted_participant.inserted_id), team_name=participant.team_name,
+            )
+            if not team_object:
+                return JSONResponse(content={"message": "A team with t"})
+            new_team = TeamFunctionality.insert_team(team_object)
+            return JSONResponse(content={"message": "New admin participant was registered"}, status_code=200)
+
+        except (Exception) as e:
+            ParticipantsFunctionality.delete_participant(
+                str(inserted_participant.inserted_id),
+            )
+            return JSONResponse(content={"message": str(e)}, status_code=500)
+
+    @classmethod
+    def add_participant_to_targeted_team(cls, team: HackathonTeam, participant: NewParticipant) -> JSONResponse:
+        try:
+            inserted_participant = ParticipantsFunctionality.create_participant(
+                participant,
+            )
+            team.team_members.append(str(inserted_participant.inserted_id))
+
+            updatedTeam = TeamFunctionality.update_team_query_using_dump(
+                team.model_dump(),
+            )
+            participant.team_name = updatedTeam.team_name
+
+            updated_participant = ParticipantsFunctionality.update_participant(
+                id=str(inserted_participant.inserted_id), participant=participant,
+            )
+            return JSONResponse(content={"message": "Participant was successfully verified and appended to corresponding team"}, status_code=200)
+
+        except (Exception) as e:
+            return JSONResponse(content={"message": str(e)}, status_code=500)
 
     @classmethod
     def add_participant_to_existing_random_team(cls, available_team: HackathonTeam, participant: NewParticipant) -> JSONResponse:
