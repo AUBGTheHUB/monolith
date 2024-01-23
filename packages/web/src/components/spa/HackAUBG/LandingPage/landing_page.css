@@ -101,14 +101,33 @@ input[type='reset'] {
 }
 
 @media only screen and (max-width: 500px) {
+    .landing-page .title {
+        padding-bottom: 45%;
+    }
     .landing-page .title h1 {
-        font-size: 20px;
+        font-size: 2.3rem;
     }
     .landing-page .title h2 {
-        font-size: 10px;
+        font-size: 0.7rem;
     }
     .landing-page .register-button h1 {
-        font-size: 10px;
+        font-size: 0.9rem;
+    }
+    .landing-page .register-button {
+        margin-top: 20px;
+        padding: 10px;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+    .landing-page .title h1 {
+        font-size: 1rem;
+    }
+    .landing-page .title h2 {
+        font-size: 0.5rem;
+    }
+    .landing-page .register-button h1 {
+        font-size: 0.5rem;
     }
     .landing-page .register-button {
         margin-top: 20px;
