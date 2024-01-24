@@ -6,7 +6,6 @@ export const LandingBackground = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
 
     const desktopCoords = {
-        // l/r  u/d
         github: 'translate(3200 600)',
         design: 'translate(3300 900)',
         starH: 'translate(3500 300)',
@@ -18,23 +17,22 @@ export const LandingBackground = () => {
         marketing: 'translate(300 1400)',
     };
     const mobile = {
-        // l/r  u/d
-        github: 'translate(3150 -1800)',
-        design: 'translate(2300 1400)',
-        starH: 'translate(1886 -1600)',
-        starF: 'translate(725 -2000)',
-        chat: 'translate(200 -1200)',
-        android: 'translate(2950 -1400)',
-        dev: 'translate(300 1200)',
-        perticipant: 'translate(2200 2600)',
-        marketing: 'translate(300 2400)',
+        github: 'translate(3100 -400)',
+        design: 'translate(2600 2300)',
+        starH: 'translate(2600 -1000)',
+        starF: 'translate(700 -1400)',
+        chat: 'translate(300 -400)',
+        android: 'translate(3150 2000)',
+        dev: 'translate(300 2300)',
+        perticipant: 'translate(2400 2950)',
+        marketing: 'translate(700 2950)',
     };
 
     useEffect(() => {
         const handleResize = () => {
             var width = window.innerWidth;
-            setIsMobile(width < 500);
-            var scale = isMobile ? 14 : 3.5 + width / 5000;
+            setIsMobile(width < 900);
+            var scale = isMobile ? 10 : 3 + width / 5000;
             var elements = document.querySelectorAll('.resizable');
 
             elements.forEach(function (element) {

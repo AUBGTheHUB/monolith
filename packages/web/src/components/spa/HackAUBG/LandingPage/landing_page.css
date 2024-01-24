@@ -102,7 +102,7 @@ input[type='reset'] {
 
 @media only screen and (max-width: 500px) {
     .landing-page .title {
-        padding-bottom: 45%;
+        /* padding-bottom: 45%; */
     }
     .landing-page .title h1 {
         font-size: 2.3rem;
