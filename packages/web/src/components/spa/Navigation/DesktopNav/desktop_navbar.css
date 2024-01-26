@@ -8,10 +8,12 @@
     padding-left: 10%;
     padding-right: 10%;
     align-items: center;
-    font-family: 'Poppins';
+    font-family: 'Post No Bills Jaffna';
     font-weight: 500;
     z-index: 999 !important;
 
+    line-height: 26px;
+    letter-spacing: 0.1em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -26,8 +28,9 @@
 }
 
 .navdesktop-logo p {
-    font-family: 'Poppins';
-    font-size: 1.5rem;
+    line-height: 10px;
+    letter-spacing: 0.1em;
+    font-size: 1.6rem;
     margin: 0;
 }
 
@@ -44,7 +47,6 @@
 }
 
 /*Buttons*/
-
 .navdesktop-flex-buttons {
     align-items: center;
     display: inline-flex;
@@ -69,7 +71,7 @@
     display: flex;
     color: white;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     justify-content: center;
     align-items: center;
     margin-left: 1rem;
@@ -112,16 +114,17 @@
 
 .navdesktop-navdivs a:hover:after {
     transition: 0.35s;
+    text-align: center;
     opacity: 1;
     visibility: visible;
-    height: 100%;
+    height: 70%;
 }
 
 .hackaubg-btn {
     height: 6vh;
     color: white;
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     padding: 0 2% 0 2%;
     width: fit-content;
     cursor: pointer;
@@ -160,4 +163,32 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+.anchor-icon {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 25px;
+    margin-left: -15px;
+}
+
+.anchor-icon svg {
+    width: 22px;
+    height: 22px;
+}
+.anchor-icon:hover {
+    color: white;
+}
+.anchor-navbar-buttons {
+    display: flex;
+    position: relative;
+}
+
+.hackaubg-font {
+    font-family: 'Post No Bills Jaffna';
+}
+
+.main-font {
+    font-family: 'Poppins';
 }
