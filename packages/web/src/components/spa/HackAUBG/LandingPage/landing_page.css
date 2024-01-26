@@ -36,8 +36,8 @@ input[type='reset'] {
 .landing-page .title h2 {
     color: white;
     /* change-font */
-    font-family: 'Press Start 2P', cursive;
-    font-size: 20px;
+    font-family: 'Post No Bills Jaffna';
+    font-size: 40px;
     text-align: center;
     margin-top: 10px;
 }
@@ -46,7 +46,7 @@ input[type='reset'] {
     margin-top: 50px;
     display: flex;
     align-items: center;
-    padding: 40px;
+    padding: 30px 50px;
     border: 3px solid rgb(216, 194, 251);
     color: rgb(216 194 251);
 }
@@ -54,7 +54,9 @@ input[type='reset'] {
 .landing-page .register-button h1 {
     color: rgb(216 194 251);
     padding-right: 10px;
+    font-size: 40px !important;
     /* change-font */
+    font-family: 'Post No Bills Jaffna';
     /* font-family: ; */
 }
 
@@ -90,12 +92,13 @@ input[type='reset'] {
         font-size: 37px;
     }
     .landing-page .title h2 {
-        font-size: 10px;
+        font-size: 20px;
     }
     .landing-page .register-button h1 {
         font-size: 10px;
     }
     .landing-page .register-button {
+        margin-top: 30px;
         padding: 20px;
     }
 }
@@ -105,17 +108,19 @@ input[type='reset'] {
         /* padding-bottom: 45%; */
     }
     .landing-page .title h1 {
-        font-size: 2.3rem;
+        font-size: 2.5rem;
     }
     .landing-page .title h2 {
+        font-size: 20px !important;
+
         font-size: 0.7rem;
     }
     .landing-page .register-button h1 {
-        font-size: 0.9rem;
+        font-size: 30px !important;
     }
     .landing-page .register-button {
         margin-top: 20px;
-        padding: 10px;
+        padding: 10px 30px;
     }
 }
 
