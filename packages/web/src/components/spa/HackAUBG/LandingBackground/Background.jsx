@@ -384,12 +384,7 @@ export const LandingBackground = () => {
                         </clipPath>
                     </defs>
                     {/* android */}
-                    <path
-                        d="M6.49996 10.8333H5.41663V12.9999H6.49996V10.8333Z"
-                        fill="white"
-                        className="resizable"
-                        id="android"
-                    />
+                    <path d="M6.49996 10.8333H5.41663V12.9999H6.49996V10.8333Z" fill="white" id="android" />
                     <path
                         d="M20.5833 10.8333H19.5V12.9999H20.5833V10.8333Z"
                         fill="white"
