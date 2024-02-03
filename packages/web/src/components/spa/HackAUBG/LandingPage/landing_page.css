@@ -77,7 +77,7 @@ input[type='reset'] {
         font-size: 50px;
     }
     .landing-page .title h2 {
-        font-size: 15px;
+        font-size: 20px;
     }
     .landing-page .register-button h1 {
         font-size: 20px;
@@ -108,7 +108,7 @@ input[type='reset'] {
         /* padding-bottom: 45%; */
     }
     .landing-page .title h1 {
-        font-size: 2.5rem;
+        font-size: 30px;
     }
     .landing-page .title h2 {
         font-size: 20px !important;

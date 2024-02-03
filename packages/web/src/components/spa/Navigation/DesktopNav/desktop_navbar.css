@@ -4,7 +4,7 @@
     color: white;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
     padding-left: 10%;
     padding-right: 10%;
     align-items: center;
@@ -21,7 +21,7 @@
 }
 
 .navdesktop-logo {
-    width: 30%;
+    width: 25%;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -50,8 +50,9 @@
 .navdesktop-flex-buttons {
     align-items: center;
     display: inline-flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     font-weight: bold;
+    width: 75%;
 }
 
 .navdesktop-buttons {
@@ -76,6 +77,7 @@
     align-items: center;
     margin-left: 1rem;
     margin-right: 1rem;
+    height: 50px;
 }
 
 @media only screen and (max-width: 1087px) {
@@ -105,7 +107,7 @@
     content: '.';
     color: transparent;
     border-radius: 3px;
-    background: #fff;
+    background: rgb(191 157 248);
     visibility: none;
     opacity: 0;
     z-index: -1;
@@ -117,7 +119,7 @@
     text-align: center;
     opacity: 1;
     visibility: visible;
-    height: 70%;
+    height: 100%;
 }
 
 .hackaubg-btn {
@@ -170,12 +172,12 @@
     display: flex;
     justify-content: flex-end;
     padding-bottom: 25px;
-    margin-left: -15px;
+    left: 0px;
 }
 
 .anchor-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 }
 .anchor-icon:hover {
     color: white;
