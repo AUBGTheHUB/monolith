@@ -7,7 +7,7 @@
     display: inline-flex;
     justify-content: flex-start;
     font-weight: bold;
-    width: 70%;
+    width: 72.5%;
 }
 
 .navdesktop-container {
@@ -33,7 +33,7 @@
 }
 
 .navdesktop-logo {
-    width: 30%;
+    width: 27.5%;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -42,7 +42,8 @@
 .navdesktop-logo p {
     line-height: 10px;
     letter-spacing: 0.1em;
-    font-size: 1.6rem;
+    /* font-size: 1.6rem; */
+    font-size: 1.2rem;
     margin: 0;
 }
 
@@ -84,7 +85,8 @@
     display: flex;
     color: white;
     text-decoration: none;
-    font-size: 1.6rem;
+    /* font-size: 1.6rem; */
+    font-size: 1.2rem;
     justify-content: center;
     align-items: center;
     margin-left: 1rem;
@@ -138,7 +140,8 @@
     height: 6vh;
     color: white;
     text-decoration: none;
-    font-size: 1.6rem;
+    /* font-size: 1.6rem; */
+    font-size: 1.1rem;
     padding: 0 2% 0 2%;
     width: fit-content;
     cursor: pointer;
@@ -201,8 +204,18 @@
 
 .hackaubg-font {
     font-family: 'Post No Bills Jaffna';
+    /* font-size: 200px !important; */
+}
+
+.hackaubg-font p {
+    font-size: 1.6rem;
+}
+
+.hackaubg-font a {
+    font-size: 1.6rem;
 }
 
 .main-font {
+    /* font-weight: 400; */
     font-family: 'Poppins';
 }
