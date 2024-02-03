@@ -18,9 +18,6 @@ import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
-// import { TbFileInfo } from 'react-icons/tb';
-// import { BsCalendar2Week } from 'react-icons/bs';
-// import { MdGrading } from 'react-icons/md';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -51,7 +48,6 @@ export const HackAUBG = () => {
                     )
                 }
             />
-            {/* <MatrixWindow /> */}
             <LandingPage />
             <AboutHackathon />
             <JourneySection />

@@ -1,17 +1,17 @@
 import { LandingBackground } from '../LandingBackground/Background';
-import './landing_page.css';
+import styles from './landing_page.module.css';
 import { useState } from 'react';
 export const LandingPage = () => {
     const [hover, setHover] = useState(false);
 
     return (
-        <div className="landing-page">
+        <div className={styles['landing-page']}>
             <LandingBackground />
-            <div className="title">
+            <div className={styles['title']}>
                 <h1>HACKAUBG 6.0</h1>
                 <h2>31st March - 2nd April, AUBG - Blagoevgrad</h2>
                 <button
-                    className="register-button"
+                    className={styles['register-button']}
                     onMouseEnter={() => setHover(true)}
                     onMouseLeave={() => setHover(false)}>
                     <h1>Register</h1>

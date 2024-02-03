@@ -42,7 +42,6 @@
 .navdesktop-logo p {
     line-height: 10px;
     letter-spacing: 0.1em;
-    /* font-size: 1.6rem; */
     font-size: 1.2rem;
     margin: 0;
 }
@@ -85,7 +84,6 @@
     display: flex;
     color: white;
     text-decoration: none;
-    /* font-size: 1.6rem; */
     font-size: 1.2rem;
     justify-content: center;
     align-items: center;
@@ -140,7 +138,6 @@
     height: 6vh;
     color: white;
     text-decoration: none;
-    /* font-size: 1.6rem; */
     font-size: 1.1rem;
     padding: 0 2% 0 2%;
     width: fit-content;
@@ -204,7 +201,6 @@
 
 .hackaubg-font {
     font-family: 'Post No Bills Jaffna';
-    /* font-size: 200px !important; */
 }
 
 .hackaubg-font p {
@@ -216,6 +212,5 @@
 }
 
 .main-font {
-    /* font-weight: 400; */
     font-family: 'Poppins';
 }

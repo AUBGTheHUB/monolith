@@ -1,14 +1,16 @@
 .background {
-    /* background-color: red; */
     position: absolute;
-    svg {
-        height: 100vh;
-        overflow: hidden;
-    }
 }
-g {
+
+.background g {
     overflow: hidden;
 }
+
+.background svg {
+    height: 100vh;
+    overflow: hidden;
+}
+
 @media screen and (max-width: 1900px) {
     .background {
         svg {

@@ -1,4 +1,4 @@
-import './background.css';
+import styles from './background.module.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -50,7 +50,7 @@ export const LandingBackground = () => {
     }, [isMobile]);
 
     return (
-        <div className="background">
+        <div className={styles['background']}>
             <svg
                 id="visual"
                 viewBox="0 0 3840 2160"
