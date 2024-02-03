@@ -1,4 +1,3 @@
-import asyncio
 from typing import Any, Dict
 
 from fastapi.responses import JSONResponse
@@ -6,13 +5,15 @@ from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import UpdateParticipant
-from py_api.services.mailer import send_email_background_task, send_mail
+from py_api.services.mailer import send_email_background_task
 from starlette.background import BackgroundTasks
 
 
 class VerificationController:
     @classmethod
     async def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
+        background_tasks = BackgroundTasks()
+
         result = JWTFunctionality.decode_token(jwt_token)
 
         if isinstance(result, dict):
@@ -59,26 +60,26 @@ class VerificationController:
                 )
 
         if team.team_type == team.team_type.NORMAL:
+
             # Invite link is sent to the admin
             try:
                 jwt_token = JWTFunctionality.create_jwt_token(
                     team_name=team.team_name, is_invite=True,
                 )
-                await asyncio.create_task(
-                    send_email_background_task(
-                        verified_participant.get("email"), "Test",
-                        f"Token: {JWTFunctionality.get_email_link(jwt_token, is_invite=True)}",
-                    ),
+
+                background_tasks.add_task(
+                    send_email_background_task, verified_participant.get(
+                        "email",
+                    ), "Test",
+                    f"Url: {JWTFunctionality.get_email_link(jwt_token, is_invite=True)}",
                 )
-                # background_tasks = BackgroundTasks()
-                # background_tasks.add_task(background_send_mail, verified_participant.get("email"), "Test",
-                #                           f"Url: {JWTFunctionality.get_verification_link(jwt_token)}")
             except Exception as e:
                 return JSONResponse(
                     content={"error": str(e)},
                     status_code=500,
                 )
-        return {"message": "Participant was successfully verified"}
+
+        return JSONResponse(content={"message": "Participant was successfully verified"}, status_code=200, background=background_tasks)
 
     @classmethod
     def test_controller(cls, team_name: str) -> Any:

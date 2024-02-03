@@ -218,17 +218,14 @@ class ParticipantsController:
                 jwt_token = JWTFunctionality.create_jwt_token(
                     new_participant_object_id, existing_team.team_name,
                 )
-                await asyncio.create_task(
-                    send_email_background_task(
-                        participant.email, "Test",
-                        f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
-                    ),
-                )
-                # background_tasks = BackgroundTasks()
-                # background_tasks.add_task(background_send_mail, participant.email, "Test",
-                #                           f"Url: {JWTFunctionality.get_verification_link(jwt_token)}")
 
-            return JSONResponse(content=existing_team.model_dump(), status_code=200)
+                background_tasks = BackgroundTasks()
+                background_tasks.add_task(
+                    send_email_background_task, participant.email, "Test",
+                    f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+                )
+
+            return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
 
         except Exception as e:
             return JSONResponse(content={"message": str(e)}, status_code=500)
@@ -290,17 +287,14 @@ class ParticipantsController:
             jwt_token = JWTFunctionality.create_jwt_token(
                 new_participant_object_id, new_team.team_name,
             )
-            await asyncio.create_task(
-                send_email_background_task(
-                    participant.email, "Test",
-                    f"Token: {JWTFunctionality.get_email_link(jwt_token)}",
-                ),
-            )
-            # background_tasks = BackgroundTasks()
-            # background_tasks.add_task(background_send_mail, participant.email, "Test",
-            #                           f"Url: {JWTFunctionality.get_verification_link(jwt_token)}")
 
-            return JSONResponse(content=new_team.model_dump(), status_code=200)
+            background_tasks = BackgroundTasks()
+            background_tasks.add_task(
+                send_email_background_task, participant.email, "Test",
+                f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+            )
+
+            return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)
 
         except Exception as e:
             return JSONResponse(content={"message": str(e)}, status_code=500)
