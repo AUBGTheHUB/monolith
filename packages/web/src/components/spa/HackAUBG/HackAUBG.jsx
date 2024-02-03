@@ -16,6 +16,10 @@ import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
+import { FaRegLightbulb } from 'react-icons/fa';
+import { TbFileInfo } from 'react-icons/tb';
+import { BsCalendar2Week } from 'react-icons/bs';
+import { MdGrading } from 'react-icons/md';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -23,10 +27,10 @@ export const HackAUBG = () => {
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
-        new Anchor('About', '#about'),
-        new Anchor('Schedule', '#schedule'),
-        new Anchor('Grading Criteria', '#grading'),
-        new Anchor('FAQ', '#faq')
+        new Anchor('About', '#about', <TbFileInfo />),
+        new Anchor('Schedule', '#schedule', <BsCalendar2Week />),
+        new Anchor('Grading Criteria', '#grading', <MdGrading />),
+        new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 
     return (
@@ -42,7 +46,7 @@ export const HackAUBG = () => {
                         'gray', // mobile background color nav when opened
                         'white', // anchor color
                         'green', // desktop anchor hover color
-                        'dark gray' // mobile anchor hover color
+                        'dark gray', // mobile anchor hover color
                     )
                 }
             />
@@ -58,11 +62,7 @@ export const HackAUBG = () => {
             <AwardsSection />
             <Sponsors />
             <FaqSection />
-            <Footer
-                color={'rgb(25, 183, 0)'}
-                iconColor={'rgb(255, 255, 255)'}
-                iconBgColor={'rgb(120, 120, 120)'}
-            />
+            <Footer color={'rgb(25, 183, 0)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
         </div>
     );
 };
