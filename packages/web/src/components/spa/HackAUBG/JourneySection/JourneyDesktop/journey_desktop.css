@@ -13,92 +13,63 @@
     align-items: center;
     justify-content: center;
     background-color: #fb4298;
+    margin-bottom: 3em;
 }
 
 .journey-desktop-title h1 {
-    font-size: 2.3em;
+    font-size: 1.7em;
     font-weight: bold;
     text-transform: uppercase;
     color: #fff;
     font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    margin: 0.3em 0;
 }
 
 .journey-desktop-content {
-    display: flex;
-    text-align: justify;
     margin-bottom: 1%;
-    line-height: 1.5;
     font-size: 1.1em;
 }
 
 .journey-desktop-content h2 {
-    font-size: 1.6em;
+    font-size: 1.875em;
+    color: #dbbfff;
+    text-shadow: 0px 2px 2px #a26df7;
+    font-family: 'Post No Bills Jaffna';
+    margin: 0;
 }
 
-.vertical-line {
-    border-radius: 4px;
-    overflow: visible;
-    border: 5px solid #fff;
-    justify-items: center;
-    align-items: center;
-    background-color: #fff;
-}
-
-.journey-desktop-section .left {
-    margin-right: 50px;
-    width: 500px;
-}
-
-.journey-desktop-section .right {
-    margin-left: 50px;
-    width: 500px;
-}
-
-.journey-desktop-section .right p {
-    width: 500px;
-}
-
-.journey-desktop-section .left .top {
-    margin-bottom: 54%;
-}
-
-.journey-desktop-section .right .top {
-    margin-top: 55%;
-}
-
-.journey-desktop-section .right .bottom {
-    margin-top: 54%;
-}
-
-.journey-desktop-section .left-dot {
-    background-color: white;
-    height: 45px;
-    width: 45px;
-    position: relative;
-    top: 65px;
-    left: 532.5px;
-    border-radius: 50%;
-}
-
-.journey-desktop-section .right-dot {
-    background-color: white;
-    height: 45px;
-    width: 45px;
-    position: relative;
-    top: 65px;
-    left: -77px;
-    border-radius: 50%;
-}
-.journey-desktop-section .journey-desktop-column h2 {
-    color: #19b700;
-    margin-bottom: 3%;
-}
-.journey-desktop-section .left h2 {
+.journey-desktop-step{
     display: flex;
-    flex-direction: row-reverse;
-    text-align: right;
+    justify-content: space-between;
 }
 
-.journey-desktop-section .journey-desktop-column p {
-    color: #fff;
+.journey-desktop-step-info-heading{
+    display: flex;
+    align-items: center;
+    padding: 0.3em 0;
+    gap: 0.5em;
+}
+
+.journey-desktop-step-info-heading img{
+    width: 55px;
+}
+
+.journey-desktop-step-info p{
+    padding: 0.3em 0;
+    color: white;
+}
+
+.journey-desktop-step-info{
+    width: 60%;
+}
+
+.journey-desktop-step-visuals-blur, .journey-desktop-step-visuals-figure{
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.journey-desktop-step-visuals{
+    position: relative;
 }
