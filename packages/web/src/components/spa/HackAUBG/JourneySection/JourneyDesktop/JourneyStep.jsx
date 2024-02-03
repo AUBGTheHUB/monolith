@@ -1,37 +1,20 @@
-export const JourneyStep = ({ props }) => {
-    if (props.displayTextLeft) {
-        return (
-            <div className="journey-desktop-step">
-                <div className="journey-desktop-step-info">
-                    <div className="journey-desktop-step-info-heading">
-                        <img src={props.icon} />
-                        <h2>{props.title}</h2>
-                    </div>
+import { JourneyStepVisuals } from './JourneyStepVisuals';
 
-                    <p>{props.paragraph}</p>
-                </div>
-                <div className="journey-desktop-step-visuals">
-                    <img src={props.blur} className="journey-desktop-step-visuals-blur" />
-                    <img src={props.figure} className="journey-desktop-step-visuals-figure" />
-                </div>
-            </div>
-        );
-    }
-
+export const JourneyStep = ({ title, paragraph, icon, blur, figure, displayTextLeft }) => {
     return (
         <div className="journey-desktop-step">
-            <div className="journey-desktop-step-visuals">
-                <img src={props.blur} className="journey-desktop-step-visuals-blur" />
-                <img src={props.figure} className="journey-desktop-step-visuals-figure" />
-            </div>
+            {!displayTextLeft && <JourneyStepVisuals blur={blur} figure={figure} />}
+
             <div className="journey-desktop-step-info">
                 <div className="journey-desktop-step-info-heading">
-                    <img src={props.icon} />
-                    <h2>{props.title}</h2>
+                    <img src={icon} />
+                    <h2>{title}</h2>
                 </div>
 
-                <p>{props.paragraph}</p>
+                <p>{paragraph}</p>
             </div>
+
+            {displayTextLeft && <JourneyStepVisuals blur={blur} figure={figure} />}
         </div>
     );
 };

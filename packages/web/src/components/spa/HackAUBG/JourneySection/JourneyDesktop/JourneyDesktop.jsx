@@ -12,7 +12,7 @@ export const JourneyDesktop = () => {
                 </div>
                 <div className="journey-desktop-content">
                     {stepsData.map(stepData => (
-                        <JourneyStep props={stepData} key={stepData.title} />
+                        <JourneyStep {...stepData} key={stepData.title} />
                     ))}
                 </div>
             </div>
