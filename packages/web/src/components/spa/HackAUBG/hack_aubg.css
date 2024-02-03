@@ -22,13 +22,5 @@
     background-color: #19b700;
 }
 body {
-    background-image: linear-gradient(
-        to bottom,
-        #222222,
-        #222222,
-        #222222,
-        #222222,
-        #222222,
-        #222222
-    );
+    background-image: linear-gradient(to bottom, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d);
 }
