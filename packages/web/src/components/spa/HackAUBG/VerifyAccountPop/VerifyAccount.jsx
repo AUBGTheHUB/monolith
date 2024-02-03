@@ -23,7 +23,9 @@ export const VerifyAccount = () => {
                 <div className={styles['sample-button']}>File</div>
                 <div className={styles['sample-button-edit']}>Edit</div>
                 <div className={styles['sample-button']}>Options</div>
-                <div className={styles['sample-button']}>Help</div>
+                <div className={styles['help-button-border']}>
+                    <div className={styles['sample-button']}>Help</div>
+                </div>
             </div>
             <div className={styles['verify-button-container']}>
                 <div className={styles['verify-button']}>Verify</div>
