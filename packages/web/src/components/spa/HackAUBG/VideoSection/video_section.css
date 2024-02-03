@@ -1,10 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;400&family=Press+Start+2P&display=swap');
+
 .video-container {
     height: 100%;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'Roboto';
+    font-family: 'Press Start 2P';
     padding: 4% 0%;
-    background-image: linear-gradient(rgba(150, 0, 0, 0), #204829);
+    /* background-image: linear-gradient(rgba(150, 0, 0, 0), #204829); */
     justify-content: center;
     align-items: center;
     display: flex;
@@ -12,15 +14,25 @@
 }
 
 .video-header {
-    width: 70%;
+    width: 1200px;
     color: #fff;
     justify-content: center;
     align-items: center;
     display: flex;
-    padding: 3% 0%;
+    padding: 10px 75px;
+    background-color: #fb4298;
     text-align: center;
-    font-weight: 900;
-    font-size: 2em;
+    font-weight: 400;
+    font-size: 36px;
+    margin: 75px;
+}
+
+.video {
+    height: 547px;
+    left: 80px;
+    top: 8244px;
+
+    filter: drop-shadow(0px 4px 16px #ffc8e2);
 }
 
 @media only screen and (max-width: 900px) {

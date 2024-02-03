@@ -2,7 +2,7 @@
     padding-bottom: 3%;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(#222222, #204829);
+    /* background: linear-gradient(#222222, #204829); */
     align-items: center;
     justify-content: center;
 }
