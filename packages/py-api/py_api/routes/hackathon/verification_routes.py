@@ -11,7 +11,7 @@ router = APIRouter(prefix="/hackathon/verify")
 
 @router.get("/participant")
 async def verify_admin(jwt_token: str) -> JSONResponse:
-    return await c.verify_participants(jwt_token)
+    return c.verify_participants(jwt_token)
 
 
 @router.get("/test")

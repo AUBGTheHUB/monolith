@@ -11,7 +11,7 @@ from starlette.background import BackgroundTasks
 
 class VerificationController:
     @classmethod
-    async def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
+    def verify_participants(cls, jwt_token: str) -> JSONResponse | Dict[str, str]:
         background_tasks = BackgroundTasks()
 
         result = JWTFunctionality.decode_token(jwt_token)

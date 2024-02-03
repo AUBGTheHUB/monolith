@@ -24,6 +24,7 @@ class AuthMiddleware:
     """Utility class for easily initializing all authentication middleware"""
     _BYPASSED_ENDPOINTS: Final = {
         "/health": ["GET"], "/routes": ["GET"], "/fswitches": ["GET"], "/hackathon/verify": ["GET"],
+        "/hackathon/participants": ["POST"],
     }
 
     def __init__(self, app: FastAPI) -> None:

@@ -120,7 +120,7 @@ class ParticipantsController:
         )
 
     @classmethod
-    async def add_participant(cls, participant: NewParticipant, jwt_token: str | None = None) -> JSONResponse | Dict[
+    def add_participant(cls, participant: NewParticipant, jwt_token: str | None = None) -> JSONResponse | Dict[
         str, str,
     ]:
 
@@ -133,12 +133,12 @@ class ParticipantsController:
         if jwt_token:
             # The jwt token is provided as a query_param when a participant is registering via the custom form in
             # the frontend
-            return await cls.handle_registration_via_invite_link(jwt_token, participant)
+            return cls.handle_registration_via_invite_link(jwt_token, participant)
 
         # The participant has provided a team name upon registration, so we assign them as admin to the newly
         # created team
         if participant.team_name:
-            return await cls.add_participant_to_new_team(participant)
+            return cls.add_participant_to_new_team(participant)
 
         # The participant hasn't provided a team name upon registration, so we should add them to a random team
         else:
@@ -150,16 +150,16 @@ class ParticipantsController:
             # Find the teams which can accept a new participant
             for team in random_teams:
                 if len(team.team_members) < 6:
-                    return await cls.add_participant_to_existing_team(team, participant)
+                    return cls.add_participant_to_existing_team(team, participant)
 
             # If all the random teams are full, check if there is space for creating a new one
             if TeamFunctionality.get_count_of_teams() < 15:
-                return await cls.add_participant_to_new_team(participant, generate_random_team=True)
+                return cls.add_participant_to_new_team(participant, generate_random_team=True)
 
             return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
 
     @classmethod
-    async def handle_registration_via_invite_link(cls, jwt_token: str, participant: NewParticipant) -> JSONResponse:
+    def handle_registration_via_invite_link(cls, jwt_token: str, participant: NewParticipant) -> JSONResponse:
         result = JWTFunctionality.decode_token(jwt_token, is_invite=True)
         if isinstance(result, dict):
             decoded_token = result
@@ -173,15 +173,18 @@ class ParticipantsController:
             return JSONResponse(content={"message": "Team with this name does not exist"}, status_code=404)
 
         if len(team.team_members) < 6:
-            return await cls.add_participant_to_existing_team(team, participant, is_invite=True)
+            return cls.add_participant_to_existing_team(team, participant, is_invite=True)
 
         return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
 
     @classmethod
-    async def add_participant_to_existing_team(
+    def add_participant_to_existing_team(
             cls, existing_team: HackathonTeam,
             participant: NewParticipant, is_invite: bool = False,
     ) -> JSONResponse:
+
+        background_tasks = BackgroundTasks()
+
         try:
             # Creates new participant
             new_participant = ParticipantsFunctionality.insert_participant(
@@ -219,7 +222,6 @@ class ParticipantsController:
                     new_participant_object_id, existing_team.team_name,
                 )
 
-                background_tasks = BackgroundTasks()
                 background_tasks.add_task(
                     send_email_background_task, participant.email, "Test",
                     f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
@@ -231,7 +233,7 @@ class ParticipantsController:
             return JSONResponse(content={"message": str(e)}, status_code=500)
 
     @classmethod
-    async def add_participant_to_new_team(
+    def add_participant_to_new_team(
             cls, participant: NewParticipant,
             generate_random_team: bool = False,
     ) -> JSONResponse:
