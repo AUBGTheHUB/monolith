@@ -7,7 +7,7 @@
     display: inline-flex;
     justify-content: flex-start;
     font-weight: bold;
-    width: 75%;
+    width: 70%;
 }
 
 .navdesktop-container {
@@ -33,7 +33,7 @@
 }
 
 .navdesktop-logo {
-    width: 25%;
+    width: 30%;
     display: flex;
     align-items: center;
     cursor: pointer;
