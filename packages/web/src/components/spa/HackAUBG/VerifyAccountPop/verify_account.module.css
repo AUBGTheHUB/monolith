@@ -1,0 +1,74 @@
+.verfication-container {
+    width: 45vw;
+    height: 45vh;
+    border: 3px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 10px 15px 0px #f8c0ff;
+    background-color: #f8c0ff;
+}
+
+.top-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: #f8c0ff;
+}
+
+.sample-buttons-container {
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+    display: flex;
+    background-color: white;
+}
+
+.sample-button,
+.sample-button-edit {
+    border-right: 3px solid black;
+    display: flex;
+    flex-basis: 90px;
+    justify-content: center;
+    align-items: center;
+    padding: 13px;
+    -webkit-user-select: none;
+    user-select: none;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+}
+
+.sample-button-edit {
+    background-color: #f8c0ff;
+}
+
+.svg-minimize svg {
+    height: 2.2em;
+    width: 1.5em !important;
+}
+
+svg {
+    padding: 4px;
+}
+
+.verify-button-container {
+    display: flex;
+    height: 60%;
+    justify-content: center;
+    align-items: center;
+}
+
+.verify-button {
+    width: 13vw;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 3px solid black;
+    font-size: 30px;
+    font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace;
+}
