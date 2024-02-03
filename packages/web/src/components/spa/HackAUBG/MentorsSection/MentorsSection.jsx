@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
-import { MentorsCard } from './MentorsCard';
+//import { MentorsCard } from './MentorsCard';
+import SimpleSlider from '../Carousel';
 import './mentors_section.css';
 
 export const MentorsSection = () => {
@@ -11,13 +12,13 @@ export const MentorsSection = () => {
     const getMentors = () => {
         axios({
             method: 'get',
-            url: url + '/api/mentors'
+            url: url + '/api/mentors',
         })
-            .then((res) => {
+            .then(res => {
                 setMentors(res.data.data.data);
             })
             // eslint-disable-next-line
-            .catch((err) => {
+            .catch(err => {
                 // do nothing
             });
     };
@@ -28,9 +29,7 @@ export const MentorsSection = () => {
                 <div className="mentors-section-container">
                     <h1>Mentors</h1>
                     <div className="mentor-container">
-                        {mentor.map((mentor, index) => (
-                            <MentorsCard mentor={mentor} key={index} />
-                        ))}
+                        <SimpleSlider pictures={mentor} view={4}></SimpleSlider>
                     </div>
                 </div>
             );
