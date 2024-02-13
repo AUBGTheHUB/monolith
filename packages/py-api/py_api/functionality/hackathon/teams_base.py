@@ -32,7 +32,7 @@ class TeamFunctionality:
 
         new_team = HackathonTeam(
             team_name=team_name,
-            team_type=team_type, team_members=team_members_ids,
+            team_type=team_type, team_members=team_members_ids, is_verified=False,
         )
 
         return new_team
@@ -60,7 +60,8 @@ class TeamFunctionality:
             cls, team_name: str | None = None,
             team_id: str | None = None,
     ) -> HackathonTeam | None:
-        team: HackathonTeam
+
+        team: Dict[str, Any] = {}
 
         if team_name:
             team = t_col.find_one(
@@ -109,8 +110,14 @@ class TeamFunctionality:
         return f"RandomTeam {count + 1}"
 
     @classmethod
-    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult:
-        return t_col.insert_one(team.model_dump())
+    def insert_team(cls, team: HackathonTeam) -> results.InsertOneResult | None:
+        """Returns the insert MongoDB document or None if an error occurred during insertion"""
+
+        new_team = t_col.insert_one(team.model_dump())
+        if new_team.acknowledged:
+            return new_team
+
+        raise None
 
     @classmethod
     def get_count_of_teams(cls) -> int:
