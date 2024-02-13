@@ -3,6 +3,7 @@
     --scrollbar-background: #2222;
     /* Foreground, Background */
     scrollbar-color: var(--scrollbar-foreground) var(--scrollbar-background);
+    background-color: black;
 }
 
 .hackaubg-container::-webkit-scrollbar-track {
