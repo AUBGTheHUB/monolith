@@ -60,7 +60,13 @@ export const HackAUBG = () => {
             <AwardsSection />
             <Sponsors />
             <FaqSection />
-            <Footer color={'rgba(220,193,255,255)'} iconColor={'rgb(0, 0, 0)'} iconBgColor={'rgba(0, 0, 0, 0)'} textColor={'#000'} />
+            <Footer
+                color={'rgba(220,193,255,255)'}
+                iconColor={'rgb(0, 0, 0)'}
+                iconBgColor={'rgba(0, 0, 0, 0)'}
+                textColor={'#000'}
+                iconSize={'2.6em'}
+            />
         </div>
     );
 };

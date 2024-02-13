@@ -31,7 +31,12 @@ const LandingHome = () => {
             <LandingSection />
             <AboutSection />
             <MembersSection />
-            <Footer color={'rgb(21, 76, 121)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
+            <Footer
+                color={'rgb(21, 76, 121)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
+                iconSize={'2.2em'}
+            />
         </div>
     );
 };
