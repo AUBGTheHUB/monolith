@@ -5,9 +5,9 @@
 .hackaubg-container .navdesktop-flex-buttons {
     align-items: center;
     display: inline-flex;
-    justify-content: flex-start;
+    justify-content: center;
     font-weight: bold;
-    width: 72.5%;
+    width: 52%;
 }
 
 .navdesktop-container {
@@ -33,7 +33,7 @@
 }
 
 .navdesktop-logo {
-    width: 27.5%;
+    max-width: 24%;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -213,4 +213,8 @@
 
 .main-font {
     font-family: 'Poppins';
+}
+
+.filler {
+    min-width: 24%;
 }

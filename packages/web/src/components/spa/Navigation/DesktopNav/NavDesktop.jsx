@@ -100,6 +100,7 @@ export const NavDesktop = ({ props }) => {
                 </div>
                 {renderHackButton()}
             </div>
+            {location.pathname === '/hackaubg' && <div className="filler"></div>}
         </div>
     );
 };
