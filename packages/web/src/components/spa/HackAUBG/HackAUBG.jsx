@@ -1,6 +1,6 @@
 import React from 'react';
 import { JourneySection } from './JourneySection/JourneySection';
-import { MatrixWindow } from './LandingAnimation/LandingAnimation';
+// import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
@@ -16,10 +16,8 @@ import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
+import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
-import { TbFileInfo } from 'react-icons/tb';
-import { BsCalendar2Week } from 'react-icons/bs';
-import { MdGrading } from 'react-icons/md';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -27,9 +25,9 @@ export const HackAUBG = () => {
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
-        new Anchor('About', '#about', <TbFileInfo />),
-        new Anchor('Schedule', '#schedule', <BsCalendar2Week />),
-        new Anchor('Grading Criteria', '#grading', <MdGrading />),
+        new Anchor('About', '#about'),
+        new Anchor('Schedule', '#schedule'),
+        new Anchor('Grading Criteria', '#grading'),
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 
@@ -44,13 +42,13 @@ export const HackAUBG = () => {
                         true, // sticky desktop nav
                         '#222222', // mobile nav background color when not opened (default transparent)
                         'gray', // mobile background color nav when opened
-                        'white', // anchor color
-                        'green', // desktop anchor hover color
+                        '#e2d7fc', // anchor color
+                        'white', // desktop anchor hover color
                         'dark gray', // mobile anchor hover color
                     )
                 }
             />
-            <MatrixWindow />
+            <LandingPage />
             <AboutHackathon />
             <JourneySection />
             <RegistrationForm />

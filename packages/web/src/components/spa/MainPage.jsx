@@ -18,9 +18,9 @@ const LandingHome = () => {
     const [featureSwitches, _] = useContext(FsContext);
 
     const anchorList = [
-        new Anchor('About', '#about', false),
-        new Anchor('Team', '#team', false, featureSwitches.team),
-        new Anchor('Jobs', 'jobs', true, featureSwitches.jobs),
+        new Anchor('About', '#about', '', false),
+        new Anchor('Team', '#team', '', false, featureSwitches.team),
+        new Anchor('Jobs', 'jobs', '', true, featureSwitches.jobs),
     ];
 
     useEffect(checkHashAndScroll, []);
