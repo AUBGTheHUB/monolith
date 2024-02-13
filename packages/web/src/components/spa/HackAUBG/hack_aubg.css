@@ -3,6 +3,7 @@
     --scrollbar-background: #2222;
     /* Foreground, Background */
     scrollbar-color: var(--scrollbar-foreground) var(--scrollbar-background);
+    background-color: black;
 }
 
 .hackaubg-container::-webkit-scrollbar-track {
@@ -22,13 +23,5 @@
     background-color: #19b700;
 }
 body {
-    background-image: linear-gradient(
-        to bottom,
-        #222222,
-        #222222,
-        #222222,
-        #222222,
-        #222222,
-        #222222
-    );
+    background-image: linear-gradient(to bottom, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d, #0d0d0d);
 }
