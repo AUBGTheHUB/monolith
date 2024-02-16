@@ -3,19 +3,24 @@ from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, EmailStr, Field, validator
 
 TSHIRT_SIZE = Literal["S", "M", "L", "XL"]
+
 UNIVERSITIES_LIST = Literal[
     "Sofia University",
-    "Technical University - Sofia", "Plovdiv University", "Other",
+    "Technical University - Sofia", "American University in Bulgaria", "Plovdiv University", "Other",
 ]
-ALLOWED_AGE = Annotated[int, Field(ge=0, le=99)]
+
+ALLOWED_AGE = Annotated[int, Field(ge=18, le=99)]
+
 REFERRAL_SOURCES_LIST = Literal[
     "University",
     "Friends", "I was on a previous edition of Hack AUBG",
 ]
+
 PROGRAMMING_LANGUAGES_LIST = Literal[
     "Frontend Programming", "Backend Programming", "Programming in C#",
     "Programming in Java", "Programming in Python", "Programming in JavaScript", "Other",
 ]
+
 PROGRAMMING_LEVELS_LIST = Literal[
     "Beginner", "Intermediate",
     "Advanced", "I am not participating as a programmer", "Other",
