@@ -35,7 +35,11 @@ class ParticipantsFunctionality:
     def update_participant(cls, object_id: str, participant: UpdateParticipant | NewParticipant) -> Any:
         obj = {
             key: value for key, value in participant.model_dump().items() if
-            value
+            value != None
         }
 
-        return cls.pcol.find_one_and_update({"_id": ObjectId(object_id)}, {"$set": obj})
+        cls.pcol.find_one_and_update(
+            {"_id": ObjectId(object_id)}, {"$set": obj},
+        )
+        # Returns the updated participant
+        return cls.pcol.find_one({"_id": ObjectId(object_id)})
