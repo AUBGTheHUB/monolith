@@ -1,43 +1,53 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { AiOutlineMinus } from 'react-icons/ai';
-import './faq_module.css';
+import styles from './faq.module.css';
 
 export const FAQModule = props => {
-    const [stepContent, setStepContent] = useState('faq-container-content-not-displayed');
+    const [stepContent, setStepContent] = useState(styles.faqcontainercontentnotdisplayed);
     // eslint-disable-next-line no-unused-vars
-    const [stepId, setStepId] = useState(`faq-step-${props.id}`);
-    const [arrowDown, setArrowDown] = useState('faq-arrow-displayed');
-    const [arrowUp, setArrowUp] = useState('faq-arrow-not-displayed');
-    const getHeight = () => {
-        var divElement = document.getElementById(stepId);
-        if (divElement) {
-            return divElement.scrollHeight;
+    const [stepId, setStepId] = useState(styles[`faqstep${props.id}`]);
+    const [arrowDown, setArrowDown] = useState(styles.faqarrowdisplayed);
+    const [arrowUp, setArrowUp] = useState(styles.faqarrownotdisplayed);
+
+    useEffect(() => {
+        const getHeight = () => {
+            const divElement = document.getElementById(stepId);
+            if (divElement) {
+                return divElement.scrollHeight;
+            }
+        };
+
+        const elem = document.querySelector(styles.faqcontainercontentdisplayed);
+        if (elem) {
+            elem.style.setProperty('--elem-Height', getHeight() + 'px');
         }
-    };
+    }, []);
 
     const setMenuClass = () => {
-        if (stepContent == 'faq-container-content-displayed') {
-            setStepContent('faq-container-content-not-displayed');
-            setArrowDown('faq-arrow-displayed');
-            setArrowUp('faq-arrow-not-displayed');
+        if (stepContent == styles.faqcontainercontentdisplayed) {
+            setStepContent(styles.faqcontainercontentnotdisplayed);
+            setArrowDown(styles.faqarrowdisplayed);
+            setArrowUp(styles.faqarrownotdisplayed);
         } else {
-            setStepContent('faq-container-content-displayed');
-            setArrowDown('faq-arrow-not-displayed');
-            setArrowUp('faq-arrow-displayed');
+            setStepContent(styles.faqcontainercontentdisplayed);
+            setArrowDown(styles.faqarrownotdisplayed);
+            setArrowUp(styles.faqarrowdisplayed);
         }
     };
 
+    console.log(styles.faqmobilestepcontainer, 'HERE');
+
     return (
-        <div style={{ '--elem-Height': getHeight() + 'px' }} className="faq-mobile-step-container">
+        <div className={styles.faqmobilestepcontainer}>
             <div
-                className="faq-step-title"
+                className={styles.faqsteptitle}
                 onClick={() => {
                     setMenuClass();
-                    getHeight();
+                    //     getHeight();
                 }}>
-                <div className="faq-h2">
+                <div className={styles.faqh2}>
                     <h2>{props.stepnum}</h2>
                     <h2>{props.title}</h2>
                 </div>

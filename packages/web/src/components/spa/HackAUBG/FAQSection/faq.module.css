@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
-.faq-mobile-section {
+.faqmobilesection {
     overflow: hidden;
 }
 
-.faq-mobile-title {
+.faqmobiletitle {
     margin-bottom: 5%;
 }
 
-.faq-mobile-title h1 {
+.faqmobiletitle h1 {
     color: white;
     font-weight: 900;
     font-size: 2em;
     text-align: center;
 }
 
-.faq-mobile-step-container {
+.faqmobilestepcontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,7 +26,7 @@
     cursor: pointer;
 }
 
-.faq-h2 {
+.faqh2 {
     display: flex;
     flex-direction: column;
     width: 75%;
@@ -35,11 +35,11 @@
     font-family: 'IBM Plex Mono';
 }
 
-.faq-h2 h2 {
+.faqh2 h2 {
     padding: 0 !important;
 }
 
-.faq-mobile-step-container h2 {
+.faqmobilestepcontainer h2 {
     color: #ffffff;
     font-size: 1.2em;
     width: 91%;
@@ -49,33 +49,36 @@
     margin-bottom: 0.5%;
 }
 
-.faq-mobile-step-container p {
+.faqmobilestepcontainer p {
     color: #e0e0e0;
     font-size: 1em;
     text-align: justify;
     padding: 0 5% 3% 5%;
 }
 
-.faq-mobile-content {
+.faqmobilecontent {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
 }
 
-.faq-container-content-not-displayed {
+.faqcontainercontentnotdisplayed {
     height: 0;
     overflow: hidden;
     animation: slideout ease-in-out 0.5s;
+    font-family: 'IBM Plex Mono';
+    --elem-Height: 200px;
 }
 
-.faq-container-content-displayed {
+.faqcontainercontentdisplayed {
     overflow: hidden;
     animation: slidein ease-in-out 0.5s;
     font-family: 'IBM Plex Mono';
+    --elem-Height: 200px;
 }
 
-.faq-arrow-displayed {
+.faqarrowdisplayed {
     display: flex;
     align-items: center;
     width: 15%;
@@ -83,11 +86,11 @@
     color: #fb4298;
 }
 
-.faq-arrow-not-displayed {
+.faqarrownotdisplayed {
     display: none;
 }
 
-.faq-step-title {
+.faqsteptitle {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -113,28 +116,28 @@
 }
 
 @media only screen and (max-width: 700px) {
-    .faq-mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 1em;
     }
-    .faq-mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.8em;
     }
 }
 
 @media only screen and (max-width: 500px) {
-    .faq-mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 0.85em;
     }
-    .faq-mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.7em;
     }
 }
 
 @media only screen and (max-width: 400px) {
-    .faq-mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 0.8em;
     }
-    .faq-mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.65em;
     }
 }
