@@ -1,26 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './verify_account.module.css';
 import { FaRegWindowMinimize } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { verifyURL } from '../../../../Global';
 
-export const VerifyAccount = () => {
+export const VerifyAccount = ({ onSuccess }) => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const jwtToken = params.get('jwt_token');
+
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const handleVerifyClick = () => {
         axios({
             method: 'get',
             url: verifyURL + `?jwt_token=${jwtToken}`,
         })
-            .then(res => {
-                console.log(res);
+            .then(() => {
+                setSuccess(true);
+                setTimeout(() => {
+                    onSuccess();
+                }, 3000);
             })
 
-            .catch(err => {
-                console.log(err);
+            .catch(() => {
+                setError(true);
             });
     };
 
@@ -51,6 +57,12 @@ export const VerifyAccount = () => {
             <div className={styles['verify-button-container']}>
                 <div className={styles['verify-button']} onClick={handleVerifyClick}>
                     Verify
+                </div>
+                <div>
+                    {error && <div className={styles['error-message']}>An error occured, please try again later!</div>}
+                </div>
+                <div>
+                    {success && <div className={styles['success-message']}>You have been successfully verified!</div>}
                 </div>
             </div>
         </div>

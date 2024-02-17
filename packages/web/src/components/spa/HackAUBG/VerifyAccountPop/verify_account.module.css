@@ -57,6 +57,7 @@ svg {
 .verify-button-container {
     display: flex;
     height: 60%;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -73,6 +74,23 @@ svg {
     font-weight: 500;
     font-family: 'IBM Plex Mono', monospace;
     cursor: pointer;
+}
+
+.error-message,
+.success-message {
+    color: black;
+    font-size: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    margin: 20px 10px 0px 10px;
+    padding: 10px;
+    border: 2px solid red;
+    border-radius: 10px;
+    text-align: center;
+    background-color: white;
+}
+
+.success-message {
+    border: 2px solid rgb(0, 192, 0);
 }
 
 @media (max-width: 420px) {

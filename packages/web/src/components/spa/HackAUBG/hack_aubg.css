@@ -23,6 +23,10 @@
     background-color: #19b700;
 }
 
+.hackaubg-container.showVerification {
+    overflow: hidden;
+}
+
 .blur {
     filter: blur(8px);
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { JourneySection } from './JourneySection/JourneySection';
-// import { MatrixWindow } from './LandingAnimation/LandingAnimation';
 import { AboutHackathon } from './AboutHackathon/AboutHackathon';
 import { ScheduleHackathon } from './ScheduleSection/ScheduleSection';
 import { Anchor, Props } from '../Navigation/NavFactory.js';
@@ -12,7 +11,6 @@ import VideoSection from './VideoSection/VideoSection';
 import RegistrationForm from './RegistrationForm/RegistrationForm';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
-import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
 import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
@@ -20,10 +18,9 @@ import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
 import { useMatch } from 'react-router-dom';
 import { VerifyAccount } from '../HackAUBG/VerifyAccountPop/VerifyAccount.jsx';
+import { useState, useEffect } from 'react';
 
 export const HackAUBG = () => {
-    makeBodyScrollable();
-
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
@@ -35,15 +32,19 @@ export const HackAUBG = () => {
 
     const match = useMatch('/hackaubg/verify');
 
-    if (match) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = 'auto';
-    }
+    const [showVerification, setShowVerification] = useState(!!match);
+
+    useEffect(() => {
+        document.body.style.overflow = showVerification ? 'hidden' : 'auto';
+    }, [showVerification]);
+
+    const handleVerificationSuccess = () => {
+        setShowVerification(false);
+    };
 
     return (
-        <div className="hackaubg-container">
-            <div className={match ? 'blur' : ''}>
+        <div className={`hackaubg-container ${showVerification ? 'showVerification' : ''}`}>
+            <div className={showVerification ? 'blur' : ''}>
                 <NavBar
                     props={
                         new Props(
@@ -79,9 +80,9 @@ export const HackAUBG = () => {
                     iconSize={'2.6em'}
                 />
             </div>
-            {match && (
+            {showVerification && (
                 <div className="no-blur">
-                    <VerifyAccount />
+                    <VerifyAccount onSuccess={handleVerificationSuccess} />
                 </div>
             )}
         </div>
