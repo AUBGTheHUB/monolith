@@ -72,6 +72,7 @@ svg {
     font-size: 30px;
     font-weight: 500;
     font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
 }
 
 @media (max-width: 420px) {
