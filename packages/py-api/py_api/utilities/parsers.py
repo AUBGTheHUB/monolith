@@ -44,3 +44,12 @@ def filter_none_values(document: BaseModel) -> Dict[str, Any]:
             fields_to_be_updated[key] = value
 
     return fields_to_be_updated
+
+
+def generate_html_mail_body(url: str) -> str:
+    with open("resources/email_templates/email_template.html", 'r') as file:
+        email_template = file.read()
+
+    email_template = email_template.replace("{verifyLink}", url)
+
+    return email_template

@@ -6,6 +6,7 @@ from py_api.functionality.hackathon.participants_base import ParticipantsFunctio
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import UpdateParticipant
 from py_api.services.mailer import send_email_background_task
+from py_api.utilities.parsers import generate_html_mail_body
 from starlette.background import BackgroundTasks
 
 
@@ -71,8 +72,13 @@ class VerificationController:
                     send_email_background_task, verified_participant.get(
                         "email",
                     ), "Test",
-                    f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True, is_invite=True)}",
+                    generate_html_mail_body(
+                        JWTFunctionality.get_email_link(
+                            jwt_token, for_frontend=True, is_invite=True,
+                        ),
+                    ),
                 )
+
             except Exception as e:
                 return JSONResponse(
                     content={"error": str(e)},

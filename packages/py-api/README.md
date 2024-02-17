@@ -32,7 +32,7 @@ curl --location 'localhost:6969/v2/routes'
 
 ## Scripts
 ### Renaming a collection
-![rename collection script](./docs/images/rename_collection_script.png)
+![rename collection script](resources/docs/images/rename_collection_script.png)
 
 ## Utilities:
 ### Parsing:

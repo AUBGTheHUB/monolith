@@ -12,6 +12,7 @@ from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
 from py_api.services.mailer import send_email_background_task
+from py_api.utilities.parsers import generate_html_mail_body
 
 
 class ParticipantsController:
@@ -191,7 +192,11 @@ class ParticipantsController:
 
                 background_tasks.add_task(
                     send_email_background_task, participant.email, "Test",
-                    f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
+                    generate_html_mail_body(
+                        JWTFunctionality.get_email_link(
+                            jwt_token, for_frontend=True,
+                        ),
+                    ),
                 )
 
             return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
@@ -260,7 +265,11 @@ class ParticipantsController:
             background_tasks = BackgroundTasks()
             background_tasks.add_task(
                 send_email_background_task, participant.email, "Test",
-                f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
+                generate_html_mail_body(
+                    JWTFunctionality.get_email_link(
+                        jwt_token, for_frontend=True,
+                    ),
+                ),
             )
 
             return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)
