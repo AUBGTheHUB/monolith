@@ -10,7 +10,6 @@ import '../../../node_modules/react-hovering-cards-carousel/dist/style.css';
 import { useEffect } from 'react';
 import { checkHashAndScroll } from '../../Global';
 import { FsContext } from '../../feature_switches';
-import { VerifyAccount } from './HackAUBG/VerifyAccountPop/VerifyAccount.jsx';
 
 const LandingHome = () => {
     document.body.className = 'main-body';
@@ -29,7 +28,6 @@ const LandingHome = () => {
     return (
         <div className="main">
             <NavBar props={new Props(anchorList, true, 'transparent', false)} />
-            <VerifyAccount />
             <LandingSection />
             <AboutSection />
             <MembersSection />

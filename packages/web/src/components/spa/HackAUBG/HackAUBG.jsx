@@ -18,6 +18,8 @@ import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
+import { useMatch } from 'react-router-dom';
+import { VerifyAccount } from '../HackAUBG/VerifyAccountPop/VerifyAccount.jsx';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -30,6 +32,8 @@ export const HackAUBG = () => {
         new Anchor('Grading Criteria', '#grading'),
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
+
+    let match = useMatch('/hackaubg/verify-account');
 
     return (
         <div className="hackaubg-container">
@@ -49,6 +53,7 @@ export const HackAUBG = () => {
                 }
             />
             <LandingPage />
+            {match && <VerifyAccount />}
             <AboutHackathon />
             <JourneySection />
             <RegistrationForm />
