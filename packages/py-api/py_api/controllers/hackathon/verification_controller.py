@@ -37,27 +37,12 @@ class VerificationController:
                 is_verified=True,
             ),
         )
-        if not verified_participant:
-            return JSONResponse(
-                content={
-                    "message": "Something went wrong updating participant document",
-                },
-                status_code=500,
-            )
 
         if team.is_verified is not True:
             team.is_verified = True
-            verified_team = TeamFunctionality.update_team_query_using_dump(
+            TeamFunctionality.update_team_query_using_dump(
                 team_payload=team.model_dump(),
             )
-
-            if not verified_team:
-                return JSONResponse(
-                    content={
-                        "message": "Something went wrong updating team document",
-                    },
-                    status_code=500,
-                )
 
         if team.team_type == team.team_type.NORMAL:
 
@@ -73,13 +58,17 @@ class VerificationController:
                     ), "Test",
                     f"Url: {JWTFunctionality.get_email_link(jwt_token, is_invite=True)}",
                 )
+
             except Exception as e:
                 return JSONResponse(
                     content={"error": str(e)},
                     status_code=500,
                 )
 
-        return JSONResponse(content={"message": "Participant was successfully verified"}, status_code=200, background=background_tasks)
+        return JSONResponse(
+            content={"message": "Participant was successfully verified"}, status_code=200,
+            background=background_tasks,
+        )
 
     @classmethod
     def test_controller(cls, team_name: str) -> Any:
