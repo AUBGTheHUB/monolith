@@ -55,7 +55,10 @@ class JWTFunctionality:
             domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
 
         if for_frontend:
-            url = f"{domain}/hackaubg?jwt_token={jwt_token}"
+            if is_invite:
+                url = f"{domain}/hackaubg/invite?jwt_token={jwt_token}"
+            else:
+                url = f"{domain}/hackaubg/verify?jwt_token={jwt_token}"
 
         elif is_invite:
             url = f"{domain}/v2/hackathon/participants?jwt_token={jwt_token}"
