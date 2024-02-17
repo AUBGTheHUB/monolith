@@ -8,7 +8,7 @@ from jwt import (
     decode,
     encode,
 )
-from py_api.environment import IS_OFFLINE, SECRET_KEY
+from py_api.environment import DOCK_ENV, IS_OFFLINE, SECRET_KEY
 
 
 class JWTFunctionality:
@@ -48,11 +48,18 @@ class JWTFunctionality:
 
     @classmethod
     def get_email_link(
-            cls, jwt_token: str, domain: str = "https://thehub-aubg.com",
+            cls, jwt_token: str,
             for_frontend: bool = False, is_invite: bool = False,
     ) -> str:
+
         if IS_OFFLINE:
             domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
+
+        elif DOCK_ENV == "DEV":
+            domain = "https://dev.thehub-aubg.com"
+
+        else:
+            domain = "https://thehub-aubg.com"
 
         if for_frontend:
             if is_invite:
