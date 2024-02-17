@@ -14,7 +14,7 @@ IS_LOCAL_COMPOSE = eval_bool(getenv("IS_LOCAL_COMPOSE", False))
 SECRET_KEY = getenv("SECRET_KEY")
 HUB_MAIL = getenv("HUB_MAIL")
 HUB_PSW = getenv("HUB_PSW")
-DOCK_ENV = getenv("DOCK_ENV")
+HUB_WEB_URL = getenv("HUB_WEB_URL", "")
 
 
 OFFLINE_TOKEN = "OFFLINE_TOKEN"

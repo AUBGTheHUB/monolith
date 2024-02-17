@@ -8,7 +8,7 @@ from jwt import (
     decode,
     encode,
 )
-from py_api.environment import DOCK_ENV, IS_OFFLINE, SECRET_KEY
+from py_api.environment import HUB_WEB_URL, IS_OFFLINE, SECRET_KEY
 
 
 class JWTFunctionality:
@@ -53,13 +53,9 @@ class JWTFunctionality:
     ) -> str:
 
         if IS_OFFLINE:
-            domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
-
-        elif DOCK_ENV == "DEV":
-            domain = "https://dev.thehub-aubg.com"
-
+            domain = f"{HUB_WEB_URL}:{'3000' if for_frontend else '6969'}"
         else:
-            domain = "https://thehub-aubg.com"
+            domain = HUB_WEB_URL
 
         if for_frontend:
             if is_invite:
