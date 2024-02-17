@@ -55,17 +55,18 @@ const RegistrationForm = () => {
                 alert(JSON.stringify(data));
             })}>
             <label>Example</label>
-            <InputComponent label="Full Name" type="name" required="true" register={register} />
-            <InputComponent label="Email" type="email" required="true" register={register} />
-            <InputComponent label="Age" type="age" required="true" register={register} />
-            <InputComponent label="Location" type="text" required="true" register={register} />
-            <InputComponent label="What are your job interests" type="text" register={register} />
+            <InputComponent label="First Name" type="name" required="true" register={register} name="first_name" />
+            <InputComponent label="Last Name" type="name" required="true" register={register} name="last_name" />
+            <InputComponent label="Email" type="email" required="true" register={register} name="email" />
+            <InputComponent label="Age" type="age" required="true" register={register} name="age" />
+            <InputComponent label="Location" type="text" required="true" register={register} name="location" />
             <InputComponent
                 label="Do you have a team"
                 type="yesNo"
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="team_name"
             />
             <InputComponent
                 label="What is the name of your team"
@@ -73,6 +74,7 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 display={displayTeam}
+                name="team_name"
             />
             <InputComponent
                 label="Choose an School/University"
@@ -80,6 +82,7 @@ const RegistrationForm = () => {
                 required={false}
                 register={register}
                 values={['AUBG', 'Sofia University', 'Technical University - Sofia', 'Plovdiv University', 'Other']}
+                name="university"
             />
             <InputComponent
                 label="T-shirt size"
@@ -87,6 +90,7 @@ const RegistrationForm = () => {
                 required={false}
                 register={register}
                 values={['Small (S)', 'Medium (M)', 'Large (L)', 'Extra Large (XL)']}
+                name="tshirt_size"
             />
             <InputComponent
                 label="How did you find out about HackAUBG?"
@@ -94,6 +98,7 @@ const RegistrationForm = () => {
                 required={true}
                 register={register}
                 values={['University', 'Friends', 'I was on a previous edition of Hack AUBG', 'other']}
+                name="source_of_referral"
             />
             <InputComponent
                 label="What programming languages are you familiar with?"
@@ -109,6 +114,7 @@ const RegistrationForm = () => {
                     'Programming in Javascript',
                     "I don't have experience with any languages",
                 ]}
+                name="programming_language"
             />
             <InputComponent
                 label="What is your programming level?"
@@ -116,6 +122,7 @@ const RegistrationForm = () => {
                 required={true}
                 register={register}
                 values={['Beginner', 'Intermediate', 'Advanced', 'I am not participating as a programmer', 'Other']}
+                name="programming_level"
             />
             <InputComponent
                 label="Have you participated in Hack AUBG before?"
@@ -123,6 +130,7 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="has_participated_in_hackaubg"
             />
             <InputComponent
                 label="Are you looking for an internship?"
@@ -130,6 +138,7 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="has_internship_interest"
             />
             <InputComponent
                 label="Have you participated in other Hackathons?"
@@ -137,6 +146,7 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="has_participated_in_hackathons"
             />
             <InputComponent
                 label="Do you have previous coding experience?"
@@ -144,6 +154,7 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="has_previous_coding_experience"
             />
             <InputComponent
                 label="Do you want to receive our newsletter with potential job offerings?"
@@ -151,12 +162,14 @@ const RegistrationForm = () => {
                 required="true"
                 register={register}
                 setDisplay={display}
+                name="newsletter_consent"
             />
             <InputComponent
                 label="Agreement to share information with sponsors"
                 type="concent"
                 required={true}
                 register={register}
+                name="share_info_with_sponsors"
             />
             <input type="submit" />
         </form>

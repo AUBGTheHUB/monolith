@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 
-const InputComponent = ({ type, label, register, display, setDisplay, values, required }) => {
+const InputComponent = ({ type, label, register, display, setDisplay, values, required, name }) => {
     let restrictions = '';
     let errorMessage = '';
     if (display == false) {
@@ -11,16 +11,15 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
             restrictions = /[a-zA-Z0-9._-]+@[a-zA-Z0-9]+.[a-zA-Z]{2,4}/;
             errorMessage = 'Please enter a valid email';
         } else {
-            errorMessage = 'Both names must be between 2 and 16 characters';
-            restrictions =
-                /(^[A-Za-z]{2,16})([ ]{1})([A-Za-z]{2,16})?([ ]{0,1})?([A-Za-z]{2,16})?([ ]{1})?([A-Za-z]{2,16})/;
+            errorMessage = 'Name must be between 2 and 16 characters';
+            restrictions = /(^[A-Za-z]{2,16})/;
         }
         return (
             <div>
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
-                    {...register(type, {
+                    {...register(name, {
                         required: 'Field is required',
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
@@ -34,7 +33,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                 <input
                     type="number"
                     placeholder="Type here"
-                    {...register(type, {
+                    {...register(name, {
                         required: 'Field is required',
                         min: { value: 16, message: 'Minimum age to participate is 16' },
                     })}></input>
@@ -49,7 +48,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     type="radio"
                     name={label}
                     value="true"
-                    {...register(label)}
+                    {...register(name)}
                     onChange={() => {
                         setDisplay(true);
                     }}></input>
@@ -57,7 +56,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     type="radio"
                     name={label}
                     value="false"
-                    {...register(label)}
+                    {...register(name)}
                     onChange={() => {
                         setDisplay(false);
                     }}></input>
@@ -78,7 +77,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
-                    {...register(type, {
+                    {...register(name, {
                         required: 'Field is required',
                     })}></input>
             </div>
@@ -88,7 +87,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
             <div>
                 <label>{label}</label>
                 <select
-                    {...register(type, {
+                    {...register(name, {
                         required: required,
                     })}>
                     <option value="" selected disabled hidden>
