@@ -1,8 +1,29 @@
 import React from 'react';
 import styles from './verify_account.module.css';
 import { FaRegWindowMinimize } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { verifyURL } from '../../../../Global';
 
 export const VerifyAccount = () => {
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const jwtToken = params.get('jwt_token');
+
+    const handleVerifyClick = () => {
+        axios({
+            method: 'get',
+            url: verifyURL + `?jwt_token=${jwtToken}`,
+        })
+            .then(res => {
+                console.log(res);
+            })
+
+            .catch(err => {
+                console.log(err);
+            });
+    };
+
     return (
         <div className={styles['verfication-container']}>
             <div className={styles['top-header']}>
@@ -28,7 +49,9 @@ export const VerifyAccount = () => {
                 </div>
             </div>
             <div className={styles['verify-button-container']}>
-                <div className={styles['verify-button']}>Verify</div>
+                <div className={styles['verify-button']} onClick={handleVerifyClick}>
+                    Verify
+                </div>
             </div>
         </div>
     );

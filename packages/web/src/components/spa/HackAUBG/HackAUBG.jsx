@@ -33,7 +33,7 @@ export const HackAUBG = () => {
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 
-    const match = useMatch('/hackaubg/verify-account');
+    const match = useMatch('/hackaubg/verify');
 
     if (match) {
         document.body.style.overflow = 'hidden';
