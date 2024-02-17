@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { AiOutlineMinus } from 'react-icons/ai';
@@ -7,23 +7,16 @@ import styles from './faq.module.css';
 export const FAQModule = props => {
     const [stepContent, setStepContent] = useState(styles.faqcontainercontentnotdisplayed);
     // eslint-disable-next-line no-unused-vars
-    const [stepId, setStepId] = useState(styles[`faqstep${props.id}`]);
+    const [stepId, setStepId] = useState(`faq-step${props.id}`);
     const [arrowDown, setArrowDown] = useState(styles.faqarrowdisplayed);
     const [arrowUp, setArrowUp] = useState(styles.faqarrownotdisplayed);
 
-    useEffect(() => {
-        const getHeight = () => {
-            const divElement = document.getElementById(stepId);
-            if (divElement) {
-                return divElement.scrollHeight;
-            }
-        };
-
-        const elem = document.querySelector(styles.faqcontainercontentdisplayed);
-        if (elem) {
-            elem.style.setProperty('--elem-Height', getHeight() + 'px');
+    const getHeight = () => {
+        const divElement = document.getElementById(stepId);
+        if (divElement) {
+            document.documentElement.style.setProperty(`--elem-Height`, `${divElement.scrollHeight}px`);
         }
-    }, []);
+    };
 
     const setMenuClass = () => {
         if (stepContent == styles.faqcontainercontentdisplayed) {
@@ -36,16 +29,13 @@ export const FAQModule = props => {
             setArrowUp(styles.faqarrowdisplayed);
         }
     };
-
-    console.log(styles.faqmobilestepcontainer, 'HERE');
-
     return (
         <div className={styles.faqmobilestepcontainer}>
             <div
                 className={styles.faqsteptitle}
                 onClick={() => {
                     setMenuClass();
-                    //     getHeight();
+                    getHeight();
                 }}>
                 <div className={styles.faqh2}>
                     <h2>{props.stepnum}</h2>
