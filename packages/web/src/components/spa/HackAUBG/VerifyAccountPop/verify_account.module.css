@@ -63,10 +63,12 @@ svg {
 }
 
 .verify-button {
-    width: 13vw;
+    width: 18vw;
     height: 10vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    text-align: center;
     align-items: center;
     background-color: white;
     border: 3px solid black;
@@ -74,6 +76,7 @@ svg {
     font-weight: 500;
     font-family: 'IBM Plex Mono', monospace;
     cursor: pointer;
+    padding: 60px 0px;
 }
 
 .error-message,
@@ -94,6 +97,10 @@ svg {
 }
 
 @media (max-width: 420px) {
+    .button-message {
+        display: none;
+    }
+
     .help-button-border div {
         border-right: none !important;
     }
@@ -127,6 +134,10 @@ svg {
 }
 
 @media (max-width: 600px) {
+    .button-message {
+        display: none;
+    }
+
     .help-button-border div {
         border-right: none !important;
     }
@@ -155,6 +166,10 @@ svg {
 }
 
 @media (min-width: 601px) and (max-width: 1024px) {
+    .button-message {
+        display: none;
+    }
+
     .help-button-border div {
         border-right: none !important;
     }
@@ -182,5 +197,11 @@ svg {
     .svg-minimize svg {
         height: 1.8em;
         width: 1.2em;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1400px) {
+    .verify-button {
+        width: 25vw;
     }
 }

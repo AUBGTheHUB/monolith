@@ -56,7 +56,7 @@ export const VerifyAccount = ({ onSuccess }) => {
             </div>
             <div className={styles['verify-button-container']}>
                 <div className={styles['verify-button']} onClick={handleVerifyClick}>
-                    Verify
+                    Verify <span className={styles['button-message']}>participation</span>
                 </div>
                 <div>
                     {error && <div className={styles['error-message']}>An error occured, please try again later!</div>}
