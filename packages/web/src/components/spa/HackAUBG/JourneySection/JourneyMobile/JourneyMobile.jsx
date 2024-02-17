@@ -13,7 +13,7 @@ export const JourneyMobile = () => {
             <div className="journey-mobile-content">
                 <JourneyStep
                     id="1"
-                    stepnum={`STEP 1:`}
+                    stepIcon={`/step-1-icon-mobile.svg`}
                     title={`Gather a team and register`}
                     text={`Gather your dream team and register in the form
                             below! Don’t forget to create a diverse team, as the
@@ -28,7 +28,7 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="2"
-                    stepnum={`STEP 2:`}
+                    stepIcon={`/step-2-icon-mobile.svg`}
                     title={`Meet the Hub and prepare`}
                     text={`Right after you click the Register button you will
                             receive an email confirming your place. In the
@@ -43,7 +43,7 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="3"
-                    stepnum={`STEP 3:`}
+                    stepIcon={`/step-3-icon-mobile.svg`}
                     title={`Get Hackathoning`}
                     text={`HackAUBG 5.0 starts on Friday, March 31st. It will
                             be fully on-ground, taking place at American
@@ -62,7 +62,7 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="4"
-                    stepnum={`STEP 4:`}
+                    stepIcon={`/step-4-icon-mobile.svg`}
                     title={`Present and win`}
                     text={`This is the home stretch! You have put in the work
                             and now need to blow the judges away! Your task

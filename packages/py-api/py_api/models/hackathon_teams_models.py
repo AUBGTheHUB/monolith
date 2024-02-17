@@ -19,11 +19,13 @@ class HackathonTeam(BaseModel):
     team_name: str
     team_members: List[str]
     team_type: TeamType
+    is_verified: bool
 
 
 class UpdateTeam(BaseModel):
     team_name: Optional[str] = None
     team_members: Optional[List[str]] = None
+    is_verified: Optional[bool] = False
 
 
 class MoveTeamMembers(BaseModel):
