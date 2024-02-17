@@ -1,7 +1,7 @@
 from typing import Any, Dict, Tuple
 
 from bson import ObjectId
-from py_api.database.initialize import participants_col
+from py_api.database.initialize import client, participants_col
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import (
     NewParticipant,
@@ -22,11 +22,12 @@ class ParticipantsFunctionality:
 
     @classmethod
     def insert_participant(cls, participant: NewParticipant) -> results.InsertOneResult:
-        new_participant = cls.pcol.insert_one(participant.model_dump())
-        if new_participant.acknowledged:
-            return new_participant
-
-        raise Exception("Failed inserting new participant")
+        with client.start_session() as session:
+            with session.start_transaction():
+                new_participant = cls.pcol.insert_one(
+                    participant.model_dump(), session=session,
+                )
+                return new_participant
 
     @classmethod
     def delete_participant(cls, object_id: str) -> results.DeleteResult | None:

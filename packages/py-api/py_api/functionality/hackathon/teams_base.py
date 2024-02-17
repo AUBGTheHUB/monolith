@@ -2,6 +2,8 @@ from typing import Any, Dict, List
 
 from bson import ObjectId
 from py_api.database.initialize import t_col
+
+# from py_api.functionality.hackathon.custom_exceptions import TeamUpdateException
 from py_api.models import HackathonTeam
 from py_api.models.hackathon_teams_models import TeamType
 from pymongo import results
@@ -102,6 +104,9 @@ class TeamFunctionality:
             }, projection={"_id": 0}, return_document=True,
         )
 
+        if not updated_team:
+            raise Exception()
+
         return HackathonTeam(**updated_team)
 
     @classmethod
@@ -117,7 +122,7 @@ class TeamFunctionality:
         if new_team.acknowledged:
             return new_team
 
-        raise None
+        raise Exception()
 
     @classmethod
     def get_count_of_teams(cls) -> int:

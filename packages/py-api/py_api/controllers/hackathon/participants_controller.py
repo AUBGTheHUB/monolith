@@ -36,6 +36,7 @@ class ParticipantsController:
         specified_participant = participants_col.find_one(
             filter={"_id": ObjectId(object_id)},
         )
+
         if not specified_participant:
             return JSONResponse(
                 content={"message": "The targeted participant was not found!"},
@@ -169,9 +170,11 @@ class ParticipantsController:
 
             # Creates new participant
             participant.team_name = existing_team.team_name
+
             new_participant = ParticipantsFunctionality.insert_participant(
                 participant,
             )
+
             new_participant_object_id = str(new_participant.inserted_id)
 
             existing_team = TeamFunctionality.update_team_query_using_dump(
@@ -179,9 +182,6 @@ class ParticipantsController:
                     existing_team.team_name, new_participant_object_id,
                 ).model_dump(),
             )
-
-            if not existing_team:
-                return JSONResponse(content={"message": "Something went wrong updating team document"}, status_code=500)
 
             # The participant is random, so we should send them a verification email
             if not is_invite:
