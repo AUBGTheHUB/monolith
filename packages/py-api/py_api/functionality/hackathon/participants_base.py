@@ -1,8 +1,8 @@
 from typing import Any, Dict, Tuple
 
 from bson import ObjectId
-from functionality.hackathon.teams_base import TeamFunctionality
 from py_api.database.initialize import participants_col
+from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import (
     NewParticipant,
     UpdateParticipant,

@@ -1,6 +1,5 @@
-import asyncio
 import json
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -12,7 +11,7 @@ from py_api.functionality.hackathon.participants_base import ParticipantsFunctio
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
-from py_api.services.mailer import send_email_background_task, send_mail
+from py_api.services.mailer import send_email_background_task
 
 
 class ParticipantsController:
