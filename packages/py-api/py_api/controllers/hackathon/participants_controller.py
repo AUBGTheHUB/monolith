@@ -1,5 +1,5 @@
 import json
-from typing import Dict
+from typing import Any, Callable, Dict
 
 from bson.json_util import dumps
 from fastapi import BackgroundTasks
@@ -11,6 +11,7 @@ from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
 from py_api.services.mailer import send_email_background_task
+from pymongo.client_session import ClientSession
 
 
 class ParticipantsController:
@@ -49,28 +50,34 @@ class ParticipantsController:
 
     @classmethod
     def delete_participant(cls, object_id: str) -> JSONResponse:
-        participant = ParticipantsFunctionality.get_participant_by_id(
-            object_id,
-        )
-        if not participant:
-            return JSONResponse(
-                content={"message": "The targeted participant was not found!"},
-                status_code=404,
+        try:
+            participant = ParticipantsFunctionality.get_participant_by_id(
+                object_id,
+            )
+            if not participant:
+                return JSONResponse(
+                    content={
+                        "message": "The targeted participant was not found!",
+                    },
+                    status_code=404,
+                )
+
+            response, status_code = ParticipantsFunctionality.remove_participant_from_team(
+                object_id, str(NewParticipant(**participant).team_name),
             )
 
-        response, status_code = ParticipantsFunctionality.remove_participant_from_team(
-            object_id, str(NewParticipant(**participant).team_name),
-        )
+            ParticipantsFunctionality.delete_participant(object_id)
 
-        ParticipantsFunctionality.delete_participant(object_id)
+            if status_code != 200:
+                return JSONResponse(response, status_code)
 
-        if status_code != 200:
-            return JSONResponse(response, status_code)
+            return JSONResponse(
+                content={"message": "The participant was deleted successfully!"},
+                status_code=200,
+            )
 
-        return JSONResponse(
-            content={"message": "The participant was deleted successfully!"},
-            status_code=200,
-        )
+        except Exception as e:
+            return JSONResponse(content={"error": str(e)}, status_code=500)
 
     @classmethod
     def update_participant(
@@ -78,23 +85,30 @@ class ParticipantsController:
             object_id: str,
             info_to_be_updated: UpdateParticipant,
     ) -> JSONResponse:
+        try:
 
-        if not ParticipantsFunctionality.get_participant_by_id(object_id):
-            return JSONResponse(
-                content={"message": "The targeted participant was not found!"},
-                status_code=404,
+            if not ParticipantsFunctionality.get_participant_by_id(object_id):
+                return JSONResponse(
+                    content={
+                        "message": "The targeted participant was not found!",
+                    },
+                    status_code=404,
+                )
+
+            # Queries the given participant and updates it
+            updated_participant = ParticipantsFunctionality.update_participant(
+                object_id, info_to_be_updated,
             )
-        # Queries the given participant and updates it
-        updated_participant = ParticipantsFunctionality.update_participant(
-            object_id, info_to_be_updated,
-        )
 
-        return JSONResponse(
-            content={
-                "participant": json.loads(dumps(updated_participant)),
-            },
-            status_code=200,
-        )
+            return JSONResponse(
+                content={
+                    "participant": json.loads(dumps(updated_participant)),
+                },
+                status_code=200,
+            )
+
+        except Exception as e:
+            return JSONResponse(content={"error": str(e)}, status_code=500)
 
     @classmethod
     def add_participant(cls, participant: NewParticipant, jwt_token: str | None = None) -> JSONResponse | Dict[
@@ -156,104 +170,106 @@ class ParticipantsController:
         return JSONResponse(content={"message": "The maximum number of team members is reached."}, status_code=409)
 
     @classmethod
+    def _start_transaction(cls, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+        try:
+            with client.start_session() as session:
+                with session.start_transaction():
+                    return func(*args, **kwargs, session=session)
+        except Exception as e:
+            return JSONResponse(content={"error": str(e)}, status_code=500)
+
+    @classmethod
     def add_participant_to_existing_team(
         cls, participant: NewParticipant, existing_team: HackathonTeam,
         is_invite: bool = False,
     ) -> JSONResponse:
+        return cls._start_transaction(
+            cls._add_participant_and_update_existing_team, participant, existing_team,
+            is_invite,
+        )
 
-        try:
-            with client.start_session() as session:
-                with session.start_transaction():
-                    if is_invite:
-                        participant.is_verified = True
+    @classmethod
+    def _add_participant_and_update_existing_team(
+        cls, participant: NewParticipant, existing_team: HackathonTeam,
+        is_invite: bool, session: ClientSession,
+    ) -> JSONResponse:
+        if is_invite:
+            participant.is_verified = True
 
-                    participant.team_name = existing_team.team_name
-                    new_participant = ParticipantsFunctionality.insert_participant(
-                        participant, session,
-                    )
+        participant.team_name = existing_team.team_name
+        new_participant = ParticipantsFunctionality.insert_participant(
+            participant, session,
+        )
 
-                    new_participant_object_id = str(
-                        new_participant.inserted_id,
-                    )
+        new_participant_object_id = str(new_participant.inserted_id)
 
-                    result = TeamFunctionality.add_participant_to_team_object(
-                        existing_team.team_name, new_participant_object_id,
-                    )
-                    if not isinstance(result, HackathonTeam):
-                        return JSONResponse(content=result[0], status_code=result[1])
+        result = TeamFunctionality.add_participant_to_team_object(
+            existing_team.team_name, new_participant_object_id,
+        )
 
-                    existing_team = TeamFunctionality.update_team_query_using_dump(
-                        result.model_dump(), session,
-                    )
+        if not isinstance(result, HackathonTeam):
+            return JSONResponse(content=result[0], status_code=result[1])
 
-                    # The participant is random, so we should send them a verification email
-                    if not is_invite:
-                        jwt_token = JWTFunctionality.create_jwt_token(
-                            new_participant_object_id,
-                            existing_team.team_name,
-                        )
+        existing_team = TeamFunctionality.update_team_query_using_dump(
+            result.model_dump(), session=session,
+        )
 
-                        background_tasks = BackgroundTasks()
-                        background_tasks.add_task(
-                            send_email_background_task, participant.email, "Test",
-                            f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
-                        )
+        background_tasks = BackgroundTasks()
+        if not is_invite:
+            jwt_token = JWTFunctionality.create_jwt_token(
+                new_participant_object_id, existing_team.team_name,
+            )
+            background_tasks.add_task(
+                send_email_background_task, participant.email, "Test",
+                f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+            )
 
-                    return JSONResponse(
-                        content=existing_team.model_dump(), status_code=200,
-                        background=background_tasks,
-                    )
-
-        except Exception as e:
-            return JSONResponse(content={"message": str(e)}, status_code=500)
+        return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
 
     @classmethod
     def add_participant_to_new_team(
-            cls, participant: NewParticipant,
-            generate_random_team: bool = False,
+        cls, participant: NewParticipant,
+        generate_random_team: bool = False,
     ) -> JSONResponse:
+        return cls._start_transaction(cls._add_participant_and_create_new_team, participant, generate_random_team)
 
-        try:
-            with client.start_session() as session:
-                with session.start_transaction():
-                    participant.is_admin = True
-                    new_participant = ParticipantsFunctionality.insert_participant(
-                        participant, session,
-                    )
+    @classmethod
+    def _add_participant_and_create_new_team(
+        cls, participant: NewParticipant, generate_random_team: bool,
+        session: ClientSession,
+    ) -> JSONResponse:
+        participant.is_admin = True
+        new_participant = ParticipantsFunctionality.insert_participant(
+            participant, session,
+        )
 
-                    new_participant_object_id = str(
-                        new_participant.inserted_id,
-                    )
+        new_participant_object_id = str(new_participant.inserted_id)
 
-                    new_team = TeamFunctionality.create_team_object_with_admin(
-                        user_id=new_participant_object_id,
-                        team_name=TeamFunctionality.generate_random_team_name(
-                        ) if generate_random_team else participant.team_name,
-                        generate_random_team=generate_random_team,
-                    )
+        new_team = TeamFunctionality.create_team_object_with_admin(
+            user_id=new_participant_object_id,
+            team_name=TeamFunctionality.generate_random_team_name()
+            if generate_random_team else participant.team_name,
+            generate_random_team=generate_random_team,
+        )
+        if not new_team:
+            session.abort_transaction()
+            return JSONResponse(
+                content={
+                    "message": "Couldn't create team, because a team of the same name already exists!",
+                },
+                status_code=409,
+            )
 
-                    if not new_team:
-                        session.abort_transaction()
-                        return JSONResponse(
-                            content={
-                                "message": "Couldn't create team, because a team of the same name already exists!",
-                            },
-                            status_code=409,
-                        )
+        TeamFunctionality.insert_team(new_team, session)
 
-                    TeamFunctionality.insert_team(new_team, session)
+        jwt_token = JWTFunctionality.create_jwt_token(
+            new_participant_object_id, new_team.team_name,
+        )
 
-                    jwt_token = JWTFunctionality.create_jwt_token(
-                        new_participant_object_id, new_team.team_name,
-                    )
+        background_tasks = BackgroundTasks()
+        background_tasks.add_task(
+            send_email_background_task, participant.email, "Test",
+            f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+        )
 
-                    background_tasks = BackgroundTasks()
-                    background_tasks.add_task(
-                        send_email_background_task, participant.email, "Test",
-                        f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
-                    )
-
-                    return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)
-
-        except Exception as e:
-            return JSONResponse(content={"message": str(e)}, status_code=500)
+        return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)

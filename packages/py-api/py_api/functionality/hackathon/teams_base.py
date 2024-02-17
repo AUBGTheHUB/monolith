@@ -90,15 +90,15 @@ class TeamFunctionality:
 
     @classmethod
     def _update_team(
-        cls, query: Dict[str, Any], team_payload: Dict[str, Any],
-        session: ClientSession = None,
+            cls, query: Dict[str, Any], team_payload: Dict[str, Any],
+            session: ClientSession = None,
     ) -> HackathonTeam:
         updated_team = t_col.find_one_and_update(
             query, {
                 "$set": {
                     key: value for key, value in team_payload.items() if value
                 },
-            }, projection={"_id": 0}, session=session,
+            }, projection={"_id": 0}, return_document=True, session=session,
         )
         return HackathonTeam(**updated_team)
 
@@ -130,6 +130,14 @@ class TeamFunctionality:
     @classmethod
     def insert_team(cls, team: HackathonTeam, session: ClientSession) -> results.InsertOneResult:
         return t_col.insert_one(team.model_dump(), session=session)
+
+    @classmethod
+    def delete_team(cls, object_id: str) -> results.DeleteResult | None:
+        with client.start_session() as session:
+            with session.start_transaction():
+                return t_col.find_one_and_delete(
+                    filter={"_id": ObjectId(object_id)}, session=session,
+                )
 
     @classmethod
     def get_count_of_teams(cls) -> int:

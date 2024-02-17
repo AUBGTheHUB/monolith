@@ -41,10 +41,8 @@ class TeamsController:
 
     @staticmethod
     def delete_team(object_id: str) -> JSONResponse:
-        delete_team = t_col.find_one_and_delete(
-            filter={"_id": ObjectId(object_id)},
-        )
-
+        delete_team = TeamFunctionality.delete_team(object_id)
+        # delete all participants from the team
         if not delete_team:
             return JSONResponse(
                 content={"message": "The team was not found"},
