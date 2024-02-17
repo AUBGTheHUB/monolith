@@ -56,7 +56,7 @@ class VerificationController:
                     send_email_background_task, verified_participant.get(
                         "email",
                     ), "Test",
-                    f"Url: {JWTFunctionality.get_email_link(jwt_token, is_invite=True)}",
+                    f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True, is_invite=True)}",
                 )
 
             except Exception as e:
