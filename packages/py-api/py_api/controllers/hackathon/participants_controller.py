@@ -191,7 +191,7 @@ class ParticipantsController:
 
                 background_tasks.add_task(
                     send_email_background_task, participant.email, "Test",
-                    f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+                    f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
                 )
 
             return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
@@ -260,7 +260,7 @@ class ParticipantsController:
             background_tasks = BackgroundTasks()
             background_tasks.add_task(
                 send_email_background_task, participant.email, "Test",
-                f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+                f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
             )
 
             return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)
