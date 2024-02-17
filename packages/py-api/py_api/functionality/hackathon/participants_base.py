@@ -1,6 +1,7 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from bson import ObjectId
+from functionality.hackathon.teams_base import TeamFunctionality
 from py_api.database.initialize import participants_col
 from py_api.models.hackathon_participants_models import (
     NewParticipant,
@@ -43,3 +44,26 @@ class ParticipantsFunctionality:
         )
         # Returns the updated participant
         return cls.pcol.find_one({"_id": ObjectId(object_id)})
+
+    @classmethod
+    def remove_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
+        team = TeamFunctionality.fetch_team(
+            deleted_participant.get("team_name"),
+        )
+        if not team:
+            return {"message": "The participant is not in a team"}, 404
+
+        deleted_participant_id = str(deleted_participant["_id"])
+
+        if deleted_participant_id in team.team_members:
+            team.team_members.remove(deleted_participant_id)
+        else:
+            return {"message": "The participant is not in the specified team"}, 404
+
+        updated_team = TeamFunctionality.update_team_query_using_dump(
+            team.model_dump(),
+        )
+        if not updated_team:
+            return {"message": "Something went wrong updating team document"}, 500
+
+        return {"message": "The participant was deleted successfully from team!"}, 200

@@ -60,9 +60,10 @@ class ParticipantsController:
                 status_code=404,
             )
 
-        response, status_code = cls.remove_participant_from_team(
+        response, status_code = ParticipantsFunctionality.remove_participant_from_team(
             deleted_participant,
         )
+
         if status_code != 200:
             return JSONResponse(response, status_code)
 
@@ -70,29 +71,6 @@ class ParticipantsController:
             content={"message": "The participant was deleted successfully!"},
             status_code=200,
         )
-
-    @classmethod
-    def remove_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
-        team = TeamFunctionality.fetch_team(
-            deleted_participant.get("team_name"),
-        )
-        if not team:
-            return {"message": "The participant is not in a team"}, 404
-
-        deleted_participant_id = str(deleted_participant["_id"])
-
-        if deleted_participant_id in team.team_members:
-            team.team_members.remove(deleted_participant_id)
-        else:
-            return {"message": "The participant is not in the specified team"}, 404
-
-        updated_team = TeamFunctionality.update_team_query_using_dump(
-            team.model_dump(),
-        )
-        if not updated_team:
-            return {"message": "Something went wrong updating team document"}, 500
-
-        return {"message": "The participant was deleted successfully from team!"}, 200
 
     @classmethod
     def update_participant(
