@@ -1,0 +1,9 @@
+.grading_criteria {
+    display: flex;
+    width 80
+}
+
+.grading_criteria_row {
+    display: flex;
+    flex-direction: row;
+}
