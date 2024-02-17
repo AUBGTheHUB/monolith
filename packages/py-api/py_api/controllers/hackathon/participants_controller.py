@@ -1,6 +1,5 @@
-import asyncio
 import json
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
 from bson.json_util import dumps
 from bson.objectid import ObjectId
@@ -12,7 +11,7 @@ from py_api.functionality.hackathon.participants_base import ParticipantsFunctio
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
 from py_api.models.hackathon_teams_models import HackathonTeam
-from py_api.services.mailer import send_email_background_task, send_mail
+from py_api.services.mailer import send_email_background_task
 
 
 class ParticipantsController:
@@ -60,9 +59,10 @@ class ParticipantsController:
                 status_code=404,
             )
 
-        response, status_code = cls.remove_participant_from_team(
+        response, status_code = ParticipantsFunctionality.remove_participant_from_team(
             deleted_participant,
         )
+
         if status_code != 200:
             return JSONResponse(response, status_code)
 
@@ -70,29 +70,6 @@ class ParticipantsController:
             content={"message": "The participant was deleted successfully!"},
             status_code=200,
         )
-
-    @classmethod
-    def remove_participant_from_team(cls, deleted_participant: Dict[str, Any]) -> Tuple[Dict[str, str], int]:
-        team = TeamFunctionality.fetch_team(
-            deleted_participant.get("team_name"),
-        )
-        if not team:
-            return {"message": "The participant is not in a team"}, 404
-
-        deleted_participant_id = str(deleted_participant["_id"])
-
-        if deleted_participant_id in team.team_members:
-            team.team_members.remove(deleted_participant_id)
-        else:
-            return {"message": "The participant is not in the specified team"}, 404
-
-        updated_team = TeamFunctionality.update_team_query_using_dump(
-            team.model_dump(),
-        )
-        if not updated_team:
-            return {"message": "Something went wrong updating team document"}, 500
-
-        return {"message": "The participant was deleted successfully from team!"}, 200
 
     @classmethod
     def update_participant(
@@ -124,7 +101,7 @@ class ParticipantsController:
         str, str,
     ]:
 
-        if TeamFunctionality.get_count_of_teams() > 15:
+        if TeamFunctionality.get_count_of_teams() > 16:
             return JSONResponse(content={"message": "Hackathon is at max capacity"}, status_code=409)
 
         if ParticipantsFunctionality.check_if_email_exists(participant.email):
@@ -153,7 +130,7 @@ class ParticipantsController:
                     return cls.add_participant_to_existing_team(team, participant)
 
             # If all the random teams are full, check if there is space for creating a new one
-            if TeamFunctionality.get_count_of_teams() < 15:
+            if TeamFunctionality.get_count_of_teams() < 16:
                 return cls.add_participant_to_new_team(participant, generate_random_team=True)
 
             return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
@@ -169,13 +146,14 @@ class ParticipantsController:
         team = TeamFunctionality.fetch_team(
             team_name=decoded_token.get("team_name"),
         )
+
         if not team:
             return JSONResponse(content={"message": "Team with this name does not exist"}, status_code=404)
 
         if len(team.team_members) < 6:
             return cls.add_participant_to_existing_team(team, participant, is_invite=True)
 
-        return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
+        return JSONResponse(content={"message": "The maximum number of team members is reached."}, status_code=409)
 
     @classmethod
     def add_participant_to_existing_team(
@@ -186,33 +164,22 @@ class ParticipantsController:
         background_tasks = BackgroundTasks()
 
         try:
+            if is_invite:
+                participant.is_verified = True
+
             # Creates new participant
+            participant.team_name = existing_team.team_name
             new_participant = ParticipantsFunctionality.insert_participant(
                 participant,
             )
             new_participant_object_id = str(new_participant.inserted_id)
 
-            existing_team = TeamFunctionality.add_participant_to_team_object(
-                existing_team.team_name, new_participant_object_id,
-            )
-
-            updated_participant = ParticipantsFunctionality.update_participant(
-                new_participant_object_id, UpdateParticipant(
-                    team_name=existing_team.team_name,
-                ),
-            )
-
-            if not updated_participant:
-                return JSONResponse(
-                    content={
-                        "message": "Something went wrong updating participant document",
-                    },
-                    status_code=500,
-                )
-
             existing_team = TeamFunctionality.update_team_query_using_dump(
-                existing_team.model_dump(),
+                TeamFunctionality.add_participant_to_team_object(
+                    existing_team.team_name, new_participant_object_id,
+                ).model_dump(),
             )
+
             if not existing_team:
                 return JSONResponse(content={"message": "Something went wrong updating team document"}, status_code=500)
 
@@ -257,7 +224,7 @@ class ParticipantsController:
                     content={
                         "message": "Couldn't create team, because a team of the same name already exists!",
                     },
-                    status_code=422,
+                    status_code=409,
                 )
 
             updated_participant = ParticipantsFunctionality.update_participant(
