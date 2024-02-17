@@ -43,41 +43,47 @@ export const HackAUBG = () => {
 
     return (
         <div className="hackaubg-container">
-            <NavBar
-                props={
-                    new Props(
-                        anchorList, // list of anchors
-                        false, // hackAUBG button
-                        'rgba(0,0,0,.5)', // desktop background color nav
-                        true, // sticky desktop nav
-                        '#222222', // mobile nav background color when not opened (default transparent)
-                        'gray', // mobile background color nav when opened
-                        '#e2d7fc', // anchor color
-                        'white', // desktop anchor hover color
-                        'dark gray', // mobile anchor hover color
-                    )
-                }
-            />
-            <LandingPage />
-            {match && <VerifyAccount />}
-            <AboutHackathon />
-            <JourneySection />
-            <RegistrationForm />
-            <MentorsSection />
-            <JudgesSection />
-            <VideoSection />
-            <ScheduleHackathon />
-            <GradingCriteria />
-            <AwardsSection />
-            <Sponsors />
-            <FaqSection />
-            <Footer
-                color={'rgba(220,193,255,255)'}
-                iconColor={'rgb(0, 0, 0)'}
-                iconBgColor={'rgba(0, 0, 0, 0)'}
-                textColor={'#000'}
-                iconSize={'2.6em'}
-            />
+            <div className={match ? 'blur' : ''}>
+                <NavBar
+                    props={
+                        new Props(
+                            anchorList, // list of anchors
+                            false, // hackAUBG button
+                            'rgba(0,0,0,.5)', // desktop background color nav
+                            true, // sticky desktop nav
+                            '#222222', // mobile nav background color when not opened (default transparent)
+                            'gray', // mobile background color nav when opened
+                            '#e2d7fc', // anchor color
+                            'white', // desktop anchor hover color
+                            'dark gray', // mobile anchor hover color
+                        )
+                    }
+                />
+                <LandingPage />
+                <AboutHackathon />
+                <JourneySection />
+                <RegistrationForm />
+                <MentorsSection />
+                <JudgesSection />
+                <VideoSection />
+                <ScheduleHackathon />
+                <GradingCriteria />
+                <AwardsSection />
+                <Sponsors />
+                <FaqSection />
+                <Footer
+                    color={'rgba(220,193,255,255)'}
+                    iconColor={'rgb(0, 0, 0)'}
+                    iconBgColor={'rgba(0, 0, 0, 0)'}
+                    textColor={'#000'}
+                    iconSize={'2.6em'}
+                />
+            </div>
+            {match && (
+                <div className="no-blur">
+                    <VerifyAccount />
+                </div>
+            )}
         </div>
     );
 };
