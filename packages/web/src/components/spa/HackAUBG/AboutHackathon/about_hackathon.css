@@ -6,14 +6,17 @@
     font-weight: 400;
     align-items: center;
     font-family: 'Roboto';
+    padding: 5% 0% 0% 0%;
 }
 
 .about-title-hack-aubg {
-    padding: 5% 0% 0% 0%;
-    color: #19b700;
-    font-family: 'Roboto';
+    color: #fff;
+    font-family: 'Press Start 2P';
     font-weight: 900;
-    font-size: 2em;
+    font-size: 1.7em;
+    padding: 8px 100px;
+    background-color: #fb4298;
+    margin: 0 10px;
 }
 
 .about-text-container-hack-aubg {
@@ -23,6 +26,10 @@
     color: white;
     align-items: center;
     font-size: 1.1em;
+    text-align: center;
+}
+.about-text-container-hack-aubg h1 {
+    text-align: center;
 }
 
 .about-text-hack-aubg {

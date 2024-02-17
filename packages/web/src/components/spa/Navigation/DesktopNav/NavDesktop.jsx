@@ -69,8 +69,8 @@ export const NavDesktop = ({ props }) => {
                     }}
                     style={{ color: props.anchorColor }}>
                     {anchor.name}
+                    {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
                 </a>
-                {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
             </div>
         );
     };
@@ -100,6 +100,7 @@ export const NavDesktop = ({ props }) => {
                 </div>
                 {renderHackButton()}
             </div>
+            {location.pathname === '/hackaubg' && <div className="filler"></div>}
         </div>
     );
 };

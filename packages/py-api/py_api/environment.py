@@ -12,6 +12,8 @@ IS_OFFLINE = eval_bool(getenv("IS_OFFLINE", False))
 ENABLE_ANALYTICS = eval_bool(getenv("ENABLE_ANALYTICS", False))
 IS_LOCAL_COMPOSE = eval_bool(getenv("IS_LOCAL_COMPOSE", False))
 SECRET_KEY = getenv("SECRET_KEY")
+HUB_MAIL = getenv("HUB_MAIL")
+HUB_PSW = getenv("HUB_PSW")
 
 OFFLINE_TOKEN = "OFFLINE_TOKEN"
 

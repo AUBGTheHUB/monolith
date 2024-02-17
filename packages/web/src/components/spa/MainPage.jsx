@@ -19,9 +19,9 @@ const LandingHome = () => {
     const [featureSwitches, _] = useContext(FsContext);
 
     const anchorList = [
-        new Anchor('About', '#about', false),
-        new Anchor('Team', '#team', false, featureSwitches.team),
-        new Anchor('Jobs', 'jobs', true, featureSwitches.jobs),
+        new Anchor('About', '#about', '', false),
+        new Anchor('Team', '#team', '', false, featureSwitches.team),
+        new Anchor('Jobs', 'jobs', '', true, featureSwitches.jobs),
     ];
 
     useEffect(checkHashAndScroll, []);
@@ -33,7 +33,12 @@ const LandingHome = () => {
             <LandingSection />
             <AboutSection />
             <MembersSection />
-            <Footer color={'rgb(21, 76, 121)'} iconColor={'rgb(255, 255, 255)'} iconBgColor={'rgb(120, 120, 120)'} />
+            <Footer
+                color={'rgb(21, 76, 121)'}
+                iconColor={'rgb(255, 255, 255)'}
+                iconBgColor={'rgb(120, 120, 120)'}
+                iconSize={'2.2em'}
+            />
         </div>
     );
 };

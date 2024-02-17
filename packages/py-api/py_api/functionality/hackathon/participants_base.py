@@ -20,22 +20,26 @@ class ParticipantsFunctionality:
         return False
 
     @classmethod
-    def create_participant(cls, participant: NewParticipant) -> results.InsertOneResult:
+    def insert_participant(cls, participant: NewParticipant) -> results.InsertOneResult:
         new_participant = cls.pcol.insert_one(participant.model_dump())
         if new_participant.acknowledged:
             return new_participant
 
-        raise Exception("Could not create participant")
+        raise Exception("Failed inserting new participant")
 
     @classmethod
-    def delete_participant(cls, id: str) -> results.DeleteResult | None:
-        return cls.pcol.delete_one({"_id": id})
+    def delete_participant(cls, object_id: str) -> results.DeleteResult | None:
+        return cls.pcol.delete_one({"_id": object_id})
 
     @classmethod
-    def update_participant(cls, id: str, participant: UpdateParticipant | NewParticipant) -> Any:
+    def update_participant(cls, object_id: str, participant: UpdateParticipant | NewParticipant) -> Any:
         obj = {
             key: value for key, value in participant.model_dump().items() if
-            value
+            value != None
         }
 
-        return cls.pcol.find_one_and_update({"_id": ObjectId(id)}, {"$set": obj})
+        cls.pcol.find_one_and_update(
+            {"_id": ObjectId(object_id)}, {"$set": obj},
+        )
+        # Returns the updated participant
+        return cls.pcol.find_one({"_id": ObjectId(object_id)})
