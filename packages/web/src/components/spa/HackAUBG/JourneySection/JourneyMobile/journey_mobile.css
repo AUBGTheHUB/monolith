@@ -2,16 +2,22 @@
     overflow: hidden;
 }
 .journey-mobile-title {
-    margin-bottom: 5%;
+    background-color: #fb4298;
+    width: 80%;
+    margin: 8% auto;
+    padding: 0.5em;
 }
 .journey-mobile-title h1 {
-    color: #19b700;
-    font-weight: 900;
-    font-size: 2em;
     text-align: center;
+    font-size: 1.7em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    margin: 0.3em 0;
 }
 .mobile-step-container {
-    background-color: #fff;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,16 +29,21 @@
 }
 .journey-h2 {
     display: flex;
-    flex-direction: column;
     width: 75%;
     margin-top: 4%;
     margin-bottom: 4%;
 }
 .journey-h2 h2 {
     padding: 0 !important;
+    color: #fb4298;
+    font-family: 'Post No Bills Jaffna';
+}
+
+.journey-h2 img{
+    width: 2em;
+    margin-right: 0.5em;
 }
 .mobile-step-container h2 {
-    color: #19b700;
     font-size: 1.2em;
     width: 91%;
     display: flex;
