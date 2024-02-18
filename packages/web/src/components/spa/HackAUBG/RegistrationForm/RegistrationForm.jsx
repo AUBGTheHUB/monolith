@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import InputComponent from './InputComponent';
 import axios from 'axios';
 import { url } from '../../../../Global';
+import { registerURL } from '../../../../Global';
 //import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
@@ -58,11 +59,19 @@ const RegistrationForm = () => {
             }
             console.log(updatedValues);
 
-            if (updatedValues.team == false) {
-                console.log('no team');
-            } else {
-                console.log('team');
-            }
+            axios({
+                method: 'post',
+                url: registerURL,
+                updatedValues,
+            })
+                .then(() => {
+                    // setIsFormAvailable(true);
+                    console.log('success');
+                })
+                .catch(() => {
+                    // setIsFormAvailable(false);
+                    console.log('failure');
+                });
         }
     };
 

@@ -14,6 +14,7 @@ const parseToNewAPI = url => url.replace('8000', '6969');
 const objUploaderURL = `${url}/v2/uploader`;
 const urlShortenerURL = `${url}/v2/shortener`;
 const featureSwitchesURL = parseToNewAPI(`${url}/v2/fswitches`);
+const registerURL = parseToNewAPI(`${url}/v2/hackathon/participants`);
 const HEADERS = { 'BEARER-TOKEN': localStorage.getItem('auth_token') };
 
 const checkBrowserValid = () => {
@@ -148,6 +149,7 @@ export {
     parseToNewAPI,
     urlShortenerURL,
     featureSwitchesURL,
+    registerURL,
     HEADERS,
 };
 export default Validate;
