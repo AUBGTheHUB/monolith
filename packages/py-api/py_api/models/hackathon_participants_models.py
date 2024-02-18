@@ -2,7 +2,10 @@ from typing import Annotated, Literal, Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
 
-TSHIRT_SIZE = Literal["S", "M", "L", "XL"]
+TSHIRT_SIZE = Literal[
+    'Small (S)', 'Medium (M)',
+    'Large (L)', 'Extra Large (XL)',
+]
 
 UNIVERSITIES_LIST = Literal[
     "Sofia University",
@@ -18,7 +21,8 @@ REFERRAL_SOURCES_LIST = Literal[
 
 PROGRAMMING_LANGUAGES_LIST = Literal[
     "Frontend Programming", "Backend Programming", "Programming in C#",
-    "Programming in Java", "Programming in Python", "Programming in JavaScript", "Other",
+    "Programming in Java", "Programming in Python", "Programming in JavaScript",
+    "I don't have experience with any languages", "Other",
 ]
 
 PROGRAMMING_LEVELS_LIST = Literal[
