@@ -49,7 +49,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                 <label>{label}</label>
                 <input
                     onChange={() => {
-                        setDisplay('true');
+                        setDisplay(true);
                     }}
                     type="radio"
                     value="true"
@@ -58,7 +58,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     })}></input>
                 <input
                     onChange={() => {
-                        setDisplay('false');
+                        setDisplay(false);
                     }}
                     type="radio"
                     value="false"

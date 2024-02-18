@@ -50,7 +50,7 @@ const RegistrationForm = () => {
         }
     };
 
-    const [displayTeam, setDisplayTeam] = useState('blurred');
+    const [displayTeam, setDisplayTeam] = useState(false);
     const display = value => {
         setDisplayTeam(value);
     };
