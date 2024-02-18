@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 
-const InputComponent = ({ type, label, register, display, values, required, name, error }) => {
+const InputComponent = ({ type, label, register, values, required, display, name, error }) => {
     let restrictions = '';
     let errorMessage = '';
-    if (display == false) {
-        return null;
-    }
+    // if (display == false) {
+    //     return null;
+    // }
     if (type === 'name' || type == 'email') {
         if (type == 'email') {
             restrictions = /[a-zA-Z0-9._-]+@[a-zA-Z0-9]+.[a-zA-Z]{2,4}/;
@@ -73,12 +73,12 @@ const InputComponent = ({ type, label, register, display, values, required, name
         );
     } else if (type == 'text') {
         return (
-            <div>
+            <div disabled={display}>
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
                     {...register(name, {
-                        required: 'Field is required',
+                        required: required,
                     })}></input>
                 <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>

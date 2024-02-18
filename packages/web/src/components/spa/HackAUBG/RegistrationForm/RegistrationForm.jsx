@@ -48,13 +48,15 @@ const RegistrationForm = () => {
         }
     };
 
-    // if ( === 'true') console.log('true');
     const [displayTeam, setDisplayTeam] = useState(false);
+    const [req, setReq] = useState('');
     const display = () => {
         if (getValues().team == 'true') {
             setDisplayTeam(true);
+            setReq('Field is required');
         } else {
             setDisplayTeam(false);
+            setReq('');
         }
     };
 
@@ -97,7 +99,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Location*"
                 type="text"
-                required="true"
+                required="Field is required"
                 register={register}
                 name="location"
                 error={errors.location && errors.location.message}
@@ -111,17 +113,15 @@ const RegistrationForm = () => {
                 name="team"
                 error={errors.team && errors.team.message}
             />
-            {displayTeam && (
-                <InputComponent
-                    label="What is the name of your team*"
-                    type="text"
-                    required="true"
-                    register={register}
-                    name="team_name"
-                    error={errors.team_name && errors.team_name.message}
-                />
-            )}
-
+            <InputComponent
+                label="What is the name of your team*"
+                type="text"
+                required={req}
+                register={register}
+                display={displayTeam}
+                name="team_name"
+                error={errors.team_name && errors.team_name.message}
+            />
             <InputComponent
                 label="Choose an School/University"
                 type="select"
@@ -141,7 +141,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="How did you find out about HackAUBG?*"
                 type="select"
-                required="Field is required"
+                required={false}
                 register={register}
                 values={['University', 'Friends', 'I was on a previous edition of Hack AUBG', 'other']}
                 name="source_of_referral"
@@ -150,7 +150,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="What programming languages are you familiar with?*"
                 type="select"
-                required="Field is required"
+                required={false}
                 register={register}
                 values={[
                     'Frontend Programming',
@@ -167,7 +167,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="What is your programming level?"
                 type="select"
-                required="Field is required"
+                required={false}
                 register={register}
                 values={['Beginner', 'Intermediate', 'Advanced', 'I am not participating as a programmer', 'Other']}
                 name="programming_level"
