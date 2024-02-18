@@ -43,26 +43,28 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
             </div>
         );
     } else if (type == 'yesNo') {
-        if (label != 'Do you have a team') setDisplay = () => {};
+        if (label != 'Do you have a team*') setDisplay = () => {};
         return (
             <div>
                 <label>{label}</label>
                 <input
+                    onChange={() => {
+                        setDisplay('true');
+                    }}
                     type="radio"
-                    name={label}
                     value="true"
-                    {...register(name)}
-                    onChange={() => {
-                        setDisplay(true);
-                    }}></input>
+                    {...register(name, {
+                        required: 'Field is required',
+                    })}></input>
                 <input
-                    type="radio"
-                    name={label}
-                    value="false"
-                    {...register(name)}
                     onChange={() => {
-                        setDisplay(false);
-                    }}></input>
+                        setDisplay('false');
+                    }}
+                    type="radio"
+                    value="false"
+                    {...register(name, {
+                        required: 'Field is required',
+                    })}></input>
                 <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );

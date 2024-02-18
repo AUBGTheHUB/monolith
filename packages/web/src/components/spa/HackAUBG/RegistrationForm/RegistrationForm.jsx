@@ -40,6 +40,8 @@ const RegistrationForm = () => {
     }, []);
     if (isFormAvailable) return null;
 
+    console.log(errors);
+
     const onSubmit = () => {
         if (Object.keys(errors).length !== 0) {
             console.log(errors);
@@ -48,7 +50,7 @@ const RegistrationForm = () => {
         }
     };
 
-    const [displayTeam, setDisplayTeam] = useState(false);
+    const [displayTeam, setDisplayTeam] = useState('blurred');
     const display = value => {
         setDisplayTeam(value);
     };
@@ -100,11 +102,11 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Do you have a team*"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
-                name="team_name"
-                error={errors.team_name && errors.team_name.message}
+                name="team"
+                error={errors.team && errors.team.message}
             />
             <InputComponent
                 label="What is the name of your team*"
@@ -169,7 +171,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Have you participated in Hack AUBG before?"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
                 name="has_participated_in_hackaubg"
@@ -178,7 +180,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Are you looking for an internship?"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
                 name="has_internship_interest"
@@ -187,7 +189,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Have you participated in other Hackathons?"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
                 name="has_participated_in_hackathons"
@@ -196,7 +198,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Do you have previous coding experience?"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
                 name="has_previous_coding_experience"
@@ -205,7 +207,7 @@ const RegistrationForm = () => {
             <InputComponent
                 label="Do you want to receive our newsletter with potential job offerings?"
                 type="yesNo"
-                required="true"
+                required="Field is required"
                 register={register}
                 setDisplay={display}
                 name="newsletter_consent"
