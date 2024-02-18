@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 
-const InputComponent = ({ type, label, register, display, setDisplay, values, required, name }) => {
+const InputComponent = ({ type, label, register, display, setDisplay, values, required, name, error }) => {
     let restrictions = '';
     let errorMessage = '';
     if (display == false) {
@@ -23,6 +23,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                         required: 'Field is required',
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     } else if (type == 'age') {
@@ -36,7 +37,9 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     {...register(name, {
                         required: 'Field is required',
                         min: { value: 16, message: 'Minimum age to participate is 16' },
+                        max: { value: 99, message: 'Maximum age to participate is 99' },
                     })}></input>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     } else if (type == 'yesNo') {
@@ -60,6 +63,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     onChange={() => {
                         setDisplay(false);
                     }}></input>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     } else if (type === 'concent') {
@@ -68,7 +72,8 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
         return (
             <div>
                 <label>{label}</label>
-                <input type="checkbox" {...register('concent', { required: true, message: errorMessage })}></input>
+                <input type="checkbox" {...register('concent', { required: 'Field is required' })}></input>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     } else if (type == 'text') {
@@ -80,6 +85,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                     {...register(name, {
                         required: 'Field is required',
                     })}></input>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     } else if (type == 'select') {
@@ -89,6 +95,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                 <select
                     {...register(name, {
                         required: required,
+                        message: 'Field is required',
                     })}>
                     <option value="" selected disabled hidden>
                         Choose here
@@ -99,6 +106,7 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
                         </option>
                     ))}
                 </select>
+                <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
     }
