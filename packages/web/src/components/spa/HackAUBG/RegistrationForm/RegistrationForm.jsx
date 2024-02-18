@@ -44,7 +44,25 @@ const RegistrationForm = () => {
         if (Object.keys(errors).length !== 0) {
             console.log(errors);
         } else {
-            console.log(getValues());
+            const values = getValues();
+            const updatedValues = {};
+
+            for (const [key, value] of Object.entries(values)) {
+                if (value === 'true') {
+                    updatedValues[key] = true;
+                } else if (value === 'false') {
+                    updatedValues[key] = false;
+                } else {
+                    updatedValues[key] = value;
+                }
+            }
+            console.log(updatedValues);
+
+            if (updatedValues.team == false) {
+                console.log('no team');
+            } else {
+                console.log('team');
+            }
         }
     };
 
