@@ -40,8 +40,6 @@ const RegistrationForm = () => {
     }, []);
     if (isFormAvailable) return null;
 
-    console.log(errors);
-
     const onSubmit = () => {
         if (Object.keys(errors).length !== 0) {
             console.log(errors);
@@ -50,14 +48,19 @@ const RegistrationForm = () => {
         }
     };
 
+    // if ( === 'true') console.log('true');
     const [displayTeam, setDisplayTeam] = useState(false);
-    const display = value => {
-        setDisplayTeam(value);
+    const display = () => {
+        if (getValues().team == 'true') {
+            setDisplayTeam(true);
+        } else {
+            setDisplayTeam(false);
+        }
     };
 
     return (
         // eslint-disable-next-line no-unused-vars
-        <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)}>
+        <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
             <label>Example</label>
             <InputComponent
                 label="First Name*"
@@ -108,15 +111,17 @@ const RegistrationForm = () => {
                 name="team"
                 error={errors.team && errors.team.message}
             />
-            <InputComponent
-                label="What is the name of your team*"
-                type="text"
-                required="true"
-                register={register}
-                display={displayTeam}
-                name="team_name"
-                error={errors.team_name && errors.team_name.message}
-            />
+            {displayTeam && (
+                <InputComponent
+                    label="What is the name of your team*"
+                    type="text"
+                    required="true"
+                    register={register}
+                    name="team_name"
+                    error={errors.team_name && errors.team_name.message}
+                />
+            )}
+
             <InputComponent
                 label="Choose an School/University"
                 type="select"

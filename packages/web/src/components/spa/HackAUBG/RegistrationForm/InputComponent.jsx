@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 
-const InputComponent = ({ type, label, register, display, setDisplay, values, required, name, error }) => {
+const InputComponent = ({ type, label, register, display, values, required, name, error }) => {
     let restrictions = '';
     let errorMessage = '';
     if (display == false) {
@@ -43,23 +43,16 @@ const InputComponent = ({ type, label, register, display, setDisplay, values, re
             </div>
         );
     } else if (type == 'yesNo') {
-        if (label != 'Do you have a team*') setDisplay = () => {};
         return (
             <div>
                 <label>{label}</label>
                 <input
-                    onChange={() => {
-                        setDisplay(true);
-                    }}
                     type="radio"
                     value="true"
                     {...register(name, {
                         required: 'Field is required',
                     })}></input>
                 <input
-                    onChange={() => {
-                        setDisplay(false);
-                    }}
                     type="radio"
                     value="false"
                     {...register(name, {
