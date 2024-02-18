@@ -62,7 +62,7 @@ const RegistrationForm = () => {
             axios({
                 method: 'post',
                 url: registerURL,
-                updatedValues,
+                data: updatedValues,
             })
                 .then(() => {
                     // setIsFormAvailable(true);
@@ -154,7 +154,13 @@ const RegistrationForm = () => {
                 type="select"
                 required={false}
                 register={register}
-                values={['AUBG', 'Sofia University', 'Technical University - Sofia', 'Plovdiv University', 'Other']}
+                values={[
+                    'American University in Bulgaria',
+                    'Sofia University',
+                    'Technical University - Sofia',
+                    'Plovdiv University',
+                    'Other',
+                ]}
                 name="university"
             />
             <InputComponent
@@ -162,6 +168,7 @@ const RegistrationForm = () => {
                 type="select"
                 required={false}
                 register={register}
+                // values={['S', 'M', 'L', 'XL']}
                 values={['Small (S)', 'Medium (M)', 'Large (L)', 'Extra Large (XL)']}
                 name="tshirt_size"
             />
@@ -170,7 +177,7 @@ const RegistrationForm = () => {
                 type="select"
                 required={false}
                 register={register}
-                values={['University', 'Friends', 'I was on a previous edition of Hack AUBG', 'other']}
+                values={['University', 'Friends', 'I was on a previous edition of Hack AUBG']}
                 name="source_of_referral"
                 error={errors.source_of_referral && errors.source_of_referral.message}
             />
@@ -187,6 +194,7 @@ const RegistrationForm = () => {
                     'Programming in Python',
                     'Programming in Javascript',
                     "I don't have experience with any languages",
+                    'Other',
                 ]}
                 name="programming_language"
                 error={errors.programming_language && errors.programming_language.message}
@@ -247,11 +255,11 @@ const RegistrationForm = () => {
             />
             <InputComponent
                 label="Agreement to share information with sponsors"
-                type="concent"
+                type="share_info_with_sponsors"
                 required={true}
                 register={register}
                 name="share_info_with_sponsors"
-                error={errors.concent && errors.concent.message}
+                error={errors.share_info_with_sponsors && errors.share_info_with_sponsors.message}
             />
             <input type="submit" />
         </form>

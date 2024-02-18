@@ -61,13 +61,15 @@ const InputComponent = ({ type, label, register, values, required, display, name
                 <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
-    } else if (type === 'concent') {
+    } else if (type === 'share_info_with_sponsors') {
         restrictions = 'true';
         errorMessage = 'You must agree <3';
         return (
             <div>
                 <label>{label}</label>
-                <input type="checkbox" {...register('concent', { required: 'Field is required' })}></input>
+                <input
+                    type="checkbox"
+                    {...register('share_info_with_sponsors', { required: 'Field is required' })}></input>
                 <p style={{ color: 'red' }}>{error}</p>{' '}
             </div>
         );
