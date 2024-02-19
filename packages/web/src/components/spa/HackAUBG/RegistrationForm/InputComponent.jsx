@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
+import styles from './registration_form.module.css';
 
 const InputComponent = ({ type, label, register, values, required, display, name, error }) => {
     let restrictions = '';
@@ -15,7 +16,7 @@ const InputComponent = ({ type, label, register, values, required, display, name
             restrictions = /(^[A-Za-z]{2,16})/;
         }
         return (
-            <div>
+            <div className={styles.form_cell}>
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
@@ -23,13 +24,15 @@ const InputComponent = ({ type, label, register, values, required, display, name
                         required: 'Field is required',
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     } else if (type == 'age') {
         errorMessage = 'Age must be a number';
         return (
-            <div>
+            <div className={styles.form_cell}>
                 <label>{label}</label>
                 <input
                     type="number"
@@ -39,55 +42,68 @@ const InputComponent = ({ type, label, register, values, required, display, name
                         min: { value: 16, message: 'Minimum age to participate is 16' },
                         max: { value: 99, message: 'Maximum age to participate is 99' },
                     })}></input>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     } else if (type == 'yesNo') {
         return (
-            <div>
+            <div className={styles.form_cell}>
                 <label>{label}</label>
-                <input
-                    type="radio"
-                    value="true"
-                    {...register(name, {
-                        required: 'Field is required',
-                    })}></input>
-                <input
-                    type="radio"
-                    value="false"
-                    {...register(name, {
-                        required: 'Field is required',
-                    })}></input>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.radio_group}>
+                    <input
+                        type="radio"
+                        value="true"
+                        {...register(name, {
+                            required: 'Field is required',
+                        })}></input>
+                    <label>Yes</label>
+
+                    <input
+                        type="radio"
+                        value="false"
+                        {...register(name, {
+                            required: 'Field is required',
+                        })}></input>
+                    <label>No</label>
+                </div>
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     } else if (type === 'share_info_with_sponsors') {
         restrictions = 'true';
         errorMessage = 'You must agree <3';
         return (
-            <div>
+            <div className={styles.form_cell}>
                 <label>{label}</label>
                 <input
                     type="checkbox"
                     {...register('share_info_with_sponsors', { required: 'Field is required' })}></input>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     } else if (type == 'text') {
         return (
-            <div disabled={display}>
+            <div disabled={display} className={styles.form_cell}>
                 <label>{label}</label>
                 <input
                     placeholder="Type here"
                     {...register(name, {
                         required: required,
                     })}></input>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     } else if (type == 'select') {
         return (
-            <div>
+            <div className={styles.form_cell}>
                 <label>{label}</label>
                 <select
                     {...register(name, {
@@ -103,13 +119,15 @@ const InputComponent = ({ type, label, register, values, required, display, name
                         </option>
                     ))}
                 </select>
-                <p style={{ color: 'red' }}>{error}</p>{' '}
+                <div className={styles.error_msg}>
+                    <p style={{ color: 'red' }}>{error}</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div>
+        <div className={styles.form_cell}>
             <label>{label}</label>
             <input type={type}></input>
         </div>
