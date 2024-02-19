@@ -59,7 +59,7 @@ class JWTFunctionality:
 
         if for_frontend:
             if is_invite:
-                url = f"{domain}/hackaubg/invite?jwt_token={jwt_token}"
+                url = f"{domain}/hackaubg?jwt_token={jwt_token}"
             else:
                 url = f"{domain}/hackaubg/verify?jwt_token={jwt_token}"
 
