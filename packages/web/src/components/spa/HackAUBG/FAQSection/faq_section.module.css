@@ -17,18 +17,20 @@
     width: 85%;
     position: relative;
     background-color: #fb4298;
-    padding: 15px 0px 10px 0px;
+    padding: 1em 0px 1em 0px;
     text-align: center;
     left: 50%;
     transform: translate(-50%, 0);
     justify-content: center;
-    height: 66px;
+    height: 3em;
     margin-bottom: 40px;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 980px) {
     .faq-h1 {
-        font-size: 5vw;
+        font-size: 100%;
+        height: 4em;
+        padding: 1em 0px 1em 0px;
     }
 
     .left-svg {
@@ -42,7 +44,7 @@
 
 .left-svg {
     position: absolute;
-    z-index: -100;
+    z-index: 1;
     top: 10%;
     height: 40vw;
     width: 20vw;
@@ -50,7 +52,7 @@
 
 .right-svg {
     position: absolute;
-    z-index: -100;
+    z-index: 1;
     right: 0;
     top: 30%;
     height: 40vw;
