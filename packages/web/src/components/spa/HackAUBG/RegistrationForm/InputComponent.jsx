@@ -53,20 +53,25 @@ const InputComponent = ({ type, label, register, values, required, display, name
                 <label>{label}</label>
                 <div className={styles.radio_group}>
                     <input
+                        id={`${name}_true`}
                         type="radio"
                         value="true"
                         {...register(name, {
                             required: 'Field is required',
-                        })}></input>
-                    <label>Yes</label>
+                        })}
+                    />
+                    <label htmlFor={`${name}_true`}>Yes</label>
 
                     <input
+                        id={`${name}_false`}
                         type="radio"
                         value="false"
+                        style={{ marginLeft: '15px' }}
                         {...register(name, {
                             required: 'Field is required',
-                        })}></input>
-                    <label>No</label>
+                        })}
+                    />
+                    <label htmlFor={`${name}_false`}>No</label>
                 </div>
                 <div className={styles.error_msg}>
                     <p style={{ color: 'red' }}>{error}</p>

@@ -183,7 +183,7 @@
     position: relative;
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 25px;
+    margin-bottom: 25px;
     left: 0px;
 }
 
@@ -191,9 +191,9 @@
     width: 20px;
     height: 20px;
 }
-.anchor-icon:hover {
-    color: white;
-}
+/* .anchor-icon:hover {
+    color: black;
+} */
 .anchor-navbar-buttons {
     display: flex;
     position: relative;
