@@ -3,11 +3,9 @@ import './desktop_navbar.css';
 import { navigateTo } from '../../../../Global';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
 
 export const NavDesktop = ({ props }) => {
     const location = useLocation();
-    const anchorColorState = useState(props.anchorColor);
     const renderHackButton = () => {
         if (props.hasHackButton) {
             return (
@@ -43,7 +41,6 @@ export const NavDesktop = ({ props }) => {
     const changeAnchorColor = (e, color) => {
         e.target.style.color = color;
     };
-
     const buildDesktopAnchor = anchor => {
         if (anchor.isLink) {
             return (
@@ -61,25 +58,10 @@ export const NavDesktop = ({ props }) => {
             );
         }
         return (
-            <div>
-                <a
-                    className="anchor-navbar-buttons"
-                    onMouseEnter={() => {
-                        anchorColorState(props.anchorHoverColor);
-                        // changeAnchorColor(e, props.anchorHoverColor);
-                    }}
-                    onMouseLeave={() => {
-                        anchorColorState(props.anchorColor);
-                        // changeAnchorColor(e, props.anchorColor);
-                    }}
-                    href={anchor.endpoint}
-                    style={{ color: anchorColorState }}>
+            <div className={`anchor-navbar-buttons ` + props.specifyHack}>
+                <a href={anchor.endpoint} style={{ color: props.anchorColor }}>
                     {anchor.name}
-                    {anchor.icon !== false && (
-                        <> {anchor.icon}</>
-                        // <div className="anchor-icon" style={{ color: props.anchorColor }}>
-                        // </div>
-                    )}
+                    {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
                 </a>
             </div>
         );

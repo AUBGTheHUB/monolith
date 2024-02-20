@@ -43,8 +43,7 @@ export const HackAUBG = () => {
                         '#222222', // mobile nav background color when not opened (default transparent)
                         'gray', // mobile background color nav when opened
                         '#e2d7fc', // anchor color
-                        'red', // desktop anchor hover color
-                        'black', // mobile anchor hover color
+                        'hackAUBG', // specify HackAUBG
                     )
                 }
             />

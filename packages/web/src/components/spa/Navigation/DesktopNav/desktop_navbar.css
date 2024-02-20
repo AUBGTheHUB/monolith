@@ -106,6 +106,13 @@
     color: rgb(21, 76, 121);
 }
 
+.hackAUBG a:hover {
+    color: #000 !important;
+}
+.hackAUBG svg:hover {
+    color: #000 !important;
+}
+
 .navdesktop-navdivs a:after {
     display: block;
     position: absolute;
