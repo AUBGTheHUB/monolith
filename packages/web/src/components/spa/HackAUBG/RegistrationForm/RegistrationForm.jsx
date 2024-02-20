@@ -67,6 +67,10 @@ const RegistrationForm = () => {
                 }
             }
 
+            if (updatedValues.team == false) {
+                updatedValues.team_name = '';
+            }
+
             axios({
                 method: 'post',
                 url: registerURL + `?jwt_token=${token}`,
@@ -306,7 +310,6 @@ const RegistrationForm = () => {
             <input className={styles.reg_submit} type="submit" />
         </form>
     );
-    //  else return(<div>hello</div>);
 };
 
 export default RegistrationForm;

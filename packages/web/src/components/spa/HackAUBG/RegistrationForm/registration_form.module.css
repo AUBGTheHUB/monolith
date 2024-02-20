@@ -166,3 +166,17 @@
 .form_cell input[type='number'] {
     -moz-appearance: textfield;
 }
+
+.form_cell:disabled ~ label {
+    color: red;
+}
+
+.disabled {
+    opacity: 0.5; /* Makes the input semi-transparent */
+    background-color: #ccc;
+    user-select: none;
+}
+
+.disabled input {
+    user-select: none;
+}

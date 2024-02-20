@@ -94,9 +94,12 @@ const InputComponent = ({ type, label, register, values, required, display, name
         );
     } else if (type == 'text') {
         return (
-            <div disabled={display} className={styles.form_cell}>
+            <div
+                disabled={display}
+                className={display ? `${styles.form_cell}` + ' ' + `${styles.disabled}` : `${styles.form_cell}`}>
                 <label>{label}</label>
                 <input
+                    disabled={display}
                     placeholder="Type here"
                     {...register(name, {
                         required: required,
