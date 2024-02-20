@@ -23,16 +23,11 @@ export const MemberCard = ({ props, animationClassname = 'hidden' }) => {
                 }}
                 onMouseLeave={() => {
                     setHoverOverlay('hidden');
-                }}
-            >
+                }}>
                 <div className={hoverOverlay}>
                     {NOSYNCDEV()}
-                    <h3 className="members-card-overlay-text name">
-                        {props.firstname + ' ' + props.lastname}
-                    </h3>
-                    <p className="members-card-overlay-text position">
-                        {props.position}
-                    </p>
+                    <h3 className="members-card-overlay-text name">{props.firstname + ' ' + props.lastname}</h3>
+                    <p className="members-card-overlay-text position">{props.position}</p>
                     {/* <p className="members-card-overlay-text department">
                         {props.department}
                     </p> */}

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import './main.css';
-import { MembersSection } from './MembersSection/MembersSection';
+import { MembersSection } from './MembersSection/MemberPage';
 import { NavBar } from './Navigation/NavBar';
 import { LandingSection } from './LandingSection/LandingSection';
 import { Anchor, Props } from './Navigation/NavFactory.js';
