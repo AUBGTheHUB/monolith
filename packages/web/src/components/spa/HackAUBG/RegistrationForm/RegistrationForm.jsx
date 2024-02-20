@@ -88,7 +88,6 @@ const RegistrationForm = () => {
     };
 
     return (
-        // eslint-disable-next-line no-unused-vars
         <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
@@ -178,7 +177,6 @@ const RegistrationForm = () => {
                         type="select"
                         required={false}
                         register={register}
-                        // values={['S', 'M', 'L', 'XL']}
                         values={['Small (S)', 'Medium (M)', 'Large (L)', 'Extra Large (XL)']}
                         name="tshirt_size"
                     />
