@@ -94,6 +94,10 @@ input[type='radio'] {
     margin: 0 !important;
 }
 
+.form_cell:disabled ~ label {
+    color: #888;
+}
+
 @media screen and (max-width: 1200px) {
     .form_container {
         width: 90%;

@@ -137,26 +137,6 @@ const RegistrationForm = () => {
                         error={errors.location && errors.location.message}
                     />
                     <InputComponent
-                        label="Do you have a team*"
-                        type="yesNo"
-                        required="Field is required"
-                        register={register}
-                        setDisplay={display}
-                        name="team"
-                        error={errors.team && errors.team.message}
-                    />
-                </div>
-                <div className={styles.form_row}>
-                    <InputComponent
-                        label="What is the name of your team*"
-                        type="text"
-                        required={req}
-                        register={register}
-                        display={displayTeam}
-                        name="team_name"
-                        error={errors.team_name && errors.team_name.message}
-                    />
-                    <InputComponent
                         label="Choose an School/University"
                         type="select"
                         required={false}
@@ -169,6 +149,26 @@ const RegistrationForm = () => {
                             'Other',
                         ]}
                         name="university"
+                    />
+                </div>
+                <div className={styles.form_row}>
+                    <InputComponent
+                        label="Do you want to create a team*"
+                        type="yesNo"
+                        required="Field is required"
+                        register={register}
+                        setDisplay={display}
+                        name="team"
+                        error={errors.team && errors.team.message}
+                    />
+                    <InputComponent
+                        label="What is the name of your team*"
+                        type="text"
+                        required={req}
+                        register={register}
+                        display={!displayTeam}
+                        name="team_name"
+                        error={errors.team_name && errors.team_name.message}
                     />
                 </div>
 
