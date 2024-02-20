@@ -6,6 +6,8 @@ import InputComponent from './InputComponent';
 import axios from 'axios';
 import { url } from '../../../../Global';
 import { registerURL } from '../../../../Global';
+import { jwtDecode } from 'jwt-decode';
+
 //import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
@@ -22,6 +24,8 @@ const RegistrationForm = () => {
     // const [buttonMessage, setButtonMessage] = useState('');
     // const [disableTeamNameField, setDisableTeamNameField] = useState(true);
     const [isFormAvailable, setIsFormAvailable] = useState(false);
+    const [teamName, setTeamName] = useState('');
+    const [token, setToken] = useState('');
 
     const checkRegistrationAvailability = () => {
         axios({
@@ -38,6 +42,11 @@ const RegistrationForm = () => {
 
     useEffect(() => {
         checkRegistrationAvailability();
+        const token = setToken(new URL(window.location.href).searchParams.get('jwt_token'));
+        if (token) {
+            const decoded = jwtDecode(token);
+            setTeamName(decoded.team_name);
+        }
     }, []);
     if (isFormAvailable) return null;
 
@@ -61,7 +70,7 @@ const RegistrationForm = () => {
 
             axios({
                 method: 'post',
-                url: registerURL,
+                url: registerURL + `?jwt_token=${token}`,
                 data: updatedValues,
             })
                 .then(() => {
@@ -91,6 +100,7 @@ const RegistrationForm = () => {
         <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
+                    {teamName}
                     <InputComponent
                         label="First Name*"
                         type="name"
@@ -150,27 +160,28 @@ const RegistrationForm = () => {
                         name="university"
                     />
                 </div>
-                <div className={styles.form_row}>
-                    <InputComponent
-                        label="Do you want to create a team*"
-                        type="yesNo"
-                        required="Field is required"
-                        register={register}
-                        setDisplay={display}
-                        name="team"
-                        error={errors.team && errors.team.message}
-                    />
-                    <InputComponent
-                        label="What is the name of your team*"
-                        type="text"
-                        required={req}
-                        register={register}
-                        display={!displayTeam}
-                        name="team_name"
-                        error={errors.team_name && errors.team_name.message}
-                    />
-                </div>
-
+                {!token && (
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Do you want to create a team*"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="team"
+                            error={errors.team && errors.team.message}
+                        />
+                        <InputComponent
+                            label="What is the name of your team*"
+                            type="text"
+                            required={req}
+                            register={register}
+                            display={!displayTeam}
+                            name="team_name"
+                            error={errors.team_name && errors.team_name.message}
+                        />
+                    </div>
+                )}
                 <div className={styles.form_row}>
                     <InputComponent
                         label="T-shirt size"
