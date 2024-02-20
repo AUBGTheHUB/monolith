@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './desktop_navbar.css';
 import { navigateTo } from '../../../../Global';
 import { Link } from 'react-router-dom';
@@ -20,6 +20,10 @@ export const NavDesktop = ({ props }) => {
             );
         }
     };
+
+    useEffect(() => {
+        console.log(props);
+    }, []);
     const openHome = () => {
         navigateTo('/');
         window.scrollTo(0, 0);

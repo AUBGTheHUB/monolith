@@ -103,7 +103,7 @@
 }
 
 .navdesktop-navdivs a:hover {
-    color: rgb(21, 76, 121);
+    color: rgb(21, 76, 121) !important;
 }
 
 .hackAUBG a:hover {
