@@ -16,7 +16,7 @@ const RegistrationForm = () => {
         formState: { errors },
         handleSubmit,
         getValues,
-    } = useForm();
+    } = useForm({ mode: 'all' });
     // const [loadingAnimation, setLoadingAnimation] = useState(false);
     // const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
     // const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
@@ -66,7 +66,6 @@ const RegistrationForm = () => {
                     updatedValues[key] = value;
                 }
             }
-            console.log(updatedValues);
 
             axios({
                 method: 'post',
@@ -98,6 +97,10 @@ const RegistrationForm = () => {
 
     return (
         <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
+            <div className={styles.form_header}>
+                <h1>Register for HackAUBG 6.0</h1>
+            </div>
+
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
                     {teamName}
@@ -300,7 +303,7 @@ const RegistrationForm = () => {
                     />
                 </div>
             </div>
-            <input type="submit" />
+            <input className={styles.reg_submit} type="submit" />
         </form>
     );
     //  else return(<div>hello</div>);

@@ -7,7 +7,22 @@
     align-items: center;
 }
 
+.form_header {
+    background-color: #fb4298;
+}
+
+.form_header h1 {
+    text-align: center;
+    font-size: 1.7em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    margin: 0.3em 9em;
+}
+
 .form_container {
+    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -69,19 +84,24 @@
 .radio_group {
     display: flex;
     align-items: center;
-    margin-top: 2%;
+    margin-top: 1%;
     margin-bottom: 7.5px;
 }
 
 .radio_group input {
     width: 8%;
+    cursor: pointer;
     height: 90%;
 }
 
-input[type='radio'] {
-    background-color: red;
+.radio_group label {
+    cursor: pointer;
+}
+
+.radio_group input[type='radio'] {
     accent-color: rgb(231 82 150);
 }
+
 .radio_group label {
     font-size: 15px !important;
 }
@@ -98,20 +118,29 @@ input[type='radio'] {
     color: #888;
 }
 
+.reg_submit {
+    margin-top: 20px;
+    padding: 15px 60px !important;
+    background-color: transparent !important;
+    border: 2.5px solid rgb(148 255 0) !important;
+    color: rgb(148 255 0) !important;
+    font-family: 'Post No Bills Jaffna' !important;
+    font-size: 25px !important;
+    letter-spacing: 2px !important;
+    transition: 0.2s;
+}
+
+.reg_submit:hover {
+    background-color: rgb(148 255 0) !important;
+    color: #000 !important;
+    transition: 0.2s;
+}
+
 @media screen and (max-width: 1200px) {
     .form_container {
         width: 90%;
     }
-    /* input[type='radio']:after {
-        top: -1vw !important;
-    } */
 }
-
-/* @media screen and (max-width: 900px) {
-    input[type='radio']:after {
-        top: -1.2vw !important;
-    }
-} */
 
 @media screen and (max-width: 800px) {
     .form_container {
@@ -123,19 +152,17 @@ input[type='radio'] {
     .form_row .form_cell {
         width: 100%;
     }
-
-    /* input[type='radio']:after {
-        width: 2vw;
-        height: 2vw;
-        border-radius: 15px;
-        top: -14.5px;
-        left: 16.5px;
-    } */
-    /* input[type='radio']:after {
-        top: -1.5vw !important;
-        left: 1vw !important;
-    } */
 }
 
-/* @media screen and (max-width: 800px) {
-} */
+/* remove input numer arrow */
+/* Chrome, Safari, Edge, Opera */
+.form_cell input::-webkit-outer-spin-button,
+.form_cell input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.form_cell input[type='number'] {
+    -moz-appearance: textfield;
+}
