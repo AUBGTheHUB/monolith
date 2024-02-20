@@ -26,6 +26,7 @@ const RegistrationForm = () => {
     const [isFormAvailable, setIsFormAvailable] = useState(false);
     const [teamName, setTeamName] = useState('');
     const [token, setToken] = useState('');
+    // const [test, setTest] = useState('');
 
     const checkRegistrationAvailability = () => {
         axios({
@@ -96,18 +97,25 @@ const RegistrationForm = () => {
         } else {
             setDisplayTeam(false);
             setReq('');
+            document.querySelector('input[name=team_name]').value = '';
         }
     };
+
+    // useEffect(() => {
+    //     if (!displayTeam) {
+    //         setTest('');
+    //     }
+    // }, [displayTeam]);
 
     return (
         <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
             <div className={styles.form_header}>
                 <h1>Register for HackAUBG 6.0</h1>
             </div>
+            {teamName}
 
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
-                    {teamName}
                     <InputComponent
                         label="First Name*"
                         type="name"
@@ -186,6 +194,7 @@ const RegistrationForm = () => {
                             display={!displayTeam}
                             name="team_name"
                             error={errors.team_name && errors.team_name.message}
+                            // {...(displayTeam ? { value: '' } : {})}
                         />
                     </div>
                 )}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'; // eslint-disable-line
 import styles from './registration_form.module.css';
 
-const InputComponent = ({ type, label, register, values, required, display, name, error }) => {
+const InputComponent = ({ type, label, register, values, required, display, name, error, value }) => {
     let restrictions = '';
     let errorMessage = '';
     // if (display == false) {
@@ -99,6 +99,7 @@ const InputComponent = ({ type, label, register, values, required, display, name
                 className={display ? `${styles.form_cell}` + ' ' + `${styles.disabled}` : `${styles.form_cell}`}>
                 <label>{label}</label>
                 <input
+                    value={value}
                     disabled={display}
                     placeholder="Type here"
                     {...register(name, {
