@@ -11,6 +11,7 @@
 
 .faq-h1 {
     display: flex;
+    align-items: center;
     color: #ffffff;
     font-size: 200%;
     font-family: 'Press Start 2P', system-ui;
