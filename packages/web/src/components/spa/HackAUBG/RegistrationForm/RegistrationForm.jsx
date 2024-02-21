@@ -27,6 +27,7 @@ const RegistrationForm = () => {
     const [teamName, setTeamName] = useState('');
     const [token, setToken] = useState('');
     // const [test, setTest] = useState('');
+    const [error, setError] = useState('');
 
     const checkRegistrationAvailability = () => {
         axios({
@@ -43,8 +44,9 @@ const RegistrationForm = () => {
 
     useEffect(() => {
         checkRegistrationAvailability();
-        const token = setToken(new URL(window.location.href).searchParams.get('jwt_token'));
+        const token = new URL(window.location.href).searchParams.get('jwt_token');
         if (token) {
+            setToken(true);
             const decoded = jwtDecode(token);
             setTeamName(decoded.team_name);
         }
@@ -74,16 +76,18 @@ const RegistrationForm = () => {
 
             axios({
                 method: 'post',
-                url: registerURL + `?jwt_token=${token}`,
+                url: registerURL + (token ? `?jwt_token=${token}` : ''),
                 data: updatedValues,
             })
                 .then(() => {
                     // setIsFormAvailable(true);
+                    setError('');
                     console.log('success');
                 })
-                .catch(() => {
+                .catch(error => {
                     // setIsFormAvailable(false);
-                    console.log('failure');
+                    console.log(error.response.data.message);
+                    setError(error.response.data.message);
                 });
         }
     };
@@ -101,19 +105,16 @@ const RegistrationForm = () => {
         }
     };
 
-    // useEffect(() => {
-    //     if (!displayTeam) {
-    //         setTest('');
-    //     }
-    // }, [displayTeam]);
-
     return (
         <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
             <div className={styles.form_header}>
                 <h1>Register for HackAUBG 6.0</h1>
             </div>
-            {teamName}
-
+            {teamName && (
+                <div className={styles.team_name}>
+                    <h2>Registering for team: {teamName}</h2>
+                </div>
+            )}
             <div className={styles.form_container}>
                 <div className={styles.form_row}>
                     <InputComponent
@@ -194,7 +195,6 @@ const RegistrationForm = () => {
                             display={!displayTeam}
                             name="team_name"
                             error={errors.team_name && errors.team_name.message}
-                            // {...(displayTeam ? { value: '' } : {})}
                         />
                     </div>
                 )}
@@ -306,16 +306,17 @@ const RegistrationForm = () => {
                         name="newsletter_consent"
                         error={errors.newsletter_consent && errors.newsletter_consent.message}
                     />
-                    <InputComponent
-                        label="Agreement to share information with sponsors"
-                        type="share_info_with_sponsors"
-                        required={true}
-                        register={register}
-                        name="share_info_with_sponsors"
-                        error={errors.share_info_with_sponsors && errors.share_info_with_sponsors.message}
-                    />
                 </div>
             </div>
+            <InputComponent
+                label="Agreement to share information with sponsors"
+                type="share_info_with_sponsors"
+                required={true}
+                register={register}
+                name="share_info_with_sponsors"
+                error={errors.share_info_with_sponsors && errors.share_info_with_sponsors.message}
+            />
+            {error && <div className={styles.error}>{error}</div>}
             <input className={styles.reg_submit} type="submit" />
         </form>
     );
