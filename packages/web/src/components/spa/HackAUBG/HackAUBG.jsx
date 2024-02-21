@@ -13,11 +13,11 @@ import RegistrationForm from './RegistrationForm/RegistrationForm.jsx';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { makeBodyScrollable } from '../Navigation/MobileNav/NavMobile';
-import FaqSection from './FaqSection/FaqSection';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
+import { FAQSection } from './FAQSection/FAQSection.jsx';
 
 export const HackAUBG = () => {
     makeBodyScrollable();
@@ -59,14 +59,14 @@ export const HackAUBG = () => {
             <GradingCriteria />
             <AwardsSection />
             <Sponsors />
-            <FaqSection />
+            <FAQSection />
             <Footer
                 color={'rgba(220,193,255,255)'}
                 iconColor={'rgb(0, 0, 0)'}
                 iconBgColor={'rgba(0, 0, 0, 0)'}
                 textColor={'#000'}
                 iconSize={'2.6em'}
-            />
+            />{' '}
         </div>
     );
 };
