@@ -11,7 +11,7 @@ import VideoSection from './VideoSection/VideoSection';
 import RegistrationForm from './RegistrationForm/RegistrationForm';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
-import FaqSection from './FaqSection/FaqSection';
+import { FAQSection } from './FAQSection/FAQSection.jsx';
 import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { LandingPage } from './LandingPage/LandingPage.jsx';
@@ -71,7 +71,7 @@ export const HackAUBG = () => {
                 <GradingCriteria />
                 <AwardsSection />
                 <Sponsors />
-                <FaqSection />
+                <FAQSection />
                 <Footer
                     color={'rgba(220,193,255,255)'}
                     iconColor={'rgb(0, 0, 0)'}
