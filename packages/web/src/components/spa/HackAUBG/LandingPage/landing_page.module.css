@@ -33,7 +33,6 @@ input[type='reset'] {
 
 .landing-page .title h2 {
     color: white;
-    /* change-font */
     font-family: 'Post No Bills Jaffna';
     font-size: 40px;
     text-align: center;
@@ -54,9 +53,8 @@ input[type='reset'] {
     color: rgb(216 194 251);
     padding-right: 10px;
     font-size: 40px !important;
-    /* change-font */
+
     font-family: 'Post No Bills Jaffna';
-    /* font-family: ; */
 }
 
 .landing-page .register-button:hover {
@@ -103,9 +101,6 @@ input[type='reset'] {
 }
 
 @media only screen and (max-width: 500px) {
-    .landing-page .title {
-        /* padding-bottom: 45%; */
-    }
     .landing-page .title h1 {
         font-size: 30px;
     }

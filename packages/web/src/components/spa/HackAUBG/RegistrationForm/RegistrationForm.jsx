@@ -96,8 +96,7 @@ const RegistrationForm = () => {
         }
     };
 
-    //remove ! when in production
-    if (!featureSwitches.regForm) {
+    if (featureSwitches.regForm) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                 <div className={styles.form_header}>
