@@ -101,10 +101,27 @@ tr > td {
         /* margin: 0 100px; */
         width: 100%;
         height: 5px;
-        border-bottom: 2px solid red;
+        border-bottom: 2px solid #fb4298;
+    }
+    .grading_criteria_title {
+        width: 80%;
     }
 }
 
+@media screen and (max-width: 400px) {
+    .grading_criteria {
+        font-size: 10px;
+    }
+    .grading_criteria th {
+        font-size: 10px;
+    }
+    .left {
+        padding: 0px;
+    }
+    .right {
+        padding: 0px;
+    }
+}
 /* table,
 th,
 td {
