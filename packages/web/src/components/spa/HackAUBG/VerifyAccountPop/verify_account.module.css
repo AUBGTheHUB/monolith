@@ -96,72 +96,9 @@ svg {
     border: 2px solid rgb(0, 192, 0);
 }
 
-@media (max-width: 420px) {
-    .button-message {
-        display: none;
-    }
-
-    .help-button-border div {
-        border-right: none !important;
-    }
-
-    .sample-buttons-container {
-        display: none;
-    }
-
-    .sample-button,
-    .sample-button-edit {
-        display: none;
-    }
-
-    .verify-button-container {
-        height: 50%;
-    }
+@media (min-width: 1025px) and (max-width: 1400px) {
     .verify-button {
-        width: 70vw;
-        height: 15vh;
-        font-size: 25px;
-    }
-    .sample-button,
-    .sample-button-edit {
-        font-size: 10px;
-        padding: 6px;
-    }
-    .svg-minimize svg {
-        height: 1em;
-        width: 0.6em;
-    }
-}
-
-@media (max-width: 600px) {
-    .button-message {
-        display: none;
-    }
-
-    .help-button-border div {
-        border-right: none !important;
-    }
-
-    .verfication-container {
-        height: 35vh;
-    }
-
-    .verify-button-container {
-        height: 65%;
-    }
-    .verify-button {
-        width: 38vw;
-        height: 10vh;
-        font-size: 25px;
-    }
-    .sample-button,
-    .sample-button-edit {
-        font-size: 12px;
-        padding: 8px;
-    }
-    .svg-minimize svg {
-        height: 1.5em;
-        width: 1em;
+        width: 25vw;
     }
 }
 
@@ -179,14 +116,18 @@ svg {
         height: 40vh;
     }
 
-    .verify-button-container {
-        height: 65%;
+    .verfication-container.message-shown {
+        height: 45vh;
+    }
+
+    .verify-button-container.message-shown {
+        margin-top: 12px;
     }
 
     .verify-button {
         width: 25vw;
         height: 10vh;
-        font-size: 25px;
+        font-size: 30px;
     }
 
     .sample-button,
@@ -194,14 +135,66 @@ svg {
         font-size: 14px;
         padding: 10px;
     }
-    .svg-minimize svg {
-        height: 1.8em;
-        width: 1.2em;
+}
+
+@media (max-width: 600px) {
+    .button-message {
+        display: none;
+    }
+
+    .help-button-border div {
+        border-right: none !important;
+    }
+
+    .verfication-container {
+        height: 35vh;
+    }
+
+    .verfication-container.message-shown {
+        height: 50vh;
+    }
+
+    .verify-button-container.message-shown {
+        margin-top: 22px;
+    }
+
+    .verify-button {
+        width: 38vw;
+        height: 10vh;
+        font-size: 25px;
+    }
+
+    .sample-button,
+    .sample-button-edit {
+        font-size: 12px;
+        padding: 8px;
     }
 }
 
-@media (min-width: 1025px) and (max-width: 1400px) {
+@media (max-width: 420px) {
+    .button-message {
+        display: none;
+    }
+
+    .sample-buttons-container {
+        display: none;
+    }
+
     .verify-button {
-        width: 25vw;
+        width: 36vw;
+        height: 10vh;
+        font-size: 25px;
+    }
+
+    .verfication-container {
+        height: 35vh;
+    }
+
+    .verfication-container.message-shown {
+        height: 50vh;
+    }
+
+    .verify-button-container.message-shown {
+        margin-top: 22px;
     }
 }

@@ -32,7 +32,7 @@ export const HackAUBG = () => {
 
     const match = useMatch('/hackaubg/verify');
 
-    const [showVerification, setShowVerification] = useState(!!match);
+    const [showVerification, setShowVerification] = useState(match);
 
     useEffect(() => {
         document.body.style.overflow = showVerification ? 'hidden' : 'auto';

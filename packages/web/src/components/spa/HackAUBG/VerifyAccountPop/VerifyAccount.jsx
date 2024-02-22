@@ -31,7 +31,7 @@ export const VerifyAccount = ({ onSuccess }) => {
     };
 
     return (
-        <div className={styles['verfication-container']}>
+        <div className={`${styles['verfication-container']} ${error || success ? styles['message-shown'] : ''}`}>
             <div className={styles['top-header']}>
                 <div className={styles['svg-minimize']}>
                     <FaRegWindowMinimize />
@@ -54,7 +54,7 @@ export const VerifyAccount = ({ onSuccess }) => {
                     <div className={styles['sample-button']}>Help</div>
                 </div>
             </div>
-            <div className={styles['verify-button-container']}>
+            <div className={`${styles['verify-button-container']} ${error || success ? styles['message-shown'] : ''}`}>
                 <div className={styles['verify-button']} onClick={handleVerifyClick}>
                     Verify <span className={styles['button-message']}>participation</span>
                 </div>
