@@ -4,6 +4,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    padding-top: 50px;
 }
 
 .form_header {

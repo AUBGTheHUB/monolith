@@ -48,12 +48,11 @@ export const HackAUBG = () => {
                 }
             />
             <LandingPage />
-
             <AboutHackathon />
             <JourneySection />
+            <RegistrationForm />
             <MentorsSection />
             <JudgesSection />
-            <RegistrationForm />
             <VideoSection />
             <ScheduleHackathon />
             <GradingCriteria />
