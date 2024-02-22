@@ -84,8 +84,18 @@ tr > td {
 }
 
 @media screen and (max-width: 1000px) {
+    .grading_criteria th {
+        margin: 0 2px;
+    }
     .grading_criteria_wrapper {
         flex-wrap: wrap;
+    }
+
+    .left {
+        padding: 10px;
+    }
+    .right {
+        padding: 10px;
     }
 
     .grading_criteria_table {
