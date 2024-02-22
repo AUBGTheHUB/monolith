@@ -80,7 +80,7 @@ const InputComponent = ({ type, label, register, values, required, display, name
         restrictions = 'true';
         errorMessage = 'You must agree <3';
         return (
-            <div className={styles.checkbox_container}>
+            <div className={styles.checkbox_container + ' ' + styles.checkbox_mobile}>
                 <div className={styles.checkbox}>
                     <label>{label}</label>
                     <input

@@ -215,6 +215,14 @@
     .error_msg {
         font-size: 0.7rem;
     }
+    .checkbox_mobile {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+    .checkbox_mobile label {
+        margin-right: 0;
+    }
 }
 
 /* remove input numer arrow */
