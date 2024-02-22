@@ -257,6 +257,7 @@
 }
 
 .reg_complete {
+    text-align: center;
     padding-top: 2.5%;
     user-select: none;
     color: rgb(148 255 0);

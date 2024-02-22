@@ -316,13 +316,16 @@ const RegistrationForm = () => {
                 />
                 {error && <div className={styles.error}>{error}</div>}
                 {isSubmitted ? (
-                    <h2 className={styles.reg_complete}>Registration successful</h2>
+                    token ? (
+                        <h2 className={styles.reg_complete}>Registration successful!</h2>
+                    ) : (
+                        <h2 className={styles.reg_complete}>
+                            Registration successful! <br></br>Please check your email to verify your participation!
+                        </h2>
+                    )
                 ) : (
                     <input className={styles.reg_submit + ' ' + isSubmitted} type="submit" />
                 )}
-                {/* <input className={styles.reg_submit + ' ' + isSubmitted} type="submit" />
-
-                <h2> Registration successful</h2> */}
             </form>
         );
     } else {
