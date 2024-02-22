@@ -1,7 +1,6 @@
 .form {
     display: flex;
     color: white;
-    /* flex-wrap: wrap; */
     justify-content: center;
     flex-direction: column;
     align-items: center;
@@ -68,7 +67,6 @@
 }
 
 .form_row .form_cell input {
-    /* padding-top: 10px; */
     font-size: 20px;
     outline: none;
     border: none;
@@ -192,7 +190,6 @@
     }
     .form_row .form_cell {
         width: 100%;
-        /* height: 190px; */
     }
 
     .form_cell label {
@@ -245,4 +242,22 @@
 
 .disabled input {
     user-select: none;
+}
+
+.reg_closed {
+    padding-top: 5%;
+    color: white;
+    text-align: center;
+}
+
+.error {
+    color: red;
+
+    text-align: center;
+}
+
+.reg_complete {
+    padding-top: 2.5%;
+    user-select: none;
+    color: rgb(148 255 0);
 }
