@@ -16,7 +16,7 @@ import Sponsors from './SponsorsSection/SponsorsSection';
 import './hack_aubg.css';
 import { LandingPage } from './LandingPage/LandingPage.jsx';
 import { FaRegLightbulb } from 'react-icons/fa';
-import { useMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { VerifyAccount } from '../HackAUBG/VerifyAccountPop/VerifyAccount.jsx';
 import { useState, useEffect } from 'react';
 
@@ -30,9 +30,11 @@ export const HackAUBG = () => {
         new Anchor('FAQ', '#faq', <FaRegLightbulb />),
     ];
 
-    const match = useMatch('/hackaubg/verify');
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const jwtToken = params.get('jwt_token');
 
-    const [showVerification, setShowVerification] = useState(match);
+    const [showVerification, setShowVerification] = useState(jwtToken);
 
     useEffect(() => {
         document.body.style.overflow = showVerification ? 'hidden' : 'auto';
