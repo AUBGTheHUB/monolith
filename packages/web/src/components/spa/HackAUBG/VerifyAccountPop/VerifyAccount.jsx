@@ -12,14 +12,17 @@ export const VerifyAccount = ({ onSuccess }) => {
 
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleVerifyClick = () => {
+        setLoading(true);
         axios({
             method: 'get',
             url: verifyURL + `?jwt_token=${jwtToken}`,
         })
             .then(() => {
                 setSuccess(true);
+                setLoading(false);
                 setTimeout(() => {
                     onSuccess();
                 }, 3000);
@@ -27,6 +30,9 @@ export const VerifyAccount = ({ onSuccess }) => {
 
             .catch(() => {
                 setError(true);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 3000);
             });
     };
 
@@ -58,12 +64,13 @@ export const VerifyAccount = ({ onSuccess }) => {
                 <div className={styles['verify-button']} onClick={handleVerifyClick}>
                     Verify <span className={styles['button-message']}>participation</span>
                 </div>
-                <div>
-                    {error && <div className={styles['error-message']}>An error occured, please try again later!</div>}
-                </div>
-                <div>
-                    {success && <div className={styles['success-message']}>You have been successfully verified!</div>}
-                </div>
+                {loading && <span className={styles['loader']}></span>}
+                {!loading && error && (
+                    <div className={styles['error-message']}>An error occured, please try again later!</div>
+                )}
+                {!loading && success && (
+                    <div className={styles['success-message']}>You have been successfully verified!</div>
+                )}
             </div>
         </div>
     );
