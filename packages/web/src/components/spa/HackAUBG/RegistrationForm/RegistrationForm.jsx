@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'; // eslint-disable-line
 import styles from './registration_form.module.css';
 import { useForm } from 'react-hook-form';
-//import { useState } from 'react';
 import InputComponent from './InputComponent';
 import axios from 'axios';
 import { url } from '../../../../Global';
 import { registerURL } from '../../../../Global';
 import { jwtDecode } from 'jwt-decode';
 import { FsContext } from '../../../../feature_switches';
-
-//import { FsContext } from '../../../../feature_switches';
 
 const RegistrationForm = () => {
     // eslint-disable-next-line
@@ -19,6 +16,8 @@ const RegistrationForm = () => {
     const [token, setToken] = useState('');
     const [error, setError] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [displayTeam, setDisplayTeam] = useState(false);
+    const [req, setReq] = useState('');
 
     const {
         register,
@@ -85,8 +84,6 @@ const RegistrationForm = () => {
         }
     };
 
-    const [displayTeam, setDisplayTeam] = useState(false);
-    const [req, setReq] = useState('');
     const display = () => {
         if (getValues().team == 'true') {
             setDisplayTeam(true);
@@ -98,6 +95,7 @@ const RegistrationForm = () => {
         }
     };
 
+    //remove ! when in production
     if (!featureSwitches.regForm) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
