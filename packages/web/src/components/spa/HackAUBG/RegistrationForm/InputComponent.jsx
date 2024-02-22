@@ -106,7 +106,9 @@ const InputComponent = ({ type, label, register, values, required, display, name
                         required: required,
                     })}></input>
                 <div className={styles.error_msg}>
-                    <p style={{ color: 'red' }}>{error}</p>
+                    <p style={{ color: 'red' }} name={name}>
+                        {error}
+                    </p>
                 </div>
             </div>
         );

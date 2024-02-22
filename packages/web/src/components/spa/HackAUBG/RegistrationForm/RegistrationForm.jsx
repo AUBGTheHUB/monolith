@@ -91,6 +91,7 @@ const RegistrationForm = () => {
         } else {
             setDisplayTeam(false);
             setReq('');
+            document.querySelector('p[name=team_name]').textContent = '';
             document.querySelector('input[name=team_name]').value = '';
         }
     };
@@ -248,7 +249,7 @@ const RegistrationForm = () => {
 
                     <div className={styles.form_row}>
                         <InputComponent
-                            label="Have you participated in Hack AUBG before?"
+                            label="Have you participated in Hack AUBG before?*"
                             type="yesNo"
                             required="Field is required"
                             register={register}
@@ -257,7 +258,7 @@ const RegistrationForm = () => {
                             error={errors.has_participated_in_hackaubg && errors.has_participated_in_hackaubg.message}
                         />
                         <InputComponent
-                            label="Are you looking for an internship?"
+                            label="Are you looking for an internship?*"
                             type="yesNo"
                             required="Field is required"
                             register={register}
@@ -269,7 +270,7 @@ const RegistrationForm = () => {
 
                     <div className={styles.form_row}>
                         <InputComponent
-                            label="Have you participated in other Hackathons?"
+                            label="Have you participated in other Hackathons?*"
                             type="yesNo"
                             required="Field is required"
                             register={register}
@@ -280,7 +281,7 @@ const RegistrationForm = () => {
                             }
                         />
                         <InputComponent
-                            label="Do you have previous coding experience?"
+                            label="Do you have previous coding experience?*"
                             type="yesNo"
                             required="Field is required"
                             register={register}
