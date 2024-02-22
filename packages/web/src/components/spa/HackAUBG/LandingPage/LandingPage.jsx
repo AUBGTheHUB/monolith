@@ -10,10 +10,11 @@ export const LandingPage = () => {
             <div className={styles['title']}>
                 <h1>HACKAUBG 6.0</h1>
                 <h2>31st March - 2nd April, AUBG - Blagoevgrad</h2>
-                <button
+                <a
                     className={styles['register-button']}
                     onMouseEnter={() => setHover(true)}
-                    onMouseLeave={() => setHover(false)}>
+                    onMouseLeave={() => setHover(false)}
+                    href="#registration">
                     <h1>Register</h1>
                     <svg width="20" height="25" viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -36,7 +37,7 @@ export const LandingPage = () => {
                             </linearGradient>
                         </defs>
                     </svg>
-                </button>
+                </a>
             </div>
         </div>
     );
