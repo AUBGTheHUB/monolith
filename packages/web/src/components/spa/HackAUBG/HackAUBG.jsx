@@ -82,11 +82,7 @@ export const HackAUBG = () => {
                     iconSize={'2.6em'}
                 />
             </div>
-            {showVerification && (
-                <div className="no-blur">
-                    <VerifyAccount onSuccess={handleVerificationSuccess} />
-                </div>
-            )}
+            {showVerification && <VerifyAccount className="no-blur" onSuccess={handleVerificationSuccess} />}
         </div>
     );
 };
