@@ -4,16 +4,14 @@ import styles from './registration_form.module.css';
 const InputComponent = ({ type, label, register, values, required, display, name, error, value }) => {
     let restrictions = '';
     let errorMessage = '';
-    // if (display == false) {
-    //     return null;
-    // }
+
     if (type === 'name' || type == 'email') {
         if (type == 'email') {
-            restrictions = /[a-zA-Z0-9._-]+@[a-zA-Z0-9]+.[a-zA-Z]{2,4}/;
+            restrictions = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i;
             errorMessage = 'Please enter a valid email';
         } else {
             errorMessage = 'Name must be between 2 and 16 characters';
-            restrictions = /(^[A-Za-z]{2,16})/;
+            restrictions = /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/;
         }
         return (
             <div className={styles.form_cell}>

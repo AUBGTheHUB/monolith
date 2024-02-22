@@ -54,9 +54,7 @@ const RegistrationForm = () => {
     if (isFormAvailable) return null;
 
     const onSubmit = () => {
-        if (Object.keys(errors).length !== 0) {
-            console.log(errors);
-        } else {
+        if (Object.keys(errors).length == 0) {
             const values = getValues();
             const updatedValues = {};
 
