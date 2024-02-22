@@ -117,11 +117,11 @@ svg {
     }
 
     .verfication-container.message-shown {
-        height: 45vh;
+        height: 47vh;
     }
 
     .verify-button-container.message-shown {
-        margin-top: 12px;
+        margin-top: 20px;
     }
 
     .verify-button {
