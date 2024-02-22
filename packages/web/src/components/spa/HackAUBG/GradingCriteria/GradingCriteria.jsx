@@ -3,6 +3,7 @@ import styles from './garding_criteria.module.css';
 export const GradingCriteria = () => {
     return (
         <div className={styles.grading_criteria}>
+            <h1 className={styles.grading_criteria_title}>Grading Criteria</h1>
             <div className={styles.grading_criteria_wrapper}>
                 <div className={styles.table_wrapper + ' ' + styles.left}>
                     <table className={styles.grading_criteria_table}>

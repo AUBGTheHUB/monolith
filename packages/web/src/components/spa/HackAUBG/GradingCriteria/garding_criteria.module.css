@@ -9,6 +9,20 @@
     font-size: 14px;
 }
 
+.grading_criteria_title {
+    width: 50%;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding: 10px 75px;
+    background-color: #fb4298;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.7rem;
+    margin: 75px;
+}
+
 .grading_criteria th {
     font-size: 17px;
 
@@ -43,7 +57,7 @@ tr > td {
     width: 80%;
     display: flex;
     justify-content: space-around;
-    border: 2px solid red;
+    border: 2px solid #fb4298;
 }
 
 .table_wrapper {
