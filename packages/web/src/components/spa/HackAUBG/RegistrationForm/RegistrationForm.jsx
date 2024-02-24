@@ -96,7 +96,7 @@ const RegistrationForm = () => {
         }
     };
 
-    if (featureSwitches.regForm) {
+    if (!featureSwitches.regForm) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                 <div className={styles.form_header}>
@@ -230,9 +230,9 @@ const RegistrationForm = () => {
                             error={errors.programming_language && errors.programming_language.message}
                         />
                         <InputComponent
-                            label="What is your programming level?"
+                            label="What is your programming level?*"
                             type="select"
-                            required={false}
+                            required="Field is required"
                             register={register}
                             values={[
                                 'Beginner',
