@@ -26,7 +26,7 @@ async def update_participant(object_id: str, participant_form: UpdateParticipant
 
 
 @router.post("")
-async def add_participant(update_form: NewParticipant, jwt_token: Optional[str] = None) -> JSONResponse:
+async def add_participant(update_form: NewParticipant, jwt_token: Optional[str] = Query(None)) -> JSONResponse:
     return c.add_participant(update_form, jwt_token)
 
 
