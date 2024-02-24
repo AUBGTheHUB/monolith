@@ -4,6 +4,9 @@ from typing import Any, Callable, Dict
 from bson.json_util import dumps
 from fastapi import BackgroundTasks
 from fastapi.responses import JSONResponse
+from py_api.database.database_transaction_handlers import (
+    handle_database_session_transaction,
+)
 from py_api.database.initialize import client, participants_col
 from py_api.functionality.hackathon.jwt_base import JWTFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
@@ -170,28 +173,10 @@ class ParticipantsController:
         return JSONResponse(content={"message": "The maximum number of team members is reached."}, status_code=409)
 
     @classmethod
-    def _start_transaction(cls, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
-        try:
-            with client.start_session() as session:
-                with session.start_transaction():
-                    return func(*args, **kwargs, session=session)
-        except Exception as e:
-            return JSONResponse(content={"error": str(e)}, status_code=500)
-
-    @classmethod
+    @handle_database_session_transaction
     def add_participant_to_existing_team(
-        cls, participant: NewParticipant, existing_team: HackathonTeam,
-        is_invite: bool = False,
-    ) -> JSONResponse:
-        return cls._start_transaction(
-            cls._add_participant_and_update_existing_team, participant, existing_team,
-            is_invite,
-        )
-
-    @classmethod
-    def _add_participant_and_update_existing_team(
-        cls, participant: NewParticipant, existing_team: HackathonTeam,
-        is_invite: bool, session: ClientSession,
+            cls, participant: NewParticipant, existing_team: HackathonTeam, session: ClientSession,
+            is_invite: bool = False,
     ) -> JSONResponse:
         if is_invite:
             participant.is_verified = True
@@ -227,16 +212,10 @@ class ParticipantsController:
         return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
 
     @classmethod
+    @handle_database_session_transaction
     def add_participant_to_new_team(
-        cls, participant: NewParticipant,
-        generate_random_team: bool = False,
-    ) -> JSONResponse:
-        return cls._start_transaction(cls._add_participant_and_create_new_team, participant, generate_random_team)
-
-    @classmethod
-    def _add_participant_and_create_new_team(
-        cls, participant: NewParticipant, generate_random_team: bool,
-        session: ClientSession,
+            cls, participant: NewParticipant, session: ClientSession,
+            generate_random_team: bool = False,
     ) -> JSONResponse:
         participant.is_admin = True
         new_participant = ParticipantsFunctionality.insert_participant(
