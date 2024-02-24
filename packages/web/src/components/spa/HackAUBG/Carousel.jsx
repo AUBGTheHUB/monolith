@@ -65,8 +65,6 @@ export default class SimpleSlider extends Component {
                     <img
                         className={'tedko-image'}
                         style={{
-                            height: '333px',
-                            width: '290px',
                             objectFit: 'cover',
                             margin: '10px',
                         }}
@@ -99,6 +97,30 @@ export default class SimpleSlider extends Component {
             pauseOnHover: true,
             nextArrow: <SampleNextArrow />,
             prevArrow: <SamplePrevArrow />,
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                    },
+                },
+                {
+                    breakpoint: 700,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2,
+                    },
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                    },
+                },
+            ],
         };
         return (
             <>

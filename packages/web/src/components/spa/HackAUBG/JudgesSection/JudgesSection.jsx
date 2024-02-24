@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { url } from '../../../../Global';
-import { JudgesCard } from './JudgesCard';
+import SimpleSlider from '../Carousel';
 import './judges_section.css';
 
 export const JudgesSection = () => {
@@ -27,11 +27,10 @@ export const JudgesSection = () => {
         if (jury) {
             return (
                 <div className="judges-section-container">
+                    <img className="pacman-right" src="Pacman-right.png"></img>
                     <h1>Judges</h1>
                     <div className="judge-container">
-                        {jury.map((judge, index) => (
-                            <JudgesCard judge={judge} key={index} />
-                        ))}
+                        <SimpleSlider pictures={jury} view={4}></SimpleSlider>
                     </div>
                 </div>
             );

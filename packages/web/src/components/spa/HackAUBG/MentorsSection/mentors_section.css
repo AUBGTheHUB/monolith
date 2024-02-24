@@ -1,25 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 .mentors-section-container h1 {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 200%;
+    font-family: 'Press Start 2P', system-ui;
+    width: 30%;
+    position: relative;
+    background-color: #fb4298;
+    padding: 1em 0px 1em 0px;
     text-align: center;
-    color: #19b700;
-    padding: 1% 0;
-    font-weight: 900;
-    font-size: 2em;
+    left: 50%;
+    transform: translate(-50%, 0);
+    justify-content: center;
+    height: 2em;
+    margin-bottom: 40px;
 }
 
 .tedko-container img {
-    border: 20px #402f5c solid;
-    width: 290px;
-    height: 333px;
+    border: 1.5vw #402f5c solid;
+    height: 20vw;
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
+    margin: 0px !important;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .carousel {
     position: relative;
     left: 7%;
-    width: 90%;
     height: 100%;
     max-width: 85%;
 }
@@ -29,34 +41,55 @@
     margin-top: 0px;
     font-family: 'IBM Plex Mono', monospace;
     text-align: center;
-    width: 90%;
-    margin-left: 11px;
+    width: 20vw;
+    font-size: 90%;
     font-weight: 500;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .names {
     background-color: #c0f589;
     border: 1px black solid;
-    font-size: 150%;
+    font-size: 1.5vw;
     margin-bottom: 0;
+    position: relative;
 }
 
 .position {
     background-color: #c0f589;
     border: 1px black solid;
-    width: 40%;
-    height: 40px;
+    width: 47% !important;
+    min-height: 40px;
     justify-content: center;
+    display: flex;
+    align-items: center;
+    text-wrap: balance;
+}
+
+.pacman-left {
+    width: 13vw;
+    position: absolute;
+    left: 20%;
 }
 
 .company {
     background-color: #c0f589;
     border: 1px black solid;
-    width: fit-content;
-    width: 60%;
+    width: 53% !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    text-wrap: balance;
 }
 
 .bonus-info {
     display: flex;
-    font-size: 20px;
+    font-size: 1vw;
+}
+
+@media only screen and (max-width: 700px) {
+    .bonus-info {
+        font-size: 1.5vw;
+    }
 }

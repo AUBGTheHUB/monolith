@@ -1,38 +1,23 @@
-.judges-section-container {
-    box-sizing: border-box;
-    margin: 0;
-    font-family: 'Roboto';
-    padding: 3% 0%;
-    background-color: #222222;
-}
-
 .judges-section-container h1 {
-    text-align: center;
-    color: #19b700;
-    padding: 1% 0;
-    font-weight: 900;
-    font-size: 2em;
-}
-
-.judge-container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    gap: 16px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px 10px;
+    color: #ffffff;
+    font-size: 200%;
+    font-family: 'Press Start 2P', system-ui;
+    width: 30%;
+    position: relative;
+    background-color: #fb4298;
+    padding: 1em 0px 1em 0px;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%, 0);
+    justify-content: center;
+    height: 2em;
+    margin-bottom: 40px;
 }
 
-.judge-container img {
-    width: 100%;
-    max-width: 250px;
-    height: 250px;
-    object-fit: cover;
-    border-radius: 10px;
-    cursor: pointer;
+.judges-section-container {
+    position: relative;
 }
 
 .judges-coming-soon-container {
@@ -40,4 +25,11 @@
     padding-bottom: 5%;
     color: white;
     text-align: center;
+}
+
+.pacman-right {
+    width: 13vw;
+    position: absolute;
+    left: 70%;
+    top: -3vw;
 }

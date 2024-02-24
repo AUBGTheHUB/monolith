@@ -2,13 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
-//import { MentorsCard } from './MentorsCard';
 import SimpleSlider from '../Carousel';
 import './mentors_section.css';
-
 export const MentorsSection = () => {
     const [mentor, setMentors] = useState();
-
     const getMentors = () => {
         axios({
             method: 'get',
@@ -27,6 +24,7 @@ export const MentorsSection = () => {
         if (mentor) {
             return (
                 <div className="mentors-section-container">
+                    <img className="pacman-left" src="Pacman-left.png"></img>
                     <h1>Mentors</h1>
                     <div className="mentor-container">
                         <SimpleSlider pictures={mentor} view={4}></SimpleSlider>
