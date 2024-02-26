@@ -14,11 +14,11 @@
     font-family: 'Press Start 2P';
     font-weight: 900;
     font-size: 1.7em;
-    /* padding: 8px 100px; */
     background-color: #fb4298;
     margin: 6% auto;
-    width: 20%;
+    width: 22.5%;
     padding: 10px 0;
+    text-align: center;
 }
 
 .about_container_hack_aubg .about_title_hack_aubg {
