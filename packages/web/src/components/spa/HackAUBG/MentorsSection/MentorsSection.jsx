@@ -24,9 +24,13 @@ export const MentorsSection = () => {
         if (mentor) {
             return (
                 <div className={styles['mentors-section-container']}>
-                    <div className={styles['title']}>
-                        <img className={styles['pacman-left']} src="Pacman-left.png"></img>
-                        <h1>Mentors</h1>
+                    <div className={styles['title-container']}>
+                        <div className={styles.pac}>
+                            <img className={styles['pacman-left']} src="Pacman-left.png"></img>
+                        </div>
+                        <div className={styles.title}>
+                            <h1>Mentors</h1>
+                        </div>
                     </div>
                     <div className={styles['mentor-container']}>
                         <SimpleSlider pictures={mentor} view={4}></SimpleSlider>

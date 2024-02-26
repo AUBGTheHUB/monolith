@@ -1,4 +1,4 @@
-.mentors-section-container h1 {
+/* .mentors-section-container h1 {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,6 +26,46 @@
     margin-bottom: 40px;
     gap: 0vw;
     align-content: flex-start;
+} */
+
+.title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.title-container h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', system-ui;
+    color: #fff;
+    background-color: #fb4298;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7em;
+    margin: 0 !important;
+}
+
+.title {
+    display: flex;
+    width: 60%;
+    justify-content: flex-start;
+    padding: 10px 0;
+}
+
+.pac {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+    width: 25%;
+    padding-left: 10px;
+}
+
+.pacman-left {
+    width: auto;
+    height: 5vw;
 }
 
 .mentors-section-container {
@@ -82,14 +122,6 @@
     text-wrap: balance;
 }
 
-.pacman-left {
-    position: relative;
-    width: 10vw;
-    height: 6vw;
-    left: 5%;
-    align-self: center;
-}
-
 .company {
     background-color: #c0f589;
     border: 1px black solid;
@@ -113,6 +145,24 @@
     text-align: center;
 }
 
+@media only screen and (max-width: 1000px) {
+    .title-container h1 {
+        font-size: 1.1em;
+        width: 70%;
+    }
+    .title {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .pac {
+        padding-right: 10px;
+        width: 30%;
+        justify-content: flex-end !important;
+
+        justify-content: space-between;
+    }
+}
+
 @media only screen and (max-width: 700px) {
     .bonus-info {
         font-size: 1.5vw;
@@ -124,9 +174,5 @@
 
     .text-bottom {
         width: 30vw;
-    }
-
-    .title {
-        height: 8vw;
     }
 }

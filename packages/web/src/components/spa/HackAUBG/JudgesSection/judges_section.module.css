@@ -1,36 +1,3 @@
-/* .judges-section-container h1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 1.7em;
-    font-family: 'Press Start 2P', system-ui;
-    width: 60%;
-    position: absolute;
-    top: 0px;
-    background-color: #fb4298;
-    padding: 1em 0px 1em 0px;
-    text-align: center;
-    left: 50%;
-    transform: translate(-50%, 0);
-    justify-content: center;
-    height: 100%;
-    align-self: center;
-    order: 2;
-    margin: 0px !important;
-} */
-
-/* .title {
-    position: relative;
-    display: flex;
-    align-items: baseline;
-    gap: 0vw;
-    height: fit-content;
-    margin-bottom: 40px;
-    flex-direction: row-reverse;
-    align-content: flex-start;
-} */
-
 .title-container {
     width: 100%;
     display: flex;
@@ -49,7 +16,6 @@
     align-items: center;
     font-size: 1.7em;
     margin: 0 !important;
-    /* margin-right: 5vh; */
 }
 
 .title {
