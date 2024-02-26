@@ -20,7 +20,8 @@
     text-align: center;
     font-weight: 400;
     font-size: 1.7rem;
-    margin: 75px;
+    margin-top: 4%;
+    margin-bottom: 2%;
 }
 
 .grading_criteria th {
@@ -115,6 +116,9 @@ tr > td {
     }
     .grading_criteria_title {
         width: 80%;
+        padding: 10px 0;
+        font-size: 1.1em;
+        margin: 20px;
     }
 }
 

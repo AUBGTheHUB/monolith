@@ -6,6 +6,7 @@
     width: 80%;
     margin: 8% auto;
     padding: 0.5em;
+    font-size: 0.7em;
 }
 .journey-mobile-title h1 {
     text-align: center;
@@ -39,7 +40,7 @@
     font-family: 'Post No Bills Jaffna';
 }
 
-.journey-h2 img{
+.journey-h2 img {
     width: 2em;
     margin-right: 0.5em;
 }

@@ -7,11 +7,15 @@
 }
 
 .awards-section-title {
-    color: #19b700;
-    font-family: 'Roboto';
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+
+    color: #fff;
+    background-color: #fb4298;
     font-size: 2em;
     font-weight: 900;
-    margin-top: 2%;
+    margin-top: 6%;
+    margin-bottom: 2%;
+    padding: 10px 75px;
 }
 
 .awards-images-container {
@@ -71,6 +75,12 @@
 }
 
 @media only screen and (max-width: 900px) {
+    .awards-section-title {
+        text-align: center;
+        font-size: 1.1em;
+        width: 80%;
+        padding: 10px 0;
+    }
     .awards-images-container {
         width: 70%;
         margin: 3% 0%;
