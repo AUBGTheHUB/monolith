@@ -46,13 +46,14 @@
 
 .pacman-right {
     width: auto;
-    height: 5vw;
+    height: 4vw;
 }
 
 @media only screen and (max-width: 1000px) {
     .title-container h1 {
         font-size: 1.1em;
         width: 70%;
+        padding: 10px 0;
     }
     .title {
         width: 100%;
@@ -61,5 +62,10 @@
     .pac {
         width: 30%;
         justify-content: space-between;
+    }
+
+    .pacman-right {
+        width: auto;
+        height: 5vw;
     }
 }

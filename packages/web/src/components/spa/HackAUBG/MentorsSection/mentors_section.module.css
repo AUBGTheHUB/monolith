@@ -65,7 +65,7 @@
 
 .pacman-left {
     width: auto;
-    height: 5vw;
+    height: 4vw;
 }
 
 .mentors-section-container {
@@ -149,6 +149,7 @@
     .title-container h1 {
         font-size: 1.1em;
         width: 70%;
+        padding: 10px 0;
     }
     .title {
         width: 100%;
@@ -160,6 +161,11 @@
         justify-content: flex-end !important;
 
         justify-content: space-between;
+    }
+
+    .pacman-left {
+        width: auto;
+        height: 5vw;
     }
 }
 
