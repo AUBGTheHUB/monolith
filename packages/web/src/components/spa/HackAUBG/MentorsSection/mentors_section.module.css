@@ -33,6 +33,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 50px;
+    height: 100%;
 }
 
 .title-container h1 {
@@ -145,6 +146,11 @@
     text-align: center;
 }
 
+.mentor-container {
+    display: flex;
+    width: 100%;
+}
+
 @media only screen and (max-width: 1000px) {
     .title-container h1 {
         font-size: 1.1em;
@@ -169,16 +175,52 @@
     }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 900px) {
     .bonus-info {
         font-size: 1.5vw;
+    }
+
+    .names {
+        font-size: 2vw;
     }
 
     .tedko-container img {
         height: 30vw;
     }
 
+    .mentor-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
     .text-bottom {
         width: 30vw;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .bonus-info {
+        font-size: 3vw;
+    }
+
+    .names {
+        font-size: 4vw;
+    }
+
+    .tedko-container img {
+        height: 60vw;
+    }
+
+    .mentor-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    .text-bottom {
+        width: 60vw;
     }
 }

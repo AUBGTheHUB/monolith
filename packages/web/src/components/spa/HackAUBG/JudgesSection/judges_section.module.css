@@ -69,3 +69,21 @@
         height: 5vw;
     }
 }
+
+@media only screen and (max-width: 900px) {
+    .judge-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .judge-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+}
