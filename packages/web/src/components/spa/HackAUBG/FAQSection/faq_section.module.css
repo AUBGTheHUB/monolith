@@ -18,21 +18,17 @@
     width: 60%;
     position: relative;
     background-color: #fb4298;
-    /* padding: 1em 0px 1em 0px; */
     text-align: center;
     padding: 10px 0;
     left: 50%;
     transform: translate(-50%, 0);
     justify-content: center;
-    /* height: 3em; */
     margin-bottom: 40px;
 }
 
 @media only screen and (max-width: 980px) {
     .faq-h1 {
         font-size: 1.1em;
-
-        /* padding: 1em 0px 1em 0px; */
         width: 80%;
     }
 
