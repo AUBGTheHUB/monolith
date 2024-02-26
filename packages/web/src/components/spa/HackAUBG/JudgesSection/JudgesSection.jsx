@@ -27,9 +27,13 @@ export const JudgesSection = () => {
         if (jury) {
             return (
                 <div className={styles['judges-section-container']}>
-                    <div className={styles['title']}>
-                        <h1>Judges</h1>
-                        <img className={styles['pacman-right']} src="Pacman-right.png"></img>
+                    <div className={styles['title-container']}>
+                        <div className={styles.title}>
+                            <h1>Judges</h1>
+                        </div>
+                        <div className={styles.pac}>
+                            <img className={styles['pacman-right']} src="Pacman-right.png"></img>
+                        </div>
                     </div>
                     <div className={styles['judge-container']}>
                         <SimpleSlider pictures={jury} view={4}></SimpleSlider>

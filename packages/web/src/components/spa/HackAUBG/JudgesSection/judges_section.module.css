@@ -1,4 +1,4 @@
-.judges-section-container h1 {
+/* .judges-section-container h1 {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -18,9 +18,9 @@
     align-self: center;
     order: 2;
     margin: 0px !important;
-}
+} */
 
-.title {
+/* .title {
     position: relative;
     display: flex;
     align-items: baseline;
@@ -29,8 +29,43 @@
     margin-bottom: 40px;
     flex-direction: row-reverse;
     align-content: flex-start;
+} */
+
+.title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
 }
 
+.title-container h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', system-ui;
+    color: #fff;
+    background-color: #fb4298;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7em;
+    margin: 0 !important;
+    /* margin-right: 5vh; */
+}
+
+.title {
+    display: flex;
+    width: 60%;
+    justify-content: flex-end;
+    padding: 10px 0;
+}
+
+.pac {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 25%;
+    padding-left: 10px;
+}
 .judges-section-container {
     position: relative;
     margin-top: 5vw;
@@ -44,15 +79,21 @@
 }
 
 .pacman-right {
-    position: relative;
-    width: 10vw;
-    height: 6vw;
-    align-self: center;
-    right: 7vw;
+    width: auto;
+    height: 5vw;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 1000px) {
+    .title-container h1 {
+        font-size: 1.1em;
+        width: 70%;
+    }
     .title {
-        height: 10vw;
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .pac {
+        width: 30%;
+        justify-content: space-between;
     }
 }
