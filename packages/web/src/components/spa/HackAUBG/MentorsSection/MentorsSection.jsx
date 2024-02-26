@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
 import SimpleSlider from '../Carousel';
-import './mentors_section.css';
+import styles from './mentors_section.module.css';
 export const MentorsSection = () => {
     const [mentor, setMentors] = useState();
     const getMentors = () => {
@@ -23,17 +23,19 @@ export const MentorsSection = () => {
     const renderMentors = () => {
         if (mentor) {
             return (
-                <div className="mentors-section-container">
-                    <img className="pacman-left" src="Pacman-left.png"></img>
-                    <h1>Mentors</h1>
-                    <div className="mentor-container">
+                <div className={styles['mentors-section-container']}>
+                    <div className={styles['title']}>
+                        <img className={styles['pacman-left']} src="Pacman-left.png"></img>
+                        <h1>Mentors</h1>
+                    </div>
+                    <div className={styles['mentor-container']}>
                         <SimpleSlider pictures={mentor} view={4}></SimpleSlider>
                     </div>
                 </div>
             );
         }
         return (
-            <div className="mentors-coming-soon-container">
+            <div className={styles['mentors-coming-soon-container']}>
                 <h1>
                     Mentors coming <br />
                     soon...

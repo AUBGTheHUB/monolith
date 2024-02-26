@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { url } from '../../../../Global';
 import SimpleSlider from '../Carousel';
-import './judges_section.css';
+import styles from './judges_section.module.css';
 
 export const JudgesSection = () => {
     const [jury, setJury] = useState();
@@ -26,17 +26,19 @@ export const JudgesSection = () => {
     const renderJudges = () => {
         if (jury) {
             return (
-                <div className="judges-section-container">
-                    <img className="pacman-right" src="Pacman-right.png"></img>
-                    <h1>Judges</h1>
-                    <div className="judge-container">
+                <div className={styles['judges-section-container']}>
+                    <div className={styles['title']}>
+                        <h1>Judges</h1>
+                        <img className={styles['pacman-right']} src="Pacman-right.png"></img>
+                    </div>
+                    <div className={styles['judge-container']}>
                         <SimpleSlider pictures={jury} view={4}></SimpleSlider>
                     </div>
                 </div>
             );
         }
         return (
-            <div className="judges-coming-soon-container">
+            <div className={styles['judges-coming-soon-container']}>
                 <h1>
                     Judges coming <br />
                     soon...

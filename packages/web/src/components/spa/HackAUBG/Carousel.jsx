@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import mentorsStyles from './MentorsSection/mentors_section.module.css';
+//import judgesStyles from './JudgesSection/judges_section.module.css';
 //import './carousel.css';
 
 const SampleNextArrow = props => {
@@ -32,7 +34,7 @@ const SamplePrevArrow = props => {
         <svg
             onClick={onClick}
             className={className}
-            style={{ ...style, display: 'flex', transform: 'rotate(180deg)', marginRight: '10px' }}
+            style={{ ...style, display: 'flex', transform: 'rotate(180deg)' }}
             width="44"
             height="44"
             viewBox="0 0 44 44"
@@ -61,22 +63,22 @@ export default class SimpleSlider extends Component {
     sliders() {
         return this.state.sliders.map(data => {
             return (
-                <div className="tedko-container" key={data.id}>
+                <div className={mentorsStyles['tedko-container']} key={data.id}>
                     <img
-                        className={'tedko-image'}
+                        className={mentorsStyles['tedko-image']}
                         style={{
                             objectFit: 'cover',
                             margin: '10px',
                         }}
                         src={data.profilepicture}
                     />
-                    <div className="text-bottom">
-                        <p className="names">
+                    <div className={mentorsStyles['text-bottom']}>
+                        <p className={mentorsStyles['names']}>
                             {data.firstname} {data.lastname}
                         </p>
-                        <div className="bonus-info">
-                            <p className="position">{data.position}</p>
-                            <p className="company">{data.company}</p>
+                        <div className={mentorsStyles['bonus-info']}>
+                            <p className={mentorsStyles['position']}>{data.position}</p>
+                            <p className={mentorsStyles['company']}>{data.company}</p>
                         </div>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ export default class SimpleSlider extends Component {
         };
         return (
             <>
-                <Slider className="carousel" {...settings}>
+                <Slider className={mentorsStyles['carousel']} {...settings}>
                     {this.sliders()}
                 </Slider>
             </>

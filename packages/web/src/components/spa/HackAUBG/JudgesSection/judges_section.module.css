@@ -1,0 +1,58 @@
+.judges-section-container h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.7em;
+    font-family: 'Press Start 2P', system-ui;
+    width: 60%;
+    position: absolute;
+    top: 0px;
+    background-color: #fb4298;
+    padding: 1em 0px 1em 0px;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%, 0);
+    justify-content: center;
+    height: 100%;
+    align-self: center;
+    order: 2;
+    margin: 0px !important;
+}
+
+.title {
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0vw;
+    height: fit-content;
+    margin-bottom: 40px;
+    flex-direction: row-reverse;
+    align-content: flex-start;
+}
+
+.judges-section-container {
+    position: relative;
+    margin-top: 5vw;
+}
+
+.judges-coming-soon-container {
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+}
+
+.pacman-right {
+    position: relative;
+    width: 10vw;
+    height: 6vw;
+    align-self: center;
+    right: 7vw;
+}
+
+@media only screen and (max-width: 700px) {
+    .title {
+        height: 10vw;
+    }
+}

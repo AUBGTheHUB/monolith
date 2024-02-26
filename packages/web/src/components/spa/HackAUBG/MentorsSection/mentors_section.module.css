@@ -1,21 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-
 .mentors-section-container h1 {
     display: flex;
     align-items: center;
+    justify-content: center;
     color: #ffffff;
-    font-size: 200%;
+    font-size: 1.7em;
     font-family: 'Press Start 2P', system-ui;
-    width: 30%;
-    position: relative;
+    width: 60%;
+    position: absolute;
+    top: 0px;
     background-color: #fb4298;
     padding: 1em 0px 1em 0px;
     text-align: center;
     left: 50%;
     transform: translate(-50%, 0);
     justify-content: center;
-    height: 2em;
+    height: 100%;
+    align-self: center;
+    margin-bottom: 0px !important;
+}
+
+.title {
+    position: relative;
+    display: flex;
+    align-items: baseline;
     margin-bottom: 40px;
+    gap: 0vw;
+    align-content: flex-start;
+}
+
+.mentors-section-container {
+    position: relative;
+    margin-top: 5vw;
 }
 
 .tedko-container img {
@@ -68,9 +83,11 @@
 }
 
 .pacman-left {
-    width: 13vw;
-    position: absolute;
-    left: 20%;
+    position: relative;
+    width: 10vw;
+    height: 6vw;
+    left: 5%;
+    align-self: center;
 }
 
 .company {
@@ -86,10 +103,30 @@
 .bonus-info {
     display: flex;
     font-size: 1vw;
+    min-height: 4.5vw;
+}
+
+.mentors-coming-soon-container {
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
 }
 
 @media only screen and (max-width: 700px) {
     .bonus-info {
         font-size: 1.5vw;
+    }
+
+    .tedko-container img {
+        height: 30vw;
+    }
+
+    .text-bottom {
+        width: 30vw;
+    }
+
+    .title {
+        height: 8vw;
     }
 }
