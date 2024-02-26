@@ -3,8 +3,6 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import mentorsStyles from './MentorsSection/mentors_section.module.css';
-//import judgesStyles from './JudgesSection/judges_section.module.css';
-//import './carousel.css';
 
 const SampleNextArrow = props => {
     const { className, style, onClick } = props;
@@ -24,8 +22,6 @@ const SampleNextArrow = props => {
             />
         </svg>
     );
-
-    //    <div className={className} style={{ ...style, display: 'block', background: 'red' }} onClick={onClick} />;
 };
 
 const SamplePrevArrow = props => {
