@@ -45,7 +45,6 @@ export default class SimpleSlider extends Component {
         super(props);
         const slides = this.props.view;
         const pictures = this.props.pictures;
-        console.log(props);
         this.state = {
             sliders: pictures,
             slides: slides,
