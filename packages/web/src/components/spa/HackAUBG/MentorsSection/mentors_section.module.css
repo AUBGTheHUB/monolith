@@ -84,6 +84,7 @@
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
+    cursor: pointer;
 }
 
 .carousel {
@@ -174,6 +175,10 @@
         width: auto;
         height: 7vw;
     }
+}
+
+a{
+    outline: none;
 }
 
 @media only screen and (max-width: 900px) {

@@ -55,13 +55,15 @@ export default class SimpleSlider extends Component {
         return this.state.sliders.map(data => {
             return (
                 <div className={mentorsStyles['tedko-container']} key={data.id}>
-                    <img
-                        className={mentorsStyles['tedko-image']}
-                        style={{
-                            objectFit: 'cover',
-                        }}
-                        src={data.profilepicture}
-                    />
+                    <a href={data.sociallink} target="_blank">
+                        <img
+                            className={mentorsStyles['tedko-image']}
+                            style={{
+                                objectFit: 'cover',
+                            }}
+                            src={data.profilepicture}
+                        />
+                    </a>
                     <div className={mentorsStyles['text-bottom']}>
                         <p className={mentorsStyles['names']}>
                             {data.firstname} {data.lastname}

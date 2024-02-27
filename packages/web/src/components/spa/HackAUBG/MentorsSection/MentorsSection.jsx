@@ -13,6 +13,7 @@ export const MentorsSection = () => {
         })
             .then(res => {
                 setMentors(res.data.data.data);
+                console.log(res.data.data.data);
             })
             // eslint-disable-next-line
             .catch(err => {
