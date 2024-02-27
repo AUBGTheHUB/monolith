@@ -16,6 +16,7 @@ const SampleNextArrow = props => {
                 width: '30px',
                 height: '30px',
                 right: '-4vw',
+                zIndex: 999,
             }}
             src="arrow-right.png"></img>
     );
@@ -33,6 +34,7 @@ const SamplePrevArrow = props => {
                 width: '30px',
                 height: '30px',
                 left: '-4vw',
+                zIndex: 999,
             }}
             src="arrow-left.png"></img>
     );
