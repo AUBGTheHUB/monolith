@@ -2,22 +2,21 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
-import { MentorsCard } from './MentorsCard';
-import './mentors_section.css';
-
+import SimpleSlider from '../Carousel';
+import styles from './mentors_section.module.css';
 export const MentorsSection = () => {
     const [mentor, setMentors] = useState();
-
     const getMentors = () => {
         axios({
             method: 'get',
-            url: url + '/api/mentors'
+            url: url + '/api/mentors',
         })
-            .then((res) => {
+            .then(res => {
                 setMentors(res.data.data.data);
+                console.log(res.data.data.data);
             })
             // eslint-disable-next-line
-            .catch((err) => {
+            .catch(err => {
                 // do nothing
             });
     };
@@ -25,18 +24,23 @@ export const MentorsSection = () => {
     const renderMentors = () => {
         if (mentor) {
             return (
-                <div className="mentors-section-container">
-                    <h1>Mentors</h1>
-                    <div className="mentor-container">
-                        {mentor.map((mentor, index) => (
-                            <MentorsCard mentor={mentor} key={index} />
-                        ))}
+                <div className={styles['mentors-section-container']}>
+                    <div className={styles['title-container']}>
+                        <div className={styles.pac}>
+                            <img className={styles['pacman-left']} src="Pacman-left.png"></img>
+                        </div>
+                        <div className={styles.title}>
+                            <h1>Mentors</h1>
+                        </div>
+                    </div>
+                    <div className={styles['mentor-container']}>
+                        <SimpleSlider pictures={mentor} view={4}></SimpleSlider>
                     </div>
                 </div>
             );
         }
         return (
-            <div className="mentors-coming-soon-container">
+            <div className={styles['mentors-coming-soon-container']}>
                 <h1>
                     Mentors coming <br />
                     soon...

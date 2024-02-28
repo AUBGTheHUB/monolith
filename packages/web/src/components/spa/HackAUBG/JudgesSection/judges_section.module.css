@@ -1,0 +1,90 @@
+.title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.title-container h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', system-ui;
+    color: #fff;
+    background-color: #fb4298;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7em;
+    margin: 0 !important;
+    padding: 10px 0;
+}
+
+.title {
+    display: flex;
+    width: 60%;
+    justify-content: flex-end;
+    padding: 10px 0;
+}
+
+.pac {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 25%;
+    padding-left: 10px;
+}
+.judges-section-container {
+    position: relative;
+    margin-top: 5vw;
+}
+
+.judges-coming-soon-container {
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+}
+
+.pacman-right {
+    width: auto;
+    height: 4vw;
+}
+
+@media only screen and (max-width: 1000px) {
+    .title-container h1 {
+        font-size: 1.1em;
+        width: 70%;
+        padding: 10px 0;
+    }
+    .title {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .pac {
+        width: 30%;
+        justify-content: space-between;
+    }
+
+    .pacman-right {
+        width: auto;
+        height: 7vw;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .judge-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .judge-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+}
