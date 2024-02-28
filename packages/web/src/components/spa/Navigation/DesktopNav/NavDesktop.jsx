@@ -21,9 +21,6 @@ export const NavDesktop = ({ props }) => {
         }
     };
 
-    useEffect(() => {
-        console.log(props);
-    }, []);
     const openHome = () => {
         navigateTo('/');
         window.scrollTo(0, 0);

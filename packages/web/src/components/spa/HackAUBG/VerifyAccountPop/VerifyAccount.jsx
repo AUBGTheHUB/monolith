@@ -11,7 +11,6 @@ export const VerifyAccount = ({ className, onSuccess }) => {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        console.log(params);
         if (params.size === 0) {
             window.location.href = '/hackaubg';
         } else {
