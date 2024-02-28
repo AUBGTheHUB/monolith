@@ -4,6 +4,7 @@
     align-items: center;
     height: 6vh;
     padding: 25px 0;
+    z-index: 2;
 }
 .footer-container p {
     color: white;

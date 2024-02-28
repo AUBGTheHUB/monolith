@@ -76,7 +76,7 @@ export const NavDesktop = ({ props }) => {
             <div
                 className={`navdesktop-logo ${location.pathname === '/hackaubg' ? 'hackaubg-font' : 'main-font'}`}
                 onClick={openHome}>
-                <img src="hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
+                <img src="../hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
                 <p>The Hub</p>
             </div>
             <div className="navdesktop-flex-buttons">

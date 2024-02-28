@@ -1,32 +1,47 @@
 [
     {
         "id": 0,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "I want to participate! When is the deadline for registering?",
+        "text": "Registration is open until Friday, March 25th."
     },
     {
         "id": 1,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "How many people can be in a team?",
+        "text": "The minimum number of people in a team is 4, but you can have up to 6 people in a team. The ideal team would consist of one or two software developers, a designer, and one or two business planners."
     },
     {
         "id": 3,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "Can I register without a team?",
+        "text": "Of course! If you are alone or if you only have 1 other teammate, you can register and a facilitator from the Hub’s organizing team will help you in finding more teammates."
     },
     {
         "id": 4,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "Where will the Hackathon be held?",
+        "text": "The Hackathon will be in American University in Bulgaria’s ABF Sports Hall, located on ul. Svoboda Bachvarova 12 in Blagoevgrad."
     },
     {
         "id": 5,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "How long will we have to develop our projects?",
+        "text": "The brainstorming process starts on Friday at 20:00 and you will have until Sunday at 13:00 to submit your project. Make sure you keep an eye on the clock!"
     },
     {
         "id": 6,
-        "title": "Gather a team and register",
-        "text": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition."
+        "title": "Is there a theme for the Hackathon?",
+        "text": "Yes! However, it will be kept a secret until the Opening Ceremony on Friday."
+    },
+    {
+        "id": 7,
+        "title": "Can I start developing something in advance?",
+        "text": "We advise you to not start developing in advance, since the project you will eventually develop has to be related to the theme of the Hackathon, which is announced at the opening ceremony. However, if you would like to research winning projects from previous years, feel free! You can also start brainstorming with your team well before the start of the Hackathon."
+    },
+    {
+        "id": 8,
+        "title": "What if I have an urgent question during the Hackathon? Where can I ask?",
+        "text": "We will be setting up a Facebook group for the registered participants. There, you can ask questions during the event. In addition, the Hub members will be around at all times to answer any questions that pop up."
+    },
+    {
+        "id": 9,
+        "title": "Is there a specific technology or tech stack I need to use for the Hackathon?",
+        "text": "No, there is not. You may use whatever you would like. Keep in mind, however, that the judges tend to reward the projects with more modern tech stacks more than others."
     }
 ]
