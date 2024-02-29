@@ -22,6 +22,8 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 export const HackAUBG = () => {
+    const [showVerification, setShowVerification] = useState('');
+
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
@@ -32,10 +34,17 @@ export const HackAUBG = () => {
     ];
 
     const location = useLocation();
+    if (location.search.includes('/verify')) {
+        console.log('verify');
+    }
     const params = new URLSearchParams(location.search);
     const jwtToken = params.get('jwt_token');
-
-    const [showVerification, setShowVerification] = useState(jwtToken);
+    useEffect(() => {
+        if (location.pathname === '/hackaubg/verify') {
+            console.log('verify');
+            setShowVerification(jwtToken);
+        }
+    }, [location]);
 
     useEffect(() => {
         document.body.style.overflow = showVerification ? 'hidden' : 'auto';

@@ -8,6 +8,7 @@ import { verifyURL } from '../../../../Global';
 export const VerifyAccount = ({ className, onSuccess }) => {
     const [jwtToken, setJwtToken] = useState('');
     const location = useLocation();
+    const [buttonState, setButtonState] = useState(true);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -31,6 +32,7 @@ export const VerifyAccount = ({ className, onSuccess }) => {
             .then(() => {
                 setSuccess(true);
                 setLoading(false);
+                setButtonState(false);
                 setTimeout(() => {
                     onSuccess();
                 }, 3000);
@@ -73,7 +75,9 @@ export const VerifyAccount = ({ className, onSuccess }) => {
                     className={`${styles['verify-button-container']} ${
                         error || success ? styles['message-shown'] : ''
                     }`}>
-                    <div className={styles['verify-button']} onClick={handleVerifyClick}>
+                    <div
+                        className={buttonState ? styles['verify-button'] : styles['verify-button-disabled']}
+                        onClick={handleVerifyClick}>
                         Verify <span className={styles['button-message']}>participation</span>
                     </div>
                     {loading && <span className={styles['loader']}></span>}

@@ -36,9 +36,17 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingHome />} />
                 <Route path="/*" element={<NotFound />} />
-                <Route path="/hackaubg" element={<HackAUBG />}>
-                    <Route path="verify" element={<VerifyAccount />} />
-                </Route>
+                <Route path="/hackaubg" element={<HackAUBG />}></Route>
+                <Route
+                    path="/hackaubg/verify"
+                    element={
+                        <>
+                            <HackAUBG />
+                            <VerifyAccount />
+                        </>
+                    }
+                />
+
                 {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
                 <Route path="/admin" element={<LandingAdminPage />} />
                 <Route path="/admin/dashboard" element={<Dashboard />} />
