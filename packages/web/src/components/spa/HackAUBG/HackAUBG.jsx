@@ -34,14 +34,11 @@ export const HackAUBG = () => {
     ];
 
     const location = useLocation();
-    if (location.search.includes('/verify')) {
-        console.log('verify');
-    }
+
     const params = new URLSearchParams(location.search);
     const jwtToken = params.get('jwt_token');
     useEffect(() => {
         if (location.pathname === '/hackaubg/verify') {
-            console.log('verify');
             setShowVerification(jwtToken);
         }
     }, [location]);
@@ -51,8 +48,13 @@ export const HackAUBG = () => {
     }, [showVerification]);
 
     const handleVerificationSuccess = () => {
+        console.log('success');
         setShowVerification(false);
     };
+
+    useEffect(() => {
+        console.log('showVerification', showVerification);
+    }, [showVerification]);
 
     return (
         <div className={`hackaubg-container ${showVerification ? 'showVerification' : ''}`}>
