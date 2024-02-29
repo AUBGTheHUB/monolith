@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './desktop_navbar.css';
 import { navigateTo } from '../../../../Global';
 import { Link } from 'react-router-dom';
