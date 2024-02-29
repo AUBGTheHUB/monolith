@@ -313,7 +313,7 @@ const RegistrationForm = () => {
                     error={errors.share_info_with_sponsors && errors.share_info_with_sponsors.message}
                 />
                 {error && <div className={styles.error}>{error}</div>}
-                {!isSubmitted ? (
+                {isSubmitted ? (
                     token ? (
                         <h2 className={styles.reg_complete}>Registration successful!</h2>
                     ) : (
