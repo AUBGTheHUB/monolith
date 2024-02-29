@@ -1,13 +1,5 @@
 .sponsors-main {
     height: fit-content;
-    background: linear-gradient(
-        #204829,
-        #222222,
-        #222222,
-        #222222,
-        #204829,
-        #204829
-    );
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,11 +16,17 @@
 }
 
 .sponsors-header {
-    margin-top: 3%;
-    color: #7de776;
-    font-family: 'Roboto';
-    font-weight: 900;
-    font-size: 2em;
+    text-align: center;
+    font-family: 'Press Start 2P', system-ui;
+    color: #fff;
+    background-color: #fb4298;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7em;
+    margin: 0 !important;
+    padding: 10px 0;
 }
 
 .sponsors-headers {
@@ -118,6 +116,11 @@
 }
 
 @media only screen and (max-width: 900px) {
+    .sponsors-header {
+        font-size: 1.1em;
+        width: 80%;
+        padding: 10px 0;
+    }
     .sponsors-main {
         padding-bottom: 5%;
     }
