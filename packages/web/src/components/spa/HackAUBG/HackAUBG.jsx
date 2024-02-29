@@ -58,7 +58,7 @@ export const HackAUBG = () => {
                             '#222222', // mobile nav background color when not opened (default transparent)
                             'gray', // mobile background color nav when opened
                             '#e2d7fc', // anchor color
-                            'hackAUBG', // specify HackAUBG
+                            'hackAUBG', // specify HackAUBG page
                         )
                     }
                 />
