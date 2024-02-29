@@ -7,6 +7,7 @@
 }
 
 .sponsors-containers {
+    /* z-index: 2; */
     width: 80%;
     color: white;
     display: flex;
@@ -27,6 +28,7 @@
     font-size: 1.7em;
     margin: 0 !important;
     padding: 10px 0;
+    z-index: 3;
 }
 
 .sponsors-headers {
@@ -35,6 +37,7 @@
     position: relative;
     top: 32px;
     border-style: solid;
+    z-index: 4;
 }
 
 .sponsors-header-platinum {
@@ -77,6 +80,7 @@
     justify-content: center;
     align-items: center;
     background-color: white;
+    z-index: 3;
 }
 
 .logo-container {
@@ -87,6 +91,7 @@
     gap: 10%;
     margin: 4% 2% 2% 2%;
     background-color: white;
+    z-index: 3;
 }
 
 .logo-container img {
@@ -161,4 +166,26 @@
         min-width: 70vw;
         margin: 10% 2% 6% 2%;
     }
+}
+
+.left-svg {
+    position: absolute;
+    z-index: 1;
+    right: 0%;
+    /* top: 10%; */
+    height: 80vw;
+    width: 40vw;
+    margin-top: 50%;
+    transform: rotateY(180deg);
+    /* background-color: red; */
+}
+
+.right-svg {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    margin-bottom: 100%;
+    height: 50vw;
+    width: 40vw;
+    transform: rotateY(180deg);
 }
