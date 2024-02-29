@@ -13,7 +13,7 @@ export const JourneyDesktop = () => {
                 <div className="journey-desktop-content">
                     {stepsData.map((stepData, index) => (
                         <React.Fragment key={stepData.title}>
-                            {<img src={`./step-${index + 1}-trail.svg`} id={`step-${index + 1}-trail`} />}
+                            {<img src={`../step-${index + 1}-trail.svg`} id={`step-${index + 1}-trail`} />}
                             <JourneyStep {...stepData} index={index + 1} />
                         </React.Fragment>
                     ))}
