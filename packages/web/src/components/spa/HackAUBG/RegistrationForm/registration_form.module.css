@@ -165,6 +165,32 @@
     transition: 0.2s;
 }
 
+.disabled input {
+    user-select: none;
+}
+
+.reg_closed {
+    padding-top: 5%;
+    color: white;
+    text-align: center;
+}
+
+.error {
+    color: red;
+
+    text-align: center;
+}
+
+.reg_complete {
+    width: 55%;
+    text-align: center;
+    padding-top: 2.5%;
+    user-select: none;
+    color: rgb(148 255 0);
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    font-size: 1.3em;
+}
+
 @media screen and (max-width: 1200px) {
     .form_container {
         width: 90%;
@@ -210,6 +236,11 @@
     .form_row:last-child .form_cell {
         width: 100%;
     }
+
+    .reg_complete {
+        width: 90%;
+        font-size: 1.1em;
+    }
 }
 
 @media screen and (max-width: 400px) {
@@ -247,27 +278,4 @@
     opacity: 0.5; /* Makes the input semi-transparent */
     background-color: #ccc;
     user-select: none;
-}
-
-.disabled input {
-    user-select: none;
-}
-
-.reg_closed {
-    padding-top: 5%;
-    color: white;
-    text-align: center;
-}
-
-.error {
-    color: red;
-
-    text-align: center;
-}
-
-.reg_complete {
-    text-align: center;
-    padding-top: 2.5%;
-    user-select: none;
-    color: rgb(148 255 0);
 }
