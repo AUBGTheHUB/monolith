@@ -142,6 +142,7 @@
 }
 
 .mentors-coming-soon-container {
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
     padding-top: 4%;
     padding-bottom: 5%;
     color: #fb4298;
@@ -177,7 +178,7 @@
     }
 }
 
-a{
+a {
     outline: none;
 }
 
