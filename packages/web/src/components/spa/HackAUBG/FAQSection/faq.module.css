@@ -1,92 +1,99 @@
-.journey-mobile-section {
+:root {
+    --elem-Height: 200px;
+}
+
+.faqmobilesection {
     overflow: hidden;
 }
-.journey-mobile-title {
-    background-color: #fb4298;
-    width: 80%;
-    margin: 8% auto;
-    padding: 0.5em;
-    font-size: 0.7em;
+
+.faqmobiletitle {
+    margin-bottom: 5%;
 }
-.journey-mobile-title h1 {
+
+.faqmobiletitle h1 {
+    color: white;
+    font-weight: 900;
+    font-size: 2em;
     text-align: center;
-    font-size: 1.7em;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #fff;
-    font-family: 'Press Start 2P', 'Roboto', sans-serif;
-    margin: 0.3em 0;
 }
-.mobile-step-container {
-    background-color: white;
+
+.faqmobilestepcontainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border-radius: 15px;
     font-size: 1.3em;
     margin-top: 0%;
-    margin-bottom: 8%;
-    width: 80%;
-}
-.journey-h2 {
-    display: flex;
-    width: 75%;
-    margin-top: 4%;
-    margin-bottom: 4%;
-}
-.journey-h2 h2 {
-    padding: 0 !important;
-    color: #fb4298;
-    font-family: 'Post No Bills Jaffna';
+    width: 70%;
+    border-bottom: 1px #c7c9d5 solid;
+    cursor: pointer;
 }
 
-.journey-h2 img {
-    width: 2em;
-    margin-right: 0.5em;
+.faqh2 {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+
+    margin: 2.5% 0;
+    font-family: 'IBM Plex Mono';
 }
-.mobile-step-container h2 {
-    font-size: 1.2em;
+
+.faqh2 h2 {
+    padding: 0 !important;
+}
+
+.faqmobilestepcontainer h2 {
+    color: #ffffff;
+    font-size: 1em;
     width: 91%;
     display: flex;
     align-items: center;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
 }
-.mobile-step-container p {
-    color: #000;
-    font-size: 1em;
+
+.faqmobilestepcontainer p {
+    color: #e0e0e0;
+    font-size: 0.8em;
     text-align: justify;
     padding: 0 5% 3% 5%;
 }
-.journey-mobile-content {
+
+.faqmobilecontent {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
 }
 
-.container-content-not-displayed {
+.faqcontainercontentnotdisplayed {
     height: 0;
     overflow: hidden;
     animation: slideout ease-in-out 0.5s;
+    font-family: 'IBM Plex Mono';
 }
-.container-content-displayed {
+
+.faqcontainercontentdisplayed {
     overflow: hidden;
     animation: slidein ease-in-out 0.5s;
+    font-family: 'IBM Plex Mono';
 }
-.journey-arrow-displayed {
+
+.faqarrowdisplayed {
     display: flex;
     align-items: center;
     width: 15%;
     justify-content: flex-end;
+    color: #fb4298;
 }
-.journey-arrow-not-displayed {
+
+.faqarrownotdisplayed {
     display: none;
 }
-.step-title {
+
+.faqsteptitle {
     display: flex;
     width: 100%;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 @keyframes slidein {
@@ -98,6 +105,7 @@
         height: var(--elem-Height);
     }
 }
+
 @keyframes slideout {
     0% {
         height: var(--elem-Height);
@@ -109,28 +117,31 @@
 }
 
 @media only screen and (max-width: 700px) {
-    .mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 1em;
     }
-    .mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.8em;
+    }
+    .faqh2 {
+        margin: 4% 0;
     }
 }
 
 @media only screen and (max-width: 500px) {
-    .mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 0.85em;
     }
-    .mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.7em;
     }
 }
 
 @media only screen and (max-width: 400px) {
-    .mobile-step-container h2 {
+    .faqmobilestepcontainer h2 {
         font-size: 0.8em;
     }
-    .mobile-step-container p {
+    .faqmobilestepcontainer p {
         font-size: 0.65em;
     }
 }

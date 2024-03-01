@@ -1,4 +1,4 @@
-.about-container-hack-aubg {
+.about_container_hack_aubg {
     width: 100vw;
     height: 80%;
     display: flex;
@@ -9,17 +9,23 @@
     padding: 5% 0% 0% 0%;
 }
 
-.about-title-hack-aubg {
+.about_title_hack_aubg {
     color: #fff;
     font-family: 'Press Start 2P';
     font-weight: 900;
     font-size: 1.7em;
-    padding: 8px 100px;
     background-color: #fb4298;
-    margin: 0 10px;
+    margin: 6% auto;
+    width: 22.5%;
+    padding: 10px 0;
+    text-align: center;
 }
 
-.about-text-container-hack-aubg {
+.about_container_hack_aubg .about_title_hack_aubg {
+    text-align: center;
+}
+
+.about_text_container_hack_aubg {
     width: 70vw;
     margin: 0.5% 20% 5% 20%;
     display: flex;
@@ -28,26 +34,22 @@
     font-size: 1.1em;
     text-align: center;
 }
-.about-text-container-hack-aubg h1 {
+.about_text_container_hack_aubg h1 {
     text-align: center;
 }
 
-.about-text-hack-aubg {
-    text-align: justify;
-    padding: 4%;
-    margin: 0%;
-}
-
 @media only screen and (max-width: 900px) {
-    .about-container-hack-aubg {
+    .about_container_hack_aubg {
         font-weight: 200;
     }
 
-    .about-title-hack-aubg {
-        margin: 12% 0% 5% 0%;
+    .about_title_hack_aubg {
+        padding: 10px 0;
+        font-size: 1.4em;
+        width: 80%;
     }
 
-    .about-text-container-hack-aubg {
+    .about_text_container_hack_aubg {
         width: 80%;
         display: flex;
         color: white;

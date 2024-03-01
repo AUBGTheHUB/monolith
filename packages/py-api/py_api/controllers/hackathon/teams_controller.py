@@ -41,10 +41,8 @@ class TeamsController:
 
     @staticmethod
     def delete_team(object_id: str) -> JSONResponse:
-        delete_team = t_col.find_one_and_delete(
-            filter={"_id": ObjectId(object_id)},
-        )
-
+        delete_team = TeamFunctionality.delete_team(object_id)
+        # delete all participants from the team
         if not delete_team:
             return JSONResponse(
                 content={"message": "The team was not found"},
@@ -73,6 +71,7 @@ class TeamsController:
         cls, object_id: str,
         team_payload: UpdateTeam | HackathonTeam,
     ) -> JSONResponse:
+
         updated_team = TeamFunctionality.update_team_query_using_dump(
             team_payload=team_payload.model_dump(), object_id=object_id,
         )
@@ -83,4 +82,4 @@ class TeamsController:
                 status_code=404,
             )
 
-        return JSONResponse(content={"team": updated_team}, status_code=200)
+        return JSONResponse(content={"team": updated_team.model_dump()}, status_code=200)

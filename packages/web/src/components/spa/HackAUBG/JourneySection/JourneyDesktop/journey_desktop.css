@@ -8,7 +8,7 @@
 }
 
 .journey-desktop-title {
-    width: 85%;
+    width: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,38 +38,55 @@
     margin: 0;
 }
 
-.journey-desktop-step{
+.journey-desktop-step {
     display: flex;
     justify-content: space-between;
 }
 
-.journey-desktop-step-info-heading{
+.journey-desktop-step-info-heading {
     display: flex;
     align-items: center;
     padding: 0.3em 0;
     gap: 0.5em;
 }
 
-.journey-desktop-step-info-heading img{
+.journey-desktop-step-info-heading img {
     width: 55px;
 }
 
-.journey-desktop-step-info p{
+.journey-desktop-step-info p {
     padding: 0.3em 0;
     color: white;
 }
 
-.journey-desktop-step-info{
+.journey-desktop-step-info {
     width: 60%;
 }
 
-.journey-desktop-step-visuals-blur, .journey-desktop-step-visuals-figure{
+.journey-desktop-step-visuals-blur,
+.journey-desktop-step-visuals-figure {
     position: absolute;
     top: 50%;
     bottom: 50%;
     transform: translate(-50%, -50%);
 }
 
-.journey-desktop-step-visuals{
+.journey-desktop-step-visuals {
     position: relative;
+}
+
+#step-1-trail {
+    transform: translateX(400%);
+}
+
+#step-2-trail {
+    transform: translateX(360%);
+}
+
+#step-3-trail {
+    transform: translateX(180%);
+}
+
+#step-4-trail {
+    transform: translateX(167%);
 }
