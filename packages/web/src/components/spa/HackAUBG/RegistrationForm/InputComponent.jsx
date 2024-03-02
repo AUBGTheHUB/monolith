@@ -4,14 +4,20 @@ import styles from './registration_form.module.css';
 const InputComponent = ({ type, label, register, values, required, display, name, error, value }) => {
     let restrictions = '';
     let errorMessage = '';
+    let minValue = 0;
+    let maxValue = 0;
+    let MinMaxMsg = '';
 
     if (type === 'name' || type == 'email') {
         if (type == 'email') {
             restrictions = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i;
             errorMessage = 'Please enter a valid email';
         } else {
-            errorMessage = 'Name must be between 2 and 16 characters';
+            errorMessage = 'No special characters and trailing spaces';
             restrictions = /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/;
+            minValue = 2;
+            maxValue = 16;
+            MinMaxMsg = 'Name must be between 2 and 16 characters';
         }
         return (
             <div className={styles.form_cell}>
@@ -20,6 +26,8 @@ const InputComponent = ({ type, label, register, values, required, display, name
                     placeholder="Type here"
                     {...register(name, {
                         required: 'Field is required',
+                        minLength: { value: minValue, message: MinMaxMsg },
+                        maxLength: { value: maxValue, message: MinMaxMsg },
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
                 <div className={styles.error_msg}>

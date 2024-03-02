@@ -9,15 +9,11 @@ export const VerifyAccount = ({ className, onSuccess }) => {
     const [jwtToken, setJwtToken] = useState('');
     const location = useLocation();
     const [buttonState, setButtonState] = useState(true);
-
+    const [errorMsg, setErrorMsg] = useState('');
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        if (params.size === 0) {
-            window.location.href = '/hackaubg';
-        } else {
-            setJwtToken(params.get('jwt_token'));
-        }
-    }, [location]);
+        setJwtToken(params.get('jwt_token'));
+    }, []);
 
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -38,8 +34,13 @@ export const VerifyAccount = ({ className, onSuccess }) => {
                 }, 3000);
             })
 
-            .catch(() => {
+            .catch(err => {
                 setError(true);
+                console.log(err.response.status);
+                if (err.response.status === 498) {
+                    setErrorMsg('Invite link has expired');
+                }
+
                 setTimeout(() => {
                     setLoading(false);
                 }, 3000);
@@ -82,7 +83,9 @@ export const VerifyAccount = ({ className, onSuccess }) => {
                     </div>
                     {loading && <span className={styles['loader']}></span>}
                     {!loading && error && (
-                        <div className={styles['error-message']}>An error occured, please try again later!</div>
+                        <div className={styles['error-message']}>
+                            An error occured, please try again later! {errorMsg}
+                        </div>
                     )}
                     {!loading && success && (
                         <div className={styles['success-message']}>You have been successfully verified!</div>

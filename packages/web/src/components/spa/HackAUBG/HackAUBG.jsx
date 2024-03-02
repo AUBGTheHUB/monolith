@@ -39,7 +39,11 @@ export const HackAUBG = () => {
     const jwtToken = params.get('jwt_token');
     useEffect(() => {
         if (location.pathname === '/hackaubg/verify') {
-            setShowVerification(jwtToken);
+            if (params.size === 0) {
+                window.location.href = '/hackaubg';
+            } else {
+                setShowVerification(jwtToken);
+            }
         }
     }, [location]);
 
@@ -48,7 +52,6 @@ export const HackAUBG = () => {
     }, [showVerification]);
 
     const handleVerificationSuccess = () => {
-        console.log('success');
         setShowVerification(false);
     };
 
