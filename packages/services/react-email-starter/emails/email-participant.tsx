@@ -1,4 +1,4 @@
-import { Body, Container, Head, Html, Img, Section, Text } from '@react-email/components';
+import { Body, Container, Head, Html, Img, Section, Text, Link } from '@react-email/components';
 import * as React from 'react';
 
 export const ParticipantWelcomeEmail = () => (
@@ -11,7 +11,7 @@ export const ParticipantWelcomeEmail = () => (
             <Container style={container}>
                 <Section>
                     <Text style={title}>
-                        Welcome to HackAUBG 5.0, <br /> <br /> Aleksandar!
+                        Welcome to HackAUBG 5.0, <br /> <br /> {`{participantName}`}
                     </Text>
                     <br /> <br />
                     <Text style={paragraph as React.CSSProperties}>
@@ -32,8 +32,18 @@ export const ParticipantWelcomeEmail = () => (
                     </Text>
                     <Text style={paragraph as React.CSSProperties}>
                         Make sure to follow our social media accounts for updates about the event and exciting upcoming
-                        surpises - <span style={highlight}>Facebook, Instagram</span> and{' '}
-                        <span style={highlight}>Linkedin</span>
+                        surpises -{' '}
+                        <Link href="https://www.facebook.com/TheHubAUBG" style={highlight}>
+                            Facebook
+                        </Link>
+                        ,{' '}
+                        <Link href="https://www.instagram.com/thehubaubg/" style={highlight}>
+                            Instagram
+                        </Link>{' '}
+                        and{' '}
+                        <Link href="https://www.linkedin.com/company/the-hub-aubg/mycompany/" style={highlight}>
+                            Linkedin
+                        </Link>
                     </Text>
                     <Text style={paragraph as React.CSSProperties}>
                         We're thrilled to have you on board and can't wait to meet you!
