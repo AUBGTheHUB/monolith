@@ -11,7 +11,7 @@ export const ParticipantWelcomeEmail = () => (
             <Container style={container}>
                 <Section>
                     <Text style={title}>
-                        Welcome to HackAUBG 5.0, <br /> <br /> {`{participantName}`}
+                        Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
                     </Text>
                     <br /> <br />
                     <Text style={paragraph as React.CSSProperties}>

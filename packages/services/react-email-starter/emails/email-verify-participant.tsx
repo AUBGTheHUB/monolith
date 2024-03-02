@@ -11,7 +11,7 @@ export const ParticipantVerifyEmail = () => (
             <Container style={container}>
                 <Section>
                     <Text style={title}>
-                        Welcome to HackAUBG 5.0, <br /> <br /> {`{participantName}`}
+                        Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
                     </Text>
                     <br /> <br />
                     <Text style={paragraph as React.CSSProperties}>
@@ -19,7 +19,7 @@ export const ParticipantVerifyEmail = () => (
                     </Text>
                     <br /> <br /> <br />
                     <a href="{verifyLink}" style={registerButton}>
-                        <h1 style={buttonText}>Register</h1>
+                        <h1 style={buttonText}>Verify</h1>
                         <svg width="20" height="25" viewBox="0 0 20 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 fillRule="evenodd"
@@ -76,11 +76,12 @@ const container = {
 };
 
 const paragraph = {
-    fontSize: '16px',
+    fontSize: '22px',
     color: '#FFFFFF',
     lineHeight: '24px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+    marginTop: '60px',
 };
 
 const highlight = {
