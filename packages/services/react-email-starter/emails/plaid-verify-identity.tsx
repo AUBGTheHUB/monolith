@@ -1,48 +1,83 @@
-import { Body, Container, Head, Heading, Html, Img, Link, Section, Text } from '@react-email/components';
+import { Body, Container, Head, Html, Img, Section, Text } from '@react-email/components';
 import * as React from 'react';
 
-interface PlaidVerifyIdentityEmailProps {
-    validationCode?: string;
-}
-
-const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
-
-export const PlaidVerifyIdentityEmail = ({ validationCode }: PlaidVerifyIdentityEmailProps) => (
+export const ParticipantWelcomeEmail = () => (
     <Html>
-        <Head />
+        <Head>
+            <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+            <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet" />
+        </Head>
         <Body style={main}>
             <Container style={container}>
-                <Link href="{verifyLink}" style={link}>
-                    Click here
-                </Link>
+                <Section>
+                    <Text style={title}>
+                        Welcome to HackAUBG 5.0, <br /> <br /> Aleksandar!
+                    </Text>
+                    <br /> <br />
+                    <Text style={paragraph as React.CSSProperties}>
+                        Before the hackathon starts, there are a few <span style={highlight}>important things:</span>
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        You can view your payments and a variety of other information about your account right from your
+                        dashboard.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 5.0 Facebook
+                        group. That is where we'll share all the latest updates and instructions about the event.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        What's more, each team will have their very own <span style={highlight}>facilitator</span> from
+                        The Hub to guide you through the hackathon. They'll be your point of contact for any questions
+                        or concerns you may have and will even help you find new teammates if needed.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        Make sure to follow our social media accounts for updates about the event and exciting upcoming
+                        surpises - <span style={highlight}>Facebook, Instagram</span> and{' '}
+                        <span style={highlight}>Linkedin</span>
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        We're thrilled to have you on board and can't wait to meet you!
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        <span style={highlight}>See you soon! - The Hub AUBG</span>
+                    </Text>
+                </Section>
             </Container>
+            <Img src={'../static/moon-email.png'} width="100%" height="100%" />
         </Body>
     </Html>
 );
 
-PlaidVerifyIdentityEmail.PreviewProps = {
-    validationCode: '144833',
-} as PlaidVerifyIdentityEmailProps;
-
-export default PlaidVerifyIdentityEmail;
+export default ParticipantWelcomeEmail;
 
 const main = {
-    backgroundColor: '#ffffff',
-    fontFamily: 'HelveticaNeue,Helvetica,Arial,sans-serif',
+    fontFamily: "'IBM Plex Mono', monospace",
+    backgroundImage: `url(../static/moon-particles-5.png)`,
+    margin: '0',
+};
+
+const title = {
+    fontFamily: "'Press Start 2P'",
+    color: '#FFFFFF',
+    textAlign: 'center' as 'center',
+    fontSize: '25px',
 };
 
 const container = {
-    backgroundColor: '#ffffff',
-    border: '1px solid #eee',
-    borderRadius: '5px',
-    boxShadow: '0 5px 10px rgba(20,50,70,.2)',
-    marginTop: '20px',
-    maxWidth: '360px',
     margin: '0 auto',
-    padding: '68px 0 130px',
+    padding: '20px 0 48px',
+    color: '#FFFFFF',
+    backgroundColor: 'rgba(0, 0, 0, 1.5)',
 };
 
-const link = {
-    color: '#444',
-    textDecoration: 'underline',
+const paragraph = {
+    fontSize: '16px',
+    color: '#FFFFFF',
+    lineHeight: '24px',
+    textAlign: 'center',
+    textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+};
+
+const highlight = {
+    color: '#C298F3',
 };
