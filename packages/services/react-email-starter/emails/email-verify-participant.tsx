@@ -9,7 +9,7 @@ export const ParticipantVerifyEmail = () => (
         </Head>
         <Body style={main}>
             <Container style={container}>
-                <Section>
+                <Section style={sectionStyle}>
                     <Text style={title}>
                         Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
                     </Text>
@@ -69,10 +69,21 @@ const title = {
 };
 
 const container = {
+    display: 'flex',
+    justifyContent: 'center',
     margin: '0 auto',
     padding: '20px 0 48px',
     color: '#FFFFFF',
     backgroundColor: 'rgba(0, 0, 0, 1.5)',
+};
+
+const sectionStyle = {
+    display: 'flex',
+    flexDirection: 'column' as 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    textAlign: 'center' as 'center',
 };
 
 const paragraph = {
@@ -89,17 +100,19 @@ const highlight = {
 };
 
 const registerButton = {
-    display: 'flex',
+    display: 'inline-flex',
     alignItems: 'center',
+    alignSelf: 'center',
     justifyContent: 'center',
-    padding: '30px 50px',
+    padding: '25px 10px',
     border: '3px solid #D8C2FB',
     color: '#D8C2FB',
     textDecoration: 'none',
+    width: '80%',
 };
 
 const buttonText = {
     paddingRight: '10px',
-    fontSize: '40px',
+    fontSize: '35px',
     fontFamily: "'Press Start 2P'",
 };
