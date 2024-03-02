@@ -44,7 +44,11 @@ export const ParticipantVerifyEmail = () => (
                     </a>
                 </Section>
             </Container>
-            <Img src={'../static/moon-email.png'} width="100%" height="100%" />
+            <Img
+                src={'https://s3-eu-central-1.amazonaws.com/hubarskibucket/moon-email.png'}
+                width="100%"
+                height="auto"
+            />
         </Body>
     </Html>
 );
@@ -53,7 +57,8 @@ export default ParticipantVerifyEmail;
 
 const main = {
     fontFamily: "'IBM Plex Mono', monospace",
-    backgroundImage: `url(../static/moon-particles-5.png)`,
+    backgroundImage: `url(https://s3-eu-central-1.amazonaws.com/hubarskibucket/email-background.png)`,
+    backgroundColor: '#fff',
     margin: '0',
     display: 'flex',
     flexDirection: 'column' as 'column',

@@ -53,7 +53,11 @@ export const ParticipantWelcomeEmail = () => (
                     </Text>
                 </Section>
             </Container>
-            <Img src={'../static/moon-email.png'} width="100%" height="100%" />
+            <Img
+                src={'https://s3-eu-central-1.amazonaws.com/hubarskibucket/moon-email.png'}
+                width="100%"
+                height="auto"
+            />
         </Body>
     </Html>
 );
@@ -62,7 +66,8 @@ export default ParticipantWelcomeEmail;
 
 const main = {
     fontFamily: "'IBM Plex Mono', monospace",
-    backgroundImage: `url(../static/moon-particles-5.png)`,
+    backgroundColor: '#fff',
+    backgroundImage: `url(https://s3-eu-central-1.amazonaws.com/hubarskibucket/email-background.png)`,
     margin: '0',
 };
 
@@ -77,7 +82,7 @@ const container = {
     margin: '0 auto',
     padding: '20px 0 48px',
     color: '#FFFFFF',
-    backgroundColor: 'rgba(0, 0, 0, 1.5)',
+    background: 'linear-gradient(0,0,0)',
 };
 
 const paragraph = {
