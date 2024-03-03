@@ -6,18 +6,23 @@ const InputComponent = ({ type, label, register, values, required, display, name
     let errorMessage = '';
     let minValue = 0;
     let maxValue = 0;
-    let MinMaxMsg = '';
+    let MinMsg = '';
+    let MaxMsg = '';
 
     if (type === 'name' || type == 'email') {
         if (type == 'email') {
             restrictions = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i;
             errorMessage = 'Please enter a valid email';
+            minValue = 0;
+            maxValue = 100;
+            MaxMsg = 'Email is too long';
         } else {
             errorMessage = 'No special characters and trailing spaces';
             restrictions = /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/;
             minValue = 2;
             maxValue = 16;
-            MinMaxMsg = 'Name must be between 2 and 16 characters';
+            MinMsg = 'Field is too short';
+            MaxMsg = 'Field is too long';
         }
         return (
             <div className={styles.form_cell}>
@@ -26,8 +31,8 @@ const InputComponent = ({ type, label, register, values, required, display, name
                     placeholder="Type here"
                     {...register(name, {
                         required: 'Field is required',
-                        minLength: { value: minValue, message: MinMaxMsg },
-                        maxLength: { value: maxValue, message: MinMaxMsg },
+                        minLength: { value: minValue, message: MinMsg },
+                        maxLength: { value: maxValue, message: MaxMsg },
                         pattern: { value: restrictions, message: errorMessage },
                     })}></input>
                 <div className={styles.error_msg}>
