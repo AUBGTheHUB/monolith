@@ -4,7 +4,6 @@ import * as React from 'react';
 export const ParticipantWelcomeEmail = () => (
     <Html>
         <Head>
-            <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
             <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet" />
             <meta name="color-scheme" content="light"></meta>
             <meta name="supported-color-schemes" content="light"></meta>
@@ -15,7 +14,7 @@ export const ParticipantWelcomeEmail = () => (
                     <Section style={test2}>
                         <Section style={test3}>
                             <Text style={title}>
-                                Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
+                                Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
                             </Text>
                             <br /> <br />
                             <Text style={paragraph as React.CSSProperties}>
@@ -53,6 +52,14 @@ export const ParticipantWelcomeEmail = () => (
                                 </Link>
                             </Text>
                             <Text style={paragraph as React.CSSProperties}>
+                                However, before you go, here is the invite link, so you can invite your teammates to
+                                join:
+                                <Link href="{`{inviteLink}`}" style={highlight}>
+                                    {' '}
+                                    click here
+                                </Link>
+                            </Text>
+                            <Text style={paragraph as React.CSSProperties}>
                                 We're thrilled to have you on board and can't wait to meet you!
                             </Text>
                             <Text style={paragraph as React.CSSProperties}>
@@ -81,7 +88,7 @@ const main = {
 };
 
 const title = {
-    fontFamily: "'Press Start 2P'",
+    fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
     textAlign: 'center' as 'center',

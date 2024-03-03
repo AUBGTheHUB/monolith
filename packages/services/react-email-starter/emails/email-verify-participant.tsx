@@ -4,7 +4,6 @@ import * as React from 'react';
 export const ParticipantVerifyEmail = () => (
     <Html>
         <Head>
-            <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
             <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet" />
         </Head>
         <Body style={main}>
@@ -79,7 +78,7 @@ const main = {
 };
 
 const title = {
-    fontFamily: "'Press Start 2P'",
+    fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     textAlign: 'center' as 'center',
     fontSize: '25px',
