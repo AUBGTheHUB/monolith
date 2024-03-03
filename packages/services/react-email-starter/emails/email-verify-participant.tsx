@@ -1,4 +1,4 @@
-import { Body, Container, Head, Html, Img, Section, Text } from '@react-email/components';
+import { Body, Container, Head, Html, Img, Link, Section, Text } from '@react-email/components';
 import * as React from 'react';
 
 export const ParticipantVerifyEmail = () => (
@@ -8,52 +8,59 @@ export const ParticipantVerifyEmail = () => (
         </Head>
         <Body style={main}>
             <Container style={container}>
-                <Section style={sectionStyle}>
-                    <Text style={title}>
-                        Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
-                    </Text>
-                    <br /> <br />
-                    <Text style={paragraph}>
-                        Thank you for registering for our sixth <span style={highlight}> annual hackathon</span>!<br />{' '}
-                        <br />
-                        We are extremely excited to have you on board and can't wait to see what{' '}
-                        <span style={highlight}> you'll create! </span>
-                        <br /> <br />
-                        Before your adventure at the hackathon starts, <span style={highlight}>you have to:</span>
-                    </Text>
-                    <br /> <br /> <br />
-                    <div style={{ textAlign: 'center' }}>
-                        <a href="{verifyLink}" style={registerButton}>
-                            <h1 style={buttonText}>Verify</h1>
-                            <svg
-                                style={{ display: 'inline-block', verticalAlign: 'middle' }}
-                                width="20"
-                                height="25"
-                                viewBox="0 0 20 25"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M1.92298 25L1.92298 23.4042L4.23071 23.4042L4.23072 21.8087L6.53845 21.8087L6.53845 20.2128L8.84619 20.2128L8.84619 18.6173L11.1538 18.6173L11.1538 17.2873L13.4615 17.2873L13.4615 15.9575L15.7692 15.9575L15.7692 14.628L18.0769 14.628L18.0769 13.298L20 13.298L20 11.7022L18.0769 11.7022L18.0769 10.3722L15.7693 10.3722L15.7693 9.04297L13.4615 9.04297L13.4615 7.71297L11.1539 7.71297L11.1539 6.38321L8.84619 6.38321L8.84619 4.78741L6.53845 4.78741L6.53845 3.19185L4.23071 3.19185L4.23071 1.59605L1.92297 1.59604L1.92297 5.75475e-05L7.90761e-06 5.73794e-05L5.72205e-06 25L1.92298 25Z"
-                                    fill="url(#paint0_linear_76_9313)"
-                                />
-                                <defs>
-                                    <linearGradient
-                                        id="paint0_linear_76_9313"
-                                        x1="10"
-                                        y1="25"
-                                        x2="10"
-                                        y2="0.000205119"
-                                        gradientUnits="userSpaceOnUse">
-                                        <stop stopColor="#d8c2fb" />
-                                        <stop offset="0.9999" stopColor="#d8c2fb" />
-                                        <stop offset="1" stopColor="white" stopOpacity="0" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                        </a>
-                    </div>
+                <Section style={styleForBackground}>
+                    <Section style={styleForBackground2}>
+                        <Section style={styleForBackground3}>
+                            <Section style={sectionStyle}>
+                                <Text style={title}>
+                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
+                                </Text>
+                                <br /> <br />
+                                <Text style={paragraph}>
+                                    Thank you for registering for our sixth{' '}
+                                    <span style={highlight}> annual hackathon</span>!<br /> <br />
+                                    We are extremely excited to have you on board and can't wait to see what{' '}
+                                    <span style={highlight}> you'll create! </span>
+                                    <br /> <br />
+                                    Before your adventure at the hackathon starts,{' '}
+                                    <span style={highlight}>you have to:</span>
+                                </Text>
+                                <br /> <br /> <br />
+                                <div style={{ textAlign: 'center' }}>
+                                    <Link href="{verifyLink}" style={registerButton}>
+                                        <h1 style={buttonText}>Verify</h1>
+                                        <svg
+                                            style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                                            width="20"
+                                            height="25"
+                                            viewBox="0 0 20 25"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                fillRule="evenodd"
+                                                clipRule="evenodd"
+                                                d="M1.92298 25L1.92298 23.4042L4.23071 23.4042L4.23072 21.8087L6.53845 21.8087L6.53845 20.2128L8.84619 20.2128L8.84619 18.6173L11.1538 18.6173L11.1538 17.2873L13.4615 17.2873L13.4615 15.9575L15.7692 15.9575L15.7692 14.628L18.0769 14.628L18.0769 13.298L20 13.298L20 11.7022L18.0769 11.7022L18.0769 10.3722L15.7693 10.3722L15.7693 9.04297L13.4615 9.04297L13.4615 7.71297L11.1539 7.71297L11.1539 6.38321L8.84619 6.38321L8.84619 4.78741L6.53845 4.78741L6.53845 3.19185L4.23071 3.19185L4.23071 1.59605L1.92297 1.59604L1.92297 5.75475e-05L7.90761e-06 5.73794e-05L5.72205e-06 25L1.92298 25Z"
+                                                fill="url(#paint0_linear_76_9313)"
+                                            />
+                                            <defs>
+                                                <linearGradient
+                                                    id="paint0_linear_76_9313"
+                                                    x1="10"
+                                                    y1="25"
+                                                    x2="10"
+                                                    y2="0.000205119"
+                                                    gradientUnits="userSpaceOnUse">
+                                                    <stop stopColor="#d8c2fb" />
+                                                    <stop offset="0.9999" stopColor="#d8c2fb" />
+                                                    <stop offset="1" stopColor="white" stopOpacity="0" />
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
+                                    </Link>
+                                </div>
+                            </Section>
+                        </Section>
+                    </Section>
                 </Section>
             </Container>
             <Img src={'https://s3-eu-central-1.amazonaws.com/hubarskibucket/moon-email.png'} width="100%" />
@@ -70,13 +77,13 @@ const main = {
     margin: '0',
     display: 'block',
     minHeight: '100vh',
-    position: 'relative',
+    position: 'relative' as 'relative',
 };
 
 const title = {
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
-    textAlign: 'center',
+    textAlign: 'center' as 'center',
     fontSize: '25px',
 };
 
@@ -89,14 +96,14 @@ const container = {
 
 const sectionStyle = {
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'center' as 'center',
 };
 
 const paragraph = {
     fontSize: '22px',
     color: '#FFFFFF',
     lineHeight: '30px',
-    textAlign: 'center',
+    textAlign: 'center' as 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
     marginTop: '60px',
 };
@@ -111,7 +118,7 @@ const registerButton = {
     border: '3px solid #D8C2FB',
     color: '#D8C2FB',
     textDecoration: 'none',
-    width: '80%',
+    width: '50%',
 };
 
 const buttonText = {
@@ -120,4 +127,20 @@ const buttonText = {
     fontFamily: "'Press Start 2P'",
     display: 'inline-block',
     verticalAlign: 'middle',
+};
+
+const styleForBackground = {
+    background: '#000',
+    backgroundImage: 'linear-gradient(#000,#000)',
+    color: '#fff',
+};
+
+const styleForBackground2 = {
+    background: '#000',
+    mixBlendMode: 'screen' as 'screen',
+};
+
+const styleForBackground3 = {
+    background: '#000',
+    mixBlendMode: 'difference' as 'difference',
 };
