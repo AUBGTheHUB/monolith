@@ -36,14 +36,19 @@ export const HackAUBG = () => {
     const location = useLocation();
 
     const params = new URLSearchParams(location.search);
-    const jwtToken = params.get('jwt_token');
     useEffect(() => {
-        if (location.pathname === '/hackaubg/verify') {
-            if (params.size === 0) {
-                window.location.href = '/hackaubg';
-            } else {
-                setShowVerification(jwtToken);
+        const jwtToken = params.get('jwt_token');
+        const jwtPattern = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/;
+        if (jwtPattern.test(jwtToken)) {
+            if (location.pathname === '/hackaubg/verify') {
+                if (params.size === 0 || jwtToken === null) {
+                    window.location.href = '/hackaubg';
+                } else {
+                    setShowVerification(jwtToken);
+                }
             }
+        } else if (jwtToken !== null) {
+            window.location.href = '/hackaubg';
         }
     }, [location]);
 
@@ -54,10 +59,6 @@ export const HackAUBG = () => {
     const handleVerificationSuccess = () => {
         setShowVerification(false);
     };
-
-    useEffect(() => {
-        console.log('showVerification', showVerification);
-    }, [showVerification]);
 
     return (
         <div className={`hackaubg-container ${showVerification ? 'showVerification' : ''}`}>

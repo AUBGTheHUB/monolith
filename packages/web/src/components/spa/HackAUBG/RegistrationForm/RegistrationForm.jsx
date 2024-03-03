@@ -7,6 +7,7 @@ import { url } from '../../../../Global';
 import { registerURL } from '../../../../Global';
 import { jwtDecode } from 'jwt-decode';
 import { FsContext } from '../../../../feature_switches';
+import { isApiUp } from '../../../../Global';
 
 const RegistrationForm = () => {
     // eslint-disable-next-line
@@ -17,6 +18,7 @@ const RegistrationForm = () => {
     const [error, setError] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [displayTeam, setDisplayTeam] = useState(false);
+    const [isApiUp1, setIsApiUp1] = useState(true);
     const [req, setReq] = useState('');
 
     const {
@@ -36,6 +38,21 @@ const RegistrationForm = () => {
             })
             .catch(() => {
                 setIsFormAvailable(false);
+            });
+
+        axios({
+            method: 'get',
+            url: isApiUp,
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    setIsApiUp1(true);
+                }
+            })
+            .catch(err => {
+                if (err.code === 'ERR_NETWORK') {
+                    setIsApiUp1(false);
+                }
             });
     };
 
@@ -96,7 +113,7 @@ const RegistrationForm = () => {
         }
     };
 
-    if (!featureSwitches.regForm) {
+    if (featureSwitches.regForm && isApiUp1) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                 <div className={styles.form_header}>

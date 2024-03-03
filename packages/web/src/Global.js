@@ -16,6 +16,7 @@ const urlShortenerURL = `${url}/v2/shortener`;
 const featureSwitchesURL = parseToNewAPI(`${url}/v2/fswitches`);
 const registerURL = parseToNewAPI(`${url}/v2/hackathon/participants`);
 const verifyURL = parseToNewAPI(`${url}/v2/hackathon/verify/participant`);
+const isApiUp = parseToNewAPI(`${url}/v2/health`);
 const HEADERS = { 'BEARER-TOKEN': localStorage.getItem('auth_token') };
 
 const checkBrowserValid = () => {
@@ -152,6 +153,7 @@ export {
     featureSwitchesURL,
     registerURL,
     verifyURL,
+    isApiUp,
     HEADERS,
 };
 export default Validate;
