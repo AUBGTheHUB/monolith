@@ -10,63 +10,55 @@ export const ParticipantWelcomeEmail = () => (
         </Head>
         <Body style={main}>
             <Container style={container}>
-                <Section style={test1}>
-                    <Section style={test2}>
-                        <Section style={test3}>
-                            <Text style={title}>
-                                Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
-                            </Text>
-                            <br /> <br />
-                            <Text style={paragraph as React.CSSProperties}>
-                                Before the hackathon starts, there are a few{' '}
-                                <span style={highlight}>important things:</span>
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                You can view your payments and a variety of other information about your account right
-                                from your dashboard.
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                To ensure you stay in the loop, we will invite you to join the Official HackAUBG 5.0
-                                Facebook group. That is where we'll share all the latest updates and instructions about
-                                the event.
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                What's more, each team will have their very own{' '}
-                                <span style={highlight}>facilitator</span> from The Hub to guide you through the
-                                hackathon. They'll be your point of contact for any questions or concerns you may have
-                                and will even help you find new teammates if needed.
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                Make sure to follow our social media accounts for updates about the event and exciting
-                                upcoming surpises -{' '}
-                                <Link href="https://www.facebook.com/TheHubAUBG" style={highlight}>
-                                    Facebook
-                                </Link>
-                                ,{' '}
-                                <Link href="https://www.instagram.com/thehubaubg/" style={highlight}>
-                                    Instagram
-                                </Link>{' '}
-                                and{' '}
-                                <Link href="https://www.linkedin.com/company/the-hub-aubg/mycompany/" style={highlight}>
-                                    Linkedin
-                                </Link>
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                However, before you go, here is the invite link, so you can invite your teammates to
-                                join:
-                                <Link href="{`{inviteLink}`}" style={highlight}>
-                                    {' '}
-                                    click here
-                                </Link>
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                We're thrilled to have you on board and can't wait to meet you!
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                <span style={highlight}>See you soon! - The Hub AUBG</span>
-                            </Text>
-                        </Section>
-                    </Section>
+                <Section style={removeDots}>
+                    <Text style={title}>
+                        Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
+                    </Text>
+                    <br /> <br />
+                    <Text style={paragraph as React.CSSProperties}>
+                        Before the hackathon starts, there are a few <span style={highlight}>important things:</span>
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        You can view your payments and a variety of other information about your account right from your
+                        dashboard.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 5.0 Facebook
+                        group. That is where we'll share all the latest updates and instructions about the event.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        What's more, each team will have their very own <span style={highlight}>facilitator</span> from
+                        The Hub to guide you through the hackathon. They'll be your point of contact for any questions
+                        or concerns you may have and will even help you find new teammates if needed.
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        Make sure to follow our social media accounts for updates about the event and exciting upcoming
+                        surpises -{' '}
+                        <Link href="https://www.facebook.com/TheHubAUBG" style={highlight}>
+                            Facebook
+                        </Link>
+                        ,{' '}
+                        <Link href="https://www.instagram.com/thehubaubg/" style={highlight}>
+                            Instagram
+                        </Link>{' '}
+                        and{' '}
+                        <Link href="https://www.linkedin.com/company/the-hub-aubg/mycompany/" style={highlight}>
+                            Linkedin
+                        </Link>
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        However, before you go, here is the invite link, so you can invite your teammates to join:
+                        <Link href="{`{inviteLink}`}" style={highlight}>
+                            {' '}
+                            click here
+                        </Link>
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        We're thrilled to have you on board and can't wait to meet you!
+                    </Text>
+                    <Text style={paragraph as React.CSSProperties}>
+                        <span style={highlight}>See you soon! - The Hub AUBG</span>
+                    </Text>
                 </Section>
             </Container>
             <Img
@@ -108,20 +100,10 @@ const paragraph = {
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
 };
 
-const test1 = {
+const removeDots = {
     background: '#000',
     backgroundImage: 'linear-gradient(#000,#000)',
     color: '#fff',
-};
-
-const test2 = {
-    background: '#000',
-    mixBlendMode: 'screen',
-};
-
-const test3 = {
-    background: '#000',
-    mixBlendMode: 'difference',
 };
 
 const highlight = {
