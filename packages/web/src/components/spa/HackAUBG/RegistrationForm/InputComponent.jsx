@@ -117,6 +117,7 @@ const InputComponent = ({ type, label, register, values, required, display, name
                     placeholder="Type here"
                     {...register(name, {
                         required: required,
+                        maxLength: { value: 64, message: 'Field is too long' },
                     })}></input>
                 <div className={styles.error_msg}>
                     <p style={{ color: 'red' }} name={name}>
