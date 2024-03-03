@@ -64,6 +64,7 @@ const main = {
     margin: '0',
     display: 'block',
     minHeight: '100vh',
+    position: 'relative',
 };
 
 const title = {
