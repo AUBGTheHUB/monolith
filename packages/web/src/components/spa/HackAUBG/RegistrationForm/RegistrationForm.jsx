@@ -345,9 +345,9 @@ const RegistrationForm = () => {
         );
     } else {
         return (
-            <h1 className={styles.reg_closed} id="registration">
+            <p className={styles.reg_closed} id="registration">
                 Registration is closed
-            </h1>
+            </p>
         );
     }
 };

@@ -43,10 +43,10 @@ export const JudgesSection = () => {
         }
         return (
             <div className={styles['judges-coming-soon-container']}>
-                <h1>
+                <p>
                     Judges coming <br />
                     soon...
-                </h1>
+                </p>
             </div>
         );
     };

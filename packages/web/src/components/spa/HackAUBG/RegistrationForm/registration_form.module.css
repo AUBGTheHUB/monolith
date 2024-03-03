@@ -170,9 +170,13 @@
 }
 
 .reg_closed {
-    padding-top: 5%;
-    color: white;
+    margin-top: 20px;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
     text-align: center;
+    font-size: 1.8vw !important;
 }
 
 .error {
@@ -208,7 +212,10 @@
     }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 900px) {
+    .reg_closed {
+        font-size: 5vw !important;
+    }
     .form_container {
         width: 90% !important;
     }
