@@ -14,6 +14,11 @@ export const ParticipantVerifyEmail = () => (
                     </Text>
                     <br /> <br />
                     <Text style={paragraph}>
+                        Thank you for registering for our sixth <span style={highlight}> annual hackathon</span>!<br />{' '}
+                        <br />
+                        We are extremely excited to have you on board and can't wait to see what{' '}
+                        <span style={highlight}> you'll create! </span>
+                        <br /> <br />
                         Before your adventure at the hackathon starts, <span style={highlight}>you have to:</span>
                     </Text>
                     <br /> <br /> <br />
@@ -21,6 +26,7 @@ export const ParticipantVerifyEmail = () => (
                         <a href="{verifyLink}" style={registerButton}>
                             <h1 style={buttonText}>Verify</h1>
                             <svg
+                                style={{ display: 'inline-block', verticalAlign: 'middle' }}
                                 width="20"
                                 height="25"
                                 viewBox="0 0 20 25"
@@ -89,7 +95,7 @@ const sectionStyle = {
 const paragraph = {
     fontSize: '22px',
     color: '#FFFFFF',
-    lineHeight: '24px',
+    lineHeight: '30px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
     marginTop: '60px',
@@ -112,4 +118,6 @@ const buttonText = {
     paddingRight: '10px',
     fontSize: '35px',
     fontFamily: "'Press Start 2P'",
+    display: 'inline-block',
+    verticalAlign: 'middle',
 };
