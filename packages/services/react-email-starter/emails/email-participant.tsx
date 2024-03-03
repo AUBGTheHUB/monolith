@@ -6,16 +6,8 @@ export const ParticipantWelcomeEmail = () => (
         <Head>
             <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
             <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet" />
-            <style>
-                {`
-            u + .body .gmail-blend-difference {
-                background:#FFF;
-                                color: #000;
-
-                mix-blend-mode:difference;
-            }
-        `}
-            </style>
+            <meta name="color-scheme" content="light"></meta>
+            <meta name="supported-color-schemes" content="light"></meta>
         </Head>
         <Body style={main}>
             <Container style={container}>
@@ -86,8 +78,6 @@ const main = {
     backgroundColor: '#000',
     backgroundImage: `url(https://s3-eu-central-1.amazonaws.com/hubarskibucket/email-background.png)`,
     margin: '0',
-    // background: '#FFF',
-    // mixBlendMode: 'difference',
 };
 
 const title = {
@@ -109,24 +99,22 @@ const paragraph = {
     lineHeight: '24px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
-    background: '#000',
-    mixBlendMode: 'difference',
 };
 
 const test1 = {
-    // background: '#000',
-    // backgroundImage: 'linear-gradient(#000,#000)',
-    // color: '#fff',
+    background: '#000',
+    backgroundImage: 'linear-gradient(#000,#000)',
+    color: '#fff',
 };
 
 const test2 = {
-    // background: '#000',
-    // mixBlendMode: 'screen',
+    background: '#000',
+    mixBlendMode: 'screen',
 };
 
 const test3 = {
-    // background: '#000',
-    // mixBlendMode: 'difference',
+    background: '#000',
+    mixBlendMode: 'difference',
 };
 
 const highlight = {
