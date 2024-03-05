@@ -36,13 +36,16 @@
 .judges-section-container {
     position: relative;
     margin-top: 5vw;
+    margin-bottom: 5vw;
 }
 
 .judges-coming-soon-container {
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
     padding-top: 4%;
     padding-bottom: 5%;
     color: #fb4298;
     text-align: center;
+    font-size: 1.8vw !important;
 }
 
 .pacman-right {
@@ -77,6 +80,9 @@
         position: relative;
         left: 50%;
         transform: translate(-50%, 0);
+    }
+    .judges-coming-soon-container {
+        font-size: 5vw !important;
     }
 }
 
