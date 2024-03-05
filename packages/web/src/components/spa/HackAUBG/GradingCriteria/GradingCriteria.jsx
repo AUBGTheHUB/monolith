@@ -5,7 +5,7 @@ import { useContext } from 'react';
 export const GradingCriteria = () => {
     // eslint-disable-next-line
     const [featureSwitches, _] = useContext(FsContext);
-    if (featureSwitches.GradingCriteria) {
+    if (featureSwitches.GradeCrit) {
         return (
             <div className={styles.grading_criteria}>
                 <h1 className={styles.grading_criteria_title}>Grading Criteria</h1>
