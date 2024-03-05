@@ -120,7 +120,18 @@
     margin-bottom: 5%;
 }
 
+.sponsors_closed {
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+    font-size: 1.8vw !important;
+}
+
 @media only screen and (max-width: 900px) {
+    .sponsors_closed {
+        font-size: 5vw !important;
+    }
     .sponsors-header {
         font-size: 1.1em;
         width: 80%;

@@ -5,9 +5,13 @@ import { useEffect } from 'react';
 import { url } from '../../../../Global';
 import SimpleSlider from '../Carousel';
 import styles from './judges_section.module.css';
+import { FsContext } from '../../../../feature_switches';
+import { useContext } from 'react';
 
 export const JudgesSection = () => {
     const [jury, setJury] = useState();
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
 
     const getJury = () => {
         axios({
@@ -24,7 +28,7 @@ export const JudgesSection = () => {
     };
 
     const renderJudges = () => {
-        if (jury) {
+        if (jury && featureSwitches.Judges) {
             return (
                 <div className={styles['judges-section-container']}>
                     <div className={styles['title-container']}>

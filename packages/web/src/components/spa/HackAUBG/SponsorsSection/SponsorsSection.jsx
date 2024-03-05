@@ -4,10 +4,14 @@ import { url } from '../../../../Global';
 import { useState, useEffect } from 'react';
 import SponsorsContainer from './SponsorContainer';
 import './sponsors_section.css';
+import { FsContext } from '../../../../feature_switches';
+import { useContext } from 'react';
 
 const Sponsors = () => {
     // eslint-disable-next-line no-unused-vars
     const [sponsor, setSponsor] = useState({});
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
 
     const fetchSponsors = () => {
         let unfilteredSponsors;
@@ -35,7 +39,7 @@ const Sponsors = () => {
     };
 
     useEffect(fetchSponsors, []);
-    if (Object.keys(sponsor).length !== 0) {
+    if (Object.keys(sponsor).length !== 0 && featureSwitches.Sponsors) {
         return (
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
@@ -77,6 +81,12 @@ const Sponsors = () => {
                     <SponsorsContainer sponsors={sponsor.bronze} category={'bronze'} />
                 </div>
             </div>
+        );
+    } else {
+        return (
+            <p className="sponsors_closed" id="registration">
+                Sponsors coming soon!
+            </p>
         );
     }
 };

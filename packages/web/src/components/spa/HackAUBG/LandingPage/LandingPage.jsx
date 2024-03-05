@@ -9,7 +9,7 @@ export const LandingPage = () => {
             <LandingBackground />
             <div className={styles['title']}>
                 <h1>HACKAUBG 6.0</h1>
-                <h2>31st March - 2nd April, AUBG - Blagoevgrad</h2>
+                <h2>29th March - 31st March, AUBG - Blagoevgrad</h2>
                 <a
                     className={styles['register-button']}
                     onMouseEnter={() => setHover(true)}
