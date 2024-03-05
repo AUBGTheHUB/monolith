@@ -9,7 +9,7 @@ export const Footer = ({ color, iconColor, iconBgColor, textColor, iconSize }) =
     return (
         <div className="footer-container" style={{ backgroundColor: color }}>
             <div className="copyright">
-                <p style={{ color: textColor }}>© 2023 The Hub AUBG. All rights reserved</p>
+                <p style={{ color: textColor }}>© 2024 The Hub AUBG. All rights reserved</p>
             </div>
             <div className="social-media">
                 <div className="links" style={{ backgroundColor: iconBgColor }}>
