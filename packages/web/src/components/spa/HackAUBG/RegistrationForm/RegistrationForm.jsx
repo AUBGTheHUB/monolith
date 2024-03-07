@@ -60,7 +60,7 @@ const RegistrationForm = () => {
         checkRegistrationAvailability();
         const token = new URL(window.location.href).searchParams.get('jwt_token');
         if (token) {
-            setToken(true);
+            setToken(token);
             const decoded = jwtDecode(token);
             setTeamName(decoded.team_name);
         }
@@ -113,7 +113,7 @@ const RegistrationForm = () => {
         }
     };
 
-    if (featureSwitches.regForm && isApiUp) {
+    if (!featureSwitches.regForm && isApiUp) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                 <div className={styles.form_header}>
