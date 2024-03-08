@@ -108,3 +108,9 @@ run-rust-api:
 .PHONY: run-svelte-quest
 run-svelte-quest:
 	cd packages/services/questionnaire && npm run dev -- --open
+
+
+
+.PHONY: run-email-template
+run-email-template:
+	cd packages/services/react-email-starter && npm run dev

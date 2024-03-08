@@ -59,8 +59,9 @@ if [ $ACTIONS == $START ]; then
     LOCAL_PY_API="Python backend"
     LOCAL_QUESTIONNAIRE="Questionnaire"
     LOCAL_RUST_API="URL Shortener"
+    EMAIL_TEMPLATE="Email Template"
     NGINX="Reverse Proxy"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX")
+    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX" "$EMAIL_TEMPLATE")
 
     ACTIONS_EXIT_STATUS=$?
     clear
@@ -85,6 +86,12 @@ if [ $ACTIONS == $START ]; then
         make run-rust-api
     elif [ "$ACTIONS" == "$NGINX" ]; then
         make run-nginx
+    elif [ "$ACTIONS" == "$EMAIL_TEMPLATE" ]; then
+        make run-email-template
+    else
+        echo "Invalid option"
+        exit 1
+
     fi
 
 elif [ "$ACTIONS" == "$DEPLOY" ]; then

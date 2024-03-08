@@ -308,18 +308,6 @@ const RegistrationForm = () => {
                             }
                         />
                     </div>
-
-                    <div className={styles.form_row}>
-                        <InputComponent
-                            label="Do you want to receive our newsletter with potential job offerings?"
-                            type="yesNo"
-                            required="Field is required"
-                            register={register}
-                            setDisplay={display}
-                            name="newsletter_consent"
-                            error={errors.newsletter_consent && errors.newsletter_consent.message}
-                        />
-                    </div>
                 </div>
                 <InputComponent
                     label="Agreement to share information with sponsors"
