@@ -14,7 +14,7 @@ export const ParticipantWelcomeEmail = () => (
                     <Section style={styleForBackground}>
                         <Section style={styleForBackground2}>
                             <Text style={title_team}>
-                                Welcome to HackAUBG 6.0, <br /> <br /> {`{teamtName}`}!
+                                Welcome to HackAUBG 6.0, <br /> <br /> {`{teamName}`}!
                             </Text>
                             <Text style={title_no_team}>
                                 Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
@@ -85,7 +85,7 @@ const main = {
 };
 
 const title_no_team = {
-    // display: '{title_no_team}',
+    display: '{title_no_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -94,7 +94,7 @@ const title_no_team = {
 };
 
 const title_team = {
-    // display: '{title_team}',
+    display: '{title_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -116,6 +116,7 @@ const paragraph = {
 };
 
 const paragraph_invite = {
+    display: 'none',
     // display: '{inviteLinkVisibility}',
     fontSize: '16px',
     color: '#FFFFFF',

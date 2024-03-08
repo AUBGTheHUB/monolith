@@ -13,7 +13,7 @@ export const ParticipantVerifyEmail = () => (
                         <Section style={styleForBackground3}>
                             <Section style={sectionStyle}>
                                 <Text style={title_team}>
-                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{teamtName}`}!
+                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{teamName}`}!
                                 </Text>
                                 <Text style={title_no_team}>
                                     Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
@@ -81,7 +81,7 @@ const main = {
 };
 
 const title_no_team = {
-    // display: '{title_no_team}',
+    display: '{title_no_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -90,7 +90,7 @@ const title_no_team = {
 };
 
 const title_team = {
-    // display: '{title_team}',
+    display: '{title_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',

@@ -53,13 +53,13 @@
                                                                 <tr>
                                                                     <td>
                                                                         <p
-                                                                            style="font-size:25px;line-height:24px;margin:16px 0;display:inital;font-family:&#x27;IBM Plex Mono&#x27;, monospace;color:#FFFFFF;background:#000;text-align:center">
+                                                                            style="font-size:25px;line-height:24px;margin:16px 0;display:{title_team};font-family:&#x27;IBM Plex Mono&#x27;, monospace;color:#FFFFFF;background:#000;text-align:center">
                                                                             Welcome to HackAUBG 6.0, <br />
                                                                             <br />
-                                                                            {teamtName}!
+                                                                            {teamName}!
                                                                         </p>
                                                                         <p
-                                                                            style="font-size:25px;line-height:24px;margin:16px 0;display:none;font-family:&#x27;IBM Plex Mono&#x27;, monospace;color:#FFFFFF;background:#000;text-align:center">
+                                                                            style="font-size:25px;line-height:24px;margin:16px 0;display:{title_no_team};font-family:&#x27;IBM Plex Mono&#x27;, monospace;color:#FFFFFF;background:#000;text-align:center">
                                                                             Welcome to HackAUBG 6.0, <br />
                                                                             <br />
                                                                             {participantName}!
@@ -82,11 +82,18 @@
                                                                             >
                                                                         </p>
                                                                         <p
-                                                                            style="
-                                                                                font-size: 14px;
-                                                                                line-height: 24px;
-                                                                                margin: 16px 0;
-                                                                            "></p>
+                                                                            style="font-size:16px;line-height:24px;margin:16px 0;display:{inviteLinkVisibility};color:#FFFFFF;text-align:center;text-shadow:0px 0px 8px rgba(0, 0, 0, 0.8)">
+                                                                            Here is the invite link, so you can invite
+                                                                            your teammates to join: <br /><a
+                                                                                href="{inviteLink}"
+                                                                                style="
+                                                                                    color: #fff;
+                                                                                    text-decoration: underline;
+                                                                                "
+                                                                                target="_blank"
+                                                                                >{inviteLink}</a
+                                                                            >
+                                                                        </p>
                                                                         <p
                                                                             style="
                                                                                 font-size: 16px;
@@ -167,20 +174,6 @@
                                                                             >
                                                                         </p>
                                                                         <p
-                                                                            style="font-size:16px;line-height:24px;margin:16px 0;display:{inviteLinkVisibility};color:#FFFFFF;text-align:center;text-shadow:0px 0px 8px rgba(0, 0, 0, 0.8)">
-                                                                            However, before you go, here is the invite
-                                                                            link, so you can invite your teammates to
-                                                                            join: <br /><a
-                                                                                href="{inviteLink}"
-                                                                                style="
-                                                                                    color: #067df7;
-                                                                                    text-decoration: none;
-                                                                                "
-                                                                                target="_blank"
-                                                                                >{inviteLink}</a
-                                                                            >
-                                                                        </p>
-                                                                        <p
                                                                             style="
                                                                                 font-size: 16px;
                                                                                 line-height: 24px;
@@ -202,6 +195,7 @@
                                                                                 text-align: center;
                                                                                 text-shadow: 0px 0px 8px
                                                                                     rgba(0, 0, 0, 0.8);
+                                                                                margin-bottom: 25px;
                                                                             ">
                                                                             <span style="color: #c298f3"
                                                                                 >See you soon! - The Hub AUBG</span
