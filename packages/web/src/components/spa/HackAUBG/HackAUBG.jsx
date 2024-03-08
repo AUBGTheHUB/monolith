@@ -47,7 +47,6 @@ export const HackAUBG = () => {
                     setShowVerification(jwtToken);
                 }
             } else if (location.pathname === '/hackaubg') {
-                console.log('here');
                 document.getElementById('registration').scrollIntoView({ block: 'start', behavior: 'smooth' });
             }
         } else if (jwtToken !== null) {
