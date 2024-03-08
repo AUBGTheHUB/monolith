@@ -24,7 +24,12 @@ export const ParticipantWelcomeEmail = () => (
                                 Before the hackathon starts, there are a few{' '}
                                 <span style={highlight}>important things:</span>
                             </Text>
-                            <Text></Text>
+                            <Text style={paragraph_invite as React.CSSProperties}>
+                                Here is the invite link, so you can invite your teammates to join: <br />
+                                <Link
+                                    href="{inviteLink}"
+                                    style={inv_link as React.CSSProperties}>{`{inviteLink}`}</Link>
+                            </Text>
                             <Text style={paragraph as React.CSSProperties}>
                                 To ensure you stay in the loop, we will invite you to join the Official HackAUBG 6.0
                                 Facebook group. That is where we'll share all the latest updates and instructions about
@@ -51,15 +56,10 @@ export const ParticipantWelcomeEmail = () => (
                                     Linkedin
                                 </Link>
                             </Text>
-                            <Text style={paragraph_invite as React.CSSProperties}>
-                                However, before you go, here is the invite link, so you can invite your teammates to
-                                join: <br />
-                                <Link href="{inviteLink}">{`{inviteLink}`}</Link>
-                            </Text>
                             <Text style={paragraph as React.CSSProperties}>
                                 We're thrilled to have you on board and can't wait to meet you!
                             </Text>
-                            <Text style={paragraph as React.CSSProperties}>
+                            <Text style={paragraph_last as React.CSSProperties}>
                                 <span style={highlight}>See you soon! - The Hub AUBG</span>
                             </Text>
                         </Section>
@@ -86,7 +86,6 @@ const main = {
 
 const title_no_team = {
     // display: '{title_no_team}',
-    display: 'none',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -96,7 +95,6 @@ const title_no_team = {
 
 const title_team = {
     // display: '{title_team}',
-    display: 'inital',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -118,12 +116,21 @@ const paragraph = {
 };
 
 const paragraph_invite = {
-    display: '{inviteLinkVisibility}',
+    // display: '{inviteLinkVisibility}',
     fontSize: '16px',
     color: '#FFFFFF',
     lineHeight: '24px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+};
+
+const paragraph_last = {
+    fontSize: '16px',
+    color: '#FFFFFF',
+    lineHeight: '24px',
+    textAlign: 'center',
+    textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+    marginBottom: '25px',
 };
 
 const removeDots = {
@@ -144,4 +151,9 @@ const styleForBackground2 = {
 
 const highlight = {
     color: '#C298F3',
+};
+
+const inv_link = {
+    color: '#fff',
+    textDecoration: 'underline',
 };

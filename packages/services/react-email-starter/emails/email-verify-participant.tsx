@@ -29,7 +29,7 @@ export const ParticipantVerifyEmail = () => (
                                     <span style={highlight}>you have to:</span>
                                 </Text>
                                 <br /> <br /> <br />
-                                <div style={{ textAlign: 'center' }}>
+                                <div style={{ textAlign: 'center', paddingBottom: '50px' }}>
                                     <Link href="{verifyLink}" style={registerButton}>
                                         <h1 style={buttonText}>Verify</h1>
                                         <svg
@@ -53,8 +53,8 @@ export const ParticipantVerifyEmail = () => (
                                                     x2="10"
                                                     y2="0.000205119"
                                                     gradientUnits="userSpaceOnUse">
-                                                    <stop stopColor="#d8c2fb" />
-                                                    <stop offset="0.9999" stopColor="#d8c2fb" />
+                                                    <stop stopColor="#fff" />
+                                                    <stop offset="0.9999" stopColor="#fff" />
                                                     <stop offset="1" stopColor="white" stopOpacity="0" />
                                                 </linearGradient>
                                             </defs>
@@ -75,16 +75,13 @@ export default ParticipantVerifyEmail;
 
 const main = {
     fontFamily: "'IBM Plex Mono', monospace",
+    backgroundColor: '#000',
     backgroundImage: `url(https://s3-eu-central-1.amazonaws.com/hubarskibucket/email-background.png)`,
-    backgroundColor: '#fff',
     margin: '0',
-    display: 'block',
-    minHeight: '100vh',
-    position: 'relative' as 'relative',
 };
 
 const title_no_team = {
-    display: '{title_no_team}',
+    // display: '{title_no_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -93,7 +90,7 @@ const title_no_team = {
 };
 
 const title_team = {
-    display: '{title_team}',
+    // display: '{title_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -102,8 +99,7 @@ const title_team = {
 };
 
 const container = {
-    margin: '0 auto',
-    padding: '20px 0 48px',
+    margin: '20px auto',
     color: '#FFFFFF',
     backgroundColor: 'rgba(0, 0, 0, 1.5)',
 };
@@ -128,11 +124,11 @@ const highlight = {
 
 const registerButton = {
     display: 'inline-block',
-    padding: '17.5px 0',
-    border: '3px solid #D8C2FB',
+    padding: '10px 0',
+    border: '3px solid #fff',
     color: '#D8C2FB',
     textDecoration: 'none',
-    width: '47.5%',
+    width: '60%',
 };
 
 const buttonText = {
@@ -141,6 +137,7 @@ const buttonText = {
     fontFamily: "'Press Start 2P'",
     display: 'inline-block',
     verticalAlign: 'middle',
+    color: '#fff',
 };
 
 const styleForBackground = {
