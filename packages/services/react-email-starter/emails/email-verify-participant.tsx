@@ -13,7 +13,8 @@ export const ParticipantVerifyEmail = () => (
                         <Section style={styleForBackground3}>
                             <Section style={sectionStyle}>
                                 <Text style={title_team}>
-                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{teamName}`}!
+                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}, from team{' '}
+                                    {`{teamName}`}!
                                 </Text>
                                 <Text style={title_no_team}>
                                     Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
@@ -87,6 +88,7 @@ const title_no_team = {
     background: '#000',
     textAlign: 'center' as 'center',
     fontSize: '25px',
+    paddingTop: '30px',
 };
 
 const title_team = {
@@ -96,6 +98,7 @@ const title_team = {
     background: '#000',
     textAlign: 'center' as 'center',
     fontSize: '25px',
+    paddingTop: '30px',
 };
 
 const container = {
@@ -115,7 +118,9 @@ const paragraph = {
     lineHeight: '30px',
     textAlign: 'center' as 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
-    marginTop: '60px',
+    marginTop: '20px',
+    marginLeft: '10px',
+    marginRight: '10px',
 };
 
 const highlight = {

@@ -14,7 +14,7 @@ export const ParticipantWelcomeEmail = () => (
                     <Section style={styleForBackground}>
                         <Section style={styleForBackground2}>
                             <Text style={title_team}>
-                                Welcome to HackAUBG 6.0, <br /> <br /> {`{teamName}`}!
+                                Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}, from team {`{teamName}`}!
                             </Text>
                             <Text style={title_no_team}>
                                 Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
@@ -26,9 +26,11 @@ export const ParticipantWelcomeEmail = () => (
                             </Text>
                             <Text style={paragraph_invite as React.CSSProperties}>
                                 Here is the invite link, so you can invite your teammates to join: <br />
-                                <Link
-                                    href="{inviteLink}"
-                                    style={inv_link as React.CSSProperties}>{`{inviteLink}`}</Link>
+                            </Text>
+                            <Text style={aaa}>
+                                <Link href="{inviteLink}" style={inv_link as React.CSSProperties}>
+                                    http://localhost:3000/hackaubg?jwt_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsInRlYW1fbmFtZSI6IktCIExBQlMgQlJhdGxlIiwiaW52aXRlIjp0cnVlLCJleHAiOjE3MTI1MjY1NjF9.BS3Gsa4uNNaXBc8Gc3u11VGA6yeTTxph2abI-8BMwfc
+                                </Link>
                             </Text>
                             <Text style={paragraph as React.CSSProperties}>
                                 To ensure you stay in the loop, we will invite you to join the Official HackAUBG 6.0
@@ -91,6 +93,7 @@ const title_no_team = {
     background: '#000',
     textAlign: 'center' as 'center',
     fontSize: '25px',
+    paddingTop: '30px',
 };
 
 const title_team = {
@@ -100,6 +103,7 @@ const title_team = {
     background: '#000',
     textAlign: 'center' as 'center',
     fontSize: '25px',
+    paddingTop: '30px',
 };
 
 const container = {
@@ -113,16 +117,19 @@ const paragraph = {
     lineHeight: '24px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+    marginLeft: '3px',
+    marginRight: '3px',
 };
 
 const paragraph_invite = {
-    display: 'none',
-    // display: '{inviteLinkVisibility}',
+    display: '{inviteLinkVisibility}',
     fontSize: '16px',
     color: '#FFFFFF',
     lineHeight: '24px',
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+    marginLeft: '3px',
+    marginRight: '3px',
 };
 
 const paragraph_last = {
@@ -132,6 +139,8 @@ const paragraph_last = {
     textAlign: 'center',
     textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
     marginBottom: '25px',
+    marginLeft: '3px',
+    marginRight: '3px',
 };
 
 const removeDots = {
@@ -157,4 +166,13 @@ const highlight = {
 const inv_link = {
     color: '#fff',
     textDecoration: 'underline',
+    wordBreak: 'break-all',
+    textAlign: 'center',
+};
+
+const aaa = {
+    textAlign: 'center',
+    marginLeft: '3px',
+    marginRight: '3px',
+    fontSize: '12px',
 };
