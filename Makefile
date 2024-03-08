@@ -114,8 +114,3 @@ run-svelte-quest:
 .PHONY: run-email-template
 run-email-template:
 	cd packages/services/react-email-starter && npm run dev
-
-
-# .PHONY: run-email-template
-# run-email-template:
-# 	cd packages/services/react-email-template && npm run dev
