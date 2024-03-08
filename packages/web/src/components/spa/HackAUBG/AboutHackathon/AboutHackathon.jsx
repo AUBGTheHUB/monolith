@@ -1,13 +1,13 @@
 import React from 'react';
-import './about_hackathon.css';
+import styles from './about_hackathon.module.css';
 
 export const AboutHackathon = () => {
     return (
-        <div className="about-container-hack-aubg" id="about">
-            <h1 className="about-title-hack-aubg">ABOUT</h1>
-            <div className="about-text-container-hack-aubg">
-                <p className="about-text-hack-aubg">
-                    Welcome to HackAUBG 5.0 - the ultimate 52-hour hackathon experience organized by The Hub. At
+        <div className={styles.about_container_hack_aubg} id="about">
+            <h1 className={styles.about_title_hack_aubg}>ABOUT</h1>
+            <div className={styles.about_text_container_hack_aubg}>
+                <p className={styles.about_text_hack_aubg}>
+                    Welcome to HackAUBG 6.0 - the ultimate 52-hour hackathon experience organized by The Hub. At
                     HackAUBG, our goal is to provide a platform for students, professionals, and entrepreneurs to come
                     together and develop solutions for real-world problems. Whether you’re a programmer, a designer, or
                     simply have an interest in tech or business, we welcome you to join us and put your skills to the

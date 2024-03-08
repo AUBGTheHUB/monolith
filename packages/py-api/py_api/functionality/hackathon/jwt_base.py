@@ -8,7 +8,7 @@ from jwt import (
     decode,
     encode,
 )
-from py_api.environment import IS_OFFLINE, SECRET_KEY
+from py_api.environment import HUB_WEB_URL, IS_OFFLINE, SECRET_KEY
 
 
 class JWTFunctionality:
@@ -21,7 +21,7 @@ class JWTFunctionality:
             "sub": participant_obj_id,
             "team_name": team_name,
             "invite": is_invite,
-            "exp": datetime.utcnow() + timedelta(hours=24),
+            "exp": datetime.utcnow() + timedelta(days=30 if is_invite else 2),
         }
 
         return str(encode(payload, SECRET_KEY, algorithm="HS256"))
@@ -48,14 +48,20 @@ class JWTFunctionality:
 
     @classmethod
     def get_email_link(
-            cls, jwt_token: str, domain: str = "https://thehub-aubg.com",
+            cls, jwt_token: str,
             for_frontend: bool = False, is_invite: bool = False,
     ) -> str:
+
         if IS_OFFLINE:
-            domain = f"http://localhost:{'3000' if for_frontend else '6969'}"
+            domain = f"{HUB_WEB_URL}:{'3000' if for_frontend else '6969'}"
+        else:
+            domain = HUB_WEB_URL
 
         if for_frontend:
-            url = f"{domain}/hackaubg?jwt_token={jwt_token}"
+            if is_invite:
+                url = f"{domain}/hackaubg?jwt_token={jwt_token}"
+            else:
+                url = f"{domain}/hackaubg/verify?jwt_token={jwt_token}"
 
         elif is_invite:
             url = f"{domain}/v2/hackathon/participants?jwt_token={jwt_token}"

@@ -1,0 +1,207 @@
+.title-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+    height: 100%;
+}
+
+.title-container h1 {
+    text-align: center;
+    font-family: 'Press Start 2P', system-ui;
+    color: #fff;
+    background-color: #fb4298;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7em;
+    margin: 0 !important;
+    padding: 10px 0;
+}
+
+.title {
+    display: flex;
+    width: 60%;
+    justify-content: flex-start;
+    padding: 10px 0;
+}
+
+.pac {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+    width: 25%;
+    padding-left: 10px;
+}
+
+.pacman-left {
+    width: auto;
+    height: 4vw;
+}
+
+.mentors-section-container {
+    position: relative;
+    margin-top: 5vw;
+}
+
+.tedko-container img {
+    border: 1.5vw #402f5c solid;
+    height: 20vw;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0px !important;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    cursor: pointer;
+}
+
+.carousel {
+    position: relative;
+    left: 7%;
+    height: 100%;
+    max-width: 85%;
+}
+
+.text-bottom {
+    position: relative;
+    margin-top: 0px;
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: center;
+    width: 20vw;
+    font-size: 90%;
+    font-weight: 500;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.names {
+    background-color: #c0f589;
+    border: 1px black solid;
+    font-size: 1.5vw;
+    margin-bottom: 0;
+    position: relative;
+}
+
+.position {
+    background-color: #c0f589;
+    border: 1px black solid;
+    width: 47% !important;
+    min-height: 40px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    text-wrap: balance;
+}
+
+.company {
+    background-color: #c0f589;
+    border: 1px black solid;
+    width: 53% !important;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    text-wrap: balance;
+}
+
+.bonus-info {
+    display: flex;
+    font-size: 1vw;
+    min-height: 4.5vw;
+}
+
+.mentors-coming-soon-container {
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+    font-size: 1.8vw !important;
+}
+
+.mentor-container {
+    display: flex;
+    width: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+    .title-container h1 {
+        font-size: 1.1em;
+        width: 70%;
+        padding: 10px 0;
+    }
+    .title {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .pac {
+        padding-right: 10px;
+        width: 30%;
+        justify-content: flex-end !important;
+
+        justify-content: space-between;
+    }
+
+    .pacman-left {
+        width: auto;
+        height: 7vw;
+    }
+}
+
+a {
+    outline: none;
+}
+
+@media only screen and (max-width: 900px) {
+    .bonus-info {
+        font-size: 1.5vw;
+    }
+
+    .names {
+        font-size: 2vw;
+    }
+
+    .tedko-container img {
+        height: 30vw;
+    }
+
+    .mentor-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    .text-bottom {
+        width: 30vw;
+    }
+    .mentors-coming-soon-container {
+        font-size: 5vw !important;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .bonus-info {
+        font-size: 3vw;
+    }
+
+    .names {
+        font-size: 4vw;
+    }
+
+    .tedko-container img {
+        height: 60vw;
+    }
+
+    .mentor-container {
+        width: 90% !important;
+        position: relative;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    .text-bottom {
+        width: 60vw;
+    }
+}
