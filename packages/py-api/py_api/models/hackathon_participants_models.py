@@ -1,6 +1,6 @@
 from typing import Annotated, Literal, Optional
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, validator
 
 TSHIRT_SIZE = Literal[
     'Small (S)', 'Medium (M)',
@@ -35,7 +35,7 @@ class NewParticipant(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    tshirt_size: TSHIRT_SIZE
+    tshirt_size: Optional[TSHIRT_SIZE] = None
     team_name: Optional[str] = None
     is_verified: Optional[bool] = False
     is_admin: Optional[bool] = False
@@ -49,14 +49,17 @@ class NewParticipant(BaseModel):
     has_internship_interest: bool
     has_participated_in_hackathons: bool
     has_previous_coding_experience: bool
-    newsletter_consent: bool
     share_info_with_sponsors: bool
 
-    @validator("share_info_with_sponsors")
+    @field_validator("share_info_with_sponsors", mode='before')
     def check_if_true(cls, value: bool) -> bool:
         if not value:
             raise ValueError("share_info_with_sponsors shall be true")
         return value
+
+    @field_validator('tshirt_size', mode='before')
+    def convert_empty_string_to_none(cls, value: str) -> str | None:
+        return None if value == "" else value
 
 
 class UpdateParticipant(BaseModel):
@@ -76,5 +79,8 @@ class UpdateParticipant(BaseModel):
     has_internship_interest: Optional[bool] = None
     has_participated_in_hackathons: Optional[bool] = None
     has_previous_coding_experience: Optional[bool] = None
-    newsletter_consent: Optional[bool] = None
     share_info_with_sponsors: Optional[bool] = True
+
+    @field_validator('tshirt_size', mode='before')
+    def convert_empty_string_to_none(cls, value: str) -> str | None:
+        return None if value == "" else value
