@@ -56,7 +56,7 @@ class MailingFunctionality:
                 )
             else:
                 html_content = html_content.replace(
-                    "{inviteLinkVisibility}", "initial",
+                    "{inviteLinkVisibility}", "block",
                 )
         else:
             html_content = (
