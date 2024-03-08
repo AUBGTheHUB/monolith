@@ -2,6 +2,7 @@ from typing import Any, Dict
 
 from fastapi.responses import JSONResponse
 from py_api.functionality.hackathon.jwt_base import JWTFunctionality
+from py_api.functionality.hackathon.mailing_functionality import MailingFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models.hackathon_participants_models import UpdateParticipant
@@ -32,7 +33,7 @@ class VerificationController:
                 status_code=404,
             )
 
-        verified_participant = ParticipantsFunctionality.update_participant(
+        verified_participant: Dict[str, Any] = ParticipantsFunctionality.update_participant(
             object_id=str(decoded_token.get("sub")), participant=UpdateParticipant(
                 is_verified=True,
             ),
@@ -46,25 +47,29 @@ class VerificationController:
 
         try:
             if team.team_type == team.team_type.NORMAL:
-                # Invite link is sent to the admin along with verification message
+                # A confirmation email is send to the admin along with the invite link
                 jwt_token = JWTFunctionality.create_jwt_token(
                     team_name=team.team_name, is_invite=True,
                 )
 
                 background_tasks.add_task(
-                    send_email_background_task, verified_participant.get(
+                    MailingFunctionality.send_confirmation_email, email=verified_participant.get(
                         "email",
-                    ), "Test",
-                    f"You have successfully registred from HACKAUBG 6.0. To invite your teamates to join your team use the following link. \n Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True, is_invite=True)}",
+                    ),
+                    jwt_token=jwt_token,
+                    team_name=verified_participant.get("team_name"),
+                    participant_name=verified_participant.get("first_name"), is_admin=True,
                 )
 
             else:
-                # Verification email is sent to the random team participant
+                # A confirmation email is send to the random participant
                 background_tasks.add_task(
-                    send_email_background_task, verified_participant.get(
+                    MailingFunctionality.send_confirmation_email, email=verified_participant.get(
                         "email",
-                    ), "HackAUBG registration confirmation",
-                    f"You have successfully been registred to HACKAUBG 6.0! Happy Coding!",
+                    ),
+                    jwt_token=jwt_token,
+                    team_name=None,
+                    participant_name=verified_participant.get("first_name"),
                 )
 
         except Exception as e:
