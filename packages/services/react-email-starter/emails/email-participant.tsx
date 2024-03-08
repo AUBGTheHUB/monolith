@@ -29,7 +29,7 @@ export const ParticipantWelcomeEmail = () => (
                             </Text>
                             <Text style={aaa}>
                                 <Link href="{inviteLink}" style={inv_link as React.CSSProperties}>
-                                    http://localhost:3000/hackaubg?jwt_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOm51bGwsInRlYW1fbmFtZSI6IktCIExBQlMgQlJhdGxlIiwiaW52aXRlIjp0cnVlLCJleHAiOjE3MTI1MjY1NjF9.BS3Gsa4uNNaXBc8Gc3u11VGA6yeTTxph2abI-8BMwfc
+                                    {`{inviteLink}`}
                                 </Link>
                             </Text>
                             <Text style={paragraph as React.CSSProperties}>
