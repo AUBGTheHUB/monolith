@@ -28,7 +28,7 @@ class MailingFunctionality:
 
     @classmethod
     def generate_email_body(
-            cls, template_path: str, participant_name: str, has_invite_link: bool, jwt_token: str,
+            cls, template_path: str, participant_name: str, has_invite_link: bool, jwt_token: str, is_admin: bool = False,
             team_name: str | None = None,
     ) -> str:
         email_link = JWTFunctionality.get_email_link(
@@ -46,10 +46,18 @@ class MailingFunctionality:
                 html_content
                 .replace("{title_no_team}", "none")
                 .replace("{title_team}", "inital")
-                .replace("{inviteLinkVisibility}", "inital")
                 .replace("{inviteLink}", email_link)
                 .replace("{teamName}", team_name)
             )
+
+            if is_admin is False:
+                html_content = html_content.replace(
+                    "{inviteLinkVisibility}", "none",
+                )
+            else:
+                html_content = html_content.replace(
+                    "{inviteLinkVisibility}", "initial",
+                )
         else:
             html_content = (
                 html_content
@@ -82,7 +90,7 @@ class MailingFunctionality:
 
         body_html = cls.generate_email_body(
             template["template_path"], jwt_token=jwt_token, team_name=team_name,
-            participant_name=participant_name, has_invite_link=True,
+            participant_name=participant_name, has_invite_link=True, is_admin=is_admin,
         )
 
         await send_mail(email, template["subject"], body_html)
