@@ -1,5 +1,5 @@
 import { Button } from './Button';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
@@ -19,6 +19,10 @@ export const NavMobile = ({ props }) => {
     if (currentBodyHeight !== bodyHeight) {
         setBodyHeight(currentBodyHeight);
     }
+
+    useEffect(() => {
+        makeBodyScrollable();
+    }, []);
 
     const renderHackButton = () => {
         if (props.hasHackButton) {

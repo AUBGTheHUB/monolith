@@ -8,6 +8,7 @@
     justify-content: center;
     font-weight: bold;
     width: 52%;
+    z-index: 999;
 }
 
 .navdesktop-container {
