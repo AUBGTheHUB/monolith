@@ -9,6 +9,7 @@ from py_api.database.database_transaction_handlers import (
 )
 from py_api.database.initialize import client, participants_col
 from py_api.functionality.hackathon.jwt_base import JWTFunctionality
+from py_api.functionality.hackathon.mailing_functionality import MailingFunctionality
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import NewParticipant, UpdateParticipant
@@ -175,6 +176,7 @@ class ParticipantsController:
             cls, participant: NewParticipant, existing_team: HackathonTeam, session: ClientSession,
             is_invite: bool = False,
     ) -> JSONResponse:
+
         if is_invite:
             participant.is_verified = True
 
@@ -182,7 +184,6 @@ class ParticipantsController:
         new_participant = ParticipantsFunctionality.insert_participant(
             participant, session,
         )
-
         new_participant_object_id = str(new_participant.inserted_id)
 
         result = TeamFunctionality.add_participant_to_team_object(
@@ -198,17 +199,26 @@ class ParticipantsController:
 
         background_tasks = BackgroundTasks()
         if not is_invite:
+            # The participant is random, so we send them a verification email
             jwt_token = JWTFunctionality.create_jwt_token(
                 new_participant_object_id, existing_team.team_name,
             )
+
             background_tasks.add_task(
-                send_email_background_task, participant.email, "Test",
-                f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
+                MailingFunctionality.send_verification_email, email=participant.email, jwt_token=jwt_token,
+                team_name=None,
+                participant_name=participant.first_name,
             )
+
         else:
+            # The participant has registered via an invitation link, so we send them a confirmation email
+            jwt_token = JWTFunctionality.create_jwt_token(
+                new_participant_object_id, existing_team.team_name, is_invite=True,
+            )
             background_tasks.add_task(
-                send_email_background_task, participant.email, "HackAUBG registration confirmation",
-                f"You have successfully to {participant.team_name} on HACKAUBG 6.0! Happy Coding!",
+                MailingFunctionality.send_confirmation_email, email=participant.email, jwt_token=jwt_token,
+                team_name=participant.team_name,
+                participant_name=participant.first_name, is_admin=False,
             )
 
         return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
@@ -249,8 +259,9 @@ class ParticipantsController:
 
         background_tasks = BackgroundTasks()
         background_tasks.add_task(
-            send_email_background_task, participant.email, "Test",
-            f"Url: {JWTFunctionality.get_email_link(jwt_token)}",
+            MailingFunctionality.send_verification_email, email=participant.email, jwt_token=jwt_token,
+            team_name=participant.team_name if not generate_random_team else None,
+            participant_name=participant.first_name,
         )
 
         return JSONResponse(content=new_team.model_dump(), status_code=200, background=background_tasks)
