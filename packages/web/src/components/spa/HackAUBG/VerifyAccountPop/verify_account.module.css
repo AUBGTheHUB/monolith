@@ -62,7 +62,8 @@
     align-items: center;
 }
 
-.verify-button {
+.verify-button,
+.verify-button-disabled {
     width: 18vw;
     height: 10vh;
     display: flex;
@@ -120,6 +121,12 @@
     inset: 6px;
 }
 
+.verify-button-disabled {
+    pointer-events: none;
+    opacity: 0.8;
+    user-select: none;
+}
+
 @keyframes rotate {
     0% {
         transform: rotate(0deg);
@@ -148,7 +155,8 @@
 }
 
 @media (min-width: 1025px) and (max-width: 1400px) {
-    .verify-button {
+    .verify-button,
+    .verify-button-disabled {
         width: 25vw;
     }
 }
@@ -175,7 +183,8 @@
         margin-top: 20px;
     }
 
-    .verify-button {
+    .verify-button,
+    .verify-button-disabled {
         width: 25vw;
         height: 10vh;
         font-size: 30px;
@@ -209,7 +218,8 @@
         margin-top: 22px;
     }
 
-    .verify-button {
+    .verify-button,
+    .verify-button-disabled {
         width: 38vw;
         height: 10vh;
         font-size: 25px;

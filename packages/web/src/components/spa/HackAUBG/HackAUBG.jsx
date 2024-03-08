@@ -8,7 +8,7 @@ import { Footer } from '../Footer/Footer';
 import MentorsSection from './MentorsSection/MentorsSection';
 import JudgesSection from './JudgesSection/JudgesSection';
 import VideoSection from './VideoSection/VideoSection';
-import RegistrationForm from './RegistrationForm/RegistrationForm';
+import RegistrationForm from './RegistrationForm/RegistrationForm.jsx';
 import { GradingCriteria } from './GradingCriteria/GradingCriteria';
 import { AwardsSection } from '../HackAUBG/AwardsSection/AwardsSection';
 import { FAQSection } from './FAQSection/FAQSection.jsx';
@@ -19,8 +19,11 @@ import { FaRegLightbulb } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
 import { VerifyAccount } from '../HackAUBG/VerifyAccountPop/VerifyAccount.jsx';
 import { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 
 export const HackAUBG = () => {
+    const [showVerification, setShowVerification] = useState('');
+
     document.body.className = 'hackaubg-container';
 
     const anchorList = [
@@ -31,10 +34,23 @@ export const HackAUBG = () => {
     ];
 
     const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const jwtToken = params.get('jwt_token');
 
-    const [showVerification, setShowVerification] = useState(jwtToken);
+    const params = new URLSearchParams(location.search);
+    useEffect(() => {
+        const jwtToken = params.get('jwt_token');
+        const jwtPattern = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/;
+        if (jwtPattern.test(jwtToken)) {
+            if (location.pathname === '/hackaubg/verify') {
+                if (params.size === 0 || jwtToken === null) {
+                    window.location.href = '/hackaubg';
+                } else {
+                    setShowVerification(jwtToken);
+                }
+            }
+        } else if (jwtToken !== null) {
+            window.location.href = '/hackaubg';
+        }
+    }, [location]);
 
     useEffect(() => {
         document.body.style.overflow = showVerification ? 'hidden' : 'auto';
@@ -57,8 +73,7 @@ export const HackAUBG = () => {
                             '#222222', // mobile nav background color when not opened (default transparent)
                             'gray', // mobile background color nav when opened
                             '#e2d7fc', // anchor color
-                            'white', // desktop anchor hover color
-                            'dark gray', // mobile anchor hover color
+                            'hackAUBG', // specify HackAUBG page
                         )
                     }
                 />
@@ -83,6 +98,7 @@ export const HackAUBG = () => {
                 />
             </div>
             {showVerification && <VerifyAccount className="no-blur" onSuccess={handleVerificationSuccess} />}
+            <Outlet />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './verify_account.module.css';
 import { FaRegWindowMinimize } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
@@ -6,9 +6,14 @@ import axios from 'axios';
 import { verifyURL } from '../../../../Global';
 
 export const VerifyAccount = ({ className, onSuccess }) => {
+    const [jwtToken, setJwtToken] = useState('');
     const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const jwtToken = params.get('jwt_token');
+    const [buttonState, setButtonState] = useState(true);
+    const [errorMsg, setErrorMsg] = useState('');
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        setJwtToken(params.get('jwt_token'));
+    }, []);
 
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -23,13 +28,19 @@ export const VerifyAccount = ({ className, onSuccess }) => {
             .then(() => {
                 setSuccess(true);
                 setLoading(false);
+                setButtonState(false);
                 setTimeout(() => {
                     onSuccess();
                 }, 3000);
             })
 
-            .catch(() => {
+            .catch(err => {
                 setError(true);
+                console.log(err.response.status);
+                if (err.response.status === 498) {
+                    setErrorMsg('Invite link has expired');
+                }
+
                 setTimeout(() => {
                     setLoading(false);
                 }, 3000);
@@ -65,12 +76,16 @@ export const VerifyAccount = ({ className, onSuccess }) => {
                     className={`${styles['verify-button-container']} ${
                         error || success ? styles['message-shown'] : ''
                     }`}>
-                    <div className={styles['verify-button']} onClick={handleVerifyClick}>
+                    <div
+                        className={buttonState ? styles['verify-button'] : styles['verify-button-disabled']}
+                        onClick={handleVerifyClick}>
                         Verify <span className={styles['button-message']}>participation</span>
                     </div>
                     {loading && <span className={styles['loader']}></span>}
                     {!loading && error && (
-                        <div className={styles['error-message']}>An error occured, please try again later!</div>
+                        <div className={styles['error-message']}>
+                            An error occured, please try again later! {errorMsg}
+                        </div>
                     )}
                     {!loading && success && (
                         <div className={styles['success-message']}>You have been successfully verified!</div>

@@ -4,8 +4,14 @@ import { useState, useEffect } from 'react';
 import { url } from '../../../../Global';
 import SimpleSlider from '../Carousel';
 import styles from './mentors_section.module.css';
+import { FsContext } from '../../../../feature_switches';
+import { useContext } from 'react';
+
 export const MentorsSection = () => {
     const [mentor, setMentors] = useState();
+    // eslint-disable-next-line
+    const [featureSwitches, _] = useContext(FsContext);
+
     const getMentors = () => {
         axios({
             method: 'get',
@@ -21,7 +27,7 @@ export const MentorsSection = () => {
     };
 
     const renderMentors = () => {
-        if (mentor) {
+        if (mentor && featureSwitches.Mentors) {
             return (
                 <div className={styles['mentors-section-container']}>
                     <div className={styles['title-container']}>
@@ -40,10 +46,10 @@ export const MentorsSection = () => {
         }
         return (
             <div className={styles['mentors-coming-soon-container']}>
-                <h1>
+                <p>
                     Mentors coming <br />
                     soon...
-                </h1>
+                </p>
             </div>
         );
     };

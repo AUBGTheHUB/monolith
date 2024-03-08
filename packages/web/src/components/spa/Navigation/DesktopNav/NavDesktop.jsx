@@ -20,6 +20,7 @@ export const NavDesktop = ({ props }) => {
             );
         }
     };
+
     const openHome = () => {
         navigateTo('/');
         window.scrollTo(0, 0);
@@ -58,16 +59,8 @@ export const NavDesktop = ({ props }) => {
             );
         }
         return (
-            <div className="anchor-navbar-buttons">
-                <a
-                    href={anchor.endpoint}
-                    onMouseEnter={e => {
-                        changeAnchorColor(e, props.anchorHoverColor);
-                    }}
-                    onMouseLeave={e => {
-                        changeAnchorColor(e, props.anchorColor);
-                    }}
-                    style={{ color: props.anchorColor }}>
+            <div className={`anchor-navbar-buttons ` + props.specifyHack}>
+                <a href={anchor.endpoint} style={{ color: props.anchorColor }}>
                     {anchor.name}
                     {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
                 </a>

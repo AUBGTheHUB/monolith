@@ -118,9 +118,6 @@ class ParticipantsController:
         str, str,
     ]:
 
-        if TeamFunctionality.get_count_of_teams() > 16:
-            return JSONResponse(content={"message": "Hackathon is at max capacity"}, status_code=409)
-
         if ParticipantsFunctionality.check_if_email_exists(participant.email):
             return JSONResponse(status_code=400, content={"message": "User with such email already exists"})
 
@@ -129,28 +126,28 @@ class ParticipantsController:
             # the frontend
             return cls.handle_registration_via_invite_link(jwt_token, participant)
 
-        # The participant has provided a team name upon registration, so we assign them as admin to the newly
-        # created team
-        if participant.team_name:
-            return cls.add_participant_to_new_team(participant)
-
-        # The participant hasn't provided a team name upon registration, so we should add them to a random team
-        else:
+        # Logic for adding a random participant to an existing team
+        if not participant.team_name:
             # Fetch the teams of type random
             random_teams = TeamFunctionality.fetch_teams_by_condition(
                 {"team_type": "random"},
             )
-
-            # Find the teams which can accept a new participant
+            # Find the teams which can accept a new participant and add it if there is space
             for team in random_teams:
                 if len(team.team_members) < 6:
                     return cls.add_participant_to_existing_team(participant, team)
 
-            # If all the random teams are full, check if there is space for creating a new one
-            if TeamFunctionality.get_count_of_teams() < 16:
+        # Logic for creating a new team and adding the admin
+        if TeamFunctionality.get_count_of_teams() < 16:
+            if participant.team_name:
+                # The participant has provided a team name upon registration, so we assign them as admin to the newly
+                # created team
+                return cls.add_participant_to_new_team(participant)
+            else:
+                # The participant hasn't provided a team name upon registration, so we assign the admin to the newly created random team
                 return cls.add_participant_to_new_team(participant, generate_random_team=True)
 
-            return JSONResponse(content={"message": "The maximum number of teams is reached."}, status_code=409)
+        return JSONResponse(content={"message": "Hackathon is at maximum capacity"}, status_code=409)
 
     @classmethod
     def handle_registration_via_invite_link(cls, jwt_token: str, participant: NewParticipant) -> JSONResponse:
@@ -207,6 +204,11 @@ class ParticipantsController:
             background_tasks.add_task(
                 send_email_background_task, participant.email, "Test",
                 f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True)}",
+            )
+        else:
+            background_tasks.add_task(
+                send_email_background_task, participant.email, "HackAUBG registration confirmation",
+                f"You have successfully to {participant.team_name} on HACKAUBG 6.0! Happy Coding!",
             )
 
         return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)

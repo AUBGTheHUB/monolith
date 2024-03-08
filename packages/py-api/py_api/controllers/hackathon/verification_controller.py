@@ -44,10 +44,9 @@ class VerificationController:
                 team_payload=team.model_dump(),
             )
 
-        if team.team_type == team.team_type.NORMAL:
-
-            # Invite link is sent to the admin
-            try:
+        try:
+            if team.team_type == team.team_type.NORMAL:
+                # Invite link is sent to the admin along with verification message
                 jwt_token = JWTFunctionality.create_jwt_token(
                     team_name=team.team_name, is_invite=True,
                 )
@@ -56,14 +55,23 @@ class VerificationController:
                     send_email_background_task, verified_participant.get(
                         "email",
                     ), "Test",
-                    f"Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True, is_invite=True)}",
+                    f"You have successfully registred from HACKAUBG 6.0. To invite your teamates to join your team use the following link. \n Url: {JWTFunctionality.get_email_link(jwt_token, for_frontend=True, is_invite=True)}",
                 )
 
-            except Exception as e:
-                return JSONResponse(
-                    content={"error": str(e)},
-                    status_code=500,
+            else:
+                # Verification email is sent to the random team participant
+                background_tasks.add_task(
+                    send_email_background_task, verified_participant.get(
+                        "email",
+                    ), "HackAUBG registration confirmation",
+                    f"You have successfully been registred to HACKAUBG 6.0! Happy Coding!",
                 )
+
+        except Exception as e:
+            return JSONResponse(
+                content={"error": str(e)},
+                status_code=500,
+            )
 
         return JSONResponse(
             content={"message": "Participant was successfully verified"}, status_code=200,
