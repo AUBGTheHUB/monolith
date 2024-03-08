@@ -13,7 +13,10 @@ export const ParticipantWelcomeEmail = () => (
                 <Section style={removeDots}>
                     <Section style={styleForBackground}>
                         <Section style={styleForBackground2}>
-                            <Text style={title}>
+                            <Text style={title_team}>
+                                Welcome to HackAUBG 6.0, <br /> <br /> {`{teamtName}`}!
+                            </Text>
+                            <Text style={title_no_team}>
                                 Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
                             </Text>
                             <br /> <br />
@@ -21,12 +24,9 @@ export const ParticipantWelcomeEmail = () => (
                                 Before the hackathon starts, there are a few{' '}
                                 <span style={highlight}>important things:</span>
                             </Text>
+                            <Text></Text>
                             <Text style={paragraph as React.CSSProperties}>
-                                You can view your payments and a variety of other information about your account right
-                                from your dashboard.
-                            </Text>
-                            <Text style={paragraph as React.CSSProperties}>
-                                To ensure you stay in the loop, we will invite you to join the Official HackAUBG 5.0
+                                To ensure you stay in the loop, we will invite you to join the Official HackAUBG 6.0
                                 Facebook group. That is where we'll share all the latest updates and instructions about
                                 the event.
                             </Text>
@@ -51,13 +51,10 @@ export const ParticipantWelcomeEmail = () => (
                                     Linkedin
                                 </Link>
                             </Text>
-                            <Text style={paragraph as React.CSSProperties}>
+                            <Text style={paragraph_invite as React.CSSProperties}>
                                 However, before you go, here is the invite link, so you can invite your teammates to
-                                join:
-                                <Link href="{`{inviteLink}`}" style={highlight}>
-                                    {' '}
-                                    click here
-                                </Link>
+                                join: <br />
+                                <Link href="{inviteLink}">{`{inviteLink}`}</Link>
                             </Text>
                             <Text style={paragraph as React.CSSProperties}>
                                 We're thrilled to have you on board and can't wait to meet you!
@@ -87,7 +84,19 @@ const main = {
     margin: '0',
 };
 
-const title = {
+const title_no_team = {
+    // display: '{title_no_team}',
+    display: 'none',
+    fontFamily: "'IBM Plex Mono', monospace",
+    color: '#FFFFFF',
+    background: '#000',
+    textAlign: 'center' as 'center',
+    fontSize: '25px',
+};
+
+const title_team = {
+    // display: '{title_team}',
+    display: 'inital',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
     background: '#000',
@@ -101,6 +110,15 @@ const container = {
 };
 
 const paragraph = {
+    fontSize: '16px',
+    color: '#FFFFFF',
+    lineHeight: '24px',
+    textAlign: 'center',
+    textShadow: '0px 0px 8px rgba(0, 0, 0, 0.8)',
+};
+
+const paragraph_invite = {
+    display: '{inviteLinkVisibility}',
     fontSize: '16px',
     color: '#FFFFFF',
     lineHeight: '24px',

@@ -12,8 +12,11 @@ export const ParticipantVerifyEmail = () => (
                     <Section style={styleForBackground2}>
                         <Section style={styleForBackground3}>
                             <Section style={sectionStyle}>
-                                <Text style={title}>
-                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}
+                                <Text style={title_team}>
+                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{teamtName}`}!
+                                </Text>
+                                <Text style={title_no_team}>
+                                    Welcome to HackAUBG 6.0, <br /> <br /> {`{participantName}`}!
                                 </Text>
                                 <br /> <br />
                                 <Text style={paragraph}>
@@ -80,9 +83,20 @@ const main = {
     position: 'relative' as 'relative',
 };
 
-const title = {
+const title_no_team = {
+    display: '{title_no_team}',
     fontFamily: "'IBM Plex Mono', monospace",
     color: '#FFFFFF',
+    background: '#000',
+    textAlign: 'center' as 'center',
+    fontSize: '25px',
+};
+
+const title_team = {
+    display: '{title_team}',
+    fontFamily: "'IBM Plex Mono', monospace",
+    color: '#FFFFFF',
+    background: '#000',
     textAlign: 'center' as 'center',
     fontSize: '25px',
 };
@@ -114,11 +128,11 @@ const highlight = {
 
 const registerButton = {
     display: 'inline-block',
-    padding: '25px 10px',
+    padding: '17.5px 0',
     border: '3px solid #D8C2FB',
     color: '#D8C2FB',
     textDecoration: 'none',
-    width: '50%',
+    width: '47.5%',
 };
 
 const buttonText = {
