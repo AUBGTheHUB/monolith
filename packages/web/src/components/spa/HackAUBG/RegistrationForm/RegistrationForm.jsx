@@ -625,38 +625,6 @@ const RegistrationForm = () => {
                                 {errors.hasexperience && <p className="error-text">*This field is required</p>}
                             </p>
                         </div>
-                        <div className="send-info">
-                            <label className="radio-label">
-                                Do you want to receive our newsletter with potential job offerings?
-                            </label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('wantjoboffers', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('wantjoboffers', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.wantjoboffers && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
                     </fieldset>
                     {apiError == true && (
                         <p className="db-error-msg">
