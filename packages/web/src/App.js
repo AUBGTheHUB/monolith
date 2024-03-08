@@ -11,7 +11,6 @@ import { goBackIfActionsAreStateless, handleUrlDependantStyling } from './Global
 import { FsContext, loadFeatureSwitches, parseFeatureSwitches } from './feature_switches';
 import { Toaster } from 'react-hot-toast';
 import AdminRoutesWithBackButton from './AdminRoutesWithBackButton';
-import { VerifyAccount } from './components/spa/HackAUBG/VerifyAccountPop/VerifyAccount';
 
 function App() {
     document.addEventListener('locationChange', handleUrlDependantStyling);
@@ -37,7 +36,7 @@ function App() {
                 <Route path="/" element={<LandingHome />} />
                 <Route path="/*" element={<NotFound />} />
                 <Route path="/hackaubg" element={<HackAUBG />}>
-                    <Route path=":variable_name" element={<VerifyAccount />} />
+                    <Route path="verify" />
                 </Route>
                 {featureSwitches.jobs ? <Route path="/jobs" element={<JobsSection />} /> : null}
                 <Route path="/admin" element={<LandingAdminPage />} />

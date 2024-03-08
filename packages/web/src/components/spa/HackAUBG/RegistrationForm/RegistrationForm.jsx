@@ -1,29 +1,32 @@
-import React, { useContext, useEffect } from 'react'; // eslint-disable-line
-import './registration_form.css';
+import React, { useContext, useEffect, useState } from 'react'; // eslint-disable-line
+import styles from './registration_form.module.css';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import InputComponent from './InputComponent';
 import axios from 'axios';
 import { url } from '../../../../Global';
-import { BsExclamationCircleFill } from 'react-icons/bs';
+import { registerURL } from '../../../../Global';
+import { jwtDecode } from 'jwt-decode';
 import { FsContext } from '../../../../feature_switches';
+import { isApiUpURL } from '../../../../Global';
 
 const RegistrationForm = () => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }, // eslint-disable-line
-    } = useForm({ mode: 'all' });
-
     // eslint-disable-next-line
     const [featureSwitches, _] = useContext(FsContext);
-
-    const [loadingAnimation, setLoadingAnimation] = useState(false);
-    const [submitPressed, setSubmitPressed] = useState(false); // eslint-disable-line
-    const [submitButtonValue, setSubmitButtonValue] = useState('Register'); // eslint-disable-line
-    const [apiError, setApiError] = useState(false);
-    const [buttonMessage, setButtonMessage] = useState('');
-    const [disableTeamNameField, setDisableTeamNameField] = useState(true);
     const [isFormAvailable, setIsFormAvailable] = useState(false);
+    const [teamName, setTeamName] = useState('');
+    const [token, setToken] = useState('');
+    const [error, setError] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [displayTeam, setDisplayTeam] = useState(false);
+    const [isApiUp, setIsApiUp] = useState(true);
+    const [req, setReq] = useState('');
+
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        getValues,
+    } = useForm({ mode: 'all' });
 
     const checkRegistrationAvailability = () => {
         axios({
@@ -36,612 +39,317 @@ const RegistrationForm = () => {
             .catch(() => {
                 setIsFormAvailable(false);
             });
+
+        axios({
+            method: 'get',
+            url: isApiUpURL,
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    setIsApiUp(true);
+                }
+            })
+            .catch(err => {
+                if (err.code === 'ERR_NETWORK') {
+                    setIsApiUp(false);
+                }
+            });
     };
 
     useEffect(() => {
         checkRegistrationAvailability();
+        const token = new URL(window.location.href).searchParams.get('jwt_token');
+        if (token) {
+            setToken(token);
+            const decoded = jwtDecode(token);
+            setTeamName(decoded.team_name);
+        }
     }, []);
+    if (isFormAvailable) return null;
 
-    const registerMember = data => {
-        axios({
-            method: 'post',
+    const onSubmit = () => {
+        if (Object.keys(errors).length == 0) {
+            const values = getValues();
+            const updatedValues = {};
 
-            // * /api/hackathon/register?testing=true -> if you want to test the endpoint without sending an email upon registration
-            url: url + '/api/hackathon/register',
-            data,
-        })
-            // eslint-disable-next-line no-unused-vars
-            .then(res => {
-                setLoadingAnimation(false);
-                setApiError(false);
-                console.log(res['response']['data']['message']);
+            for (const [key, value] of Object.entries(values)) {
+                if (value === 'true') {
+                    updatedValues[key] = true;
+                } else if (value === 'false') {
+                    updatedValues[key] = false;
+                } else {
+                    updatedValues[key] = value;
+                }
+            }
+
+            if (updatedValues.team == false) {
+                updatedValues.team_name = '';
+            }
+
+            axios({
+                method: 'post',
+                url: registerURL + (token ? `?jwt_token=${token}` : ''),
+                data: updatedValues,
             })
-            .catch(err => {
-                setLoadingAnimation(false);
-                setErrorMessage(err);
-                setApiError(true); // put button in error state
-                setSubmitButtonValue('Retry');
-            });
+                .then(() => {
+                    setError('');
+                    setIsSubmitted(true);
+                })
+                .catch(error => {
+                    setError(error.response.data.message);
+                });
+        }
     };
 
-    function parseVars(data) {
-        //getting all data from form and converting True/False string to boolean
-        Object.entries(data).forEach(field => {
-            if (field[1] === 'True' || field[1] === 'False') {
-                data[field[0]] = field[1] === 'True' ? true : false;
-            }
-        });
-        return data;
-    }
-
-    //checking what error code we receive from the backend and outputing message depending on the code
-    function setErrorMessage(err) {
-        if (err['response']['status'] >= 500) {
-            setButtonMessage('Something went wrong'); //add new message
+    const display = () => {
+        if (getValues().team == 'true') {
+            setDisplayTeam(true);
+            setReq('Field is required');
         } else {
-            setButtonMessage(err['response']['data']['message']);
-        }
-    }
-
-    //send data to registerMember function
-    const onSubmit = data => {
-        setLoadingAnimation(true);
-        data = parseVars(data);
-        data = checkTeamname(data);
-        registerMember(data);
-    };
-
-    // useEffect will always initialize this with the correct state
-    const [buttonState, setButtonState] = useState('hackaubg-register-btn disabled');
-
-    //handleDisabledFields will blur teamname inout field if they answer no
-    const handleDisabledFields = e => {
-        if (e.target.name === 'hasteam') {
-            if (e.target.value === 'False') {
-                setDisableTeamNameField(true);
-            } else {
-                setDisableTeamNameField(false);
-            }
+            setDisplayTeam(false);
+            setReq('');
+            document.querySelector('p[name=team_name]').textContent = '';
+            document.querySelector('input[name=team_name]').value = '';
         }
     };
-    //checks if user selected Yes/No on question about if they have team and if they do not have the teamname value is null
-    function checkTeamname(data) {
-        if (data.hasteam == false) {
-            data.teamname = null;
-        }
-        return data;
-    }
 
-    //changes the button color and text depending on what is enetred in the form
-    const checkButtonAvailability = () => {
-        if (apiError) {
-            setButtonState('hackaubg-register-btn error');
-            return;
-        } else {
-            if (Object.keys(errors).length != 0) {
-                setButtonState('hackaubg-register-btn error');
-                setSubmitPressed(false);
-                setSubmitButtonValue('Check inputs');
-                return;
-            } else if (Object.keys(errors).length == 0 && submitPressed) {
-                setButtonState('hackaubg-register-btn disabled');
-                setSubmitButtonValue('Success');
-                return;
-            }
-        }
-        setButtonState('hackaubg-register-btn');
-        setSubmitButtonValue('Submit');
-    };
-
-    useEffect(checkButtonAvailability, [Object.keys(errors)]);
-
-    const showButton = () => {
-        if (loadingAnimation) {
-            return <input type="submit" value="LOADING" className="hackaubg-register-btn" />;
-        } else {
-            return (
-                <input
-                    type="submit"
-                    className={buttonState}
-                    value={submitButtonValue}
-                    onClick={() => {
-                        setSubmitPressed(true);
-                    }}
-                />
-            );
-        }
-    };
-    if (isFormAvailable && featureSwitches.regForm) {
+    if (featureSwitches.regForm && isApiUp) {
         return (
-            <div className="registration-main" id="registration">
-                <h1>Register for HackAUBG 5.0</h1>
-                <form className="reg-form" onSubmit={handleSubmit(onSubmit)} onChange={handleDisabledFields}>
-                    <fieldset className="from-personal-info">
-                        <div className="send-info">
-                            <label>
-                                Full Name
-                                <input
-                                    type="text"
-                                    placeholder="Enter your name"
-                                    {...register('fullname', {
-                                        required: {
-                                            value: true,
-                                            message: '*This field is required',
-                                        },
-                                        minLength: {
-                                            message: '*Minimum length is 4 characters',
-                                            value: 4,
-                                        },
-                                        maxLength: {
-                                            message: 'Maximum length is 50 characters',
-                                            value: 50,
-                                        },
-                                        pattern: {
-                                            value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
-                                            message: 'No special characters and trailing spaces',
-                                        },
-                                    })}
-                                />
-                            </label>
-                            <p className="error-msg">{errors.fullname?.message}</p>
+            <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
+                <div className={styles.form_header}>
+                    <h1>Register for HackAUBG 6.0</h1>
+                </div>
+                {teamName && (
+                    <div className={styles.team_name}>
+                        <h2>Registering for team: {teamName}</h2>
+                    </div>
+                )}
+                <div className={styles.form_container}>
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="First Name*"
+                            type="name"
+                            required="true"
+                            register={register}
+                            name="first_name"
+                            error={errors.first_name && errors.first_name.message}
+                        />
+                        <InputComponent
+                            label="Last Name*"
+                            type="name"
+                            required="true"
+                            register={register}
+                            name="last_name"
+                            error={errors.last_name && errors.last_name.message}
+                        />
+                    </div>
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Email*"
+                            type="email"
+                            required="true"
+                            register={register}
+                            name="email"
+                            error={errors.email && errors.email.message}
+                        />
+                        <InputComponent
+                            label="Age*"
+                            type="age"
+                            required="true"
+                            register={register}
+                            name="age"
+                            error={errors.age && errors.age.message}
+                        />
+                    </div>
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Location*"
+                            type="text"
+                            required="Field is required"
+                            register={register}
+                            name="location"
+                            error={errors.location && errors.location.message}
+                        />
+                        <InputComponent
+                            label="Choose an School/University"
+                            type="select"
+                            required={false}
+                            register={register}
+                            values={[
+                                'American University in Bulgaria',
+                                'Sofia University',
+                                'Technical University - Sofia',
+                                'Plovdiv University',
+                                'Other',
+                            ]}
+                            name="university"
+                        />
+                    </div>
+                    {!token && (
+                        <div className={styles.form_row}>
+                            <InputComponent
+                                label="Do you want to create a team*"
+                                type="yesNo"
+                                required="Field is required"
+                                register={register}
+                                setDisplay={display}
+                                name="team"
+                                error={errors.team && errors.team.message}
+                            />
+                            <InputComponent
+                                label="What is the name of your team*"
+                                type="text"
+                                required={req}
+                                register={register}
+                                display={!displayTeam}
+                                name="team_name"
+                                error={errors.team_name && errors.team_name.message}
+                            />
                         </div>
-                        <div className="send-info">
-                            <label>
-                                Email
-                                <input
-                                    type="text"
-                                    placeholder="Enter your email"
-                                    {...register('email', {
-                                        required: {
-                                            value: true,
-                                            message: '*This field is required',
-                                        },
-                                        pattern: {
-                                            value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/i,
-                                            message: '*Please enter valid email',
-                                        },
-                                        minLength: {
-                                            message: '*Minimum length is 4 characters',
-                                            value: 4,
-                                        },
-                                    })}
-                                />
-                                <p className="error-msg">{errors.email?.message}</p>
-                            </label>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                Age
-                                <input
-                                    type="number"
-                                    placeholder="Enter your age"
-                                    {...register('age', {
-                                        required: {
-                                            value: true,
-                                            message: '*This field is required',
-                                        },
-                                        min: {
-                                            message: 'Minimum age is 16',
-                                            value: 16,
-                                        },
-                                        max: {
-                                            message: 'Maximum length is 3 symbols',
-                                            value: 99,
-                                        },
-                                        pattern: {
-                                            value: /^\d{2}$/,
-                                            message: 'No special characters and trailing spaces',
-                                        },
-                                        valueAsNumber: true,
-                                    })}
-                                />
-                            </label>
-                            <p className="error-msg">{errors.age?.message}</p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                Location
-                                <input
-                                    type="text"
-                                    placeholder="Enter the place you currently live"
-                                    {...register('location', {
-                                        required: {
-                                            value: true,
-                                            message: '*This field is required',
-                                        },
-                                        minLength: {
-                                            message: 'Minimum length is 2 characters',
-                                            value: 2,
-                                        },
-                                        maxLength: {
-                                            message: 'Maximum length is 50 characters',
-                                            value: 50,
-                                        },
-                                        pattern: {
-                                            value: /^[\t a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$/,
-                                            message: 'No special characters and trailing spaces',
-                                        },
-                                    })}
-                                />
-                            </label>
-                            <p className="error-msg">{errors.location?.message}</p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                School/University
-                                <select
-                                    defaultValue={'default'}
-                                    className="select"
-                                    {...register('university', {
-                                        required: true,
-                                    })}>
-                                    <option value="default" disabled>
-                                        Choose an School/University
-                                    </option>
-
-                                    <option value="AUBG">AUBG</option>
-                                    <option value="Sofia University">Sofia University</option>
-                                    <option value="Technical University - Sofia">Technical University - Sofia</option>
-                                    <option value="Plovdiv University">Plovdiv University</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </label>
-                            <p className="error-msg">
-                                {errors.university && <p className="error-text">*University/School is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                T-shirt size
-                                <select
-                                    className="select"
-                                    defaultValue={'default'}
-                                    {...register('shirtsize', {
-                                        required: true,
-                                    })}>
-                                    <option value="default" disabled>
-                                        Choose a size
-                                    </option>
-
-                                    <option value="Small (S)">Small (S)</option>
-                                    <option value="Medium (M)">Medium (M)</option>
-                                    <option value="Large (L)">Large (L)</option>
-                                    <option value="Extra Large (XL)">Extra Large (XL)</option>
-                                </select>
-                            </label>
-                            <p className="error-msg">
-                                {errors.shirtsize && <p className="error-text">*Shirt size is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                How did you find out about HackAUBG?
-                                <select
-                                    className="select"
-                                    defaultValue={'default'}
-                                    {...register('heardaboutus', {
-                                        required: true,
-                                    })}>
-                                    <option value="default" disabled>
-                                        Choose one option
-                                    </option>
-
-                                    <option value="University">University</option>
-                                    <option value="Friends">Friends</option>
-                                    <option value="prevHackAUBG">I was on a previous edition of Hack AUBG</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </label>
-                            <p className="error-msg">
-                                {errors.heardaboutus && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                What are your strongest sides?
-                                <select
-                                    className="select"
-                                    defaultValue={'default'}
-                                    {...register('strongsides', {
-                                        required: true,
-                                    })}>
-                                    <option value="default" disabled>
-                                        Choose one option
-                                    </option>
-
-                                    <option value="Frontend Programming">Frontend Programming</option>
-                                    <option value="Backend Programming">Backend Programming</option>
-                                    <option value="Programming in C#">Programming in C#</option>
-                                    <option value="Programming in Java">Programming in Java</option>
-                                    <option value="Programming in Python">Programming in Python</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="UI/UX">UI/UX</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </label>
-                            <p className="error-msg">
-                                {errors.strongsides && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                What are your job interests?
-                                <input
-                                    type="text"
-                                    placeholder="List the fields you are interested to work in"
-                                    {...register('jobinterests', {
-                                        required: {
-                                            value: true,
-                                            message: '*This field is required',
-                                        },
-                                        minLength: {
-                                            message: '*Minimum length is 4 characters',
-                                            value: 4,
-                                        },
-                                        maxLength: {
-                                            message: 'Maximum length is 100 characters',
-                                            value: 100,
-                                        },
-                                    })}
-                                />
-                            </label>
-                            <p className="error-msg">{errors.jobinterests?.message}</p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                What is your programming level?
-                                <select
-                                    className="select"
-                                    defaultValue={'default'}
-                                    {...register('programminglevel', {
-                                        required: true,
-                                    })}>
-                                    <option value="default" disabled>
-                                        Choose one option
-                                    </option>
-
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                    <option value="NotProgrammer">I am not participating as a programmer</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </label>
-                            <p className="error-msg">
-                                {errors.programminglevel && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Do you have a team?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('hasteam', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        // onClick={teamToggle}
-                                        {...register('hasteam', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.hasteam && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label>
-                                What is the name of your team?
-                                <input
-                                    disabled={disableTeamNameField}
-                                    placeholder={
-                                        disableTeamNameField == false
-                                            ? "Enter your team's name"
-                                            : 'We will find you a team!'
-                                    }
-                                    type="text"
-                                    {...register('teamname', {
-                                        required: {
-                                            value: !disableTeamNameField,
-                                            message: '*This field is required',
-                                        },
-                                        minLength: {
-                                            message: '*Minimum length is 4 characters',
-                                            value: 4,
-                                        },
-                                        maxLength: {
-                                            message: 'Maximum length is 100 characters',
-                                            value: 100,
-                                        },
-                                    })}
-                                />
-                            </label>
-                            <p className="error-msg">{errors.teamname?.message}</p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Have you participated in Hack AUBG before?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('prevhackaubgparticipation', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('prevhackaubgparticipation', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.prevhackaubgparticipation && (
-                                    <p className="error-text">*This field is required</p>
-                                )}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Are you looking for an internship?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('wantinternship', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('wantinternship', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.wantinternship && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Have you participated in other Hackathons?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('prevhackathonparticipation', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('prevhackathonparticipation', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.prevhackathonparticipation && (
-                                    <p className="error-text">*This field is required</p>
-                                )}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Do you want to share you info with sponsors?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('shareinfowithsponsors', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('shareinfowithsponsors', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.shareinfowithsponsors && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                        <div className="send-info">
-                            <label className="radio-label">Do you have previous coding experience?</label>
-                            <div className="radio-select">
-                                <div className="radio-btn">
-                                    <label>Yes</label>
-                                    <input
-                                        {...register('hasexperience', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="True"
-                                        className="radio"
-                                    />
-                                </div>
-                                <div className="radio-btn">
-                                    <label>No</label>
-                                    <input
-                                        {...register('hasexperience', {
-                                            required: true,
-                                        })}
-                                        type="radio"
-                                        value="False"
-                                        className="radio"
-                                    />
-                                </div>
-                            </div>
-                            <p className="error-msg">
-                                {errors.hasexperience && <p className="error-text">*This field is required</p>}
-                            </p>
-                        </div>
-                    </fieldset>
-                    {apiError == true && (
-                        <p className="db-error-msg">
-                            <BsExclamationCircleFill />
-                            {buttonMessage}
-                        </p>
                     )}
-                    {showButton()}
-                </form>
-            </div>
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="T-shirt size"
+                            type="select"
+                            required={false}
+                            register={register}
+                            values={['Small (S)', 'Medium (M)', 'Large (L)', 'Extra Large (XL)']}
+                            name="tshirt_size"
+                        />
+                        <InputComponent
+                            label="How did you find out about HackAUBG?*"
+                            type="select"
+                            required="Field is required"
+                            register={register}
+                            values={['University', 'Friends', 'I was on a previous edition of Hack AUBG']}
+                            name="source_of_referral"
+                            error={errors.source_of_referral && errors.source_of_referral.message}
+                        />
+                    </div>
+
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="What programming languages are you familiar with?*"
+                            type="select"
+                            required="Field is required"
+                            register={register}
+                            values={[
+                                'Frontend Programming',
+                                'Backend Programming',
+                                'Programming in C#',
+                                'Programming in Java',
+                                'Programming in Python',
+                                'Programming in Javascript',
+                                "I don't have experience with any languages",
+                                'Other',
+                            ]}
+                            name="programming_language"
+                            error={errors.programming_language && errors.programming_language.message}
+                        />
+                        <InputComponent
+                            label="What is your programming level?*"
+                            type="select"
+                            required="Field is required"
+                            register={register}
+                            values={[
+                                'Beginner',
+                                'Intermediate',
+                                'Advanced',
+                                'I am not participating as a programmer',
+                                'Other',
+                            ]}
+                            name="programming_level"
+                            error={errors.programming_level && errors.programming_level.message}
+                        />
+                    </div>
+
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Have you participated in Hack AUBG before?*"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="has_participated_in_hackaubg"
+                            error={errors.has_participated_in_hackaubg && errors.has_participated_in_hackaubg.message}
+                        />
+                        <InputComponent
+                            label="Are you looking for an internship?*"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="has_internship_interest"
+                            error={errors.has_internship_interest && errors.has_internship_interest.message}
+                        />
+                    </div>
+
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Have you participated in other Hackathons?*"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="has_participated_in_hackathons"
+                            error={
+                                errors.has_participated_in_hackathons && errors.has_participated_in_hackathons.message
+                            }
+                        />
+                        <InputComponent
+                            label="Do you have previous coding experience?*"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="has_previous_coding_experience"
+                            error={
+                                errors.has_previous_coding_experience && errors.has_previous_coding_experience.message
+                            }
+                        />
+                    </div>
+
+                    <div className={styles.form_row}>
+                        <InputComponent
+                            label="Do you want to receive our newsletter with potential job offerings?"
+                            type="yesNo"
+                            required="Field is required"
+                            register={register}
+                            setDisplay={display}
+                            name="newsletter_consent"
+                            error={errors.newsletter_consent && errors.newsletter_consent.message}
+                        />
+                    </div>
+                </div>
+                <InputComponent
+                    label="Agreement to share information with sponsors"
+                    type="share_info_with_sponsors"
+                    required={true}
+                    register={register}
+                    name="share_info_with_sponsors"
+                    error={errors.share_info_with_sponsors && errors.share_info_with_sponsors.message}
+                />
+                {error && <div className={styles.error}>{error}</div>}
+                {isSubmitted ? (
+                    token ? (
+                        <h2 className={styles.reg_complete}>Registration successful!</h2>
+                    ) : (
+                        <h2 className={styles.reg_complete}>
+                            Registration successful! <br></br>Please check your email to verify your participation!
+                        </h2>
+                    )
+                ) : (
+                    <input className={styles.reg_submit + ' ' + isSubmitted} type="submit" />
+                )}
+            </form>
+        );
+    } else {
+        return (
+            <p className={styles.reg_closed} id="registration">
+                Registration is closed
+            </p>
         );
     }
-    return (
-        <h1 className="reg-closed" id="registration">
-            Registration is closed
-        </h1>
-    );
 };
 
 export default RegistrationForm;

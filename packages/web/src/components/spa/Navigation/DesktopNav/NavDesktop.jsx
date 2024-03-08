@@ -20,6 +20,7 @@ export const NavDesktop = ({ props }) => {
             );
         }
     };
+
     const openHome = () => {
         navigateTo('/');
         window.scrollTo(0, 0);
@@ -58,16 +59,8 @@ export const NavDesktop = ({ props }) => {
             );
         }
         return (
-            <div className="anchor-navbar-buttons">
-                <a
-                    href={anchor.endpoint}
-                    onMouseEnter={e => {
-                        changeAnchorColor(e, props.anchorHoverColor);
-                    }}
-                    onMouseLeave={e => {
-                        changeAnchorColor(e, props.anchorColor);
-                    }}
-                    style={{ color: props.anchorColor }}>
+            <div className={`anchor-navbar-buttons ` + props.specifyHack}>
+                <a href={anchor.endpoint} style={{ color: props.anchorColor }}>
                     {anchor.name}
                     {anchor.icon !== false && <div className="anchor-icon">{anchor.icon}</div>}
                 </a>
@@ -78,7 +71,7 @@ export const NavDesktop = ({ props }) => {
     return (
         <div className="navdesktop-container" style={stickyProps()}>
             <div
-                className={`navdesktop-logo ${location.pathname === '/hackaubg' ? 'hackaubg-font' : 'main-font'}`}
+                className={`navdesktop-logo ${location.pathname.includes('/hackaubg') ? 'hackaubg-font' : 'main-font'}`}
                 onClick={openHome}>
                 <img src="../hublogo.png" className="navdesktop-logo-image" alt="The Hub AUBG" />
                 <p>The Hub</p>
@@ -88,7 +81,7 @@ export const NavDesktop = ({ props }) => {
                     {props.anchorList.map((anchor, index) => (
                         <div
                             className={`navdesktop-navdivs ${
-                                location.pathname === '/hackaubg' ? 'hackaubg-font' : 'main-font'
+                                location.pathname.includes('/hackaubg') ? 'hackaubg-font' : 'main-font'
                             }`}
                             key={index}
                             style={{

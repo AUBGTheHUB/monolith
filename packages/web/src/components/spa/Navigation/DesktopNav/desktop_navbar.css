@@ -8,6 +8,7 @@
     justify-content: center;
     font-weight: bold;
     width: 52%;
+    z-index: 999;
 }
 
 .navdesktop-container {
@@ -103,7 +104,14 @@
 }
 
 .navdesktop-navdivs a:hover {
-    color: rgb(21, 76, 121);
+    color: rgb(21, 76, 121) !important;
+}
+
+.hackAUBG a:hover {
+    color: #000 !important;
+}
+.hackAUBG svg:hover {
+    color: #000 !important;
 }
 
 .navdesktop-navdivs a:after {
@@ -183,7 +191,7 @@
     position: relative;
     display: flex;
     justify-content: flex-end;
-    padding-bottom: 25px;
+    margin-bottom: 25px;
     left: 0px;
 }
 
@@ -191,9 +199,9 @@
     width: 20px;
     height: 20px;
 }
-.anchor-icon:hover {
-    color: white;
-}
+/* .anchor-icon:hover {
+    color: black;
+} */
 .anchor-navbar-buttons {
     display: flex;
     position: relative;

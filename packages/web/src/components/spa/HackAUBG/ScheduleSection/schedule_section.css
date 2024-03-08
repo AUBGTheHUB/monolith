@@ -78,12 +78,25 @@
     font-size: 1em;
 }
 
+.schedule_closed {
+    margin-top: 20px;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+    font-size: 1.8vw !important;
+}
+
 @media only screen and (max-width: 1050px) {
     .schedule-text-container {
         width: 80%;
     }
 }
 @media only screen and (max-width: 900px) {
+    .schedule_closed {
+        font-size: 5vw !important;
+    }
     .schedule-text-container {
         flex-direction: column;
         align-items: center;

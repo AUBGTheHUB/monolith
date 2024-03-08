@@ -141,4 +141,4 @@ class TeamFunctionality:
 
     @classmethod
     def get_count_of_teams(cls) -> int:
-        return int(t_col.count_documents({}))
+        return len(cls.fetch_teams_by_condition({"is_verified": True}))

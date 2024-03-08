@@ -21,7 +21,7 @@ else
 fi
 
 #----------------------------BUILD SERVICES---------------------------------------
-ERROR_MESSAGE = $(docker-compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
+ERROR_MESSAGE = $(docker compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
 
 if [ $? -ne 0 ]; then
     content="🏗️: $DEPLOYMENT_ENV
