@@ -177,7 +177,13 @@ a {
         width: 30vw;
     }
     .mentors-coming-soon-container {
+        display: flex;
+        justify-content: center;
         font-size: 5vw !important;
+    }
+
+    .mentors-coming-soon-container p {
+        width: 90%;
     }
 }
 
