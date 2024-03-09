@@ -46,10 +46,7 @@ export const MentorsSection = () => {
         }
         return (
             <div className={styles['mentors-coming-soon-container']}>
-                <p>
-                    Mentors coming <br />
-                    soon...
-                </p>
+                <p>Mentors coming soon!</p>
             </div>
         );
     };

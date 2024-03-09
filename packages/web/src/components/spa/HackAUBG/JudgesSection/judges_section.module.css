@@ -82,7 +82,12 @@
         transform: translate(-50%, 0);
     }
     .judges-coming-soon-container {
+        display: flex;
+        justify-content: center;
         font-size: 5vw !important;
+    }
+    .judges-coming-soon-container p {
+        width: 90%;
     }
 }
 
