@@ -52,11 +52,11 @@ export const GradingCriteria = () => {
                             </tr>{' '}
                             <tr>
                                 <td>Project deployment</td>
-                                <td className={styles.points}>6</td>
+                                <td className={styles.points}>5</td>
                             </tr>{' '}
                             <tr>
-                                <td>Structured git repository</td>
-                                <td className={styles.points}>4</td>
+                                <td>Structured git repository with documentation</td>
+                                <td className={styles.points}>5</td>
                             </tr>
                             <tr>
                                 <td className={styles.total_points} colSpan={2}>
