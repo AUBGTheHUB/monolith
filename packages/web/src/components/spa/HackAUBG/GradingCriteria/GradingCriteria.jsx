@@ -18,11 +18,11 @@ export const GradingCriteria = () => {
                             </tr>
                             <tr>
                                 <td>Innovative idea and originality</td>
-                                <td className={styles.points}>7</td>
+                                <td className={styles.points}>8</td>
                             </tr>
                             <tr>
                                 <td>Market Research</td>
-                                <td className={styles.points}>6</td>
+                                <td className={styles.points}>5</td>
                             </tr>
                             <tr>
                                 <td>Usage of external data to verify the idea</td>
@@ -30,7 +30,7 @@ export const GradingCriteria = () => {
                             </tr>
                             <tr>
                                 <td className={styles.total_points} colSpan={2}>
-                                    Total: 20 points
+                                    Total: 15 points
                                 </td>
                             </tr>
                         </table>
@@ -60,7 +60,7 @@ export const GradingCriteria = () => {
                             </tr>
                             <tr>
                                 <td className={styles.total_points} colSpan={2}>
-                                    Total: 20 points
+                                    Total: 30 points
                                 </td>
                             </tr>
                         </table>
@@ -91,7 +91,7 @@ export const GradingCriteria = () => {
                             </tr>
                             <tr>
                                 <td className={styles.total_points} colSpan={2}>
-                                    Total: 20 points
+                                    Total: 40 points
                                 </td>
                             </tr>
                         </table>
@@ -121,7 +121,7 @@ export const GradingCriteria = () => {
                             </tr>
                             <tr>
                                 <td className={styles.total_points} colSpan={2}>
-                                    Total: 20 points
+                                    Total: 40 points
                                 </td>
                             </tr>
                         </table>
