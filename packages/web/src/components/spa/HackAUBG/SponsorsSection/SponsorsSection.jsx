@@ -76,7 +76,7 @@ const Sponsors = () => {
                     {/* !!!!!!! PUT IT IN A NEW COMPONENT !!!!!!!!! */}
 
                     <div className="sponsors-header-bronze sponsors-headers">
-                        <h1 style={{ color: '#FFFFFF' }}>Media Partners</h1>
+                        <h1 style={{ color: '#FFFFFF' }}>Bronze</h1>
                     </div>
                     <SponsorsContainer sponsors={sponsor.bronze} category={'bronze'} />
                 </div>
