@@ -184,9 +184,9 @@
     z-index: 1;
     right: 0%;
     /* top: 10%; */
-    height: 80vw;
-    width: 40vw;
-    margin-top: 50%;
+    height: 35vw;
+    width: 20vw;
+    margin-top: 35%;
     transform: rotateY(180deg);
     /* background-color: red; */
 }
@@ -195,8 +195,8 @@
     position: absolute;
     z-index: 1;
     left: 0;
-    margin-bottom: 100%;
-    height: 50vw;
-    width: 40vw;
+    margin-bottom: 40%;
+    height: 40vw;
+    width: 30vw;
     transform: rotateY(180deg);
 }
