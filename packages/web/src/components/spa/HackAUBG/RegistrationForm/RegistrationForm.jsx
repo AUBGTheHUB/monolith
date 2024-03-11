@@ -57,14 +57,12 @@ const RegistrationForm = () => {
     };
 
     useEffect(() => {
-        if (!window.location.href.includes('/verify')) {
-            checkRegistrationAvailability();
-            const token = new URL(window.location.href).searchParams.get('jwt_token');
-            if (token) {
-                setToken(token);
-                const decoded = jwtDecode(token);
-                setTeamName(decoded.team_name);
-            }
+        checkRegistrationAvailability();
+        const token = new URL(window.location.href).searchParams.get('jwt_token');
+        if (token) {
+            setToken(token);
+            const decoded = jwtDecode(token);
+            setTeamName(decoded.team_name);
         }
     }, []);
     if (isFormAvailable) return null;
@@ -223,7 +221,7 @@ const RegistrationForm = () => {
                             type="select"
                             required="Field is required"
                             register={register}
-                            values={['University', 'Friends', 'I was on a previous edition of Hack AUBG', 'Other']}
+                            values={['University', 'Friends', 'I was on a previous edition of Hack AUBG']}
                             name="source_of_referral"
                             error={errors.source_of_referral && errors.source_of_referral.message}
                         />
@@ -236,10 +234,12 @@ const RegistrationForm = () => {
                             required="Field is required"
                             register={register}
                             values={[
-                                'Programming in JavaScript',
+                                'Frontend Programming',
+                                'Backend Programming',
                                 'Programming in C#',
                                 'Programming in Java',
                                 'Programming in Python',
+                                'Programming in Javascript',
                                 "I don't have experience with any languages",
                                 'Other',
                             ]}

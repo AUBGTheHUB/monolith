@@ -12,17 +12,16 @@ UNIVERSITIES_LIST = Literal[
     "Technical University - Sofia", "American University in Bulgaria", "Plovdiv University", "Other",
 ]
 
-ALLOWED_AGE = Annotated[int, Field(ge=16, le=99)]
+ALLOWED_AGE = Annotated[int, Field(ge=18, le=99)]
 
 REFERRAL_SOURCES_LIST = Literal[
     "University",
-    "Friends", "I was on a previous edition of Hack AUBG", "Other",
+    "Friends", "I was on a previous edition of Hack AUBG",
 ]
 
 PROGRAMMING_LANGUAGES_LIST = Literal[
-    "Programming in JavaScript",
-    "Programming in C#", "Programming in C++",
-    "Programming in Java", "Programming in Python",
+    "Frontend Programming", "Backend Programming", "Programming in C#",
+    "Programming in Java", "Programming in Python", "Programming in JavaScript",
     "I don't have experience with any languages", "Other",
 ]
 
