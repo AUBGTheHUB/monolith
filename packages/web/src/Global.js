@@ -91,7 +91,7 @@ const handleUrlDependantStyling = () => {
     if (location.href.includes('hackaubg')) {
         favicon = '/favicon-pink.ico';
         iosIcon = '/pink-logo512.png';
-        title = 'HackAUBG 5.0';
+        title = 'HackAUBG 6.0';
         document.body.style.backgroundColor = '#222222';
     } else {
         favicon = '/favicon.ico';
