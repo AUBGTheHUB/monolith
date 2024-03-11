@@ -173,7 +173,7 @@ const RegistrationForm = () => {
                             error={errors.location && errors.location.message}
                         />
                         <InputComponent
-                            label="Choose an School/University"
+                            label="Choose a School/University"
                             type="select"
                             required={false}
                             register={register}

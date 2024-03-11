@@ -31,7 +31,7 @@ export const AwardsSection = () => {
                     <br />
                     Take part in all of the games we have prepared!
                     <br />
-                    All participants will recieve giftbags with swag from The Hub and all HackAUBG 6.0 partners!
+                    All participants will receive giftbags with swag from The Hub and all HackAUBG 6.0 partners!
                 </p>
             </div>
         </div>
