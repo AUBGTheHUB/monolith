@@ -221,7 +221,7 @@ const RegistrationForm = () => {
                             type="select"
                             required="Field is required"
                             register={register}
-                            values={['University', 'Friends', 'I was on a previous edition of Hack AUBG']}
+                            values={['University', 'Friends', 'I was on a previous edition of Hack AUBG', 'Other']}
                             name="source_of_referral"
                             error={errors.source_of_referral && errors.source_of_referral.message}
                         />
@@ -234,12 +234,10 @@ const RegistrationForm = () => {
                             required="Field is required"
                             register={register}
                             values={[
-                                'Frontend Programming',
-                                'Backend Programming',
+                                'Programming in JavaScript',
                                 'Programming in C#',
                                 'Programming in Java',
                                 'Programming in Python',
-                                'Programming in Javascript',
                                 "I don't have experience with any languages",
                                 'Other',
                             ]}
