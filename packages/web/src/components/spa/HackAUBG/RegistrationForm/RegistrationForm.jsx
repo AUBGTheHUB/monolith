@@ -57,12 +57,14 @@ const RegistrationForm = () => {
     };
 
     useEffect(() => {
-        checkRegistrationAvailability();
-        const token = new URL(window.location.href).searchParams.get('jwt_token');
-        if (token) {
-            setToken(token);
-            const decoded = jwtDecode(token);
-            setTeamName(decoded.team_name);
+        if (!window.location.href.includes('/verify')) {
+            checkRegistrationAvailability();
+            const token = new URL(window.location.href).searchParams.get('jwt_token');
+            if (token) {
+                setToken(token);
+                const decoded = jwtDecode(token);
+                setTeamName(decoded.team_name);
+            }
         }
     }, []);
     if (isFormAvailable) return null;
