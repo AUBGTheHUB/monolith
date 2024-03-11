@@ -21,14 +21,16 @@ else
 fi
 
 #----------------------------BUILD SERVICES---------------------------------------
-ERROR_MESSAGE = $(docker compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
+ERROR_MESSAGE=$(docker compose up --build -d 2>&1) #Runs the command and stores the error message if something goes wrong
 
 if [ $? -ne 0 ]; then
-    content="🏗️: $DEPLOYMENT_ENV
-    $COMMIT_TITLE_URL
-    ❌: Build Failed"
+    content=$'🏗️: '$DEPLOYMENT_ENV$'\n'$COMMIT_TITLE_URL$'\n❌: Build Failed'
 
-    json_payload=$(jq -n --arg ERR "$ERROR_MESSAGE" --arg CONTENT "$content" '{"content": $CONTENT, "embeds":[{"title": "BUILD",  "description": $ERR}]}')
+    # Use jq to construct the JSON payload properly
+    json_payload=$(jq -n --arg ERR "$ERROR_MESSAGE" --arg CONTENT "$content" \
+    '{"content": $CONTENT, "embeds": [{"title": "BUILD", "description": $ERR}]}')
+
+    # Send the payload to the Discord webhook
     curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
     exit 1
 fi
@@ -69,13 +71,14 @@ for ((i = 0; i < ${#services[@]}; i++)); do
     actual_status=$(curl -m 5 -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
-        RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
+        RESULT_STRING="Health check to $url failed with status code: $actual_status"
+        content='🏗️: '$DEPLOYMENT_ENV$'\n'$COMMIT_TITLE_URL$'\n🚑: Health Check Failed'
 
-        content="🏗️: $DEPLOYMENT_ENV
-        $COMMIT_TITLE_URL
-        ❌: Build Failed"
+        # Use jq to construct the JSON payload properly
+        json_payload=$(jq -n --arg ERR "$RESULT_STRING" --arg CONTENT "$content" \
+        '{"content": $CONTENT, "embeds": [{"title": "HEALTH CHECK", "description": $ERR}]}')
 
-        json_payload=$(jq -n --arg ERR "$RESULT_STRING" --arg CONTENT "$content" '{"content": $CONTENT, "embeds":[{"title": "BUILD",  "description": $ERR}]}')
+        # Send the payload to the Discord webhook
         curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
         exit 1
     fi
