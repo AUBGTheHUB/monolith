@@ -16,6 +16,11 @@ def team_count() -> JSONResponse:
     return c.team_count()
 
 
+@router.get("/csv")
+def get_teams() -> JSONResponse:
+    return c.get_teams()
+
+
 @router.get("/{object_id}")
 def get_team(object_id: str) -> JSONResponse:
     return c.get_team(object_id)
