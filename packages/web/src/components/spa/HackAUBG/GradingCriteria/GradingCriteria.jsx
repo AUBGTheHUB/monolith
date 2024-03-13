@@ -7,7 +7,7 @@ export const GradingCriteria = () => {
     const [featureSwitches, _] = useContext(FsContext);
     if (featureSwitches.GradeCrit) {
         return (
-            <div className={styles.grading_criteria}>
+            <div className={styles.grading_criteria} id="grading">
                 <h1 className={styles.grading_criteria_title}>Grading Criteria</h1>
                 <div className={styles.grading_criteria_wrapper}>
                     <div className={styles.table_wrapper + ' ' + styles.left}>
