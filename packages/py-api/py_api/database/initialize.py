@@ -1,4 +1,4 @@
-from py_api.environment import IS_OFFLINE, MONGO_URI
+from py_api.environment import DOCK_ENV, IS_OFFLINE, MONGO_URI
 from pymongo import MongoClient
 
 # * How to use - https://pymongo.readthedocs.io/en/stable/tutorial.html
@@ -18,7 +18,7 @@ su_col = client["ShortenedUrlsDB"].shortened_urls
 q_col = client["questionnaires"].questions
 a_col = client["questionnaires"].answers
 
-if not IS_OFFLINE:
+if DOCK_ENV == 'PROD':
     # * use these collections when working within the Teams controller
     t_col = client['hackathon'].teams
     # * use these collections when working within the Hackathon_Participants controller
