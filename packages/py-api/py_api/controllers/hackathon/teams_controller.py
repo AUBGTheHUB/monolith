@@ -169,8 +169,6 @@ class TeamsController:
             df = pd.json_normalize(df.to_dict(orient='records'))
             df.columns = df.columns.str.replace('team_members.', '')
 
-            df.to_csv('output.csv', mode='a', index=False)
-
             if i == 0:
                 sheet = wb.active
                 sheet.title = team['TeamName']
