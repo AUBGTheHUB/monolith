@@ -120,13 +120,14 @@ class ParticipantsController:
     ]:
 
         if ParticipantsFunctionality.check_if_email_exists(participant.email):
-            return JSONResponse(status_code=400, content={"message": "User with such email already exists"})
+            return JSONResponse(status_code=409, content={"message": "User with such email already exists"})
 
         if jwt_token:
             # The jwt token is provided as a query_param when a participant is registering via the custom form in
             # the frontend
             return cls.handle_registration_via_invite_link(jwt_token, participant)
 
+        # Logic for adding a participant to a new team
         if TeamFunctionality.get_count_of_teams() < 16:
             if participant.team_name:
                 if TeamFunctionality.fetch_team(team_name=participant.team_name):
@@ -135,17 +136,6 @@ class ParticipantsController:
                 return cls.add_participant_to_db(participant, is_participant_random=False)
             else:
                 return cls.add_participant_to_db(participant, is_participant_random=True)
-
-        # # Logic for adding a random participant to an existing team
-        # if not participant.team_name:
-        #     # Fetch the teams of type random
-        #     random_teams = TeamFunctionality.fetch_teams_by_condition(
-        #         {"team_type": "random"},
-        #     )
-        #     # Find the teams which can accept a new participant and add it if there is space
-        #     for team in random_teams:
-        #         if len(team.team_members) < 6:
-        #             return cls.add_participant_to_existing_team(participant, team)
 
         return JSONResponse(content={"message": "Hackathon is at maximum capacity"}, status_code=409)
 
@@ -165,20 +155,17 @@ class ParticipantsController:
             return JSONResponse(content={"message": "Team with this name does not exist"}, status_code=404)
 
         if len(team.team_members) < 6:
-            return cls.add_participant_to_existing_team(participant, team, is_invite=True)
+            return cls.add_invite_participant_to_existing_team(participant, team)
 
         return JSONResponse(content={"message": "The maximum number of team members is reached."}, status_code=409)
 
     @classmethod
     @handle_database_session_transaction
-    def add_participant_to_existing_team(
+    def add_invite_participant_to_existing_team(
             cls, participant: NewParticipant, existing_team: HackathonTeam, session: ClientSession,
-            is_invite: bool = False,
     ) -> JSONResponse:
 
-        if is_invite:
-            participant.is_verified = True
-
+        participant.is_verified = True
         participant.team_name = existing_team.team_name
         new_participant = ParticipantsFunctionality.insert_participant(
             participant, session,
@@ -197,28 +184,16 @@ class ParticipantsController:
         )
 
         background_tasks = BackgroundTasks()
-        if not is_invite:
-            # The participant is random, so we send them a verification email
-            jwt_token = JWTFunctionality.create_jwt_token(
-                new_participant_object_id, existing_team.team_name,
-            )
 
-            background_tasks.add_task(
-                MailingFunctionality.send_verification_email, email=participant.email, jwt_token=jwt_token,
-                team_name=None,
-                participant_name=participant.first_name,
-            )
-
-        else:
-            # The participant has registered via an invitation link, so we send them a confirmation email
-            jwt_token = JWTFunctionality.create_jwt_token(
-                new_participant_object_id, existing_team.team_name, is_invite=True,
-            )
-            background_tasks.add_task(
-                MailingFunctionality.send_confirmation_email, email=participant.email, jwt_token=jwt_token,
-                team_name=participant.team_name,
-                participant_name=participant.first_name, is_admin=False,
-            )
+        # The participant has registered via an invitation link, so we send them a confirmation email
+        jwt_token = JWTFunctionality.create_jwt_token(
+            new_participant_object_id, existing_team.team_name, is_invite=True,
+        )
+        background_tasks.add_task(
+            MailingFunctionality.send_confirmation_email, email=participant.email, jwt_token=jwt_token,
+            team_name=participant.team_name,
+            participant_name=participant.first_name, is_admin=False,
+        )
 
         return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
 
