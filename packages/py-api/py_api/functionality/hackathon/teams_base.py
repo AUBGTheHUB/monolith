@@ -141,4 +141,5 @@ class TeamFunctionality:
 
     @classmethod
     def get_count_of_teams(cls) -> int:
+        """Counts the number of verified teams in the database"""
         return len(cls.fetch_teams_by_condition({"is_verified": True}))
