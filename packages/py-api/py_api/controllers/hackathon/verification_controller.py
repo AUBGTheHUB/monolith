@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from fastapi.responses import JSONResponse
 from py_api.database.database_transaction_handlers import (
@@ -9,38 +9,27 @@ from py_api.functionality.hackathon.mailing_functionality import MailingFunction
 from py_api.functionality.hackathon.participants_base import ParticipantsFunctionality
 from py_api.functionality.hackathon.teams_base import TeamFunctionality
 from py_api.models import HackathonTeam
-from py_api.models.hackathon_participants_models import (
-    NewParticipant,
-    UpdateParticipant,
-)
+from py_api.models.hackathon_participants_models import UpdateParticipant
 from pymongo.client_session import ClientSession
 from starlette.background import BackgroundTasks
 
 
 class VerificationController:
     @classmethod
-    @handle_database_session_transaction
-    def verify_participants(cls, jwt_token: str, session: ClientSession) -> JSONResponse:
-        background_tasks = BackgroundTasks()
-
-        result = JWTFunctionality.decode_token(jwt_token)
-
-        if isinstance(result, dict):
-            decoded_token = result
-        else:
-            return JSONResponse(content=result[0], status_code=result[1])
-
+    def fetch_and_verify_participant(cls, decoded_token: JWTType, session: ClientSession) -> Tuple[None, JSONResponse] | Tuple[
+            Dict[str, Any], None,
+    ]:
         participant = ParticipantsFunctionality.get_participant_by_id(
             str(decoded_token.get("sub")),
         )
         if not participant:
-            return JSONResponse(
+            return None, JSONResponse(
                 content={"message": "Participant with such id does not exist"},
-                status_code=208,
+                status_code=404,
             )
 
         if participant.get("is_verified") is True:
-            return JSONResponse(
+            return None, JSONResponse(
                 content={"message": "Participant is already verified"},
                 status_code=208,
             )
@@ -50,9 +39,28 @@ class VerificationController:
                 is_verified=True,
             ), session=session,
         )
+        return verified_participant, None
 
+    @classmethod
+    @handle_database_session_transaction
+    def verify_participants(cls, jwt_token: str, session: ClientSession) -> JSONResponse:
+        result_of_decoding = JWTFunctionality.decode_token(jwt_token)
+        if isinstance(result_of_decoding, dict):
+            decoded_token = result_of_decoding
+        else:
+            return JSONResponse(content=result_of_decoding[0], status_code=result_of_decoding[1])
+
+        verified_participant, error = cls.fetch_and_verify_participant(
+            decoded_token, session,
+        )
+        if error:
+            return error
+
+        if verified_participant is None:
+            return JSONResponse(content={"message": "No participant found"}, status_code=404)
+
+        background_tasks = BackgroundTasks()
         if decoded_token.get("team_name") is None and decoded_token.get("random_participant") is True:
-            # Fetch the teams of type random
             random_teams = TeamFunctionality.fetch_teams_by_condition(
                 {"team_type": "random"},
             )
@@ -60,7 +68,7 @@ class VerificationController:
             # Find the teams which can accept a new participant and add it if there is space
             for team in random_teams:
                 if len(team.team_members) < 6:
-                    return cls.add_participant_to_existing_team(
+                    return cls.add_participant_to_existing_random_team(
                         verified_participant, team, session,
                         decoded_token, background_tasks, jwt_token,
                     )
@@ -70,23 +78,22 @@ class VerificationController:
                 decoded_token, session, background_tasks, verified_participant, True, jwt_token,
             )
 
-        if decoded_token.get("team_name") and decoded_token.get("random_participant") is False and decoded_token.get(
-                "invite",
-        ) is False:
+        if decoded_token.get("team_name") and decoded_token.get("random_participant") is False:
             # A confirmation email is send to the admin along with the invite link
             jwt_token = JWTFunctionality.create_jwt_token(
                 team_name=decoded_token.get("team_name"), is_invite=True,
             )
+
             return cls.create_team_and_send_email(
                 decoded_token, session, background_tasks, verified_participant, False, jwt_token,
             )
 
     @classmethod
     def create_team_and_send_email(
-        cls, decoded_token: JWTType, session: ClientSession,
-        background_tasks: BackgroundTasks,
-        verified_participant: Dict[str, Any], generate_random_team: bool,
-        jwt_token: str,
+            cls, decoded_token: JWTType, session: ClientSession,
+            background_tasks: BackgroundTasks,
+            verified_participant: Dict[str, Any], generate_random_team: bool,
+            jwt_token: str,
     ) -> JSONResponse:
         new_team = cls.create_new_team(
             new_participant_object_id=str(decoded_token.get("sub")), session=session,
@@ -98,6 +105,7 @@ class VerificationController:
             cls.send_confirmation_email(
                 background_tasks, verified_participant, jwt_token, None,
             )
+
         else:
             cls.send_confirmation_email(
                 background_tasks, verified_participant, jwt_token, new_team.team_name,
@@ -114,9 +122,9 @@ class VerificationController:
 
     @classmethod
     def send_confirmation_email(
-        cls, background_tasks: BackgroundTasks, verified_participant: Dict[str, Any],
-        jwt_token: str,
-        team_name: str | None,
+            cls, background_tasks: BackgroundTasks, verified_participant: Dict[str, Any],
+            jwt_token: str,
+            team_name: str | None,
     ) -> None:
         background_tasks.add_task(
             MailingFunctionality.send_confirmation_email, email=verified_participant.get(
@@ -148,25 +156,23 @@ class VerificationController:
         return new_team_obj
 
     @classmethod
-    def add_participant_to_existing_team(
-        cls, participant: Dict[str, Any], existing_team: HackathonTeam,
-        session: ClientSession, decoded_token: JWTType,
-        background_tasks: BackgroundTasks, jwt_token: str,
-        is_invite: bool = False,
+    def add_participant_to_existing_random_team(
+            cls, participant: Dict[str, Any], existing_random_team: HackathonTeam,
+            session: ClientSession, decoded_token: JWTType, background_tasks: BackgroundTasks, jwt_token: str,
     ) -> JSONResponse:
 
         result = TeamFunctionality.add_participant_to_team_object(
-            existing_team.team_name, decoded_token["sub"],
+            existing_random_team.team_name, decoded_token["sub"],
         )
 
         if not isinstance(result, HackathonTeam):
             return JSONResponse(content=result[0], status_code=result[1])
 
-        existing_team = TeamFunctionality.update_team_query_using_dump(
+        updated_random_team = TeamFunctionality.update_team_query_using_dump(
             result.model_dump(), session=session,
         )
         cls.send_confirmation_email(
             background_tasks, participant, jwt_token, None,
         )
 
-        return JSONResponse(content=existing_team.model_dump(), status_code=200, background=background_tasks)
+        return JSONResponse(content=updated_random_team.model_dump(), status_code=200, background=background_tasks)
