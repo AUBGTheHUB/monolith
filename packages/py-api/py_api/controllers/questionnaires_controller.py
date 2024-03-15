@@ -20,7 +20,6 @@ class QuestionnairesController:
         answers = a_col.find({'department': dep})
         answers = [list(a['answers'].values()) for a in answers]
 
-        # I need to query the answers again because once I itereate over them then down below the answers list is empty
         submission_timestamps = [
             str(a["_id"].generation_time)
             for a in a_col.find({'department': dep})

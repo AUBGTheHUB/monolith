@@ -45,7 +45,7 @@ export const JourneyMobile = () => {
                     id="3"
                     stepIcon={`/step-3-icon-mobile.svg`}
                     title={`Get Hackathoning`}
-                    text={`HackAUBG 6.0 starts on Friday, March 31st. It will
+                    text={`HackAUBG 6.0 starts on Friday, March 29th. It will
                             be fully on-ground, taking place at American
                             University in Bulgaria&apos;s Sports Hall in the ABF
                             building. If you do not reside in Blagoevgrad, be
