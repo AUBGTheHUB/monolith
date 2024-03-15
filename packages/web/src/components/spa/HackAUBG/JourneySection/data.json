@@ -1,34 +1,31 @@
 [
     {
         "title": "Gather a team and register",
-        "paragraph": "In a quirky turn of events, a talking parrot was spotted giving weather forecasts on a local news channel, leaving viewers both amused and confused. Meanwhile, a group of adventurous cats successfully organized a feline-only rock climbing competition, showcasing their agility and courage. Surprisingly, a time-traveling gardener from the 18th century appeared in a suburban backyard, expressing sheer amazement at the sight of modern lawnmowers. At the nearby cafe, a group of synchronized hummingbirds performed a mesmerizing dance routine, attracting patrons with their graceful movements.",
+        "paragraph": "Gather your dream team and register in the form below! Don’t forget to create a diverse team, as the best teams usually incorporate programmers, business planners, and designers. The teams should be between 4 and 6 people. However, if you have less, don’t worry! Organizers from the Hub will add you to the best suited team for you. Don’t procrastinate registering, because if the registered teams become more than 12, your team will be waitlisted until the very last week before the competition.",
         "icon": "/step-1-icon.svg",
         "blur": "/step-1-blur.svg",
         "figure": "/step-1-figure.svg",
         "displayTextLeft": true
     },
-
     {
         "title": "Meet the Hub and prepare",
-        "paragraph": "In a quirky turn of events, a talking parrot was spotted giving weather forecasts on a local news channel, leaving viewers both amused and confused. Meanwhile, a group of adventurous cats successfully organized a feline-only rock climbing competition, showcasing their agility and courage. Surprisingly, a time-traveling gardener from the 18th century appeared in a suburban backyard, expressing sheer amazement at the sight of modern lawnmowers. At the nearby cafe, a group of synchronized hummingbirds performed a mesmerizing dance routine, attracting patrons with their graceful movements.",
+        "paragraph": "Right after you click the Register button you will receive an email confirming your place. In the following 48 hours, you will receive another email from us introducing you to your team facilitator - a Hubber who will guide you through everything about HackAUBG 6.0. Pro tip: take a few days to research some hackathon strategies, previous award-winning HackAUBG projects, and brainstorm! After all, you do not want to be unprepared for your chance to bring home the grand prize of 3000 BGN!",
         "icon": "/step-2-icon.svg",
         "blur": "/step-2-blur.svg",
         "figure": "/step-2-figure.svg",
         "displayTextLeft": false
     },
-
     {
         "title": "Get Hackathoning",
-        "paragraph": "In a quirky turn of events, a talking parrot was spotted giving weather forecasts on a local news channel, leaving viewers both amused and confused. Meanwhile, a group of adventurous cats successfully organized a feline-only rock climbing competition, showcasing their agility and courage. Surprisingly, a time-traveling gardener from the 18th century appeared in a suburban backyard, expressing sheer amazement at the sight of modern lawnmowers. At the nearby cafe, a group of synchronized hummingbirds performed a mesmerizing dance routine, attracting patrons with their graceful movements.",
+        "paragraph": "HackAUBG 6.0 starts on Friday, March 31st. It will be fully on-ground, taking place at American University in Bulgaria&apos;s Sports Hall in the ABF building. If you do not reside in Blagoevgrad, be sure to make arrangements for your stay here. In case you need help, your Hub facilitator will be more than happy to help you arrange your stay. Below you can check out the HackAUBG 6.0 schedule for all the details. Your facilitator will be checking in with you to make sure you have access to everything needed prior to the event. Once it becomes time for the Opening Ceremony on Friday, March 31st, the theme will be announced. Then it is time to start developing, designing, and strategizing!",
         "icon": "/step-3-icon.svg",
         "blur": "/step-3-blur.svg",
         "figure": "/step-3-figure.svg",
         "displayTextLeft": true
     },
-
     {
         "title": "Present and Win",
-        "paragraph": "In a quirky turn of events, a talking parrot was spotted giving weather forecasts on a local news channel, leaving viewers both amused and confused. Meanwhile, a group of adventurous cats successfully organized a feline-only rock climbing competition, showcasing their agility and courage. Surprisingly, a time-traveling gardener from the 18th century appeared in a suburban backyard, expressing sheer amazement at the sight of modern lawnmowers. At the nearby cafe, a group of synchronized hummingbirds performed a mesmerizing dance routine, attracting patrons with their graceful movements.",
+        "paragraph": "This is the home stretch! You have put in the work and now need to blow the judges away! Your task consists of creating a presentation for your product, as well as a Software Demo. After your presentation, there will be a Q&A session with the panel of judges. The grading criteria for the project and presentation can be found below. Make sure to check it, as it is extremely important! If you have any more questions, check out the FAQ section at the end of the page!",
         "icon": "/step-4-icon.svg",
         "blur": "/step-4-blur.svg",
         "figure": "/step-4-figure.svg",

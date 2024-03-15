@@ -13,10 +13,10 @@ from pymongo.client_session import ClientSession
 class TeamFunctionality:
 
     @classmethod
-    def create_team_object_with_admin(
+    def create_team_object_with_first_participant(
             cls, user_id: str,
             team_name: str | None = None, generate_random_team: bool = False,
-    ) -> HackathonTeam | None:
+    ) -> HackathonTeam:
         """ creates a new HackathonTeam object without inserting it in the database """
 
         team_type = TeamType.NORMAL
@@ -26,16 +26,12 @@ class TeamFunctionality:
             team_type = TeamType.RANDOM
             team_name = cls.generate_random_team_name()
 
-        if cls.fetch_team(team_name=team_name):
-            # Team with such name already exists
-            return None
-
-        # Upon team initialization, we need at least one team member who is considered the admin
+        # Upon team initialization, we need at least one team member
         team_members_ids = [user_id]
 
         new_team = HackathonTeam(
             team_name=team_name,
-            team_type=team_type, team_members=team_members_ids, is_verified=False,
+            team_type=team_type, team_members=team_members_ids, is_verified=True,
         )
 
         return new_team
@@ -141,4 +137,5 @@ class TeamFunctionality:
 
     @classmethod
     def get_count_of_teams(cls) -> int:
+        """Counts the number of verified teams in the database"""
         return len(cls.fetch_teams_by_condition({"is_verified": True}))
