@@ -60,7 +60,7 @@ class VerificationController:
             return JSONResponse(content={"message": "No participant found"}, status_code=404)
 
         background_tasks = BackgroundTasks()
-        if decoded_token.get("team_name") is None and decoded_token.get("random_participant") is True:
+        if decoded_token.get("random_participant") is True:
             random_teams = TeamFunctionality.fetch_teams_by_condition(
                 {"team_type": "random"},
             )
@@ -78,8 +78,8 @@ class VerificationController:
                 decoded_token, session, background_tasks, verified_participant, True, jwt_token,
             )
 
-        if decoded_token.get("team_name") and decoded_token.get("random_participant") is False:
-            # A confirmation email is send to the admin along with the invite link
+        else:
+            # A confirmation email is sent to the admin along with the invite link
             jwt_token = JWTFunctionality.create_jwt_token(
                 team_name=decoded_token.get("team_name"), is_invite=True,
             )
