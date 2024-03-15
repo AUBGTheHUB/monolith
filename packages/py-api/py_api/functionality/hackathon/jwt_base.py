@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple, TypedDict, cast
 
 from jwt import (
     DecodeError,
@@ -10,27 +10,38 @@ from jwt import (
 )
 from py_api.environment import HUB_WEB_URL, IS_OFFLINE, SECRET_KEY
 
+JWTType = TypedDict(
+    'JWTType', {
+        'sub': str, 'team_name': str, 'invite': bool,
+        'random_participant': bool, 'exp': datetime,
+    },
+)
+
 
 class JWTFunctionality:
 
     @classmethod
     def create_jwt_token(
             cls, participant_obj_id: str | None = None, team_name: str | None = None,
-            is_invite: bool = False, ) -> str:
+            is_invite: bool = False, is_participant_random: bool = False,
+    ) -> str:
         payload = {
             "sub": participant_obj_id,
             "team_name": team_name,
             "invite": is_invite,
-            "exp": datetime.utcnow() + timedelta(days=30 if is_invite else 2),
+            "random_participant": is_participant_random,
+            "exp": datetime.utcnow() + timedelta(days=30 if is_invite else 1),
         }
 
         return str(encode(payload, SECRET_KEY, algorithm="HS256"))
 
     @classmethod
-    def decode_token(cls, jwt_token: str, is_invite: bool = False) -> Dict[str, Any] | Tuple[Dict[str, str], int]:
+    def decode_token(cls, jwt_token: str, is_invite: bool = False) -> JWTType | Tuple[Dict[str, str], int]:
         try:
-            decoded_token: Dict[str, Any] = decode(
-                jwt_token, SECRET_KEY, algorithms=["HS256"],
+            decoded_token = cast(
+                JWTType, decode(
+                    jwt_token, SECRET_KEY, algorithms=["HS256"],
+                ),
             )
             return decoded_token
 
@@ -59,9 +70,9 @@ class JWTFunctionality:
 
         if for_frontend:
             if is_invite:
-                url = f"{domain}hackaubg?jwt_token={jwt_token}"
+                url = f"{domain}/hackaubg?jwt_token={jwt_token}"
             else:
-                url = f"{domain}hackaubg/verify?jwt_token={jwt_token}"
+                url = f"{domain}/hackaubg/verify?jwt_token={jwt_token}"
 
         elif is_invite:
             url = f"{domain}/v2/hackathon/participants?jwt_token={jwt_token}"

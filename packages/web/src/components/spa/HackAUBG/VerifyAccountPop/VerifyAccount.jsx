@@ -22,7 +22,7 @@ export const VerifyAccount = ({ className, onSuccess }) => {
     const handleVerifyClick = () => {
         setLoading(true);
         axios({
-            method: 'get',
+            method: 'post',
             url: verifyURL + `?jwt_token=${jwtToken}`,
         })
             .then(() => {

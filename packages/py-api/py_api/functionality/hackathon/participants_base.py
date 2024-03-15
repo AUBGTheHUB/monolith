@@ -22,7 +22,10 @@ class ParticipantsFunctionality:
         return False
 
     @classmethod
-    def insert_participant(cls, participant: NewParticipant, session: ClientSession | None = None) -> results.InsertOneResult:
+    def insert_participant(
+        cls, participant: NewParticipant,
+        session: ClientSession | None = None,
+    ) -> results.InsertOneResult:
         if session:
             return cls.pcol.insert_one(participant.model_dump(), session=session)
 
@@ -43,17 +46,17 @@ class ParticipantsFunctionality:
         return cls.pcol.find_one({"_id": ObjectId(object_id)})
 
     @classmethod
-    def update_participant(cls, object_id: str, participant: UpdateParticipant | NewParticipant) -> Any:
+    def update_participant(
+        cls, object_id: str, participant: UpdateParticipant | NewParticipant,
+        session: ClientSession,
+    ) -> Any:
         obj = {
             key: value for key, value in participant.model_dump().items() if
             value is not None
         }
-
-        with client.start_session() as session:
-            with session.start_transaction():
-                return cls.pcol.find_one_and_update(
-                    {"_id": ObjectId(object_id)}, {"$set": obj}, return_document=True,
-                )
+        return cls.pcol.find_one_and_update(
+            {"_id": ObjectId(object_id)}, {"$set": obj}, return_document=True, session=session,
+        )
 
     @classmethod
     def remove_participant_from_team(cls, participant_id: str, team_name: str) -> Tuple[Dict[str, str], int]:

@@ -15,7 +15,7 @@ SECRET_KEY = getenv("SECRET_KEY")
 HUB_MAIL = getenv("HUB_MAIL")
 HUB_PSW = getenv("HUB_PSW")
 HUB_WEB_URL = getenv("HUB_WEB_URL", "")
-
+DOCK_ENV = getenv("DOCK_ENV", "")
 
 OFFLINE_TOKEN = "OFFLINE_TOKEN"
 

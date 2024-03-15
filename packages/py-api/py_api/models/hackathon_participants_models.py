@@ -58,7 +58,7 @@ class NewParticipant(BaseModel):
             raise ValueError("share_info_with_sponsors shall be true")
         return value
 
-    @field_validator('tshirt_size', mode='before')
+    @field_validator('tshirt_size', 'team_name', mode='before')
     def convert_empty_string_to_none(cls, value: str) -> str | None:
         return None if value == "" else value
 
@@ -82,6 +82,6 @@ class UpdateParticipant(BaseModel):
     has_previous_coding_experience: Optional[bool] = None
     share_info_with_sponsors: Optional[bool] = True
 
-    @field_validator('tshirt_size', mode='before')
+    @field_validator('tshirt_size', 'team_name', mode='before')
     def convert_empty_string_to_none(cls, value: str) -> str | None:
         return None if value == "" else value
