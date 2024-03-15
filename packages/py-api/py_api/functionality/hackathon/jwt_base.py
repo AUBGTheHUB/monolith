@@ -21,7 +21,7 @@ class JWTFunctionality:
             "sub": participant_obj_id,
             "team_name": team_name,
             "invite": is_invite,
-            "exp": datetime.utcnow() + timedelta(days=30 if is_invite else 2),
+            "exp": datetime.utcnow() + timedelta(days=30 if is_invite else 1),
         }
 
         return str(encode(payload, SECRET_KEY, algorithm="HS256"))
