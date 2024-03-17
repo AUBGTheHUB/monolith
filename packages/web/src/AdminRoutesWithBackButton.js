@@ -23,15 +23,6 @@ import UrlsTable from './components/admin_page/url_shortener/table';
 import { Routes, Route } from 'react-router-dom';
 import BackBtn from './components/admin_page/back_button/back_button.jsx';
 import { Hackteams } from './components/admin_page/hackathon/hackathon_teams/hackathon_teams.jsx';
-// import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
-// import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
-// import TeamActions from './components/admin_page/hackathon/hackathon_teams/actions_teams';
-// import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
-// import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
-// import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
-// import RenderNoTeamParticipants from './components/admin_page/hackathon/hackathon_no_team_participants/render_no_team_participants';
-// import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
-// import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
 
 const adminRoutes = [
     {
@@ -122,47 +113,6 @@ const adminRoutes = [
         path: 'hackteams',
         element: <Hackteams />,
     },
-    //Code is comented bacause it is not used
-    // {
-    //     path: 'members/add',
-    //     element: <AddMember />,
-    // },
-    // {
-    //     path: 'hackaton/teams',
-    //     element: <RenderTeams />,
-    // },
-    // {
-    //     path: 'hackaton/teams/actions',
-    //     element: <TeamActions />,
-    // },
-    // {
-    //     path: 'hackaton/teams/add',
-    //     element: <AddNewTeam />,
-    // },
-    // {
-    //     path: 'hackaton/teams/members',
-    //     element: <RenderTeamMembers />,
-    // },
-    // {
-    //     path: 'hackaton/teams/members/add',
-    //     element: <AddTeamMember />
-    // },
-    // {
-    //     path: 'hackaton/teams/members/actions',
-    //     element: <TeamMemberActions />,
-    // },
-    // {
-    //     path: 'hackaton/noteamparticipants',
-    //     element: <RenderNoTeamParticipants />,
-    // },
-    // {
-    //     path: 'hackathon/noteamparticipants/add',
-    //     element: <AddNoTeamParticipant />,
-    // },
-    // {
-    //     path: 'hackathon/noteamparticipants/actions',
-    //     element: <NoTeamParticipantsActions />,
-    // },
 ];
 
 const AdminRoutesWithBackButton = () => (
