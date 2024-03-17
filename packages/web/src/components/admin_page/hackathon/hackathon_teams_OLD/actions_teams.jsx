@@ -13,17 +13,17 @@ const TeamActions = () => {
     console.log(team_data);
     const [formState, setFormState] = useState({
         teamname: '',
-        teammembers: team_data.teammembers
+        teammembers: team_data.teammembers,
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const target = e.target;
         const value = target.value;
         const name = target.name;
 
         setFormState({
             ...formState,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -33,14 +33,14 @@ const TeamActions = () => {
         axios({
             method: 'delete',
             url: url + '/api/hackathon/teams/' + team_data['id'] + '/',
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Team was deleted');
                 history(-2);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -50,14 +50,14 @@ const TeamActions = () => {
             method: 'put',
             url: url + '/api/hackathon/teams/' + team_data['id'],
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-            data: { ...formState }
+            data: { ...formState },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Member info was edited');
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -76,8 +76,7 @@ const TeamActions = () => {
                             variant="primary"
                             onClick={() => {
                                 delete_team();
-                            }}
-                        >
+                            }}>
                             Remove
                         </Button>
                     </Card.Body>
@@ -88,12 +87,7 @@ const TeamActions = () => {
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Team Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="teamname"
-                            name="teamname"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="teamname" name="teamname" onChange={handleInputChange} />
                     </Form.Group>
 
                     <Button
@@ -101,8 +95,7 @@ const TeamActions = () => {
                         type="button"
                         onClick={() => {
                             edit_team();
-                        }}
-                    >
+                        }}>
                         Edit team
                     </Button>
                 </Form>

@@ -29,16 +29,16 @@ const TeamMemberActions = () => {
         wantinternship: false,
         jobinterests: '',
         shareinfowithsponsors: false,
-        wantjoboffers: false
+        wantjoboffers: false,
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const target = e.target;
         const name = target.name;
         const value = name == 'age' ? parseInt(target.value) : target.value;
         setFormState({
             ...formState,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -49,14 +49,14 @@ const TeamMemberActions = () => {
         axios({
             method: 'delete',
             url: url + '/api/hackathon/members/' + member_data['id'],
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Member was deleted');
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -66,14 +66,14 @@ const TeamMemberActions = () => {
             method: 'put',
             url: url + '/api/hackathon/members/' + member_data['id'],
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-            data: { ...formState }
+            data: { ...formState },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Member info was edited');
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -82,10 +82,7 @@ const TeamMemberActions = () => {
         <div className="actions-single-member">
             <div className="single-member-box">
                 <Card style={{ width: '18rem' }} className="member-card">
-                    <Card.Img
-                        variant="top"
-                        src={member_data['profilepicture']}
-                    />
+                    <Card.Img variant="top" src={member_data['profilepicture']} />
                     <Card.Body>
                         <Card.Title>{member_data['fullname']}</Card.Title>
                         <Card.Text>
@@ -130,8 +127,7 @@ const TeamMemberActions = () => {
                             variant="primary"
                             onClick={() => {
                                 remove_team_member();
-                            }}
-                        >
+                            }}>
                             Remove
                         </Button>
                     </Card.Body>
@@ -142,21 +138,11 @@ const TeamMemberActions = () => {
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="fullname"
-                            name="fullname"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="fullname" name="fullname" onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="email"
-                            name="email"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="email" name="email" onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>School</Form.Label>
@@ -170,22 +156,12 @@ const TeamMemberActions = () => {
 
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Age</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="age"
-                            name="age"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="number" placeholder="age" name="age" onChange={handleInputChange} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Location</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="location"
-                            name="location"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="location" name="location" onChange={handleInputChange} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
@@ -242,8 +218,7 @@ const TeamMemberActions = () => {
                         type="button"
                         onClick={() => {
                             edit_team_member();
-                        }}
-                    >
+                        }}>
                         Edit member
                     </Button>
                 </Form>

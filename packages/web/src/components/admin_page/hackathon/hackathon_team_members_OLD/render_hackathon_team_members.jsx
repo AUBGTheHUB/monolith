@@ -17,27 +17,27 @@ const RenderTeamMembers = () => {
         axios({
             method: 'delete',
             url: url + `/api/hackathon/teams/${team_data['id']}`,
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 history(-1);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch(err => {});
     };
 
     const getTeamMembers = () => {
         axios({
             method: 'get',
             url: url + `/api/hackathon/teams/${team_data['id']}`,
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
-            .then((res) => {
+            .then(res => {
                 setTeamMembers(res.data.data.data.TeamMembers);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {});
+            .catch(err => {});
     };
 
     useEffect(() => {
@@ -50,27 +50,15 @@ const RenderTeamMembers = () => {
                 <>
                     <Card>
                         <Card.Body>
-                            <Card.Title>
-                                {' '}
-                                Team Name: {team_data.teamname}
-                            </Card.Title>
+                            <Card.Title> Team Name: {team_data.teamname}</Card.Title>
                         </Card.Body>
                     </Card>
                     <div className="members-box">
                         {teamMembers.map((person, index) => (
-                            <Card
-                                style={{ width: '18rem' }}
-                                key={index}
-                                className="member-card"
-                            >
-                                <Card.Img
-                                    variant="top"
-                                    src={person['profilepicture']}
-                                />
+                            <Card style={{ width: '18rem' }} key={index} className="member-card">
+                                <Card.Img variant="top" src={person['profilepicture']} />
                                 <Card.Body>
-                                    <Card.Title>
-                                        {person['fullname']}
-                                    </Card.Title>
+                                    <Card.Title>{person['fullname']}</Card.Title>
                                     <Card.Text>
                                         <b>Email: </b> {person['email']}
                                     </Card.Text>
@@ -109,16 +97,12 @@ const RenderTeamMembers = () => {
                                     <Button
                                         variant="primary"
                                         onClick={() => {
-                                            history(
-                                                '/admin/dashboard/hackathon/teams/members/actions',
-                                                {
-                                                    state: {
-                                                        member_data: person
-                                                    }
-                                                }
-                                            );
-                                        }}
-                                    >
+                                            history('/admin/dashboard/hackathon/teams/members/actions', {
+                                                state: {
+                                                    member_data: person,
+                                                },
+                                            });
+                                        }}>
                                         Actions
                                     </Button>
                                 </Card.Body>
@@ -136,16 +120,12 @@ const RenderTeamMembers = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history(
-                            '/admin/dashboard/hackathon/teams/members/add',
-                            {
-                                state: {
-                                    team_data: team_data
-                                }
-                            }
-                        );
-                    }}
-                >
+                        history('/admin/dashboard/hackathon/teams/members/add', {
+                            state: {
+                                team_data: team_data,
+                            },
+                        });
+                    }}>
                     Add Member
                 </Button>
                 {renderMap()}
@@ -154,11 +134,10 @@ const RenderTeamMembers = () => {
                     onClick={() => {
                         history('/admin/dashboard/hackathon/teams/actions', {
                             state: {
-                                team_data: team_data
-                            }
+                                team_data: team_data,
+                            },
                         });
-                    }}
-                >
+                    }}>
                     EDIT TEAM
                 </Button>
                 <Button
@@ -166,14 +145,13 @@ const RenderTeamMembers = () => {
                     onClick={() => {
                         if (!isVerified) {
                             window.alert(
-                                "Are you sure you want to delete this team?\nIf that's the case, press the button again."
+                                "Are you sure you want to delete this team?\nIf that's the case, press the button again.",
                             );
                             setVerified(true);
                         } else {
                             deleteTeam();
                         }
-                    }}
-                >
+                    }}>
                     DELETE TEAM
                 </Button>
             </div>

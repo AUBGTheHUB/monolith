@@ -13,13 +13,13 @@ const RenderNoTeamParticipants = () => {
         axios({
             method: 'get',
             url: url + '/api/hackathon/participants_no_team',
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
-            .then((res) => {
+            .then(res => {
                 setTeamMembers(res.data.data.data);
             })
             // eslint-disable-next-line no-unused-vars
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -33,15 +33,8 @@ const RenderNoTeamParticipants = () => {
             return (
                 <div className="members-box">
                     {teamMembers.map((person, index) => (
-                        <Card
-                            style={{ width: '18rem' }}
-                            key={index}
-                            className="member-card"
-                        >
-                            <Card.Img
-                                variant="top"
-                                src={person['profilepicture']}
-                            />
+                        <Card style={{ width: '18rem' }} key={index} className="member-card">
+                            <Card.Img variant="top" src={person['profilepicture']} />
                             <Card.Body>
                                 <Card.Title>{person['fullname']}</Card.Title>
                                 <Card.Text>
@@ -82,31 +75,23 @@ const RenderNoTeamParticipants = () => {
                                 <Button
                                     variant="primary"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/hackathon/noteamparticipants/actions',
-                                            {
-                                                state: {
-                                                    member_data: person
-                                                }
-                                            }
-                                        );
-                                    }}
-                                >
+                                        history('/admin/dashboard/hackathon/noteamparticipants/actions', {
+                                            state: {
+                                                member_data: person,
+                                            },
+                                        });
+                                    }}>
                                     Actions
                                 </Button>
                                 <Button
                                     variant="success"
                                     onClick={() => {
-                                        history(
-                                            '/admin/dashboard/hackathon/teams',
-                                            {
-                                                state: {
-                                                    member_data: person
-                                                }
-                                            }
-                                        );
-                                    }}
-                                >
+                                        history('/admin/dashboard/hackathon/teams', {
+                                            state: {
+                                                member_data: person,
+                                            },
+                                        });
+                                    }}>
                                     Add to team
                                 </Button>
                             </Card.Body>
@@ -123,11 +108,8 @@ const RenderNoTeamParticipants = () => {
                 <Button
                     variant="primary"
                     onClick={() => {
-                        history(
-                            '/admin/dashboard/hackathon/noteamparticipants/add'
-                        );
-                    }}
-                >
+                        history('/admin/dashboard/hackathon/noteamparticipants/add');
+                    }}>
                     Add a Participant
                 </Button>
                 {renderMap()}

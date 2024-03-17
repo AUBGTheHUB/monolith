@@ -2,17 +2,18 @@ import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Valate, { url } from '../../../../Global';
-import InvalClient from '../../invalid_client';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Validate, { url } from '../../../../Global';
+import InvalidClient from '../../invalid_client';
 
-const AddNoTeamParticipant = () => {
+const AddTeamMember = () => {
+    const location = useLocation();
+    let team_data = location.state.team_data;
     const history = useNavigate();
-
     const [formState, setFormState] = useState({
         fullname: '',
-        hasteam: false,
-        teamname: '',
+        hasteam: true,
+        teamname: team_data.teamname,
         email: '',
         university: '',
         age: 0,
@@ -27,60 +28,70 @@ const AddNoTeamParticipant = () => {
         wantinternship: false,
         jobinterests: '',
         shareinfowithsponsors: false,
-        wantjoboffers: false
+        wantjoboffers: false,
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const target = e.target;
         const name = target.name;
         const value = name == 'age' ? Number(target.value) : target.value;
         setFormState({
             ...formState,
-            [name]: target.type == 'checkbox' ? target.checked : value
+            [name]: target.type == 'checkbox' ? target.checked : value,
         });
     };
 
-    const addNewNoTeamParticipant = () => {
+    const addNewTeamMember = () => {
+        // console.log(formState)
+        let teamID = team_data.id;
+        delete team_data.id;
         axios({
             method: 'post',
-            url: url + '/api/hackathon/participants_no_team',
+            url: url + '/api/hackathon/members',
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-            data: { ...formState }
+            data: { ...formState },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('New member was added');
-                console.log(res);
-                history(-1);
+                team_data['teammembers'].push(res['data']['data']['data']['InsertedID']);
+                console.log(team_data);
+                console.log(teamID);
+                axios({
+                    method: 'put',
+                    url: url + `/api/hackathon/teams/${teamID}`,
+                    headers: {
+                        'BEARER-TOKEN': localStorage.getItem('auth_token'),
+                    },
+                    data: { ...team_data },
+                })
+                    // eslint-disable-next-line no-unused-vars
+                    .then(res => {
+                        console.log('Member added to the team');
+                        history(-1);
+                    })
+                    .catch(err => {
+                        alert(err['response']['data']['data']['data']);
+                    });
             })
-            .catch((err) => {
+            .catch(err => {
                 alert(err['response']['data']['data']['data']);
             });
     };
 
-    if (Valate()) {
+    if (Validate()) {
         return (
             <div className="add-member-main-div">
                 <Form>
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="fullname"
-                            name="fullname"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="fullname" name="fullname" onChange={handleInputChange} />
                     </Form.Group>
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="email"
-                            name="email"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="email" name="email" onChange={handleInputChange} />
                     </Form.Group>
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>School</Form.Label>
                         <Form.Control
                             type="text"
@@ -90,27 +101,17 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Age</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="age"
-                            name="age"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="number" placeholder="age" name="age" onChange={handleInputChange} />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Location</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="location"
-                            name="location"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="location" name="location" onChange={handleInputChange} />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Heard about us?</Form.Label>
                         <Form.Control
                             type="text"
@@ -120,10 +121,8 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
-                        <Form.Label>
-                            Previous Hackathon Participation?
-                        </Form.Label>
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Previous Hackathon Participation?</Form.Label>
                         <Form.Check
                             type="switch"
                             label="prevhackathonparticipation"
@@ -132,10 +131,8 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
-                        <Form.Label>
-                            Previous HackAUBG Participation?
-                        </Form.Label>
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Previous HackAUBG Participation?</Form.Label>
                         <Form.Check
                             type="switch"
                             label="prevhackaubgparticipation"
@@ -144,10 +141,8 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
-                        <Form.Label>
-                            Previous HackAUBG Participation?
-                        </Form.Label>
+                    <Form.Group className="mb-3" controlId="formBasicText">
+                        <Form.Label>Previous HackAUBG Participation?</Form.Label>
                         <Form.Check
                             type="switch"
                             label="hasexperience"
@@ -156,7 +151,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Programming level</Form.Label>
                         <Form.Control
                             type="text"
@@ -166,7 +161,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Strong Sides</Form.Label>
                         <Form.Control
                             type="text"
@@ -176,7 +171,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Shirt Size</Form.Label>
                         <Form.Control
                             type="text"
@@ -186,7 +181,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Internship</Form.Label>
                         <Form.Check
                             type="switch"
@@ -196,7 +191,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Job Interests</Form.Label>
                         <Form.Control
                             type="text"
@@ -205,7 +200,7 @@ const AddNoTeamParticipant = () => {
                             onChange={handleInputChange}
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Sponsor Share</Form.Label>
                         <Form.Check
                             type="switch"
@@ -215,7 +210,7 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" control="formBasicText">
+                    <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>NewsLetter</Form.Label>
                         <Form.Check
                             type="switch"
@@ -225,19 +220,15 @@ const AddNoTeamParticipant = () => {
                         />
                     </Form.Group>
 
-                    <Button
-                        variant="primary"
-                        type="button"
-                        onClick={addNewNoTeamParticipant}
-                    >
+                    <Button variant="primary" type="button" onClick={addNewTeamMember}>
                         Add new member
                     </Button>
                 </Form>
             </div>
         );
     } else {
-        return <InvalClient />;
+        return <InvalidClient />;
     }
 };
 
-export default AddNoTeamParticipant;
+export default AddTeamMember;

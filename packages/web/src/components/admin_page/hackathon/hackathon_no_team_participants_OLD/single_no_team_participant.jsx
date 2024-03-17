@@ -29,16 +29,16 @@ const NoTeamParticipantsActions = () => {
         wantinternship: false,
         jobinterests: '',
         shareinfowithsponsors: false,
-        wantjoboffers: false
+        wantjoboffers: false,
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const target = e.target;
         const name = target.name;
         const value = name == 'age' ? parseInt(target.value) : target.value;
         setFormState({
             ...formState,
-            [name]: value
+            [name]: value,
         });
     };
 
@@ -48,18 +48,15 @@ const NoTeamParticipantsActions = () => {
         console.log(member_data['id']);
         axios({
             method: 'delete',
-            url:
-                url +
-                '/api/hackathon/participants_no_team/' +
-                member_data['id'],
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            url: url + '/api/hackathon/participants_no_team/' + member_data['id'],
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Participant was deleted');
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -68,19 +65,16 @@ const NoTeamParticipantsActions = () => {
         console.log(formState);
         axios({
             method: 'put',
-            url:
-                url +
-                '/api/hackathon/participants_no_team/' +
-                member_data['id'],
+            url: url + '/api/hackathon/participants_no_team/' + member_data['id'],
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-            data: { ...formState }
+            data: { ...formState },
         })
             // eslint-disable-next-line no-unused-vars
-            .then((res) => {
+            .then(res => {
                 console.log('Participant info was edited');
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
@@ -89,10 +83,7 @@ const NoTeamParticipantsActions = () => {
         <div className="actions-single-member">
             <div className="single-member-box">
                 <Card style={{ width: '18rem' }} className="member-card">
-                    <Card.Img
-                        variant="top"
-                        src={member_data['profilepicture']}
-                    />
+                    <Card.Img variant="top" src={member_data['profilepicture']} />
                     <Card.Body>
                         <Card.Title>{member_data['fullname']}</Card.Title>
                         <Card.Text>
@@ -137,8 +128,7 @@ const NoTeamParticipantsActions = () => {
                             variant="primary"
                             onClick={() => {
                                 remove_team_member();
-                            }}
-                        >
+                            }}>
                             Remove
                         </Button>
                     </Card.Body>
@@ -149,21 +139,11 @@ const NoTeamParticipantsActions = () => {
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="fullname"
-                            name="fullname"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="fullname" name="fullname" onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="email"
-                            name="email"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="email" name="email" onChange={handleInputChange} />
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>School</Form.Label>
@@ -177,22 +157,12 @@ const NoTeamParticipantsActions = () => {
 
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Age</Form.Label>
-                        <Form.Control
-                            type="number"
-                            placeholder="age"
-                            name="age"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="number" placeholder="age" name="age" onChange={handleInputChange} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
                         <Form.Label>Location</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="location"
-                            name="location"
-                            onChange={handleInputChange}
-                        />
+                        <Form.Control type="text" placeholder="location" name="location" onChange={handleInputChange} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicText">
@@ -249,8 +219,7 @@ const NoTeamParticipantsActions = () => {
                         type="button"
                         onClick={() => {
                             edit_team_member();
-                        }}
-                    >
+                        }}>
                         Edit member
                     </Button>
                 </Form>

@@ -17,42 +17,37 @@ const RenderTeams = () => {
         axios({
             method: 'get',
             url: url + '/api/hackathon/teams',
-            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') }
+            headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
         })
-            .then((res) => {
+            .then(res => {
                 setTeams(res.data.data.data);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
 
-    const addParticipantToTeam = (team) => {
+    const addParticipantToTeam = team => {
         // team.teammembers.push(member_data.id);
         // member_data.hasteam = true;
         // member_data.teamname = team.teamname;
         // console.log(member_data)
         axios({
             method: 'post',
-            url:
-                url +
-                '/api/hackathon/participants_no_team/' +
-                member_data.id +
-                '/move_to_team/' +
-                team.id,
+            url: url + '/api/hackathon/participants_no_team/' + member_data.id + '/move_to_team/' + team.id,
             headers: { 'BEARER-TOKEN': localStorage.getItem('auth_token') },
-            data: { member_data }
+            data: { member_data },
         })
-            .then((res) => {
+            .then(res => {
                 console.log(res);
                 history(-1);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.log(err);
             });
     };
 
-    const addButton = (team) => {
+    const addButton = team => {
         if (Object.keys(member_data).length > 0) {
             return (
                 <Button
@@ -60,8 +55,7 @@ const RenderTeams = () => {
                     onClick={() => {
                         console.log(team);
                         addParticipantToTeam(team);
-                    }}
-                >
+                    }}>
                     Add
                 </Button>
             );
@@ -75,29 +69,19 @@ const RenderTeams = () => {
                 <div className="members-box">
                     {teams.map((team, index) => {
                         return (
-                            <Card
-                                style={{ width: '18rem' }}
-                                key={index}
-                                className="member-card"
-                            >
+                            <Card style={{ width: '18rem' }} key={index} className="member-card">
                                 <Card.Body>
                                     <Card.Title>{team['teamname']}</Card.Title>
-                                    <Card.Text>
-                                        {team['teammembers'].length}
-                                    </Card.Text>
+                                    <Card.Text>{team['teammembers'].length}</Card.Text>
                                     <Button
                                         variant="primary"
                                         onClick={() => {
-                                            history(
-                                                '/admin/dashboard/hackathon/teams/members',
-                                                {
-                                                    state: {
-                                                        team_data: team
-                                                    }
-                                                }
-                                            );
-                                        }}
-                                    >
+                                            history('/admin/dashboard/hackathon/teams/members', {
+                                                state: {
+                                                    team_data: team,
+                                                },
+                                            });
+                                        }}>
                                         Details (Controls)
                                     </Button>
                                     {addButton(team)}
@@ -121,8 +105,7 @@ const RenderTeams = () => {
                     variant="primary"
                     onClick={() => {
                         history('/admin/dashboard/hackathon/teams/add', {});
-                    }}
-                >
+                    }}>
                     Add Team
                 </Button>
                 {renderMap()}
