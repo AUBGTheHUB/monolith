@@ -31,6 +31,7 @@ import { RenderStorageObjects } from './components/admin_page/s3_page/render_obj
 import UrlsTable from './components/admin_page/url_shortener/table';
 import { Routes, Route } from 'react-router-dom';
 import BackBtn from './components/admin_page/back_button/back_button.jsx';
+import { Hackteams } from './components/admin_page/hackathon/hackathon_teams/hackathon_teams.jsx';
 
 const adminRoutes = [
     {
@@ -117,6 +118,10 @@ const adminRoutes = [
         path: 'fswitches',
         element: <RenderSwitches />,
     },
+    {
+        path: 'hackteams',
+        element: <Hackteams />,
+    },
     //Code is comented bacause it is not used
     // {
     //     path: 'members/add',
@@ -140,7 +145,7 @@ const adminRoutes = [
     // },
     // {
     //     path: 'hackaton/teams/members/add',
-    //     element: <AddTeamMember />,
+    //     element: <AddTeamMember />
     // },
     // {
     //     path: 'hackaton/teams/members/actions',
