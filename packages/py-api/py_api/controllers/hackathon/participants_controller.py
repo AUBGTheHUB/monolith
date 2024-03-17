@@ -128,7 +128,7 @@ class ParticipantsController:
             return cls.handle_registration_via_invite_link(jwt_token, participant)
 
         # Logic for adding a participant to a new team
-        if TeamFunctionality.get_count_of_teams() < 16:
+        if TeamFunctionality.get_count_of_teams() < 17:
             if participant.team_name:
                 if TeamFunctionality.fetch_team(team_name=participant.team_name):
                     return JSONResponse(content={"message": "Team with this name already exists"}, status_code=409)
