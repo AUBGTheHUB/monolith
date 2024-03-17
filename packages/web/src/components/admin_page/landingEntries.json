@@ -54,7 +54,7 @@
         "description": "Manage feature switches"
     },
     {
-        "title": "Hackathon Teams Download",
+        "title": "Hackathon Teams",
         "text": "Download Hackathon Teams as CSV",
         "url": "/admin/dashboard/hackteams",
         "description": "Download Hackathon Teams"
