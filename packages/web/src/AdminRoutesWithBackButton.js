@@ -16,22 +16,22 @@ import SponsorsActions from './components/admin_page/hackathon/hackathon_sponsor
 import RenderPartners from './components/admin_page/hackathon/hackathon_partners/render_partners';
 import AddPartners from './components/admin_page/hackathon/hackathon_partners/add_partners';
 import PartnersActions from './components/admin_page/hackathon/hackathon_partners/actions_partners';
-// import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
-// import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
-// import TeamActions from './components/admin_page/hackathon/hackathon_teams/actions_teams';
 import RenderSwitches from './components/admin_page/feature_switch_page/render_switch';
 import S3Panel from './components/admin_page/s3_page/s3_landing';
 import { RenderStorageObjects } from './components/admin_page/s3_page/render_objects';
+import UrlsTable from './components/admin_page/url_shortener/table';
+import { Routes, Route } from 'react-router-dom';
+import BackBtn from './components/admin_page/back_button/back_button.jsx';
+import { Hackteams } from './components/admin_page/hackathon/hackathon_teams/hackathon_teams.jsx';
+// import RenderTeams from './components/admin_page/hackathon/hackathon_teams/render_teams';
+// import RenderTeamMembers from './components/admin_page/hackathon/hackathon_team_members/render_hackathon_team_members';
+// import TeamActions from './components/admin_page/hackathon/hackathon_teams/actions_teams';
 // import TeamMemberActions from './components/admin_page/hackathon/hackathon_team_members/single_team_member.jsx';
 // import AddTeamMember from './components/admin_page/hackathon/hackathon_team_members/new_member';
 // import AddNewTeam from './components/admin_page/hackathon/hackathon_teams/new_team.jsx';
 // import RenderNoTeamParticipants from './components/admin_page/hackathon/hackathon_no_team_participants/render_no_team_participants';
 // import NoTeamParticipantsActions from './components/admin_page/hackathon/hackathon_no_team_participants/single_no_team_participant';
 // import AddNoTeamParticipant from './components/admin_page/hackathon/hackathon_no_team_participants/new_no_team_participant';
-import UrlsTable from './components/admin_page/url_shortener/table';
-import { Routes, Route } from 'react-router-dom';
-import BackBtn from './components/admin_page/back_button/back_button.jsx';
-import { Hackteams } from './components/admin_page/hackathon/hackathon_teams/hackathon_teams.jsx';
 
 const adminRoutes = [
     {
