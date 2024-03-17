@@ -55,7 +55,7 @@
     },
     {
         "title": "Hackathon Teams Download",
-        "text": "Download Hackathon Teams as XLSX",
+        "text": "Download Hackathon Teams as CSV",
         "url": "/admin/dashboard/hackteams",
         "description": "Download Hackathon Teams"
     }
