@@ -43,21 +43,25 @@
 .sponsors-header-platinum {
     background-color: #00b79a;
     border-color: #00b79a;
+    min-width: 20vw;
 }
 
 .sponsors-header-gold {
     background-color: #c9b037;
     border-color: #c9b037;
+    min-width: 20vw;
 }
 
 .sponsors-header-custom {
     background-color: #cdbaba;
     border-color: #cdbaba;
+    min-width: 20vw;
 }
 
 .sponsors-header-silver {
     background-color: #b4b4b4;
     border-color: #b4b4b4;
+    min-width: 20vw;
 }
 
 .sponsors-header-bronze {
@@ -66,11 +70,18 @@
     min-width: 20vw;
 }
 
+.sponsors-header-media {
+    background-color: #2596be;
+    border-color: #2596be;
+    min-width: 20vw;
+}
+
 .platinum-box,
 .gold-box,
 .silver-box,
 .custom-box,
-.bronze-box {
+.bronze-box,
+.media-box {
     width: 100%;
     height: fit-content;
     max-width: 1000px;
@@ -117,6 +128,10 @@
 
 .bronze-box {
     border-color: rgb(163, 104, 37);
+}
+
+.media-box {
+    border-color: #2596be;
     margin-bottom: 5%;
 }
 

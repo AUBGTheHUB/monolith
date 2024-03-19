@@ -12,6 +12,7 @@ const Sponsors = () => {
     const [sponsor, setSponsor] = useState({});
     // eslint-disable-next-line
     const [featureSwitches, _] = useContext(FsContext);
+    const [mediaSponsors, setMediaSponsors] = useState({});
 
     const fetchSponsors = () => {
         let unfilteredSponsors;
@@ -38,7 +39,18 @@ const Sponsors = () => {
         //removed catch to fix console error
     };
 
+    const fetchMediaSponsors = () => {
+        axios({
+            method: 'get',
+            url: url + '/api/partners',
+        }).then(res => {
+            const mediaSponsors = res.data.data.data;
+            setMediaSponsors({ bronze: mediaSponsors });
+        });
+    };
+
     useEffect(fetchSponsors, []);
+    useEffect(fetchMediaSponsors, []);
     if (Object.keys(sponsor).length !== 0 && featureSwitches.Sponsors) {
         return (
             <div className="sponsors-main">
@@ -79,6 +91,11 @@ const Sponsors = () => {
                         <h1 style={{ color: '#FFFFFF' }}>Bronze</h1>
                     </div>
                     <SponsorsContainer sponsors={sponsor.bronze} category={'bronze'} />
+
+                    <div className="sponsors-header-media sponsors-headers">
+                        <h1 style={{ color: '#FFFFFF' }}>Media</h1>
+                    </div>
+                    <SponsorsContainer sponsors={mediaSponsors.bronze} category={'media'} />
                 </div>
             </div>
         );
