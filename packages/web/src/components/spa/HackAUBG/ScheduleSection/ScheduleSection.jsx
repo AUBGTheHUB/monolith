@@ -15,16 +15,16 @@ export const ScheduleHackathon = () => {
                     <div className="schedule-table-container" id="friday-container">
                         <h1 className="schedule-table-title">FRIDAY</h1>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">17:30</h2>
-                            <p>Registration and Networking</p>
+                            <h2 className="schedule-time">16:00</h2>
+                            <p>Registration</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">18:30</h2>
+                            <h2 className="schedule-time">18:00</h2>
                             <p>Opening Ceremony</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">20:00</h2>
-                            <p>Brainstorming Ideas</p>
+                            <h2 className="schedule-time">19:00</h2>
+                            <p>Dinner and Brainstorming</p>
                         </div>
                         <div className="schedule-table-row">
                             <h2 className="schedule-time">21:00</h2>
@@ -38,62 +38,58 @@ export const ScheduleHackathon = () => {
                     <div className="schedule-table-container" id="saturday-container">
                         <h1 className="schedule-table-title">SATURDAY</h1>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">09:30</h2>
+                            <h2 className="schedule-time">09:00</h2>
                             <p>Breakfast</p>
                         </div>
                         <div className="schedule-table-row">
+                            <h2 className="schedule-time">10:00</h2>
+                            <p>Idea Pitching to Mentors</p>
+                        </div>
+                        <div className="schedule-table-row">
                             <h2 className="schedule-time">11:00</h2>
-                            <p>Mentorship & HR Sessions</p>
+                            <p>Mentors Presentations</p>
                         </div>
                         <div className="schedule-table-row">
                             <h2 className="schedule-time">11:30</h2>
-                            <p>Idea Pitching Pt. 2</p>
+                            <p>Mentorship and HR Booths</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">12:00</h2>
-                            <p>Mentorship & HR Sessions</p>
-                        </div>
-                        <div className="schedule-table-row">
-                            <h2 className="schedule-time">13:30</h2>
+                            <h2 className="schedule-time">13:00</h2>
                             <p>Lunch</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">14:30</h2>
-                            <p>Mentorship + Coding</p>
+                            <h2 className="schedule-time">14:00</h2>
+                            <p>Mentorship and Coding</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">19:30</h2>
-                            <p>Dinner</p>
+                            <h2 className="schedule-time">17:30</h2>
+                            <p>Mentorship Ends</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">20:30</h2>
-                            <p>Coding</p>
+                            <h2 className="schedule-time">19:00</h2>
+                            <p>Dinner and Coding</p>
                         </div>
                     </div>
                     <div className="schedule-table-container">
                         <h1 className="schedule-table-title">SUNDAY</h1>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">09:30</h2>
-                            <p>Breakfast</p>
+                            <h2 className="schedule-time">10:00</h2>
+                            <p>Breakfast and Coding</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">10:30</h2>
-                            <p>Coding</p>
-                        </div>
-                        <div className="schedule-table-row">
-                            <h2 className="schedule-time">13:00</h2>
-                            <p>Presentation Submission Deadline</p>
+                            <h2 className="schedule-time">12:00</h2>
+                            <p>Submission Deadline</p>
                         </div>
                         <div className="schedule-table-row">
                             <h2 className="schedule-time">13:00</h2>
-                            <p>Lunch</p>
-                        </div>
-                        <div className="schedule-table-row">
-                            <h2 className="schedule-time">14:30</h2>
                             <p>Presentations Begin</p>
                         </div>
                         <div className="schedule-table-row">
-                            <h2 className="schedule-time">19:00</h2>
+                            <h2 className="schedule-time">14:10</h2>
+                            <p>Lunch</p>
+                        </div>
+                        <div className="schedule-table-row">
+                            <h2 className="schedule-time">19:30</h2>
                             <p>Award Ceremony</p>
                         </div>
                     </div>
