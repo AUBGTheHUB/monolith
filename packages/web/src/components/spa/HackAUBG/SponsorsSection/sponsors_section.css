@@ -63,14 +63,19 @@
 .sponsors-header-bronze {
     background-color: rgb(163, 104, 37);
     border-color: rgb(163, 104, 37);
-    min-width: 20vw;
+}
+
+.sponsors-header-media {
+    background-color: #2596be;
+    border-color: #2596be;
 }
 
 .platinum-box,
 .gold-box,
 .silver-box,
 .custom-box,
-.bronze-box {
+.bronze-box,
+.media-box {
     width: 100%;
     height: fit-content;
     max-width: 1000px;
@@ -117,6 +122,10 @@
 
 .bronze-box {
     border-color: rgb(163, 104, 37);
+}
+
+.media-box {
+    border-color: #2596be;
     margin-bottom: 5%;
 }
 
