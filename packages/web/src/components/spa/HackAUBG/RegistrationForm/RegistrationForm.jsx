@@ -173,9 +173,9 @@ const RegistrationForm = () => {
                             error={errors.location && errors.location.message}
                         />
                         <InputComponent
-                            label="Choose a School/University"
+                            label="Choose a School/University*"
                             type="select"
-                            required={false}
+                            required="Field is required"
                             register={register}
                             values={[
                                 'American University in Bulgaria',
@@ -185,6 +185,7 @@ const RegistrationForm = () => {
                                 'Other',
                             ]}
                             name="university"
+                            error={errors.university && errors.university.message}
                         />
                     </div>
                     {!token && (
