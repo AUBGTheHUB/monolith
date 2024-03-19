@@ -43,31 +43,37 @@
 .sponsors-header-platinum {
     background-color: #00b79a;
     border-color: #00b79a;
+    min-width: 20vw;
 }
 
 .sponsors-header-gold {
     background-color: #c9b037;
     border-color: #c9b037;
+    min-width: 20vw;
 }
 
 .sponsors-header-custom {
     background-color: #cdbaba;
     border-color: #cdbaba;
+    min-width: 20vw;
 }
 
 .sponsors-header-silver {
     background-color: #b4b4b4;
     border-color: #b4b4b4;
+    min-width: 20vw;
 }
 
 .sponsors-header-bronze {
     background-color: rgb(163, 104, 37);
     border-color: rgb(163, 104, 37);
+    min-width: 20vw;
 }
 
 .sponsors-header-media {
     background-color: #2596be;
     border-color: #2596be;
+    min-width: 20vw;
 }
 
 .platinum-box,
