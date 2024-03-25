@@ -115,7 +115,7 @@ const RegistrationForm = () => {
         }
     };
 
-    if (featureSwitches.regForm && isApiUp) {
+    if ((featureSwitches.regForm && isApiUp) || (teamName && isApiUp)) {
         return (
             <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                 <div className={styles.form_header}>
