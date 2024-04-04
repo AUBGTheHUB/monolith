@@ -110,7 +110,7 @@ const RegistrationForm = () => {
     };
 
     if (featureSwitches.regForm) {
-        if ((featureSwitches.isRegFull === false && isApiUp) || (teamName && isApiUp)) {
+        if (isApiUp && (featureSwitches.isRegFull === false || teamName)) {
             return (
                 <form className={styles.form} id="registration" onSubmit={handleSubmit(onSubmit)} onChange={display}>
                     <div className={styles.form_header}>
