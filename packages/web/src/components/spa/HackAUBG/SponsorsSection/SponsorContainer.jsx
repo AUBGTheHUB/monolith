@@ -3,7 +3,7 @@ import SponsorCard from './SponsorCard';
 import './sponsors_section.css';
 
 const SponsorsContainer = ({ sponsors, category }) => {
-    if (sponsors.length !== 0) {
+    if (sponsors && sponsors.length !== 0) {
         return (
             <div className={category + '-box'}>
                 <div className="logo-container">

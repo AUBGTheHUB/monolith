@@ -3,7 +3,6 @@ import styles from './registration_form.module.css';
 import { useForm } from 'react-hook-form';
 import InputComponent from './InputComponent';
 import axios from 'axios';
-import { url } from '../../../../Global';
 import { registerURL } from '../../../../Global';
 import { jwtDecode } from 'jwt-decode';
 import { FsContext } from '../../../../feature_switches';
@@ -20,7 +19,6 @@ const DisabledForm = () => {
 const RegistrationForm = () => {
     // eslint-disable-next-line
     const [featureSwitches, _] = useContext(FsContext);
-    const [isFormAvailable, setIsFormAvailable] = useState(false);
     const [teamName, setTeamName] = useState('');
     const [token, setToken] = useState('');
     const [error, setError] = useState('');
@@ -37,17 +35,6 @@ const RegistrationForm = () => {
     } = useForm({ mode: 'all' });
 
     const checkRegistrationAvailability = () => {
-        axios({
-            method: 'get',
-            url: url + '/api/hackathon/register/available',
-        })
-            .then(() => {
-                setIsFormAvailable(true);
-            })
-            .catch(() => {
-                setIsFormAvailable(false);
-            });
-
         axios({
             method: 'get',
             url: isApiUpURL,
@@ -75,7 +62,6 @@ const RegistrationForm = () => {
             }
         }
     }, []);
-    if (isFormAvailable) return null;
 
     const onSubmit = () => {
         if (Object.keys(errors).length == 0) {
