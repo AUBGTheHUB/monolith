@@ -51,7 +51,7 @@ const Sponsors = () => {
 
     useEffect(fetchSponsors, []);
     useEffect(fetchMediaSponsors, []);
-    if (Object.keys(sponsor).length !== 0 && featureSwitches.Sponsors) {
+    if (Object.keys(sponsor) && Object.keys(sponsor).length !== 0 && featureSwitches.Sponsors) {
         return (
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
