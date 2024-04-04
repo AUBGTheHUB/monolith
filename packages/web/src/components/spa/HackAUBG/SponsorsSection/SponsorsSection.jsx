@@ -13,6 +13,8 @@ const Sponsors = () => {
     // eslint-disable-next-line
     const [featureSwitches, _] = useContext(FsContext);
     const [mediaSponsors, setMediaSponsors] = useState({});
+    const [isMediaLoaded, setIsMediaLoaded] = useState(false);
+    const [isSponsprLoaded, setIsSponsorLoaded] = useState(false);
 
     const fetchSponsors = () => {
         let unfilteredSponsors;
@@ -34,6 +36,7 @@ const Sponsors = () => {
             });
 
             setSponsor(tempSponsor);
+            setIsSponsorLoaded(true);
         });
         // eslint-disable-next-line no-unused-vars
         //removed catch to fix console error
@@ -46,12 +49,18 @@ const Sponsors = () => {
         }).then(res => {
             const mediaSponsors = res.data.data.data;
             setMediaSponsors({ bronze: mediaSponsors });
+            setIsMediaLoaded(true);
         });
     };
 
-    useEffect(fetchSponsors, []);
-    useEffect(fetchMediaSponsors, []);
-    if (Object.keys(sponsor) && Object.keys(sponsor).length !== 0 && featureSwitches.Sponsors) {
+    useEffect(() => {
+        if (featureSwitches.Sponsors) {
+            fetchSponsors();
+            fetchMediaSponsors();
+        }
+    }, [featureSwitches.Sponsors]);
+
+    if (isMediaLoaded && isSponsprLoaded && featureSwitches.Sponsors) {
         return (
             <div className="sponsors-main">
                 <h1 className="sponsors-header">SPONSORS</h1>
