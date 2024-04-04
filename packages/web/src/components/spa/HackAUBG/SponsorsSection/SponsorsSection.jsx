@@ -76,35 +76,35 @@ const Sponsors = () => {
                     <div className="sponsors-header-platinum sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Platinum</h1>
                     </div>
-                    <SponsorsContainer sponsors={sponsor.platinum} category={'platinum'} />
+                    <SponsorsContainer sponsors={sponsor.platinum} category={'platinum'} isLoaded={isSponsprLoaded} />
 
                     <div className="sponsors-header-gold sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Gold</h1>
                     </div>
-                    <SponsorsContainer sponsors={sponsor.gold} category={'gold'} />
+                    <SponsorsContainer sponsors={sponsor.gold} category={'gold'} isLoaded={isSponsprLoaded} />
                     <div className="sponsors-header-custom sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Custom</h1>
                     </div>
 
-                    <SponsorsContainer sponsors={sponsor.custom} category={'custom'} />
+                    <SponsorsContainer sponsors={sponsor.custom} category={'custom'} isLoaded={isSponsprLoaded} />
                     <div className="sponsors-header-silver sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Silver</h1>
                     </div>
                     <img className="right-svg" src="FAQ-right.png" />
 
-                    <SponsorsContainer sponsors={sponsor.silver} category={'silver'} />
+                    <SponsorsContainer sponsors={sponsor.silver} category={'silver'} isLoaded={isSponsprLoaded} />
                     {/* TODO: add hackathon partners to hackathon partners in admin panel */}
                     {/* !!!!!!! PUT IT IN A NEW COMPONENT !!!!!!!!! */}
 
                     <div className="sponsors-header-bronze sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Bronze</h1>
                     </div>
-                    <SponsorsContainer sponsors={sponsor.bronze} category={'bronze'} />
+                    <SponsorsContainer sponsors={sponsor.bronze} category={'bronze'} isLoaded={isSponsprLoaded} />
 
                     <div className="sponsors-header-media sponsors-headers">
                         <h1 style={{ color: '#FFFFFF' }}>Media</h1>
                     </div>
-                    <SponsorsContainer sponsors={mediaSponsors.bronze} category={'media'} />
+                    <SponsorsContainer sponsors={mediaSponsors.bronze} category={'media'} isLoaded={isMediaLoaded} />
                 </div>
             </div>
         );
