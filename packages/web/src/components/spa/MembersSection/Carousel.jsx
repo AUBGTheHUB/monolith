@@ -54,7 +54,7 @@ export default class SimpleSlider extends Component {
             autoplay: true,
             centerMode: false,
             centerPadding: 30,
-            autoplaySpeed: 3000,
+            autoplaySpeed: 10000,
             pauseOnHover: true,
         };
         return (

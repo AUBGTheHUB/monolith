@@ -1,0 +1,58 @@
+.about_container_hack_aubg {
+    width: 100vw;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    font-weight: 400;
+    align-items: center;
+    font-family: 'Roboto';
+    padding: 5% 0% 0% 0%;
+}
+
+.about_title_hack_aubg {
+    color: #fff;
+    font-family: 'Press Start 2P';
+    font-weight: 900;
+    font-size: 1.7em;
+    background-color: #fb4298;
+    margin: 6% auto;
+    width: 22.5%;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.about_container_hack_aubg .about_title_hack_aubg {
+    text-align: center;
+}
+
+.about_text_container_hack_aubg {
+    width: 70vw;
+    margin: 0.5% 20% 5% 20%;
+    display: flex;
+    color: white;
+    align-items: center;
+    font-size: 1.1em;
+    text-align: center;
+}
+.about_text_container_hack_aubg h1 {
+    text-align: center;
+}
+
+@media only screen and (max-width: 900px) {
+    .about_container_hack_aubg {
+        font-weight: 200;
+    }
+
+    .about_title_hack_aubg {
+        padding: 10px 0;
+        font-size: 1.4em;
+        width: 80%;
+    }
+
+    .about_text_container_hack_aubg {
+        width: 80%;
+        display: flex;
+        color: white;
+        align-items: center;
+    }
+}

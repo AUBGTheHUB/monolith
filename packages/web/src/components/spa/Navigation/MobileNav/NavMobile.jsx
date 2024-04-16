@@ -1,5 +1,5 @@
 import { Button } from './Button';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './mobile_navbar.css';
 import { CgMenu } from 'react-icons/cg';
 import { MdOutlineClose } from 'react-icons/md';
@@ -20,13 +20,14 @@ export const NavMobile = ({ props }) => {
         setBodyHeight(currentBodyHeight);
     }
 
+    useEffect(() => {
+        makeBodyScrollable();
+    }, []);
+
     const renderHackButton = () => {
         if (props.hasHackButton) {
             return (
-                <div
-                    className="navmobile-button-ham"
-                    onClick={navigateToHackAUBG}
-                >
+                <div className="navmobile-button-ham" onClick={navigateToHackAUBG}>
                     HackAUBG
                 </div>
             );
@@ -38,9 +39,7 @@ export const NavMobile = ({ props }) => {
     };
 
     const [menuClass, setMenuClass] = useState('navmobile-menu not-displayed');
-    const [closeButton, setCloseButton] = useState(
-        'navmobile-button-close not-displayed'
-    );
+    const [closeButton, setCloseButton] = useState('navmobile-button-close not-displayed');
 
     const closeMenu = () => {
         setMenuClass('navmobile-menu-backwards');
@@ -51,7 +50,7 @@ export const NavMobile = ({ props }) => {
         window.scrollTo(0, 0);
     };
 
-    const buildMobileAnchor = (anchor) => {
+    const buildMobileAnchor = anchor => {
         if (anchor.isLink) {
             return (
                 <Link
@@ -59,8 +58,7 @@ export const NavMobile = ({ props }) => {
                     onClick={() => {
                         closeMenu();
                         makeBodyScrollable();
-                    }}
-                >
+                    }}>
                     {anchor.name}
                 </Link>
             );
@@ -72,31 +70,20 @@ export const NavMobile = ({ props }) => {
                 onClick={() => {
                     closeMenu();
                     makeBodyScrollable();
-                }}
-            >
+                }}>
                 {anchor.name}
             </a>
         );
     };
 
     return (
-        <div
-            className="navmobile-body"
-            style={{ '--anchorHoverColor': props.mobileAnchorHoverColor }}
-        >
+        <div className="navmobile-body" style={{ '--anchorHoverColor': props.mobileAnchorHoverColor }}>
             <div
                 className="navmobile-container"
                 style={{
-                    backgroundColor: props.mobileBgColor
-                        ? props.mobileHeader
-                        : 'transparent'
-                }}
-            >
-                <img
-                    src="hublogo.png"
-                    className="navmobile-logo"
-                    onClick={openHome}
-                ></img>
+                    backgroundColor: props.mobileBgColor ? props.mobileHeader : 'transparent',
+                }}>
+                <img src="../hublogo.png" className="navmobile-logo" onClick={openHome}></img>
                 <h2 className="navmobile-title" onClick={openHome}>
                     The Hub
                 </h2>
@@ -113,7 +100,7 @@ export const NavMobile = ({ props }) => {
                                     document.body.style.overflow = 'scroll';
                                 }}
                             />
-                        )
+                        ),
                     }}
                 />
             </div>
@@ -122,9 +109,8 @@ export const NavMobile = ({ props }) => {
                 className={menuClass}
                 style={{
                     height: bodyHeight,
-                    backgroundColor: props.mobileBgColor
-                }}
-            >
+                    backgroundColor: props.mobileBgColor,
+                }}>
                 <Button
                     props={{
                         css: 'navmobile-button-close',
@@ -137,7 +123,7 @@ export const NavMobile = ({ props }) => {
                                     makeBodyScrollable();
                                 }}
                             />
-                        )
+                        ),
                     }}
                 />
 
@@ -146,9 +132,8 @@ export const NavMobile = ({ props }) => {
                         <ul
                             key={index}
                             style={{
-                                display: !anchor.featureSwitch ? 'none' : ''
-                            }}
-                        >
+                                display: !anchor.featureSwitch ? 'none' : '',
+                            }}>
                             <li>{buildMobileAnchor(anchor)}</li>
                         </ul>
                     ))}

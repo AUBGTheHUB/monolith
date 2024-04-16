@@ -52,5 +52,11 @@
         "text": "Change feature switches states",
         "url": "/admin/dashboard/fswitches",
         "description": "Manage feature switches"
+    },
+    {
+        "title": "Hackathon Teams",
+        "text": "Download Hackathon Teams as CSV",
+        "url": "/admin/dashboard/hackteams",
+        "description": "Download Hackathon Teams"
     }
 ]

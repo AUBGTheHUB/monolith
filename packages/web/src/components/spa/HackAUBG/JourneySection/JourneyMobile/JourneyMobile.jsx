@@ -13,7 +13,7 @@ export const JourneyMobile = () => {
             <div className="journey-mobile-content">
                 <JourneyStep
                     id="1"
-                    stepnum={`STEP 1:`}
+                    stepIcon={`/step-1-icon-mobile.svg`}
                     title={`Gather a team and register`}
                     text={`Gather your dream team and register in the form
                             below! Don’t forget to create a diverse team, as the
@@ -28,14 +28,14 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="2"
-                    stepnum={`STEP 2:`}
+                    stepIcon={`/step-2-icon-mobile.svg`}
                     title={`Meet the Hub and prepare`}
                     text={`Right after you click the Register button you will
                             receive an email confirming your place. In the
                             following 48 hours, you will receive another email
                             from us introducing you to your team facilitator - a
                             Hubber who will guide you through everything about
-                            HackAUBG 5.0. Pro tip: take a few days to research
+                            HackAUBG 6.0. Pro tip: take a few days to research
                             some hackathon strategies, previous award-winning
                             HackAUBG projects, and brainstorm! After all, you do
                             not want to be unprepared for your chance to bring
@@ -43,16 +43,16 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="3"
-                    stepnum={`STEP 3:`}
+                    stepIcon={`/step-3-icon-mobile.svg`}
                     title={`Get Hackathoning`}
-                    text={`HackAUBG 5.0 starts on Friday, March 31st. It will
+                    text={`HackAUBG 6.0 starts on Friday, March 29th. It will
                             be fully on-ground, taking place at American
                             University in Bulgaria&apos;s Sports Hall in the ABF
                             building. If you do not reside in Blagoevgrad, be
                             sure to make arrangements for your stay here. In
                             case you need help, your Hub facilitator will be
                             more than happy to help you arrange your stay. Below
-                            you can check out the HackAUBG 5.0 schedule for all
+                            you can check out the HackAUBG 6.0 schedule for all
                             the details. Your facilitator will be checking in
                             with you to make sure you have access to everything
                             needed prior to the event. Once it becomes time for
@@ -62,7 +62,7 @@ export const JourneyMobile = () => {
                 />
                 <JourneyStep
                     id="4"
-                    stepnum={`STEP 4:`}
+                    stepIcon={`/step-4-icon-mobile.svg`}
                     title={`Present and win`}
                     text={`This is the home stretch! You have put in the work
                             and now need to blow the judges away! Your task

@@ -10,6 +10,11 @@ const FEATURE_SWITCHES = {
     jobs: false,
     regForm: false,
     team: true,
+    GradeCrit: false,
+    Mentors: false,
+    Judges: false,
+    Schedule: false,
+    Sponsors: false,
 };
 
 export const loadFeatureSwitches = () => {

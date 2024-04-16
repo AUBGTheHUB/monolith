@@ -1,98 +1,112 @@
-.carousel{
-    width:50%;
-    margin:auto;
+.carousel {
+    width: 70%;
+    margin-top:5% !important;
+    margin-bottom:5% !important;
+    margin: auto;
 }
 @media only screen and (max-width: 600px) {
-  .carousel {
-    width:14em;
-    margin:auto;
-  }
+    .carousel {
+        width: 14em;
+        margin: auto;
+    }
 }
-.text-bottom{
+.tedko-container:hover .text-bottom {
+  display: block;
     text-align: left;
-  position: absolute;
-  top: 85%;
-  font-size: 1.2em;
-  left: 5.4em;
-  color:white;
-  transform: translate(-50%, -50%);
-  width:200px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-weight: bold;
-  z-index: 5;
+    position: absolute;
+    top: 85%;
+    font-size: 1.2em;
+    left: 5.4em;
+    color: white;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.text-bottom{
+  display: none;
 }
 
 .text-department{
-  text-align: left;
-  position: absolute;
-  top: 95%;
-  font-size: 0.9em;
-  left: 7.3em;
-  color:white;
-  transform: translate(-50%, -50%);
-  z-index:5;
-  width:200px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  opacity: 80%;
-  font-weight: bold;
+  display: none;
 }
 
-.tedko-container{
+.tedko-container:hover .text-department {
+    display: block;
+    text-align: left;
+    position: absolute;
+    top: 95%;
+    font-size: 0.9em;
+    left: 7.3em;
+    color: white;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: 200px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    opacity: 80%;
+    font-weight: bold;
+}
+
+.tedko-container {
     position: relative;
-  text-align: center;
-  width: 200px !important;
-  height: 200px;
-  margin:0;
-  padding: 0;
-  display:flex;
-  justify-content: center;
+    text-align: center;
+    width: 200px !important;
+    height: 200px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
 }
 
-.tedko-image{
-      transition: .5s ease;
-  backface-visibility: hidden;
-  margin:0;
-  overflow: hidden;
-   padding: 0;
+.tedko-image {
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
 }
-.tedko-container:hover .socialmedia{
+
+.tedko-container:hover .socialmedia {
     opacity: 1;
     width: 30px;
-  height: auto;
-  z-index: 5;
+    height: auto;
+    z-index: 5;
 }
 
-.socialmedia{
-      transition: .5s ease;
-  opacity: 0;
-   z-index: 5;
-  position: absolute;
-  top: 15%;
-  left: 10.5em;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  text-align: center;
-  width: 30px;
-  height: auto;
-    color:white
+.socialmedia {
+    transition: 0.5s ease;
+    opacity: 0;
+    z-index: 5;
+    position: absolute;
+    top: 15%;
+    left: 10.5em;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+    width: 30px;
+    height: auto;
+    color: white;
 }
 
-.tedko-overlay{
-    transition: .5s ease;
-  backface-visibility: hidden;
+.tedko-overlay {
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+        border-radius: 10px;
 }
 
-.tedko-container:hover  .tedko-overlay{
-    width:200px;
-    height:200px;
+.tedko-container:hover .tedko-overlay {
+    width: 200px;
+    height: 200px;
     border-radius: 10px;
-    position:absolute;
-    background-color:#000;
-    opacity:0.4;
+    position: absolute;
+    background-color: #000;
+    opacity: 0.4;
     z-index: 4;
 }
 
-.slick-slide{
+.slick-slide {
     display: flex !important;
     justify-content: center !important;
 }

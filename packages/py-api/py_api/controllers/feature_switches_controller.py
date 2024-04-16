@@ -20,15 +20,14 @@ class FeatureSwitchesController:
 
     @classmethod
     def upsert_switch(cls, fs: FeatureSwitch) -> Dict[str, Any] | JSONResponse:
-        dumped_fs = fs.model_dump()
         prohibited_chars = "'\";/:!@#$%\\[]^*()_-+{}=?.,§~`"
 
-        if has_prohibited_characters(dumped_fs["switch_id"], prohibited_chars):
+        if has_prohibited_characters(fs.switch_id, prohibited_chars):
             return JSONResponse(content={"message": f"Provided endpoint includes a prohibited character - {prohibited_chars}"}, status_code=400)
 
         document = cls.fs_col.find_one_and_update(
-            {"switch_id": dumped_fs["switch_id"]}, {
-                "$set": dumped_fs,
+            {"switch_id": fs.switch_id}, {
+                "$set": fs.model_dump(),
             }, upsert=True,
             projection={"_id": 0},
             return_document=True,

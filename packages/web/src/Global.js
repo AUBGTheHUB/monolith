@@ -14,6 +14,10 @@ const parseToNewAPI = url => url.replace('8000', '6969');
 const objUploaderURL = `${url}/v2/uploader`;
 const urlShortenerURL = `${url}/v2/shortener`;
 const featureSwitchesURL = parseToNewAPI(`${url}/v2/fswitches`);
+const registerURL = parseToNewAPI(`${url}/v2/hackathon/participants`);
+const verifyURL = parseToNewAPI(`${url}/v2/hackathon/verify/participant`);
+const isApiUpURL = parseToNewAPI(`${url}/v2/health`);
+const downloadTeamsURL = parseToNewAPI(`${url}/v2/hackathon/teams/csv`);
 const HEADERS = { 'BEARER-TOKEN': localStorage.getItem('auth_token') };
 
 const checkBrowserValid = () => {
@@ -86,9 +90,9 @@ const handleUrlDependantStyling = () => {
     let favicon, iosIcon, title;
 
     if (location.href.includes('hackaubg')) {
-        favicon = '/favicon-green.ico';
-        iosIcon = '/green-logo512.png';
-        title = 'HackAUBG 5.0';
+        favicon = '/favicon-pink.ico';
+        iosIcon = '/pink-logo512.png';
+        title = 'HackAUBG 6.0';
         document.body.style.backgroundColor = '#222222';
     } else {
         favicon = '/favicon.ico';
@@ -148,6 +152,10 @@ export {
     parseToNewAPI,
     urlShortenerURL,
     featureSwitchesURL,
+    registerURL,
+    verifyURL,
+    isApiUpURL,
+    downloadTeamsURL,
     HEADERS,
 };
 export default Validate;

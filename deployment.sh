@@ -4,18 +4,44 @@ BRANCH="$1"
 WEBHOOK="$2"
 
 if [ -z "$BRANCH" ] || [ -z "$WEBHOOK" ]; then
-  echo "Error: BRANCH or WEBHOOK is empty. Exiting."
-  exit 1
-fi
-
-#----------------------------BUILD SERVICES---------------------------------------
-docker-compose up --build -d
-
-if [ $? -ne 0 ]; then
-    RESULT_STRING="Running docker-compose on ${BRANCH} deployment failed!"
-    curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+    echo "Error: BRANCH or WEBHOOK is empty. Exiting."
     exit 1
 fi
+
+REPO_URL="https://github.com/AUBGTheHUB/monolith"
+COMMIT_ID=$(git rev-parse HEAD)
+COMMIT_TITLE=$(git log -1 --pretty=%B)
+COMMIT_URL="$REPO_URL/commit/$COMMIT_ID"
+COMMIT_TITLE_URL="🔔:[$COMMIT_TITLE]($COMMIT_URL)"
+
+if [ "$BRANCH" = "production" ]; then
+    DEPLOYMENT_ENV="PROD"
+else
+    DEPLOYMENT_ENV="DEV"
+fi
+
+# Functin to manually escape special characters in both content and ERROR_MESSAGE
+# Escapes: "\", `"`, newline to `\n`, carriage return to `\r`, and tab to `\t`
+escape_json_string() {
+    echo -n "$1" | sed -E ':a;N;$!ba;s/\\/\\\\/g;s/"/\\"/g;s/\r/\\r/g;s/\n/\\n/g;s/\t/\\t/g'
+}
+
+#----------------------------BUILD SERVICES---------------------------------------
+ERROR_MESSAGE=$(docker compose up --build -d 2>&1) # Runs the command and stores the error message if something goes
+
+if [ $? -ne 0 ]; then
+    content="🏗️: $DEPLOYMENT_ENV\n$COMMIT_TITLE_URL\n❌: Build Failed"
+
+    escaped_content=$(escape_json_string "$content")
+    escaped_error=$(escape_json_string "$ERROR_MESSAGE")
+    # Manually construct the JSON payload with escaped variables
+    json_payload="{\"content\": \"$escaped_content\", \"embeds\": [{\"title\": \"BUILD\", \"description\": \"$escaped_error\"}]}"
+
+    # Send the payload to the Discord webhook
+    curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
+    exit 1
+fi
+
 
 sleep 20
 
@@ -53,13 +79,20 @@ for ((i = 0; i < ${#services[@]}; i++)); do
     actual_status=$(curl -m 5 -o /dev/null -Isw '%{http_code}\n' -X "$method" "https://$url")
 
     if [[ "$actual_status" -ne "$expected_status" ]]; then
-        RESULT_STRING="Health check to ${url} failed with status code: ${actual_status}"
-        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+        content="🏗️: $DEPLOYMENT_ENV\n$COMMIT_TITLE_URL\n🚑: Health Check Failed"
+        RESULT_STRING="Health check to $url failed with status code: $actual_status"
+
+        escaped_content=$(escape_json_string "$content")
+        escaped_error=$(escape_json_string "$RESULT_STRING")
+        # Manually construct the JSON payload with escaped variables
+        json_payload="{\"content\": \"$escaped_content\", \"embeds\": [{\"title\": \"BUILD\", \"description\": \"$escaped_error\"}]}"
+
+        # Send the payload to the Discord webhook
+        curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "$json_payload"
         exit 1
     fi
 done
 
 #----------------------------HEALTH CHECKS DONE-----------------------------------
 
-RESULT_STRING="Deployment was successful for branch: ${BRANCH}"
-curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"${RESULT_STRING}\"}"
+curl -X POST "${WEBHOOK}" -H "Content-Type: application/json" -d "{\"content\": \"🏗️:${DEPLOYMENT_ENV}\\n${COMMIT_TITLE_URL}\\n✅:Build Successful\"}"

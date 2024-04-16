@@ -3,9 +3,12 @@
     justify-content: space-around;
     align-items: center;
     height: 6vh;
+    padding: 25px 0;
+    z-index: 2;
 }
 .footer-container p {
     color: white;
+    font-weight: 450;
     margin-bottom: 0;
 }
 .social-media {
@@ -17,8 +20,6 @@
     margin-left: 5px;
 }
 .footer-container .social-media svg {
-    height: 2em;
-    width: 2em;
     padding: 6px;
     color: white;
     border: 2px solid transparent;

@@ -1,0 +1,151 @@
+.grading_criteria {
+    color: white;
+    display: flex;
+    width: 100%;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+}
+
+.grading_criteria_title {
+    width: 50%;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding: 10px 75px;
+    background-color: #fb4298;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.7rem;
+    margin-top: 4%;
+    margin-bottom: 2%;
+}
+
+.grading_criteria th {
+    font-size: 17px;
+
+    padding-bottom: 15px;
+}
+
+.grading_criteria_col {
+    max-width: 50%;
+}
+
+.grading_criteria_section {
+    display: flex;
+    min-width: 100%;
+    justify-content: center;
+}
+
+.grading_criteria_table {
+    width: 100%;
+    margin: 0 10px;
+}
+
+tr > td {
+    padding: 1.3em 0;
+}
+
+.points {
+    text-align: center;
+}
+
+.grading_criteria_wrapper {
+    margin: 25px 0;
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    border: 2px solid #fb4298;
+}
+
+.table_wrapper {
+    width: 50%;
+    display: flex;
+}
+
+.left {
+    padding: 60px 30px 60px 60px;
+}
+.right {
+    padding: 60px 60px 60px 30px;
+}
+
+.line {
+    height: 0;
+    border: transparent;
+}
+
+.total_points {
+    padding-top: 30px;
+    text-align: right;
+    padding-bottom: 0 !important;
+}
+
+.grading_closed {
+    margin-top: 20px;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+    font-size: 1.8vw !important;
+}
+
+@media screen and (max-width: 1000px) {
+    .grading_criteria th {
+        margin: 0 2px;
+    }
+    .grading_criteria_wrapper {
+        flex-wrap: wrap;
+    }
+
+    .left {
+        padding: 10px;
+    }
+    .right {
+        padding: 10px;
+    }
+
+    .grading_criteria_table {
+        width: 95%;
+        margin: 10px 10px;
+    }
+
+    .table_wrapper {
+        width: 100%;
+        display: flex;
+    }
+    .line {
+        /* margin: 0 100px; */
+        width: 100%;
+        height: 5px;
+        border-bottom: 2px solid #fb4298;
+    }
+    .grading_criteria_title {
+        width: 80%;
+        padding: 10px 0;
+        font-size: 1.1em;
+        margin: 20px;
+    }
+    .grading_closed {
+        font-size: 5vw !important;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .grading_criteria {
+        font-size: 10px;
+    }
+    .grading_criteria th {
+        font-size: 10px;
+    }
+    .left {
+        padding: 0px;
+    }
+    .right {
+        padding: 0px;
+    }
+}

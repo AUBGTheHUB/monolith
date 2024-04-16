@@ -5,15 +5,24 @@
     font-weight: 400;
     align-items: center;
     font-family: 'Roboto';
-    background: linear-gradient(#204829, #222222 50%);
 }
 
 .schedule-section-title {
-    margin-left: 2%;
-    padding-top: 7%;
-    color: #7de776;
-    font-weight: 900;
-    font-size: 2em;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+
+    width: 40%;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding: 10px 75px;
+    background-color: #fb4298;
+    text-align: center;
+    font-weight: 400;
+    font-size: 1.7rem;
+    margin-top: 6%;
+    margin-bottom: 2%;
+    align-self: center;
 }
 
 .schedule-text-container {
@@ -36,8 +45,9 @@
 }
 
 .schedule-table-title {
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
     padding: 5% 0% 10% 0%;
-    color: #7de776;
+    color: rgb(191 144 254);
     font-weight: 900;
     font-size: 1.4em;
     text-align: center;
@@ -50,15 +60,32 @@
 }
 
 .schedule-time {
-    color: #7de776;
+    font-family: 'Post No Bills Jaffna';
+
+    color: rgb(191 144 254);
     font-weight: 900;
-    font-size: 1.3em;
+    font-size: 1.5em;
+    width: 70px;
     padding-right: 30px;
 }
 
 .schedule-event-title {
-    font-size: 0.9em;
+    font-size: 1.5em;
     width: 220px;
+}
+
+.schedule-table-row p {
+    font-size: 1em;
+}
+
+.schedule_closed {
+    margin-top: 20px;
+    font-family: 'Press Start 2P', 'Roboto', sans-serif;
+    padding-top: 4%;
+    padding-bottom: 5%;
+    color: #fb4298;
+    text-align: center;
+    font-size: 1.8vw !important;
 }
 
 @media only screen and (max-width: 1050px) {
@@ -67,6 +94,9 @@
     }
 }
 @media only screen and (max-width: 900px) {
+    .schedule_closed {
+        font-size: 5vw !important;
+    }
     .schedule-text-container {
         flex-direction: column;
         align-items: center;
@@ -78,6 +108,8 @@
         padding-top: 5%;
     }
     .schedule-section-title {
+        width: 80%;
+        font-size: 1.1em;
         text-align: center;
     }
     .schedule-table-title {
@@ -92,6 +124,14 @@
 }
 
 @media only screen and (max-width: 400px) {
+    .schedule-time {
+        font-size: 1.1em;
+    }
+
+    .schedule-table-row p {
+        font-size: 0.8em;
+    }
+
     .schedule-text-container {
         margin-left: 7%;
     }

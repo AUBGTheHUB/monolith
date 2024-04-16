@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { parseToNewAPI, urlShortenerURL } from '../../../Global';
 import UrlRow from './row';
 import { updateErrorMessage } from './requests';
-
+import styles from './url_shortener.module.css';
 const popover = (onUpdate, errorMessage) => {
     return (
         <Popover id="popover-basic">
@@ -119,7 +119,7 @@ const UrlsTable = () => {
     }, [showAddOverlay]);
 
     return (
-        <>
+        <div className={styles.url_shortener_container}>
             <OverlayTrigger
                 show={showAddOverlay}
                 placement="bottom"
@@ -158,7 +158,7 @@ const UrlsTable = () => {
                     ))}
                 </tbody>
             </Table>
-        </>
+        </div>
     );
 };
 

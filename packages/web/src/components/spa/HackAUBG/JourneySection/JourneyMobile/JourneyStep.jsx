@@ -4,10 +4,8 @@ import { AiOutlineArrowDown } from 'react-icons/ai';
 import { AiOutlineArrowUp } from 'react-icons/ai';
 import './journey_mobile.css';
 
-export const JourneyStep = (props) => {
-    const [stepContent, setStepContent] = useState(
-        'container-content-not-displayed'
-    );
+export const JourneyStep = props => {
+    const [stepContent, setStepContent] = useState('container-content-not-displayed');
     // eslint-disable-next-line no-unused-vars
     const [stepId, setStepId] = useState(`step-${props.id}`);
     const [arrowDown, setArrowDown] = useState('journey-arrow-displayed');
@@ -32,19 +30,15 @@ export const JourneyStep = (props) => {
     };
 
     return (
-        <div
-            style={{ '--elem-Height': getHeight() + 'px' }}
-            className="mobile-step-container"
-        >
+        <div style={{ '--elem-Height': getHeight() + 'px' }} className="mobile-step-container">
             <div
                 className="step-title"
                 onClick={() => {
                     setMenuClass();
                     getHeight();
-                }}
-            >
+                }}>
                 <div className="journey-h2">
-                    <h2>{props.stepnum}</h2>
+                    <img src={props.stepIcon} />
                     <h2>{props.title}</h2>
                 </div>
 
