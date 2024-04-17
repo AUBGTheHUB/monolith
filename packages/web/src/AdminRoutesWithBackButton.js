@@ -22,6 +22,7 @@ import UrlsTable from './components/admin_page/url_shortener/table';
 import { Routes, Route } from 'react-router-dom';
 import BackBtn from './components/admin_page/back_button/back_button.jsx';
 import { Hackteams } from './components/admin_page/hackathon/hackathon_teams/hackathon_teams.jsx';
+import AddMember from './components/admin_page/members_page/new_member.jsx';
 
 const adminRoutes = [
     {
@@ -31,6 +32,10 @@ const adminRoutes = [
     {
         path: 'members/actions',
         element: <MemberActions />,
+    },
+    {
+        path: 'members/add',
+        element: <AddMember />,
     },
     {
         path: 'jobs',
