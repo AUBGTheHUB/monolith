@@ -1,25 +1,27 @@
 .carousel {
-    width: 70%;
+    width: 80%;
     margin-top:5% !important;
     margin-bottom:5% !important;
     margin: auto;
 }
+
 @media only screen and (max-width: 600px) {
     .carousel {
         width: 14em;
         margin: auto;
     }
 }
+
 .tedko-container:hover .text-bottom {
-  display: block;
+    display: block;
     text-align: left;
     position: absolute;
     top: 85%;
     font-size: 1.2em;
-    left: 5.4em;
+    left: 6.8em;
     color: white;
     transform: translate(-50%, -50%);
-    width: 200px;
+    width: 250px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-weight: bold;
     z-index: 5;
@@ -39,11 +41,11 @@
     position: absolute;
     top: 95%;
     font-size: 0.9em;
-    left: 7.3em;
+    left: 9.2em;
     color: white;
     transform: translate(-50%, -50%);
     z-index: 5;
-    width: 200px;
+    width: 250px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     opacity: 80%;
     font-weight: bold;
@@ -52,8 +54,8 @@
 .tedko-container {
     position: relative;
     text-align: center;
-    width: 200px !important;
-    height: 200px;
+    width: 250px !important;
+    height: 250px;
     margin: 0;
     padding: 0;
     display: flex;
@@ -75,13 +77,27 @@
     z-index: 5;
 }
 
+.slick-prev:before,
+.slick-next:before
+{
+  font-family: 'slick';
+  font-size: 28px;
+  line-height: 1;
+
+  opacity: .75;
+  color: white;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .socialmedia {
     transition: 0.5s ease;
     opacity: 0;
     z-index: 5;
     position: absolute;
     top: 15%;
-    left: 10.5em;
+    left: 13em;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     text-align: center;
@@ -97,8 +113,8 @@
 }
 
 .tedko-container:hover .tedko-overlay {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     border-radius: 10px;
     position: absolute;
     background-color: #000;

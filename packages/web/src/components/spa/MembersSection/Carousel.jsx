@@ -28,8 +28,8 @@ export default class SimpleSlider extends Component {
                     <img
                         className={'tedko-image'}
                         style={{
-                            height: '200px',
-                            width: '200px',
+                            height: '250px',
+                            width: '250px',
                             borderRadius: '10px',
                             objectFit: 'cover',
                             margin: '0px',
@@ -53,7 +53,7 @@ export default class SimpleSlider extends Component {
             arrows: true,
             autoplay: true,
             centerMode: false,
-            centerPadding: 30,
+            centerPadding: 40,
             autoplaySpeed: 10000,
             pauseOnHover: true,
         };
