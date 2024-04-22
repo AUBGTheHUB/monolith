@@ -47,7 +47,7 @@ export default class SimpleSlider extends Component {
     render() {
         const settings = {
             infinite: true,
-            speed: 700,
+            speed: 1500,
             slidesToShow: this.state.slides,
             slidesToScroll: this.state.slides,
             arrows: true,
