@@ -1,0 +1,128 @@
+.carousel {
+    width: 80%;
+    margin-top:5% !important;
+    margin-bottom:5% !important;
+    margin: auto;
+}
+
+@media only screen and (max-width: 600px) {
+    .carousel {
+        width: 14em;
+        margin: auto;
+    }
+}
+
+.tedko-container:hover .text-bottom {
+    display: block;
+    text-align: left;
+    position: absolute;
+    top: 85%;
+    font-size: 1.2em;
+    left: 6.8em;
+    color: white;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.text-bottom{
+  display: none;
+}
+
+.text-department{
+  display: none;
+}
+
+.tedko-container:hover .text-department {
+    display: block;
+    text-align: left;
+    position: absolute;
+    top: 95%;
+    font-size: 0.9em;
+    left: 9.2em;
+    color: white;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: 250px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    opacity: 80%;
+    font-weight: bold;
+}
+
+.tedko-container {
+    position: relative;
+    text-align: center;
+    width: 250px !important;
+    height: 250px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.tedko-image {
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.tedko-container:hover .socialmedia {
+    opacity: 1;
+    width: 30px;
+    height: auto;
+    z-index: 5;
+}
+
+.slick-prev:before,
+.slick-next:before
+{
+  font-family: 'slick';
+  font-size: 28px;
+  line-height: 1;
+
+  opacity: .75;
+  color: white;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.socialmedia {
+    transition: 0.5s ease;
+    opacity: 0;
+    z-index: 5;
+    position: absolute;
+    top: 15%;
+    left: 13em;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+    width: 30px;
+    height: auto;
+    color: white;
+}
+
+.tedko-overlay {
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+        border-radius: 10px;
+}
+
+.tedko-container:hover .tedko-overlay {
+    width: 250px;
+    height: 250px;
+    border-radius: 10px;
+    position: absolute;
+    background-color: #000;
+    opacity: 0.4;
+    z-index: 4;
+}
+
+.slick-slide {
+    display: flex !important;
+    justify-content: center !important;
+}
