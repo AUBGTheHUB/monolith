@@ -1,7 +1,0 @@
-__pycache__
-.venv
-.idea/
-.pytest_cache/
-*.log*
-*.csv
-*.xlsx
