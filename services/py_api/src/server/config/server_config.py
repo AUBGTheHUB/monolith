@@ -4,6 +4,8 @@ from os import environ
 from dotenv import load_dotenv
 from uvicorn import run
 
+from src.database.db_manager import ping_db
+from src.server.logger.logger_factory import configure_app_logger, get_uvicorn_logger
 from src.utils import SingletonMeta
 
 load_dotenv()
@@ -21,26 +23,22 @@ def load_server_config() -> ServerConfig:
     return ServerConfig()
 
 
-def start(server_config: ServerConfig) -> None:
+def start() -> None:
     """Starts the Uvicorn server with different config based on the env we are in"""
+    server_config = load_server_config()
 
-    # TODO: ADD ssl and logging levels/config
-    if server_config.ENV == "PROD":
+    if server_config.ENV in ("PROD", "DEV", "TEST"):
+        configure_app_logger(server_config.ENV)
+        ping_db()
+
+        # If the ENV is PROD or TEST we don't want to have hot reloading
         run(
             app="src.server.main:app",
             host=server_config.ADDRESS,
             port=server_config.PORT,
-            reload=False,
+            reload=server_config.ENV == "DEV",
             root_path="/api/v3",
+            log_config=get_uvicorn_logger(server_config.ENV),
         )
-    elif server_config.ENV == "DEV":
-        run(
-            app="src.server.main:app",
-            host=server_config.ADDRESS,
-            port=server_config.PORT,
-            reload=True,
-            root_path="/api/v3",
-        )
-    # TODO: ADD ENV = TEST case
     else:
         raise ValueError("The ENV environment variable should be PROD, DEV OR TEST")
