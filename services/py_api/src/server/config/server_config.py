@@ -37,8 +37,9 @@ def start() -> None:
             host=server_config.ADDRESS,
             port=server_config.PORT,
             reload=server_config.ENV == "DEV",
-            root_path="/api/v3",
             log_config=get_uvicorn_logger(server_config.ENV),
+            ssl_certfile="src/server/certs/localhost.crt",
+            ssl_keyfile="src/server/certs/localhost.key",
         )
     else:
         raise ValueError("The ENV environment variable should be PROD, DEV OR TEST")
