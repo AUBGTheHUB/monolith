@@ -1,10 +1,10 @@
 name: Unit and Integration tests with pytest
 
 on:
-  commit:
+  pull_request:
     types: [ assigned, opened, synchronize, reopened ]
 #    paths: [ 'services/py_api/**' ]
-  commit:
+  push:
     branches:
       - main
 
