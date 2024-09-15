@@ -1,7 +1,7 @@
 from pymongo.errors import ConnectionFailure
 
-
 from fastapi import Response, status
+from result import is_err
 
 from src.database.db_manager import ping_db
 from src.server.response_schemas.schemas import ErrResponse, PongResponse
@@ -12,9 +12,8 @@ class UtilityHandlers:
     async def ping_services(response: Response) -> PongResponse | ErrResponse:
         db_ok = True
 
-        try:
-            ping_db()
-        except ConnectionFailure:
+        err = ping_db()
+        if err:
             db_ok = False
 
         if not db_ok:

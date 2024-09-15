@@ -29,7 +29,10 @@ def start() -> None:
 
     if server_config.ENV in ("PROD", "DEV", "TEST"):
         configure_app_logger(server_config.ENV)
-        ping_db()
+
+        err = ping_db()
+        if err:
+            raise RuntimeError(err.err_value)
 
         # If the ENV is PROD or TEST we don't want to have hot reloading
         run(
@@ -38,6 +41,7 @@ def start() -> None:
             port=server_config.PORT,
             reload=server_config.ENV == "DEV",
             log_config=get_uvicorn_logger(server_config.ENV),
+            # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV
             ssl_certfile="src/server/certs/localhost.crt",
             ssl_keyfile="src/server/certs/localhost.key",
         )
