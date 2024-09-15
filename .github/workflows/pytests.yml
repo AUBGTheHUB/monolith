@@ -27,6 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install poetry
+          cd /monolith/services/py_api/
           poetry install
 
       - name: Run tests
