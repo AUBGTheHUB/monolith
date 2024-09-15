@@ -36,7 +36,7 @@ def start() -> None:
 
         # If the ENV is PROD or TEST we don't want to have hot reloading
         run(
-            app="src.server.main:app",
+            app="src.server.app_entrypoint:app",
             host=server_config.ADDRESS,
             port=server_config.PORT,
             reload=server_config.ENV == "DEV",

@@ -1,18 +1,18 @@
-from pymongo.errors import ConnectionFailure
-
 from fastapi import Response, status
-from result import is_err
 
-from src.database.db_manager import ping_db
-from src.server.response_schemas.schemas import ErrResponse, PongResponse
+from src.database.db_manager import DB_MANAGER
+from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse
 
 
 class UtilityHandlers:
-    @staticmethod
-    async def ping_services(response: Response) -> PongResponse | ErrResponse:
+
+    def __init__(self, db_manger: DB_MANAGER) -> None:
+        self.db_manger = db_manger
+
+    async def ping_services(self, response: Response) -> PongResponse | ErrResponse:
         db_ok = True
 
-        err = ping_db()
+        err = await self.db_manger.async_ping_db()
         if err:
             db_ok = False
 

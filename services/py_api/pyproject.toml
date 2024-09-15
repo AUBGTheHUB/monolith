@@ -18,7 +18,7 @@ pymongo = "^4.8.0"
 colorama = "^0.4.6"
 
 [tool.poetry.scripts]
-start = "src.server.main:start"
+start = "src.server.app_entrypoint:start"
 
 [build-system]
 requires = ["poetry-core"]
