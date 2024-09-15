@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
     const [count, setCount] = useState(0);
-    const a = 5;
+    const a = 10;
 
     return (
         <>
