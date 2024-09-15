@@ -4,9 +4,9 @@
 
 data @asynchroza
 
-packages/web @SuelaCark @Aleks1908 @asynchroza @nikolayninov @DemonHashira @r-mishev
+packages/web @Aleks1908 @asynchroza @Isak-Bego
 
-packages/api @IvanObreshkov @asynchroza
+packages/api @IvanObreshkov @asynchroza @Isak-Bego
 
 **/Dockerfile @asynchroza
 
@@ -14,7 +14,7 @@ packages/api @IvanObreshkov @asynchroza
 
 manage_app.py @asynchroza
 
-**/*.sh @asynchroza @SuelaCark @r-mishev @IvanObreshkov
+**/*.sh @asynchroza @IvanObreshkov
 
 Makefile @asynchroza
 
@@ -24,4 +24,4 @@ packages/services @asynchroza
 
 packages/services/questionnaire @asynchroza @Aleks1908
 
-packages/py-api @asynchroza @IvanObreshkov
+packages/py-api @asynchroza @IvanObreshkov @Isak-Bego
