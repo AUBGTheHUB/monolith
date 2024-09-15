@@ -28,7 +28,9 @@ jobs:
           poetry install
 
       - name: Run integration tests
-        run: poetry run pytest ./tests/integration_tests/
+        run: |
+          find . -name \*.pyc -delete
+          poetry run pytest ./tests/integration_tests/
       - name: Run unit tests
         run: poetry run pytest ./tests/unit_tests/
 
