@@ -61,6 +61,9 @@ def ping_db() -> Err[str]:
 
 def create_db_manager() -> DatabaseManager:
     """Returns a Singleton Database Manager"""
+    # This method is needed because Annotated[DatabaseManager, Depends(DatabaseManager)] does not work as expected due
+    # to the SingletonMeta class used in the DatabaseManager.
+    # For more info: https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/
     return DatabaseManager()
 
 
