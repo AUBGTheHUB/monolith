@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run pre-commit
-cd packages/py-api && poetry run pre-commit
+npx lint-staged
