@@ -2,7 +2,7 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "eslint.useESLintClass": true,
-    "eslint.format.enable": true,
+    "eslint.format.enable": false, // Disable ESLint formatting
     "eslint.packageManager": "npm",
     "prettier.configPath": "./.prettierrc",
     "eslint.validate": [
@@ -14,7 +14,7 @@
     "eslint.workingDirectories": [
         "packages/web"
     ],
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.alwaysShowStatus": true,
     "makefile.extensionOutputFolder": "./.vscode",
     "[go]": {
