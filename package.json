@@ -13,7 +13,12 @@
     "typescript-eslint": "^8.5.0"
   },
   "scripts": {
-    "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "prettier --write",
+      "lint-staged"
+    ]
   }
 }
