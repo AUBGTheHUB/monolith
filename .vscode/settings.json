@@ -2,18 +2,20 @@
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "eslint.useESLintClass": true,
-    "eslint.format.enable": true,
+    "eslint.format.enable": false, // Disable ESLint formatting
     "eslint.packageManager": "npm",
-    "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
-    "eslint.workingDirectories": ["packages/web"],
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "prettier.configPath": "./.prettierrc",
+    "eslint.validate": [
+        "javascript",
+        "typescript",
+        "javascriptreact",
+        "typescriptreact"
+    ],
+    "eslint.workingDirectories": [
+        "packages/web"
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.alwaysShowStatus": true,
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[css]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
     "makefile.extensionOutputFolder": "./.vscode",
     "[go]": {
         "editor.defaultFormatter": "golang.go",
@@ -68,9 +70,6 @@
     ],
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
-    },
-    "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[svelte]": {
         "editor.defaultFormatter": "svelte.svelte-vscode"
