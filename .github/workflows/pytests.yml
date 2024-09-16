@@ -1,13 +1,16 @@
 name: Unit and Integration tests with pytest
 
-on: [push]
+on:
+  pull_request:
+    types: [ assigned, opened, synchronize, reopened ]
+    #    paths: [ 'services/py_api/**' ]
 
 defaults:
   run:
-    working-directory: services/py_api/
+    working-directory: services/py_api/tests/
 
 jobs:
-  run_unit_tests:
+  run_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,26 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      # https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#caching-packages
+      - name: Install Poetry And Dependiecies ${{ matrix.python-version }}
+        run: pipx install poetry
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+      - run: poetry install
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-
-      - name: Run integration tests
-        run: |
-          find . -name \*.pyc -delete
-          poetry run pytest ./tests/integration_tests/
-      - name: Run unit tests
-        run: poetry run pytest ./tests/unit_tests/
+      - name: Run tests
+        run: poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=
 
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
           path: |
