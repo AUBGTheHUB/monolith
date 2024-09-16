@@ -16,6 +16,9 @@ jobs:
       matrix:
         python-version: [ "3.12.6" ]
 
+    env:
+      ENV: "TEST"
+
     steps:
       - uses: actions/checkout@v4
 
