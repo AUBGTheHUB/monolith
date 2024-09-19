@@ -3,7 +3,7 @@ name: Unit and Integration tests with pytest
 on:
   pull_request:
     types: [ assigned, opened, synchronize, reopened ]
-    #    paths: [ 'services/py_api/**' ]
+    paths: [ 'services/py_api/*.py', 'services/py_api/*.lock', 'services/py_api/*.toml' ]
 
 defaults:
   run:
