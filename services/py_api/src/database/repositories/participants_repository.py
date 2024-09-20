@@ -29,7 +29,7 @@ class ParticipantsRepository(CRUDRepository):
         # TODO: Add unique constraint over email, catch errors accordingly
         result = await self._query_manager.create_obj_tx(input_data)
         if is_err(result):
-            return result.err()
+            return result
 
         return Ok(
             ParticipantResponse(

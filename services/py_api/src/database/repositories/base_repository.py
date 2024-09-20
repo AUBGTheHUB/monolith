@@ -1,10 +1,17 @@
 from abc import abstractmethod, ABC
 
-from click.testing import Result
 from pydantic import BaseModel
+from result import Result
+
+
+# Across the project we use the result pattern for better error handling
+# https://www.milanjovanovic.tech/blog/functional-error-handling-in-dotnet-with-the-result-pattern
+# https://github.com/rustedpy/result
 
 
 class CRUDRepository(ABC):
+    """An Interface for CRUD operations over a particular collection in Mongo"""
+
     @abstractmethod
     async def create(self, input_data: BaseModel) -> Result:
         raise NotImplementedError()

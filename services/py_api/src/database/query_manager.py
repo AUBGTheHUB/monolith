@@ -10,14 +10,24 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.utils import SingletonMeta
 
 LOG = get_logger()
 
 T = TypeVar("T")
 
 
-class QueryManager(metaclass=SingletonMeta):
+class QueryManager:
+    """
+    This class is an abstraction over the Motor library. The class is used by passing it as a dependency to a
+    particular repository along with the collection name we are going to work with. It provides a transactional context
+     for performing write operations on specific MongoDB collection. The transactions are managed and retried by the
+     QueryManager. Read operations are not executed in transactions as we are ok with the default read concern used by
+     the Mongo client. You can find more about it here:
+    https://www.mongodb.com/docs/manual/core/transactions/
+    https://www.mongodb.com/docs/manual/core/transactions/#-local-
+    https://www.mongodb.com/docs/manual/reference/mongodb-defaults/
+    """
+
     _RETRY_TRANSACTION_DEADLINE_SEC = 3
 
     def __init__(self, db_manager: DatabaseManager, collection: str) -> None:
@@ -54,21 +64,23 @@ class QueryManager(metaclass=SingletonMeta):
     async def create_obj_tx(self, input_data: BaseModel) -> Result[InsertOneResult, str]:
         # TODO: add check if unique constraint fails
         """Creates an obj in Mongo via a transaction"""
-        # https://www.mongodb.com/docs/manual/core/transactions/
         session = await self._client.start_session()
         try:
+            # https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/#causal-consistency
+            # https://pymongo.readthedocs.io/en/stable/api/pymongo/client_session.html#pymongo.client_session.ClientSession
             session.start_transaction()
-            LOG.debug("Inserting obj in Mongo via transaction")
+            LOG.debug("Inserting {} in Mongo via transaction".format(input_data.model_dump()))
 
             inserted_result = await self._retry_tx(self._collection.insert_one, session, input_data.model_dump())
             await session.commit_transaction()
+            LOG.debug("Transaction commited")
 
             return Ok(inserted_result)
 
         except Exception as e:
-            LOG.debug("Aborting transaction due to err {}".format(e))
+            LOG.exception("Aborting transaction due to err {}".format(e))
             await session.abort_transaction()
-            return Err(e.args[0])
+            return Err("Unexpected err occurred during transaction")
 
         finally:
             LOG.debug("Closing DB session")
