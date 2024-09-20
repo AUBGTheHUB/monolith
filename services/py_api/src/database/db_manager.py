@@ -13,34 +13,38 @@ from src.utils import SingletonMeta
 LOG = get_logger()
 
 
-# DB_NAME = "TheHubDev"
-
-
 class DatabaseManager(metaclass=SingletonMeta):
-    """Creates a Thread-safe singleton Database manager. This manager is created once in the app_factory and used
-    across the whole application. It provides a Singleton db client and utils for pinging the database"""
+    """Creates a Thread-safe singleton Database manager. It provides a wrapper over the AsyncIOMotorClient and utils for
+    pinging the database. The singleton behaviour allows us to have one instance of the AsyncIOMotorClient which we
+    could safely use across our application through the interface of the DatabaseManager"""
+
+    DB_NAME = "TheHubDEV"
 
     def __init__(self) -> None:
-        self.client = AsyncIOMotorClient(host=os.environ["DATABASE_URL"])
+        self._client = AsyncIOMotorClient(host=os.environ["DATABASE_URL"])
 
     def close_all_connections(self) -> Err[str]:
         """Closes all connections in the pool managed by Mongo"""
-        if not self.client:
+        if not self._client:
             return Err("The database client is not initialized!")
 
         LOG.debug("Closing all database connections")
-        self.client.close()
+        self._client.close()
 
     async def async_ping_db(self) -> Err[str]:
         try:
             LOG.debug("Pinging MongoDB...")
-            await self.client.admin.command("ping")
+            await self._client.admin.command("ping")
         except ConnectionFailure:
             return Err("Database is unavailable!")
         except (OperationFailure, ConfigurationError):
             return Err("Database authentication failed!")
 
         LOG.debug("Pong")
+
+    @property
+    def client(self) -> AsyncIOMotorClient:
+        return self._client
 
 
 def ping_db() -> Err[str]:
@@ -59,16 +63,18 @@ def ping_db() -> Err[str]:
     mongo_client.close()
 
 
-def create_db_manager() -> DatabaseManager:
-    """Returns a Singleton Database Manager"""
-    # This method is needed because Annotated[DatabaseManager, Depends(DatabaseManager)] does not work as expected due
-    # to the SingletonMeta class used in the DatabaseManager.
-    # For more info: https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/
+def get_db_manager() -> DatabaseManager:
+    """Returns a Singleton Database Manager
+    This method could be used as the global access point to the Database Manager across the application.
+    The method is also needed because Annotated[DatabaseManager, Depends(DatabaseManager)] does not work as expected due
+    to the SingletonMeta class used in the DatabaseManager.
+    For more info: https://fastapi.tiangolo.com/tutorial/dependencies/classes-as-dependencies/
+    """
     return DatabaseManager()
 
 
-DB_MANAGER = Annotated[DatabaseManager, Depends(create_db_manager)]
-"""Global FastAPI dependency used across routes and handlers"""
+DB_MANAGER = Annotated[DatabaseManager, Depends(get_db_manager)]
+"""Global FastAPI dependency used across routes and handlers."""
 
 # To learn more about FastAPI Dependency injection system, visit:
 # https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
