@@ -7,28 +7,8 @@ if [ "$1" != "--post" ]; then
     echo -e '\nexport NVM_DIR="$HOME/.nvm"
     [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
     [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
-
-	brew install wget
-
-	cd $HOME/Downloads
- 
-	if [[ $(uname -m) == 'arm64' ]]
-	then
-	    wget -O go.pkg https://go.dev/dl/go1.19.1.darwin-arm64.pkg 
-	else
-	    wget -O go.pkg https://go.dev/dl/go1.19.1.darwin-amd64.pkg
-	fi
- 
-	sudo installer -verbose -pkg $HOME/Downloads/go.pkg -target $HOME
-    echo "export PATH=$PATH:$HOME/go/bin" >> ~/.zshrc
-
-	cd /usr/local/go/src
-
-    sudo rm -rf $HOME/go
-	sudo mv /usr/local/go $HOME
-	sudo chmod -R 777 $HOME/go
     
-    cd $HOME/go/src
+    cd $HOME
 
 	git clone git@github.com:AUBGTheHUB/monolith.git
 
@@ -49,7 +29,7 @@ else
 
 	source $HOME/.nvm/nvm.sh || source $(brew --prefix nvm)/nvm.sh
 	nvm install --lts
-	cd $HOME/go/src/monolith
+	cd $HOME/monolith
 
 	make install-hooks 
 	make install-web

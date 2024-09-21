@@ -1,29 +1,24 @@
 .PHONY: install-web
 install-web:
-	cd ./packages/web/ && npm install
+	cd ./services/web/ && npm install
 
 .PHONY: run-web
 run-web:
-	cd ./packages/web/ && npm run start
+	cd ./services/web/ && npm run dev
 
-.PHONY: run-dev
-run-dev:
-	cd ./packages/web/ && npm run dev
+# TO-DO: Write the script for spinning up the dev server
+# .PHONY: run-dev
+# run-dev:
+# 	cd ./services/web/ && npm run start
 
 .PHONY: run-prod
 run-prod:
-	cd ./packages/web/ && npm run prod
-
-.PHONY: run-api
-run-api:
-	cd ./packages/api/ && go run main.go
+	cd ./services/web/ && npm run prod
 
 .PHONY: lint
 lint:
-	cd ./packages/web/ \
+	cd ./services/web/ \
 	&& npm run lint || true \
-	&& npm run lint:fix \
-	&& npm run format
 
 .PHONY: install-hooks
 install-hooks:
@@ -43,7 +38,6 @@ install-code-plugins:
 	code --install-extension aaron-bond.better-comments \
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode \
-	code --install-extension golang.Go
 
 
 .PHONY: install-gum
@@ -62,14 +56,14 @@ reload-api:
 gum:
 	bash ./cli.sh
 
-.PHONY: install-env
-install-env:
-	cp -n .env.sample .env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
-	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
+# .PHONY: install-env
+# install-env:
+# 	cp -n .env.sample .env; \
+# 	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
+# 	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
+# 	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env; \
+# 	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
+# 	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
 
 .PHONY: install-python
 install-python:
@@ -90,16 +84,12 @@ install-python:
 
 .PHONY: run-py-api
 run-py-api:
-	cd packages/py-api && poetry run start
+	cd services/py_api && poetry run start
 
 .PHONY: install-signed-certs
 install-signed-certs:
 	cp data/certs/local.crt data/certs/devenv.crt
 	cp data/certs/local.key data/certs/devenv.key
-
-.PHONY: run-nginx
-run-nginx:
-	cd nginx && docker-compose up --build
 
 .PHONY: run-rust-api
 run-rust-api:
@@ -108,8 +98,6 @@ run-rust-api:
 .PHONY: run-svelte-quest
 run-svelte-quest:
 	cd packages/services/questionnaire && npm run dev -- --open
-
-
 
 .PHONY: run-email-template
 run-email-template:
