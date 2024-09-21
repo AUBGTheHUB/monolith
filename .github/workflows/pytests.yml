@@ -1,0 +1,48 @@
+name: Unit and Integration tests with pytest
+
+on:
+  pull_request:
+    types: [ assigned, opened, synchronize, reopened ]
+    paths:
+      - 'services/py_api/**/*.py'
+      - 'services/py_api/**/*.lock'
+      - 'services/py_api/**/*.toml'
+
+defaults:
+  run:
+    working-directory: services/py_api/tests/
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.12.6" ]
+
+    env:
+      ENV: ${{secrets.ENV}}
+      PORT: ${{secrets.PORT}}
+      ADDRESS: ${{secrets.ADDRESS}}
+      DATABASE_URL: ${{secrets.DATABASE_URL}}
+
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-python/blob/main/docs/advanced-usage.md#caching-packages
+      - name: Install Poetry And Dependiecies ${{ matrix.python-version }}
+        run: pipx install poetry
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'poetry'
+      - run: poetry install
+
+      - name: Run tests
+        run: poetry run pytest --cov --cov-report=html
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: ./services/py_api/tests/htmlcov
