@@ -39,7 +39,6 @@ install-code-plugins:
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode \
 
-
 .PHONY: install-gum
 install-gum:
 	go install github.com/charmbracelet/gum@latest
@@ -65,22 +64,41 @@ gum:
 # 	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
 # 	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
 
+# .PHONY: install-python
+# install-python:
+# 	if [ $(shell uname -s) = Linux ]; \
+# 	then \
+# 		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.bashrc; \
+# 		curl -sSL https://install.python-poetry.org | python3 - ;\
+# 		cd ./services/py_api && \
+# 		PATH=/$(shell whoami)/.local/bin:$$PATH poetry install; \
+# 	else \
+# 		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
+# 		curl -sSL https://install.python-poetry.org | python3 - ;\
+# 		cd ./services/py_api && \
+# 		PATH=/Users/$(shell whoami)/.local/bin:$$PATH poetry install; \
+# 	fi \
+
+# 	echo "Please, reload your shell!"
+
 .PHONY: install-python
 install-python:
-	if [ $(shell uname -s) = Linux ]; \
+	if [ $(shell uname -s) = Darwin ]; \
 	then \
-		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		curl -sSL https://install.python-poetry.org | python3 - ;\
-		cd ./packages/py-api && \
-		PATH=/$(shell whoami)/.local/bin:$$PATH poetry install; \
+		echo "Checking if HomeBrew is installed...\n"; \
+		if [ $(shell command -v brew) ]; \
+		then \
+			echo "Homebrew is already installed!\n"; \
+		else  \
+			echo "Installing HomeBrew...\n"; \
+			/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+			export PATH="$$PATH:/opt/homebrew/bin"; \
+		fi \
 	else \
-		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		curl -sSL https://install.python-poetry.org | python3 - ;\
-		cd ./packages/py-api && \
-		PATH=/Users/$(shell whoami)/.local/bin:$$PATH poetry install; \
+		echo -e "You are running linux..."; \
 	fi \
 
-	echo "Please, reload your shell!"
+
 
 .PHONY: run-py-api
 run-py-api:

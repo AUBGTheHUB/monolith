@@ -1,12 +1,19 @@
 #!/bin/sh
  
 if [ "$1" != "--post" ]; then
- 
-	brew install nvm
+	
+	homebrew_prefix="/usr/local"
 
-    echo -e '\nexport NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion' >> ~/.zshrc
+	if [ $(uname -m) == "arm64" ]; 
+	then
+		homebrew_prefix="/opt/homebrew"
+	fi
+
+	brew install nvm
+	
+	echo "\nexport NVM_DIR=\"$HOME/.nvm\"
+	[ -s \"${homebrew_prefix}/opt/nvm/nvm.sh\" ] && \. \"${homebrew_prefix}/opt/nvm/nvm.sh\"  # This loads nvm
+	[ -s \"${homebrew_prefix}/opt/nvm/etc/bash_completion.d/nvm\" ] && \. \"${homebrew_prefix}/opt/nvm/etc/bash_completion.d/nvm\"  # This loads nvm bash_completion" >> ~/.zshrc
     
     cd $HOME
 
@@ -23,9 +30,9 @@ else
 	YELLOW='\033[1;33m'
 	NC='\033[0m'
 
-    echo -e "\n${YELLOW}If you are getting the following error: nvm command not found\n"
-    echo -e "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh\n"
-    echo -e "The first step of the project intialization has already set up a new login shell\n${NC}"
+    echo "\n${YELLOW}If you are getting the following error: nvm command not found\n"
+    echo "Please, log out and log in again - this is a common issue where another default shell is trying to execute instead of zsh\n"
+    echo "The first step of the project intialization has already set up a new login shell\n${NC}"
 
 	source $HOME/.nvm/nvm.sh || source $(brew --prefix nvm)/nvm.sh
 	nvm install --lts
@@ -33,9 +40,9 @@ else
 
 	make install-hooks 
 	make install-web
-	make install-env
+	# make install-env
 	make install-code-plugins
-	make install-python
+	# make install-python
 
 	echo "alias spa=\"cd ${PWD}\"" >> $HOME/.zshrc
 fi
