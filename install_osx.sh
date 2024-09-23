@@ -1,25 +1,19 @@
 #!/bin/sh
  
 if [ "$1" != "--post" ]; then
-	
-	homebrew_prefix="/usr/local"
-
-	if [ $(uname -m) == "arm64" ]; 
-	then
-		homebrew_prefix="/opt/homebrew"
-	fi
 
 	brew install nvm
 	
 	echo "\nexport NVM_DIR=\"$HOME/.nvm\"
-	[ -s \"${homebrew_prefix}/opt/nvm/nvm.sh\" ] && \. \"${homebrew_prefix}/opt/nvm/nvm.sh\"  # This loads nvm
-	[ -s \"${homebrew_prefix}/opt/nvm/etc/bash_completion.d/nvm\" ] && \. \"${homebrew_prefix}/opt/nvm/etc/bash_completion.d/nvm\"  # This loads nvm bash_completion" >> ~/.zshrc
+	[ -s \"$(brew --prefix)/opt/nvm/nvm.sh\" ] && \. \"$(brew --prefix)/opt/nvm/nvm.sh\"  # This loads nvm
+	[ -s \"$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm\" ] && \. \"$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm\"  # This loads nvm bash_completion" >> ~/.zshrc
     
     cd $HOME
 
 	git clone git@github.com:AUBGTheHUB/monolith.git
 
     cd monolith
+	git checkout main
 
 	chsh -s /bin/zsh # set zsh as default
 
@@ -40,9 +34,9 @@ else
 
 	make install-hooks 
 	make install-web
-	# make install-env
+	make install-env
 	make install-code-plugins
-	# make install-python
+	make install-python
 
 	echo "alias spa=\"cd ${PWD}\"" >> $HOME/.zshrc
 fi
