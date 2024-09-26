@@ -1,50 +1,29 @@
 .PHONY: install-web
 install-web:
-	cd ./packages/web/ && npm install
+	cd ./services/web/ && npm install
 
 .PHONY: run-web
 run-web:
-	cd ./packages/web/ && npm run start
+	cd ./services/web/ && npm run start
 
 .PHONY: run-dev
 run-dev:
-	cd ./packages/web/ && npm run dev
+	cd ./services/web/ && npm run dev
 
 .PHONY: run-prod
 run-prod:
-	cd ./packages/web/ && npm run prod
-
-.PHONY: run-api
-run-api:
-	cd ./packages/api/ && go run main.go
-
-.PHONY: lint
-lint:
-	cd ./packages/web/ \
-	&& npm run lint || true \
-	&& npm run lint:fix \
-	&& npm run format
+	cd ./services/web/ && npm run prod
 
 .PHONY: install-hooks
 install-hooks:
 	npm install; \
 	npm run prepare; \
 
-.PHONY: post-osx
-post-osx:
-	./install_osx.sh --post
-
-.PHONY: post-wsl
-post-wsl:
-	./install_wsl.sh --post
-
 .PHONY: install-code-plugins
 install-code-plugins:
 	code --install-extension aaron-bond.better-comments \
 	code --install-extension dbaeumer.vscode-eslint \
 	code --install-extension esbenp.prettier-vscode \
-	code --install-extension golang.Go
-
 
 .PHONY: install-gum
 install-gum:
@@ -53,10 +32,6 @@ install-gum:
 .PHONY: install-air
 install-air:
 	go install github.com/cosmtrek/air@latest
-
-.PHONY: reload-api
-reload-api:
-	cd packages/api && bash ./reload.sh
 
 .SILENT: gum
 gum:
@@ -71,23 +46,6 @@ install-env:
 	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
 	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
 
-.PHONY: install-python
-install-python:
-	if [ $(shell uname -s) = Linux ]; \
-	then \
-		echo 'export PATH="/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		curl -sSL https://install.python-poetry.org | python3 - ;\
-		cd ./packages/py-api && \
-		PATH=/$(shell whoami)/.local/bin:$$PATH poetry install; \
-	else \
-		echo 'export PATH="/Users/$(shell whoami)/.local/bin:$$PATH"' >> ~/.zshrc; \
-		curl -sSL https://install.python-poetry.org | python3 - ;\
-		cd ./packages/py-api && \
-		PATH=/Users/$(shell whoami)/.local/bin:$$PATH poetry install; \
-	fi \
-
-	echo "Please, reload your shell!"
-
 .PHONY: run-py-api
 run-py-api:
 	cd services/py_api && poetry run start
@@ -97,20 +55,14 @@ install-signed-certs:
 	cp data/certs/local.crt data/certs/devenv.crt
 	cp data/certs/local.key data/certs/devenv.key
 
-.PHONY: run-nginx
-run-nginx:
-	cd nginx && docker-compose up --build
-
 .PHONY: run-rust-api
 run-rust-api:
-	cd packages/services/url_shortener && make watch
+	cd services/url_shortener && make watch
 
 .PHONY: run-svelte-quest
 run-svelte-quest:
-	cd packages/services/questionnaire && npm run dev -- --open
-
-
+	cd services/questionnaire && npm run dev -- --open
 
 .PHONY: run-email-template
 run-email-template:
-	cd packages/services/react-email-starter && npm run dev
+	cd services/react-email-starter && npm run dev
