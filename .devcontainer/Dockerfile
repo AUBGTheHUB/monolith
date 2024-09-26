@@ -17,7 +17,21 @@ RUN rm -rf go.tar.gz
 RUN echo "export PATH=$PATH:$HOME/go/bin" >> $HOME/.bashrc
 
 # Install python
-RUN sudo apt install build-essential zlib1g zlib1g-dev libssl-dev libffi-dev
+RUN apt install -y \
+    build-essential \
+    zlib1g-dev \
+    libssl-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    curl \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libffi-dev \
+    liblzma-dev
 RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 RUN echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
