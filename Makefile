@@ -40,11 +40,11 @@ gum:
 .PHONY: install-env
 install-env:
 	cp -n .env.sample .env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/web/.env.development; \
-	ln -sf ${PWD}/.env ${PWD}/packages/api/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/url_shortener/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/py-api/.env; \
-	ln -sf ${PWD}/.env ${PWD}/packages/services/questionnaire;
+	ln -sf ${PWD}/.env ${PWD}/services/web/.env.development; \
+	ln -sf ${PWD}/.env ${PWD}/services/api/.env; \
+	ln -sf ${PWD}/.env ${PWD}/services/url_shortener/.env; \
+	ln -sf ${PWD}/.env ${PWD}/services/py_api/.env; \
+	ln -sf ${PWD}/.env ${PWD}/services/questionnaire;
 
 .PHONY: run-py-api
 run-py-api:
