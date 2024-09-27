@@ -79,7 +79,7 @@ def get_db_manager() -> DatabaseManager:
     return DatabaseManager()
 
 
-# Global FastAPI dependency used across routes and handlers.
+# Global FastAPI dependencies used across routes and handlers.
 DB_MANAGER = Annotated[DatabaseManager, Depends(get_db_manager)]
 PARTICIPANTS_COLLECTION = "participants"
 TEAMS_COLLECTION = "teams"

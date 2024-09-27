@@ -30,6 +30,7 @@ class TransactionManager:
         If there was a TransientTransactionError, retries the transaction up to max_retries or
         until the deadline is exceeded, whichever is first.
         Inspired by AgnosticClientSession.with_transaction()
+        https://motor.readthedocs.io/en/stable/api-tornado/motor_client_session.html#motor.motor_tornado.MotorClientSession.with_transaction
         https://stackoverflow.com/questions/52153538/what-is-a-transienttransactionerror-in-mongoose-or-mongodb
         """
         max_retries = 3
