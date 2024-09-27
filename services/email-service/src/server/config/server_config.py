@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from os import environ
+from os import environ, cpu_count
 
 from dotenv import load_dotenv
 from uvicorn import run
@@ -39,6 +39,8 @@ def start() -> None:
             # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV
             ssl_certfile="src/server/certs/localhost.crt",
             ssl_keyfile="src/server/certs/localhost.key",
+            # https://docs.gunicorn.org/en/stable/design.html#how-many-workers
+            workers=(2 * (cpu_count() or 0) + 1) if server_config.ENV == "PROD" else None,
         )
     else:
         raise ValueError("The ENV environment variable should be PROD, DEV OR TEST")
