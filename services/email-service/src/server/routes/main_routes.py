@@ -16,4 +16,5 @@ async def send_email(req_body: RequestBody, response: Response) -> EmailSentResp
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return ErrResponse(error=f"Sending of email to {req_body.receiver} failed!")
 
+    response.status_code = status.HTTP_202_ACCEPTED
     return EmailSentResponse(message=f"Email successfully sent to {req_body.receiver}")
