@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from result import Err
-from structlog import get_logger
+from structlog.stdlib import get_logger
 
 from src.utils import SingletonMeta
 
@@ -21,7 +21,13 @@ class DatabaseManager(metaclass=SingletonMeta):
     DB_NAME = "TheHubDEV"
 
     def __init__(self) -> None:
-        self._client = AsyncIOMotorClient(host=os.environ["DATABASE_URL"])
+        # The mongo client has a conn pool under the hood, and we set a min number of idle conn that the pool has
+        # to maintain, the default is 0. After maxIdleTimeMS the connection pool replaces the idle conn with a new one.
+        # I set a min number of conn according to the article below. The connection is also removed too fast, after
+        # around 30 sec, that's why I increased maxIdleTimeMS to 5 min.
+        # https://alexedwards.net/blog/configuring-sqldb
+        # https://www.mongodb.com/docs/languages/python/pymongo-driver/current/faq/#how-does-connection-pooling-work-in-pymongo-
+        self._client = AsyncIOMotorClient(host=os.environ["DATABASE_URL"], minPoolSize=25, maxIdleTimeMS=5 * 60 * 1000)
 
     def close_all_connections(self) -> Err[str]:
         """Closes all connections in the pool managed by Mongo"""
@@ -73,8 +79,10 @@ def get_db_manager() -> DatabaseManager:
     return DatabaseManager()
 
 
+# Global FastAPI dependency used across routes and handlers.
 DB_MANAGER = Annotated[DatabaseManager, Depends(get_db_manager)]
-"""Global FastAPI dependency used across routes and handlers."""
+PARTICIPANTS_COLLECTION = "participants"
+TEAMS_COLLECTION = "teams"
 
 # To learn more about FastAPI Dependency injection system, visit:
 # https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
