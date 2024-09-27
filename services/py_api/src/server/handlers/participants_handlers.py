@@ -1,11 +1,7 @@
-from typing import Tuple, Type
-
-from result import is_err, Err, Ok
+from result import is_err
 from starlette import status
 from starlette.responses import Response
 
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
 from src.server.exception import DuplicateEmail, DuplicateTeamName
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import AdminParticipantRegisteredResponse, ErrResponse
@@ -19,9 +15,7 @@ class ParticipantHandlers:
     async def create_participant(
         self, response: Response, input_data: ParticipantRequestBody
     ) -> AdminParticipantRegisteredResponse | ErrResponse:
-        result: (
-            Ok[Tuple[Participant, Team]] | Err[Type[DuplicateEmail]] | Err[Type[DuplicateTeamName]] | Err[Exception]
-        ) = await self._service.register_admin_participant(input_data)
+        result = await self._service.register_admin_participant(input_data)
 
         if is_err(result):
             if isinstance(result.value, DuplicateEmail):
