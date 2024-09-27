@@ -13,6 +13,7 @@ from src.database.db_manager import DatabaseManager
 LOG = get_logger()
 
 T = TypeVar("T")
+E = TypeVar("E")
 
 
 class TransactionManager:
@@ -24,7 +25,7 @@ class TransactionManager:
     def _deadline_exceeded(self, start_time: float) -> bool:
         return monotonic() - start_time > self._RETRY_TRANSACTION_DEADLINE_SEC
 
-    async def _retry_tx(self, func: Callable[..., Awaitable[Result[T]]], *args: Any, **kwargs: Any) -> Result[T]:
+    async def _retry_tx(self, func: Callable[..., Awaitable[Result[T, E]]], *args: Any, **kwargs: Any) -> Result[T, E]:
         """
         If there was a TransientTransactionError, retries the transaction up to max_retries or
         until the deadline is exceeded, whichever is first.
