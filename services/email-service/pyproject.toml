@@ -12,6 +12,8 @@ fastapi = "^0.115.0"
 aiosmtplib = "^3.0.2"
 uvicorn = "^0.31.0"
 structlog = "^24.4.0"
+result = "^0.17.0"
+pydantic = {extras = ["email"], version = "^2.9.2"}
 
 
 [tool.poetry.group.dev.dependencies]
