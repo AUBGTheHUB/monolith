@@ -1,14 +1,14 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Type
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import is_err, Err, Ok
-from result.result import E
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
+from src.server.exception import DuplicateEmail, DuplicateTeamName
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
@@ -24,7 +24,7 @@ class ParticipantService:
 
     async def _create_participant_team_transaction(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Err[E] | Ok[tuple[Participant, Team]]:
+    ) -> Ok[Tuple[Participant, Team]] | Err[Type[DuplicateEmail]] | Err[Type[DuplicateTeamName]] | Err[Exception]:
 
         participant = await self._participant_repo.create(input_data, session)
         if is_err(participant):
@@ -36,6 +36,8 @@ class ParticipantService:
 
         return Ok((participant.value, team.value))
 
-    async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Err | Tuple[Participant, Team]:
+    async def register_admin_participant(
+        self, input_data: ParticipantRequestBody
+    ) -> Ok[Tuple[Participant, Team]] | Err[Type[DuplicateEmail]] | Err[Type[DuplicateTeamName]] | Err[Exception]:
         result = await self._tx_manager.with_transaction(self._create_participant_team_transaction, input_data)
         return result
