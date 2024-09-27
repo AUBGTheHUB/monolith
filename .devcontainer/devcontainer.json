@@ -14,9 +14,8 @@
         8000
     ],
     // Volume containing repo is shared after image is built, therefore we cannot run any setup steps
-    // during the image creation. This is the command which gets executed once the image is built and the 
+    // during the image creation. This is the command which gets executed once the image is built and the
     // volume is mounted
-    // TODO: You will have to run all `poetry install` commands here
     "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
     "customizations": {
         "vscode": {

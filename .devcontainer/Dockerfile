@@ -36,7 +36,7 @@ RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
 RUN echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
 RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-RUN exec $SHELL
+RUN source ~/.bashrc
 
 RUN pyenv install 3.12.6
 RUN pyenv global 3.12.6
