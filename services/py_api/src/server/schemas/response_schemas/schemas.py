@@ -1,5 +1,7 @@
-from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from pydantic import BaseModel
+
+from src.database.model.participant_model import Participant
+from src.database.model.team_model import Team
 
 
 class ErrResponse(BaseModel):
@@ -10,12 +12,6 @@ class PongResponse(BaseModel):
     message: str
 
 
-class ParticipantResponse(BaseModel):
-    # TODO: Add more fields once we know them or use the once from last year
-    id: str
-    name: str
-    email: EmailStr
-    email_verified: bool = False
-    is_admin: bool
-    created_at: datetime
-    updated_at: datetime
+class AdminParticipantRegisteredResponse(BaseModel):
+    participant: Participant
+    team: Team
