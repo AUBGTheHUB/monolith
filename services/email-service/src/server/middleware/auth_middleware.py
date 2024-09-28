@@ -9,7 +9,7 @@ from starlette.responses import JSONResponse
 class AuthMiddleware:
     """This middleware is responsible for checking if the requests are coming from PY-API"""
 
-    _BYPASSED_ENDPOINTS: Final = {"/ping": ["GET"]}
+    _BYPASSED_ENDPOINTS: Final = {"/ping": ["GET"], "/docs": ["GET"], "/openapi.json": ["GET"]}
 
     def __init__(self, app: FastAPI) -> None:
         @app.middleware("http")
