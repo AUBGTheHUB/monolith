@@ -1,0 +1,34 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+    "name": "Ubuntu",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        3000,
+        6969,
+        8000
+    ],
+    // Volume containing repo is shared after image is built, therefore we cannot run any setup steps
+    // during the image creation. This is the command which gets executed once the image is built and the
+    // volume is mounted
+    "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "ms-python.python",
+                "ms-python.debugpy",
+                "golang.go",
+                "yoavbls.pretty-ts-errors",
+                "aaron-bond.better-comments"
+            ]
+        }
+    },
+    "remoteUser": "root"
+}
