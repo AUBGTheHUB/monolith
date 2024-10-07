@@ -1,8 +1,7 @@
 # mypy: disable-error-code=no-any-return
 # This is because we have Generic methods
-
-from time import monotonic
-from typing import Callable, Any, TypeVar, Awaitable
+from asyncio import sleep
+from typing import Callable, Any, Awaitable
 
 from pymongo.errors import PyMongoError
 from result import Err, is_err, Result
@@ -12,46 +11,51 @@ from src.database.db_manager import DatabaseManager
 
 LOG = get_logger()
 
-T = TypeVar("T")
-E = TypeVar("E")
-
 
 class TransactionManager:
-    _RETRY_TRANSACTION_DEADLINE_SEC = 3
+    """This class is responsible for executing multiple mongo db queries such as insert_one or update_on in a
+    transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction."""
 
     def __init__(self, db_manager: DatabaseManager) -> None:
         self._client = db_manager.client
 
-    def _deadline_exceeded(self, start_time: float) -> bool:
-        return monotonic() - start_time > self._RETRY_TRANSACTION_DEADLINE_SEC
-
-    async def _retry_tx(self, func: Callable[..., Awaitable[Result[T, E]]], *args: Any, **kwargs: Any) -> Result[T, E]:
+    @staticmethod
+    async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
         """
-        If there was a TransientTransactionError, retries the transaction up to max_retries or
-        until the deadline is exceeded, whichever is first.
-        Inspired by AgnosticClientSession.with_transaction()
+        If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
+        to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
+        network issue.
+        Inspired by:
         https://motor.readthedocs.io/en/stable/api-tornado/motor_client_session.html#motor.motor_tornado.MotorClientSession.with_transaction
         https://stackoverflow.com/questions/52153538/what-is-a-transienttransactionerror-in-mongoose-or-mongodb
+
+        Raises:
+            PyMongoError
         """
         max_retries = 3
-        start_time = monotonic()
+        delay = 1  # initial delay in seconds
 
-        for retry in range(max_retries):
+        # range is exclusive that's why we do max_retries + 1
+        for retry in range(1, max_retries + 1):
             try:
                 return await func(*args, **kwargs)
             except PyMongoError as exc:
-                if exc.has_error_label("TransientTransactionError") and not self._deadline_exceeded(start_time):
+                if exc.has_error_label("TransientTransactionError"):
                     LOG.debug("Retrying transaction retry {}".format(retry))
+                    await sleep(delay)
+                    delay *= 2  # exponential backoff
                     continue
-                # If it's a non-retryable error, or we've exceeded the deadline, re-raise
+
+                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise RuntimeError("Transaction failed after maximum retries")
+        raise PyMongoError("Transaction failed after maximum retries")
 
-    async def with_transaction(self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """
-        A generic method used for executing a callback in a transaction. The method starts the transaction and commits
-        it. In case of an Exception the transaction is automatically aborted.
+        A generic method used for executing a callback in a transaction. This method is generic as we want the
+        with_transaction method to have the return type of the passed callback function. The method is responsible for
+        starting a transaction and commiting it. In case of an Exception the transaction is automatically aborted.
 
         The ``callback`` could be a function grouping multiple operations. For example::
 
@@ -60,6 +64,10 @@ class TransactionManager:
             await teams.update_one({"test":"test"} session=session)
 
         await tx_manager.with_transaction(callback)
+
+        To learn more about Generics visit:
+        https://docs.python.org/3/library/typing.html#generics
+        https://www.youtube.com/watch?v=q6ujWWaRdbA
         """
 
         session = await self._client.start_session()
