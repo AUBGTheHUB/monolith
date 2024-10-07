@@ -17,9 +17,8 @@ LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository):
-    def __init__(self, db_manager: DatabaseManager, collection: str) -> None:
-        self._client = db_manager.client
-        self._collection = self._client[db_manager.DB_NAME][collection]
+    def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
+        self._collection = db_manager.get_collection(collection_name)
 
     async def create(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None

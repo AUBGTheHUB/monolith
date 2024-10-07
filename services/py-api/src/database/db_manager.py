@@ -2,7 +2,7 @@ import os
 from typing import Annotated
 
 from fastapi import Depends
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from result import Err
@@ -18,7 +18,7 @@ class DatabaseManager(metaclass=SingletonMeta):
     pinging the database. The singleton behaviour allows us to have one instance of the AsyncIOMotorClient which we
     could safely use across our application through the interface of the DatabaseManager"""
 
-    DB_NAME = "TheHubDEV"
+    _DB_NAME = "TheHubDEV"
 
     def __init__(self) -> None:
         # The mongo client has a conn pool under the hood, and we set a min number of idle conn that the pool has
@@ -51,6 +51,11 @@ class DatabaseManager(metaclass=SingletonMeta):
     @property
     def client(self) -> AsyncIOMotorClient:
         return self._client
+
+    def get_collection(self, collection_name: str) -> AsyncIOMotorCollection:
+        # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-database
+        # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
+        return self._client[self._DB_NAME][collection_name]
 
 
 def ping_db() -> Err[str]:
