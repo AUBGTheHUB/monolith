@@ -41,7 +41,7 @@ class TransactionManager:
                 return await func(*args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError") and not self._deadline_exceeded(start_time):
-                    LOG.debug("Retrying transaction retry{}".format(retry))
+                    LOG.debug("Retrying transaction retry {}".format(retry))
                     continue
                 # If it's a non-retryable error, or we've exceeded the deadline, re-raise
                 raise exc

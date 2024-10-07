@@ -54,7 +54,10 @@ class DatabaseManager(metaclass=SingletonMeta):
 
 
 def ping_db() -> Err[str]:
-    """This method is used on application startup. It is not async as I cannot await the start() method"""
+    """This method is used only on application startup. It is different from the async_ping_db defined in the
+    DatabaseManager as it uses the synchronous MongoClient. We need this method because if we used the async_ping_db we
+    had to await it. The await keyword is used only is async ctx and the start() method should not and cannot be async,
+    as we are using it as a poetry script."""
     mongo_client = MongoClient(host=os.environ["DATABASE_URL"])
 
     try:
