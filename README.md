@@ -7,84 +7,88 @@
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
 [![Notify Discord - New PR](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml)
-## How to set up the project
+## > How to set up the project
 
-Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
-##### Recommended Text Editor: `VSCode`
-##### Recommended Plugins: `GitLens`
+### Prerequisites
+> To understand why we need the following, read more about [Dev Containers](https://containers.dev/).
+
+- Download [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- Download [Visual Studio Code](https://code.visualstudio.com/Download).
+- Install the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in Visual Studio Code.
+#### For WSL users
 ---
-### ENVIRONMENT VARIABLES:
-* GLOBAL .env file for easy management of environment variables within services
-```bash
-make install-env  # ask the team for the .env contents
+>Run the following commands in PowerShell admin mode.
+- Check the version of your WSL.
+```PowerShell
+wsl -l -v
 ```
-#### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March.
+- If you don't have WSL version 2. Run:
+```PowerShell
+wsl --set-version <distro name> 2
+```
+> Change the <distro name> to match the one that you are running. You could see your distro name from the result of the previous command.
+- After your WSL version is updated set it as default by running:
+```PowerShell
+wsl --set-default-version 2
+```
+- Set the chosen distro as default
+```PowerShell
+wsl --set-default <distro name>
+```
+- **Close WSL and reopen it**
+
+After running the above commands. Close PowerShell.
+- Open **Docker Desktop**
+- Navigate to **Settings**
+- From the **General** tab, select **Use WSL 2 based engine**
+
+>You should be all set 🎉
 ---
 
-### Adding your SSH key to the ssh-agent and GitHub
-⚠️ This step is a prerequisite for the installation scripts
+### 1. Add your SSH key to the ssh-agent and GitHub
 
 Here is the guide:
 * [Generate SSH key and add it to agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 * [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
----
-### OSX installation
-
-Install brew and follow the instructions (sometimes it asks you to run some additional commands):
-```shell
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_osx.sh | bash
-```
-
-And then run:
+### 2. Clone the repository to your machine
 ```bash
-cd ~/go/src/monolith && make post-osx
-
-# make sure to check the output towards the end as certain installations may require manual intervention.
+git clone git@github.com:AUBGTheHUB/monolith.git
 ```
----
-### WSL installation
-* For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
+### 3. Navigate to the project directory
 ```bash
-curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_wsl.sh | bash
+cd monolith
 ```
-
-And then run:
+### 4. Open your project in Visual Studio code. Run:
 ```bash
-cd ~/go/src/monolith && make post-wsl
-
-# make sure to check the output towards the end as certain installations may require manual intervention.
+code .
+```
+### 5. Navigate to Visual Studio Code and perform:
+- <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Windows) to open the command palette
+- In the command palette write and select:
+```
+>Dev Containers: Reopen in Container
 ```
 
-### Easy access to repo
+>After this step you should wait until the container is built. It will install all the dependencies needed for development on its own.
 
-```bash
-alias spa="cd ~/go/src/monolith"
-```
----
+### 6. Check if Dev Container is running successfully
+If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
+Visual Studio Code client.
+
+<img src="https://i.ibb.co/qnYQ6Qp/Screenshot-2024-10-07-at-2-33-55-PM.png" alt="image" border="0">
+
+
 ### __HOW TO RUN PROJECT__ or so called __GUM__:
-
+> Before running the command below, make sure you are on the root directory of the project
 ```bash
 make gum
 ```
 > This is a command-line tool for managing running services and setting up deployment environments
 
 **For developers**:
-Spin up local server instances:
 
-<img width="429" alt="image" src="https://github.com/AUBGTheHUB/monolith/assets/104720011/0f8e96f8-3931-4eaf-a72d-54a784b75971">
-
-Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made.
-```
-local api -> localhost:8000 / :6969
-prod api -> https://thehub-aubg.com
-dev api -> https://dev.thehub-aubg.com
-```
 
 **For deployments**:
 
