@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmail
+from src.server.exception import DuplicateEmailError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 LOG = get_logger()
@@ -38,7 +38,7 @@ class ParticipantsRepository(CRUDRepository):
 
     async def create(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Ok[Participant] | Err[Type[DuplicateEmail]] | Err[Exception]:
+    ) -> Ok[Participant] | Err[DuplicateEmailError | Exception]:
         try:
             participant = Participant(
                 _id=ObjectId(), name=input_data.name, email=input_data.email, is_admin=input_data.is_admin
@@ -48,7 +48,7 @@ class ParticipantsRepository(CRUDRepository):
             return Ok(participant)
         except DuplicateKeyError:
             LOG.warning("Participant insertion failed due to duplicate email {}".format(input_data.email))
-            return Err(DuplicateEmail("Duplicate email"))
+            return Err(DuplicateEmailError(input_data.email))
         except Exception as e:
             LOG.exception("Participant insertion failed due to err {}".format(e))
             return Err(e)
