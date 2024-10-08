@@ -77,27 +77,19 @@ code .
 If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
 Visual Studio Code client.
 
-<img src="https://i.ibb.co/qnYQ6Qp/Screenshot-2024-10-07-at-2-33-55-PM.png" alt="image" border="0">
-
+![](/docs/github/connected_devContainer.png)
 
 ---
-### __HOW TO RUN PROJECT__ or so called __GUM__:
+### __HOW TO RUN THE PROJECT__:
 > Run the following command after navigating to the project root directory
 
 ```bash
 make gum
 ```
-> This is a command-line tool for managing running services and setting up deployment environments
 
-**For developers**:
 Spin up local server instances:
 
-<img width="429" alt="image" src="https://github.com/AUBGTheHUB/monolith/assets/104720011/0f8e96f8-3931-4eaf-a72d-54a784b75971">
-
-**For deployments**:
-
-<img src="https://i.ibb.co/7nBqHkn/image.png" alt="image" border="0">
-
+![](/docs/github/gum_interface.png)
 
 ## Directory structure
 ```
