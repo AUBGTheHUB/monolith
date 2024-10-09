@@ -7,208 +7,100 @@
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
 [![Notify Discord - New PR](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_pr.yml)
-## How to set up the project
+## > How to set up the project
 
-Check [Backend](#backend), [Frontend](#frontend), [Hooks](#git-hooks) and [Plugins](#vscode-plugins)
-##### Recommended Text Editor: `VSCode`
-##### Recommended Plugins: `GitLens`
+### Prerequisites
+> To understand why we need the following, read more about [Dev Containers](https://containers.dev/).
+
+- Download [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- Download [Visual Studio Code](https://code.visualstudio.com/Download).
+- Install the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in Visual Studio Code.
+#### For WSL users
 ---
-### ENVIRONMENT VARIABLES:
-* GLOBAL .env file for easy management of environment variables within services
-```bash
-make install-env  # ask the team for the .env contents
+>Run the following commands in PowerShell admin mode.
+- Check the version of your WSL.
+```PowerShell
+wsl -l -v
 ```
-#### Run the command above if you delete the root .env file by mistake or you had installed the project pre 15th March.
+- If you don't have WSL version 2. Run:
+```PowerShell
+wsl --set-version <distro name> 2
+```
+> Change the <distro name> to match the one that you are running. You could see your distro name from the result of the previous command.
+- After your WSL version is updated set it as default by running:
+```PowerShell
+wsl --set-default-version 2
+```
+- Set the chosen distro as default
+```PowerShell
+wsl --set-default <distro name>
+```
+- **Close WSL and reopen it**
+
+After running the above commands. Close PowerShell.
+- Open **Docker Desktop**
+- Navigate to **Settings**
+- From the **General** tab, select **Use WSL 2 based engine**
+
+>You should be all set 🎉
 ---
 
-### Adding your SSH key to the ssh-agent and GitHub
-⚠️ This step is a prerequisite for the installation scripts
+### 1. Add your SSH key to the ssh-agent and GitHub
 
 Here is the guide:
 * [Generate SSH key and add it to agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 * [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
+### 2. Clone the repository to your machine
+```bash
+git clone git@github.com:AUBGTheHUB/monolith.git
+```
+### 3. Navigate to the project directory
+```bash
+cd monolith
+```
+### 4. Open your project in Visual Studio code. Run:
+```bash
+code .
+```
+### 5. Navigate to Visual Studio Code and perform:
+- <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Windows) to open the command palette
+- In the command palette write and select:
+```
+>Dev Containers: Reopen in Container
+```
+
+>After this step you should wait until the container is built. It will install all the dependencies needed for development on its own.
+
+### 6. Check if Dev Container is running successfully
+If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
+Visual Studio Code client.
+
+![](/docs/github/connected_devContainer.png)
+
 ---
-### OSX installation
-
-Install brew and follow the instructions (sometimes it asks you to run some additional commands):
-```shell
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-```shell
-curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_osx.sh | bash
-```
-
-And then run:
-```bash
-cd ~/go/src/monolith && make post-osx
-
-# make sure to check the output towards the end as certain installations may require manual intervention.
-```
----
-### WSL installation
-* For [Ubuntu](https://www.microsoft.com/store/productId/9PDXGNCFSCZV) WSL
-```bash
-curl https://raw.githubusercontent.com/AUBGTheHUB/monolith/master/install_wsl.sh | bash
-```
-
-And then run:
-```bash
-cd ~/go/src/monolith && make post-wsl
-
-# make sure to check the output towards the end as certain installations may require manual intervention.
-```
-
-### Easy access to repo
-
-```bash
-alias spa="cd ~/go/src/monolith"
-```
----
-### __HOW TO RUN PROJECT__ or so called __GUM__:
+### __HOW TO RUN THE PROJECT__:
+> Run the following command after navigating to the project root directory
 
 ```bash
 make gum
 ```
-> This is a command-line tool for managing running services and setting up deployment environments
 
-**For developers**:
 Spin up local server instances:
 
-<img width="429" alt="image" src="https://github.com/AUBGTheHUB/monolith/assets/104720011/0f8e96f8-3931-4eaf-a72d-54a784b75971">
+![](/docs/github/gum_interface.png)
 
-Similarly to the Makefile phonies, the three different options change the point towards which api requests are being made.
-```
-local api -> localhost:8000 / :6969
-prod api -> https://thehub-aubg.com
-dev api -> https://dev.thehub-aubg.com
-```
-
-**For deployments**:
-
-<img src="https://i.ibb.co/7nBqHkn/image.png" alt="image" border="0">
-
----
-### Backend
-
-* __Static BEARER-TOKEN__:
-Add this in the .env file (update root .env)
-```bash
-MONGO_URI=<uri>    # Ask NOSYNCDEV for the uri
-
-IS_OFFLINE=true    # IS_TEST=true overwrites this
-                   # so make sure that you set IS_TEST to false
-                   # after you're done running integration/unit tests
-```
-
-* __Run__:
-```shell
-make run-api # Golang API
-make run-py-api # Python API
-```
-
-* __Run (hot reload)__:
-```
-make reload-api
-```
-
-* using a task:
-    * `ctrl + P` (for mac keybindings might differ)
-    * type `task Hot Reload API`
-
-* or:
-    * `ctrl + shift + P` (for mac keybindings might differ)
-    * type `Tasks: Run Task` and find `Hot Reload API`
-
----
-
-
-* #### __Debug__:
-1. Put breakpoints:
-<img src="https://i.ibb.co/5vW0H6N/image.png" border="0">
-
-2. Go to `main.go`, open `Run and Debug` and choose the `Debug API` task:
-<img src="https://i.ibb.co/K0GnCY9/image.png" border="0">
-
-3. Click the green arrow icon:
-<img src="https://i.ibb.co/9VrKp3R/image.png" border="0">
-
-
-* #### __How to resolve `could not import module ...`__:
-<img src="https://i.ibb.co/KmHqm1q/image.png" alt="image" border="0">
-
-
-* Open `/packages/api` as a Workspace folder:
-    <img src="https://i.ibb.co/tbTs4Wg/image.png" alt="image" border="0">
-
-* Open VSCode directly from within `packages/api` (e.g. `spa && cd packages/api && code .`)
-
----
-### Frontend
-Notes:
-* No need to run any of this if you installed the project using either one of the installation scripts.
-* Object Uploader (S3 admin panel) won't work if you don't update your .env file with the appropriate content (ask the team)
-
-* Installation from `root` (needed when there are new packages added to `package.json`):
-```shell
-# update node to 16.16.0
-make install-web
-```
-
-* Run from `root`:
-```shell
-make run-web    # run this if you are applying changes to the api and you want to test them locally using the frontend (or if prod and dev are down)
-
-make run-dev    # run this if you want the frontend to make requests towards the api which is currently staged on the dev environment
-
-make run-prod   # run this if you want the frontend to make requests towards the production api on https://thehub-aubg.com
-```
-
-** For installing, running, cleaning and building from `web` - take a look at the `scripts` in `web/package.json`
-
-* Lint (part of the hooks):
-```bash
-make lint  # makes your code more readable 🥰
-```
----
-
-### Git hooks
-
-* Install pre-commit hook:
-```shell
-make install-hooks  # POSIX compliant shells only
-```
-Do not install the hooks if you are going to be using `Powershell`
-
-This is going to execute a script which will <em>install</em> git commit hooks.
-The pre-hook is linting the JS code and the post-hook amends the changes to the commit, hence there will be no need for you to do it manually.
-The hooks generate a `files_for_commit.txt`, which is used for tracking state. Please, do ignore it!
-
----
-### VSCode plugins
-* Install needed plugins by running the following phony:
-```
-make install-code-plugins # linters and better comments
-```
-
-### Docker
-
-```shell
-docker-compose up --build
-```
-
----
 ## Directory structure
 ```
 .
-└── packages
-    ├── api
+└── services
     ├── py-api
-    └── services
-    │   └── url_shortener
+    ├── questionnaire
+    ├── react-email-starter
+    ├── url_shortener
     └── web
+
 ```
 
 ---
