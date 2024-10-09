@@ -1,0 +1,95 @@
+# mypy: disable-error-code=no-any-return
+# This is because we have Generic methods
+from asyncio import sleep
+from typing import Callable, Any, Awaitable
+
+from pymongo.errors import PyMongoError
+from result import Err, is_err, Result
+from structlog.stdlib import get_logger
+
+from src.database.db_manager import DatabaseManager
+
+LOG = get_logger()
+
+
+class TransactionManager:
+    """This class is responsible for executing multiple mongo db queries such as insert_one or update_on in a
+    transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction."""
+
+    def __init__(self, db_manager: DatabaseManager) -> None:
+        self._client = db_manager.client
+
+    @staticmethod
+    async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
+        """
+        If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
+        to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
+        network issue.
+        Inspired by:
+        https://motor.readthedocs.io/en/stable/api-tornado/motor_client_session.html#motor.motor_tornado.MotorClientSession.with_transaction
+        https://stackoverflow.com/questions/52153538/what-is-a-transienttransactionerror-in-mongoose-or-mongodb
+
+        Raises:
+            PyMongoError
+        """
+        max_retries = 3
+        delay = 1  # initial delay in seconds
+
+        # range is exclusive that's why we do max_retries + 1
+        for retry in range(1, max_retries + 1):
+            try:
+                return await func(*args, **kwargs)
+            except PyMongoError as exc:
+                if exc.has_error_label("TransientTransactionError"):
+                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    await sleep(delay)
+                    delay *= 2  # exponential backoff
+                    continue
+
+                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
+                raise exc
+
+        raise PyMongoError("Transaction failed after maximum retries")
+
+    async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+        """
+        A generic method used for executing a callback in a transaction. This method is generic as we want the
+        with_transaction method to have the return type of the passed callback function. The method is responsible for
+        starting a transaction and commiting it. In case of an Exception the transaction is automatically aborted.
+
+        The ``callback`` could be a function grouping multiple operations. For example::
+
+        async def callback(session):
+            await participants.insert_one({"test":"test"} session=session)
+            await teams.update_one({"test":"test"} session=session)
+
+        await tx_manager.with_transaction(callback)
+
+        To learn more about Generics visit:
+        https://docs.python.org/3/library/typing.html#generics
+        https://www.youtube.com/watch?v=q6ujWWaRdbA
+        """
+
+        session = await self._client.start_session()
+        try:
+            session.start_transaction()
+            LOG.debug("Starting transaction")
+
+            result = await self._retry_tx(callback, *args, session=session, **kwargs)
+            if is_err(result):
+                LOG.exception("Aborting transaction due to err {}".format(result.value))
+                await session.abort_transaction()
+                return result
+
+            await session.commit_transaction()
+            LOG.debug("Transaction commited")
+
+            return result
+        except Exception as e:
+            LOG.exception("Aborting transaction due to err {}".format(e))
+            await session.abort_transaction()
+            return Err(e)
+        finally:
+            LOG.debug("Closing DB session")
+            # Finish this session. If a transaction has started, abort it.
+            await session.end_session()

@@ -5,5 +5,6 @@ from src.server.config.server_config import start
 # enable 'reload' or 'workers'. Also, we need it to create the AsyncTestClient.
 app = create_app()
 
+# https://realpython.com/if-name-main-python/
 if __name__ == "__main__":
     start()

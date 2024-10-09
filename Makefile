@@ -35,12 +35,12 @@ install-env:
 	ln -sf ${PWD}/.env ${PWD}/services/web/.env.development; \
 	ln -sf ${PWD}/.env ${PWD}/services/api/.env; \
 	ln -sf ${PWD}/.env ${PWD}/services/url_shortener/.env; \
-	ln -sf ${PWD}/.env ${PWD}/services/py_api/.env; \
+	ln -sf ${PWD}/.env ${PWD}/services/py-api/.env; \
 	ln -sf ${PWD}/.env ${PWD}/services/questionnaire;
 
 .PHONY: run-py-api
 run-py-api:
-	cd services/py_api && poetry run start
+	cd services/py-api && poetry run start
 
 .PHONY: install-signed-certs
 install-signed-certs:

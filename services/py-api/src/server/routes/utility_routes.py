@@ -7,6 +7,7 @@ from src.server.schemas.response_schemas.schemas import PongResponse, ErrRespons
 utility_router = APIRouter()
 
 
+# https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 def create_utility_handler(db_manager: DB_MANAGER) -> UtilityHandlers:
     return UtilityHandlers(db_manager)
 
