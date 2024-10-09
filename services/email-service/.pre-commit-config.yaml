@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        args: [ "--safe", "--line-length", "120" ]
+
+  - repo: https://github.com/myint/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args: [ "--in-place", "--remove-all-unused-imports", "--remove-unused-variables", "--ignore-init-module-imports" ]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v1.11.2'
+    hooks:
+      - id: mypy
+        args: [ "--strict", "--pretty", "--no-error-summary", "--disable-error-code=misc", "--disable-error-code=import" ]
