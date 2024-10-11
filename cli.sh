@@ -41,74 +41,39 @@ fi
 
 gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "Hello, there! Welcome to The Hub's $(gum style --foreground 212 'monolith')."
 
-echo -e "What would you like to do?"
+echo -e "What instance do you want to spin up?"
 
-START="Develop"
-DEPLOY="Deploy"
+WEB_CLIENT="React frontend"
+LOCAL_PY_API="Python backend"
+LOCAL_QUESTIONNAIRE="Questionnaire"
+LOCAL_RUST_API="URL Shortener"
+EMAIL_TEMPLATE="Email Template"
+ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$EMAIL_TEMPLATE")
 
-ACTIONS=$(gum choose --limit 1 "$START" "$DEPLOY" )
+ACTIONS_EXIT_STATUS=$?
+clear
 
-if [ $ACTIONS == $START ]; then
-    clear
-    echo -e "What instance do you want to spin up?"
+if [ $ACTIONS_EXIT_STATUS -eq 0 ]; then
+    gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "You might need to pull the latest dependencies if the service is unable to start."
+fi
 
-    WEB_CLIENT="React frontend"
-    DEV_CLIENT="React frontend (dev.thehub-aubg.com)"
-    PROD_CLIENT="React frontend (thehub-aubg.com)"
-    LOCAL_API="Golang backend"
-    LOCAL_PY_API="Python backend"
-    LOCAL_QUESTIONNAIRE="Questionnaire"
-    LOCAL_RUST_API="URL Shortener"
-    EMAIL_TEMPLATE="Email Template"
-    NGINX="Reverse Proxy"
-    ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$DEV_CLIENT" "$PROD_CLIENT" "$LOCAL_API" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$NGINX" "$EMAIL_TEMPLATE")
 
-    ACTIONS_EXIT_STATUS=$?
-    clear
+if [ "$ACTIONS" == "$WEB_CLIENT" ]; then
+    make run-web
+elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
+    make run-py-api
+elif [ "$ACTIONS" == "$LOCAL_QUESTIONNAIRE" ]; then
+    make run-svelte-quest
+elif [ "$ACTIONS" == "$LOCAL_RUST_API" ]; then
+    make run-rust-api
+elif [ "$ACTIONS" == "$NGINX" ]; then
+    make run-nginx
+elif [ "$ACTIONS" == "$EMAIL_TEMPLATE" ]; then
+    make run-email-template
+else
+    echo "Invalid option"
+    exit 1
 
-    if [ $ACTIONS_EXIT_STATUS -eq 0 ]; then
-        gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "You might need to pull the latest dependencies if the service is unable to start."
-    fi
-
-    if [ "$ACTIONS" == "$WEB_CLIENT" ]; then
-        make run-web
-    elif [ "$ACTIONS" == "$DEV_CLIENT" ]; then
-        make run-dev
-    elif [ "$ACTIONS" == "$PROD_CLIENT" ]; then
-        make run-prod
-    elif [ "$ACTIONS" == "$LOCAL_API" ]; then
-        make reload-api
-    elif [ "$ACTIONS" == "$LOCAL_PY_API" ]; then
-        make run-py-api
-    elif [ "$ACTIONS" == "$LOCAL_QUESTIONNAIRE" ]; then
-        make run-svelte-quest
-    elif [ "$ACTIONS" == "$LOCAL_RUST_API" ]; then
-        make run-rust-api
-    elif [ "$ACTIONS" == "$NGINX" ]; then
-        make run-nginx
-    elif [ "$ACTIONS" == "$EMAIL_TEMPLATE" ]; then
-        make run-email-template
-    else
-        echo "Invalid option"
-        exit 1
-
-    fi
-
-elif [ "$ACTIONS" == "$DEPLOY" ]; then
-    LOGIN_IN_VM="SSH into a Virtual Machine"
-    SET_VM_ENV="Set up Virtual Machine for Deployment"
-    VM_IP=""
-
-    ACTIONS=$(gum choose --limit 1 "$LOGIN_IN_VM" "$SET_VM_ENV")
-
-    if [ "$ACTIONS" == "$LOGIN_IN_VM" ]; then
-        set_vm_ip
-        ssh $VM_IP
-
-    elif [ "$ACTIONS" == "$SET_VM_ENV" ]; then
-        set_vm_ip
-        ssh -t $VM_IP "curl https://raw.githubusercontent.com/AUBGTheHUB/spa-website-2022/master/set_vm_env.sh | bash"
-    fi
 fi
 
 if [ -z $HUB_VM ] && [ $VM_IP ]; then

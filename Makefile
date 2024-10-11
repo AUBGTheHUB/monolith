@@ -4,15 +4,7 @@ install-web:
 
 .PHONY: run-web
 run-web:
-	cd ./services/web/ && npm run start
-
-.PHONY: run-dev
-run-dev:
 	cd ./services/web/ && npm run dev
-
-.PHONY: run-prod
-run-prod:
-	cd ./services/web/ && npm run prod
 
 .PHONY: install-hooks
 install-hooks:
