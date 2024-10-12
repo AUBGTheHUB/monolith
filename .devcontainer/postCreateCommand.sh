@@ -9,5 +9,5 @@ poetry config virtualenvs.in-project true
 #Installs the node_modules inside ./services/web
 make install-web
 #Installs the backend dependencies
-cd ./services/py_api/
+cd ./services/py-api/
 poetry install

@@ -4,13 +4,13 @@ on:
   pull_request:
     types: [ assigned, opened, synchronize, reopened ]
     paths:
-      - 'services/py_api/**/*.py'
-      - 'services/py_api/**/*.lock'
-      - 'services/py_api/**/*.toml'
+      - 'services/py-api/**/*.py'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
 
 defaults:
   run:
-    working-directory: services/py_api/tests/
+    working-directory: services/py-api/tests/
 
 jobs:
   run_tests:
@@ -45,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
-          path: ./services/py_api/tests/htmlcov
+          path: ./services/py-api/tests/htmlcov
