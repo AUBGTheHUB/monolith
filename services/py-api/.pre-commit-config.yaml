@@ -21,4 +21,5 @@ repos:
     rev: 'v1.11.2'
     hooks:
       - id: mypy
-        args: [ "--strict", "--pretty", "--no-error-summary", "--disable-error-code=misc", "--disable-error-code=import" ]
+        args: [ "--strict", "--pretty", "--no-error-summary", "--disable-error-code=misc", "--disable-error-code=import",
+                "--enable-incomplete-feature=NewGenericSyntax" ]

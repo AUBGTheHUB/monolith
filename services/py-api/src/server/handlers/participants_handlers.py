@@ -2,7 +2,7 @@ from result import is_err
 from starlette import status
 from starlette.responses import Response
 
-from src.server.exception import DuplicateEmail, DuplicateTeamName
+from src.server.exception import DuplicateEmailError, DuplicateTeamNameError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import AdminParticipantRegisteredResponse, ErrResponse
 from src.service.participants_service import ParticipantService
@@ -18,11 +18,11 @@ class ParticipantHandlers:
         result = await self._service.register_admin_participant(input_data)
 
         if is_err(result):
-            if isinstance(result.value, DuplicateEmail):
+            if isinstance(result.value, DuplicateEmailError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Participant with this email already exists")
 
-            if isinstance(result.value, DuplicateTeamName):
+            if isinstance(result.value, DuplicateTeamNameError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Team with this name already exists")
 

@@ -7,7 +7,7 @@ class ApiUser(HttpUser):
     wait_time = between(1, 5)
 
     @task
-    def create_random_user(self) -> None:
+    def create_admin_participant(self) -> None:
         random_name = "test_" + "".join(random.choices(string.ascii_lowercase, k=4))
         random_email = "".join(random.choices(string.ascii_lowercase, k=4)) + "@test.com"
         team_name = "".join(random.choices(string.ascii_uppercase, k=6))

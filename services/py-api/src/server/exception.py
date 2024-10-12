@@ -1,9 +1,9 @@
 from pymongo.errors import DuplicateKeyError
 
 
-class DuplicateEmail(DuplicateKeyError):
+class DuplicateEmailError(DuplicateKeyError):
     pass
 
 
-class DuplicateTeamName(DuplicateKeyError):
+class DuplicateTeamNameError(DuplicateKeyError):
     pass

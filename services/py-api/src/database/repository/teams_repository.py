@@ -10,20 +10,19 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.team_model import Team
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateTeamName
+from src.server.exception import DuplicateTeamNameError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository):
-    def __init__(self, db_manager: DatabaseManager, collection: str) -> None:
-        self._client = db_manager.client
-        self._collection = self._client[db_manager.DB_NAME][collection]
+    def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
+        self._collection = db_manager.get_collection(collection_name)
 
     async def create(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Ok[Team] | Err[DuplicateKeyError] | Err[Exception]:
+    ) -> Ok[Team] | Err[DuplicateTeamNameError | Exception]:
 
         try:
             team = Team(_id=ObjectId(), name=input_data.team_name)
@@ -33,7 +32,7 @@ class TeamsRepository(CRUDRepository):
 
         except DuplicateKeyError:
             LOG.warning("Team insertion failed due to duplicate team name {}".format(input_data.team_name))
-            return Err(DuplicateTeamName("Duplicate team name"))
+            return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:
             LOG.exception("Team insertion failed due to err {}".format(e))
