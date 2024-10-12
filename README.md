@@ -1,8 +1,5 @@
 # @AUBGTheHUB's Monolith
-
-[![Build Frontend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml)
-
-[![Build Python Backend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml)
+[![Python API Tests](https://github.com/AUBGTheHUB/monolith/actions/workflows/pytests.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/pytests.yml)
 
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
