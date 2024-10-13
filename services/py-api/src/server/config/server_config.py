@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from os import environ
+from os import environ, cpu_count
 
 from dotenv import load_dotenv
 from uvicorn import run
@@ -41,9 +41,14 @@ def start() -> None:
             port=server_config.PORT,
             reload=server_config.ENV == "DEV",
             log_config=get_uvicorn_logger(server_config.ENV),
-            # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV
+            # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV. This should be
+            # done before deploying to PROD
             ssl_certfile="src/server/certs/localhost.crt",
             ssl_keyfile="src/server/certs/localhost.key",
+            # https://docs.gunicorn.org/en/stable/design.html#how-many-workers
+            # As cpu_count could return None we use 0 instead, as 2 * None would produce an error
+            # Also "workers" flag is ignored when reloading is enabled.
+            workers=(2 * (cpu_count() or 0) + 1) if server_config.ENV == "DEV" else None,
         )
     else:
         raise ValueError("The ENV environment variable should be PROD, DEV OR TEST")
