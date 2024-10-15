@@ -1,5 +1,4 @@
 FROM python:3.12.6-bullseye AS builder
-LABEL authors="ivanobreshkov"
 
 # https://medium.com/@albertazzir/blazing-fast-python-docker-builds-with-poetry-a78a66f5aed0
 
@@ -12,28 +11,43 @@ ENV POETRY_NO_INTERACTION=1 \
 
 WORKDIR /app
 
+# Poetry will complain if a README.md is not found
 COPY pyproject.toml poetry.lock README.md ./
 
-RUN poetry install --no-root && rm -rf $POETRY_CACHE_DIR
+# we use --no-root to avoid installing the project itself. This helps maintain the Docker cache, as changes to the
+# project source won't invalidate the cached dependencies.
+# https://python-poetry.org/docs/faq/#poetry-busts-my-docker-cache-because-it-requires-me-to-copy-my-source-files-in-before-installing-3rd-party-dependencies
+RUN poetry install --without dev --no-root && rm -rf $POETRY_CACHE_DIR
 
 # The runtime image, used to just run the code provided its virtual environment
 FROM python:3.12.6-slim-bullseye AS runtime
 
+# we use --no-install-recommends and removing the list of packages to make the finall image size smaller
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
+# Prepending the venv's bin directory to PATH to ensure executables are found
+# Prepending is important because Linux searches the PATH from left to right, so executables in /app/.venv/bin will be used
+# first before any system-wide executables
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
 
+# This ensures that the hat the runtime image has access to the packages and dependencies installed in the venv
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
+# Any subsecuent commmands like COPY and RUN that use relative path witll use /app as the base directory
 WORKDIR /app
 
 COPY src ./src
-COPY .env ./
 
 EXPOSE 8080
 
-# As we are using self-signed certs we don't check the validity of the certs with -k
-HEALTHCHECK --interval=1m --timeout=10s CMD curl -k -f https://localhost:6969/email-service/v1/ping
+# If the env is LOCAL this means we are using self-signed certs. If we use curl without -k, it will try to validate
+# them, which would make the command fail and the conatiner will be marked unhealthy
+HEALTHCHECK --interval=1m --timeout=10s CMD \
+    if [ "$ENV" = "LOCAL" ]; then \
+        curl -k -f https://$DOMAIN:8080/api/v3/ping; \
+    else \
+        curl -f https://$DOMAIN/api/v3/ping; \
+    fi
 
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
