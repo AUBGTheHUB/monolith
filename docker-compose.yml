@@ -1,87 +1,21 @@
-version: '3'
-
 services:
-  server:
+  py-api:
     build:
-      context: ./packages/api
-      target: final
-    container_name: api
-    env_file:
-      - ".env"
-    expose:
-      - 8000
-    ports:
-      - 8000:8000
-    volumes:
-      - ./data/certs:/app/certs
-    networks:
-      - front-back
-
-  py_api_server:
-    build:
-      context: ./packages/py-api
-      target: final
+      context: ./services/py-api
+      target: runtime
     container_name: py-api
     env_file:
-      - ".env"
+      - "./services/py-api/.env"
     expose:
-      - 6969
+      - 8080
     ports:
-      - 6969:6969
-    volumes:
-      - ./packages/py-api/py_api/shared:/app/py_api/shared
-      - ./data/certs:/app/certs
-    networks:
-      - front-back
-
-  shortener:
-    build: ./packages/services/url_shortener
-    container_name: shortener
-    env_file:
-      - ".env"
-    expose:
-      - 8001
-    ports:
-      - 8001:8001
-    networks:
-      - front-back
-
-  questionnaire:
-    build:
-      context: ./
-      dockerfile: ./packages/services/questionnaire/Dockerfile
-    container_name: questionnaire
-    env_file:
-      - ".env"
-    expose:
-      - 6420
-    ports:
-      - 6420:6420
+      - 8080:8080
     volumes:
       - ./data/certs:/app/certs
     networks:
-      - front-back
-
-  client:
-    build:
-      context: ./packages/web
-    container_name: web
-    env_file:
-      - ".env"
-    expose:
-      - 443
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - server
-      - py_api_server
-      - shortener
-    volumes:
-      - ./data/certs:/etc/nginx/certs
-    networks:
-      - front-back
+      - monolith
+    restart: always
 
 networks:
-  front-back:
+  monolith:
     driver: bridge
