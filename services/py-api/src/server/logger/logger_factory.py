@@ -95,6 +95,6 @@ def configure_app_logger(env: str) -> None:
             if env != "DEV" and env != "PROD"
             else WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
         ),
-        wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
+        wrapper_class=None if env != "DEV" and env != "PROD" else make_filtering_bound_logger(INFO),
         cache_logger_on_first_use=True,
     )
