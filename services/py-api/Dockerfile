@@ -48,7 +48,7 @@ HEALTHCHECK --interval=1m --timeout=10s CMD \
     if [ "$ENV" = "LOCAL" ]; then \
         curl -k -f https://$DOMAIN:8080/api/v3/ping; \
     else \
-        curl -f https://$DOMAIN/api/v3/ping; \
+        curl -f https://$DOMAIN:8080/api/v3/ping; \
     fi
 
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
