@@ -92,7 +92,7 @@ def configure_app_logger(env: str) -> None:
         ],
         logger_factory=(
             PrintLoggerFactory()
-            if env != "PROD"
+            if env != "DEV" or env != "PROD"
             else WriteLoggerFactory(file=Path("server").with_suffix(".log").open("a"))
         ),
         wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
