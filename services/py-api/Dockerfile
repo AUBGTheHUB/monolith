@@ -38,6 +38,7 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR /app
 
 COPY src ./src
+COPY shared ./shared
 
 EXPOSE 8080
 

@@ -46,7 +46,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
             "logfile": {
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "INFO",
-                "filename": "server.log",
+                "filename": "shared/server.log",
                 "formatter": "logformatter",
                 "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
                 "backupCount": 2,  # 2 backup files
@@ -88,12 +88,12 @@ def configure_app_logger(env: str) -> None:
                     CallsiteParameter.LINENO,
                 }
             ),
-            _CustomConsoleRenderer() if env == "DEV" else JSONRenderer(),
+            _CustomConsoleRenderer() if env != "DEV" and env != "PROD" else JSONRenderer(),
         ],
         logger_factory=(
             PrintLoggerFactory()
-            if env != "DEV" or env != "PROD"
-            else WriteLoggerFactory(file=Path("server").with_suffix(".log").open("a"))
+            if env != "DEV" and env != "PROD"
+            else WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
         ),
         wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
         cache_logger_on_first_use=True,
