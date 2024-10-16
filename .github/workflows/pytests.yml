@@ -24,6 +24,7 @@ jobs:
       PORT: ${{secrets.PORT}}
       ADDRESS: ${{secrets.ADDRESS}}
       DATABASE_URL: ${{secrets.DATABASE_URL}}
+      SIMULATING_PROD_ENV: ${{secrets.SIMULATING_PROD_ENV}}
 
 
     steps:
