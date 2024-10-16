@@ -33,7 +33,7 @@ class _CustomConsoleRenderer(ConsoleRenderer):
         return str(super().__call__(logger, name, event_dict))
 
 
-def get_uvicorn_logger(env: str) -> Dict[str, Any]:
+def get_uvicorn_logger(env: str, simulating_prod_env: bool = False) -> Dict[str, Any]:
     prod_logging_config: Dict[str, Any] = {
         "version": 1,
         "formatters": {
@@ -61,9 +61,9 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    # We save the incoming requests logs like this one:
+    # We save the incoming requests logs to a file like this:
     # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
-    if env == "DEV" and env == "PROD":
+    if env == "DEV" or env == "PROD" or simulating_prod_env is True:
         return prod_logging_config
 
     default_logging_config: Dict[str, Any] = LOGGING_CONFIG
@@ -71,7 +71,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     return default_logging_config
 
 
-def configure_app_logger(env: str) -> None:
+def configure_app_logger(env: str, simulating_prod_env: bool = False) -> None:
     """Configures structlog. This logger is intended for use in the application level, and it is different from
     uvicorn's default one"""
     configure(
@@ -92,14 +92,18 @@ def configure_app_logger(env: str) -> None:
             ),
             # If the ENV is DEV or PROD we save the logs in a JSON format. This is done in order to have better
             # filtering and searchability
-            _CustomConsoleRenderer() if env != "DEV" and env != "PROD" else JSONRenderer(),
+            (
+                _CustomConsoleRenderer()
+                if env != "DEV" and env != "PROD" and simulating_prod_env is False
+                else JSONRenderer()
+            ),
         ],
         logger_factory=(
-            # For LOCAL and TEST env we print the logs directly to the stdout
             # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
-            PrintLoggerFactory()
-            if env != "DEV" and env != "PROD"
-            else WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
+            # For LOCAL and TEST env we print the logs directly to the stdout
+            WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
+            if env == "DEV" or env == "PROD" or simulating_prod_env is True
+            else PrintLoggerFactory()
         ),
         # For the PROD env we allow logs with logging level above INFO, in order not to clutter our log files
         # For every other env the logging level is DEBUG and above, in order to have better traceability if something
