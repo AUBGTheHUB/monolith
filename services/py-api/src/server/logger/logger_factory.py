@@ -61,7 +61,9 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    if env == "PROD":
+    # We save the incoming requests logs like this one:
+    # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    if env == "DEV" and env == "PROD":
         return prod_logging_config
 
     default_logging_config: Dict[str, Any] = LOGGING_CONFIG
@@ -88,13 +90,20 @@ def configure_app_logger(env: str) -> None:
                     CallsiteParameter.LINENO,
                 }
             ),
+            # If the ENV is DEV or PROD we save the logs in a JSON format. This is done in order to have better
+            # filtering and searchability
             _CustomConsoleRenderer() if env != "DEV" and env != "PROD" else JSONRenderer(),
         ],
         logger_factory=(
+            # For LOCAL and TEST env we print the logs directly to the stdout
+            # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
             PrintLoggerFactory()
             if env != "DEV" and env != "PROD"
             else WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
         ),
-        wrapper_class=None if env != "DEV" and env != "PROD" else make_filtering_bound_logger(INFO),
+        # For the PROD env we allow logs with logging level above INFO, in order not to clutter our log files
+        # For every other env the logging level is DEBUG and above, in order to have better traceability if something
+        # goes wrong during testing
+        wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
         cache_logger_on_first_use=True,
     )
