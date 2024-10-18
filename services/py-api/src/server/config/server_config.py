@@ -14,7 +14,7 @@ load_dotenv()
 
 # We also configure the logger here. This should be done before calling LOG = get_logger(), which we use in almost
 # every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
-configure_app_logger(environ["ENV"], bool(environ["SIMULATING_PROD_ENV"]))
+configure_app_logger(environ["ENV"])
 
 
 @dataclass
@@ -22,7 +22,6 @@ class ServerConfig(metaclass=SingletonMeta):
     ENV = environ["ENV"]
     PORT = int(environ["PORT"])
     ADDRESS = environ["ADDRESS"]
-    SIMULATING_PROD_ENV = bool(environ["SIMULATING_PROD_ENV"])
 
 
 def load_server_config() -> ServerConfig:
@@ -43,10 +42,8 @@ def start() -> None:
             app="src.server.app_entrypoint:app",
             host=server_config.ADDRESS,
             port=server_config.PORT,
-            # Reloading is intended only for local development. Simulating a PROD/DEV env will result in multiple
-            # workers spawned
-            reload=server_config.ENV == "LOCAL" and server_config.SIMULATING_PROD_ENV is False,
-            log_config=get_uvicorn_logger(server_config.ENV, server_config.SIMULATING_PROD_ENV),
+            reload=server_config.ENV == "LOCAL",
+            log_config=get_uvicorn_logger(server_config.ENV),
             # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV. This should be
             # done before deploying to PROD
             ssl_certfile="src/server/certs/localhost.crt",
