@@ -42,13 +42,12 @@ COPY shared ./shared
 
 EXPOSE 8080
 
-# If the env is LOCAL this means we are using self-signed certs. If we use curl without -k, it will try to validate
-# them, which would make the command fail and the conatiner will be marked unhealthy
 HEALTHCHECK --interval=1m --timeout=10s CMD \
-    if [ "$ENV" = "LOCAL" ]; then \
-        curl -k -f https://$DOMAIN:8080/api/v3/ping; \
+    if [ "$DOMAIN" = "localhost" ]; then \
+        curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
     else \
         curl -f https://$DOMAIN:8080/api/v3/ping; \
     fi
+
 
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
