@@ -25,13 +25,15 @@ def _get_ssl_config(env: str) -> Tuple[str, str]:
     #  The paths are set according to the current DEV/PROD VMs
 
     letsencrypt_path = "/etc/letsencrypt/live"
+    domain = environ["DOMAIN"]
 
-    if env == "DEV":
+    # The domain !="localhost" is needed as when simulating a DEV/PROD env locally we need to use the self-signed certs
+    if env == "DEV" and domain != "localhost":
         return (
             f"{letsencrypt_path}/dev.thehub-aubg.com/fullchain.pem",
             f"{letsencrypt_path}/dev.thehub-aubg.com/privkey.pem",
         )
-    if env == "PROD":
+    if env == "PROD" and domain != "localhost":
         return f"{letsencrypt_path}/thehub-aubg.com/fullchain.pem", f"{letsencrypt_path}/thehub-aubg.com/privkey.pem"
 
     return "src/server/certs/localhost.crt", "src/server/certs/localhost.key"

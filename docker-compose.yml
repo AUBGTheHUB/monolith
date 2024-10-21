@@ -7,11 +7,13 @@ services:
     env_file:
       - "./services/py-api/.env"
     expose:
-      - 8080
+      - "8080"
     ports:
-      - 8080:8080
+      - "8080:8080"
     volumes:
       - ./services/py-api/shared:/app/shared
+      - /etc/letsencrypt/live:/etc/letsencrypt/live
+
     networks:
       - monolith
     restart: always
