@@ -40,6 +40,10 @@ WORKDIR /app
 COPY src ./src
 COPY shared ./shared
 
+# add letencrypt/live folder. Here are the certs on the VMs.
+# TODO: This should be changed when https://github.com/AUBGTheHUB/monolith/issues/737 is resolved
+COPY /etc/letsencrypt/live /etc/letsencrypt/live
+
 EXPOSE 8080
 
 HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
