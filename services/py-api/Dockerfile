@@ -42,7 +42,7 @@ COPY shared ./shared
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=1m --timeout=10s CMD \
+HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
     if [ "$DOMAIN" = "localhost" ]; then \
         curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
     else \
