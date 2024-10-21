@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from os import environ, cpu_count
 
+from typing import Tuple
 from dotenv import load_dotenv
 from uvicorn import run
 
@@ -17,11 +18,31 @@ load_dotenv()
 configure_app_logger(environ["ENV"])
 
 
+def _get_ssl_config(env: str) -> Tuple[str, str]:
+    """Returns ssl_certfile, ssl_keyfile based on the ENV"""
+    # TODO: these paths will definitely change depending on the web server we choose, disused in
+    #  https://github.com/AUBGTheHUB/monolith/issues/737
+    #  The paths are set according to the current DEV/PROD VMs
+
+    letsencrypt_path = "/etc/letsencrypt/live"
+
+    if env == "DEV":
+        return (
+            f"{letsencrypt_path}/dev.thehub-aubg.com/fullchain.pem",
+            f"{letsencrypt_path}/dev.thehub-aubg.com/privkey.pem",
+        )
+    if env == "PROD":
+        return f"{letsencrypt_path}/thehub-aubg.com/fullchain.pem", f"{letsencrypt_path}/thehub-aubg.com/privkey.pem"
+
+    return "src/server/certs/localhost.crt", "src/server/certs/localhost.key"
+
+
 @dataclass
 class ServerConfig(metaclass=SingletonMeta):
     ENV = environ["ENV"]
     PORT = int(environ["PORT"])
     ADDRESS = environ["ADDRESS"]
+    SSL_CERT, SSL_KEY = _get_ssl_config(ENV)
 
 
 def load_server_config() -> ServerConfig:
@@ -44,10 +65,8 @@ def start() -> None:
             port=server_config.PORT,
             reload=server_config.ENV == "LOCAL",
             log_config=get_uvicorn_logger(server_config.ENV),
-            # TODO: Add those to ServerConfig in order for them to be loaded dynamically based on ENV. This should be
-            # done before deploying to PROD
-            ssl_certfile="src/server/certs/localhost.crt",
-            ssl_keyfile="src/server/certs/localhost.key",
+            ssl_certfile=server_config.SSL_CERT,
+            ssl_keyfile=server_config.SSL_KEY,
             # https://docs.gunicorn.org/en/stable/design.html#how-many-workers
             # https://stackoverflow.com/questions/65278110/how-does-gunicorn-distribute-requests-across-sync-workers
             # As cpu_count could return None we use 0 instead, as 2 * None would produce an error
