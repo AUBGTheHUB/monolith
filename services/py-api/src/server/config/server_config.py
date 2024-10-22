@@ -60,7 +60,7 @@ def start() -> None:
         err = ping_db()
         if err:
             raise RuntimeError(err.err_value)
-        print("BRAT", server_config.SSL_CERT, server_config.SSL_KEY)
+
         run(
             app="src.server.app_entrypoint:app",
             host=server_config.ADDRESS,

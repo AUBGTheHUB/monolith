@@ -23,6 +23,7 @@ jobs:
       ENV: ${{secrets.ENV}}
       PORT: ${{secrets.PORT}}
       ADDRESS: ${{secrets.ADDRESS}}
+      DOMAIN: ${{secrets.DOMAIN}}
       DATABASE_URL: ${{secrets.DATABASE_URL}}
 
 
