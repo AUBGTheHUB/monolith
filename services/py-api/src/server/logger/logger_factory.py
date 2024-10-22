@@ -97,6 +97,8 @@ def configure_app_logger(env: str, simulating_prod_env: bool = False) -> None:
         logger_factory=(
             # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
             # For LOCAL and TEST env we print the logs directly to the stdout
+            # FIXME: This could create an issue as the uvicorn logger will eventually create a server.log.1 file but
+            #  these logs will continue to be written to the old server.log file
             WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
             if env in ("DEV", "PROD")
             else PrintLoggerFactory()
