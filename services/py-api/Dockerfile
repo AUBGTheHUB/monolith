@@ -42,14 +42,12 @@ COPY shared ./shared
 
 EXPOSE 8080
 
-#HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
-#    if [ "$DOMAIN" = "localhost" ]; then \
-#        curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
-#    else \
-#        curl -f https://$DOMAIN:8080/api/v3/ping; \
-#    fi
-#
-#
-#ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
+HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
+    if [ "$DOMAIN" = "localhost" ]; then \
+        curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
+    else \
+        curl -f https://$DOMAIN:8080/api/v3/ping; \
+    fi
 
-CMD ["tail", "-f", "/dev/null"]
+
+ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
