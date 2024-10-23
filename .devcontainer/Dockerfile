@@ -16,7 +16,7 @@ RUN rm -rf /usr/local/go && tar -C $HOME -xzf go.tar.gz
 RUN rm -rf go.tar.gz
 RUN echo "export PATH=$PATH:$HOME/go/bin" >> $HOME/.bashrc
 
-# Install pyenv and its dependices
+# Install pyenv and its dependencies
 RUN apt install -y \
     build-essential \
     zlib1g-dev \
