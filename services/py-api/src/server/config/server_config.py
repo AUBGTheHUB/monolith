@@ -18,7 +18,7 @@ load_dotenv()
 configure_app_logger(environ["ENV"])
 
 
-def _get_ssl_config(env: str) -> Tuple[str, str]:
+def _get_ssl_config() -> Tuple[str, str]:
     """Returns ssl_certfile, ssl_keyfile based on the ENV"""
     # TODO: these paths will definitely change depending on the web server we choose, disused in
     #  https://github.com/AUBGTheHUB/monolith/issues/737
@@ -42,17 +42,17 @@ class ServerConfig(metaclass=SingletonMeta):
     ENV = environ["ENV"]
     PORT = int(environ["PORT"])
     ADDRESS = environ["ADDRESS"]
-    SSL_CERT, SSL_KEY = _get_ssl_config(ENV)
+    SSL_CERT, SSL_KEY = _get_ssl_config()
 
 
-def load_server_config() -> ServerConfig:
+def _load_server_config() -> ServerConfig:
     """Returns a Singleton Server Config"""
     return ServerConfig()
 
 
 def start() -> None:
     """Starts the Uvicorn server with different config based on the environment we are in"""
-    server_config = load_server_config()
+    server_config = _load_server_config()
 
     if server_config.ENV in ("PROD", "DEV", "LOCAL", "TEST"):
         err = ping_db()
