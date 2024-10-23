@@ -31,10 +31,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf 
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
 
-# This ensures that the hat the runtime image has access to the packages and dependencies installed in the venv
+# This ensures that the runtime image has access to the packages and dependencies installed in the venv
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-# Any subsecuent commmands like COPY and RUN that use relative path witll use /app as the base directory
+# Any subsecuent commmands like COPY and RUN that use relative path will use /app as the base directory
 WORKDIR /app
 
 COPY src ./src
@@ -43,11 +43,13 @@ COPY shared ./shared
 EXPOSE 8080
 
 HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
+    # This is needed as when we run the container locally we need to use the self-signed certs
+    # If not passes with --cacert curl will fail with exit code 60, meaning there is a problem with the SSL
     if [ "$DOMAIN" = "localhost" ]; then \
         curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
     else \
         curl -f https://$DOMAIN:8080/api/v3/ping; \
     fi
 
-
+# Run the uvicorn server
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]

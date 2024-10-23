@@ -21,6 +21,10 @@ from uvicorn.config import LOGGING_CONFIG
 
 
 class _CustomConsoleRenderer(ConsoleRenderer):
+    """We override the standard ConsoleRenderer in order to have the logs displayed like this in the console:
+    "2024-10-23 13:18:22 [debug    ] db_manager.py:83 (ping_db) Pong"
+    """
+
     def __call__(self, logger: WrappedLogger, name: str, event_dict: EventDict) -> str:
         event_dict["event"] = "{file}:{line} ({function}) {}".format(
             event_dict["event"],
@@ -71,7 +75,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     return default_logging_config
 
 
-def configure_app_logger(env: str, simulating_prod_env: bool = False) -> None:
+def configure_app_logger(env: str) -> None:
     """Configures structlog. This logger is intended for use in the application level, and it is different from
     uvicorn's default one"""
     configure(
@@ -91,7 +95,8 @@ def configure_app_logger(env: str, simulating_prod_env: bool = False) -> None:
                 }
             ),
             # If the ENV is DEV or PROD we save the logs in a JSON format. This is done in order to have better
-            # filtering and searchability
+            # filtering and searching of logs if we use something like the ELK stack in the future
+            # https://www.elastic.co/elastic-stack
             (JSONRenderer() if env in ("DEV", "PROD") else _CustomConsoleRenderer()),
         ],
         logger_factory=(
@@ -103,7 +108,7 @@ def configure_app_logger(env: str, simulating_prod_env: bool = False) -> None:
             if env in ("DEV", "PROD")
             else PrintLoggerFactory()
         ),
-        # For the PROD env we allow logs with logging level above INFO, in order not to clutter our log files
+        # For the PROD env we allow logs with logging level INFO and above, in order not to clutter our log files
         # For every other env the logging level is DEBUG and above, in order to have better traceability if something
         # goes wrong during testing
         wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
