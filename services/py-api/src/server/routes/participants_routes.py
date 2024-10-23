@@ -37,13 +37,13 @@ def _service(
     return ParticipantService(p_repo, t_repo, tx_manager)
 
 
-def _create_handler(service: ParticipantService = Depends(_service)) -> ParticipantHandlers:
+def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHandlers:
     return ParticipantHandlers(service)
 
 
 @participants_router.post("")
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_create_handler)
+    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
 ) -> AdminParticipantRegisteredResponse | ErrResponse:
     # TODO: Add docs
     return await handler.create_participant(response, input_data)

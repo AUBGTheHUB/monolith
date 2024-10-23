@@ -34,7 +34,7 @@ class ParticipantService:
         if is_err(team):
             return team
 
-        return Ok((participant.value, team.value))
+        return Ok((participant.ok_value, team.ok_value))
 
     async def register_admin_participant(
         self, input_data: ParticipantRequestBody

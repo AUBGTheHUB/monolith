@@ -18,15 +18,15 @@ class ParticipantHandlers:
         result = await self._service.register_admin_participant(input_data)
 
         if is_err(result):
-            if isinstance(result.value, DuplicateEmailError):
+            if isinstance(result.err_value, DuplicateEmailError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Participant with this email already exists")
 
-            if isinstance(result.value, DuplicateTeamNameError):
+            if isinstance(result.err_value, DuplicateTeamNameError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Team with this name already exists")
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
-        return AdminParticipantRegisteredResponse(participant=result.value[0], team=result.value[1])
+        return AdminParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1])
