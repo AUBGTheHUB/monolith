@@ -16,7 +16,7 @@ RUN rm -rf /usr/local/go && tar -C $HOME -xzf go.tar.gz
 RUN rm -rf go.tar.gz
 RUN echo "export PATH=$PATH:$HOME/go/bin" >> $HOME/.bashrc
 
-# Install python
+# Install pyenv and its dependices
 RUN apt install -y \
     build-essential \
     zlib1g-dev \
@@ -38,10 +38,11 @@ RUN echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >>
 RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 RUN source ~/.bashrc
 
+# Install python and set the version globally
 RUN pyenv install 3.12.6
 RUN pyenv global 3.12.6
 
-#Install pipx and poetry
+# Install pipx and poetry
 RUN apt install -y pipx
 RUN pipx ensurepath
 RUN pipx install poetry
