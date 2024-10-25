@@ -1,6 +1,5 @@
-from typing import Optional
+from typing import Optional, Any
 
-from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -28,7 +27,7 @@ class ParticipantsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
     ) -> Result:
         raise NotImplementedError()
 
@@ -36,14 +35,17 @@ class ParticipantsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def create(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
     ) -> Ok[Participant] | Err[DuplicateEmailError | Exception]:
         try:
             participant = Participant(
-                _id=ObjectId(), name=input_data.name, email=input_data.email, is_admin=input_data.is_admin
+                name=input_data.name,
+                email=input_data.email,
+                is_admin=input_data.is_admin,
+                team_id=kwargs.get("team_id"),
             )
-            LOG.debug("Inserting participant {}".format(participant.model_dump()))
-            await self._collection.insert_one(document=participant.model_dump(), session=session)
+            LOG.debug("Inserting participant {}".format(participant.dump_as_json()))
+            await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
         except DuplicateKeyError:
             LOG.warning("Participant insertion failed due to duplicate email {}".format(input_data.email))

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Optional
+from typing import Optional, Any
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -15,7 +15,9 @@ class CRUDRepository(ABC):
     """An Interface for CRUD operations over a particular collection in Mongo"""
 
     @abstractmethod
-    async def create(self, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
+    async def create(
+        self, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
+    ) -> Result:
         raise NotImplementedError()
 
     @abstractmethod
@@ -29,7 +31,7 @@ class CRUDRepository(ABC):
 
     @abstractmethod
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
     ) -> Result:
         raise NotImplementedError()
 

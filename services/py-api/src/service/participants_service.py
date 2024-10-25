@@ -26,13 +26,13 @@ class ParticipantService:
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
-        participant = await self._participant_repo.create(input_data, session)
-        if is_err(participant):
-            return participant
-
         team = await self._team_repo.create(input_data, session)
         if is_err(team):
             return team
+
+        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        if is_err(participant):
+            return participant
 
         return Ok((participant.ok_value, team.ok_value))
 

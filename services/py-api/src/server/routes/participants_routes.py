@@ -41,9 +41,10 @@ def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHand
     return ParticipantHandlers(service)
 
 
-@participants_router.post("")
+@participants_router.post(
+    "", responses={201: {"model": AdminParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
+)
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
 ) -> AdminParticipantRegisteredResponse | ErrResponse:
-    # TODO: Add docs
     return await handler.create_participant(response, input_data)
