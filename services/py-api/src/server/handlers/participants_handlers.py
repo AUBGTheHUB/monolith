@@ -4,7 +4,7 @@ from starlette.responses import Response
 
 from src.server.exception import DuplicateEmailError, DuplicateTeamNameError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import AdminParticipantRegisteredResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
 
 
@@ -14,7 +14,12 @@ class ParticipantHandlers:
 
     async def create_participant(
         self, response: Response, input_data: ParticipantRequestBody
-    ) -> AdminParticipantRegisteredResponse | ErrResponse:
+    ) -> ParticipantRegisteredInTeamResponse | ErrResponse:
+        # TODO:
+        # if input_data.is_admin:
+        #     result = await self._service.register_admin_participant(input_data)
+        # else:
+        #     ...
         result = await self._service.register_admin_participant(input_data)
 
         if is_err(result):
@@ -29,4 +34,4 @@ class ParticipantHandlers:
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
-        return AdminParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1])
+        return ParticipantRegisteredInTeamResponse(participant=result.ok_value[0], team=result.ok_value[1])

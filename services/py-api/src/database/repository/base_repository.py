@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -16,8 +16,17 @@ class CRUDRepository(ABC):
 
     @abstractmethod
     async def create(
-        self, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
+        self, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Dict[str, Any]
     ) -> Result:
+        """Create a new document in a particular collection in Mongo.
+
+        Args:
+            input_data: The data to be inserted.
+            session: MongoDB client session. If provided, this operation will be executed within a transaction.
+            **kwargs: Additional keyword arguments for specific implementations.
+                For example, when creating a participant, we might pass the `team_id` of the team the participant
+                should be added to.
+        """
         raise NotImplementedError()
 
     @abstractmethod
@@ -31,7 +40,11 @@ class CRUDRepository(ABC):
 
     @abstractmethod
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
+        self,
+        obj_id: str,
+        input_data: BaseModel,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Result:
         raise NotImplementedError()
 

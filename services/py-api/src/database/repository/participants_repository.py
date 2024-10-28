@@ -42,6 +42,7 @@ class ParticipantsRepository(CRUDRepository):
                 name=input_data.name,
                 email=input_data.email,
                 is_admin=input_data.is_admin,
+                # If the team_id is passed as a kwarg the participant will be inserted in the given team
                 team_id=kwargs.get("team_id"),
             )
             LOG.debug("Inserting participant {}".format(participant.dump_as_json()))

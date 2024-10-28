@@ -1,10 +1,9 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional
 
-from bson import ObjectId
 from pydantic import EmailStr
 
-from src.database.model.base_model import Base
+from src.database.model.base_model import Base, SerializableObjectId
 
 
 @dataclass(kw_only=True)
@@ -13,7 +12,7 @@ class Participant(Base):
     email: EmailStr
     is_admin: bool
     email_verified: bool = field(default=False)
-    team_id: Optional[ObjectId]
+    team_id: Optional[SerializableObjectId]
 
     def dump_as_mongo_db_document(self) -> Dict[str, Any]:
         return {

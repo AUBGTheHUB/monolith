@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -20,7 +20,10 @@ class TeamsRepository(CRUDRepository):
         self._collection = db_manager.get_collection(collection_name)
 
     async def create(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None, **kwargs
+        self,
+        input_data: ParticipantRequestBody,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Ok[Team] | Err[DuplicateTeamNameError | Exception]:
 
         try:
@@ -44,7 +47,11 @@ class TeamsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        obj_id: str,
+        input_data: BaseModel,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Result:
         raise NotImplementedError()
 
