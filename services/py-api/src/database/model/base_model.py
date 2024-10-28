@@ -19,8 +19,8 @@ Swagger page will throw an error because it cannot serialize the standard Mongo 
 @dataclass(kw_only=True)
 class Base(Serializer, ABC):
     _id: SerializableObjectId = field(default_factory=lambda: ObjectId())
-    """This is with underscore as MongoDB expects it like this. We create the ID on demand in order to return the whole
-    object and have type safe attributes when used as a return type of a function
+    """This is with underscore as MongoDB expects it like this. We create the ID on demand in order to use the created
+    object as a return type of a function and have all the info as type safe attributes
     https://www.mongodb.com/docs/languages/python/pymongo-driver/current/write/insert/#the-_id-field"""
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)

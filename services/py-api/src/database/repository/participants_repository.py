@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -35,7 +35,10 @@ class ParticipantsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def create(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
+        self,
+        input_data: ParticipantRequestBody,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Ok[Participant] | Err[DuplicateEmailError | Exception]:
         try:
             participant = Participant(
