@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, field_serializer, ConfigDict
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -15,13 +15,12 @@ class PongResponse(BaseModel):
 
 
 class ParticipantRegisteredInTeamResponse(BaseModel):
-    participant: Participant
-    team: Team
-
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
     # schema for <class 'bson.objectid.ObjectId'>
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    participant: Participant
+    team: Team
 
     @field_serializer("participant")
     def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
