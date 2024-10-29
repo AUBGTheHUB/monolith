@@ -7,7 +7,7 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import AdminParticipantRegisteredResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
 
 participants_router = APIRouter(prefix="/hackathon/participants")
@@ -37,13 +37,14 @@ def _service(
     return ParticipantService(p_repo, t_repo, tx_manager)
 
 
-def _create_handler(service: ParticipantService = Depends(_service)) -> ParticipantHandlers:
+def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHandlers:
     return ParticipantHandlers(service)
 
 
-@participants_router.post("")
+@participants_router.post(
+    "", responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
+)
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_create_handler)
-) -> AdminParticipantRegisteredResponse | ErrResponse:
-    # TODO: Add docs
+    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
+) -> ParticipantRegisteredInTeamResponse | ErrResponse:
     return await handler.create_participant(response, input_data)

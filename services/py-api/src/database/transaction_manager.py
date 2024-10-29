@@ -14,7 +14,26 @@ LOG = get_logger()
 
 class TransactionManager:
     """This class is responsible for executing multiple mongo db queries such as insert_one or update_on in a
-    transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction."""
+    transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction.
+    The terms you will see in the code below:
+
+    `session` - a Mongo ClientSession provides the context in which to execute multiple operations in a specific
+    sequence, isolating them from operations in other sessions and transactions to prevent conflicts and maintain data
+    consistency. In other words the session provides Causal Consistency to the operations in the transaction.
+    https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/#causal-consistency
+
+    `transaction` - Ensures atomicity within this session context, meaning that all operations in the sequence succeed
+    together or fail together. If any operation fails, the entire sequence is rolled back, so changes to the database
+    are not made
+
+    To learn more about Mongo ClientSession visit:
+    https://pymongo.readthedocs.io/en/stable/api/pymongo/client_session.html#pymongo.client_session.ClientSession
+
+    To learn more about Transactions in Mongo visit: https://www.mongodb.com/docs/manual/core/transactions/
+
+    To learn more about Isolation Levels visit:
+    https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/
+    """
 
     def __init__(self, db_manager: DatabaseManager) -> None:
         self._client = db_manager.client
