@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any
 
 
-class Serializer(ABC):
+class SerializableDbModel(ABC):
     @abstractmethod
     def dump_as_json(self) -> Dict[str, Any]:
         """This method should be used when returning an HTTP response"""

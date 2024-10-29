@@ -22,7 +22,9 @@ class CRUDRepository(ABC):
 
         Args:
             input_data: The data to be inserted.
-            session: MongoDB client session. If provided, this operation will be executed within a transaction.
+            session: If provided, this operation will be executed within a session context, where other related
+                operations might also be running as part of a sequence. It is also used to execute the operation in a
+                transaction. For more info check the `TransactionManager` class
             **kwargs: Additional keyword arguments for specific implementations.
                 For example, when creating a participant, we might pass the `team_id` of the team the participant
                 should be added to.

@@ -22,7 +22,7 @@ class ParticipantService:
         self._team_repo = team_repo
         self._tx_manager = tx_manager
 
-    async def _create_participant_team_transaction(
+    async def _create_participant_and_team_in_transaction(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
@@ -39,5 +39,6 @@ class ParticipantService:
     async def register_admin_participant(
         self, input_data: ParticipantRequestBody
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
-        result = await self._tx_manager.with_transaction(self._create_participant_team_transaction, input_data)
+        # TODO: Add Capacity check 2
+        result = await self._tx_manager.with_transaction(self._create_participant_and_team_in_transaction, input_data)
         return result

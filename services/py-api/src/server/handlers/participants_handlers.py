@@ -16,7 +16,8 @@ class ParticipantHandlers:
         self, response: Response, input_data: ParticipantRequestBody
     ) -> ParticipantRegisteredInTeamResponse | ErrResponse:
         # TODO:
-        # if input_data.is_admin:
+        # When the logic for all cases is done
+        # if input_data.is_admin and input_data.team_name:
         #     result = await self._service.register_admin_participant(input_data)
         # else:
         #     ...

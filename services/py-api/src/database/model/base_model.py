@@ -6,7 +6,7 @@ from typing import Annotated
 from bson import ObjectId
 from pydantic.json_schema import WithJsonSchema
 
-from src.database.model.json_serializer import Serializer
+from src.database.model.json_serializer import SerializableDbModel
 
 SerializableObjectId = Annotated[ObjectId, WithJsonSchema({"type": "string", "format": "objectid"})]
 """As the original Mongo ObjectID is not json serializable this is needed to represent the ObjectID as a string in API
@@ -18,7 +18,7 @@ https://docs.pydantic.dev/latest/concepts/json_schema/#withjsonschema-annotation
 # https://stackoverflow.com/questions/51575931/class-inheritance-in-python-3-7-dataclasses ans with 150 up votes
 # https://www.trueblade.com/blogs/news/python-3-10-new-dataclass-features
 @dataclass(kw_only=True)
-class Base(Serializer, ABC):
+class Base(SerializableDbModel, ABC):
     _id: SerializableObjectId = field(default_factory=lambda: ObjectId())
     """This is with underscore as MongoDB expects it like this. We create the ID on demand in order to use the created
     object as a return type of a function and have all the info as type safe attributes
