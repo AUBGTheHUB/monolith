@@ -96,7 +96,7 @@ class TransactionManager:
 
             result = await self._retry_tx(callback, *args, session=session, **kwargs)
             if is_err(result):
-                LOG.exception("Aborting transaction due to err {}".format(result.value))
+                LOG.exception("Aborting transaction due to err {}".format(result.err_value))
                 await session.abort_transaction()
                 return result
 

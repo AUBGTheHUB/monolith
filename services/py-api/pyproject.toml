@@ -15,7 +15,7 @@ structlog = "^24.4.0"
 result = "^0.17.0"
 pymongo = "^4.8.0"
 motor = "^3.5.1"
-pydantic = {extras = ["email"], version = "^2.9.2"}
+pydantic = { extras = ["email"], version = "^2.9.2" }
 
 
 [tool.poetry.group.dev.dependencies]
@@ -31,9 +31,3 @@ start = "src.server.app_entrypoint:start"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
-filterwarnings = [
-    "ignore:coroutine 'AsyncClient.aclose' was never awaited:RuntimeWarning"
-]
