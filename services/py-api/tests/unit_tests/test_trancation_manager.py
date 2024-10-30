@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, patch, MagicMock, Mock
 
 import pytest
 from pymongo.errors import PyMongoError
-from result import Ok, Err, Result
+from result import Ok, Err
 
 from src.database.db_manager import DatabaseManager
 from src.database.transaction_manager import TransactionManager
@@ -117,7 +117,7 @@ async def test_with_transaction_failure(setup_transaction_manager: TransactionMa
     mock_session.end_session = AsyncMock()  # `end_session` is async
 
     # Define a callback function that raises an exception
-    async def mock_callback(session: AsyncMock) -> Result:
+    async def mock_callback(session: AsyncMock) -> Err:
         return Err(ValueError("Simulated failure"))
 
     result = await tx_manager.with_transaction(mock_callback)
