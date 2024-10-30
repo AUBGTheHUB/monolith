@@ -13,20 +13,24 @@ from src.server.exception import DuplicateEmailError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
+@pytest.fixture
+def repo(db_manager_mock: Mock) -> ParticipantsRepository:
+    return ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION)
+
+
 @pytest.mark.asyncio
-async def test_create_participant_success(db_manager_mock: Mock, ten_sec_window: Tuple[datetime, datetime]) -> None:
+async def test_create_participant_success(
+    db_manager_mock: Mock,
+    ten_sec_window: Tuple[datetime, datetime],
+    mock_input_data: ParticipantRequestBody,
+    repo: ParticipantsRepository,
+) -> None:
     start_time, end_time = ten_sec_window
 
-    repo = ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION)
-
-    # Mock participant input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="test@example.com", team_name="Test Team", is_admin=True
-    )
     participant = Participant(
-        name=input_data.name,
-        email=input_data.email,
-        is_admin=input_data.is_admin,
+        name=mock_input_data.name,
+        email=mock_input_data.email,
+        is_admin=mock_input_data.is_admin,
         email_verified=False,  # default value as per the model definition
         team_id=None,
     )
@@ -36,7 +40,7 @@ async def test_create_participant_success(db_manager_mock: Mock, ten_sec_window:
     # database call
     repo._collection.insert_one = AsyncMock()
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
@@ -64,18 +68,13 @@ async def test_create_participant_success(db_manager_mock: Mock, ten_sec_window:
 
 
 @pytest.mark.asyncio
-async def test_create_participant_duplicate_email_error(db_manager_mock: Mock) -> None:
-    repo = ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION)
-
-    # Mock participant input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="duplicate@example.com", team_name="Test Team", is_admin=True
-    )
-
+async def test_create_participant_duplicate_email_error(
+    db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: ParticipantsRepository
+) -> None:
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate email
     repo._collection.insert_one = AsyncMock(side_effect=DuplicateKeyError("Duplicate email error"))
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
@@ -84,22 +83,17 @@ async def test_create_participant_duplicate_email_error(db_manager_mock: Mock) -
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     # Check that the error message is the duplicate email as expected
-    assert str(result.err_value) == "duplicate@example.com"
+    assert str(result.err_value) == "test@example.com"
 
 
 @pytest.mark.asyncio
-async def test_create_participant_general_exception(db_manager_mock: Mock) -> None:
-    repo = ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION)
-
-    # Mock participant input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="error@example.com", team_name="Test Team", is_admin=True
-    )
-
-    # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate email
+async def test_create_participant_general_exception(
+    db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: ParticipantsRepository
+) -> None:
+    # Simulate a general exception raised by insert_one
     repo._collection.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()

@@ -13,24 +13,27 @@ from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.database.model.team_model import Team
 
 
+@pytest.fixture
+def repo(db_manager_mock: Mock) -> TeamsRepository:
+    return TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
+
+
 @pytest.mark.asyncio
-async def test_create_team_success(db_manager_mock: Mock, ten_sec_window: Tuple[datetime, datetime]) -> None:
+async def test_create_team_success(
+    db_manager_mock: Mock,
+    ten_sec_window: Tuple[datetime, datetime],
+    mock_input_data: ParticipantRequestBody,
+    repo: TeamsRepository,
+) -> None:
     start_time, end_time = ten_sec_window
 
-    # Create repository instance
-    repo = TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
-
-    # Mock team input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="test@example.com", team_name="Test Team", is_admin=True
-    )
-    team = Team(name=input_data.team_name)
+    team = Team(name=mock_input_data.team_name)
     team_document = team.dump_as_mongo_db_document()
 
     # Mock insert_one to simulate successful insertion
     repo._collection.insert_one = AsyncMock()
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
@@ -51,23 +54,17 @@ async def test_create_team_success(db_manager_mock: Mock, ten_sec_window: Tuple[
 
     # Assert the result is Ok
     assert isinstance(result, Ok)
-    assert result.ok_value.name == input_data.team_name
+    assert result.ok_value.name == mock_input_data.team_name
 
 
 @pytest.mark.asyncio
-async def test_create_team_duplicate_name_error(db_manager_mock: Mock) -> None:
-    # Create repository instance
-    repo = TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
-
-    # Mock team input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="duplicate@example.com", team_name="Duplicate Team", is_admin=True
-    )
-
+async def test_create_team_duplicate_name_error(
+    db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: TeamsRepository
+) -> None:
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate team name
     repo._collection.insert_one = AsyncMock(side_effect=DuplicateKeyError("Duplicate team name error"))
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
@@ -75,23 +72,17 @@ async def test_create_team_duplicate_name_error(db_manager_mock: Mock) -> None:
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
     # Check that the error message contains the team name
-    assert str(result.err_value) == "Duplicate Team"
+    assert str(result.err_value) == "Test Team"
 
 
 @pytest.mark.asyncio
-async def test_create_team_general_exception(db_manager_mock: Mock) -> None:
-    # Create repository instance
-    repo = TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
-
-    # Mock team input data
-    input_data = ParticipantRequestBody(
-        name="Test User", email="error@example.com", team_name="Error Team", is_admin=True
-    )
-
+async def test_create_team_general_exception(
+    db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: TeamsRepository
+) -> None:
     # Simulate a general exception raised by insert_one
     repo._collection.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
-    result = await repo.create(input_data)
+    result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
