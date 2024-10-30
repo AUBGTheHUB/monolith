@@ -2,29 +2,15 @@ from datetime import datetime, timedelta
 from typing import Tuple
 
 import pytest
-import pytest_asyncio
 from unittest.mock import Mock, MagicMock, AsyncMock
 
-from httpx import AsyncClient, ASGITransport
 from starlette.responses import Response
-from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.app_entrypoint import app
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-
-LOG = get_logger()
-
-
-@pytest_asyncio.fixture
-async def async_client() -> AsyncClient:
-    client = AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
-    yield client
-    LOG.debug("Closing Async Client")
-    await client.aclose()
 
 
 @pytest.fixture
