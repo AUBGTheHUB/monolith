@@ -1,6 +1,6 @@
 import pytest
 import pytest_asyncio
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, AsyncMock
 
 from httpx import AsyncClient, ASGITransport
 from starlette.responses import Response
@@ -22,7 +22,10 @@ async def async_client() -> AsyncClient:
 
 @pytest.fixture
 def db_manager_mock() -> Mock:
-    return Mock(spec=DatabaseManager)
+    db_manager = Mock(spec=DatabaseManager)
+    # We use AsyncMock, as the original AsyncIOMotorClient class has async methods
+    db_manager.client = AsyncMock()
+    return db_manager
 
 
 @pytest.fixture
