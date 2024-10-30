@@ -97,7 +97,7 @@ async def test_retry_logic():
     mock_operation = AsyncMock(side_effect=Exception("Failure"))
 
     # Patch `asyncio.sleep` in `my_module` to avoid real delays
-    with patch("my_module.asyncio.sleep", new_callable=AsyncMock):
+    with patch("my_module.asyncio.sleep", new=AsyncMock):
         with pytest.raises(Exception, match="Operation failed after retries"):
             await retry_logic(mock_operation, retries=3)
 
@@ -105,9 +105,9 @@ async def test_retry_logic():
     assert mock_operation.call_count == 3
 
 ```
-#### Explanation of `patch` and `new_callable`
+#### Explanation of `patch` and `new`
 
-- **`new_callable=AsyncMock`**: `patch` creates a mock of the specified type (`AsyncMock` in this case) for the patched function. This ensures `asyncio.sleep` behaves as an async function without introducing real delays.
+- **`new=AsyncMock`**: Directly assigns a specific mock object as the replacement. With `new`, you are giving `patch` an actual instance to use in place of the target.
 - **Scope of `with patch`**: The `patch` replacement only applies within the `with` block. Outside of it, `asyncio.sleep` behaves normally.
 
 In short, use `with patch` for cases where the functions or classes you want to mock are part of an external module or library, and you don’t have direct access to them as injected dependencies. This technique is particularly helpful when testing code that’s not designed with Dependency Injection in mind.

@@ -36,7 +36,7 @@ async def test_retry_tx_transient_error_with_retry() -> None:
     mock_db_operation = AsyncMock(side_effect=[TransientTransactionError(), Ok("Success")])
 
     # Patch sleep for faster testing
-    with patch("src.database.transaction_manager.sleep", new_callable=AsyncMock()):
+    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
         result = await TransactionManager._retry_tx(mock_db_operation)
 
     # Called twice due to retry
@@ -63,7 +63,7 @@ async def test_retry_tx_exhaust_retries() -> None:
     mock_db_operation = AsyncMock(side_effect=TransientTransactionError())
 
     # Patch sleep for faster tests
-    with patch("src.database.transaction_manager.sleep", new_callable=AsyncMock()):
+    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
         with pytest.raises(PyMongoError) as exc:
             await TransactionManager._retry_tx(mock_db_operation)
 
