@@ -22,6 +22,8 @@ class Participant(Base):
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
             "team_id": self.team_id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
         }
 
     def dump_as_json(self) -> Dict[str, Any]:
@@ -32,4 +34,6 @@ class Participant(Base):
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
             "team_id": str(self.team_id),
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
