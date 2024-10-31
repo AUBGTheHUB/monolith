@@ -49,51 +49,6 @@ Here is the guide:
 
 * [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
-### [IMPORTANT!] [WSL USERS] To ensure that WSL shares the SSH keys with the devContainer perform:
-
-#### 1. Create a file named ssh-agent in your .ssh directory
-```bash
-touch ~/.ssh/ssh-agent
-```
-
-#### 2. Check the name of your shell config file name. Expect `.profile` or `.bash_profile`
-
-```bash
-cd ~ && ls -a
-```
-
->In the list that appears see if your system has a .profile or a .bash_profile
-
-#### 3. Add the following block of code in the end of your shell config file.
-
-```bash
-# Auto-start ssh-agent
-if [ -z "$SSH_AUTH_SOCK" ]; then
-  # Check for a currently running instance of the agent
-  RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
-  if [ "$RUNNING_AGENT" = "0" ]; then
-    # Launch a new instance of the agent
-    ssh-agent -s &> ~/.ssh/ssh-agent
-  fi
-  eval `cat ~/.ssh/ssh-agent` > /dev/null
-  ssh-add ~/.ssh/id_ed25519 2> /dev/null
-fi
-```
-#### Open your shell config file and add the above code in the end:
-
-```bash
-nano ~/.profile
-```
-#### OR
-```bash
-nano ~/.bash_profile
-```
-Depending on how the file is named in your system
-
-#### 4. After that `Save & Exit`
-
-#### 5. Then reopen WSL
-
 ### 2. Clone the repository to your machine
 ```bash
 git clone git@github.com:AUBGTheHUB/monolith.git
@@ -102,6 +57,16 @@ git clone git@github.com:AUBGTheHUB/monolith.git
 ```bash
 cd monolith
 ```
+---
+### Extra Step: For WSL users
+In order to make sure that your WSL SSH keys are forwarded to the DEV Container you should run the following script:
+
+```bash
+bash wsl_ssh_forwarding.sh
+```
+[Learn More](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials) about how this is done
+
+---
 ### 4. Open your project in Visual Studio code. Run:
 ```bash
 code .
