@@ -27,44 +27,20 @@ async def test_create_participant_success(
 ) -> None:
     start_time, end_time = ten_sec_window
 
-    participant = Participant(
-        name=mock_input_data.name,
-        email=mock_input_data.email,
-        is_admin=mock_input_data.is_admin,
-        email_verified=False,  # default value as per the model definition
-        team_id=None,
-    )
-    participant_document = participant.dump_as_mongo_db_document()
-
-    # By using AsyncMock, we’re simulating the behavior of insert_one as if it succeeded without making an actual
-    # database call
-    repo._collection.insert_one = AsyncMock()
-
     result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
 
-    # We cannot use assert_awaited_once_with(document=participant_document, session=None) because it would require
-    # an exact match between the passed document in the test and the actual document created dynamically within
-    # `repo.create(input_data)`. Since fields like `_id`, `created_at`, and `updated_at` are generated one demand each
-    # time `Participant` is  instantiated, the values in the participant_document above will differ from the once
-    # in the actual document created dynamically within `repo.create(input_data), making an exact match impossible.
-    # That's why we are comparing only certain fields from the passed document.
-    actual_call_args = repo._collection.insert_one.call_args[1]["document"]
-
-    # Validate each field except _id and timestamps directly
-    assert actual_call_args["name"] == participant_document["name"]
-    assert actual_call_args["email"] == participant_document["email"]
-    assert actual_call_args["is_admin"] == participant_document["is_admin"]
-    assert actual_call_args["email_verified"] == participant_document["email_verified"]
-    assert actual_call_args["team_id"] == participant_document["team_id"]
-
-    # Check that created_at and updated_at fall within the 10-second window
-    assert start_time <= actual_call_args["created_at"] <= end_time, "created_at is not within the 10-second window"
-    assert start_time <= actual_call_args["updated_at"] <= end_time, "updated_at is not within the 10-second window"
-
     assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+    assert result.ok_value.name == mock_input_data.name
+    assert result.ok_value.email == mock_input_data.email
+    assert result.ok_value.is_admin == mock_input_data.is_admin
+    assert result.ok_value.email_verified is False
+    assert result.ok_value.team_id is None
+    assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
+    assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
 
 
 @pytest.mark.asyncio
@@ -79,7 +55,6 @@ async def test_create_participant_duplicate_email_error(
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
 
-    # Assert the result is an Err containing DuplicateEmailError
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     # Check that the error message is the duplicate email as expected
@@ -98,7 +73,6 @@ async def test_create_participant_general_exception(
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
 
-    # Assert the result is an Err containing DuplicateEmailError
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     # Check that the error message is the one in the Exception

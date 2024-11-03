@@ -27,34 +27,17 @@ async def test_create_team_success(
 ) -> None:
     start_time, end_time = ten_sec_window
 
-    team = Team(name=mock_input_data.team_name)
-    team_document = team.dump_as_mongo_db_document()
-
-    # Mock insert_one to simulate successful insertion
-    repo._collection.insert_one = AsyncMock()
-
     result = await repo.create(mock_input_data)
 
     # Check that insert_one was awaited once
     repo._collection.insert_one.assert_awaited_once()
 
-    # We cannot use assert_awaited_once_with(document=team_document, session=None) because it would require
-    # an exact match between the passed document in the test and the actual document created dynamically within
-    # `repo.create(input_data)`. Since fields like `_id`, `created_at`, and `updated_at` are generated one demand each
-    # time `Team` is  instantiated, the values in the team_document above will differ from the once
-    # in the actual document created dynamically within `repo.create(input_data), making an exact match impossible.
-    # That's why we are comparing only certain fields from the passed document.
-    actual_call_args = repo._collection.insert_one.call_args[1]["document"]
-
-    assert actual_call_args["name"] == team_document["name"]
-
-    # Check that created_at and updated_at fall within the 10-second window
-    assert start_time <= actual_call_args["created_at"] <= end_time, "created_at is not within the 10-second window"
-    assert start_time <= actual_call_args["updated_at"] <= end_time, "updated_at is not within the 10-second window"
-
-    # Assert the result is Ok
     assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Team)
     assert result.ok_value.name == mock_input_data.team_name
+    # Check that created_at and updated_at fall within the 10-second window
+    assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
+    assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
 
 
 @pytest.mark.asyncio
