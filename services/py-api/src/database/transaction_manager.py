@@ -3,7 +3,7 @@
 from asyncio import sleep
 from typing import Callable, Any, Awaitable
 
-from pymongo.client_session import ClientSession
+from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo.errors import PyMongoError
 from result import Err, is_err, Result
 from structlog.stdlib import get_logger
@@ -46,6 +46,7 @@ class TransactionManager:
         to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
         network issue.
         Inspired by:
+        https://www.mongodb.com/docs/manual/core/transactions-in-applications/#example-1
         https://motor.readthedocs.io/en/stable/api-tornado/motor_client_session.html#motor.motor_tornado.MotorClientSession.with_transaction
         https://stackoverflow.com/questions/52153538/what-is-a-transienttransactionerror-in-mongoose-or-mongodb
 
@@ -72,9 +73,11 @@ class TransactionManager:
         raise PyMongoError("Transaction failed after maximum retries")
 
     @staticmethod
-    async def _retry_commit(session: ClientSession, *args: Any, **kwargs: Any) -> None:
+    async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
         """
         Uses the same logic for the retries as the _retry_tx (exponential backoff)
+        Inspired by:
+        https://www.mongodb.com/docs/manual/core/transactions-in-applications/#example-1
         """
         max_retries = 3
         delay = 1  # initial delay in seconds
@@ -82,7 +85,8 @@ class TransactionManager:
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
             try:
-                # The commit_transaction method does not return anything
+                # The commit_transaction method does not return anything, and we use the return to exit the loop
+                # if no Exception is encountered
                 return await session.commit_transaction()
             except PyMongoError as exc:
                 if exc.has_error_label("UnknownTransactionCommitResult"):
@@ -102,7 +106,7 @@ class TransactionManager:
         with_transaction method to have the return type of the passed callback function. The method is responsible for
         starting a transaction and commiting it. In case of an Exception the transaction is automatically aborted.
 
-        Note: The default with_transaction method from the "motor" library will stop retrying the transaction after 120 seconds
+        Note: The default with_transaction method from the `motor` library will stop retrying the transaction after 120 seconds
         have elapsed. However, since we want a shorter duration until the transaction is aborted, we have implemented a _retry_tx
         method and _retry_commit method that will abort the transaction when the maximum number of retries is reached in any of
         the retry methods.
@@ -127,11 +131,11 @@ class TransactionManager:
 
             result = await self._retry_tx(callback, *args, session=session, **kwargs)
             if is_err(result):
-                LOG.exception("Aborting transaction due to err {}".format(result.err_value))
+                LOG.warning("Aborting transaction due to err {}".format(result.err_value))
                 await session.abort_transaction()
                 return result
 
-            await self._retry_commit(session=session)
+            await self._retry_commit(session)
             LOG.debug("Transaction commited")
 
             return result
@@ -140,6 +144,7 @@ class TransactionManager:
             LOG.exception("Aborting transaction due to err {}".format(e))
             await session.abort_transaction()
             return Err(e)
+
         finally:
             LOG.debug("Closing DB session")
             # Finish this session. If a transaction has started, abort it.
