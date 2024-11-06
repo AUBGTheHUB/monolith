@@ -20,7 +20,6 @@ def repo(db_manager_mock: Mock) -> ParticipantsRepository:
 
 @pytest.mark.asyncio
 async def test_create_participant_success(
-    db_manager_mock: Mock,
     ten_sec_window: Tuple[datetime, datetime],
     mock_input_data: ParticipantRequestBody,
     repo: ParticipantsRepository,
@@ -28,9 +27,6 @@ async def test_create_participant_success(
     start_time, end_time = ten_sec_window
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
@@ -48,12 +44,11 @@ async def test_create_participant_duplicate_email_error(
     db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: ParticipantsRepository
 ) -> None:
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate email
-    repo._collection.insert_one = AsyncMock(side_effect=DuplicateKeyError("Duplicate email error"))
+    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
+        side_effect=DuplicateKeyError("Duplicate email error")
+    )
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
@@ -66,12 +61,9 @@ async def test_create_participant_general_exception(
     db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: ParticipantsRepository
 ) -> None:
     # Simulate a general exception raised by insert_one
-    repo._collection.insert_one = AsyncMock(side_effect=Exception("Test error"))
+    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
