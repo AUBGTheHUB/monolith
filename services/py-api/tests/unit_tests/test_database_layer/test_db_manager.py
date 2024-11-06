@@ -5,6 +5,16 @@ from pymongo.errors import ConnectionFailure
 from result import Err
 
 from src.database.db_manager import DatabaseManager
+from src.utils import SingletonMeta
+
+
+# https://docs.pytest.org/en/6.2.x/fixture.html#autouse-fixtures-fixtures-you-don-t-have-to-request
+@pytest.fixture(autouse=True)
+def reset_singleton() -> None:
+    # Clear singleton instances before each test as we get inconsistent test results
+    # Accessing private members of class like this is highly discouraged and is only possible as this is Python.
+    # We do it only because this is an exceptional case. Using Singletons in unit tests could be tricky :(
+    SingletonMeta._instances.clear()
 
 
 @pytest.fixture
@@ -55,4 +65,4 @@ async def test_close_all_connections_success(db_manager: DatabaseManager) -> Non
 @pytest.mark.asyncio
 async def test_close_all_connections_err(db_manager_none_client: DatabaseManager) -> None:
     result = db_manager_none_client.close_all_connections()
-    assert isinstance(result, Err)
+    isinstance(result, Err)
