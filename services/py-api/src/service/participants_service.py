@@ -36,11 +36,11 @@ class ParticipantService:
 
         return Ok((participant.ok_value, team.ok_value))
 
-    async def capacity_check_one(self, db_manager: DatabaseManager, collection_name: str):
-        
-        _collection =   db_manager.get_collection(collection_name)
-        N = _collection.count_documents({"team_id":  ""})  # Number of already verified random participants
-        R = _collection.count_documents({})
+  #  async def capacity_check_one(self, db_manager: DatabaseManager, collection_name: str):
+       
+    #    _collection =   db_manager.get_collection(collection_name)
+   #     N = _collection.count_documents({"team_id":  ""})  # Number of already verified random participants
+    #    R = _collection.count_documents({})
 
 
 
