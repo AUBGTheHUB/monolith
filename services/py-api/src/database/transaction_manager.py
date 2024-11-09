@@ -141,7 +141,7 @@ class TransactionManager:
             return result
 
         except Exception as e:
-            LOG.exception("Aborting transaction due to err {}".format(e))
+            LOG.warning("Aborting transaction due to err {}".format(e))
             await session.abort_transaction()
             return Err(e)
 

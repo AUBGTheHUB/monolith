@@ -7,7 +7,6 @@ from structlog.contextvars import merge_contextvars
 from structlog.dev import ConsoleRenderer
 from structlog.processors import (
     TimeStamper,
-    ExceptionPrettyPrinter,
     StackInfoRenderer,
     CallsiteParameterAdder,
     CallsiteParameter,
@@ -83,9 +82,8 @@ def configure_app_logger(env: str) -> None:
             add_log_level,
             merge_contextvars,
             TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
-            ExceptionPrettyPrinter(),
-            StackInfoRenderer(),
             format_exc_info,
+            StackInfoRenderer(),
             PositionalArgumentsFormatter(),
             CallsiteParameterAdder(
                 {
