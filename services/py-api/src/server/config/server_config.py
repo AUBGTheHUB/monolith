@@ -11,7 +11,7 @@ from src.utils import SingletonMeta
 
 # This should be called first because the env variables should be loaded into the process before we start using them
 # across our codebase
-load_dotenv()
+load_dotenv(override=True)
 
 # We also configure the logger here. This should be done before calling LOG = get_logger(), which we use in almost
 # every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
