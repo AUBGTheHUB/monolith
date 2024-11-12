@@ -28,12 +28,12 @@ class TeamsRepository(CRUDRepository):
 
         try:
             team = Team(name=input_data.team_name)
-            LOG.debug("Inserting team {}".format(team.dump_as_json()))
+            LOG.debug("Inserting team...", team=team.dump_as_json())
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
         except DuplicateKeyError:
-            LOG.warning("Team insertion failed due to duplicate team name {}".format(input_data.team_name))
+            LOG.warning("Team insertion failed due to duplicate team name", team_name=input_data.team_name)
             return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:

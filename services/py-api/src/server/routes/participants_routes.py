@@ -42,7 +42,7 @@ def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHand
 
 
 @participants_router.post(
-    "", responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
+    "", status_code=201, responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)

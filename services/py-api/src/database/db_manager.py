@@ -1,5 +1,5 @@
-import os
 from math import ceil
+from os import environ
 from typing import Annotated
 
 from fastapi import Depends
@@ -33,12 +33,13 @@ class DatabaseManager(metaclass=SingletonMeta):
         # https://medium.com/@dhanushkasampath.mtr/what-are-the-default-values-for-hikari-connection-pool-if-we-do-not-override-in-application-properti-11932cdbe321
         # https://www.mongodb.com/docs/languages/python/pymongo-driver/current/faq/#how-does-connection-pooling-work-in-pymongo-
         self._client = AsyncIOMotorClient(
-            host=os.environ["DATABASE_URL"], minPoolSize=ceil(0.1 * 25), maxConnecting=25, maxIdleTimeMS=5 * 60 * 1000
+            host=environ["DATABASE_URL"], minPoolSize=ceil(0.1 * 25), maxConnecting=25, maxIdleTimeMS=5 * 60 * 1000
         )
 
     def close_all_connections(self) -> Err[str]:
         """Closes all connections in the pool managed by Mongo"""
-        if not self._client:
+        if self._client is None:
+            LOG.error("The database client is not initialized!")
             return Err("The database client is not initialized!")
 
         LOG.debug("Closing all database connections")
@@ -48,12 +49,13 @@ class DatabaseManager(metaclass=SingletonMeta):
         try:
             LOG.debug("Pinging MongoDB...")
             await self._client.admin.command("ping")
-        except ConnectionFailure:
+            LOG.debug("Pong")
+        except ConnectionFailure as cf:
+            LOG.exception("Pinging db failed due to err {}".format(cf))
             return Err("Database is unavailable!")
-        except (OperationFailure, ConfigurationError):
+        except (OperationFailure, ConfigurationError) as err:
+            LOG.exception("Pinging db failed due to err {}".format(err))
             return Err("Database authentication failed!")
-
-        LOG.debug("Pong")
 
     @property
     def client(self) -> AsyncIOMotorClient:
@@ -70,18 +72,20 @@ def ping_db() -> Err[str]:
     DatabaseManager as it uses the synchronous MongoClient. We need this method because if we used the async_ping_db we
     had to await it. The await keyword is used only is async ctx and the start() method should not and cannot be async,
     as we are using it as a poetry script."""
-    mongo_client = MongoClient(host=os.environ["DATABASE_URL"])
+    mongo_client = MongoClient(host=environ["DATABASE_URL"])
 
     try:
         LOG.debug("Pinging MongoDB...")
         mongo_client.admin.command("ping")
-    except ConnectionFailure:
+        LOG.debug("Pong")
+    except ConnectionFailure as cf:
+        LOG.exception("Pinging db failed due to err {}".format(cf))
         return Err("Database is unavailable!")
-    except (OperationFailure, ConfigurationError):
+    except (OperationFailure, ConfigurationError) as err:
+        LOG.exception("Pinging db failed due to err {}".format(err))
         return Err("Database authentication failed!")
-
-    LOG.debug("Pong")
-    mongo_client.close()
+    finally:
+        mongo_client.close()
 
 
 def get_db_manager() -> DatabaseManager:
