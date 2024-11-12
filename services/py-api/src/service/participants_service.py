@@ -35,18 +35,25 @@ class ParticipantService:
             return participant
 
         return Ok((participant.ok_value, team.ok_value))
-
-  #  async def capacity_check_one(self, db_manager: DatabaseManager, collection_name: str):
-       
-    #    _collection =   db_manager.get_collection(collection_name)
-   #     N = _collection.count_documents({"team_id":  ""})  # Number of already verified random participants
-    #    R = _collection.count_documents({})
-
-
+    
+    async def _create_random_participant_in_transaction(
+            self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Ok[Participant] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
+        participant = await self._participant_repo.create(input_data, session, team_id=None)
+        if is_err(participant):
+            return participant
+        
+        return Ok(participant.ok_value)
 
     async def register_admin_participant(
         self, input_data: ParticipantRequestBody
-    ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError  | DuplicateTeamNameError | Exception]:
+    ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
         # TODO: Add Capacity check 2
         result = await self._tx_manager.with_transaction(self._create_participant_and_team_in_transaction, input_data)
         return result
+
+    async def register_random_participant(self, input_data: ParticipantRequestBody
+    ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
+        # TODO: Add capacity check 1
+        result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
+        return result; 

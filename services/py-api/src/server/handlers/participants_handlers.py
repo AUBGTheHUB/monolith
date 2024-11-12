@@ -21,7 +21,12 @@ class ParticipantHandlers:
         #     result = await self._service.register_admin_participant(input_data)
         # else:
         #     ...
-        result = await self._service.register_admin_participant(input_data)
+
+
+        if input_data.is_admin and input_data.team_name:
+            result = await self._service.register_admin_participant(input_data)
+        else:   
+            result = await self._service.register_random_participant(input_data)
 
         if is_err(result):
             if isinstance(result.err_value, DuplicateEmailError):
