@@ -55,5 +55,11 @@ class ParticipantService:
     async def register_random_participant(self, input_data: ParticipantRequestBody
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
         # TODO: Add capacity check 1
+        
+        #if capacity_check_one: 
+        #   result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
+        #else: 
+        #   json response 409
+        
         result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
         return result; 

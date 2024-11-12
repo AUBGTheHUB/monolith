@@ -29,3 +29,7 @@ class ParticipantRegisteredInTeamResponse(BaseModel):
     @field_serializer("team")
     def serialize_team(self, team: Team) -> Dict[str, Any]:
         return team.dump_as_json()
+
+
+class NumberOfRandomParticipantsResponse(BaseModel):
+    number: int
