@@ -57,3 +57,9 @@ class TeamsRepository(CRUDRepository):
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
         raise NotImplementedError()
+    
+    async def get_verified_registered_teams_count(self) -> Ok[int]:
+        """Returns the count of verified teams."""
+        query = {"verified": True}
+        count = await self._collection.count_documents(query)
+        return Ok(count)
