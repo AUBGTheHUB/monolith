@@ -39,7 +39,7 @@ class ParticipantsRepository(CRUDRepository):
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
-    ) -> Ok[Participant] | Err[DuplicateEmailError | Exception]:
+    ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             participant = Participant(
                 name=input_data.name,
@@ -58,8 +58,8 @@ class ParticipantsRepository(CRUDRepository):
             LOG.exception("Participant insertion failed due to err {}".format(e))
             return Err(e)
     
-    async def get_verified_random_participants_count(self) -> Ok[int]:
+    async def get_verified_random_participants_count(self) -> int:
         """Returns the count of verified participants who are not assigned to any team."""
         query = {"verified": True, "team_id": None}
         count = await self._collection.count_documents(query)
-        return Ok(count)
+        return count

@@ -2,7 +2,7 @@ from result import is_err
 from starlette import status
 from starlette.responses import Response
 
-from src.server.exception import DuplicateEmailError, DuplicateTeamNameError
+from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
@@ -31,7 +31,10 @@ class ParticipantHandlers:
             if isinstance(result.err_value, DuplicateTeamNameError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Team with this name already exists")
-
+            if isinstance(result.err_value, HackathonCapacityExceededError):
+                response.status_code = status.HTTP_409_CONFLICT
+                return ErrResponse(error="Max hackathon capacity has been reached")
+            
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
