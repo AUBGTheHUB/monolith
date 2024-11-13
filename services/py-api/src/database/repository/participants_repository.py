@@ -1,3 +1,4 @@
+from math import ceil
 from typing import Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -58,20 +59,9 @@ class ParticipantsRepository(CRUDRepository):
             LOG.exception("Participant insertion failed due to err {}".format(e))
             return Err(e)
 
-
-    async def capacity_check_one(
-            self
-    ):
-        numberOfRandomParticipants = self._collection.find({"is_admin" : "false"}).count()
-        numberOfRegisteredTeams = self._collection.find({"is_verified": "true"}).count()
+    async def get_number_random_participants(self):
+        return self._collection.find({"is_admin" : "false"}).count()
         
-        totalNumberOfRandomParticipants = 50 # change later 
-        totalNumberOfVerifiedTeams = 50 #change later
-        if numberOfRandomParticipants >= totalNumberOfRandomParticipants and numberOfRegisteredTeams >= totalNumberOfVerifiedTeams:
-            #send to participant handler
-            LOG.exception("Too many participants")
-        else:
-            return True
 
         
     

@@ -1,3 +1,4 @@
+from math import ceil
 from typing import Tuple, Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -52,15 +53,31 @@ class ParticipantService:
         # TODO: Add Capacity check 2
         result = await self._tx_manager.with_transaction(self._create_participant_and_team_in_transaction, input_data)
         return result
+    
+    async def capacity_check_one(self):
+        random_participants = ParticipantsRepository.get_number_random_participants()
+        registered_teams = TeamsRepository.get_number_registered_teams()
+        
+        hackathon_teams_cap = 20 #change later
+        participants_per_team = 5 #change later
 
-    async def register_random_participant(self, input_data: ParticipantRequestBody
+        anticipated_total_teams = registered_teams + ceil((random_participants + 1) / participants_per_team)
+
+        if anticipated_total_teams <= hackathon_teams_cap:
+            return True
+        else:
+            #send to participant handler
+            return False
+
+    #revise
+    async def insert_random_participant(self, input_data: ParticipantRequestBody
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
         # TODO: Add capacity check 1
         
-        if ParticipantsRepository.capacity_check_one(): 
+        if ParticipantsRepository.capacity_check_one():
            result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
            return result; 
-        else: 
+        else:
            ParticipantHandlers.capacity_reached()
         
 
