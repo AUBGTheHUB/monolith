@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from dotenv import load_dotenv
 
-from resend import Resend
+import resend
 from mail_service import MailService
 from service.mail_service.utils import load_email_participant_html_template, load_email_verify_participant_html_template
 
@@ -15,7 +15,8 @@ class ResendMailService(MailService):
         api_key = os.getenv("RESEND_API_KEY")
         if not api_key:
             raise ValueError("RESEND_API_KEY environment variable is not set")
-        self.client = Resend(api_key=api_key)
+        resend.api_key = api_key
+        self.client = resend
 
     async def send_email(
         self, receiver: str, subject: str, body_text: Optional[str] = None, body_html: Optional[str] = None
@@ -28,19 +29,21 @@ class ResendMailService(MailService):
         if not body_text and not body_html:
             raise ValueError("At least one of body_text or body_html must be provided")
 
-        message = {
-            "to": receiver,
+        params: resend.Emails.SendParams = {
+            "from": f"THE HUB <{SENDER_EMAIL}>",
+            "to": [receiver],
             "subject": subject,
-            "from": SENDER_EMAIL,
         }
 
         if body_html:
-            message["html"] = body_html
+            params["html"] = body_html
         elif body_text:
-            message["text"] = body_text
+            params["text"] = body_text
 
         try:
-            await self.client.send(message)
+            email = self.client.Emails.send(params)
+            # TODO: I need to actually log here
+            print("Email sent successfully: ", email)
         except Exception as e:
             raise RuntimeError(f"Failed to send email: {str(e)}") from e
 

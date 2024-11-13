@@ -16,6 +16,7 @@ result = "^0.17.0"
 pymongo = "^4.8.0"
 motor = "^3.5.1"
 pydantic = {extras = ["email"], version = "^2.9.2"}
+resend = "^2.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
