@@ -66,7 +66,7 @@ class DatabaseManager(metaclass=SingletonMeta):
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
         return self._client[self._DB_NAME][collection_name]
 
-
+   
 def ping_db() -> Err[str]:
     """This method is used only on application startup. It is different from the async_ping_db defined in the
     DatabaseManager as it uses the synchronous MongoClient. We need this method because if we used the async_ping_db we

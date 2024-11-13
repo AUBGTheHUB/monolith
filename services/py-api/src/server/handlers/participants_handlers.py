@@ -41,3 +41,8 @@ class ParticipantHandlers:
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
         return ParticipantRegisteredInTeamResponse(participant=result.ok_value[0], team=result.ok_value[1])
+
+
+    async def capacity_reached(self, response: Response):
+        response.status_code = status.HTTP_409_CONFLICT
+        return ErrResponse(error="The hackathon capacity has been reached")

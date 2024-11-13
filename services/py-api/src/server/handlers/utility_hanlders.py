@@ -21,7 +21,3 @@ class UtilityHandlers:
             return ErrResponse(error="Database not available!")
 
         return PongResponse(message="pong")
-
-    async def random_users_services(self, response:Response) -> NumberOfRandomParticipantsResponse | ErrResponse:
-        #TODO : query db for users with no team name
-        return NumberOfRandomParticipantsResponse(number=0)
