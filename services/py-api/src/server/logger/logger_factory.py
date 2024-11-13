@@ -1,4 +1,6 @@
-from logging import INFO, FileHandler
+from logging import INFO
+from logging.handlers import RotatingFileHandler
+from os import path
 from pathlib import Path
 from typing import Dict, Any
 
@@ -35,60 +37,52 @@ class _CustomConsoleRenderer(ConsoleRenderer):
         )
         return str(super().__call__(logger, name, event_dict))
 
-import os
-from logging import FileHandler
 
-class CustomRotatingFileHandler(FileHandler):
-    def __init__(self, filename, max_bytes, backup_count=1, encoding=None, delay=False):
-        super().__init__(filename, mode='a', encoding=encoding, delay=delay)
-        self.max_bytes = max_bytes
-        self.backup_count = backup_count
+class _CustomRotatingFileHandler(RotatingFileHandler):
+    """
+    By default the Rotating file handler, closes the current logfile (stream), renames the file by adding .1, .2, .3,
+    ...etc and then creates a new server.log to start logging there (opens a new stream). However, with this logic we
+    could not syncronize both structlog and uvicorn to log at the new server.log file, since structlog had the stream
+    opened to the old file which was renamed to i.e. server.log.1 by the handler used by uvicorn. To go around it, we
+    are changing how the rollover of files is happening. Here we copy the contents of the server.log once it reaches
+    the limit. We create a new file with the extension .1, .2, .3, ...etc. We paste the contents of the server.log to
+    the new file i.e. server.log.1 and then delete whatever server.log had. This way structlog and uvicorn keep
+    writing to the same file (the original server.log) using their originally opened streams.
 
-    def shouldRollover(self, record):
-        """
-        Determine if rollover should occur by checking the current file size.
-        """
-        if self.stream is None:  # Delay was set to True, open the stream now.
-            self.stream = self._open()
-        if self.max_bytes > 0:  # Check file size if max_bytes is set.
-            self.stream.seek(0, os.SEEK_END)  # Move to end of file.
-            if self.stream.tell() >= self.max_bytes:
-                return True
-        return False
+    To acheive this we override the doRollover() method of the logging.RotatingFileHandler.
 
-    def get_new_rollover_filename(self):
+    Inspiration for the new implementation was gotten from an amazing tool called 'logrotate' that performs rotation of
+    logs in this manner.
+
+    Thank you 'logrotate'!
+    """
+
+    def _get_new_rollover_filename(self) -> str:
         """
         Generate the next available rollover file name in the sequence `.1`, `.2`, `.3`, etc.
         """
-        for i in range(1, self.backup_count + 1):
+        for i in range(1, self.backupCount + 1):
             rollover_filename = f"{self.baseFilename}.{i}"
-            if not os.path.exists(rollover_filename):
+            if not path.exists(rollover_filename):
                 return rollover_filename
+
         # If all filenames are in use, overwrite the oldest file by cycling back to `.1`
         return f"{self.baseFilename}.1"
 
-    def doRollover(self):
+    def doRollover(self) -> None:
         """
         Perform a rollover by copying the contents to a new file and truncating the original file in place.
         """
         # Get the next available rollover filename
-        rollover_filename = self.get_new_rollover_filename()
+        rollover_filename = self._get_new_rollover_filename()
 
         # Copy contents to the new rollover file
-        with open(self.baseFilename, 'r') as original_file, open(rollover_filename, 'w') as rollover_file:
+        with open(self.baseFilename, "r") as original_file, open(rollover_filename, "w") as rollover_file:
             rollover_file.write(original_file.read())
 
         # Truncate the original file in place without reopening
-        with open(self.baseFilename, 'w') as original_file:
+        with open(self.baseFilename, "w") as original_file:
             original_file.truncate()
-
-    def emit(self, record):
-        """
-        Emit a record, performing a rollover if needed.
-        """
-        if self.shouldRollover(record):
-            self.doRollover()
-        super().emit(record)
 
 
 def get_uvicorn_logger(env: str) -> Dict[str, Any]:
@@ -102,12 +96,12 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
         "handlers": {
             "logfile": {
-                "class": "src.server.logger.logger_factory.CustomRotatingFileHandler",
+                "class": "src.server.logger.logger_factory._CustomRotatingFileHandler",
                 "level": "INFO",
                 "filename": "shared/server.log",
                 "formatter": "logformatter",
-                "max_bytes": 10000,  # 10 MB limit
-                "backup_count": 2,  # 2 backup files
+                "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
+                "backupCount": 2,  # 2 backup files
             },
         },
         "root": {
@@ -155,8 +149,6 @@ def configure_app_logger(env: str) -> None:
         logger_factory=(
             # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
             # For LOCAL and TEST env we print the logs directly to the stdout
-            # FIXME: This could create an issue as the uvicorn logger will eventually create a server.log.1 file but
-            #  these logs will continue to be written to the old server.log file
             WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
             if env in ("DEV", "PROD")
             else PrintLoggerFactory()
