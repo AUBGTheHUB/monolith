@@ -1,6 +1,6 @@
 from logging import INFO
 from logging.handlers import RotatingFileHandler
-from os import path
+from os import path, rename
 from pathlib import Path
 from typing import Dict, Any
 
@@ -67,7 +67,15 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
                 return rollover_filename
 
         # If all filenames are in use, overwrite the oldest file by cycling back to `.1`
-        return f"{self.baseFilename}.1"
+        # This function renames the files so that the oldest one is .1 and the newest
+        # is the .{backupCount}.
+        for i in range(1, self.backupCount + 1):
+            if i == 1:
+                rename(f"{self.baseFilename}.{1}", f"{self.baseFilename}.{self.backupCount}")
+            else:
+                rename(f"{self.baseFilename}.{i}", f"{self.baseFilename}.{i-1}")
+
+        return f"{self.baseFilename}.{self.backupCount}"
 
     def doRollover(self) -> None:
         """
