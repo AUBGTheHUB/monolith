@@ -1,4 +1,4 @@
-from logging import INFO
+from logging import INFO, FileHandler
 from pathlib import Path
 from typing import Dict, Any
 
@@ -35,6 +35,61 @@ class _CustomConsoleRenderer(ConsoleRenderer):
         )
         return str(super().__call__(logger, name, event_dict))
 
+import os
+from logging import FileHandler
+
+class CustomRotatingFileHandler(FileHandler):
+    def __init__(self, filename, max_bytes, backup_count=1, encoding=None, delay=False):
+        super().__init__(filename, mode='a', encoding=encoding, delay=delay)
+        self.max_bytes = max_bytes
+        self.backup_count = backup_count
+
+    def shouldRollover(self, record):
+        """
+        Determine if rollover should occur by checking the current file size.
+        """
+        if self.stream is None:  # Delay was set to True, open the stream now.
+            self.stream = self._open()
+        if self.max_bytes > 0:  # Check file size if max_bytes is set.
+            self.stream.seek(0, os.SEEK_END)  # Move to end of file.
+            if self.stream.tell() >= self.max_bytes:
+                return True
+        return False
+
+    def get_new_rollover_filename(self):
+        """
+        Generate the next available rollover file name in the sequence `.1`, `.2`, `.3`, etc.
+        """
+        for i in range(1, self.backup_count + 1):
+            rollover_filename = f"{self.baseFilename}.{i}"
+            if not os.path.exists(rollover_filename):
+                return rollover_filename
+        # If all filenames are in use, overwrite the oldest file by cycling back to `.1`
+        return f"{self.baseFilename}.1"
+
+    def doRollover(self):
+        """
+        Perform a rollover by copying the contents to a new file and truncating the original file in place.
+        """
+        # Get the next available rollover filename
+        rollover_filename = self.get_new_rollover_filename()
+
+        # Copy contents to the new rollover file
+        with open(self.baseFilename, 'r') as original_file, open(rollover_filename, 'w') as rollover_file:
+            rollover_file.write(original_file.read())
+
+        # Truncate the original file in place without reopening
+        with open(self.baseFilename, 'w') as original_file:
+            original_file.truncate()
+
+    def emit(self, record):
+        """
+        Emit a record, performing a rollover if needed.
+        """
+        if self.shouldRollover(record):
+            self.doRollover()
+        super().emit(record)
+
 
 def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     prod_logging_config: Dict[str, Any] = {
@@ -47,12 +102,12 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
         "handlers": {
             "logfile": {
-                "class": "logging.handlers.RotatingFileHandler",
+                "class": "src.server.logger.logger_factory.CustomRotatingFileHandler",
                 "level": "INFO",
                 "filename": "shared/server.log",
                 "formatter": "logformatter",
-                "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
-                "backupCount": 2,  # 2 backup files
+                "max_bytes": 10000,  # 10 MB limit
+                "backup_count": 2,  # 2 backup files
             },
         },
         "root": {
