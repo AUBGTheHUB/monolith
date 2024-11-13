@@ -57,6 +57,16 @@ git clone git@github.com:AUBGTheHUB/monolith.git
 ```bash
 cd monolith
 ```
+---
+### Extra Step: For WSL users
+In order to make sure that your WSL SSH keys are forwarded to the DEV Container you should run the following script:
+
+```bash
+bash wsl_ssh_forwarding.sh
+```
+[Learn More](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials) about how this is done
+
+---
 ### 4. Open your project in Visual Studio code. Run:
 ```bash
 code .

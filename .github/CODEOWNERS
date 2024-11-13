@@ -1,27 +1,25 @@
-.github/workflows @asynchroza
+.github/workflows @asynchroza @Isak-Bego @IvanObreshkov
 
 .vscode @asynchroza
 
+.devcontainer @Isak-Bego
+
 data @asynchroza
 
-packages/web @Aleks1908 @asynchroza @Isak-Bego
+services/web @Aleks1908 @asynchroza @Isak-Bego
 
-packages/api @IvanObreshkov @asynchroza @Isak-Bego
+**/Dockerfile @asynchroza @Isak-Bego @IvanObreshkov
 
-**/Dockerfile @asynchroza
+**/*.yml @asynchroza @Isak-Bego @IvanObreshkov
 
-**/*.yml @asynchroza
+**/*.sh @asynchroza @IvanObreshkov @Isak-Bego
 
-manage_app.py @asynchroza
-
-**/*.sh @asynchroza @IvanObreshkov
-
-Makefile @asynchroza
+Makefile @asynchroza @Isak-Bego @IvanObreshkov
 
 **/*.conf @asynchroza
 
-packages/services @asynchroza
+services/questionnaire @asynchroza @Aleks1908
 
-packages/services/questionnaire @asynchroza @Aleks1908
+services/py-api @asynchroza @IvanObreshkov @Isak-Bego
 
-packages/py-api @asynchroza @IvanObreshkov @Isak-Bego
+README.md @asynchroza @Isak-Bego @IvanObreshkov

@@ -7,7 +7,6 @@ from structlog.contextvars import merge_contextvars
 from structlog.dev import ConsoleRenderer
 from structlog.processors import (
     TimeStamper,
-    ExceptionPrettyPrinter,
     StackInfoRenderer,
     CallsiteParameterAdder,
     CallsiteParameter,
@@ -21,6 +20,10 @@ from uvicorn.config import LOGGING_CONFIG
 
 
 class _CustomConsoleRenderer(ConsoleRenderer):
+    """We override the standard ConsoleRenderer in order to have the logs displayed like this in the console:
+    "2024-10-23 13:18:22 [debug    ] db_manager.py:83 (ping_db) Pong"
+    """
+
     def __call__(self, logger: WrappedLogger, name: str, event_dict: EventDict) -> str:
         event_dict["event"] = "{file}:{line} ({function}) {}".format(
             event_dict["event"],
@@ -46,7 +49,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
             "logfile": {
                 "class": "logging.handlers.RotatingFileHandler",
                 "level": "INFO",
-                "filename": "server.log",
+                "filename": "shared/server.log",
                 "formatter": "logformatter",
                 "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
                 "backupCount": 2,  # 2 backup files
@@ -61,7 +64,9 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    if env == "PROD":
+    # We save the incoming requests logs to a file like this:
+    # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    if env in ("DEV", "PROD"):
         return prod_logging_config
 
     default_logging_config: Dict[str, Any] = LOGGING_CONFIG
@@ -77,9 +82,8 @@ def configure_app_logger(env: str) -> None:
             add_log_level,
             merge_contextvars,
             TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
-            ExceptionPrettyPrinter(),
-            StackInfoRenderer(),
             format_exc_info,
+            StackInfoRenderer(),
             PositionalArgumentsFormatter(),
             CallsiteParameterAdder(
                 {
@@ -88,13 +92,23 @@ def configure_app_logger(env: str) -> None:
                     CallsiteParameter.LINENO,
                 }
             ),
-            _CustomConsoleRenderer() if env == "DEV" else JSONRenderer(),
+            # If the ENV is DEV or PROD we save the logs in a JSON format. This is done in order to have better
+            # filtering and searching of logs if we use something like the ELK stack in the future
+            # https://www.elastic.co/elastic-stack
+            (JSONRenderer() if env in ("DEV", "PROD") else _CustomConsoleRenderer()),
         ],
         logger_factory=(
-            PrintLoggerFactory()
-            if env != "PROD"
-            else WriteLoggerFactory(file=Path("server").with_suffix(".log").open("a"))
+            # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
+            # For LOCAL and TEST env we print the logs directly to the stdout
+            # FIXME: This could create an issue as the uvicorn logger will eventually create a server.log.1 file but
+            #  these logs will continue to be written to the old server.log file
+            WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
+            if env in ("DEV", "PROD")
+            else PrintLoggerFactory()
         ),
+        # For the PROD env we allow logs with logging level INFO and above, in order not to clutter our log files
+        # For every other env the logging level is DEBUG and above, in order to have better traceability if something
+        # goes wrong during testing
         wrapper_class=None if env != "PROD" else make_filtering_bound_logger(INFO),
         cache_logger_on_first_use=True,
     )

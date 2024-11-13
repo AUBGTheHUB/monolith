@@ -1,6 +1,5 @@
-from typing import Optional
+from typing import Optional, Any, Dict
 
-from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -21,17 +20,20 @@ class TeamsRepository(CRUDRepository):
         self._collection = db_manager.get_collection(collection_name)
 
     async def create(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        input_data: ParticipantRequestBody,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Ok[Team] | Err[DuplicateTeamNameError | Exception]:
 
         try:
-            team = Team(_id=ObjectId(), name=input_data.team_name)
-            LOG.debug("Inserting team {}".format(team.model_dump()))
-            await self._collection.insert_one(document=team.__dict__, session=session)
+            team = Team(name=input_data.team_name)
+            LOG.debug("Inserting team...", team=team.dump_as_json())
+            await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
         except DuplicateKeyError:
-            LOG.warning("Team insertion failed due to duplicate team name {}".format(input_data.team_name))
+            LOG.warning("Team insertion failed due to duplicate team name", team_name=input_data.team_name)
             return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:
@@ -45,7 +47,11 @@ class TeamsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        obj_id: str,
+        input_data: BaseModel,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Result:
         raise NotImplementedError()
 
