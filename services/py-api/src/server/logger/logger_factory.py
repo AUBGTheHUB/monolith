@@ -1,4 +1,6 @@
 from logging import INFO
+from logging.handlers import RotatingFileHandler
+from os import path, rename
 from pathlib import Path
 from typing import Dict, Any
 
@@ -36,6 +38,61 @@ class _CustomConsoleRenderer(ConsoleRenderer):
         return str(super().__call__(logger, name, event_dict))
 
 
+class _CustomRotatingFileHandler(RotatingFileHandler):
+    """
+    By default the Rotating file handler, closes the current logfile (stream), renames the file by adding .1, .2, .3,
+    ...etc and then creates a new server.log to start logging there (opens a new stream). However, with this logic we
+    could not syncronize both structlog and uvicorn to log at the new server.log file, since structlog had the stream
+    opened to the old file which was renamed to i.e. server.log.1 by the handler used by uvicorn. To go around it, we
+    are changing how the rollover of files is happening. Here we copy the contents of the server.log once it reaches
+    the limit. We create a new file with the extension .1, .2, .3, ...etc. We paste the contents of the server.log to
+    the new file i.e. server.log.1 and then delete whatever server.log had. This way structlog and uvicorn keep
+    writing to the same file (the original server.log) using their originally opened streams.
+
+    To acheive this we override the doRollover() method of the logging.RotatingFileHandler.
+
+    Inspiration for the new implementation was gotten from an amazing tool called 'logrotate' that performs rotation of
+    logs in this manner.
+
+    Thank you 'logrotate'!
+    """
+
+    def _get_new_rollover_filename(self) -> str:
+        """
+        Generate the next available rollover file name in the sequence `.1`, `.2`, `.3`, etc.
+        """
+        for i in range(1, self.backupCount + 1):
+            rollover_filename = f"{self.baseFilename}.{i}"
+            if not path.exists(rollover_filename):
+                return rollover_filename
+
+        # If all filenames are in use, overwrite the oldest file by cycling back to `.1`
+        # This function renames the files so that the oldest one is .1 and the newest
+        # is the .{backupCount}.
+        for i in range(1, self.backupCount + 1):
+            if i == 1:
+                rename(f"{self.baseFilename}.{1}", f"{self.baseFilename}.{self.backupCount}")
+            else:
+                rename(f"{self.baseFilename}.{i}", f"{self.baseFilename}.{i-1}")
+
+        return f"{self.baseFilename}.{self.backupCount}"
+
+    def doRollover(self) -> None:
+        """
+        Perform a rollover by copying the contents to a new file and truncating the original file in place.
+        """
+        # Get the next available rollover filename
+        rollover_filename = self._get_new_rollover_filename()
+
+        # Copy contents to the new rollover file
+        with open(self.baseFilename, "r") as original_file, open(rollover_filename, "w") as rollover_file:
+            rollover_file.write(original_file.read())
+
+        # Truncate the original file in place without reopening
+        with open(self.baseFilename, "w") as original_file:
+            original_file.truncate()
+
+
 def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     prod_logging_config: Dict[str, Any] = {
         "version": 1,
@@ -47,7 +104,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
         "handlers": {
             "logfile": {
-                "class": "logging.handlers.RotatingFileHandler",
+                "class": "src.server.logger.logger_factory._CustomRotatingFileHandler",
                 "level": "INFO",
                 "filename": "shared/server.log",
                 "formatter": "logformatter",
@@ -100,8 +157,6 @@ def configure_app_logger(env: str) -> None:
         logger_factory=(
             # For DEV and PROD as these are VMs we save the logs to a logfile, so that we can check them later
             # For LOCAL and TEST env we print the logs directly to the stdout
-            # FIXME: This could create an issue as the uvicorn logger will eventually create a server.log.1 file but
-            #  these logs will continue to be written to the old server.log file
             WriteLoggerFactory(file=Path("shared/server").with_suffix(".log").open("a"))
             if env in ("DEV", "PROD")
             else PrintLoggerFactory()
