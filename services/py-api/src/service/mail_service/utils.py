@@ -21,7 +21,7 @@ def load_email_participant_html_template(participant_name, team_name, invite_lin
     )
 
 
-def load_email_verify_participant_html_template(participant_name, team_name, confirmation_link) -> None:
+def load_email_verify_participant_html_template(participant_name, team_name, confirmation_link):
     if not participant_name or not confirmation_link:
         raise ValueError("Both participant_name and verify_link must be provided.")
 
