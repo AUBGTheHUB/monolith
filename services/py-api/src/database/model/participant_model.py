@@ -8,6 +8,9 @@ from src.database.model.base_model import Base, SerializableObjectId
 
 @dataclass(kw_only=True)
 class Participant(Base):
+    """A representation of the Participant entity in Mongo. It is also the schema of how the entity should look
+    like in Mongo before it is inserted"""
+
     name: str
     email: EmailStr
     is_admin: bool
