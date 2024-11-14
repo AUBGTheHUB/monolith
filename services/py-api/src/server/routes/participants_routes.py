@@ -10,6 +10,7 @@ from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
 
+# https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
 
 
