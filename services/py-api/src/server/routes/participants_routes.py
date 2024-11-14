@@ -42,6 +42,7 @@ def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHand
     return ParticipantHandlers(service)
 
 
+# https://fastapi.tiangolo.com/advanced/additional-responses/
 @participants_router.post(
     "", status_code=201, responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
 )
