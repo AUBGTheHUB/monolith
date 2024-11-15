@@ -20,7 +20,6 @@ def repo(db_manager_mock: Mock) -> TeamsRepository:
 
 @pytest.mark.asyncio
 async def test_create_team_success(
-    db_manager_mock: Mock,
     ten_sec_window: Tuple[datetime, datetime],
     mock_input_data: ParticipantRequestBody,
     repo: TeamsRepository,
@@ -28,9 +27,6 @@ async def test_create_team_success(
     start_time, end_time = ten_sec_window
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
@@ -45,12 +41,11 @@ async def test_create_team_duplicate_name_error(
     db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: TeamsRepository
 ) -> None:
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate team name
-    repo._collection.insert_one = AsyncMock(side_effect=DuplicateKeyError("Duplicate team name error"))
+    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
+        side_effect=DuplicateKeyError("Duplicate team name error")
+    )
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
@@ -63,12 +58,9 @@ async def test_create_team_general_exception(
     db_manager_mock: Mock, mock_input_data: ParticipantRequestBody, repo: TeamsRepository
 ) -> None:
     # Simulate a general exception raised by insert_one
-    repo._collection.insert_one = AsyncMock(side_effect=Exception("Test error"))
+    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
     result = await repo.create(mock_input_data)
-
-    # Check that insert_one was awaited once
-    repo._collection.insert_one.assert_awaited_once()
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)

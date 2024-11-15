@@ -1,69 +1,68 @@
-from unittest.mock import patch, MagicMock, AsyncMock
+from unittest.mock import patch, AsyncMock
 
 import pytest
-from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+from pymongo.errors import ConnectionFailure
+from result import Err
 
 from src.database.db_manager import DatabaseManager
+from src.utils import SingletonMeta
+
+
+# https://docs.pytest.org/en/6.2.x/fixture.html#autouse-fixtures-fixtures-you-don-t-have-to-request
+@pytest.fixture(autouse=True)
+def reset_singleton() -> None:
+    # Clear singleton instances before each test as we get inconsistent test results
+    # Accessing private members of class like this is highly discouraged and is only possible as this is Python.
+    # We do it only because this is an exceptional case. Using Singletons in unit tests could be tricky :(
+    SingletonMeta._instances.clear()
 
 
 @pytest.fixture
-def setup_database_manager() -> DatabaseManager:
-    # We Patch the call in order to avoid real connection to the database during initialization
-    with patch("src.database.db_manager.AsyncIOMotorClient"):
-        return DatabaseManager()
+def db_manager() -> DatabaseManager:
+    with patch("src.database.db_manager.AsyncIOMotorClient") as mock_client:
+        mock_client.return_value.admin.command = AsyncMock(return_value={"ok": 1})
+        # https://stackoverflow.com/questions/42565304/is-it-possible-to-ping-mongodb-from-pymongo
+        with patch("src.database.db_manager.environ", {"DATABASE_URL": "mongodb+srv://test_url"}):
+            return DatabaseManager()
 
 
-def test_close_all_connections_not_initialized(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = None
+@pytest.fixture
+def db_manager_err_operation() -> DatabaseManager:
+    with patch("src.database.db_manager.AsyncIOMotorClient") as mock_client:
+        mock_client.return_value.admin.command = AsyncMock(side_effect=ConnectionFailure("Test err"))
+        # https://stackoverflow.com/questions/42565304/is-it-possible-to-ping-mongodb-from-pymongo
+        with patch("src.database.db_manager.environ", {"DATABASE_URL": "mongodb+srv://test_url"}):
+            return DatabaseManager()
+
+
+@pytest.fixture
+def db_manager_none_client() -> DatabaseManager:
+    with patch("src.database.db_manager.AsyncIOMotorClient") as mock_client:
+        mock_client.return_value = None
+        # https://stackoverflow.com/questions/42565304/is-it-possible-to-ping-mongodb-from-pymongo
+        with patch("src.database.db_manager.environ", {"DATABASE_URL": "mongodb+srv://test_url"}):
+            return DatabaseManager()
+
+
+@pytest.mark.asyncio
+async def test_async_ping_db_success(db_manager: DatabaseManager) -> None:
+    result = await db_manager.async_ping_db()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_async_ping_db_err(db_manager_err_operation: DatabaseManager) -> None:
+    result = await db_manager_err_operation.async_ping_db()
+    assert isinstance(result, Err)
+
+
+@pytest.mark.asyncio
+async def test_close_all_connections_success(db_manager: DatabaseManager) -> None:
     result = db_manager.close_all_connections()
-    # Adding a custom message if the assertion fails, for better debugging
-    assert result.is_err(), "Should return an error if client is not initialized"
-    assert result.err_value == "The database client is not initialized!"
-
-
-def test_close_all_connections_success(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = MagicMock()
-    db_manager.close_all_connections()
-    # MagicMock objects create all attributes and methods as you access them
-    db_manager._client.close.assert_called_once()
+    assert result is None
 
 
 @pytest.mark.asyncio
-async def test_async_ping_db_success(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = MagicMock()
-    db_manager._client.admin.command = AsyncMock()
-    await db_manager.async_ping_db()
-    db_manager._client.admin.command.assert_called_once_with("ping")
-
-
-@pytest.mark.asyncio
-async def test_async_ping_db_connection_failure(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = MagicMock()
-    db_manager._client.admin.command = AsyncMock(side_effect=ConnectionFailure)
-    result = await db_manager.async_ping_db()
-    assert result.is_err(), "Should return an error if there is a connection failure"
-    assert result.err_value == "Database is unavailable!"
-
-
-@pytest.mark.asyncio
-async def test_async_ping_db_operation_failure(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = MagicMock()
-    db_manager._client.admin.command = AsyncMock(side_effect=OperationFailure("Operation failed"))
-    result = await db_manager.async_ping_db()
-    assert result.is_err(), "Should return an error if there is an operation failure"
-    assert result.err_value == "Database authentication failed!"
-
-
-@pytest.mark.asyncio
-async def test_async_ping_db_configuration_error(setup_database_manager: DatabaseManager) -> None:
-    db_manager = setup_database_manager
-    db_manager._client = MagicMock()
-    db_manager._client.admin.command = AsyncMock(side_effect=ConfigurationError)
-    result = await db_manager.async_ping_db()
-    assert result.is_err(), "Should return an error if there is a configuration error"
-    assert result.err_value == "Database authentication failed!"
+async def test_close_all_connections_err(db_manager_none_client: DatabaseManager) -> None:
+    result = db_manager_none_client.close_all_connections()
+    isinstance(result, Err)

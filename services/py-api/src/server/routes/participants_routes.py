@@ -10,6 +10,7 @@ from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
 
+# https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
 
 
@@ -41,8 +42,9 @@ def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHand
     return ParticipantHandlers(service)
 
 
+# https://fastapi.tiangolo.com/advanced/additional-responses/
 @participants_router.post(
-    "", responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
+    "", status_code=201, responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)

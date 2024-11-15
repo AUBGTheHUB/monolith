@@ -6,6 +6,9 @@ from src.database.model.base_model import Base
 
 @dataclass(kw_only=True)
 class Team(Base):
+    """A representation of the Team entity in Mongo. It is also the schema of how the entity should look
+    like in Mongo before it is inserted"""
+
     name: str  # unique
     is_verified: bool = field(default=False)
 

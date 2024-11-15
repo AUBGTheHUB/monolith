@@ -56,9 +56,8 @@ class ParticipantService:
         return number_ant_teams < self._team_repo.MAX_NUMBER_OF_TEAMS_IN_HACKATHON
 
     async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Result[
-        Tuple[Participant, Team],
-        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
-    ]:
+        Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception]:
+      
         # Capacity Check 2
         has_capacity = await self._check_capacity_register_admin_participant_case()
         if not has_capacity:
