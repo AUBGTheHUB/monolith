@@ -6,6 +6,7 @@ from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, Ha
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
 from src.service.participants_service import ParticipantService
+from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
 
 
 class ParticipantHandlers:
@@ -34,7 +35,7 @@ class ParticipantHandlers:
             if isinstance(result.err_value, HackathonCapacityExceededError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Max hackathon capacity has been reached")
-            
+
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
