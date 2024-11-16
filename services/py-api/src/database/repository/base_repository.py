@@ -16,7 +16,11 @@ class CRUDRepository(ABC):
 
     @abstractmethod
     async def create(
-        self, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Dict[str, Any]
+        self,
+        uniqueTransactionId: str,
+        input_data: BaseModel,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Dict[str, Any]
     ) -> Result:
         """Create a new document in a particular collection in Mongo.
 

@@ -23,14 +23,19 @@ class ParticipantService:
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        uniqueTransactionId: str,
+        input_data: ParticipantRequestBody,
+        session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
-        team = await self._team_repo.create(input_data, session)
+        team = await self._team_repo.create(uniqueTransactionId, input_data, session)
         if is_err(team):
             return team
 
-        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        participant = await self._participant_repo.create(
+            uniqueTransactionId, input_data, session, team_id=team.ok_value.id
+        )
         if is_err(participant):
             return participant
 

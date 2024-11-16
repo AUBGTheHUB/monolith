@@ -36,6 +36,7 @@ class ParticipantsRepository(CRUDRepository):
 
     async def create(
         self,
+        uniqueTransactionId: str,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
@@ -48,12 +49,22 @@ class ParticipantsRepository(CRUDRepository):
                 # If the team_id is passed as a kwarg the participant will be inserted in the given team
                 team_id=kwargs.get("team_id"),
             )
-            LOG.debug("Inserting participant...", participant=participant.dump_as_json())
+            LOG.debug(
+                "Inserting participant... {participant} via transaction {id}".format(
+                    participant=participant.dump_as_json(), id=uniqueTransactionId
+                )
+            )
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
         except DuplicateKeyError:
-            LOG.warning("Participant insertion failed due to duplicate email", email=input_data.email)
+            LOG.warning(
+                "Participant insertion failed due to duplicate email {email} via transaction {id}".format(
+                    email=input_data.email, id=uniqueTransactionId
+                )
+            )
             return Err(DuplicateEmailError(input_data.email))
         except Exception as e:
-            LOG.exception("Participant insertion failed due to err {}".format(e))
+            LOG.exception(
+                "Participant insertion failed due to err {e} via transaction {id}".format(e=e, id=uniqueTransactionId)
+            )
             return Err(e)

@@ -8,6 +8,8 @@ from pymongo.errors import PyMongoError
 from result import Err, is_err, Result
 from structlog.stdlib import get_logger
 
+from uuid import uuid4
+
 from src.database.db_manager import DatabaseManager
 
 LOG = get_logger()
@@ -40,7 +42,9 @@ class TransactionManager:
         self._client = db_manager.client
 
     @staticmethod
-    async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
+    async def _retry_tx(
+        func: Callable[..., Awaitable[Result]], uniqueTransactionId: str, *args: Any, **kwargs: Any
+    ) -> Result:
         """
         If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
         to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
@@ -59,10 +63,10 @@ class TransactionManager:
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
             try:
-                return await func(*args, **kwargs)
+                return await func(uniqueTransactionId, *args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    LOG.debug("Retrying transaction {id} retry".format(id=uniqueTransactionId))
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -70,7 +74,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Transaction failed after maximum retries")
+        raise PyMongoError("Transaction {uniqueTransactionId} failed after maximum retries")
 
     @staticmethod
     async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
@@ -98,7 +102,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Commiting transaction failed after maximum retries")
+        raise PyMongoError("Commiting transaction {uniqueTransactionId} failed after maximum retries")
 
     async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """
@@ -126,26 +130,29 @@ class TransactionManager:
 
         session = await self._client.start_session()
         try:
+            uniqueTransactionId = str(uuid4())
             session.start_transaction()
-            LOG.debug("Starting transaction")
+            LOG.debug("Starting transaction {uniqueTransactionId}")
 
-            result = await self._retry_tx(callback, *args, session=session, **kwargs)
+            result = await self._retry_tx(callback, uniqueTransactionId, *args, session=session, **kwargs)
             if is_err(result):
-                LOG.warning("Aborting transaction due to err {}".format(result.err_value))
+                LOG.warning(
+                    "Aborting transaction {id} due to err {e}".format(e=result.err_value, id=uniqueTransactionId)
+                )
                 await session.abort_transaction()
                 return result
 
             await self._retry_commit(session)
-            LOG.debug("Transaction commited")
+            LOG.debug("Transaction {uniqueTransactionId} commited")
 
             return result
 
         except Exception as e:
-            LOG.exception("Aborting transaction due to err {}".format(e))
+            LOG.exception("Aborting transaction {id} due to err {e}".format(e=e, id=uniqueTransactionId))
             await session.abort_transaction()
             return Err(e)
 
         finally:
-            LOG.debug("Closing DB session")
+            LOG.debug("Closing DB session {uniqueTransactionId}")
             # Finish this session. If a transaction has started, abort it.
             await session.end_session()
