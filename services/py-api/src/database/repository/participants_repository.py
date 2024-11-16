@@ -4,6 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
+from src.database.transaction_manager import CustomSession
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
@@ -35,11 +36,7 @@ class ParticipantsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def create(
-        self,
-        uniqueTransactionId: str,
-        input_data: ParticipantRequestBody,
-        session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        self, input_data: ParticipantRequestBody, session: Optional[CustomSession] = None, **kwargs: Dict[str, Any]
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             participant = Participant(
@@ -49,22 +46,29 @@ class ParticipantsRepository(CRUDRepository):
                 # If the team_id is passed as a kwarg the participant will be inserted in the given team
                 team_id=kwargs.get("team_id"),
             )
-            LOG.debug(
-                "Inserting participant... {participant} via transaction {id}".format(
-                    participant=participant.dump_as_json(), id=uniqueTransactionId
+            if session:
+                LOG.debug(
+                    "Inserting participant {participant} via transaction {id}",
+                    participant=participant.dump_as_json(),
+                    id=session.transaction_id,
                 )
-            )
+
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
         except DuplicateKeyError:
-            LOG.warning(
-                "Participant insertion failed due to duplicate email {email} via transaction {id}".format(
-                    email=input_data.email, id=uniqueTransactionId
+            if session:
+                LOG.warning(
+                    "Participant insertion failed due to duplicate email {email} via transaction {id}",
+                    email=input_data.email,
+                    transaction_id=session.transaction_id,
                 )
-            )
+
             return Err(DuplicateEmailError(input_data.email))
         except Exception as e:
-            LOG.exception(
-                "Participant insertion failed due to err {e} via transaction {id}".format(e=e, id=uniqueTransactionId)
-            )
+            if session:
+                LOG.exception(
+                    "Participant insertion failed due to err {e} via transaction {id}",
+                    e=e,
+                    transaction_id=session.transaction_id,
+                )
             return Err(e)

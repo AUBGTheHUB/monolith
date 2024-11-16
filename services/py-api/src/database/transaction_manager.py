@@ -1,6 +1,7 @@
 # mypy: disable-error-code=no-any-return
 # This is because we have Generic methods
 from asyncio import sleep
+from dataclasses import dataclass
 from typing import Callable, Any, Awaitable
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -13,6 +14,11 @@ from uuid import uuid4
 from src.database.db_manager import DatabaseManager
 
 LOG = get_logger()
+
+
+@dataclass
+class CustomSession(AsyncIOMotorClientSession):
+    transaction_id: str
 
 
 class TransactionManager:
@@ -42,9 +48,7 @@ class TransactionManager:
         self._client = db_manager.client
 
     @staticmethod
-    async def _retry_tx(
-        func: Callable[..., Awaitable[Result]], uniqueTransactionId: str, *args: Any, **kwargs: Any
-    ) -> Result:
+    async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
         """
         If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
         to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
@@ -63,10 +67,10 @@ class TransactionManager:
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
             try:
-                return await func(uniqueTransactionId, *args, **kwargs)
+                return await func(*args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying transaction {id} retry".format(id=uniqueTransactionId))
+                    LOG.debug("Retrying transaction {retry} retry", retry=retry)
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -74,10 +78,10 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Transaction {uniqueTransactionId} failed after maximum retries")
+        raise PyMongoError("Transaction failed after maximum retries")
 
     @staticmethod
-    async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
+    async def _retry_commit(customSession: CustomSession) -> None:
         """
         Uses the same logic for the retries as the _retry_tx (exponential backoff)
         Inspired by:
@@ -91,10 +95,14 @@ class TransactionManager:
             try:
                 # The commit_transaction method does not return anything, and we use the return to exit the loop
                 # if no Exception is encountered
-                return await session.commit_transaction()
+                return await customSession.session.commit_transaction()
             except PyMongoError as exc:
                 if exc.has_error_label("UnknownTransactionCommitResult"):
-                    LOG.debug("Retrying to commit transaction retry {}".format(retry))
+                    LOG.debug(
+                        "Retrying to commit transaction {id} retry {retry}",
+                        retry=retry,
+                        id=customSession.transaction_id,
+                    )
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -102,7 +110,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Commiting transaction {uniqueTransactionId} failed after maximum retries")
+        raise PyMongoError("Commiting transaction {id} failed after maximum retries", id=customSession.transaction_id)
 
     async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """
@@ -128,31 +136,30 @@ class TransactionManager:
         https://www.youtube.com/watch?v=q6ujWWaRdbA
         """
 
-        session = await self._client.start_session()
         try:
-            uniqueTransactionId = str(uuid4())
-            session.start_transaction()
-            LOG.debug("Starting transaction {uniqueTransactionId}")
+            custom_session = CustomSession(session=self._client.start_session(), transaction_id=str(uuid4()))
 
-            result = await self._retry_tx(callback, uniqueTransactionId, *args, session=session, **kwargs)
+            LOG.debug("Starting transaction {id}", id=custom_session.transaction_id)
+
+            result = await self._retry_tx(callback, *args, session=custom_session, **kwargs)
             if is_err(result):
                 LOG.warning(
-                    "Aborting transaction {id} due to err {e}".format(e=result.err_value, id=uniqueTransactionId)
+                    "Aborting transaction {id} due to err {e}", e=result.err_value, id=custom_session.transaction_id
                 )
-                await session.abort_transaction()
+                await custom_session.abort_transaction()
                 return result
 
-            await self._retry_commit(session)
-            LOG.debug("Transaction {uniqueTransactionId} commited")
+            await self._retry_commit(custom_session)
+            LOG.debug("Transaction {id} commited", id=custom_session.transaction_id)
 
             return result
 
         except Exception as e:
-            LOG.exception("Aborting transaction {id} due to err {e}".format(e=e, id=uniqueTransactionId))
-            await session.abort_transaction()
+            LOG.exception("Aborting transaction {id} due to err {e}", e=e, id=custom_session.transaction_id)
+            await custom_session.abort_transaction()
             return Err(e)
 
         finally:
-            LOG.debug("Closing DB session {uniqueTransactionId}")
+            LOG.debug("Closing DB session {id}", id=custom_session.transaction_id)
             # Finish this session. If a transaction has started, abort it.
-            await session.end_session()
+            await custom_session.end_session()

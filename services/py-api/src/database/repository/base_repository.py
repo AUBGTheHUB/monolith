@@ -4,6 +4,7 @@ from typing import Optional, Any, Dict
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from result import Result
+from src.database.transaction_manager import CustomSession
 
 
 # Across the project we use the result pattern for better error handling
@@ -16,11 +17,7 @@ class CRUDRepository(ABC):
 
     @abstractmethod
     async def create(
-        self,
-        uniqueTransactionId: str,
-        input_data: BaseModel,
-        session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        self, input_data: BaseModel, session: Optional[CustomSession] = None, **kwargs: Dict[str, Any]
     ) -> Result:
         """Create a new document in a particular collection in Mongo.
 

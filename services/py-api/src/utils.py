@@ -2,6 +2,9 @@ from threading import Lock
 from typing import Any, Dict
 
 import httpx
+from structlog.stdlib import get_logger
+
+LOG = get_logger()
 
 
 class SingletonMeta(type):

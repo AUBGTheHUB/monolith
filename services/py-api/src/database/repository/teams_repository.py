@@ -4,6 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
+from src.database.transaction_manager import CustomSession
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
@@ -20,33 +21,32 @@ class TeamsRepository(CRUDRepository):
         self._collection = db_manager.get_collection(collection_name)
 
     async def create(
-        self,
-        uniqueTransactionId: str,
-        input_data: ParticipantRequestBody,
-        session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        self, input_data: ParticipantRequestBody, session: Optional[CustomSession] = None, **kwargs: Dict[str, Any]
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         try:
             team = Team(name=input_data.team_name)
-            LOG.debug(
-                "Inserting team {team} via transaction {id}".format(team=team.dump_as_json(), id=uniqueTransactionId)
-            )
+            if session:
+                LOG.debug(
+                    "Inserting team {team} via transaction {id}", team=team.dump_as_json(), id=session.transaction_id
+                )
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
         except DuplicateKeyError:
-            LOG.warning(
-                "Team insertion failed due to duplicate team name {team_name} via transaction {id}".format(
-                    team_name=input_data.team_name, id=uniqueTransactionId
+            if session:
+                LOG.warning(
+                    "Team insertion failed due to duplicate team name {team_name} via transaction {id}",
+                    team_name=input_data.team_name,
+                    id=session.transaction_id,
                 )
-            )
             return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:
-            LOG.exception(
-                "Team insertion failed due to err {e} via transaction {id}".format(e=e, id=uniqueTransactionId)
-            )
+            if session:
+                LOG.exception(
+                    "Team insertion failed due to err {e} via transaction {id}", e=e, id=session.transaction_id
+                )
             return Err(e)
 
     async def fetch_by_id(self, obj_id: str) -> Result:

@@ -1,13 +1,12 @@
 from typing import Tuple, Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import is_err, Ok, Result
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.database.transaction_manager import CustomSession, TransactionManager
 from src.server.exception import DuplicateEmailError, DuplicateTeamNameError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
@@ -24,18 +23,15 @@ class ParticipantService:
 
     async def _create_participant_and_team_in_transaction(
         self,
-        uniqueTransactionId: str,
         input_data: ParticipantRequestBody,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[CustomSession] = None,
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
-        team = await self._team_repo.create(uniqueTransactionId, input_data, session)
+        team = await self._team_repo.create(input_data, session)
         if is_err(team):
             return team
 
-        participant = await self._participant_repo.create(
-            uniqueTransactionId, input_data, session, team_id=team.ok_value.id
-        )
+        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
         if is_err(participant):
             return participant
 
