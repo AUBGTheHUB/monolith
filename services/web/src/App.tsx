@@ -4,15 +4,33 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
+// import { DropdownComponent } from '@/lib/reusable-components/dropdown.tsx';
+import { TestForm } from '@/lib/reusable-components/test-form';
 
 import MockDataComponent from './website/mockComponent';
 
 function App() {
+    /*
+    const label: string = 'Fruits';
+    const placeholder: string = 'Select a fruit';
+    const className: string = 'fruits';
+    const items = [
+        { name: 'Apple', value: 'apple' },
+        { name: 'Banana', value: 'banana' },
+        { name: 'Blueberry', value: 'blueberry' },
+    ];
+
+    <DropdownComponent label={label} placeholder={placeholder} className={className} items={items} />
+
+     */
+
     const [count, setCount] = useState(2);
     const queryClient = new QueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
+            <TestForm />
+
             <div>
                 <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
                     <img src={viteLogo} className="logo" alt="Vite logo" />
