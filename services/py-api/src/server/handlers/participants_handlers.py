@@ -1,3 +1,4 @@
+from fastapi.responses import JSONResponse
 from result import is_err
 from starlette import status
 from starlette.responses import Response
@@ -44,6 +45,8 @@ class ParticipantHandlers:
         return ParticipantRegisteredInTeamResponse(participant=result.ok_value[0], team=result.ok_value[1])
 
 
-    async def capacity_reached(self, response: Response):
-        response.status_code = status.HTTP_409_CONFLICT
-        return ErrResponse(error="The hackathon capacity has been reached")
+    async def capacity_reached(self):
+        return JSONResponse.error(
+            message = "The hackathon capacity has been reached",
+            status_code = 409
+        )

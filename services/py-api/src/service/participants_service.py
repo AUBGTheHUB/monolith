@@ -2,7 +2,7 @@ from math import ceil
 from typing import Tuple, Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import is_err, Ok, Result
+from result import Err, is_err, Ok, Result
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -66,13 +66,11 @@ class ParticipantService:
         if anticipated_total_teams <= hackathon_teams_cap:
             return True
         else:
-            #send to participant handler
             return False
 
     #revise
     async def insert_random_participant(self, input_data: ParticipantRequestBody
     ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
-        # TODO: Add capacity check 1
         
         if ParticipantsRepository.capacity_check_one():
            result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
