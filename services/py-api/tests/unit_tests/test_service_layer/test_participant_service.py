@@ -101,7 +101,7 @@ async def test_create_participant_and_team_in_transaction_participant_duplicate_
 
 @pytest.mark.asyncio
 async def test_register_admin_participant_success(
-    participant_service: ParticipantService, tx_manager_mock: AsyncMock, mock_input_data: ParticipantRequestBody
+    participant_service: ParticipantService, tx_manager_mock: Mock, mock_input_data: ParticipantRequestBody
 ) -> None:
     # Mock transaction manager to call the `_create_participant_and_team_in_transaction` function
     tx_manager_mock.with_transaction.return_value = Ok(
@@ -130,7 +130,7 @@ async def test_register_admin_participant_success(
 
 @pytest.mark.asyncio
 async def test_register_admin_participant_general_exception(
-    participant_service: ParticipantService, tx_manager_mock: AsyncMock, mock_input_data: ParticipantRequestBody
+    participant_service: ParticipantService, tx_manager_mock: Mock, mock_input_data: ParticipantRequestBody
 ) -> None:
     # Mock `with_transaction` to raise a general exception
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
