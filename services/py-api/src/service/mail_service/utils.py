@@ -1,8 +1,10 @@
-def load_email_participant_html_template(participant_name, team_name, invite_link):
-    if not participant_name:
-        raise ValueError("participant_name must be provided.")
+from os.path import dirname, join
 
-    template_path = "email_templates/email-participant.html"
+def load_email_participant_html_template(participant_name: str, team_name: str, invite_link: str):
+    base_dir = dirname(__file__)
+    template_path = join(
+        base_dir, "email_templates", "email-participant.html"
+    )
 
     with open(template_path, "r", encoding="utf-8") as file:
         email_template = file.read()
@@ -21,12 +23,11 @@ def load_email_participant_html_template(participant_name, team_name, invite_lin
     )
 
 
-def load_email_verify_participant_html_template(participant_name, team_name, confirmation_link):
-    if not participant_name or not confirmation_link:
-        raise ValueError("Both participant_name and verify_link must be provided.")
-
-    template_path = "email_templates/email-verify-participant.html"
-
+def load_email_verify_participant_html_template(participant_name: str, team_name: str, confirmation_link: str):
+    base_dir = dirname(__file__)
+    template_path = join(
+        base_dir, "email_templates", "email-verify-participant.html"
+    )
     with open(template_path, "r", encoding="utf-8") as file:
         email_template = file.read()
 

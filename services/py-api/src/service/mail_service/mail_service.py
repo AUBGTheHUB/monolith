@@ -1,70 +1,63 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Literal
 
 
 class MailService(ABC):
     @abstractmethod
     async def send_email(
-        self, receiver: str, subject: str, body_text: Optional[str] = None, body_html: Optional[str] = None
+        self, receiver: str, subject: str, body_content: str, content_type: Literal["text", "html"] = "text"
     ) -> None:
         """
         Sends an email to the specified receiver with the provided subject and body content.
         Supports both text and HTML bodies.
         :param receiver: Recipient's email address
         :param subject: Email subject line
-        :param body_text: Plain text version of the email body
-        :param body_html: HTML version of the email body
+        :param body_content: Body of the email, could be html or just plain text, must be specified in content_type
+        :param content_type: Defines the type of the email body, could be "html" (for html body) or "text" (for a plain text body)
         """
+        raise NotImplementedError()
 
     @abstractmethod
-    async def send_participant_successful_confirmation_email(
+    async def send_participant_successful_registration_email(
         self,
         receiver: str,
         subject: str,
         participant: str,
         team_name: str,
         invite_link: str,
-        body_text: Optional[str] = None,
-        body_html: Optional[str] = None,
     ) -> None:
         """
         Sends a confirmation email to a participant, confirming their acceptance into the event.
         The email will include details such as the participant's name, team name (if applicable),
         and a verification link. Both text and HTML versions of the email body can be provided.
 
-        Parameters:
-            receiver (str): The email address of the recipient.
-            subject (str): The subject line of the email.
-            participant (str): The name of the participant.
-            team_name (str): The name of the participant's team (if applicable).
-            invite_link (str): The invite link for the participant (To invite other team members).
-            body_text (Optional[str]): The plain text version of the email body (optional).
-            body_html (Optional[str]): The HTML version of the email body (optional).
+        :param receiver: The email address of the recipient.
+        :param subject: The subject line of the email.
+        :param participant: The name of the participant.
+        :param team_name: The name of the participant's team (if applicable).
+        :param invite_link: The invite link for the participant (To invite other team members).
         """
+        raise NotImplementedError()
 
     @abstractmethod
-    async def send_participant_confirmation_email(
+    async def send_participant_verification_email(
         self,
         receiver: str,
         subject: str,
         participant: str,
         team_name: str,
         confirmation_link: str,
-        body_text: Optional[str] = None,
-        body_html: Optional[str] = None,
     ) -> None:
         """
-        Sends a confirmation email to a participant, informing them that they need to confirm their application
+        Sends a verification email to a participant, informing them that they need to verify their application
         to the event. The email will include details such as the participant's name, team name (if applicable),
         and a verification link for confirming their participation. Both text and HTML versions of the email body
         can be provided.
 
-        Parameters:
-            receiver (str): The email address of the recipient.
-            subject (str): The subject line of the email.
-            participant (str): The name of the participant.
-            team_name (str): The name of the participant's team (if applicable).
-            confirmation_link (str): The verification link for the participant.
-            body_text (Optional[str]): The plain text version of the email body (optional).
-            body_html (Optional[str]): The HTML version of the email body (optional).
+        :param receiver: The email address of the recipient.
+        :param subject: The subject line of the email.
+        :param participant: The name of the participant.
+        :param team_name: The name of the participant's team (if applicable).
+        :param confirmation_link: The verification link for the participant.
         """
+        raise NotImplementedError()
