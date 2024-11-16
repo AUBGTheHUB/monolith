@@ -1,7 +1,7 @@
 from asyncio import to_thread
 from multiprocessing.util import get_logger
 from os import getenv
-from typing import Literal
+from typing import Literal, Any, Coroutine
 from dotenv import load_dotenv
 
 import resend
@@ -52,7 +52,7 @@ class ResendMailService(MailService):
         participant: str,
         team_name: str,
         invite_link: str,
-    ) -> None:
+    ) -> Coroutine[Any, Any, None]:
         try:
             body_html = load_email_participant_html_template(participant, team_name, invite_link)
         except ValueError as e:
@@ -72,7 +72,7 @@ class ResendMailService(MailService):
         participant: str,
         team_name: str,
         confirmation_link: str,
-    ) -> None:
+    ) -> Coroutine[Any, Any, None]:
         try:
             body_html = load_email_verify_participant_html_template(participant, team_name, confirmation_link)
         except ValueError as e:
