@@ -24,7 +24,7 @@ class TeamsRepository(CRUDRepository):
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
-    ) -> Ok[Team] | Err[DuplicateTeamNameError | Exception]:
+    ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         try:
             team = Team(name=input_data.team_name)

@@ -19,13 +19,8 @@ https://docs.pydantic.dev/latest/concepts/json_schema/#withjsonschema-annotation
 # https://www.trueblade.com/blogs/news/python-3-10-new-dataclass-features
 @dataclass(kw_only=True)
 class Base(SerializableDbModel, ABC):
-    _id: SerializableObjectId = field(default_factory=lambda: ObjectId())
-    """This is with underscore as MongoDB expects it like this. We create the ID on demand in order to use the created
-    object as a return type of a function and have all the info as type safe attributes
-    https://www.mongodb.com/docs/languages/python/pymongo-driver/current/write/insert/#the-_id-field"""
+    id: SerializableObjectId = field(default_factory=lambda: ObjectId())
+    """We create the ID on demand in order to use the created object as a return type of a function and have all the
+    info as type safe attributes"""
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
-
-    @property
-    def id(self) -> SerializableObjectId:
-        return self._id
