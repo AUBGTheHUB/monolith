@@ -3,8 +3,12 @@ from threading import Lock
 from typing import Any, Dict, TypedDict
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
-import jwt
+from result import Err, Ok, Result
 from structlog.stdlib import get_logger
+from src.database.model.participant_model import Participant
+from jwt import jwt
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+
 
 LOG = get_logger()
 
@@ -47,35 +51,24 @@ class AsyncClient(metaclass=SingletonMeta):
         await self._async_client.aclose()
 
 class JwtUtility:
-    class UserData(TypedDict):
-        id: int
-        name: str
-        email: str
-        is_admin: bool
-        email_verified: bool
-        team_id: int
-        created_at: str
-        updated_at: str
-         
-
+ 
     @staticmethod
-    def encode(data: UserData) -> str:
-            return encode(data,key=environ["SECRET_KEY"])
+    def encode_data(data: Participant) -> str:
+        return encode(data,key=environ["SECRET_KEY"])
     
     @staticmethod
-    def decode(token: str) -> Dict[str, Any]:
-     try:
-        decoded_payload=jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return decoded_payload
+    def decode_data(token: str) -> Result[JwtUserData, str]: 
+     try: 
+        return Ok(JwtUserData(**decode(token, environ["SECRET_KEY"])))
      except ExpiredSignatureError:
-            print("The token has expired.")
-            return {"error": "TokenExpired"}
+            LOG.warning("Failed to decode the JWT token: The token has expired.")
+            return Err("The jwt token has expired.")
      except InvalidSignatureError:
-            print("The token has an invalid signature.")
-            return {"error": "InvalidSignature"}
+            LOG.warning("Failed to decode the JWT token: The token has an invalid signature.")
+            return Err("The jwt token is invalid.")
      except DecodeError:
-            print("There was an error decoding the token.")
-            return {"error": "DecodeError"}
+            LOG.warning("Failed to decode the JWT token: There was an error decoding the token.")
+            return Err("There was an error decoding the token.")
     
-
-print(JwtUtility.encode({"str":"fdsafsad"}))
+a= JwtUtility.decode_data("decoding data...")
+a.ok_value
