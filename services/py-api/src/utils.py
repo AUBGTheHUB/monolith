@@ -1,7 +1,9 @@
+from os import environ
 from threading import Lock
-from typing import Any, Dict
-
+from typing import Any, Dict, TypedDict
+from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
+import jwt
 from structlog.stdlib import get_logger
 
 LOG = get_logger()
@@ -43,3 +45,37 @@ class AsyncClient(metaclass=SingletonMeta):
             raise RuntimeError("The AsyncClient has not been initialized!")
 
         await self._async_client.aclose()
+
+class JwtUtility:
+    class UserData(TypedDict):
+        id: int
+        name: str
+        email: str
+        is_admin: bool
+        email_verified: bool
+        team_id: int
+        created_at: str
+        updated_at: str
+         
+
+    @staticmethod
+    def encode(data: UserData) -> str:
+            return encode(data,key=environ["SECRET_KEY"])
+    
+    @staticmethod
+    def decode(token: str) -> Dict[str, Any]:
+     try:
+        decoded_payload=jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return decoded_payload
+     except ExpiredSignatureError:
+            print("The token has expired.")
+            return {"error": "TokenExpired"}
+     except InvalidSignatureError:
+            print("The token has an invalid signature.")
+            return {"error": "InvalidSignature"}
+     except DecodeError:
+            print("There was an error decoding the token.")
+            return {"error": "DecodeError"}
+    
+
+print(JwtUtility.encode({"str":"fdsafsad"}))
