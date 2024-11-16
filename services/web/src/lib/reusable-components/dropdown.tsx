@@ -53,20 +53,3 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
         />
     );
 }
-/*
-        <Select>
-            <SelectTrigger className={className}>
-                <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectGroup>
-                    {items.map((item: dropdownInput) => (
-                        <SelectItem key={item.value} value={item.value}>
-                            {item.name}
-                        </SelectItem>
-                    ))}
-                </SelectGroup>
-            </SelectContent>
-        </Select>
-
-*/

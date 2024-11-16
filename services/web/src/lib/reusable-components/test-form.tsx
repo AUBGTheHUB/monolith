@@ -43,7 +43,7 @@ export function TestForm() {
                     className={className}
                     items={items}
                     control={form.control}
-                    name="fruit" // Must match a key in `FormSchema`
+                    name="fruit"
                 />
                 <Button type="submit">Submit</Button>
             </form>

@@ -4,7 +4,6 @@ import viteLogo from '/vite.svg';
 import './App.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
-// import { DropdownComponent } from '@/lib/reusable-components/dropdown.tsx';
 import { TestForm } from '@/lib/reusable-components/test-form';
 
 import MockDataComponent from './website/mockComponent';
