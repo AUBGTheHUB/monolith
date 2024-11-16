@@ -8,7 +8,7 @@ import resend
 from src.service.mail_service.mail_service import MailService
 from src.service.mail_service.utils import (
     load_email_participant_html_template,
-    load_email_verify_participant_html_template
+    load_email_verify_participant_html_template,
 )
 
 SENDER_EMAIL = "onboarding@resend.dev"
@@ -59,10 +59,9 @@ class ResendMailService(MailService):
             raise ValueError(f"Error loading the HTML template: {str(e)}") from e
 
         try:
-            return await self.send_email(receiver=receiver,
-                                  subject=subject,
-                                  body_content=body_html,
-                                  content_type="html")
+            return await self.send_email(
+                receiver=receiver, subject=subject, body_content=body_html, content_type="html"
+            )
         except Exception as e:
             raise RuntimeError(f"Failed to send email: {str(e)}") from e
 
@@ -80,9 +79,8 @@ class ResendMailService(MailService):
             raise ValueError(f"Failed to load email template: {str(e)}")
 
         try:
-            return await self.send_email(receiver=receiver,
-                                  subject=subject,
-                                  body_content=body_html,
-                                  content_type="html")
+            return await self.send_email(
+                receiver=receiver, subject=subject, body_content=body_html, content_type="html"
+            )
         except Exception as e:
             raise RuntimeError(f"Failed to send participant confirmation email: {str(e)}") from e

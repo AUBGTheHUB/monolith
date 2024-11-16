@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Literal
+from typing import Literal
 
 
 class MailService(ABC):

@@ -32,9 +32,3 @@ start = "src.server.app_entrypoint:start"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
-filterwarnings = [
-    "ignore:coroutine 'AsyncClient.aclose' was never awaited:RuntimeWarning"
-]
