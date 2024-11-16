@@ -128,9 +128,7 @@ async def test_create_participant_capacity_exceeded_error(
     response_mock: MagicMock,
 ) -> None:
     # Mock `register_admin_participant` to return an `Err` with `CapacityExceededError`
-    participant_service_mock.register_admin_participant.return_value = Err(
-        HackathonCapacityExceededError(50)  # Assuming the max capacity is 50 for this test
-    )
+    participant_service_mock.register_admin_participant.return_value = Err(HackathonCapacityExceededError())
 
     # Call the handler
     result = await participant_handlers.create_participant(response_mock, mock_input_data)
@@ -140,6 +138,5 @@ async def test_create_participant_capacity_exceeded_error(
 
     # Assert the response indicates a conflict with capacity reached
     assert isinstance(result, ErrResponse)
-    assert result.error == "The hackathon capacity has been reached"
-    assert result.max_capacity == 50
+    assert result.error == "Max hackathon capacity has been reached"
     response_mock.status_code = status.HTTP_409_CONFLICT
