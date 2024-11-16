@@ -18,10 +18,10 @@ export const RadioButton = <T extends FieldValues>({
     name,
     options,
     groupLabel,
-    groupClassName = '',
-    itemClassName = '',
-    labelClassName = '',
-    inputClassName = '',
+    groupClassName,
+    itemClassName,
+    labelClassName,
+    inputClassName,
 }: RadioButtonProps<T>) => {
     return (
         <FormField
