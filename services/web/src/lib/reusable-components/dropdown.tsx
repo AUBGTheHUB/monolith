@@ -1,29 +1,42 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 
 type dropdownInput = {
     name: string;
     value: string;
 };
 
-type DropdownComponentProps = {
+type DropdownComponentProps<T extends FieldValues = FieldValues> = {
+    control: Control<T>;
+    name: FieldPath<T>;
     label: string;
     placeholder: string;
     className: string;
     items: dropdownInput[];
 };
 
-export function DropdownComponent({ label, placeholder, className, items }: DropdownComponentProps) {
+export function DropdownComponent<T extends FieldValues = FieldValues>({
+    name,
+    label,
+    placeholder,
+    className,
+    items,
+    control,
+}: DropdownComponentProps<T>) {
     return (
         <FormField
-            name="fruit"
+            control={control}
+            name={name}
             render={({ field }) => (
                 <FormItem>
                     <FormLabel>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className={className}>
-                            <SelectValue placeholder={placeholder} />
-                        </SelectTrigger>
+                        <FormControl>
+                            <SelectTrigger className={className}>
+                                <SelectValue placeholder={placeholder} />
+                            </SelectTrigger>
+                        </FormControl>
                         <SelectContent>
                             <SelectGroup>
                                 {items.map((item: dropdownInput) => (
