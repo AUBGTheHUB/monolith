@@ -40,16 +40,16 @@ class _CustomConsoleRenderer(ConsoleRenderer):
 
 class _CustomRotatingFileHandler(RotatingFileHandler):
     """
-    By default the Rotating file handler, closes the current logfile (stream), renames the file by adding .1, .2, .3,
-    ...etc and then creates a new server.log to start logging there (opens a new stream). However, with this logic we
-    could not syncronize both structlog and uvicorn to log at the new server.log file, since structlog had the stream
+    By default, the Rotating file handler, closes the current logfile (stream), renames the file by adding .1, .2, .3,
+    ...etc. and then creates a new server.log to start logging there (opens a new stream). However, with this logic we
+    could not synchronize both structlog and uvicorn to log at the new server.log file, since structlog had the stream
     opened to the old file which was renamed to i.e. server.log.1 by the handler used by uvicorn. To go around it, we
     are changing how the rollover of files is happening. Here we copy the contents of the server.log once it reaches
     the limit. We create a new file with the extension .1, .2, .3, ...etc. We paste the contents of the server.log to
-    the new file i.e. server.log.1 and then delete whatever server.log had. This way structlog and uvicorn keep
-    writing to the same file (the original server.log) using their originally opened streams.
+    the new file i.e. server.log.1 and then delete whatever server.log had. This way structlog and uvicorn keep writing
+    to the same file (the original server.log) using their originally opened streams.
 
-    To acheive this we override the doRollover() method of the logging.RotatingFileHandler.
+    To achieve this we override the doRollover() method of the logging.RotatingFileHandler.
 
     Inspiration for the new implementation was gotten from an amazing tool called 'logrotate' that performs rotation of
     logs in this manner.

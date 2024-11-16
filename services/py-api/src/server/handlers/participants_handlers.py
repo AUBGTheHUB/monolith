@@ -24,6 +24,7 @@ class ParticipantHandlers:
         result = await self._service.register_admin_participant(input_data)
 
         if is_err(result):
+            # https://fastapi.tiangolo.com/advanced/response-change-status-code/
             if isinstance(result.err_value, DuplicateEmailError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Participant with this email already exists")

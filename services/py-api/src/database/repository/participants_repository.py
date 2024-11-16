@@ -39,7 +39,7 @@ class ParticipantsRepository(CRUDRepository):
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
-    ) -> Ok[Participant] | Err[DuplicateEmailError | Exception]:
+    ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             participant = Participant(
                 name=input_data.name,

@@ -5,6 +5,8 @@ from pydantic import BaseModel, field_serializer, ConfigDict
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 
+# https://fastapi.tiangolo.com/tutorial/response-model/#response_model-parameter
+
 
 class ErrResponse(BaseModel):
     error: str
