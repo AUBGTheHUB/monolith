@@ -7,7 +7,7 @@ from starlette import status
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError
+from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, HackathonCapacityExceededError
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantRegisteredInTeamResponse
@@ -118,3 +118,28 @@ async def test_create_participant_general_error(
     assert isinstance(result, ErrResponse)
     assert result.error == "An unexpected error occurred during the creation of Participant"
     response_mock.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+@pytest.mark.asyncio
+async def test_create_participant_capacity_exceeded_error(
+    participant_handlers: ParticipantHandlers,
+    participant_service_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_admin_participant` to return an `Err` with `CapacityExceededError`
+    participant_service_mock.register_admin_participant.return_value = Err(
+        HackathonCapacityExceededError(50)  # Assuming the max capacity is 50 for this test
+    )
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data)
+
+    # Check that `register_admin_participant` was awaited once
+    participant_service_mock.register_admin_participant.assert_awaited_once_with(mock_input_data)
+
+    # Assert the response indicates a conflict with capacity reached
+    assert isinstance(result, ErrResponse)
+    assert result.error == "The hackathon capacity has been reached"
+    assert result.max_capacity == 50
+    response_mock.status_code = status.HTTP_409_CONFLICT

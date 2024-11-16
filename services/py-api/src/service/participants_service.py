@@ -40,7 +40,7 @@ class ParticipantService:
         return Ok((participant.ok_value, team.ok_value))
 
     async def _check_capacity_register_admin_participant_case(self) -> bool:
-        """Calculate if there is enough capacity to register a new team"""
+        """Calculate if there is enough capacity to register a new team. Capacity is measured in MAX_NUMBER_OF_VERFIED teams"""
         # Fetch number of verified random participants
         verified_random_participants = await self._participant_repo.get_verified_random_participants_count()
 
@@ -56,8 +56,10 @@ class ParticipantService:
         return number_ant_teams < self._team_repo.MAX_NUMBER_OF_TEAMS_IN_HACKATHON
 
     async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Result[
-        Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception]:
-      
+        Tuple[Participant, Team],
+        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+    ]:
+
         # Capacity Check 2
         has_capacity = await self._check_capacity_register_admin_participant_case()
         if not has_capacity:

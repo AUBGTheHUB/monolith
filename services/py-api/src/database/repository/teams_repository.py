@@ -63,6 +63,5 @@ class TeamsRepository(CRUDRepository):
 
     async def get_verified_registered_teams_count(self) -> int:
         """Returns the count of verified teams."""
-        query = {"email_verified": True}
-        count = await self._collection.count_documents(query)
-        return count
+        # Ignoring mypy type due to Returning Any from function declared to return "int"  [no-any-return] which is not true
+        return await self._collection.count_documents({"is_verified": True})  # type: ignore

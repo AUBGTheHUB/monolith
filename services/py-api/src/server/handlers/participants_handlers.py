@@ -33,6 +33,7 @@ class ParticipantHandlers:
             if isinstance(result.err_value, DuplicateTeamNameError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Team with this name already exists")
+
             if isinstance(result.err_value, HackathonCapacityExceededError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Max hackathon capacity has been reached")
