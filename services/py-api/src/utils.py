@@ -1,9 +1,14 @@
+import os
+
 from threading import Lock
 from typing import Any, Dict
 
 import httpx
 from structlog.stdlib import get_logger
 
+import jwt
+
+JWT_SECRET = os.environ["SECRET_KEY"]
 LOG = get_logger()
 
 
@@ -43,3 +48,19 @@ class AsyncClient(metaclass=SingletonMeta):
             raise RuntimeError("The AsyncClient has not been initialized!")
 
         await self._async_client.aclose()
+
+
+class JwtUtility:
+    async def encode(payload) -> Any:
+        try:
+            encoded = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+            return encoded
+        except RuntimeError as e:
+            LOG.warning(e)
+
+    async def decode(token) -> Any:
+        try:
+            decoded = jwt.decode(token, JWT_SECRET, algorithm="HS256")
+            return decoded
+        except (jwt.ExpiredSignatureError, jwt.DecodeError, jwt.InvalidSignatureError) as e:
+            LOG.error(e)
