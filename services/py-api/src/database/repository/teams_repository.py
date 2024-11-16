@@ -17,7 +17,7 @@ LOG = get_logger()
 
 class TeamsRepository(CRUDRepository):
     MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
-    MAX_NUMBER_OF_TEAMS_IN_HACKATHON: Final[int] = 30
+    MAX_NUMBER_OF_TEAMS_IN_HACKATHON: Final[int] = 12
 
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
