@@ -1,5 +1,5 @@
 from unittest.mock import Mock
-
+from unittest.mock import AsyncMock
 import pytest
 from bson import ObjectId
 from result import Ok, Err
@@ -111,6 +111,8 @@ async def test_register_admin_participant_success(
         )
     )
 
+    # Mocks the behaviour of capacity check 2
+    participant_service._check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
     # Call `register_admin_participant`
     result = await participant_service.register_admin_participant(mock_input_data)
 
@@ -133,6 +135,9 @@ async def test_register_admin_participant_general_exception(
     # Mock `with_transaction` to raise a general exception
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
 
+    # Mocks the behaviour of capacity check 2
+    participant_service._check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+
     # Call `register_admin_participant`
     result = await participant_service.register_admin_participant(mock_input_data)
 
@@ -145,3 +150,60 @@ async def test_register_admin_participant_general_exception(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     assert str(result.err_value) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_check_capacity_with_sufficient_capacity(
+    participant_service: ParticipantService, participant_repo_mock: Mock, team_repo_mock: Mock
+) -> None:
+    # Mock repository methods to return controlled values
+    participant_repo_mock.get_verified_random_participants_count.return_value = 18
+    team_repo_mock.get_verified_registered_teams_count.return_value = 4
+
+    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
+    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
+    team_repo_mock.MAX_NUMBER_OF_TEAMS_IN_HACKATHON = 12
+
+    # Call the capacity check function
+    result = await participant_service._check_capacity_register_admin_participant_case()
+
+    # Assert the result is True (enough capacity)
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_check_capacity_with_exact_limit(
+    participant_service: ParticipantService, participant_repo_mock: Mock, team_repo_mock: Mock
+) -> None:
+    # Mock repository methods to return controlled values
+    participant_repo_mock.get_verified_random_participants_count.return_value = 10
+    team_repo_mock.get_verified_registered_teams_count.return_value = 10
+
+    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
+    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
+    team_repo_mock.MAX_NUMBER_OF_TEAMS_IN_HACKATHON = 12
+
+    # Call the capacity check function
+    result = await participant_service._check_capacity_register_admin_participant_case()
+
+    # Assert the result is False (capacity exactly reached)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_check_capacity_with_exceeded_capacity(
+    participant_service: ParticipantService, participant_repo_mock: Mock, team_repo_mock: Mock
+) -> None:
+    # Mock repository methods to return controlled values
+    participant_repo_mock.get_verified_random_participants_count.return_value = 15
+    team_repo_mock.get_verified_registered_teams_count.return_value = 11
+
+    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
+    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
+    team_repo_mock.MAX_NUMBER_OF_TEAMS_IN_HACKATHON = 12
+
+    # Call the capacity check function
+    result = await participant_service._check_capacity_register_admin_participant_case()
+
+    # Assert the result is False (capacity exceeded)
+    assert result is False
