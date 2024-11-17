@@ -49,11 +49,11 @@ class ParticipantService:
 
         # Calculate the anticipated number of teams
         number_ant_teams = verified_registered_teams + ceil(
-            verified_random_participants / TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS
+            verified_random_participants / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams < TeamsRepository.MAX_NUMBER_OF_TEAMS_IN_HACKATHON
+        return number_ant_teams < self._team_repo.MAX_NUMBER_OF_TEAMS_IN_HACKATHON
 
     async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Result[
         Tuple[Participant, Team],
@@ -63,7 +63,7 @@ class ParticipantService:
         # Capacity Check 2
         has_capacity = await self._check_capacity_register_admin_participant_case()
         if not has_capacity:
-            return Err(HackathonCapacityExceededError(self._team_repo.MAX_NUMBER_OF_TEAMS_IN_HACKATHON))
+            return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
         result = await self._tx_manager.with_transaction(self._create_participant_and_team_in_transaction, input_data)
