@@ -9,9 +9,8 @@
     // "features": {},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     "forwardPorts": [
-        3000,
-        6969,
-        8000
+        3000, // React  development server
+        8080, // Python API
     ],
     // Volume containing repo is shared after image is built, therefore we cannot run any setup steps
     // during the image creation. This is the command which gets executed once the image is built and the

@@ -6,9 +6,12 @@
 
 .vscode/dryrun.log
 
+services/py-api/shared/*.log.*
+
 .files_for_commit.txt
 
 node_modules
 
 **/.DS_Store
+
 /.idea

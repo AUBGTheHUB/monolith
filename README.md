@@ -1,8 +1,5 @@
 # @AUBGTheHUB's Monolith
-
-[![Build Frontend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_frontend.yml)
-
-[![Build Python Backend](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/build_python_backend.yml)
+[![Python API Tests](https://github.com/AUBGTheHUB/monolith/actions/workflows/pytests.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/pytests.yml)
 
 [![Notify Discord - New Issue](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml/badge.svg)](https://github.com/AUBGTheHUB/monolith/actions/workflows/discord_issue.yml)
 
@@ -60,6 +57,16 @@ git clone git@github.com:AUBGTheHUB/monolith.git
 ```bash
 cd monolith
 ```
+---
+### Extra Step: For WSL users
+In order to make sure that your WSL SSH keys are forwarded to the DEV Container you should run the following script:
+
+```bash
+bash wsl_ssh_forwarding.sh
+```
+[Learn More](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials) about how this is done
+
+---
 ### 4. Open your project in Visual Studio code. Run:
 ```bash
 code .

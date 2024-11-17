@@ -1,13 +1,15 @@
-#Installs the node_modules in the project root and creates .env files for each of the services
+# Installs the node_modules in the project root and creates .env files for each of the services
 npm install && make install-env
-#Installs husky - pre-commit manager for .js, .css, .html
+# Installs husky - pre-commit manager for .js, .css, .html
 npm run prepare
-#Installs gum - helps with creating interactive terminal user interfaces
+# Installs gum - helps with creating interactive terminal user interfaces
 make install-gum
-#Enables the .venv folder to appear inside the project - currently ./services/py_api - poetry installs all the deps on this
+# Enables the .venv folder to appear inside the project - currently ./services/py_api - poetry installs all the deps on this
 poetry config virtualenvs.in-project true
-#Installs the node_modules inside ./services/web
+# This makes sure we are using the current python version configured by pyenv. https://python-poetry.org/docs/managing-environments/
+poetry config virtualenvs.prefer-active-python true
+# Installs the node_modules inside ./services/web
 make install-web
-#Installs the backend dependencies
+# Installs the backend dependencies
 cd ./services/py-api/
 poetry install
