@@ -20,6 +20,7 @@ class ParticipantsRepository(CRUDRepository):
     # TODO: Implement the rest of the methods
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
+        self._db_manager = db_manager
 
     async def fetch_by_id(self, obj_id: str) -> Result:
         raise NotImplementedError()
@@ -64,20 +65,34 @@ class ParticipantsRepository(CRUDRepository):
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
     ) -> Result[Participant, DuplicateEmailError | Exception]:
-        try:
-            participant = Participant(
-                name=input_data.name,
-                email=input_data.email,
-                is_admin=input_data.is_admin,
-                # If the team_id is passed as a kwarg the participant will be inserted in the given team
-                team_id=kwargs.get("team_id"),
-            )
-            LOG.debug("Inserting participant...", participant=participant.dump_as_json())
+
+        participant = Participant(
+            name=input_data.name,
+            email=input_data.email,
+            is_admin=input_data.is_admin,
+            # If the team_id is passed as a kwarg the participant will be inserted in the given team
+            team_id=kwargs.get("team_id"),
+        )
+
+        async def db_operation() -> None:
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
+
+        try:
+            LOG.debug("Inserting participant...", participant=participant.dump_as_json())
+
+            if session:
+                # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
+                # mechanism
+                await db_operation()
+
+            await self._db_manager.retry_db_operation(db_operation)
+
             return Ok(participant)
+
         except DuplicateKeyError:
             LOG.warning("Participant insertion failed due to duplicate email", email=input_data.email)
             return Err(DuplicateEmailError(input_data.email))
+
         except Exception as e:
             LOG.exception("Participant insertion failed due to err {}".format(e))
             return Err(e)
