@@ -13,6 +13,7 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 
 
@@ -57,6 +58,7 @@ def db_manager_mock(db_client_session_mock: Mock) -> Mock:
 def participant_repo_mock() -> Mock:
     """This is a mock obj of ParticipantsRepository. To change the return values of its methods use:
     `participant_repo_mock.method_name.return_value=some_return_value`"""
+
     participant_repo = Mock(spec=ParticipantsRepository)
 
     participant_repo.fetch_by_id = AsyncMock()
@@ -65,7 +67,9 @@ def participant_repo_mock() -> Mock:
     participant_repo.create = AsyncMock()
     participant_repo.delete = AsyncMock()
 
-    return participant_repo
+    yield participant_repo
+
+    participant_repo.reset_mock()
 
 
 @pytest.fixture
@@ -81,11 +85,31 @@ def team_repo_mock() -> Mock:
     team_repo.create = AsyncMock()
     team_repo.delete = AsyncMock()
 
-    return team_repo
+    yield team_repo
+
+    team_repo.reset_mock()
+
+
+@pytest.fixture
+def hackathon_service_mock() -> Mock:
+    """This is a mock obj of HackathonService. To change the return values of its methods use:
+    `hackathon_service_mock.method_name.return_value=some_return_value`"""
+
+    hackathon_service = Mock(spec=HackathonService)
+
+    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
+
+    yield hackathon_service
+
+    hackathon_service.reset_mock()
 
 
 @pytest.fixture
 def tx_manager_mock() -> Mock:
+    """This is a mock obj of TransactionManager. To change the return values of its methods use:
+    `tx_manager_mock.method_name.return_value=some_return_value`"""
+
     tx_manager = Mock(spec=TransactionManager)
     tx_manager.with_transaction = AsyncMock()
 
@@ -96,6 +120,9 @@ def tx_manager_mock() -> Mock:
 
 @pytest.fixture
 def participant_registration_service_mock() -> Mock:
+    """This is a mock obj of ParticipantRegistrationService. To change the return values of its methods use:
+    `p_reg_service.method_name.return_value=some_return_value`"""
+
     p_reg_service = Mock(spec=ParticipantRegistrationService)
     p_reg_service.register_admin_participant.return_value = AsyncMock()
 
