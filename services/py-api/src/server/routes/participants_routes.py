@@ -39,13 +39,13 @@ def _h_service(
     return HackathonService(p_repo, t_repo, tx_manager)
 
 
-def _p_service(
+def _p_reg_service(
     h_service: HackathonService = Depends(_h_service),
 ) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
 
 
-def _handler(p_service: ParticipantRegistrationService = Depends(_p_service)) -> ParticipantHandlers:
+def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
     return ParticipantHandlers(p_service)
 
 
