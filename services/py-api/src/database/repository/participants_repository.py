@@ -1,4 +1,3 @@
-from math import ceil
 from typing import Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -59,9 +58,7 @@ class ParticipantsRepository(CRUDRepository):
             LOG.exception("Participant insertion failed due to err {}".format(e))
             return Err(e)
 
-    async def get_number_random_participants(self):
-        return self._collection.find({"is_admin" : "false"}).count()
-        
-
-        
-    
+    async def get_verified_random_participants_count(self) -> int:
+        """Returns the count of verified participants who are not assigned to any team."""
+        # Ignoring mypy type due to Returning Any from function declared to return "int"  [no-any-return] which is not true
+        return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
