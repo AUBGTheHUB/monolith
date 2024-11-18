@@ -21,6 +21,7 @@ class TeamsRepository(CRUDRepository):
 
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
+        self._db_manager = db_manager
 
     async def create(
         self,
@@ -29,10 +30,21 @@ class TeamsRepository(CRUDRepository):
         **kwargs: Dict[str, Any]
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
-        try:
-            team = Team(name=input_data.team_name)
-            LOG.debug("Inserting team...", team=team.dump_as_json())
+        team = Team(name=input_data.team_name)
+
+        async def db_operation() -> None:
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
+
+        try:
+            LOG.debug("Inserting team...", team=team.dump_as_json())
+
+            if session:
+                # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
+                # mechanism
+                await db_operation()
+
+            await self._db_manager.retry_db_operation(db_operation)
+
             return Ok(team)
 
         except DuplicateKeyError:
