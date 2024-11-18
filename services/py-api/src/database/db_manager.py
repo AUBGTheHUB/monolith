@@ -1,11 +1,12 @@
+from asyncio import sleep
 from math import ceil
 from os import environ
-from typing import Annotated
+from typing import Annotated, Callable, Awaitable, Any
 
 from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from pymongo import MongoClient
-from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError, PyMongoError
 from result import Err
 from structlog.stdlib import get_logger
 
@@ -65,6 +66,35 @@ class DatabaseManager(metaclass=SingletonMeta):
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-database
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
         return self._client[self._DB_NAME][collection_name]
+
+    @staticmethod
+    async def retry_db_operation[T](db_operation: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+        """
+        If there was a TransientTransactionError during execution, retries the db operation with exponential backoff up
+        to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
+        network issue.
+
+        Raises:
+            PyMongoError
+        """
+        max_retries = 3
+        delay = 1  # initial delay in seconds
+
+        # range is exclusive that's why we do max_retries + 1
+        for retry in range(1, max_retries + 1):
+            try:
+                return await db_operation(*args, **kwargs)
+            except PyMongoError as exc:
+                if exc.has_error_label("TransientTransactionError"):
+                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    await sleep(delay)
+                    delay *= 2  # exponential backoff
+                    continue
+
+                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
+                raise exc
+
+        raise PyMongoError("Database operation failed after maximum retries")
 
 
 def ping_db() -> Err[str]:
