@@ -43,15 +43,11 @@ class ParticipantService:
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
-        team = None
-        if is_err(team):
-            return team
-
-        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        participant = await self._participant_repo.create(input_data, session, team_id=None)
         if is_err(participant):
             return participant
 
-        return Ok((participant.ok_value, team.ok_value))
+        return Ok((participant.ok_value, ""))
 
     async def _check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in MAX_NUMBER_OF_VERFIED teams"""
@@ -85,10 +81,10 @@ class ParticipantService:
     
     async def _check_capacity_register_random_participant_case(self) -> bool:
         # Fetch number of verified random participants
-        random_participants = ParticipantsRepository.get_verified_random_participants_count()
+        random_participants = await self._participant_repo.get_verified_random_participants_count()
 
         # Fetch number of verified registered teams
-        registered_teams = TeamsRepository.get_verified_registered_teams_count()
+        registered_teams = await self._team_repo.get_verified_registered_teams_count()
 
 
         anticipated_total_teams = registered_teams + ceil((random_participants + 1) / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS)
@@ -101,7 +97,7 @@ class ParticipantService:
     ]:
 
         # Capacity Check 1
-        has_capacity = await self._check_capacity_register_random_participant_case
+        has_capacity = await self._check_capacity_register_random_participant_case()
         if not has_capacity:
             return Err(HackathonCapacityExceededError())
 
