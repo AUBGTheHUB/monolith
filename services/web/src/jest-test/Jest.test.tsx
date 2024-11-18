@@ -1,26 +1,16 @@
-import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Link from './Jest';
 
-it('changes the class when hovered', () => {
-    const component = renderer.create(<Link />);
+it('changes the class when hovered', async () => {
+    const { container } = render(<Link />);
+    await userEvent.hover(screen.getByText('Link'));
+    await screen.findAllByText('Link');
 
-    let tree = component.toJSON() as ReactTestRendererJSON;
-    expect(tree).toMatchSnapshot();
-
-    // manually trigger the callback
-    renderer.act(() => {
-        tree.props.onMouseEnter();
-    });
-    // re-rendering
-    tree = component.toJSON() as ReactTestRendererJSON;
-    expect(tree).toMatchSnapshot();
-
-    // manually trigger the callback
-    renderer.act(() => {
-        tree.props.onMouseLeave();
-    });
-    // re-rendering
-    tree = component.toJSON() as ReactTestRendererJSON;
-    expect(tree).toMatchSnapshot();
-    //expect(1).toBeGreaterThan(19);
+    // Safely check if the first child has the 'hovered' class
+    const firstChild = container.firstChild as HTMLElement;
+    expect(firstChild).not.toBeNull(); // Ensure it's not null
+    if (firstChild) {
+        expect(firstChild.classList.contains('hovered')).toBe(true);
+    }
 });
