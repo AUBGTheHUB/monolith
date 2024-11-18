@@ -13,6 +13,7 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.service.participants_registration_service import ParticipantRegistrationService
 
 
 @pytest.fixture
@@ -54,6 +55,8 @@ def db_manager_mock(db_client_session_mock: Mock) -> Mock:
 
 @pytest.fixture
 def participant_repo_mock() -> Mock:
+    """This is a mock obj of ParticipantsRepository. To change the return values of its methods use:
+    `participant_repo_mock.method_name.return_value=some_return_value`"""
     participant_repo = Mock(spec=ParticipantsRepository)
 
     participant_repo.fetch_by_id = AsyncMock()
@@ -67,6 +70,9 @@ def participant_repo_mock() -> Mock:
 
 @pytest.fixture
 def team_repo_mock() -> Mock:
+    """This is a mock obj of TeamsRepository. To change the return values of its methods use:
+    `team_repo_mock.method_name.return_value=some_return_value`"""
+
     team_repo = Mock(spec=TeamsRepository)
 
     team_repo.fetch_by_id = AsyncMock()
@@ -89,13 +95,27 @@ def tx_manager_mock() -> Mock:
 
 
 @pytest.fixture
+def participant_registration_service_mock() -> Mock:
+    p_reg_service = Mock(spec=ParticipantRegistrationService)
+    p_reg_service.register_admin_participant.return_value = AsyncMock()
+
+    yield p_reg_service
+
+    p_reg_service.reset_mock()
+
+
+@pytest.fixture
 def mock_input_data() -> ParticipantRequestBody:
     return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=True)
 
 
 @pytest.fixture
 def response_mock() -> MagicMock:
-    return MagicMock(spec=Response)
+    resp = MagicMock(spec=Response)
+
+    yield resp
+
+    resp.reset_mock()
 
 
 @pytest.fixture
