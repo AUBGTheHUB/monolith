@@ -1,5 +1,6 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
+import jestPlugin from 'eslint-plugin-jest';
 import tseslint from 'typescript-eslint';
 import pluginReact from 'eslint-plugin-react';
 import pluginUnusedImports from 'eslint-plugin-unused-imports';
@@ -30,11 +31,17 @@ export default [
             'react-refresh/only-export-components': 'off',
         },
     },
-    {
-        plugins: ['jest'],
-        env: {
-            'jest/globals': true,
-        },
+  {
+    files: ['*.js', '*.jsx', '*.ts', '*.tsx'],
+    plugins: {
+      jest: jestPlugin, // Register the Jest plugin
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
         rules: {
             'jest/no-disabled-tests': 'warn',
             'jest/no-focused-tests': 'error',
