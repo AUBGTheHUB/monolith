@@ -2,7 +2,7 @@ from fastapi import Response, APIRouter, Depends
 
 from src.database.db_manager import DB_MANAGER
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse, NumberOfRandomParticipantsResponse
+from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 utility_router = APIRouter()
@@ -19,9 +19,3 @@ async def ping(
     response: Response, handler: UtilityHandlers = Depends(create_utility_handler)
 ) -> PongResponse | ErrResponse:
     return await handler.ping_services(response)
-
-@utility_router.get("/random_users", responses={200: {"model": NumberOfRandomParticipantsResponse}, 503: {"model": ErrResponse}})
-async def random_users(
-    response: Response, handler: UtilityHandlers = Depends(create_utility_handler)
-) -> NumberOfRandomParticipantsResponse | ErrResponse:
-    return await handler.random_users_services(response)

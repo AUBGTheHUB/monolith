@@ -1,8 +1,7 @@
 from fastapi import Response, status
 
 from src.database.db_manager import DB_MANAGER
-from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse, NumberOfRandomParticipantsResponse
-
+from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse
 
 class UtilityHandlers:
 

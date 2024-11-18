@@ -1,4 +1,3 @@
-from fastapi.responses import JSONResponse
 from result import is_err
 from starlette import status
 from starlette.responses import Response
@@ -23,11 +22,11 @@ class ParticipantHandlers:
         #     result = await self._service.register_admin_participant(input_data)
         # else:
         #     ...
-
-
-        if input_data.is_admin and input_data.team_name:
+        if input_data.is_admin:
             result = await self._service.register_admin_participant(input_data)
-        else:   
+        elif input_data.team_name:
+            result = await self._service.register_admin_participant(input_data) #change
+        else:
             result = await self._service.register_random_participant(input_data)
 
         if is_err(result):
@@ -48,10 +47,3 @@ class ParticipantHandlers:
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
 
         return ParticipantRegisteredInTeamResponse(participant=result.ok_value[0], team=result.ok_value[1])
-
-
-    async def capacity_reached(self):
-        return JSONResponse.error(
-            message = "The hackathon capacity has been reached",
-            status_code = 409
-        )

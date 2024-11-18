@@ -10,7 +10,6 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.handlers.participants_handlers import ParticipantHandlers
 
 
 class ParticipantService:
@@ -31,6 +30,20 @@ class ParticipantService:
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
         team = await self._team_repo.create(input_data, session)
+        if is_err(team):
+            return team
+
+        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        if is_err(participant):
+            return participant
+
+        return Ok((participant.ok_value, team.ok_value))
+    
+    async def _create_random_participant_in_transaction(
+        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
+
+        team = None
         if is_err(team):
             return team
 
@@ -70,26 +83,28 @@ class ParticipantService:
         result = await self._tx_manager.with_transaction(self._create_participant_and_team_in_transaction, input_data)
         return result
     
-    async def capacity_check_one(self):
-        random_participants = ParticipantsRepository.get_number_random_participants()
-        registered_teams = TeamsRepository.get_number_registered_teams()
-        
-        hackathon_teams_cap = 20 #change later
-        participants_per_team = 5 #change later
+    async def _check_capacity_register_random_participant_case(self) -> bool:
+        # Fetch number of verified random participants
+        random_participants = ParticipantsRepository.get_verified_random_participants_count()
 
-        anticipated_total_teams = registered_teams + ceil((random_participants + 1) / participants_per_team)
+        # Fetch number of verified registered teams
+        registered_teams = TeamsRepository.get_verified_registered_teams_count()
 
-        if anticipated_total_teams <= hackathon_teams_cap:
-            return True
-        else:
-            return False
 
-    #revise
-    async def insert_random_participant(self, input_data: ParticipantRequestBody
-    ) -> Ok[Tuple[Participant, Team]] | Err[DuplicateEmailError | DuplicateTeamNameError | Exception]:
-        
-        if ParticipantsRepository.capacity_check_one():
-           result = self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
-           return result; 
-        else:
-           ParticipantHandlers.capacity_reached()
+        anticipated_total_teams = registered_teams + ceil((random_participants + 1) / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS)
+
+        return anticipated_total_teams <= self._team_repo.MAX_NUMBER_OF_TEAMS_IN_HACKATHON
+    
+    async def register_random_participant(self, input_data: ParticipantRequestBody) -> Result[
+        Tuple[Participant, Team],
+        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+    ]:
+
+        # Capacity Check 1
+        has_capacity = await self._check_capacity_register_random_participant_case
+        if not has_capacity:
+            return Err(HackathonCapacityExceededError())
+
+        # Proceed with registration if there is capacity
+        result = await self._tx_manager.with_transaction(self._create_random_participant_in_transaction, input_data)
+        return result
