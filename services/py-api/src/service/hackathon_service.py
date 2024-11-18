@@ -30,7 +30,7 @@ class HackathonService:
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
-        This method is intended be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
+        This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
         function.
         """
         team = await self._team_repo.create(input_data, session)
@@ -47,7 +47,7 @@ class HackathonService:
         self, input_data: ParticipantRequestBody
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
-        any of the db operations: creation of a Team obj, creation of a Participant obj fail, the whole operation
+        any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
         fails, and no permanent changes are made to the database."""
         return await self._tx_manager.with_transaction(
             self._create_participant_and_team_in_transaction_callback, input_data
