@@ -4,7 +4,6 @@ from result import Result, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.database.transaction_manager import TransactionManager
 from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
@@ -13,9 +12,8 @@ from src.service.hackathon_service import HackathonService
 class ParticipantRegistrationService:
     """Service layer responsible for handling the business logic when registering a participant"""
 
-    def __init__(self, hackathon_service: HackathonService, tx_manager: TransactionManager) -> None:
+    def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
-        self._tx_manager = tx_manager
 
     async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Result[
         Tuple[Participant, Team],
@@ -27,8 +25,4 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        result = await self._tx_manager.with_transaction(
-            self._hackathon_service.create_participant_and_team_in_transaction_callback, input_data
-        )
-
-        return result
+        return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)

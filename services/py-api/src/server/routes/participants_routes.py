@@ -41,9 +41,8 @@ def _h_service(
 
 def _p_service(
     h_service: HackathonService = Depends(_h_service),
-    tx_manager: TransactionManager = Depends(_tx_manager),
 ) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(h_service, tx_manager)
+    return ParticipantRegistrationService(h_service)
 
 
 def _handler(p_service: ParticipantRegistrationService = Depends(_p_service)) -> ParticipantHandlers:

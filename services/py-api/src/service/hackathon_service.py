@@ -26,14 +26,12 @@ class HackathonService:
         self._team_repo = team_repo
         self._tx_manager = tx_manager
 
-    async def create_participant_and_team_in_transaction_callback(
+    async def _create_participant_and_team_in_transaction_callback(
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
-        """Creates a participant and team in a transactional manner. The participant is added to the team created.
+        """
         This method is intended be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
-        function. If any of the db operations: creation of a Team obj, creation of a Participant obj fail, the whole
-        operation fails, and no permanent changes are made to the database. (The transaction is roll backed by the
-        `with_transaction` method).
+        function.
         """
         team = await self._team_repo.create(input_data, session)
         if is_err(team):
@@ -44,6 +42,16 @@ class HackathonService:
             return participant
 
         return Ok((participant.ok_value, team.ok_value))
+
+    async def create_participant_and_team_in_transaction(
+        self, input_data: ParticipantRequestBody
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
+        """Creates a participant and team in a transactional manner. The participant is added to the team created. If
+        any of the db operations: creation of a Team obj, creation of a Participant obj fail, the whole operation
+        fails, and no permanent changes are made to the database."""
+        return await self._tx_manager.with_transaction(
+            self._create_participant_and_team_in_transaction_callback, input_data
+        )
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
