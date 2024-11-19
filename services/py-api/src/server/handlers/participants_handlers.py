@@ -25,7 +25,7 @@ class ParticipantHandlers:
         if input_data.is_admin:
             result = await self._service.register_admin_participant(input_data)
         elif input_data.team_name:
-            result = await self._service.register_admin_participant(input_data) #change
+            result = await self._service.register_admin_participant(input_data) #Should be changed to a function for adding a non-admin to existing team
         else:
             result = await self._service.register_random_participant(input_data)
 

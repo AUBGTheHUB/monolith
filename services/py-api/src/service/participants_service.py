@@ -43,7 +43,7 @@ class ParticipantService:
         self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
 
-        participant = await self._participant_repo.create(input_data, session, team_id=None)
+        participant = await self._participant_repo.create(input_data, session)
         if is_err(participant):
             return participant
 
