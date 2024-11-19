@@ -20,15 +20,14 @@ from src.service.participants_registration_service import ParticipantRegistratio
 @pytest.fixture
 def db_client_session_mock() -> MagicMock:
     mock_session = MagicMock(spec=AsyncIOMotorClientSession)
-    # We use AsyncMock, as the original AsyncIOMotorClient class has async methods
+
     mock_session.start_transaction = MagicMock()
+    # We use AsyncMock, as the original AsyncIOMotorClient class has async methods
     mock_session.commit_transaction = AsyncMock()  # `commit_transaction` is async
     mock_session.abort_transaction = AsyncMock()  # `abort_transaction` is async
     mock_session.end_session = AsyncMock()  # `end_session` is async
-    # https://docs.pytest.org/en/stable/how-to/fixtures.html#yield-fixtures-recommended
-    yield mock_session
 
-    mock_session.reset_mock()
+    return mock_session
 
 
 @pytest.fixture
@@ -49,9 +48,7 @@ def db_manager_mock(db_client_session_mock: Mock) -> Mock:
 
     db_manager.close_all_connections.side_effect = close_side_effect
 
-    yield db_manager
-
-    db_manager.reset_mock()
+    return db_manager
 
 
 @pytest.fixture
@@ -67,9 +64,7 @@ def participant_repo_mock() -> Mock:
     participant_repo.create = AsyncMock()
     participant_repo.delete = AsyncMock()
 
-    yield participant_repo
-
-    participant_repo.reset_mock()
+    return participant_repo
 
 
 @pytest.fixture
@@ -85,9 +80,7 @@ def team_repo_mock() -> Mock:
     team_repo.create = AsyncMock()
     team_repo.delete = AsyncMock()
 
-    yield team_repo
-
-    team_repo.reset_mock()
+    return team_repo
 
 
 @pytest.fixture
@@ -100,9 +93,7 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
 
-    yield hackathon_service
-
-    hackathon_service.reset_mock()
+    return hackathon_service
 
 
 @pytest.fixture
@@ -113,9 +104,7 @@ def tx_manager_mock() -> Mock:
     tx_manager = Mock(spec=TransactionManager)
     tx_manager.with_transaction = AsyncMock()
 
-    yield tx_manager
-
-    tx_manager.reset_mock()
+    return tx_manager
 
 
 @pytest.fixture
@@ -126,9 +115,7 @@ def participant_registration_service_mock() -> Mock:
     p_reg_service = Mock(spec=ParticipantRegistrationService)
     p_reg_service.register_admin_participant.return_value = AsyncMock()
 
-    yield p_reg_service
-
-    p_reg_service.reset_mock()
+    return p_reg_service
 
 
 @pytest.fixture
@@ -138,11 +125,8 @@ def mock_input_data() -> ParticipantRequestBody:
 
 @pytest.fixture
 def response_mock() -> MagicMock:
-    resp = MagicMock(spec=Response)
-
-    yield resp
-
-    resp.reset_mock()
+    # We use MagicMock as Response has magic methods such as __call__
+    return MagicMock(spec=Response)
 
 
 @pytest.fixture
