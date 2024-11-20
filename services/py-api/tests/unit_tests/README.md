@@ -7,7 +7,7 @@
 ### 2. Use `pytest` Fixtures for Setup and Repeated Code
 `pytest` fixtures are a powerful tool for handling setup tasks or reusable code across multiple tests. When you have common dependencies, objects, or configurations required by multiple tests, fixtures can simplify your test suite by making these elements reusable.
 
-- **Define Common Fixtures**: Place shared fixtures in a `conftest.py` file so they’re accessible to all tests within the directory. This keeps fixtures organized and ensures they’re automatically available without needing to import them into individual test files.
+- **Define Common Fixtures**: Place shared fixtures in a [conftest.py](https://docs.pytest.org/en/stable/reference/fixtures.html#conftest-py-sharing-fixtures-across-multiple-files) file so they’re accessible to all tests within the directory. This keeps fixtures organized and ensures they’re automatically available without needing to import them into individual test files.
 
 To learn more about `pytest` fixtures, check the [official documentation](https://docs.pytest.org/en/stable/explanation/fixtures.html).
 
@@ -17,54 +17,91 @@ To learn more about `pytest` fixtures, check the [official documentation](https:
 
 We use mocking to replace injected dependencies with fake ones, especially when our code is designed with "composition over inheritance." This approach makes it easier to substitute real dependencies with mocks in unit tests.
 
-1. **`Mock`**: Use `Mock` for simple objects that don’t require magic methods (e.g., objects with basic attributes or methods but no special behaviors).
-2. **`MagicMock`**: Use `MagicMock` for more complex objects that have magic methods, like `__call__`, `__getitem__`, etc. This mock automatically provides these special methods, making it suitable for more intricate objects.
-3. **`AsyncMock`**: Use `AsyncMock` for objects with `async` methods, or when mocking `async` methods specifically. `AsyncMock` allows you to use `await` and to control behaviors with `return_value` or `side_effect`. `side_effect` is often used to simulate errors by raising an `Exception`.
+1. **`Mock`**: Use [Mock](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock) for simple objects that don’t require magic methods (e.g., objects with basic attributes or methods but no special behaviors). If you are mocking classes use (spec=ClassName). Read more about it in the official docs.
+2. **`MagicMock`**: Use [MagicMock](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.MagicMock) for more complex objects that have magic methods, like `__call__`, `__getitem__`, etc. This mock automatically provides these special methods, making it suitable for more intricate objects.
+3. **`AsyncMock`**: Use [AsyncMock](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.AsyncMock) when mocking `async` functions. `AsyncMock`.
 
-#### Example: Using Dependency Injection with `AsyncMock`
+Read more about [return_value](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.return_value) which is used to mock the return values of functions and [side_effect](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.side_effect) which is often used for mocking raising an Exception.
 
-Here’s a class that uses dependency injection, and a test that uses `AsyncMock` for testing without the actual database dependency.
+#### Example: How to use Mock and AsyncMock
+
+Here’s a class that uses dependency injection (we inject a HackathonService instance):
 ```python
-# my_processor.py
-class DataProcessor:
-    # `db_client` is injected as a dependency
-    def __init__(self, db_client):
-        self.db_client = db_client
+class ParticipantRegistrationService:
+    """Service layer responsible for handling the business logic when registering a participant"""
 
-    async def process_data(self, data):
-        await self.db_client.save(data)
-        return "Data processed"
+    def __init__(self, hackathon_service: HackathonService) -> None:
+        self._hackathon_service = hackathon_service
+
+    async def register_admin_participant(self, input_data: ParticipantRequestBody) -> Result[
+        Tuple[Participant, Team],
+        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+    ]:
+        # Capacity Check 2
+        has_capacity = await self._hackathon_service.check_capacity_register_admin_participant_case()
+        if not has_capacity:
+            return Err(HackathonCapacityExceededError())
+
+        # Proceed with registration if there is capacity
+        return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
 
 ```
-#### Test with `AsyncMock`
+As this class is written with Dependency Injection in mind we could use a Mock object to test it.
+
+
+1. First we crete the mock. It could be a `pytest fixture` placed inside the `conftest.py` in order for it to be reused
+across tests. Here we create a Mock specified to the `HackathonService`, and we use `AsyncMock` to replace the actual versions of its `async` methods with fake ones.
+This is done firstly to isolate behaviour of a method when testing it, secondly in this case the methods of this class make real DB connections which we don't want to happen during unit testing. (Real connections are made in integration tests).
+And lastly we could control the behaviour of these methods during testing, to adhere to our particular needs.
+
 ```python
-# test_my_processor.py
-import pytest
-from unittest.mock import AsyncMock
-from my_processor import DataProcessor
+@pytest.fixture
+def hackathon_service_mock() -> Mock:
+    hackathon_service = Mock(spec=HackathonService)
+
+    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
+
+    return hackathon_service
+```
+
+2. Now we write a test case for a given behaviour:
+
+Here we assume the creation of `ParticipantRegistrationService` would happen often, that's why we create a fixture.
+`mock_input_data` is a fixture located in `conftest.py`
+
+```python
+@pytest.fixture
+def p_reg_service(hackathon_service_mock: Mock) -> ParticipantRegistrationService:
+    return ParticipantRegistrationService(hackathon_service_mock)
 
 @pytest.mark.asyncio
-async def test_process_data():
-    # Create an AsyncMock for `db_client`
-    mock_db_client = AsyncMock()
-    processor = DataProcessor(mock_db_client)
+async def test_register_admin_participant_duplicate_team_name_error(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+) -> None:
+    # Mock not full hackathon
+    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
 
-    # Call the method under test
-    result = await processor.process_data("sample data")
+    # Mock `create_participant_and_team_in_transaction` to return an `Err` for duplicate team name
+    hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(
+        DuplicateTeamNameError(mock_input_data.team_name)
+    )
 
-    # Assertions
-    # Check db_client.save was called with the right data
-    mock_db_client.save.assert_awaited_once_with("sample data")
-    assert result == "Data processed"
+    # Call the function under test
+    result = await p_reg_service.register_admin_participant(mock_input_data)
 
+    # Check that the result is an `Err` with `DuplicateTeamNameError`
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, DuplicateTeamNameError)
+    assert str(result.err_value) == mock_input_data.team_name
 ```
-This approach allows us to control the behavior of `db_client` without the need for an actual database, ensuring our test is fast and isolated.
-
 ---
 
-### 4. Using `with patch` for Functions from External Modules or Libraries
+### 4. Using [with patch](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch) for Functions from External Modules or Libraries
 
-Use `with patch` when the function you’re testing calls functions, classes, or objects from external modules or libraries that are not injected as dependencies. Since you don’t have direct access to these external functions within the function’s parameters, `patch` allows you to replace them temporarily for testing.
+Use `with patch` when the function you’re testing calls functions, classes, or objects from external modules or libraries that are not injected as dependencies. Since you don’t have direct access to these external modules within the function’s parameters, `patch` allows you to replace them temporarily for testing.
 
 #### Example: Mocking `asyncio.sleep` with `patch`
 
@@ -111,3 +148,5 @@ async def test_retry_logic():
 - **Scope of `with patch`**: The `patch` replacement only applies within the `with` block. Outside of it, `asyncio.sleep` behaves normally.
 
 In short, use `with patch` for cases where the functions or classes you want to mock are part of an external module or library, and you don’t have direct access to them as injected dependencies. This technique is particularly helpful when testing code that’s not designed with Dependency Injection in mind.
+
+Read more about where to patch [here](https://docs.python.org/3/library/unittest.mock.html#where-to-patch)
