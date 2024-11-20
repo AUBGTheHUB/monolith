@@ -50,7 +50,7 @@ export const RadioButton = <T extends FieldValues>({
                             ))}
                         </RadioGroup>
                     </FormControl>
-                    {error && <FormMessage>{error.message}</FormMessage>}
+                    <div className="min-h-[24px]">{error && <FormMessage>{error.message}</FormMessage>}</div>
                 </FormItem>
             )}
         />
