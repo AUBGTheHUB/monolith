@@ -20,5 +20,8 @@
       "prettier --write",
       "lint-staged"
     ]
+  },
+  "dependencies": {
+    "eslint-plugin-jest": "^28.9.0"
   }
 }

@@ -1,4 +1,4 @@
-from typing import Optional, Any, Dict
+from typing import Final, Optional, Any, Dict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -16,6 +16,9 @@ LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository):
+    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
+    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
+
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
@@ -57,3 +60,9 @@ class TeamsRepository(CRUDRepository):
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
         raise NotImplementedError()
+
+    async def get_verified_registered_teams_count(self) -> int:
+        """Returns the count of verified teams."""
+        # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
+        # which is not true
+        return await self._collection.count_documents({"is_verified": True})  # type: ignore
