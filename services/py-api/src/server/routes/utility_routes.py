@@ -21,8 +21,3 @@ async def ping(
     response: Response, handler: UtilityHandlers = Depends(create_utility_handler)
 ) -> PongResponse | ErrResponse:
     return await handler.ping_services(response)
-
-#Test encode function
-@utility_router.get("/testjwt", responses={200: {"model": PongResponse}, 503: {"model": ErrResponse}})
-async def testJWT() -> Any:
-    return await JwtUtility.encode({"str":"fdsafsad"})

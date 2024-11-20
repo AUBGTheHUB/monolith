@@ -1,12 +1,10 @@
 from os import environ
 from threading import Lock
-from typing import Any, Dict, TypedDict
+from typing import Any, Dict
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
-from src.database.model.participant_model import Participant
-from jwt import jwt
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 
 
@@ -51,9 +49,8 @@ class AsyncClient(metaclass=SingletonMeta):
         await self._async_client.aclose()
 
 class JwtUtility:
- 
     @staticmethod
-    def encode_data(data: Participant) -> str:
+    def encode_data(data: JwtUserData) -> str:
         return encode(data,key=environ["SECRET_KEY"])
     
     @staticmethod
@@ -70,5 +67,3 @@ class JwtUtility:
             LOG.warning("Failed to decode the JWT token: There was an error decoding the token.")
             return Err("There was an error decoding the token.")
     
-a= JwtUtility.decode_data("decoding data...")
-a.ok_value
