@@ -29,7 +29,7 @@ export const RadioButton = <T extends FieldValues>({
             control={control}
             name={name}
             render={({ field, fieldState: { error } }) => (
-                <FormItem className={cn('', groupClassName)}>
+                <FormItem className={cn('space-y-3', groupClassName)}>
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
                         <RadioGroup
@@ -38,7 +38,10 @@ export const RadioButton = <T extends FieldValues>({
                             className={cn('', radioGroupClassName)}
                         >
                             {options.map((option) => (
-                                <FormItem key={option.value} className={cn('', formItemClassName)}>
+                                <FormItem
+                                    key={option.value}
+                                    className={cn('flex items-center space-x-3 space-y-0', formItemClassName)}
+                                >
                                     <FormControl>
                                         <RadioGroupItem value={option.value} className={cn('', radioGroupClassName)} />
                                     </FormControl>
