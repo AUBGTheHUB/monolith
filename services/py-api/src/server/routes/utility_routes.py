@@ -3,8 +3,6 @@ from fastapi import Response, APIRouter, Depends
 from src.database.db_manager import DB_MANAGER
 from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse
-from src.utils import JwtUtility
-from typing import Any 
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 utility_router = APIRouter()
