@@ -26,3 +26,15 @@ class ParticipantRegistrationService:
 
         # Proceed with registration if there is capacity
         return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
+    
+    async def register_random_participant(self, input_data: ParticipantRequestBody) -> Result[Participant,
+        DuplicateEmailError | HackathonCapacityExceededError | Exception,
+    ]:
+
+        # Capacity Check 1
+        has_capacity = await self._hackathon_service.check_capacity_register_random_participant_case()
+        if not has_capacity:
+            return Err(HackathonCapacityExceededError())
+
+        # Proceed with registration if there is capacity
+        return await self._hackathon_service.create_random_participant(input_data)

@@ -4,7 +4,7 @@ from starlette.responses import Response
 
 from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
 from src.service.participants_registration_service import ParticipantRegistrationService
 
 
@@ -14,19 +14,22 @@ class ParticipantHandlers:
 
     async def create_participant(
         self, response: Response, input_data: ParticipantRequestBody
-    ) -> ParticipantRegisteredInTeamResponse | ErrResponse:
+    ) -> ParticipantRegisteredResponse | ErrResponse:
         # TODO:
         # When the logic for all cases is done
         # if input_data.is_admin and input_data.team_name:
         #     result = await self._service.register_admin_participant(input_data)
         # else:
         #     ...
-        if input_data.is_admin:
+        if input_data.is_admin and input_data.team_name:
             result = await self._service.register_admin_participant(input_data)
-        elif input_data.team_name:
-            result = await self._service.register_admin_participant(input_data) #Should be changed to a function for adding a non-admin to existing team
-        else:
+
+        elif input_data.is_admin is False and input_data.team_name is None:
             result = await self._service.register_random_participant(input_data)
+
+        else:
+           # TODO: Add invite participant case
+           pass
 
         if is_err(result):
             # https://fastapi.tiangolo.com/advanced/response-change-status-code/
@@ -44,5 +47,6 @@ class ParticipantHandlers:
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
-
-        return ParticipantRegisteredInTeamResponse(participant=result.ok_value[0], team=result.ok_value[1])
+        
+        return ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1])
+        

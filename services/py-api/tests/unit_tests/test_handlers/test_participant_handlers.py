@@ -10,7 +10,7 @@ from src.database.model.team_model import Team
 from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, HackathonCapacityExceededError
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantRegisteredInTeamResponse
+from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantRegisteredResponse
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ async def test_create_participant_success(
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(mock_input_data)
 
     # Assert that the response is successful
-    assert isinstance(result, ParticipantRegisteredInTeamResponse)
+    assert isinstance(result, ParticipantRegisteredResponse)
     assert result.participant.name == "Test User"
     assert result.team.name == "Test Team"
     response_mock.status_code = status.HTTP_200_OK

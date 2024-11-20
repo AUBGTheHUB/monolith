@@ -7,7 +7,7 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 
@@ -51,9 +51,10 @@ def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
 @participants_router.post(
-    "", status_code=201, responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
+    "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
-) -> ParticipantRegisteredInTeamResponse | ErrResponse:
+) -> ParticipantRegisteredResponse | ErrResponse:
+    print(input_data)
     return await handler.create_participant(response, input_data)
