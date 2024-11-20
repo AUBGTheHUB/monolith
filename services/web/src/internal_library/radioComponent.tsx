@@ -1,17 +1,18 @@
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 
-interface RadioButtonProps<T extends FieldValues> {
+type RadioButtonProps<T extends FieldValues> = {
     control: Control<T>;
     name: Path<T>;
     options: { label: string; value: string }[];
     groupLabel?: string;
     groupClassName?: string;
-    itemClassName?: string;
+    formItemClassName?: string;
     labelClassName?: string;
-    inputClassName?: string;
-}
+    radioGroupClassName?: string;
+};
 
 export const RadioButton = <T extends FieldValues>({
     control,
@@ -19,29 +20,29 @@ export const RadioButton = <T extends FieldValues>({
     options,
     groupLabel,
     groupClassName,
-    itemClassName,
+    radioGroupClassName,
     labelClassName,
-    inputClassName,
+    formItemClassName,
 }: RadioButtonProps<T>) => {
     return (
         <FormField
             control={control}
             name={name}
             render={({ field, fieldState: { error } }) => (
-                <FormItem className={`space-y-3 ${groupClassName}`}>
+                <FormItem className={cn('', groupClassName)}>
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
                         <RadioGroup
                             onValueChange={field.onChange}
                             value={field.value}
-                            className="flex flex-col space-y-2"
+                            className={cn('', radioGroupClassName)}
                         >
                             {options.map((option) => (
-                                <FormItem key={option.value} className={`flex items-center space-x-3 ${itemClassName}`}>
+                                <FormItem key={option.value} className={cn('', formItemClassName)}>
                                     <FormControl>
-                                        <RadioGroupItem value={option.value} className={inputClassName} />
+                                        <RadioGroupItem value={option.value} className={cn('', radioGroupClassName)} />
                                     </FormControl>
-                                    <FormLabel className={labelClassName}>{option.label}</FormLabel>{' '}
+                                    <FormLabel className={cn('', labelClassName)}>{option.label}</FormLabel>{' '}
                                 </FormItem>
                             ))}
                         </RadioGroup>
