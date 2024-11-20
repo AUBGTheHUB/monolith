@@ -15,21 +15,15 @@ class ParticipantHandlers:
     async def create_participant(
         self, response: Response, input_data: ParticipantRequestBody
     ) -> ParticipantRegisteredResponse | ErrResponse:
-        # TODO:
-        # When the logic for all cases is done
-        # if input_data.is_admin and input_data.team_name:
-        #     result = await self._service.register_admin_participant(input_data)
-        # else:
-        #     ...
         if input_data.is_admin and input_data.team_name:
             result = await self._service.register_admin_participant(input_data)
 
-        elif input_data.is_admin is False and input_data.team_name is None:
-            result = await self._service.register_random_participant(input_data)
+        # TODO: Implement this when the invite participant case is done
+        # elif input_data.is_admin is False and input_data.team_name:
+        #     result = await self._service.register_invite_participant(input_data)
 
         else:
-           # TODO: Add invite participant case
-           pass
+            result = await self._service.register_random_participant(input_data)
 
         if is_err(result):
             # https://fastapi.tiangolo.com/advanced/response-change-status-code/
@@ -47,6 +41,5 @@ class ParticipantHandlers:
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")
-        
+
         return ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1])
-        

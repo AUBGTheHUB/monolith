@@ -56,5 +56,4 @@ def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
 ) -> ParticipantRegisteredResponse | ErrResponse:
-    print(input_data)
     return await handler.create_participant(response, input_data)
