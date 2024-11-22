@@ -1,13 +1,5 @@
 #!/bin/bash
 
-current_directory=${PWD##*/}
-
-if [[$current_directory != "monolith" ]]
-then
-    echo "Run this script from the root of the monolith"
-    exit 1
-fi
-
 if ! hash gum &> /dev/null
 then
     echo "GUM could not be found, running installation script"
