@@ -7,6 +7,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@r
 
 import MockDataComponent from './website/mockComponent';
 
+import { startPerformanceTools } from 'reactscape-testing-tools';
+
+startPerformanceTools()
+
 function App() {
     const [count, setCount] = useState(2);
     const queryClient = new QueryClient();
