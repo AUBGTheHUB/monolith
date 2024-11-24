@@ -271,3 +271,24 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
+
+@pytest.mark.asyncio
+async def test_register_random_participant_order_of_operations(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+) -> None:
+    # Mock full hackathon
+    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
+
+    # Mock `create_random_participant` to raise a general exception
+    # This is in order to show that we should return the first faced err and that we check first the hackathon capacity
+    # It should have no effect to the expected result of the test
+    hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
+
+    # Call the function under test
+    result = await p_reg_service.register_random_participant(mock_input_data)
+
+    # Check that the result is an `Err` of type HackathonCapacityExceededError
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, HackathonCapacityExceededError)
