@@ -176,3 +176,20 @@ async def test_create_random_participant(
     assert result.ok_value[0].email == mock_input_data.email
     assert not result.ok_value[0].is_admin  # Ensure it is not an admin
     assert result.ok_value[1] is None  # Ensure the second element is None
+
+@pytest.mark.asyncio
+async def test_create_random_participant_duplicate_email_err(
+    hackathon_service: HackathonService,
+    mock_input_data: ParticipantRequestBody,
+    participant_repo_mock: Mock
+) -> None:
+    # Mock the `create` method to simulate a duplicate email error
+    duplicate_email_error = DuplicateEmailError(mock_input_data.email)
+    participant_repo_mock.create.return_value = Err(duplicate_email_error)
+
+    result = await hackathon_service.create_random_participant(mock_input_data)
+
+    # Check that the result is an `Err` with `DuplicateEmailError`
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, DuplicateEmailError)
+    assert str(result.err_value) == mock_input_data.email
