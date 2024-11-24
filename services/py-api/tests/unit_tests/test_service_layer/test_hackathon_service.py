@@ -193,3 +193,19 @@ async def test_create_random_participant_duplicate_email_err(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     assert str(result.err_value) == mock_input_data.email
+
+@pytest.mark.asyncio
+async def test_register_random_participant_general_exception(
+    hackathon_service: HackathonService,
+    mock_input_data: ParticipantRequestBody,
+    participant_repo_mock: Mock
+) -> None:
+    # Mock the `create` method to raise a general exception
+    participant_repo_mock.create.return_value = Err(Exception("Test error"))
+
+    result = await hackathon_service.create_random_participant(mock_input_data)
+
+    # Verify the result is an `Err` containing a general Exception
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "Test error"
