@@ -200,4 +200,26 @@ async def test_register_random_participant_success(
     assert isinstance(result.ok_value, Participant)
     assert result.ok_value.name == mock_input_data.name
     assert result.ok_value.email == mock_input_data.email
-    assert not result.ok_value.is_admin  # Ensure it is not an admin participant
+    assert not result.ok_value.is_admin  # Ensure it is not an admin 
+    
+@pytest.mark.asyncio
+async def test_register_random_participant_duplicate_email_error(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+) -> None:
+    # Mock not full hackathon
+    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+
+    # Mock `create_participant_and_team_in_transaction` to return an `Err` for duplicate email err
+    hackathon_service_mock.create_random_participant.return_value = Err(
+        DuplicateEmailError(mock_input_data.email)
+    )
+
+    # Call the function under test
+    result = await p_reg_service.register_random_participant(mock_input_data)
+
+    # Check that the result is an `Err` with `DuplicateTeamNameError`
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, DuplicateEmailError)
+    assert str(result.err_value) == mock_input_data.email
