@@ -142,36 +142,52 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
 async def test_create_participant_random_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: AsyncMock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
     response_mock: MagicMock,
 ) -> None:
-    # Modify the mock input data to trigger the random participant path
-    mock_input_data = ParticipantRequestBody(
-        name="Test User",
-        email="test@example.com",
-        is_admin=False
-    )
 
     # Mock the result from `register_random_participant`
     participant_registration_service_mock.register_random_participant.return_value = Ok(
         (
             Participant(
-                name="Test User",
-                email="test@example.com",
-                is_admin=False,
-                team_id=None,
+            name="Test User",
+            email="test@example.com",
+            is_admin=False,
+            team_id=None
             ),
-            None
-        )
+            None)
     )
 
     # Call the handler
-    result = await participant_handlers.create_participant(response_mock, mock_input_data)
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_random)
 
     # Check that `register_random_participant` was awaited once with the expected input_data
-    participant_registration_service_mock.register_random_participant.assert_awaited_once_with(mock_input_data)
+    participant_registration_service_mock.register_random_participant.assert_awaited_once_with(mock_input_data_random)
 
     # Assert that the response is successful
     assert isinstance(result, ParticipantRegisteredResponse)
     assert result.participant.name == "Test User"
     response_mock.status_code = status.HTTP_200_OK
+
+@pytest.mark.asyncio
+async def test_create_participant_random_case_duplicate_email_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_random: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_random_participant` to return an `Err` with `DuplicateEmailError`
+    participant_registration_service_mock.register_random_participant.return_value = Err(
+        DuplicateEmailError(mock_input_data_random.email)
+    )
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_random)
+
+    # Check that `register_random_participant` was awaited once
+    participant_registration_service_mock.register_random_participant.assert_awaited_once_with(mock_input_data_random)
+
+    # Assert the response indicates a conflict
+    assert isinstance(result, ErrResponse)
+    assert result.error == "Participant with this email already exists"
+    response_mock.status_code = status.HTTP_409_CONFLICT

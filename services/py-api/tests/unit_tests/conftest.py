@@ -122,6 +122,9 @@ def participant_registration_service_mock() -> Mock:
 def mock_input_data() -> ParticipantRequestBody:
     return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=True)
 
+@pytest.fixture
+def mock_input_data_random() -> ParticipantRequestBody:
+    return ParticipantRequestBody(name="Test User", email="test@example.com", team_id=None, is_admin=False)
 
 @pytest.fixture
 def response_mock() -> MagicMock:
