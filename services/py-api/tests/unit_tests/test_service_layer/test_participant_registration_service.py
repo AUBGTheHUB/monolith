@@ -176,7 +176,7 @@ async def test_register_random_participant_success(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
 ) -> None:
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
@@ -184,8 +184,8 @@ async def test_register_random_participant_success(
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
     participant_repo_mock.create.return_value = Participant(
-        name=mock_input_data.name,
-        email=mock_input_data.email,
+        name=mock_input_data_random.name,
+        email=mock_input_data_random.email,
         is_admin=False,
         team_id=None,
     )
@@ -193,42 +193,42 @@ async def test_register_random_participant_success(
     hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_input_data)
+    result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Validate that the result is an `Ok` instance containing the created participant
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
-    assert result.ok_value.name == mock_input_data.name
-    assert result.ok_value.email == mock_input_data.email
+    assert result.ok_value.name == mock_input_data_random.name
+    assert result.ok_value.email == mock_input_data_random.email
     assert not result.ok_value.is_admin  # Ensure it is not an admin 
     
 @pytest.mark.asyncio
 async def test_register_random_participant_duplicate_email_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
 ) -> None:
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
 
     # Mock `create_random_participant` to return an `Err` for duplicate email err
     hackathon_service_mock.create_random_participant.return_value = Err(
-        DuplicateEmailError(mock_input_data.email)
+        DuplicateEmailError(mock_input_data_random.email)
     )
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_input_data)
+    result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Check that the result is an `Err` with `DuplicateTeamNameError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
-    assert str(result.err_value) == mock_input_data.email
+    assert str(result.err_value) == mock_input_data_random.email
 
 @pytest.mark.asyncio
 async def test_register_random_participant_general_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
 ) -> None:
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
@@ -237,7 +237,7 @@ async def test_register_random_participant_general_error(
     hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_input_data)
+    result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Verify the result is an `Err` containing a general Exception
     assert isinstance(result, Err)
@@ -249,15 +249,15 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
 ) -> None:
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
 
     # Everything else is as expected
     participant_repo_mock.create.return_value = Participant(
-        name=mock_input_data.name,
-        email=mock_input_data.email,
+        name=mock_input_data_random.name,
+        email=mock_input_data_random.email,
         is_admin=False,
         team_id=None,
     )
@@ -265,7 +265,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_input_data)
+    result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
@@ -275,7 +275,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
 async def test_register_random_participant_order_of_operations(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
-    mock_input_data: ParticipantRequestBody,
+    mock_input_data_random: ParticipantRequestBody,
 ) -> None:
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
@@ -286,7 +286,7 @@ async def test_register_random_participant_order_of_operations(
     hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_input_data)
+    result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
