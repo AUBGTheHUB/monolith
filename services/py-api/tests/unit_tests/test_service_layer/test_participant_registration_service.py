@@ -248,7 +248,6 @@ async def test_register_random_participant_general_error(
 async def test_register_random_participant_with_hackathon_cap_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
-    team_repo_mock: Mock,
     participant_repo_mock: Mock,
     mock_input_data: ParticipantRequestBody,
 ) -> None:
@@ -259,7 +258,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     participant_repo_mock.create.return_value = Participant(
         name=mock_input_data.name,
         email=mock_input_data.email,
-        is_admin=True,
+        is_admin=False,
         team_id=None,
     )
 

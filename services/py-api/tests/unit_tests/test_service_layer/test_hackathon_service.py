@@ -149,3 +149,30 @@ async def test_check_capacity_with_exceeded_capacity(
 
     # Assert the result is False (capacity exceeded)
     assert result is False
+
+@pytest.mark.asyncio
+async def test_create_random_participant(
+    hackathon_service: HackathonService,
+    mock_input_data: ParticipantRequestBody,
+    participant_repo_mock: Mock,
+) -> None:
+    # Mock successful `create` response for random participant.
+    participant_repo_mock.create.return_value = Participant(
+        name=mock_input_data.name,
+        email=mock_input_data.email,
+        is_admin=False,
+        team_id=None,
+    )
+
+    # Return the `Ok` result from the mocked `create` method
+    participant_repo_mock.create.return_value = Ok(participant_repo_mock.create.return_value)
+
+    result = await hackathon_service.create_random_participant(mock_input_data)
+
+    # Validate that the result is an `Ok` instance containing the participant object
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value[0], Participant)  # Check the first element is a Participant
+    assert result.ok_value[0].name == mock_input_data.name
+    assert result.ok_value[0].email == mock_input_data.email
+    assert not result.ok_value[0].is_admin  # Ensure it is not an admin
+    assert result.ok_value[1] is None  # Ensure the second element is None
