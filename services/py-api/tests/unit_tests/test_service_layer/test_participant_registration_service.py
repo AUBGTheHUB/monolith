@@ -170,3 +170,34 @@ async def test_register_admin_participant_order_of_operations(
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
+
+@pytest.mark.asyncio
+async def test_register_random_participant_success(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    participant_repo_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+) -> None:
+    # Mock not full hackathon
+    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+
+    # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
+    # to with_transaction
+    participant_repo_mock.create.return_value = Participant(
+        name=mock_input_data.name,
+        email=mock_input_data.email,
+        is_admin=False,
+        team_id=None,
+    )
+
+    hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
+
+    # Call the function under test
+    result = await p_reg_service.register_random_participant(mock_input_data)
+
+    # Validate that the result is an `Ok` instance containing the created participant
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+    assert result.ok_value.name == mock_input_data.name
+    assert result.ok_value.email == mock_input_data.email
+    assert not result.ok_value.is_admin  # Ensure it is not an admin participant
