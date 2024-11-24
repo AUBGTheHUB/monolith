@@ -243,3 +243,31 @@ async def test_register_random_participant_general_error(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     assert str(result.err_value) == "Test error"
+
+@pytest.mark.asyncio
+async def test_register_random_participant_with_hackathon_cap_exceeded(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    team_repo_mock: Mock,
+    participant_repo_mock: Mock,
+    mock_input_data: ParticipantRequestBody,
+) -> None:
+    # Mock full hackathon
+    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
+
+    # Everything else is as expected
+    participant_repo_mock.create.return_value = Participant(
+        name=mock_input_data.name,
+        email=mock_input_data.email,
+        is_admin=True,
+        team_id=None,
+    )
+
+    hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
+
+    # Call the function under test
+    result = await p_reg_service.register_random_participant(mock_input_data)
+
+    # Check that the result is an `Err` of type HackathonCapacityExceededError
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, HackathonCapacityExceededError)
