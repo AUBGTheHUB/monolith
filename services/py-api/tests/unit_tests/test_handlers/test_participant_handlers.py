@@ -191,3 +191,47 @@ async def test_create_participant_random_case_duplicate_email_error(
     assert isinstance(result, ErrResponse)
     assert result.error == "Participant with this email already exists"
     response_mock.status_code = status.HTTP_409_CONFLICT
+
+@pytest.mark.asyncio
+async def test_create_participant_random_case_general_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_random: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_random_participant` to return a general `Err`
+    participant_registration_service_mock.register_random_participant.return_value = Err(Exception("General error"))
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_random)
+
+    # Check that `register_random_participant` was awaited once
+    participant_registration_service_mock.register_random_participant.assert_awaited_once_with(mock_input_data_random)
+
+    # Assert the response indicates an internal server error
+    assert isinstance(result, ErrResponse)
+    assert result.error == "An unexpected error occurred during the creation of Participant"
+    response_mock.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+@pytest.mark.asyncio
+async def test_create_participant_random_case_capacity_exceeded_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_random: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_random_participant` to return an `Err` with `CapacityExceededError`
+    participant_registration_service_mock.register_random_participant.return_value = Err(
+        HackathonCapacityExceededError()
+    )
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_random)
+
+    # Check that `register_random_participant` was awaited once
+    participant_registration_service_mock.register_random_participant.assert_awaited_once_with(mock_input_data_random)
+
+    # Assert the response indicates a conflict with capacity reached
+    assert isinstance(result, ErrResponse)
+    assert result.error == "Max hackathon capacity has been reached"
+    response_mock.status_code = status.HTTP_409_CONFLICT
