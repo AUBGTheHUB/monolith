@@ -3,18 +3,23 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 
+type Option = {
+    label: string;
+    value: string;
+};
+
 type RadioButtonProps<T extends FieldValues> = {
     control: Control<T>;
     name: Path<T>;
-    options: { label: string; value: string }[];
-    groupLabel?: string;
+    options: Option[];
+    groupLabel: string;
     groupClassName?: string;
     formItemClassName?: string;
     labelClassName?: string;
     radioGroupClassName?: string;
 };
 
-export const RadioButton = <T extends FieldValues>({
+export const RadioComponent = <T extends FieldValues>({
     control,
     name,
     options,
@@ -43,9 +48,9 @@ export const RadioButton = <T extends FieldValues>({
                                     className={cn('flex items-center space-x-3 space-y-0', formItemClassName)}
                                 >
                                     <FormControl>
-                                        <RadioGroupItem value={option.value} className={cn('', radioGroupClassName)} />
+                                        <RadioGroupItem value={option.value} className={radioGroupClassName} />
                                     </FormControl>
-                                    <FormLabel className={cn('', labelClassName)}>{option.label}</FormLabel>{' '}
+                                    <FormLabel className={labelClassName}>{option.label}</FormLabel>
                                 </FormItem>
                             ))}
                         </RadioGroup>
