@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { RadioComponent } from './internal_library/RadioComponent';
+import { RadioComponent } from './internal_library/RadioComponent/RadioComponent';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MockDataComponent from './website/mockComponent';
