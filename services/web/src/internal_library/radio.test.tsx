@@ -1,9 +1,10 @@
-import { render, fireEvent, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { RadioButton, RadioButtonProps } from './radioComponent';
 import { Button } from '@/components/ui/button';
+import userEvent from '@testing-library/user-event';
 
 const REQUIRED_MESSAGE = 'This field is required';
 
@@ -59,13 +60,9 @@ describe('SelectComponent', () => {
 
         const { getByTestId } = render(<RenderSelectComponent {...commonProps} onFormSubmit={handleSubmit} />);
 
-        await act(async () => {
-            fireEvent.click(getByTestId('radio-mentions'));
-        });
+        await userEvent.click(getByTestId('radio-mentions'));
 
-        await act(async () => {
-            fireEvent.submit(getByTestId('submit'));
-        });
+        await userEvent.click(getByTestId('submit'));
 
         expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({ select: 'mentions' }), expect.anything());
 
