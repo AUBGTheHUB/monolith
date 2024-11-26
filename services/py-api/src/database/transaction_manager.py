@@ -40,7 +40,9 @@ class TransactionManager:
         self._client = db_manager.client
 
     @staticmethod
-    async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
+    async def _retry_tx(
+        func: Callable[..., Awaitable[Result]], *args: Any, session: AsyncIOMotorClientSession, **kwargs: Any
+    ) -> Result:
         """
         If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
         to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
@@ -55,6 +57,7 @@ class TransactionManager:
         """
         max_retries = 3
         delay = 1  # initial delay in seconds
+        session_id = session.session_id["id"].hex()
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
@@ -62,7 +65,7 @@ class TransactionManager:
                 return await func(*args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    LOG.debug(f"Retrying transaction with id: {session_id} retry {retry}")
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -70,7 +73,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Transaction failed after maximum retries")
+        raise PyMongoError(f"Transaction with id: {session_id} failed after maximum retries")
 
     @staticmethod
     async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
@@ -81,6 +84,7 @@ class TransactionManager:
         """
         max_retries = 3
         delay = 1  # initial delay in seconds
+        session_id = session.session_id["id"].hex()
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
@@ -90,7 +94,7 @@ class TransactionManager:
                 return await session.commit_transaction()
             except PyMongoError as exc:
                 if exc.has_error_label("UnknownTransactionCommitResult"):
-                    LOG.debug("Retrying to commit transaction retry {}".format(retry))
+                    LOG.debug(f"Retrying to commit transaction with id: {session_id} retry {retry}")
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -98,7 +102,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError("Commiting transaction failed after maximum retries")
+        raise PyMongoError(f"Commiting transaction with id: {session_id} failed after maximum retries")
 
     async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """
@@ -125,23 +129,27 @@ class TransactionManager:
         """
 
         session = await self._client.start_session()
+        session_id = session.session_id["id"].hex()
+
         try:
             session.start_transaction()
-            LOG.debug("Starting transaction")
+            LOG.debug(f"Starting transaction with id: {session_id}")
 
             result = await self._retry_tx(callback, *args, session=session, **kwargs)
             if is_err(result):
-                LOG.warning("Aborting transaction due to err {}".format(result.err_value))
+                LOG.warning(f"Aborting transaction with id: {session_id} due to err {result.err_value}")
                 await session.abort_transaction()
                 return result
 
             await self._retry_commit(session)
-            LOG.debug("Transaction commited")
+            LOG.debug(f"Transaction with id: {session_id} commited")
 
             return result
 
         except Exception as e:
-            LOG.exception("Aborting transaction due to err {}".format(e))
+            # FIXME: When there is a repeating team name or email the below message prints "Aborting transaction with id: {session_id} due to err {team name/email}"
+            # instead of printing a meaningful error
+            LOG.exception(f"Aborting transaction with id: {session_id} due to err {e}")
             await session.abort_transaction()
             return Err(e)
 
