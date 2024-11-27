@@ -29,22 +29,24 @@ class TeamsRepository(CRUDRepository):
         **kwargs: Dict[str, Any],
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
-        session_id = session.session_id["id"].hex() if session is not None else "Implicit Session"
+        session_id = session.session_id["id"].hex() if session is not None else None
 
         try:
             team = Team(name=input_data.team_name)
-            LOG.debug(f"ID:[{session_id}] Inserting team...", team=team.dump_as_json())
+            LOG.debug("Inserting team...", team=team.dump_as_json(), session_id=session_id)
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
         except DuplicateKeyError:
             LOG.warning(
-                f"ID:[{session_id}] Team insertion failed due to duplicate team name", team_name=input_data.team_name
+                "Team insertion failed due to duplicate team name",
+                team_name=input_data.team_name,
+                session_id=session_id,
             )
             return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:
-            LOG.exception(f"ID:[{session_id}] Team insertion failed due to err {e}")
+            LOG.exception(f"Team insertion failed due to err {e}", session_id=session_id)
             return Err(e)
 
     async def fetch_by_id(self, obj_id: str) -> Result:

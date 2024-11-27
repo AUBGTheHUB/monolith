@@ -65,7 +65,7 @@ class TransactionManager:
                 return await func(*args, session=session, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug(f"ID:[{session_id}] Retrying transaction retry {retry}")
+                    LOG.debug(f"Retrying transaction retry {retry}", session_id=session_id)
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -94,7 +94,7 @@ class TransactionManager:
                 return await session.commit_transaction()
             except PyMongoError as exc:
                 if exc.has_error_label("UnknownTransactionCommitResult"):
-                    LOG.debug(f"ID:[{session_id}] Retrying to commit transaction retry {retry}")
+                    LOG.debug(f"Retrying to commit transaction retry {retry}", session_id=session_id)
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
@@ -133,23 +133,23 @@ class TransactionManager:
 
         try:
             session.start_transaction()
-            LOG.debug(f"ID:[{session_id}] Starting transaction")
+            LOG.debug("Starting transaction", session_id=session_id)
 
             result = await self._retry_tx(callback, *args, session=session, **kwargs)
             if is_err(result):
-                LOG.warning(f"ID:[{session_id}] Aborting transaction due to err {result.err_value}")
+                LOG.warning(f"Aborting transaction due to err {result.err_value}", session_id=session_id)
                 await session.abort_transaction()
                 return result
 
             await self._retry_commit(session)
-            LOG.debug(f"ID:[{session_id}] Transaction commited")
+            LOG.debug("Transaction commited", session_id=session_id)
 
             return result
 
         except Exception as e:
             # FIXME: When there is a repeating team name or email the below message prints "Aborting transaction with id: {session_id} due to err {team name/email}"
             # instead of printing a meaningful error
-            LOG.exception(f"ID:[{session_id}] Aborting transaction due to err {e}")
+            LOG.exception(f"Aborting transaction due to err {e}", session_id=session_id)
             await session.abort_transaction()
             return Err(e)
 
