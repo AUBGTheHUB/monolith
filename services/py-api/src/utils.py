@@ -62,7 +62,7 @@ class JwtUtility:
     @staticmethod
     def decode_data[T: BaseTypedDict](token: str, schema: Callable[..., T]) -> Result[T, str]:
         try:
-            #TODO: return Err() if the decoding does not return all the required fields
+            # TODO: return Err() if the decoding does not return all the required fields
             return Ok(schema(**decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])))
 
         except ExpiredSignatureError:
