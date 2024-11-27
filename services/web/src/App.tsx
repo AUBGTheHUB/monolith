@@ -22,6 +22,10 @@ const RADIO_OPTIONS = [
     { label: 'Nothing', value: 'none' },
 ];
 
+import { startPerformanceTools } from 'reactscape-testing-tools';
+
+startPerformanceTools();
+
 function App() {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),

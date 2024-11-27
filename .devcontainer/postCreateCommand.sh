@@ -1,5 +1,5 @@
-# Installs the node_modules in the project root and creates .env files for each of the services
-npm install && make install-env
+# Installs the node_modules in the project root
+npm install
 # Installs husky - pre-commit manager for .js, .css, .html
 npm run prepare
 # Installs gum - helps with creating interactive terminal user interfaces
