@@ -149,13 +149,9 @@ async def test_create_participant_random_case_success(
     # Mock the result from `register_random_participant`
     participant_registration_service_mock.register_random_participant.return_value = Ok(
         (
-            Participant(
-            name="Test User",
-            email="test@example.com",
-            is_admin=False,
-            team_id=None
-            ),
-            None)
+            Participant(name="Test User", email="test@example.com", is_admin=False, team_id=None), 
+            None,
+        )
     )
 
     # Call the handler
