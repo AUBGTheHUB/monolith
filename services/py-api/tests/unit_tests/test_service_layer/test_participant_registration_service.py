@@ -190,17 +190,20 @@ async def test_register_random_participant_success(
         team_id=None,
     )
 
-    hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
+    hackathon_service_mock.create_random_participant.return_value = Ok((participant_repo_mock.create.return_value, None))
 
     # Call the function under test
     result = await p_reg_service.register_random_participant(mock_input_data_random)
 
     # Validate that the result is an `Ok` instance containing the created participant
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, Participant)
-    assert result.ok_value.name == mock_input_data_random.name
-    assert result.ok_value.email == mock_input_data_random.email
-    assert not result.ok_value.is_admin  # Ensure it is not an admin 
+    participant, team = result.ok_value  # Unpack the tuple
+
+    assert isinstance(participant, Participant)
+    assert participant.name == mock_input_data_random.name
+    assert participant.email == mock_input_data_random.email
+    assert not participant.is_admin  # Ensure it is not an admin 
+    assert team is None # Ensure second element is None since teams are assigned later
     
 @pytest.mark.asyncio
 async def test_register_random_participant_duplicate_email_error(
