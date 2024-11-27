@@ -1,4 +1,4 @@
-from typing import TypedDict, Required
+from typing import TypedDict
 
 """
 The following wrapper around TypedDict is that so I can bind it to a generic type.
@@ -13,6 +13,6 @@ class BaseTypedDict(TypedDict):
 
 # All the types within this should be required
 class JwtUserData(BaseTypedDict):
-    sub: Required[str]
-    is_admin: Required[bool]
-    team_id: Required[str]
+    sub: str
+    is_admin: bool
+    team_id: str

@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from os import environ
 from threading import Lock
-from typing import Any, Dict
+from typing import Any, Dict, cast
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
 from result import Err, Ok, Result
@@ -62,8 +62,17 @@ class JwtUtility:
     @staticmethod
     def decode_data[T: BaseTypedDict](token: str, schema: Callable[..., T]) -> Result[T, str]:
         try:
-            # TODO: return Err() if the decoding does not return all the required fields
-            return Ok(schema(**decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])))
+            decoded_token: dict[str, Any] = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
+
+            # shcema.__annotations___.keys() gets all the defined fields of the TypedDict without initializing it
+            # this will help us see if all the fields that we have defined in the schema are present in the decoded
+            # jwt token
+            for key in schema.__annotations__.keys():
+                if key not in decoded_token:
+                    LOG.warning("The decoded token is missing some of the required fields: {}".format(decoded_token))
+                    return Err("The decoded token is missing some or all of the required fields.")
+
+            return Ok(cast(T, decoded_token))
 
         except ExpiredSignatureError:
             LOG.warning("The JWT token has expired.")
