@@ -48,7 +48,11 @@ export const RadioComponent = <T extends FieldValues>({
                                     className={cn('flex items-center space-x-3 space-y-0', formItemClassName)}
                                 >
                                     <FormControl>
-                                        <RadioGroupItem value={option.value} className={radioGroupClassName} />
+                                        <RadioGroupItem
+                                            value={option.value}
+                                            className={radioGroupClassName}
+                                            data-testid={`radio-item-${option.value}`}
+                                        />
                                     </FormControl>
                                     <FormLabel className={labelClassName}>{option.label}</FormLabel>
                                 </FormItem>
