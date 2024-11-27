@@ -12,7 +12,7 @@ class BaseTypedDict(TypedDict):
 
 
 # All the types within this should be required
-class JwtUserData(TypedDict):
+class JwtUserData(BaseTypedDict):
     sub: Required[str]
     is_admin: Required[bool]
     team_id: Required[str]

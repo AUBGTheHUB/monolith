@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from os import environ
 from threading import Lock
 from typing import Any, Dict
@@ -5,6 +6,8 @@ from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decod
 import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
+
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import BaseTypedDict
 
 LOG = get_logger()
 
@@ -53,12 +56,13 @@ class JwtUtility:
     token into a predefined format (TypedDict)"""
 
     @staticmethod
-    def encode_data[T: str](data: T) -> str:
+    def encode_data[T: BaseTypedDict](data: T) -> str:
         return str(encode(payload=data, key=environ["SECRET_KEY"], algorithm="HS256"))
 
     @staticmethod
-    def decode_data[T: str](token: str, schema: T) -> Result[T, str]:
+    def decode_data[T: BaseTypedDict](token: str, schema: Callable[..., T]) -> Result[T, str]:
         try:
+            #TODO: return Err() if the decoding does not return all the required fields
             return Ok(schema(**decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])))
 
         except ExpiredSignatureError:

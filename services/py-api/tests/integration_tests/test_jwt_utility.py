@@ -1,4 +1,5 @@
-from src.utils import JwtUtility, JwtUserData
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.utils import JwtUtility
 from structlog import get_logger
 from result import Ok
 
