@@ -1,12 +1,10 @@
-from os import environ
 from threading import Lock
-from typing import Any, Dict
+from typing import Any, Dict, cast
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
-
 
 LOG = get_logger()
 
@@ -48,22 +46,39 @@ class AsyncClient(metaclass=SingletonMeta):
 
         await self._async_client.aclose()
 
+
 class JwtUtility:
+    """A class providing methods for encoding data in with a predefined format into a JWT token, or decoding a JWT
+    token into a predefined format (TypedDict)"""
+
     @staticmethod
     def encode_data(data: JwtUserData) -> str:
-        return encode(data,key=environ["SECRET_KEY"])
-    
+        return str(encode(data, key="secret", algorithm="HS256"))
+
     @staticmethod
-    def decode_data(token: str) -> Result[JwtUserData, str]: 
-     try: 
-        return Ok(JwtUserData(**decode(token, environ["SECRET_KEY"])))
-     except ExpiredSignatureError:
-            LOG.warning("Failed to decode the JWT token: The token has expired.")
-            return Err("The jwt token has expired.")
-     except InvalidSignatureError:
-            LOG.warning("Failed to decode the JWT token: The token has an invalid signature.")
-            return Err("The jwt token is invalid.")
-     except DecodeError:
-            LOG.warning("Failed to decode the JWT token: There was an error decoding the token.")
-            return Err("There was an error decoding the token.")
-    
+    def decode_data(token: str) -> Result[JwtUserData, str]:
+        try:
+            decoded_token: dict[str, Any] = decode(token, "secret", algorithms=["HS256"])
+
+            if "sub" in decoded_token and "is_admin" in decoded_token and "team_id" in decoded_token:
+                return Ok(cast(JwtUserData, decoded_token))
+
+            LOG.warning(
+                "Decoded token is missing some or all of the required fields: `sub`, `is_admin`, `team_id`",
+                decoded_token=decoded_token,
+            )
+            return Err("The decoded token is missing some or all of the required fields: `sub`, `is_admin`, `team_id`")
+
+        except ExpiredSignatureError:
+            LOG.warning("The JWT token has expired.")
+            return Err("The JWT token has expired.")
+
+        except InvalidSignatureError:
+            LOG.warning("The JWT token has an invalid signature.")
+            return Err("The JWT token has invalid signature.")
+
+        except DecodeError:
+            # We log the exception as DecodeError is a more generic one, and we want to be able to trace what exactly
+            # has cause the error
+            LOG.exception("There was a a general error while decoding the JWT token.")
+            return Err("There was a a general error while decoding the JWT token. Checks its format again.")
