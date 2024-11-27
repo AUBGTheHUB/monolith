@@ -38,8 +38,11 @@ class ParticipantsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Participant, DuplicateEmailError | Exception]:
+
+        session_id = session.session_id["id"].hex() if session is not None else "Implicit Session"
+
         try:
             participant = Participant(
                 name=input_data.name,
@@ -48,14 +51,16 @@ class ParticipantsRepository(CRUDRepository):
                 # If the team_id is passed as a kwarg the participant will be inserted in the given team
                 team_id=kwargs.get("team_id"),
             )
-            LOG.debug("Inserting participant...", participant=participant.dump_as_json())
+            LOG.debug(f"ID:[{session_id}] Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
         except DuplicateKeyError:
-            LOG.warning("Participant insertion failed due to duplicate email", email=input_data.email)
+            LOG.warning(
+                f"ID:[{session_id}] Participant insertion failed due to duplicate email", email=input_data.email
+            )
             return Err(DuplicateEmailError(input_data.email))
         except Exception as e:
-            LOG.exception("Participant insertion failed due to err {}".format(e))
+            LOG.exception(f"ID:[{session_id}] Participant insertion failed due to err {e}")
             return Err(e)
 
     async def get_verified_random_participants_count(self) -> int:

@@ -26,21 +26,25 @@ class TeamsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
+
+        session_id = session.session_id["id"].hex() if session is not None else "Implicit Session"
 
         try:
             team = Team(name=input_data.team_name)
-            LOG.debug("Inserting team...", team=team.dump_as_json())
+            LOG.debug(f"ID:[{session_id}] Inserting team...", team=team.dump_as_json())
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
         except DuplicateKeyError:
-            LOG.warning("Team insertion failed due to duplicate team name", team_name=input_data.team_name)
+            LOG.warning(
+                f"ID:[{session_id}] Team insertion failed due to duplicate team name", team_name=input_data.team_name
+            )
             return Err(DuplicateTeamNameError(input_data.team_name))
 
         except Exception as e:
-            LOG.exception("Team insertion failed due to err {}".format(e))
+            LOG.exception(f"ID:[{session_id}] Team insertion failed due to err {e}")
             return Err(e)
 
     async def fetch_by_id(self, obj_id: str) -> Result:
@@ -54,7 +58,7 @@ class TeamsRepository(CRUDRepository):
         obj_id: str,
         input_data: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result:
         raise NotImplementedError()
 
