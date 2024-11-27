@@ -37,11 +37,7 @@ export const RadioComponent = <T extends FieldValues>({
                 <FormItem className={cn('space-y-3', groupClassName)}>
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
-                        <RadioGroup
-                            onValueChange={field.onChange}
-                            value={field.value}
-                            className={cn('', radioGroupClassName)}
-                        >
+                        <RadioGroup onValueChange={field.onChange} value={field.value} className={radioGroupClassName}>
                             {options.map((option) => (
                                 <FormItem
                                     key={option.value}

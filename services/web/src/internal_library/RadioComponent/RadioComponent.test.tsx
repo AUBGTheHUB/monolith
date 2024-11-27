@@ -83,7 +83,7 @@ describe('RadioComponent', () => {
         expect(await screen.findByText(/Please select a preference/i)).toBeInTheDocument();
 
         // Select an option to clear the error
-        await userEvent.click(screen.getByLabelText(/Nothing/i));
+        await userEvent.click(screen.getByTestId('radio-item-all'));
         expect(screen.queryByText(/Please select a preference/i)).not.toBeInTheDocument();
     });
 });
