@@ -50,9 +50,8 @@ class AsyncClient(metaclass=SingletonMeta):
         await self._async_client.aclose()
 
 
-# Generic type for the Jwt Utility
 class JwtUtility:
-    """A class providing methods for encoding data in with a predefined format into a JWT token, or decoding a JWT
+    """A class providing generic methods for encoding data in with a predefined format into a JWT token, or decoding a JWT
     token into a predefined format (TypedDict)"""
 
     @staticmethod
@@ -64,12 +63,12 @@ class JwtUtility:
         try:
             decoded_token: dict[str, Any] = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
 
-            # shcema.__annotations___.keys() gets all the defined fields of the TypedDict without initializing it
+            # schema.__annotations___.keys() gets all the defined fields of the TypedDict without initializing it
             # this will help us see if all the fields that we have defined in the schema are present in the decoded
             # jwt token
             for key in schema.__annotations__.keys():
                 if key not in decoded_token:
-                    LOG.warning("The decoded token is missing some of the required fields: {}".format(decoded_token))
+                    LOG.warning(f"The decoded token is missing some of the required fields: {decoded_token}")
                     return Err("The decoded token is missing some or all of the required fields.")
 
             return Ok(cast(T, decoded_token))
