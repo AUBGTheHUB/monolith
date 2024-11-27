@@ -1,10 +1,10 @@
+from os import environ
 from threading import Lock
-from typing import Any, Dict, cast
+from typing import Any, Dict
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 
 LOG = get_logger()
 
@@ -47,27 +47,19 @@ class AsyncClient(metaclass=SingletonMeta):
         await self._async_client.aclose()
 
 
+# Generic type for the Jwt Utility
 class JwtUtility:
     """A class providing methods for encoding data in with a predefined format into a JWT token, or decoding a JWT
     token into a predefined format (TypedDict)"""
 
     @staticmethod
-    def encode_data(data: JwtUserData) -> str:
-        return str(encode(data, key="secret", algorithm="HS256"))
+    def encode_data[T: str](data: T) -> str:
+        return str(encode(payload=data, key=environ["SECRET_KEY"], algorithm="HS256"))
 
     @staticmethod
-    def decode_data(token: str) -> Result[JwtUserData, str]:
+    def decode_data[T: str](token: str, schema: T) -> Result[T, str]:
         try:
-            decoded_token: dict[str, Any] = decode(token, "secret", algorithms=["HS256"])
-
-            if "sub" in decoded_token and "is_admin" in decoded_token and "team_id" in decoded_token:
-                return Ok(cast(JwtUserData, decoded_token))
-
-            LOG.warning(
-                "Decoded token is missing some or all of the required fields: `sub`, `is_admin`, `team_id`",
-                decoded_token=decoded_token,
-            )
-            return Err("The decoded token is missing some or all of the required fields: `sub`, `is_admin`, `team_id`")
+            return Ok(schema(**decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])))
 
         except ExpiredSignatureError:
             LOG.warning("The JWT token has expired.")
