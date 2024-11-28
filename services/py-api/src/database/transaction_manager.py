@@ -128,6 +128,11 @@ class TransactionManager:
         https://www.youtube.com/watch?v=q6ujWWaRdbA
         """
 
+        """
+        If you want to read more of how the start_session() method works, and how the sessions are
+        managed by the client and the server consider this read:
+        https://github.com/mongodb/specifications/blob/master/source/sessions/driver-sessions.md
+        """
         session = await self._client.start_session()
         session_id = session.session_id["id"].hex()
 
