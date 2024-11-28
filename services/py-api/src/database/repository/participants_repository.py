@@ -40,8 +40,13 @@ class ParticipantsRepository(CRUDRepository):
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any],
     ) -> Result[Participant, DuplicateEmailError | Exception]:
-
-        session_id = session.session_id["id"].hex() if session is not None else None
+        """
+        If the operation is not happening in a transactional context, we do not pass an explicit
+        session to this method, this way the session in the parameters of this function will be
+        None. Read more about implicit and explicit sessions here:
+        https://github.com/mongodb/specifications/blob/master/source/sessions/driver-sessions.md
+        """
+        session_id = session.session_id["id"].hex() if session else None
 
         try:
             participant = Participant(

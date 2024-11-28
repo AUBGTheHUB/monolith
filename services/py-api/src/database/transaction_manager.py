@@ -73,7 +73,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError(f"ID:[{session_id}] Transaction failed after maximum retries")
+        raise PyMongoError(f"Transaction with ID:[{session_id}] failed after maximum retries")
 
     @staticmethod
     async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
@@ -102,7 +102,7 @@ class TransactionManager:
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
-        raise PyMongoError(f"ID:[{session_id}] Commiting transaction failed after maximum retries")
+        raise PyMongoError(f"Commiting transaction with ID:[{session_id}]  failed after maximum retries")
 
     async def with_transaction[T](self, callback: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """
@@ -152,8 +152,6 @@ class TransactionManager:
             return result
 
         except Exception as e:
-            # FIXME: When there is a repeating team name or email the below message prints "Aborting transaction with id: {session_id} due to err {team name/email}"
-            # instead of printing a meaningful error
             LOG.exception(f"Aborting transaction due to err {e}", session_id=session_id)
             await session.abort_transaction()
             return Err(e)
