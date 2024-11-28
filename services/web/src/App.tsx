@@ -1,20 +1,41 @@
-import { useState } from 'react';
+import './App.css';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+import { RadioComponent } from './internal_library/RadioComponent/RadioComponent';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import MockDataComponent from './website/mockComponent';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import './App.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
+import { useState } from 'react';
 
-import MockDataComponent from './website/mockComponent';
+const FormSchema = z.object({
+    notificationPreference: z.string().min(1, { message: 'GRESHKA' }),
+});
 
-import { startPerformanceTools } from 'reactscape-testing-tools';
-
-startPerformanceTools();
+const RADIO_OPTIONS = [
+    { label: 'All new messages', value: 'all' },
+    { label: 'Direct messages and mentions', value: 'mentions' },
+    { label: 'Nothing', value: 'none' },
+];
 
 function App() {
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            notificationPreference: '',
+        },
+    });
+
+    const onSubmit = (data: z.infer<typeof FormSchema>) => {
+        console.log(data);
+    };
+
     const [count, setCount] = useState(2);
     const queryClient = new QueryClient();
-
     return (
         <QueryClientProvider client={queryClient}>
             <div>
@@ -40,6 +61,17 @@ function App() {
                 </AccordionItem>
             </Accordion>
             <MockDataComponent />
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+                    <RadioComponent
+                        control={form.control}
+                        name="notificationPreference"
+                        options={RADIO_OPTIONS}
+                        groupLabel="Notify me about..."
+                    />
+                    <Button type="submit">Submit</Button>
+                </form>
+            </Form>
         </QueryClientProvider>
     );
 }
