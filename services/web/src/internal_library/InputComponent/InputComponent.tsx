@@ -3,16 +3,22 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+type InputTypes = 'text' | 'email' | 'password' | 'number';
+
 type InputProps<T extends FieldValues> = {
     control: Control<T>;
     name: Path<T>;
     label: string;
-    type: 'text' | 'email' | 'password' | 'number';
+    type: InputTypes;
     placeholder?: string;
     formItemClassName?: string;
     labelClassName?: string;
     inputClassName?: string;
 };
+
+function handleInputChange(value: string, type: InputTypes): string | number {
+    return type === 'number' ? +value : value;
+}
 
 export const InputComponent = <T extends FieldValues>({
     control,
@@ -38,8 +44,7 @@ export const InputComponent = <T extends FieldValues>({
                             placeholder={placeholder}
                             className={cn(inputClassName)}
                             onChange={(e) => {
-                                const value = e.target.value;
-                                field.onChange(type === 'number' ? +value : value); // Convert to number for 'number' type
+                                field.onChange(handleInputChange(e.target.value, type));
                             }}
                             value={type === 'number' ? field.value || '' : field.value}
                         />

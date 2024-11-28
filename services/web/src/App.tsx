@@ -79,6 +79,7 @@ function App() {
             lastName: '',
             age: undefined,
         },
+        mode: 'onTouched',
     });
 
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
