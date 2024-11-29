@@ -59,7 +59,10 @@ class HackathonService:
         """Creates a random participant. The participant is created with team_id=None as we create the Random teams
         after the registration is closed, until then random participants are not added to a team."""
 
-        result = await self._participant_repo.create(input_data)
+        # We create a copy of the input data in order to avoid modifying it directly during runtime, as this
+        # could create strange behaviour down the line.
+        random_participant_data = input_data.model_copy(update={"team_name": None})
+        result = await self._participant_repo.create(random_participant_data)
 
         if is_err(result):
             return result
