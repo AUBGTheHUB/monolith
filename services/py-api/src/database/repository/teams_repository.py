@@ -29,6 +29,9 @@ class TeamsRepository(CRUDRepository):
         **kwargs: Dict[str, Any]
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
+        if input_data.team_name is None:
+            raise ValueError("`input_data.team_name` should NOT be None when calling this method")
+
         try:
             team = Team(name=input_data.team_name)
             LOG.debug("Inserting team...", team=team.dump_as_json())
