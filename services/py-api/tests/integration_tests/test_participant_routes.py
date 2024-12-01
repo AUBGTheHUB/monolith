@@ -9,7 +9,7 @@ PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
 RANDOM_PARTICIPANT_BODY = {"name": "testtest", "email": "testtest@test.com", "is_admin": False}
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(loop_scope="session")
 async def test_create_random_participant(
     async_client: AsyncClient, participant_repository: ParticipantsRepository
 ) -> None:
