@@ -3,7 +3,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-type InputTypes = 'text' | 'email' | 'password' | 'number';
+export type InputTypes = 'text' | 'email' | 'password' | 'number';
 
 type InputProps<T extends FieldValues> = {
     control: Control<T>;
@@ -18,6 +18,15 @@ type InputProps<T extends FieldValues> = {
 
 function handleInputChange(value: string, type: InputTypes): string | number {
     return type === 'number' ? +value : value;
+}
+
+function handleFieldChange(
+    onChange: (value: string | number) => void,
+    type: InputTypes,
+): (e: React.ChangeEvent<HTMLInputElement>) => void {
+    return (e) => {
+        onChange(handleInputChange(e.target.value, type));
+    };
 }
 
 export const InputComponent = <T extends FieldValues>({
@@ -43,9 +52,7 @@ export const InputComponent = <T extends FieldValues>({
                             type={type}
                             placeholder={placeholder}
                             className={cn(inputClassName)}
-                            onChange={(e) => {
-                                field.onChange(handleInputChange(e.target.value, type));
-                            }}
+                            onChange={handleFieldChange(field.onChange, type)}
                             value={type === 'number' ? field.value || '' : field.value}
                         />
                     </FormControl>
