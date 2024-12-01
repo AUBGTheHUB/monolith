@@ -68,7 +68,7 @@ class TeamsRepository(CRUDRepository):
         """
         try:
 
-            LOG.debug("Deleting team...", participant_obj_id=obj_id)
+            LOG.debug("Deleting team...", team_obj_id=obj_id)
             """
             According to mongodb docs result is of type _DocumentType:
             https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
