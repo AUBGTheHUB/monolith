@@ -7,8 +7,9 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ParticipantRegisteredInTeamResponse, ErrResponse
-from src.service.participants_service import ParticipantService
+from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
+from src.service.hackathon_service import HackathonService
+from src.service.participants_registration_service import ParticipantRegistrationService
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
@@ -30,23 +31,29 @@ def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
     return TransactionManager(db_manager)
 
 
-def _service(
+def _h_service(
     p_repo: ParticipantsRepository = Depends(_p_repo),
     t_repo: TeamsRepository = Depends(_t_repo),
     tx_manager: TransactionManager = Depends(_tx_manager),
-) -> ParticipantService:
-    return ParticipantService(p_repo, t_repo, tx_manager)
+) -> HackathonService:
+    return HackathonService(p_repo, t_repo, tx_manager)
 
 
-def _handler(service: ParticipantService = Depends(_service)) -> ParticipantHandlers:
-    return ParticipantHandlers(service)
+def _p_reg_service(
+    h_service: HackathonService = Depends(_h_service),
+) -> ParticipantRegistrationService:
+    return ParticipantRegistrationService(h_service)
+
+
+def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
+    return ParticipantHandlers(p_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
 @participants_router.post(
-    "", status_code=201, responses={201: {"model": ParticipantRegisteredInTeamResponse}, 409: {"model": ErrResponse}}
+    "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
     response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
-) -> ParticipantRegisteredInTeamResponse | ErrResponse:
+) -> ParticipantRegisteredResponse | ErrResponse:
     return await handler.create_participant(response, input_data)
