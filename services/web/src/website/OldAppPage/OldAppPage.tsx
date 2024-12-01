@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Fragment } from 'react/jsx-runtime';
 import { z } from 'zod';
-import MockDataComponent from '../mockRequest/mockComponent';
+import MockDataComponent from '../../mockRequest/mockComponent';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
 
