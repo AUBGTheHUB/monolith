@@ -7,6 +7,7 @@ import { z } from 'zod';
 import MockDataComponent from '../../mockRequest/mockComponent';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
+import { TestForm } from '@/internal_library/reusable-components/test-form';
 
 const FormSchema = z.object({
     notificationPreference: z.string().min(1, { message: 'GRESHKA' }),
@@ -34,6 +35,7 @@ export const OldAppPage = () => {
 
     return (
         <Fragment>
+            <TestForm />
             <h1>Vite + React</h1>
             <div className="card">
                 <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
