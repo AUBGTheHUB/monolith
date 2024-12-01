@@ -1,5 +1,6 @@
 from typing import Final, Optional, Any, Dict
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -62,7 +63,31 @@ class TeamsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
-        raise NotImplementedError()
+        """
+        Deletes the team which corresponds to the provided object_id
+        """
+        try:
+
+            LOG.debug("Deleting team...", participant_obj_id=obj_id)
+            """
+            According to mongodb docs result is of type _DocumentType:
+            https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
+            _id is projected because ObjectID is not serializable.
+            We use the Team data class to represent the deleted participant.
+            """
+            result = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+
+            """
+            The result is None when the team with the specified ObjectId is not found
+            """
+            if result:
+                return Ok(Team(id=obj_id, **result))
+
+            return Err("Failed to delete team since it does not exist.")
+
+        except Exception as e:
+            LOG.exception("Team deletion failed due to err {}".format(e))
+            return Err(e)
 
     async def get_verified_registered_teams_count(self) -> int:
         """Returns the count of verified teams."""
