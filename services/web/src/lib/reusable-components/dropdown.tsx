@@ -2,7 +2,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
 
-type dropdownInput = {
+type DropdownItem = {
     name: string;
     value: string;
 };
@@ -12,15 +12,19 @@ type DropdownComponentProps<T extends FieldValues = FieldValues> = {
     name: FieldPath<T>;
     label: string;
     placeholder: string;
-    className: string;
-    items: dropdownInput[];
+    dropdownLabelClassName?: string;
+    selectValueClassName?: string;
+    selectItemClassName?: string;
+    items: DropdownItem[];
 };
 
 export function DropdownComponent<T extends FieldValues = FieldValues>({
     name,
     label,
     placeholder,
-    className,
+    dropdownLabelClassName,
+    selectValueClassName,
+    selectItemClassName,
     items,
     control,
 }: DropdownComponentProps<T>) {
@@ -30,24 +34,26 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel>{label}</FormLabel>
+                    <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                            <SelectTrigger className={className}>
-                                <SelectValue placeholder={placeholder} />
+                            <SelectTrigger>
+                                <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                             <SelectGroup>
-                                {items.map((item: dropdownInput) => (
-                                    <SelectItem key={item.value} value={item.value}>
+                                {items.map((item) => (
+                                    <SelectItem className={selectItemClassName} key={item.value} value={item.value}>
                                         {item.name}
                                     </SelectItem>
                                 ))}
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <div className="min-h-6">
+                        <FormMessage />
+                    </div>
                 </FormItem>
             )}
         />

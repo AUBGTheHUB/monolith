@@ -1,5 +1,3 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,15 +19,6 @@ export function TestForm() {
         mode: 'onTouched',
     });
 
-    const label = 'Fruits';
-    const placeholder = 'Select a fruit';
-    const className = 'fruits';
-    const items = [
-        { name: 'Apple', value: 'apple' },
-        { name: 'Banana', value: 'banana' },
-        { name: 'Blueberry', value: 'blueberry' },
-    ];
-
     function onSubmit(data: z.infer<typeof FormSchema>) {
         console.log(data);
     }
@@ -38,10 +27,16 @@ export function TestForm() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                 <DropdownComponent
-                    label={label}
-                    placeholder={placeholder}
-                    className={className}
-                    items={items}
+                    label="Fruits"
+                    placeholder="Select a fruit"
+                    dropdownLabelClassName="dropdown-label"
+                    selectValueClassName="select-value"
+                    selectItemClassName="select-item"
+                    items={[
+                        { name: 'Apple', value: 'apple' },
+                        { name: 'Banana', value: 'banana' },
+                        { name: 'Blueberry', value: 'blueberry' },
+                    ]}
                     control={form.control}
                     name="fruit"
                 />
