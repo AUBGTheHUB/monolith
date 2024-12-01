@@ -7,7 +7,7 @@ import { z } from 'zod';
 import MockDataComponent from '../../mockRequest/mockComponent';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
-import { TestForm } from '@/lib/reusable-components/test-form';
+import { TestForm } from '@/internal_library/reusable-components/test-form';
 
 const FormSchema = z.object({
     notificationPreference: z.string().min(1, { message: 'GRESHKA' }),
