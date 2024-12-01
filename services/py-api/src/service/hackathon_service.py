@@ -53,6 +53,18 @@ class HackathonService:
             self._create_participant_and_team_in_transaction_callback, input_data
         )
 
+    async def create_random_participant(
+        self, input_data: ParticipantRequestBody
+    ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
+
+        result = await self._participant_repo.create(input_data)
+
+        if is_err(result):
+            return result
+
+        # As when first created, the random participant is not assigned to a team we return the team as None
+        return Ok((result.ok_value, None))
+
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
         teams in the hackathon. This is the Capacity Check 2 from the Excalidraw 'Adding a participant workflow'"""
@@ -70,3 +82,22 @@ class HackathonService:
 
         # Check against the hackathon capacity
         return number_ant_teams < self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+
+    async def check_capacity_register_random_participant_case(self) -> bool:
+        """Calculate if there is enough capacity to register a new random participant. Capacity is measured in max
+        number of verified teams in the hackathon. This is the Capacity Check 1 from the Excalidraw 'Adding a
+        participant workflow'"""
+
+        # Fetch number of verified random participants
+        verified_random_participants = await self._participant_repo.get_verified_random_participants_count()
+
+        # Fetch number of verified registered teams
+        verified_registered_teams = await self._team_repo.get_verified_registered_teams_count()
+
+        # Calculate the anticipated number of teams if a new random participant is added
+        number_ant_teams = verified_registered_teams + ceil(
+            (verified_random_participants + 1) / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+        )
+
+        # Check against the hackathon capacity
+        return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON

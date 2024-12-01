@@ -13,7 +13,9 @@ To learn more about `pytest` fixtures, check the [official documentation](https:
 
 ---
 
-### 3. Using Mocks for Injected Dependencies
+### 3. Check what it Dependency Injection [here](https://www.youtube.com/watch?v=J1f5b4vcxCQ)
+
+### 4. Using Mocks for Injected Dependencies
 
 We use mocking to replace injected dependencies with fake ones, especially when our code is designed with "composition over inheritance." This approach makes it easier to substitute real dependencies with mocks in unit tests.
 
@@ -99,7 +101,7 @@ async def test_register_admin_participant_duplicate_team_name_error(
 ```
 ---
 
-### 4. Using [with patch](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch) for Functions from External Modules or Libraries
+### 5. Using [with patch](https://docs.python.org/3/library/unittest.mock.html#unittest.mock.patch) for Functions from External Modules or Libraries
 
 Use `with patch` when the function you’re testing calls functions, classes, or objects from external modules or libraries that are not injected as dependencies. Since you don’t have direct access to these external modules within the function’s parameters, `patch` allows you to replace them temporarily for testing.
 
