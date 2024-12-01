@@ -24,6 +24,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
+    "react-router": "^7.0.1",
     "reactscape-testing-tools": "^1.421.69",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
