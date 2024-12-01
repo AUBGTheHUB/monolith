@@ -37,14 +37,19 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger data-testid="trigger">
                                 <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                             <SelectGroup>
                                 {items.map((item) => (
-                                    <SelectItem className={selectItemClassName} key={item.value} value={item.value}>
+                                    <SelectItem
+                                        className={selectItemClassName}
+                                        key={item.value}
+                                        value={item.value}
+                                        data-testid={`dropdown-item-${item.value}`}
+                                    >
                                         {item.name}
                                     </SelectItem>
                                 ))}

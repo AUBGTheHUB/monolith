@@ -27,6 +27,7 @@ export function TestForm() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                 <DropdownComponent
+                    name="fruit"
                     label="Fruits"
                     placeholder="Select a fruit"
                     dropdownLabelClassName="dropdown-label"
@@ -38,7 +39,6 @@ export function TestForm() {
                         { name: 'Blueberry', value: 'blueberry' },
                     ]}
                     control={form.control}
-                    name="fruit"
                 />
                 <Button type="submit">Submit</Button>
             </form>
