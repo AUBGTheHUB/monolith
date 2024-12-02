@@ -16,7 +16,7 @@ result = "^0.17.0"
 pymongo = "^4.8.0"
 motor = "^3.5.1"
 pydantic = { extras = ["email"], version = "^2.9.2" }
-pyjwt = "^2.10.0"
+pyjwt = "^2.10.1"
 
 
 [tool.poetry.group.dev.dependencies]
