@@ -1,4 +1,6 @@
+from typing import Optional
 from fastapi import APIRouter, Depends
+from fastapi.params import Query
 from starlette.responses import Response
 
 from src.database.db_manager import DB_MANAGER, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
@@ -54,6 +56,6 @@ def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
+    response: Response, input_data: ParticipantRequestBody, jwt_token: Optional[str]=Query(None), handler: ParticipantHandlers = Depends(_handler)
 ) -> ParticipantRegisteredResponse | ErrResponse:
-    return await handler.create_participant(response, input_data)
+    return await handler.create_participant(response, input_data, jwt_token)

@@ -1,3 +1,4 @@
+from typing import Optional
 from result import is_err
 from starlette import status
 from starlette.responses import Response
@@ -13,7 +14,7 @@ class ParticipantHandlers:
         self._service = service
 
     async def create_participant(
-        self, response: Response, input_data: ParticipantRequestBody
+        self, response: Response, input_data: ParticipantRequestBody, jwt_token: Optional[str] = None,
     ) -> ParticipantRegisteredResponse | ErrResponse:
         if input_data.is_admin and input_data.team_name:
             result = await self._service.register_admin_participant(input_data)
