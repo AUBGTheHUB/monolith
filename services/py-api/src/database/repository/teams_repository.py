@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.team_model import Team
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateTeamNameError
+from src.server.exception import DuplicateTeamNameError, TeamNotFound
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 LOG = get_logger()
@@ -62,7 +62,9 @@ class TeamsRepository(CRUDRepository):
     ) -> Result:
         raise NotImplementedError()
 
-    async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
+    async def delete(
+        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[Team, TeamNotFound | Exception]:
         """
         Deletes the team which corresponds to the provided object_id
         """
@@ -83,7 +85,7 @@ class TeamsRepository(CRUDRepository):
             if result:
                 return Ok(Team(id=obj_id, **result))
 
-            return Err("Failed to delete team since it does not exist.")
+            return Err(TeamNotFound())
 
         except Exception as e:
             LOG.exception("Team deletion failed due to err {}".format(e))
