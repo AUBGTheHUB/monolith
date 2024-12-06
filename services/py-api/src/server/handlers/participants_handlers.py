@@ -21,14 +21,15 @@ class ParticipantHandlers:
 
     def __init__(self, service: ParticipantRegistrationService) -> None:
         self._service = service
-        # Direct access to the participant repository to facilitate CRUD operations
-        self._repository = self._service._hackathon_service._participant_repo
 
     async def delete_participant(
         self, response: Response, participant_id: str
     ) -> ParticipantDeletedResponse | ErrResponse:
 
-        result = await self._repository.delete(participant_id)
+        # Direct access to the participant repository to facilitate CRUD operations
+        _repository = self._service._hackathon_service._participant_repo
+
+        result = await _repository.delete(participant_id)
 
         if is_err(result):
             if isinstance(result.err_value, ParticipantNotFound):
