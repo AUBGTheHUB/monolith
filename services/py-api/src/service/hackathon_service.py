@@ -64,6 +64,22 @@ class HackathonService:
 
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
+    
+    async def create_invite_link_participant(
+            self, input_data: ParticipantRequestBody
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | Exception]:
+        
+        participant_result = await self._team_repo.create(input_data)
+        if is_err(participant_result):
+            return participant_result
+
+        # Assign the team whose name matches that from input_data.team_name
+        team_result = await self._team_repo.fetch_team_by_name(input_data.team_name)
+        if is_err(team_result):
+            return team_result
+        
+        # Return the new participant and the preexisting team
+        return Ok((participant_result.ok_value, team_result.ok_value))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
@@ -101,3 +117,12 @@ class HackathonService:
 
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+    
+    async def check_team_capacity(self) -> bool:
+        """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
+
+        # Fetch number of registered participants in the team
+        registered_participants = await self._participant_repo.get_number_registered_teammates()
+
+        # Check against team capacity
+        return registered_participants + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS

@@ -13,3 +13,7 @@ class DuplicateTeamNameError(DuplicateKeyError):
 class HackathonCapacityExceededError(Exception):
     """Exception raised when hackathon capacity has been reached."""
     pass
+
+class TeamCapacityExceededError(Exception):
+    """Exception raised when team capacity has been reached."""
+    pass

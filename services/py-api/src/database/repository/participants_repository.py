@@ -63,3 +63,8 @@ class ParticipantsRepository(CRUDRepository):
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
         return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
+    
+    async def get_number_registered_teammates(self, team_id) -> int:
+        """Returns the count of registered participants already in the team."""
+
+        return await self._collection.count_documents({"email_verified": True, "team_id": team_id})

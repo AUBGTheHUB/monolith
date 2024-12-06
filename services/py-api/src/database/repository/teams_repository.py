@@ -69,3 +69,7 @@ class TeamsRepository(CRUDRepository):
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
         return await self._collection.count_documents({"is_verified": True})  # type: ignore
+    
+    async def fetch_team_by_name(self, team_name: str) -> Result:
+        """Fetches a team by the team_name from the participant"""
+        return await self._collection.find_one({"name": team_name})

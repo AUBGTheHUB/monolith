@@ -4,7 +4,7 @@ from result import Result, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
+from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError, TeamCapacityExceededError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
 
@@ -38,3 +38,15 @@ class ParticipantRegistrationService:
 
         # Proceed with registration if there is capacity
         return await self._hackathon_service.create_random_participant(input_data)
+    
+    async def register_invite_link_participant(self, input_data: ParticipantRequestBody) -> Result[
+        Tuple[Participant, Team],
+        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+    ]:
+        # Check Team Capacity
+        has_capacity = await self._hackathon_service.check_team_capacity()
+        if not has_capacity:
+            return Err(TeamCapacityExceededError())
+
+        # Proceed with registration if there is capacity
+        return await self._hackathon_service.create_invite_link_participant(input_data)
