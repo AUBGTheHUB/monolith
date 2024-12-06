@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from src.database.db_manager import get_db_manager
 from src.server.routes.routes import Routes
+from src.server.middleware.middleware import Middleware
 
 
 @asynccontextmanager
@@ -25,5 +26,6 @@ def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, root_path="/api/v3")
 
     Routes.register_routes(app)
+    Middleware.bind(app)
 
     return app
