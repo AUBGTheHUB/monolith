@@ -1,97 +1,91 @@
-import os
-import re
-from typing import Callable, Any, Final, Tuple, Literal
+from os import environ
+from typing import Callable, Any, Final
 
-from fastapi import FastAPI
+from fastapi.applications import FastAPI
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 
 class AuthMiddleware:
-    """This middleware is responsible for checking if the requests are coming from PY-API"""
+    """This middleware is responsible for handling authorization for incoming requests."""
 
-    _BYPASSED_REQUESTS: Final = {
+    _BYPASSED_ENDPOINTS: Final = {
         "/ping": ["GET"],
         "/docs": ["GET"],
         "/openapi.json": ["GET"],
         "/hackathon/participants": ["POST"],
     }
+    """
+    This dictionary maps endpoint paths to allowed HTTP methods. It contains endpoints which do not require Bearer token
+    to access (public endpoints).
+
+    Paths ending with `/*` act as wildcards, matching any sub-path. For example:
+
+    - `"/hackathon/teams/*": ["GET", "POST"]` matches paths like `/hackathon/teams/id` or `/hackathon/teams/isak/test`
+    with the specified methods (GET, POST).
+    - `"/hackathon/participants": ["POST"]` matches only `/hackathon/participants` with the POST method.
+    """
 
     def __init__(self, app: FastAPI) -> None:
 
-        _BASE_URL = app.root_path
+        _base_url: str = app.root_path
 
         @app.middleware("http")
         async def verify_request(request: Request, call_next: Callable[[Any], Any]) -> JSONResponse:
-            # Bypass any request towards an endpoint with a specified method that is declared in the
-            # _BYPASSED_ENDPOINTS dict
+            """
+            Verifies the incoming request for authorization:
+            - If the request is made to a bypassed endpoint, it is allowed to proceed.
+            - If not, it checks for a Bearer token in the request headers for authorization.
+            - If neither condition is met, it returns a 401 Unauthorized status code.
 
-            # If you the syntax below is new to you,
-            # read more about upacking of touples: https://www.w3schools.com/python/python_tuples_unpack.asp
-            _, is_bypassed = self._check_bypassed_request(request.url.path.removeprefix(_BASE_URL), request.method)
-            if is_bypassed:
-                response = await call_next(request)
-                return response
+            Args:
+                request: The incoming HTTP request.
+                call_next: The next handler in the stack.
+                    Passing the request to the next handler, either the next middleware in the stack or a route which
+                    matches the URL pattern is handled internally by the `middleware` decorator
 
-            # Provides way of authorizing the incoming request based on the environment
-            if os.environ["ENV"] != "PROD":
-                if request.headers.get("X-Auth-Token") == "DEV":
-                    response = await call_next(request)
-                    return response
-                else:
-                    return JSONResponse(content={"message": "Unauthorized"}, status_code=401)
-            else:
-                # TODO: Implement token authentication logic if we decide on an admin panel
-                # For now every effort to access authenticated routes in a PROD env will not be authorized!
+            For more info visit:
+            https://fastapi.tiangolo.com/tutorial/middleware/
+            https://www.starlette.io/middleware/
+            https://github.com/encode/starlette/blob/8a99adfb5839b37efee33f2f49c1ba27a954fcbd/starlette/middleware/base.py#L108
+            """
+            if _is_bypassed(request):
+                return await call_next(request)
+
+            # FIXME: Currently the token is hardcoded as a secret for DEV and TEST environments, we will fix it before
+            #  deploying to PROD
+            if environ["ENV"] != "PROD":
+                auth_header = request.headers.get("Authorization")
+                if (
+                    auth_header
+                    and auth_header.startswith("Bearer ")
+                    and auth_header[len("Bearer ") :] == environ["SECRET_AUTH_TOKEN"]
+                ):
+                    return await call_next(request)
+
                 return JSONResponse(content={"message": "Unauthorized"}, status_code=401)
 
-    @classmethod
-    def _check_bypassed_request(
-        cls, url_path: str, request_method: str
-    ) -> Tuple[str, Literal[True]] | Tuple[None, Literal[False]]:
-        # TODO: Strip the url from path params where there are such
+            # TODO: Implement JWT Bearer token authorization logic if we decide on an admin panel.
+            #  For now every effort to access protected routes in a PROD env will not be authorized!
+            return JSONResponse(content={"message": "Unauthorized"}, status_code=401)
 
-        # Check if the url_path matches any of the endpoints
-        endpoint, is_bypassed = cls._check_bypassed_endpoint(url_path)
+        def _is_bypassed(req: Request) -> bool:
+            """Checks if the request is towards a bypassed endpoints.
 
-        # If we have a url_path match, check if the current 'request_method' matches any of the allowed url methods
-        if is_bypassed:
-            # If both the endpoint and methods are allowed, bypass request authorization
-            if request_method in cls._BYPASSED_REQUESTS[str(endpoint)]:
-                return url_path, True
+            Returns:
+                True: if the request is made towards a bypassed endpoint
+                False: otherwise
+            """
+            path = req.url.path.removeprefix(_base_url)
+            method = req.method
 
-        return None, False
+            for allowed_path, allowed_methods in self._BYPASSED_ENDPOINTS.items():
+                # Check for exact match
+                if allowed_path == path and method in allowed_methods:
+                    return True
 
-    @classmethod
-    def _check_bypassed_endpoint(cls, url_path: str) -> Tuple[str, Literal[True]] | Tuple[None, Literal[False]]:
+                # Check for wildcard match
+                if allowed_path.endswith("/*") and path.startswith(allowed_path[:-2]) and method in allowed_methods:
+                    return True
 
-        # Tokenize the url string using '/' as a delimiter
-        url_path_tokens = url_path.split("/")
-
-        for endpoint in cls._BYPASSED_REQUESTS.keys():
-            # Tokenize the endpoint string using '/' as a delimiter
-            endpoint_tokens = endpoint.split("/")
-
-            # Reset Sentinel Value/Flag to True
-            endpoints_match = True
-
-            # If the length of the endpoints doesnt match, they are not the same
-            # Skip whatever is below and continue to the next iteration
-            if len(url_path_tokens) != len(endpoint_tokens):
-                continue
-
-            for itr in range(len(endpoint_tokens)):
-                # Do not include the path parameters in the validation
-                # The regex expression checks for strings in the format '{...}'
-                if re.match(r"^\{.*\}$", endpoint_tokens[itr]):
-                    continue
-
-                # If there is one token mismatch the endpoints don't match
-                if endpoint_tokens[itr] != url_path_tokens[itr]:
-                    endpoints_match = False
-                    break
-
-            if endpoints_match:
-                return endpoint, True
-
-        return None, False
+            return False
