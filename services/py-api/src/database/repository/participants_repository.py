@@ -1,5 +1,6 @@
 from typing import Optional, Any, Dict
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -28,8 +29,14 @@ class ParticipantsRepository(CRUDRepository):
 
     async def update(
         self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
-    ) -> Result:
-        raise NotImplementedError()
+    ) -> Result[Ok, Exception]:
+        try:
+            LOG.debug(f"Updating participant with id {obj_id}")
+            await self._collection.find_one_and_update({"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session)
+            return Ok(value=True)
+        except Exception as e:
+            LOG.error(f"Updating participant with id {obj_id} failed due to err {e}")
+            return Err(e)
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
         raise NotImplementedError()
@@ -38,7 +45,7 @@ class ParticipantsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             participant = Participant(
@@ -63,3 +70,6 @@ class ParticipantsRepository(CRUDRepository):
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
         return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
+
+    async def check_if_participant_exists_by_id(self, obj_id: str) -> bool:
+        return bool((await self._collection.count_documents({"_id": ObjectId(obj_id)})) == 1)
