@@ -1,5 +1,6 @@
 from typing import Final, Optional, Any, Dict
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -26,7 +27,7 @@ class TeamsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         if input_data.team_name is None:
@@ -57,9 +58,15 @@ class TeamsRepository(CRUDRepository):
         obj_id: str,
         input_data: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
-    ) -> Result:
-        raise NotImplementedError()
+        **kwargs: Dict[str, Any],
+    ) -> Result[Ok, Exception]:
+        try:
+            LOG.debug(f"Updating team with id {obj_id}")
+            await self._collection.find_one_and_update({"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session)
+            return Ok(value=True)
+        except Exception as e:
+            LOG.error(f"Updating team with id {obj_id} failed due to err {e}")
+            return Err(e)
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
         raise NotImplementedError()
