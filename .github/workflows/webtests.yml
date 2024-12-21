@@ -27,25 +27,16 @@ jobs:
                   node-version: '16'
 
             # Install dependencies
-            - name: Show current working directory before installing dependencies
-              run: pwd
-
             - name: Install dependencies
+              working-directory: services/web
               run: npm install
 
-            - name: Change directory
-              run: cd services/web
-
             # Build the frontend
-            - name: Show current working directory before building
-              run: pwd
-
             - name: Build the frontend
+              working-directory: services/web
               run: npm run build
 
             # Run frontend tests
-            - name: Show current working directory before running tests
-              run: pwd
-
             - name: Run frontend tests
+              working-directory: services/web
               run: npm test
