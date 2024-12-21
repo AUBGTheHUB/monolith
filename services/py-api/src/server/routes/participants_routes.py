@@ -11,6 +11,7 @@ from src.server.schemas.response_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.server.routes.dependency_factory import is_auth
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
@@ -40,6 +41,7 @@ async def create_participant(
     "/{participant_id}",
     status_code=200,
     responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
+    dependencies=[Depends(is_auth)],
 )
 async def delete_participant(
     response: Response, participant_id: str, handler: ParticipantHandlers = Depends(_handler)

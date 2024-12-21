@@ -1,12 +1,11 @@
 from typing import Any, List
 
 from fastapi import FastAPI
-from src.server.middleware.auth import AuthMiddleware
 
 
 class Middleware:
 
-    _middlewares: List[Any] = [AuthMiddleware]
+    _middlewares: List[Any] = []
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
