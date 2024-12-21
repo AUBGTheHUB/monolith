@@ -1,0 +1,35 @@
+name: Build and Test Frontend
+
+on:
+    pull_request:
+        types: [assigned, opened, synchronize, reopened]
+        paths:
+            - 'packages/web/**'
+
+jobs:
+    build_and_test_frontend:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
+
+            - name: Install dependencies
+              run: cd packages/web && npm install
+
+            - name: Build the frontend
+              run: cd packages/web && npm run build
+
+            - name: Run frontend tests
+              run: cd packages/web && npm test
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: test-results
+                  path: packages/web/test-results
