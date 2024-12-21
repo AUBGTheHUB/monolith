@@ -157,7 +157,6 @@ export const OldAppPage = () => {
                     />
                     <Button type="submit">Submit</Button>
                 </form>
-                <h1></h1>
             </FormProvider>
         </Fragment>
     );
