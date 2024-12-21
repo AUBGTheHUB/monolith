@@ -35,20 +35,12 @@ jobs:
 
             # Install dependencies
             - name: Install dependencies
-              run: cd packages/web && npm install
+              run: npm install
 
             # Build the frontend
             - name: Build the frontend
-              run: cd packages/web && npm run build
+              run: npm run build
 
             # Run frontend tests
             - name: Run frontend tests
-              run: cd packages/web && npm test
-
-            # Upload test results
-            - name: Upload test results
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: test-results
-                  path: packages/web/test-results
+              run: npm test
