@@ -25,14 +25,6 @@ jobs:
               with:
                   node-version: '16'
 
-            # Verify the existence of the target directory
-            - name: Verify packages/web directory exists
-              run: |
-                  if [ ! -d "packages/web" ]; then
-                    echo "Error: packages/web directory does not exist."
-                    exit 1
-                  fi
-
             # Install dependencies
             - name: Install dependencies
               run: npm install

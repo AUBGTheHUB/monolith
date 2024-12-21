@@ -3,5 +3,3 @@
 
 npx lint-staged
 cd services/py-api && poetry run pre-commit
-cd ..
-cd web && npm test
