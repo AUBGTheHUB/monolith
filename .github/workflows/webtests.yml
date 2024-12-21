@@ -12,8 +12,6 @@ jobs:
         steps:
             # Check out the repository
             - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0 # Ensure the full repository is checked out
 
             # Debug the directory structure (optional but useful for troubleshooting)
             - name: Show current working directory
