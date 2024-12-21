@@ -16,6 +16,9 @@ jobs:
                   fetch-depth: 0 # Ensure the full repository is checked out
 
             # Debug the directory structure (optional but useful for troubleshooting)
+            - name: Show current working directory
+              run: pwd
+
             - name: Debug repository structure
               run: ls -R
 
@@ -25,14 +28,32 @@ jobs:
               with:
                   node-version: '16'
 
+            # Verify the existence of the target directory
+            - name: Verify packages/web directory exists
+              run: |
+                  pwd  # Show working directory here
+                  if [ ! -d "packages/web" ]; then
+                    echo "Error: packages/web directory does not exist."
+                    exit 1
+                  fi
+
             # Install dependencies
+            - name: Show current working directory before installing dependencies
+              run: pwd
+
             - name: Install dependencies
               run: npm install
 
             # Build the frontend
+            - name: Show current working directory before building
+              run: pwd
+
             - name: Build the frontend
               run: npm run build
 
             # Run frontend tests
+            - name: Show current working directory before running tests
+              run: pwd
+
             - name: Run frontend tests
               run: npm test
