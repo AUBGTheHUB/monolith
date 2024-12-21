@@ -10,25 +10,45 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v3
+            # Check out the repository
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0 # Ensure the full repository is checked out
 
+            # Debug the directory structure (optional but useful for troubleshooting)
+            - name: Debug repository structure
+              run: ls -R
+
+            # Set up Node.js environment
             - name: Set up Node.js
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: '16'
 
+            # Verify the existence of the target directory
+            - name: Verify packages/web directory exists
+              run: |
+                  if [ ! -d "packages/web" ]; then
+                    echo "Error: packages/web directory does not exist."
+                    exit 1
+                  fi
+
+            # Install dependencies
             - name: Install dependencies
               run: cd packages/web && npm install
 
+            # Build the frontend
             - name: Build the frontend
               run: cd packages/web && npm run build
 
+            # Run frontend tests
             - name: Run frontend tests
               run: cd packages/web && npm test
 
+            # Upload test results
             - name: Upload test results
               if: always()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: test-results
                   path: packages/web/test-results
