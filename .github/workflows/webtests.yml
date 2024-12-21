@@ -10,33 +10,39 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            # Check out the repository
             - uses: actions/checkout@v4
-
-            # Debug the directory structure (optional but useful for troubleshooting)
-            - name: Show current working directory
-              run: pwd
 
             - name: Debug repository structure
               run: ls -R
 
-            # Set up Node.js environment
             - name: Set up Node.js
               uses: actions/setup-node@v4
               with:
                   node-version: '16'
 
-            # Install dependencies
+            - name: Cache npm dependencies
+              uses: actions/cache@v3
+              with:
+                  path: services/web/node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('services/web/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
             - name: Install dependencies
               working-directory: services/web
               run: npm install
 
-            # Build the frontend
             - name: Build the frontend
               working-directory: services/web
               run: npm run build
 
-            # Run frontend tests
             - name: Run frontend tests
               working-directory: services/web
               run: npm test
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-results
+                  path: packages/web/test-results
