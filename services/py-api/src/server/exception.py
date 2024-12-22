@@ -13,9 +13,9 @@ class HackathonCapacityExceededError(Exception):
     """Exception raised when hackathon capacity has been reached."""
 
 
-class ParticipantNotFound(Exception):
+class ParticipantNotFoundError(Exception):
     """Exception raised when there are no participants that match the query to the database"""
 
 
-class TeamNotFound(Exception):
+class TeamNotFoundError(Exception):
     """Exception raised when there are no teams that match the query to the database"""

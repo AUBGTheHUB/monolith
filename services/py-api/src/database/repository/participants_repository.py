@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmailError, ParticipantNotFound
+from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 LOG = get_logger()
@@ -34,7 +34,7 @@ class ParticipantsRepository(CRUDRepository):
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Participant, ParticipantNotFound | Exception]:
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         """
         Deletes the participant which corresponds to the provided object_id
         """
@@ -52,7 +52,7 @@ class ParticipantsRepository(CRUDRepository):
             if result:
                 return Ok(Participant(id=obj_id, **result))
 
-            return Err(ParticipantNotFound())
+            return Err(ParticipantNotFoundError())
 
         except Exception as e:
             LOG.exception("Participant deletion failed due to err {}".format(e))

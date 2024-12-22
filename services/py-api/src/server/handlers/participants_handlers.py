@@ -6,7 +6,7 @@ from src.server.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
-    ParticipantNotFound,
+    ParticipantNotFoundError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -32,7 +32,7 @@ class ParticipantHandlers:
         result = await _repository.delete(participant_id)
 
         if is_err(result):
-            if isinstance(result.err_value, ParticipantNotFound):
+            if isinstance(result.err_value, ParticipantNotFoundError):
                 response.status_code = status.HTTP_404_NOT_FOUND
                 return ErrResponse(error="Could not find the participant with the specified id")
 

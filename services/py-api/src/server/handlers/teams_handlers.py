@@ -2,7 +2,7 @@ from result import is_err
 from starlette import status
 from starlette.responses import Response
 
-from src.server.exception import TeamNotFound
+from src.server.exception import TeamNotFoundError
 from src.server.schemas.response_schemas.schemas import ErrResponse, TeamDeletedResponse
 from src.database.repository.teams_repository import TeamsRepository
 
@@ -17,7 +17,7 @@ class TeamHandlers:
         result = await self._repository.delete(team_id)
 
         if is_err(result):
-            if isinstance(result.err_value, TeamNotFound):
+            if isinstance(result.err_value, TeamNotFoundError):
                 response.status_code = status.HTTP_404_NOT_FOUND
                 return ErrResponse(error="Could not find the team with the specified id")
 
