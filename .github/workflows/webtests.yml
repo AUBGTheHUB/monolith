@@ -1,4 +1,4 @@
-name: Build and Test Frontend
+name: Build web and test internal library
 
 on:
     pull_request:
