@@ -12,6 +12,8 @@ services/py-api/shared/*.log.*
 
 node_modules
 
+covarage
+
 **/.DS_Store
 
 /.idea
