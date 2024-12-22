@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "jest",
-    "test-coverage": "jest --coverage"
+    "test": "jest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
