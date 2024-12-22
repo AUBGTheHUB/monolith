@@ -93,6 +93,10 @@ async def test_create_admin_participant(create_test_participant: Callable[..., D
     assert resp_json["team"]["is_verified"] == False
 
 
+# The following test shows the order of create operations when adding an admin participant:
+# We first create the team --> create the admin
+# That is why when trying to create the same admin we get the message that the team already exists.
+# We tried to create a team with the same name twice and the app throws an exception in that moment.
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_and_team_already_exists(
     create_test_participant: Callable[..., Dict[str, Any]]
