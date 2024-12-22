@@ -87,7 +87,7 @@ describe('DropdownComponent', () => {
         await userEvent.keyboard('[Enter]');
         await userEvent.click(screen.getByTestId('submit'));
 
-        expect(mockSubmit).toHaveBeenCalledWith({ fruit: 'apple' }, expect.anything());
+        expect(mockSubmit).toHaveBeenCalledWith({ fruit: 'applae' }, expect.anything());
         expect(mockSubmit).toHaveBeenCalledTimes(1);
     });
     it('shows an error message when no item is selected', async () => {
