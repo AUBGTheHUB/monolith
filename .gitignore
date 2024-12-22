@@ -12,7 +12,7 @@ services/py-api/shared/*.log.*
 
 node_modules
 
-covarage
+coverage
 
 **/.DS_Store
 
