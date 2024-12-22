@@ -10,8 +10,10 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-covarage
+coverage
 *.local
+
+test-report.html
 
 # Editor directories and files
 .vscode/*
