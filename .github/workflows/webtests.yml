@@ -3,7 +3,8 @@ name: Build and Test Frontend
 on:
     pull_request:
         types: [assigned, opened, synchronize, reopened]
-    workflow_dispatch:
+        paths:
+            - 'services/web/**'
 
 jobs:
     build_and_test_frontend:
