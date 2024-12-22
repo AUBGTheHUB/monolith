@@ -12,8 +12,6 @@ services/py-api/shared/*.log.*
 
 node_modules
 
-coverage
-
 **/.DS_Store
 
 /.idea
