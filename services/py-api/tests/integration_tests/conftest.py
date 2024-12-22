@@ -1,3 +1,4 @@
+from unittest.mock import patch
 import pytest
 import pytest_asyncio
 from asyncio import get_running_loop, new_event_loop, AbstractEventLoop
@@ -5,6 +6,7 @@ from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
 from typing import Callable, Dict, Any
 from src.server.app_entrypoint import app
+from os import environ
 
 LOG = get_logger()
 
@@ -57,18 +59,24 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
 
     LOG.debug("Cleaning up the test participants")
     # Perform clean-up. If we are dealing with an admin participant, we should clean both the participant and the team.
-    # Otherwise deleting only the participant is sufficient.
-    for result in request_results:
-        result_json = result.json()
-        if "participant" in result_json:
-            PARTICIPANT_ID = result_json["participant"]["id"]
-            await async_client.delete(
-                url=f"{PARTICIPANT_ENDPOINT_URL}/{PARTICIPANT_ID}", headers={"Authorization": "Bearer OFFLINE_TOKEN"}
-            )
+    # Otherwise, deleting only the participant is sufficient.
+    with patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"}):
 
-            # If a team was created with the participant (admin participant case) clean the team up
-            if result_json["team"]:
-                TEAM_ID = result_json["team"]["id"]
+        for result in request_results:
+
+            result_json = result.json()
+
+            if "participant" in result_json:
+                PARTICIPANT_ID = result_json["participant"]["id"]
                 await async_client.delete(
-                    url=f"{TEAM_ENDPOINT_URL}/{TEAM_ID}", headers={"Authorization": "Bearer OFFLINE_TOKEN"}
+                    url=f"{PARTICIPANT_ENDPOINT_URL}/{PARTICIPANT_ID}",
+                    headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
                 )
+
+                # If a team was created with the participant (admin participant case) clean the team up
+                if result_json.get("team"):
+                    TEAM_ID = result_json["team"]["id"]
+                    await async_client.delete(
+                        url=f"{TEAM_ENDPOINT_URL}/{TEAM_ID}",
+                        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+                    )
