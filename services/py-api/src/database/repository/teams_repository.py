@@ -46,8 +46,8 @@ class TeamsRepository(CRUDRepository):
             # mechanism
             if session:
                 await db_operation()
-
-            await self._db_manager.retry_db_operation(db_operation, is_read_operation=False)
+            else:
+                await self._db_manager.retry_db_operation(db_operation, is_read_operation=False)
 
             return Ok(team)
 
