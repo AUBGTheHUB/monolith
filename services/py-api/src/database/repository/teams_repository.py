@@ -31,26 +31,23 @@ class TeamsRepository(CRUDRepository):
         **kwargs: Dict[str, Any]
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
-        team = Team(name=input_data.team_name)
-
-        async def db_operation() -> None:
         if input_data.team_name is None:
             raise ValueError("`input_data.team_name` should NOT be None when calling this method")
 
-        try:
-            team = Team(name=input_data.team_name)
-            LOG.debug("Inserting team...", team=team.dump_as_json())
+        team = Team(name=input_data.team_name)
+
+        async def db_operation() -> None:
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
 
         try:
             LOG.debug("Inserting team...", team=team.dump_as_json())
 
+            # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
+            # mechanism
             if session:
-                # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
-                # mechanism
                 await db_operation()
 
-            await self._db_manager.retry_db_operation(db_operation)
+            await self._db_manager.retry_db_operation(db_operation, is_read_operation=False)
 
             return Ok(team)
 
@@ -108,6 +105,10 @@ class TeamsRepository(CRUDRepository):
 
     async def get_verified_registered_teams_count(self) -> int:
         """Returns the count of verified teams."""
+
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
-        return await self._collection.count_documents({"is_verified": True})  # type: ignore
+        async def db_operation() -> None:
+            await self._collection.count_documents({"is_verified": True})
+
+        return self._db_manager.retry_db_operation(db_operation, is_read_operation=True)  # type: ignore
