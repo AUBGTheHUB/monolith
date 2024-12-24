@@ -5,7 +5,7 @@ from typing import Annotated, Callable, Awaitable, Any
 
 from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
-from pymongo import MongoClient
+from pymongo import MongoClient, helpers_shared
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError, PyMongoError
 from result import Err
 from structlog.stdlib import get_logger
@@ -68,16 +68,27 @@ class DatabaseManager(metaclass=SingletonMeta):
         return self._client[self._DB_NAME][collection_name]
 
     @staticmethod
-    async def retry_db_operation[T](db_operation: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def retry_db_operation[
+        T
+    ](db_operation: Callable[..., Awaitable[T]], is_read_operation: bool, *args: Any, **kwargs: Any) -> T:
         """
-        If there was a TransientTransactionError during execution, retries the db operation with exponential backoff up
-        to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
-        network issue.
+        By default, MongoDB retries read and write operations, eligible for retry, only once. To increase the
+        reliability of our system we retry these operations additional two times. With this method a read or write
+        operation, eligible for retry, is retried in total of 3 times.
+
+        To learn more:
+        https://www.mongodb.com/docs/manual/core/retryable-writes/
+
+        https://github.com/mongodb/specifications/blob/master/source/retryable-writes/retryable-writes.md
+
+        https://www.mongodb.com/docs/manual/core/retryable-reads/
+
+        https://github.com/mongodb/specifications/blob/master/source/retryable-reads/retryable-reads.md
 
         Raises:
             PyMongoError
         """
-        max_retries = 3
+        max_retries = 2
         delay = 0.2  # initial delay in seconds (200 milliseconds)
 
         # range is exclusive that's why we do max_retries + 1
@@ -85,13 +96,28 @@ class DatabaseManager(metaclass=SingletonMeta):
             try:
                 return await db_operation(*args, **kwargs)
             except PyMongoError as exc:
-                if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying database operation. Retry {}".format(retry))
+                # Retryable write error
+                # https://github.com/mongodb/specifications/blob/master/source/retryable-writes/retryable-writes.md#retryablewriteerror-labels
+                if exc.has_error_label("RetryableWriteError") and is_read_operation is False:
+                    LOG.debug("Retrying database write operation. Retry {}".format(retry))
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
 
-                # If the exception it's a non-retryable error or a transactional error which didn't manage to propagate
+                # Retryable read error
+                # https://github.com/mongodb/mongo-python-driver/blob/2d21035396f63437176965cc8f157505189f2f08/pymongo/asynchronous/mongo_client.py#L2590-L2603
+                if isinstance(exc, (ConnectionFailure, OperationFailure)) and is_read_operation:
+                    # ConnectionFailures do not supply a code property that's why None is passed as a third argument
+                    # If the read error is not retryable re-raise it
+                    if getattr(exc, "code", None) not in helpers_shared._RETRYABLE_ERROR_CODES:
+                        raise exc
+
+                    LOG.debug("Retrying database read operation. Retry {}".format(retry))
+                    await sleep(delay)
+                    delay *= 2  # exponential backoff
+                    continue
+
+                # If the exception it's a non-retryable error or other error which didn't manage to propagate
                 # re-raise it in order to be caught on an upper level
                 raise exc
 
