@@ -4,7 +4,11 @@ from result import Result, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError
+from src.server.exception import (
+    DuplicateEmailError,
+    DuplicateTeamNameError,
+    HackathonCapacityExceededError,
+)
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
 

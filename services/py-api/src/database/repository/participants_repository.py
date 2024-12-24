@@ -1,5 +1,6 @@
 from typing import Optional, Any, Dict
 
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
@@ -9,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmailError
+from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 LOG = get_logger()
@@ -31,8 +32,31 @@ class ParticipantsRepository(CRUDRepository):
     ) -> Result:
         raise NotImplementedError()
 
-    async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
-        raise NotImplementedError()
+    async def delete(
+        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        """
+        Deletes the participant which corresponds to the provided object_id
+        """
+        try:
+
+            LOG.debug("Deleting participant...", participant_obj_id=obj_id)
+
+            # According to mongodb docs result is of type _DocumentType:
+            # https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
+            # _id is projected because ObjectID is not serializable.
+            # We use the Participant data class to represent the deleted participant.
+            result = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+
+            # The result is None when the participant with the specified ObjectId is not found
+            if result:
+                return Ok(Participant(id=obj_id, **result))
+
+            return Err(ParticipantNotFoundError())
+
+        except Exception as e:
+            LOG.exception("Participant deletion failed due to err {}".format(e))
+            return Err(e)
 
     async def create(
         self,
