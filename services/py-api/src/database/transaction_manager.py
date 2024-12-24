@@ -62,12 +62,13 @@ class TransactionManager:
                 return await func(*args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    LOG.debug("Retrying transaction. Retry {}".format(retry))
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
 
-                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
+                # If the exception is a non-retryable error or is a transactional error which didn't manage to
+                # propagate, re-raise it in order to be caught on an upper level
                 raise exc
 
         raise PyMongoError("Transaction failed after maximum retries")
