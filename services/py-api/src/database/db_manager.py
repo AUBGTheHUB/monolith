@@ -78,7 +78,7 @@ class DatabaseManager(metaclass=SingletonMeta):
             PyMongoError
         """
         max_retries = 3
-        delay = 1  # initial delay in seconds
+        delay = 0.2  # initial delay in seconds (200 milliseconds)
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
@@ -86,14 +86,16 @@ class DatabaseManager(metaclass=SingletonMeta):
                 return await db_operation(*args, **kwargs)
             except PyMongoError as exc:
                 if exc.has_error_label("TransientTransactionError"):
-                    LOG.debug("Retrying transaction retry {}".format(retry))
+                    LOG.debug("Retrying database operation. Retry {}".format(retry))
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
 
-                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
+                # If the exception it's a non-retryable error or a transactional error which didn't manage to propagate
+                # re-raise it in order to be caught on an upper level
                 raise exc
 
+        # Raised
         raise PyMongoError("Database operation failed after maximum retries")
 
 
