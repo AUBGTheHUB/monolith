@@ -54,7 +54,7 @@ class TransactionManager:
             PyMongoError
         """
         max_retries = 3
-        delay = 1  # initial delay in seconds
+        delay = 0.2  # initial delay in seconds (200 milliseconds)
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
@@ -80,7 +80,7 @@ class TransactionManager:
         https://www.mongodb.com/docs/manual/core/transactions-in-applications/#example-1
         """
         max_retries = 3
-        delay = 1  # initial delay in seconds
+        delay = 0.2  # initial delay in seconds (200 milliseconds)
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
