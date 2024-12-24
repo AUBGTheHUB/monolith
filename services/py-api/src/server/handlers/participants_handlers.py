@@ -26,10 +26,7 @@ class ParticipantHandlers:
         self, response: Response, participant_id: str
     ) -> ParticipantDeletedResponse | ErrResponse:
 
-        # Direct access to the participant repository to facilitate CRUD operations
-        _repository = self._service._hackathon_service._participant_repo
-
-        result = await _repository.delete(participant_id)
+        result = await self._service.delete_participant(participant_id)
 
         if is_err(result):
             if isinstance(result.err_value, ParticipantNotFoundError):

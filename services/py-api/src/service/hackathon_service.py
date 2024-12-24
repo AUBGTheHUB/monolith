@@ -101,3 +101,6 @@ class HackathonService:
 
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+
+    def get_participant_repo(self) -> ParticipantsRepository:
+        return self._participant_repo

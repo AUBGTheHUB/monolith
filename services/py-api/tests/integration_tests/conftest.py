@@ -42,16 +42,16 @@ async def async_client() -> AsyncClient:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
 
-    PARTICIPANT_ID = result_json["participant"]["id"]
+    participant_id = result_json["participant"]["id"]
     await async_client.delete(
-        url=f"{PARTICIPANT_ENDPOINT_URL}/{PARTICIPANT_ID}",
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
     )
 
     if result_json["team"] is not None:
-        TEAM_ID = result_json["team"]["id"]
+        team_id = result_json["team"]["id"]
         await async_client.delete(
-            url=f"{TEAM_ENDPOINT_URL}/{TEAM_ID}",
+            url=f"{TEAM_ENDPOINT_URL}/{team_id}",
             headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         )
 
