@@ -106,8 +106,7 @@ class DatabaseManager(metaclass=SingletonMeta):
 
                 # Retryable read error
                 # https://github.com/mongodb/mongo-python-driver/blob/2d21035396f63437176965cc8f157505189f2f08/pymongo/asynchronous/mongo_client.py#L2590-L2603
-                if isinstance(exc, (ConnectionFailure, OperationFailure)) and is_read_operation:
-                    # ConnectionFailures do not supply a code property that's why None is passed as a third argument
+                if isinstance(exc, OperationFailure) and is_read_operation:
                     # If the read error is not retryable re-raise it
                     if getattr(exc, "code", None) not in helpers_shared._RETRYABLE_ERROR_CODES:
                         raise exc
