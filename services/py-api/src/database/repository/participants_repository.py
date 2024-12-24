@@ -65,13 +65,12 @@ class ParticipantsRepository(CRUDRepository):
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
     ) -> Result[Participant, DuplicateEmailError | Exception]:
-        """Creating a Participant object in the database. If the `team_id` is passed as a kwarg the participant will be
-        inserted as part of the given team"""
 
         participant = Participant(
             name=input_data.name,
             email=input_data.email,
             is_admin=input_data.is_admin,
+            # If the team_id is passed as a kwarg the participant will be inserted in the given team
             team_id=kwargs.get("team_id"),
         )
 
@@ -81,12 +80,12 @@ class ParticipantsRepository(CRUDRepository):
         try:
             LOG.debug("Inserting participant...", participant=participant.dump_as_json())
 
+            # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
+            # mechanism
             if session:
-                # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
-                # mechanism
                 await db_operation()
 
-            await self._db_manager.retry_db_operation(db_operation)
+            await self._db_manager.retry_db_operation(db_operation, is_read_operation=False)
 
             return Ok(participant)
 
