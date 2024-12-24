@@ -65,12 +65,13 @@ class ParticipantsRepository(CRUDRepository):
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any]
     ) -> Result[Participant, DuplicateEmailError | Exception]:
+        """Creating a Participant object in the database. If the `team_id` is passed as a kwarg the participant will be
+        inserted as part of the given team"""
 
         participant = Participant(
             name=input_data.name,
             email=input_data.email,
             is_admin=input_data.is_admin,
-            # If the team_id is passed as a kwarg the participant will be inserted in the given team
             team_id=kwargs.get("team_id"),
         )
 
