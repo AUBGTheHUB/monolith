@@ -26,7 +26,7 @@ def db_manager() -> DatabaseManager:
             return DatabaseManager()
 
 
-# Define a custom exception to simulate transient transaction error
+# Define a custom exception to simulate retryable write error
 class RetryableWriteError(PyMongoError):
     def has_error_label(self, label: str) -> bool:
         return label == "RetryableWriteError"
