@@ -8,29 +8,25 @@ def generate_participant_request_body(
 
     request_body = {"name": name, "email": email, "is_admin": is_admin, **kwargs}
 
-    # If any of the fields are 'None' - don't include them in the request body
-    for key in list(request_body.keys()):  # Convert to list to avoid runtime error while modifying dictionary
-        if request_body[key] is None:
-            del request_body[key]
-
-    return request_body
+    # A new dict without None values
+    return {key: value for key, value in request_body.items() if value is not None}
 
 
 @pytest.mark.asyncio
 async def test_create_random_participant(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
 
-    RANDOM_PARTICIPANT_BODY = generate_participant_request_body()
-    resp = await create_test_participant(participant_body=RANDOM_PARTICIPANT_BODY)
+    random_participant_body = generate_participant_request_body()
+    resp = await create_test_participant(participant_body=random_participant_body)
     assert resp.status_code == 201
 
     resp_json = resp.json()
 
     assert resp_json["participant"]["name"] == "testtest"
     assert resp_json["participant"]["email"] == "testtest@test.com"
-    assert resp_json["participant"]["is_admin"] == False
-    assert resp_json["participant"]["email_verified"] == False
-    assert resp_json["participant"]["team_id"] == "None"
-    assert resp_json["team"] == None
+    assert resp_json["participant"]["is_admin"] is False
+    assert resp_json["participant"]["email_verified"] is False
+    assert resp_json["participant"]["team_id"] is None
+    assert resp_json["team"] is None
 
 
 @pytest.mark.asyncio
@@ -38,9 +34,9 @@ async def test_create_random_participant_email_already_exists(
     create_test_participant: Callable[..., Dict[str, Any]]
 ) -> None:
 
-    RANDOM_PARTICIPANT_BODY = generate_participant_request_body()
-    await create_test_participant(participant_body=RANDOM_PARTICIPANT_BODY)
-    resp = await create_test_participant(participant_body=RANDOM_PARTICIPANT_BODY)
+    random_participant_body = generate_participant_request_body()
+    await create_test_participant(participant_body=random_participant_body)
+    resp = await create_test_participant(participant_body=random_participant_body)
     assert resp.status_code == 409
 
     resp_json = resp.json()
@@ -49,10 +45,10 @@ async def test_create_random_participant_email_already_exists(
 
 
 @pytest.mark.asyncio
-async def test_create_random_participant_is_admin_true(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
+async def test_create_admin_participant_no_team_name(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
 
-    IS_ADMIN_TRUE_BODY = generate_participant_request_body(is_admin=True)
-    resp = await create_test_participant(participant_body=IS_ADMIN_TRUE_BODY)
+    is_admin_true_body = generate_participant_request_body(is_admin=True)
+    resp = await create_test_participant(participant_body=is_admin_true_body)
     assert resp.status_code == 422
 
     resp_json = resp.json()
@@ -65,8 +61,8 @@ async def test_create_random_participant_missing_required_fields(
     create_test_participant: Callable[..., Dict[str, Any]]
 ) -> None:
 
-    MISSING_REQ_FIELDS_BODY = generate_participant_request_body(name=None)
-    resp = await create_test_participant(participant_body=MISSING_REQ_FIELDS_BODY)
+    missing_req_fields_body = generate_participant_request_body(name=None)
+    resp = await create_test_participant(participant_body=missing_req_fields_body)
     assert resp.status_code == 422
 
     resp_json = resp.json()
@@ -78,19 +74,19 @@ async def test_create_random_participant_missing_required_fields(
 @pytest.mark.asyncio
 async def test_create_admin_participant(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
 
-    ADMIN_PARTICIPANT_BODY = generate_participant_request_body(is_admin=True, team_name="testteam")
-    resp = await create_test_participant(participant_body=ADMIN_PARTICIPANT_BODY)
+    admin_participant_body = generate_participant_request_body(is_admin=True, team_name="testteam")
+    resp = await create_test_participant(participant_body=admin_participant_body)
     assert resp.status_code == 201
 
     resp_json = resp.json()
 
     assert resp_json["participant"]["name"] == "testtest"
     assert resp_json["participant"]["email"] == "testtest@test.com"
-    assert resp_json["participant"]["is_admin"] == True
-    assert resp_json["participant"]["email_verified"] == False
+    assert resp_json["participant"]["is_admin"] is True
+    assert resp_json["participant"]["email_verified"] is False
     assert resp_json["participant"]["team_id"] == resp_json["team"]["id"]
     assert resp_json["team"]["name"] == "testteam"
-    assert resp_json["team"]["is_verified"] == False
+    assert resp_json["team"]["is_verified"] is False
 
 
 # The following test shows the order of create operations when adding an admin participant:
@@ -102,9 +98,9 @@ async def test_create_admin_participant_email_and_team_already_exists(
     create_test_participant: Callable[..., Dict[str, Any]]
 ) -> None:
 
-    ADMIN_PARTICIPANT_BODY = generate_participant_request_body(is_admin=True, team_name="testteam")
-    await create_test_participant(participant_body=ADMIN_PARTICIPANT_BODY)
-    resp = await create_test_participant(participant_body=ADMIN_PARTICIPANT_BODY)
+    admin_participant_body = generate_participant_request_body(is_admin=True, team_name="testteam")
+    await create_test_participant(participant_body=admin_participant_body)
+    resp = await create_test_participant(participant_body=admin_participant_body)
     assert resp.status_code == 409
 
     resp_json = resp.json()
@@ -117,13 +113,13 @@ async def test_create_admin_participant_team_already_exists(
     create_test_participant: Callable[..., Dict[str, Any]]
 ) -> None:
 
-    ADMIN_PARTICIPANT_BODY = generate_participant_request_body(is_admin=True, team_name="testteam")
-    EXISTING_TEAM_NAME_BODY = generate_participant_request_body(
+    admin_participant_body = generate_participant_request_body(is_admin=True, team_name="testteam")
+    existing_team_name_body = generate_participant_request_body(
         email="testtest1@test.com", is_admin=True, team_name="testteam"
     )
 
-    await create_test_participant(participant_body=ADMIN_PARTICIPANT_BODY)
-    resp = await create_test_participant(participant_body=EXISTING_TEAM_NAME_BODY)
+    await create_test_participant(participant_body=admin_participant_body)
+    resp = await create_test_participant(participant_body=existing_team_name_body)
     assert resp.status_code == 409
 
     resp_json = resp.json()
@@ -136,11 +132,11 @@ async def test_create_admin_participant_email_already_exists(
     create_test_participant: Callable[..., Dict[str, Any]]
 ) -> None:
 
-    ADMIN_PARTICIPANT_BODY = generate_participant_request_body(is_admin=True, team_name="testteam")
-    EXISTING_TEAM_NAME_BODY = generate_participant_request_body(is_admin=True, team_name="testteam1")
+    admin_participant_body = generate_participant_request_body(is_admin=True, team_name="testteam")
+    existing_team_name_body = generate_participant_request_body(is_admin=True, team_name="testteam1")
 
-    await create_test_participant(participant_body=ADMIN_PARTICIPANT_BODY)
-    resp = await create_test_participant(participant_body=EXISTING_TEAM_NAME_BODY)
+    await create_test_participant(participant_body=admin_participant_body)
+    resp = await create_test_participant(participant_body=existing_team_name_body)
     assert resp.status_code == 409
 
     resp_json = resp.json()

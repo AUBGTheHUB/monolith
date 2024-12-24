@@ -1,10 +1,9 @@
 from unittest.mock import patch
 import pytest
 import pytest_asyncio
-from asyncio import get_running_loop, new_event_loop, AbstractEventLoop
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, List
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -14,16 +13,18 @@ PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
 
 
-# Based on: https://stackoverflow.com/questions/61022713/pytest-asyncio-has-a-closed-event-loop-but-only-when-running-all-tests
-# The tests display a deprecation warning. Can be replaced if a better solution is found
-@pytest.fixture(scope="session")
-def event_loop() -> AbstractEventLoop:
-    try:
-        loop = get_running_loop()
-    except RuntimeError:
-        loop = new_event_loop()
-    yield loop
-    loop.close()
+# Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
+# running in the same event loop, otherwise we get `Event loop is closed`. This is because by default, each test runs
+# in a separate event loop (scope=function). Also, it’s highly recommended for neighboring tests to use the same event
+# loop scope, and as we use "session" for our async_client we need all integration tests to use "session" as well.
+# https://pytest-asyncio.readthedocs.io/en/latest/concepts.html
+# https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
+# https://docs.pytest.org/en/stable/how-to/writing_hook_functions.html
+def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
+    pytest_asyncio_tests = (item for item in items if pytest_asyncio.is_async_test(item))
+    session_scope_marker = pytest.mark.asyncio(loop_scope="session")
+    for async_test in pytest_asyncio_tests:
+        async_test.add_marker(session_scope_marker, append=False)
 
 
 # The scope is set to session so that that Async Client is only initialized once throughout the testing session,
@@ -38,6 +39,23 @@ async def async_client() -> AsyncClient:
     await client.aclose()
 
 
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
+
+    PARTICIPANT_ID = result_json["participant"]["id"]
+    await async_client.delete(
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{PARTICIPANT_ID}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+    )
+
+    if result_json["team"] is not None:
+        TEAM_ID = result_json["team"]["id"]
+        await async_client.delete(
+            url=f"{TEAM_ENDPOINT_URL}/{TEAM_ID}",
+            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        )
+
+
 # The following is an exapmle of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
@@ -48,8 +66,8 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
 
     request_results = []
 
-    # Fixtures as factories - Add docs
     async def _create(participant_body: Dict[str, Any]) -> Response:
+
         LOG.debug("Creating a test participant")
         result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
         request_results.append(result)
@@ -57,26 +75,10 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
 
     yield _create
 
-    LOG.debug("Cleaning up the test participants")
+    LOG.debug("Cleaning up the test participants that were successfully created")
     # Perform clean-up. If we are dealing with an admin participant, we should clean both the participant and the team.
     # Otherwise, deleting only the participant is sufficient.
-    with patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"}):
-
-        for result in request_results:
-
-            result_json = result.json()
-
-            if "participant" in result_json:
-                PARTICIPANT_ID = result_json["participant"]["id"]
-                await async_client.delete(
-                    url=f"{PARTICIPANT_ENDPOINT_URL}/{PARTICIPANT_ID}",
-                    headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-                )
-
-                # If a team was created with the participant (admin participant case) clean the team up
-                if result_json.get("team"):
-                    TEAM_ID = result_json["team"]["id"]
-                    await async_client.delete(
-                        url=f"{TEAM_ENDPOINT_URL}/{TEAM_ID}",
-                        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-                    )
+    for result in request_results:
+        # Status Code 201 -> Participant was sucessfully created
+        if result.status_code == 201:
+            await clean_up_test_participant(async_client=async_client, result_json=result.json())
