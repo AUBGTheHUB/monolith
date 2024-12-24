@@ -120,7 +120,6 @@ class DatabaseManager(metaclass=SingletonMeta):
                 # re-raise it in order to be caught on an upper level
                 raise exc
 
-        # Raised
         raise PyMongoError("Database operation failed after maximum retries")
 
 
