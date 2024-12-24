@@ -1,11 +1,12 @@
 from os import environ
 from typing import Annotated
-from fastapi import Depends, HTTPException, Header
+from fastapi import Depends, HTTPException, Header, Path
 from src.database.db_manager import DB_MANAGER, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.service.hackathon_service import HackathonService
+from bson import ObjectId
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
@@ -31,9 +32,6 @@ def _h_service(
     return HackathonService(p_repo, t_repo, tx_manager)
 
 
-# Auth Dependencies
-
-
 async def is_auth(authorization: Annotated[str, Header()]) -> None:
     # This follows the dependency pattern that is provided to us by FastAPI
     # You can read more about it here:
@@ -51,3 +49,8 @@ async def is_auth(authorization: Annotated[str, Header()]) -> None:
         # TODO: Implement JWT Bearer token authorization logic if we decide on an admin panel.
         #  For now every effort to access protected routes in a PROD env will not be authorized!
         raise HTTPException(detail="Unauthorized", status_code=401)
+
+
+def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
+    if not ObjectId.is_valid(object_id):
+        raise HTTPException(detail="Wrong Object ID format", status_code=400)
