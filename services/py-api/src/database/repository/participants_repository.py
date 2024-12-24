@@ -102,7 +102,7 @@ class ParticipantsRepository(CRUDRepository):
 
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
-        async def db_operation() -> None:
-            await self._collection.count_documents({"email_verified": True, "team_id": None})
+        async def db_operation() -> int:
+            return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
 
-        return self._db_manager.retry_db_operation(db_operation, is_read_operation=True)  # type: ignore
+        return await self._db_manager.retry_db_operation(db_operation, is_read_operation=True)
