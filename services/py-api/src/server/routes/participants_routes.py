@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 from starlette.responses import Response
 
 from src.server.routes.dependency_factory import _h_service
@@ -23,8 +24,14 @@ def _p_reg_service(
     return ParticipantRegistrationService(h_service)
 
 
-def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
+def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
     return ParticipantHandlers(p_service)
+
+
+def _h_handler(
+    h_service: HackathonService = Depends(_h_service),
+) -> HackathonManagementHandlers:
+    return HackathonManagementHandlers(h_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
@@ -32,7 +39,7 @@ def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_handler)
+    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_p_handler)
 ) -> ParticipantRegisteredResponse | ErrResponse:
     return await handler.create_participant(response, input_data)
 
@@ -44,6 +51,6 @@ async def create_participant(
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
 async def delete_participant(
-    response: Response, object_id: str, handler: ParticipantHandlers = Depends(_handler)
+    response: Response, object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)
 ) -> ParticipantDeletedResponse | ErrResponse:
     return await handler.delete_participant(response, object_id)

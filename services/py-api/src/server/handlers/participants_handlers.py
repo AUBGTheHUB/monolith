@@ -6,13 +6,11 @@ from src.server.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
-    ParticipantNotFoundError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
     ParticipantRegisteredResponse,
     ErrResponse,
-    ParticipantDeletedResponse,
 )
 from src.service.participants_registration_service import ParticipantRegistrationService
 
@@ -21,22 +19,6 @@ class ParticipantHandlers:
 
     def __init__(self, service: ParticipantRegistrationService) -> None:
         self._service = service
-
-    async def delete_participant(
-        self, response: Response, participant_id: str
-    ) -> ParticipantDeletedResponse | ErrResponse:
-
-        result = await self._service.delete_participant(participant_id)
-
-        if is_err(result):
-            if isinstance(result.err_value, ParticipantNotFoundError):
-                response.status_code = status.HTTP_404_NOT_FOUND
-                return ErrResponse(error="Could not find the participant with the specified id")
-
-            response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return ErrResponse(error="An unexpected error occurred during the deletion of Participant")
-
-        return ParticipantDeletedResponse(participant=result.ok_value)
 
     async def create_participant(
         self, response: Response, input_data: ParticipantRequestBody

@@ -8,7 +8,6 @@ from src.server.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
-    ParticipantNotFoundError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
@@ -43,9 +42,3 @@ class ParticipantRegistrationService:
 
         # Proceed with registration if there is capacity
         return await self._hackathon_service.create_random_participant(input_data)
-
-    async def delete_participant(
-        self, participant_id: str
-    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
-        participant_repo = self._hackathon_service.get_participant_repo()
-        return await participant_repo.delete(obj_id=participant_id)
