@@ -1,4 +1,4 @@
-from typing import Final, Optional, Any, Dict
+from typing import Final, Optional, Any, Dict, Mapping
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -80,20 +80,31 @@ class TeamsRepository(CRUDRepository):
         """
         Deletes the team which corresponds to the provided object_id
         """
+
+        async def db_operation() -> Mapping[str, Any]:
+            # According to mongodb docs result is of type _DocumentType:
+            # https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
+            # _id is projected because ObjectID is not serializable.
+            #  We use the Team data class to represent the deleted team.
+            delete_result = await self._collection.find_one_and_delete(
+                filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}
+            )
+            # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
+            # which is not true
+            return delete_result  # type: ignore
+
         try:
 
             LOG.debug("Deleting team...", team_obj_id=obj_id)
-            """
-            According to mongodb docs result is of type _DocumentType:
-            https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
-            _id is projected because ObjectID is not serializable.
-            We use the Team data class to represent the deleted participant.
-            """
-            result = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
 
-            """
-            The result is None when the team with the specified ObjectId is not found
-            """
+            # The `TransactionManager.with_transaction` method provides the session and has a built-in retry
+            # mechanism
+            if session:
+                result = await db_operation()
+            else:
+                result = await self._db_manager.retry_db_operation(db_operation, is_read_operation=False)
+
+            # The result is None when the team with the specified ObjectId is not found
             if result:
                 return Ok(Team(id=obj_id, **result))
 
