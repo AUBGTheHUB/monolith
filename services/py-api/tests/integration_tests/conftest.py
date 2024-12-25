@@ -82,3 +82,24 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
+
+
+@pytest_asyncio.fixture
+def generate_participant_request_body() -> Callable[..., Dict[str, Any]]:
+    def _generate_participant_request_body(
+        name: str | None = "testtest",
+        email: str | None = "testtest@test.com",
+        is_admin: bool | None = False,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+
+        request_body = {"name": name, "email": email, "is_admin": is_admin, **kwargs}
+        # A new dict without None values
+        return {key: value for key, value in request_body.items() if value is not None}
+
+    return _generate_participant_request_body
+
+
+@pytest.fixture
+def mock_obj_id() -> str:
+    return "507f1f77bcf86cd799439011"
