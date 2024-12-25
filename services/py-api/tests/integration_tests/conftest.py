@@ -75,10 +75,10 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
 
     yield _create
 
-    LOG.debug("Cleaning up the test participants that were successfully created")
     # Perform clean-up. If we are dealing with an admin participant, we should clean both the participant and the team.
     # Otherwise, deleting only the participant is sufficient.
     for result in request_results:
         # Status Code 201 -> Participant was sucessfully created
         if result.status_code == 201:
+            LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
