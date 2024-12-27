@@ -19,3 +19,6 @@ class ParticipantNotFoundError(Exception):
 
 class TeamNotFoundError(Exception):
     """Exception raised when there are no teams that match the query to the database"""
+
+class TeamCapacityExceededError(Exception):
+    """Exception raised when team capacity has been reached"""

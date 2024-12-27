@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 from starlette.responses import Response
 

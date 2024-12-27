@@ -9,6 +9,7 @@ from src.server.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
+    TeamCapacityExceededError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
