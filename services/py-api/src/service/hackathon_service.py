@@ -74,7 +74,7 @@ class HackathonService:
             self, input_data: ParticipantRequestBody
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | Exception]:
         
-        participant_result = await self._team_repo.create(input_data)
+        participant_result = await self._participant_repo.create(input_data)
         if is_err(participant_result):
             return participant_result
 

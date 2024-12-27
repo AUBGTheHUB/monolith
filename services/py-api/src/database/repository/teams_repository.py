@@ -99,4 +99,12 @@ class TeamsRepository(CRUDRepository):
     
     async def fetch_team_by_name(self, team_name: str) -> Result:
         """Fetches a team by the team_name from the participant"""
-        return await self._collection.find_one({"name": team_name})
+        try:
+            team = await self._collection.find_one({"name": team_name})
+            
+            if team is None:  # If no team is found, return an Err
+                return Err(Exception(f"Team with name '{team_name}' not found"))
+
+            return Ok(team)
+        except Exception as e:
+            return Err(e)
