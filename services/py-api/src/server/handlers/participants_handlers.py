@@ -5,13 +5,21 @@ from src.utils import JwtUtility
 from starlette import status
 from starlette.responses import Response
 
-from src.server.exception import DuplicateEmailError, DuplicateTeamNameError, HackathonCapacityExceededError, TeamCapacityExceededError
+from src.server.exception import (
+    DuplicateEmailError,
+    DuplicateTeamNameError,
+    HackathonCapacityExceededError,
+)
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import (
+    ParticipantRegisteredResponse,
+    ErrResponse,
+)
 from src.service.participants_registration_service import ParticipantRegistrationService
 
 
 class ParticipantHandlers:
+
     def __init__(self, service: ParticipantRegistrationService) -> None:
         self._service = service
 

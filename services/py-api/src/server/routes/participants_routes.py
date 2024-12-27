@@ -1,44 +1,22 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
-from fastapi.params import Query
+from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 from starlette.responses import Response
 
-from src.database.db_manager import DB_MANAGER, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
-from src.database.repository.participants_repository import ParticipantsRepository
-from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.server.routes.dependency_factory import _h_service
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
+from src.server.schemas.response_schemas.schemas import (
+    ParticipantRegisteredResponse,
+    ErrResponse,
+    ParticipantDeletedResponse,
+)
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.server.routes.dependency_factory import is_auth, validate_obj_id
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
-
-
-# https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
-# Dependency wiring
-
-
-def _p_repo(db_manager: DB_MANAGER) -> ParticipantsRepository:
-    return ParticipantsRepository(db_manager, PARTICIPANTS_COLLECTION)
-
-
-def _t_repo(db_manager: DB_MANAGER) -> TeamsRepository:
-    return TeamsRepository(db_manager, TEAMS_COLLECTION)
-
-
-def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
-    return TransactionManager(db_manager)
-
-
-def _h_service(
-    p_repo: ParticipantsRepository = Depends(_p_repo),
-    t_repo: TeamsRepository = Depends(_t_repo),
-    tx_manager: TransactionManager = Depends(_tx_manager),
-) -> HackathonService:
-    return HackathonService(p_repo, t_repo, tx_manager)
 
 
 def _p_reg_service(
@@ -47,8 +25,14 @@ def _p_reg_service(
     return ParticipantRegistrationService(h_service)
 
 
-def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
+def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
     return ParticipantHandlers(p_service)
+
+
+def _h_handler(
+    h_service: HackathonService = Depends(_h_service),
+) -> HackathonManagementHandlers:
+    return HackathonManagementHandlers(h_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
@@ -56,6 +40,18 @@ def _handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, jwt_token: Optional[str]=Query(None), handler: ParticipantHandlers = Depends(_handler)
+    response: Response, input_data: ParticipantRequestBody, jwt_token: Optional[str]=Query(None), handler: ParticipantHandlers = Depends(_p_handler)
 ) -> ParticipantRegisteredResponse | ErrResponse:
     return await handler.create_participant(response, input_data, jwt_token)
+
+
+@participants_router.delete(
+    "/{object_id}",
+    status_code=200,
+    responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
+    dependencies=[Depends(is_auth), Depends(validate_obj_id)],
+)
+async def delete_participant(
+    response: Response, object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)
+) -> ParticipantDeletedResponse | ErrResponse:
+    return await handler.delete_participant(response, object_id)

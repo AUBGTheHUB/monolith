@@ -1469,7 +1469,7 @@ const languages = [
     },
 ];
 
-var FontStyle = /* @__PURE__ */ (FontStyle2 => {
+var FontStyle = /* @__PURE__ */ ((FontStyle2) => {
     FontStyle2[(FontStyle2['NotSet'] = -1)] = 'NotSet';
     FontStyle2[(FontStyle2['None'] = 0)] = 'None';
     FontStyle2[(FontStyle2['Italic'] = 1)] = 'Italic';
@@ -2075,7 +2075,7 @@ function parse$1(text, errors = [], options = ParseOptions.DEFAULT) {
             currentParent = object;
             currentProperty = null;
         },
-        onObjectProperty: name => {
+        onObjectProperty: (name) => {
             currentProperty = name;
         },
         onObjectEnd: () => {
@@ -2132,7 +2132,7 @@ function visit(text, visitor, options = ParseOptions.DEFAULT) {
     }
     function toOneArgVisit(visitFunction) {
         return visitFunction
-            ? arg =>
+            ? (arg) =>
                   visitFunction(
                       arg,
                       _scanner.getTokenOffset(),
@@ -2144,7 +2144,7 @@ function visit(text, visitor, options = ParseOptions.DEFAULT) {
     }
     function toOneArgVisitWithPath(visitFunction) {
         return visitFunction
-            ? arg =>
+            ? (arg) =>
                   visitFunction(
                       arg,
                       _scanner.getTokenOffset(),
@@ -2537,7 +2537,7 @@ function _resolvePath(filepath) {
 async function _fetchAssets(filepath) {
     const path = _resolvePath(filepath);
     if (isBrowser) {
-        return await fetch(path).then(r => r.text());
+        return await fetch(path).then((r) => r.text());
     } else {
         const fs = require('fs');
         return await fs.promises.readFile(path, 'utf-8');
@@ -2616,7 +2616,7 @@ function getThemeDefaultColors(theme) {
     let fg, bg;
     let settings = theme.settings ? theme.settings : theme.tokenColors;
     const globalSetting = settings
-        ? settings.find(s => {
+        ? settings.find((s) => {
               return !s.name && !s.scope;
           })
         : void 0;
@@ -2676,7 +2676,7 @@ class Resolver {
     addLanguage(l) {
         this.languageMap[l.id] = l;
         if (l.aliases) {
-            l.aliases.forEach(a => {
+            l.aliases.forEach((a) => {
                 this.languageMap[a] = l;
             });
         }
@@ -2786,7 +2786,7 @@ function explainThemeScope(theme, scope, parentScopes) {
         let setting = theme.settings[i];
         let selectors;
         if (typeof setting.scope === 'string') {
-            selectors = setting.scope.split(/,/).map(scope2 => scope2.trim());
+            selectors = setting.scope.split(/,/).map((scope2) => scope2.trim());
         } else if (Array.isArray(setting.scope)) {
             selectors = setting.scope;
         } else {
@@ -2856,8 +2856,8 @@ function findSequence(value, position) {
 function parseColor(sequence) {
     const colorMode = sequence.shift();
     if (colorMode === '2') {
-        const rgb = sequence.splice(0, 3).map(x => Number.parseInt(x));
-        if (rgb.length !== 3 || rgb.some(x => Number.isNaN(x))) return;
+        const rgb = sequence.splice(0, 3).map((x) => Number.parseInt(x));
+        if (rgb.length !== 3 || rgb.some((x) => Number.isNaN(x))) return;
         return {
             type: 'rgb',
             rgb,
@@ -3019,7 +3019,7 @@ function createColorPalette(namedColorsMap = defaultNamedColorsMap) {
         return namedColorsMap[name];
     }
     function rgbColor(rgb) {
-        return `#${rgb.map(x => Math.max(0, Math.min(x, 255)).toString(16).padStart(2, '0')).join('')}`;
+        return `#${rgb.map((x) => Math.max(0, Math.min(x, 255)).toString(16).padStart(2, '0')).join('')}`;
     }
     let colorTable;
     function getColorTable() {
@@ -3066,12 +3066,15 @@ function tokenizeAnsiWithTheme(theme, fileContents) {
     const lines = fileContents.split(/\r?\n/);
     const colorPalette = createColorPalette(
         Object.fromEntries(
-            namedColors.map(name => [name, theme.colors[`terminal.ansi${name[0].toUpperCase()}${name.substring(1)}`]]),
+            namedColors.map((name) => [
+                name,
+                theme.colors[`terminal.ansi${name[0].toUpperCase()}${name.substring(1)}`],
+            ]),
         ),
     );
     const parser = createAnsiSequenceParser();
-    return lines.map(line =>
-        parser.parse(line).map(token => {
+    return lines.map((line) =>
+        parser.parse(line).map((token) => {
             let color;
             if (token.decorations.has('reverse')) {
                 color = token.background ? colorPalette.value(token.background) : theme.bg;
@@ -3111,7 +3114,7 @@ function dimColor(color) {
             return `#${hexMatch[1]}${hexMatch[2]}80`;
         } else {
             return `#${Array.from(hexMatch[1])
-                .map(x => `${x}${x}`)
+                .map((x) => `${x}${x}`)
                 .join('')}80`;
         }
     }
@@ -3138,7 +3141,7 @@ const defaultElements = {
 };
 function renderToHtml(lines, options = {}) {
     const bg = options.bg || '#fff';
-    const optionsByLineNumber = groupBy(options.lineOptions ?? [], option => option.line);
+    const optionsByLineNumber = groupBy(options.lineOptions ?? [], (option) => option.line);
     const userElements = options.elements || {};
     function h(type = '', props = {}, children) {
         const element = userElements[type] || defaultElements[type];
@@ -3203,7 +3206,7 @@ const htmlEscapes = {
     "'": '&#39;',
 };
 function escapeHtml(html) {
-    return html.replace(/[&<>"']/g, chr => htmlEscapes[chr]);
+    return html.replace(/[&<>"']/g, (chr) => htmlEscapes[chr]);
 }
 function getLineClasses(lineOptions) {
     const lineClasses = /* @__PURE__ */ new Set(['line']);
@@ -3250,7 +3253,7 @@ class Registry extends vscodeTextmate.Registry {
         }
     }
     async loadThemes(themes) {
-        return await Promise.all(themes.map(theme => this.loadTheme(theme)));
+        return await Promise.all(themes.map((theme) => this.loadTheme(theme)));
     }
     getLoadedThemes() {
         return Object.keys(this._resolvedThemes);
@@ -3274,7 +3277,7 @@ class Registry extends vscodeTextmate.Registry {
         const g = await this.loadGrammarWithConfiguration(lang.scopeName, 1, grammarConfig);
         this._resolvedGrammars[lang.id] = g;
         if (lang.aliases) {
-            lang.aliases.forEach(la => {
+            lang.aliases.forEach((la) => {
                 this._resolvedGrammars[la] = g;
             });
         }
@@ -3307,7 +3310,7 @@ class Registry extends vscodeTextmate.Registry {
 }
 
 function resolveLang(lang) {
-    return typeof lang === 'string' ? languages.find(l => l.id === lang || l.aliases?.includes(lang)) : lang;
+    return typeof lang === 'string' ? languages.find((l) => l.id === lang || l.aliases?.includes(lang)) : lang;
 }
 function resolveOptions(options) {
     let _languages = languages;
@@ -3404,7 +3407,7 @@ async function getHighlighter(options) {
     function codeToThemedTokens(code, lang = 'text', theme, options2 = { includeExplanation: true }) {
         if (isPlaintext(lang)) {
             const lines = code.split(/\r\n|\r|\n/);
-            return [...lines.map(line => [{ content: line }])];
+            return [...lines.map((line) => [{ content: line }])];
         }
         const { _grammar } = getGrammar(lang);
         const { _theme, _colorMap } = getTheme(theme);
@@ -3472,7 +3475,7 @@ async function getHighlighter(options) {
         codeToHtml,
         ansiToThemedTokens,
         ansiToHtml,
-        getTheme: theme => {
+        getTheme: (theme) => {
             return getTheme(theme)._theme;
         },
         loadTheme,

@@ -36,7 +36,7 @@ class Participant(Base):
             "email": self.email,
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
-            "team_id": str(self.team_id),
+            "team_id": str(self.team_id) if self.team_id else None,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
