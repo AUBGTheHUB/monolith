@@ -44,7 +44,7 @@ class ParticipantRegistrationService:
         DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
     ]:
         # Check Team Capacity
-        has_capacity = await self._hackathon_service.check_team_capacity()
+        has_capacity = await self._hackathon_service.check_team_capacity(input_data.team_name)
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 

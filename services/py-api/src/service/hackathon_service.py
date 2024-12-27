@@ -118,11 +118,11 @@ class HackathonService:
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
     
-    async def check_team_capacity(self) -> bool:
+    async def check_team_capacity(self, team_name: str) -> bool:
         """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
 
         # Fetch number of registered participants in the team
-        registered_participants = await self._participant_repo.get_number_registered_teammates()
+        registered_participants = await self._participant_repo.get_number_registered_teammates(team_name)
 
         # Check against team capacity
         return registered_participants + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS

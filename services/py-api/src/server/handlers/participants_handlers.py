@@ -1,5 +1,6 @@
 from typing import Optional
 from result import is_err
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.utils import JwtUtility
 from starlette import status
 from starlette.responses import Response
@@ -23,13 +24,13 @@ class ParticipantHandlers:
 
         elif input_data.is_admin is False and input_data.team_name:
             # Decode the token
-            decoded_result = JwtUtility.decode_data(jwt_token, schema=dict(team_name=str))
+            decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
             if is_err(decoded_result):
                 response.status_code = status.HTTP_401_UNAUTHORIZED
                 return ErrResponse(error=f"JWT decoding failed: {decoded_result.err_value}")
             
             decoded_data = decoded_result.ok_value
-            team_name_from_token = decoded_data["team_name"]
+            team_name_from_token = decoded_data["team_id"]
 
             if input_data.team_name != team_name_from_token:
                 response.status_code = status.HTTP_400_BAD_REQUEST

@@ -64,7 +64,7 @@ class ParticipantsRepository(CRUDRepository):
         # which is not true
         return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
     
-    async def get_number_registered_teammates(self, team_id) -> int:
+    async def get_number_registered_teammates(self, team_name: str) -> int:
         """Returns the count of registered participants already in the team."""
 
-        return await self._collection.count_documents({"email_verified": True, "team_id": team_id})
+        return await self._collection.count_documents({"email_verified": True, "team_name": team_name})
