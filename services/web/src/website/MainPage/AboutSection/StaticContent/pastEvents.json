@@ -1,0 +1,26 @@
+[
+    {
+        "title": "Fintech Conf 2024",
+        "tags": [
+            "conference",
+            "fintech"
+        ],
+        "cover_picture": "/sample.png"
+    },
+    {
+        "title": "HackAUBG 5.0",
+        "tags": [
+            "hackathon",
+            "coding"
+        ],
+        "cover_picture": "/sample.png"
+    },
+    {
+        "title": "HackAUBG 5.0",
+        "tags": [
+            "hackathon",
+            "coding"
+        ],
+        "cover_picture": "/sample.png"
+    }
+]

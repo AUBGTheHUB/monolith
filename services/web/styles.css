@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+.about-section{
+    --primary: #18305F;
+    --accent: #3348FF;
+    --accent-foreground: white; 
+    --card: white;
+    --card-foreground: #151515; 
+}
