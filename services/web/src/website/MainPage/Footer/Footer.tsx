@@ -1,16 +1,12 @@
-const SECTIONS_CLASS_NAME = 'w-full sm:w-1/2 lg:mx-14 lg:w-1/4 my-5 lg:my-0';
-const SECTIONS_TITLE_CLASS_NAME = 'text-base my-2 select-none font-bold text-white';
-const OPTIONS_CLASS_NAME = 'text-base my-2 text-[#E6E6E6]';
+const SECTIONS_CLASS_NAME = 'w-full md:w-1/2 lg:mx-8 lg:w-1/4 my-5 lg:my-0';
+const SECTIONS_TITLE_CLASS_NAME = 'text-base my-4 select-none font-bold text-white';
+const OPTIONS_CLASS_NAME = 'text-base my-4 text-[#E6E6E6]';
 const LINKS_CLASS_NAME = 'hover:underline';
 
 export const Footer = () => {
     return (
-        <div className="flex w-full h-full bg-gradient-to-t from-[#0B2340] via-[#1A344F] to-[#1E4D5D] justify-center py-20">
+        <div className="flex w-full h-full bg-gradient-to-t to-[#0B2340] from-[#0a1320] justify-center py-20 flex-wrap">
             <div className="flex flex-wrap lg:flex-nowrap w-[60%]">
-                <div className={SECTIONS_CLASS_NAME}>
-                    <h3 className={SECTIONS_TITLE_CLASS_NAME}>Address</h3>
-                    <p className={OPTIONS_CLASS_NAME}>AUBG Blagoevgrad, Bulgaria</p>
-                </div>
                 <div className={SECTIONS_CLASS_NAME}>
                     <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
                     <a href="#home" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
@@ -45,9 +41,17 @@ export const Footer = () => {
                     </a>
                 </div>
                 <div className={SECTIONS_CLASS_NAME}>
+                    <h3 className={SECTIONS_TITLE_CLASS_NAME}>Address</h3>
+                    <p className={OPTIONS_CLASS_NAME}>AUBG Blagoevgrad, Bulgaria</p>
+                </div>
+                <div className={SECTIONS_CLASS_NAME}>
                     <h3 className={SECTIONS_TITLE_CLASS_NAME}>Contact</h3>
                     <p className={OPTIONS_CLASS_NAME}>thehub@aubg.edu</p>
                 </div>
+            </div>
+            <span className="mt-2 w-[60vw] h-[1px] bg-[#4D4D4D]" />
+            <div className="w-[60%]">
+                <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2025</p>
             </div>
         </div>
     );
