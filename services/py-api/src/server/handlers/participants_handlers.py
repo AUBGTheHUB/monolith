@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from result import is_err
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.utils import JwtUtility
@@ -10,6 +10,7 @@ from src.server.exception import (
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
     TeamCapacityExceededError,
+    TeamNameDoesNotMatchTokenTeamNameError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -25,27 +26,14 @@ class ParticipantHandlers:
         self._service = service
 
     async def create_participant(
-        self, response: Response, input_data: ParticipantRequestBody, jwt_token: Optional[str] = None,
+        self, response: Response, input_data: ParticipantRequestBody, jwt_token: Union[str, None] = None,
     ) -> ParticipantRegisteredResponse | ErrResponse:
         
         if input_data.is_admin and input_data.team_name:
             result = await self._service.register_admin_participant(input_data)
 
         elif input_data.is_admin is False and input_data.team_name:
-            # Decode the token
-            decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
-            if is_err(decoded_result):
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return ErrResponse(error=f"JWT decoding failed: {decoded_result.err_value}")
-            
-            decoded_data = decoded_result.ok_value
-            team_name_from_token = decoded_data["team_id"]
-
-            if input_data.team_name != team_name_from_token:
-                response.status_code = status.HTTP_400_BAD_REQUEST
-                return ErrResponse(error="Team name in request does not match the invite link.")
-            
-            result = await self._service.register_invite_link_participant(input_data)
+            result = await self._service.register_invite_link_participant(input_data, jwt_token)
 
         else:
             result = await self._service.register_random_participant(input_data)
@@ -66,7 +54,11 @@ class ParticipantHandlers:
             
             if isinstance(result.err_value, TeamCapacityExceededError):
                 response.status_code = status.HTTP_409_CONFLICT
-                return ErrResponse(error="Your team's capacity has been reached")
+                return ErrResponse(error="Max team capacity has been reached")
+            
+            if isinstance(result.err_value, TeamNameDoesNotMatchTokenTeamNameError):
+                response.status_code = status.HTTP_409_CONFLICT
+                return ErrResponse(error="The team name provided does not match the one corresponding to the link")
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the creation of Participant")

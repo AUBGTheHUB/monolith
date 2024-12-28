@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from result import Result, Err
+from result import Result, Err, is_err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -8,10 +8,13 @@ from src.server.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
-    TeamCapacityExceededError
+    TeamCapacityExceededError,
+    TeamNameDoesNotMatchTokenTeamNameError,
 )
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
+from src.utils import JwtUtility
 
 
 class ParticipantRegistrationService:
@@ -44,10 +47,22 @@ class ParticipantRegistrationService:
         # Proceed with registration if there is capacity
         return await self._hackathon_service.create_random_participant(input_data)
     
-    async def register_invite_link_participant(self, input_data: ParticipantRequestBody) -> Result[
-        Tuple[Participant, Team],
-        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+    async def register_invite_link_participant(self, input_data: ParticipantRequestBody, jwt_token: str) -> Result[
+        Participant, DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | 
+        TeamNameDoesNotMatchTokenTeamNameError | Exception,
     ]:
+        # Decode the token
+        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
+        
+        if is_err(decoded_result):
+            return decoded_result
+            
+        decoded_data = decoded_result.ok_value
+        team_name_from_token = decoded_data["team_name"]
+
+        if input_data.team_name != team_name_from_token:
+            return Err(TeamNameDoesNotMatchTokenTeamNameError())
+
         # Check Team Capacity
         has_capacity = await self._hackathon_service.check_team_capacity(input_data.team_name)
         if not has_capacity:

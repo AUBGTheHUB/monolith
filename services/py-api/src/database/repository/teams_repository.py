@@ -97,14 +97,21 @@ class TeamsRepository(CRUDRepository):
         # which is not true
         return await self._collection.count_documents({"is_verified": True})  # type: ignore
     
-    async def fetch_team_by_name(self, team_name: str) -> Result:
-        """Fetches a team by the team_name from the participant"""
+    async def fetch_by_team_name(self, team_name: str) -> Result[Team, TeamNotFoundError | Exception]:
+        """
+        Fetches a team by the team_name from the participant
+        """
         try:
+            LOG.debug("Fetching team by name...", team_name=team_name)
+
+            # Query the database for the team with the given name
             team = await self._collection.find_one({"name": team_name})
             
             if team is None:  # If no team is found, return an Err
-                return Err(Exception(f"Team with name '{team_name}' not found"))
+                return Err(TeamNotFoundError)
 
             return Ok(team)
+        
         except Exception as e:
+            LOG.exception("Failed to fetch team by name '{team_name}' due to err {}".format(e))
             return Err(e)
