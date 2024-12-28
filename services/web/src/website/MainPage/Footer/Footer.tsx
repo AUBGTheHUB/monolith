@@ -2,10 +2,13 @@ const SECTIONS_CLASS_NAME = 'w-full md:w-1/2 lg:mx-8 lg:w-1/4 my-5 lg:my-0';
 const SECTIONS_TITLE_CLASS_NAME = 'text-base my-4 select-none font-bold text-white';
 const OPTIONS_CLASS_NAME = 'text-base my-4 text-[#E6E6E6]';
 const LINKS_CLASS_NAME = 'hover:underline';
+import blob from '../../../../public/footer/footer_blob.svg';
 
 export const Footer = () => {
     return (
         <div className="flex w-full h-full bg-gradient-to-t to-[#0B2340] from-[#0a1320] justify-center py-20 flex-wrap">
+            <img src={blob} className="blur-[12.5rem] absolute overflow-hidden h-[35rem] top-[-22.5rem] right-[7rem]" />
+
             <div className="flex flex-wrap lg:flex-nowrap w-[60%]">
                 <div className={SECTIONS_CLASS_NAME}>
                     <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
