@@ -3,6 +3,7 @@ from os import environ, cpu_count
 
 from typing import Tuple
 from dotenv import load_dotenv
+from structlog.stdlib import get_logger
 from uvicorn import run
 
 from src.database.db_manager import ping_db
@@ -16,6 +17,8 @@ load_dotenv(override=True)
 # We also configure the logger here. This should be done before calling LOG = get_logger(), which we use in almost
 # every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
 configure_app_logger(environ["ENV"])
+
+LOG = get_logger()
 
 
 def _get_ssl_config() -> Tuple[str, str]:
@@ -58,6 +61,9 @@ def start() -> None:
         err = ping_db()
         if err:
             raise RuntimeError(err.err_value)
+
+        if server_config.ENV == "LOCAL":
+            LOG.debug("To open swagger/docs of the API visit: https://localhost:8080/api/v3/docs")
 
         run(
             app="src.server.app_entrypoint:app",
