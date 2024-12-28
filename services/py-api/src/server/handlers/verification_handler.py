@@ -1,33 +1,53 @@
-from fastapi import APIRouter, HTTPException
-from src.service.verification_service import VerificationService
-from jose import jwt, JWTError
+from result import is_err
+from fastapi import Response
+from starlette import status
+from src.utils import JwtUtility
+from src.service.hackathon_service import HackathonService
+from src.server.schemas.response_schemas.schemas import ErrResponse
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 
-router = APIRouter()
 
-SECRET_KEY = ""  # Replace with your actual secret key
-ALGORITHM = "HS256"  # Algorithm used for JWT
+class VerificationHandlers:
+    def __init__(self, hackathon_service: HackathonService) -> None:
+        self._hackathon_service = hackathon_service
 
+    async def verify_participant(self, response: Response, jwt_token: str) -> Response | ErrResponse:
+        # Decode the JWT token using JwtUtility
+        jwt_payload = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
 
-@router.get("/hackathon/participants/verify")
-async def verify_participant(jwt_token: str, service: VerificationService) -> dict[str, str]:
-    try:
-        # Decode the JWT token
-        payload = jwt.decode(jwt_token, SECRET_KEY, algorithms=[ALGORITHM])
-        participant_id = payload.get("sub")
-        is_admin = payload.get("is_admin", None)
-        team_id = payload.get("team_id", None)
+        if is_err(jwt_payload):
+            # Invalid or expired JWT token
+            response.status_code = status.HTTP_401_UNAUTHORIZED
+            return ErrResponse(error=jwt_payload.err_value)
 
-        # Check if is_admin is False
-        if is_admin is None or is_admin is not False:
-            raise HTTPException(status_code=400, detail="Invalid token payload for this operation.")
+        # Extract necessary fields from the decoded payload
+        participant_id = jwt_payload.ok_value.get("sub")
+        is_admin = jwt_payload.ok_value.get("is_admin")
+        team_id = jwt_payload.ok_value.get("team_id")
 
-        # Call the service method to verify the participant
-        await service.verify_random_participant(participant_id, team_id)
+        # Validate participant existence
+        participant_exists = await self._hackathon_service.check_if_participant_exists_in_by_id(participant_id)
+        if not participant_exists:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return ErrResponse(error="Participant does not exist in the database.")
 
-        # Return a success response
-        return {"message": "Verification successful, participant is now verified."}
+        # Random participant verification
+        if not is_admin:
+            if not team_id:
+                # Perform Capacity Check 1 for random participants
+                has_capacity = await self._hackathon_service.check_capacity_register_random_participant_case()
+                if not has_capacity:
+                    response.status_code = status.HTTP_409_CONFLICT
+                    return ErrResponse(error="Hackathon capacity is full.")
 
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid or expired token.")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+            # Verify random participant
+            result = await self._hackathon_service.verify_random_participant_and_update(participant_id)
+            if is_err(result):
+                response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+                return ErrResponse(error="Failed to verify the random participant.")
+
+            return Response(content="Successfully verified random participant", status_code=status.HTTP_200_OK)
+
+        # Admin participant verification logic can be implemented if required
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return ErrResponse(error="Invalid token for admin participant verification.")

@@ -114,3 +114,11 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
+
+    async def verify_random_participant_and_update(self, participant_id: str) -> Result[bool, Exception]:
+        """Verify a random participant by setting email_verified=True."""
+        return await self._participant_repo.update(participant_id, {"email_verified": True})
+
+    async def check_if_participant_exists_in_by_id(self, object_id: str) -> bool:
+        """Check if a participant exists in the database."""
+        return await self._participant_repo.check_if_participant_exists_by_id(object_id)

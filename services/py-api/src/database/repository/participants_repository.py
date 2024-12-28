@@ -2,7 +2,6 @@ from typing import Optional, Any, Dict
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
@@ -17,7 +16,6 @@ LOG = get_logger()
 
 
 class ParticipantsRepository(CRUDRepository):
-    # TODO: Implement the rest of the methods
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
@@ -28,9 +26,22 @@ class ParticipantsRepository(CRUDRepository):
         raise NotImplementedError()
 
     async def update(
-        self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
-    ) -> Result:
-        raise NotImplementedError()
+        self,
+        obj_id: str,
+        input_data: Any,
+        session: Optional[AsyncIOMotorClientSession] = None,
+        **kwargs: Any,
+    ) -> Result[bool, Exception]:
+        try:
+            result = await self._collection.find_one_and_update(
+                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+            )
+            if result is None:
+                return Err(ValueError("Participant not found"))
+            return Ok(True)
+        except Exception as e:
+            LOG.exception(f"Failed to update participant with id {obj_id}: {e}")
+            return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
@@ -62,7 +73,7 @@ class ParticipantsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             participant = Participant(
@@ -86,4 +97,12 @@ class ParticipantsRepository(CRUDRepository):
         """Returns the count of verified participants who are not assigned to any team."""
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
-        return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
+        try:
+            return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
+        except Exception as e:
+            LOG.exception(f"Failed to count verified random participants: {e}")
+            return 0
+
+    async def check_if_participant_exists_by_id(self, obj_id: str) -> bool:
+        document = await self._collection.find_one({"_id": ObjectId(obj_id)})
+        return bool(document)

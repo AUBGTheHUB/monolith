@@ -27,7 +27,7 @@ class TeamsRepository(CRUDRepository):
         self,
         input_data: ParticipantRequestBody,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         if input_data.team_name is None:
@@ -58,7 +58,7 @@ class TeamsRepository(CRUDRepository):
         obj_id: str,
         input_data: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Dict[str, Any]
+        **kwargs: Dict[str, Any],
     ) -> Result:
         raise NotImplementedError()
 
@@ -95,4 +95,9 @@ class TeamsRepository(CRUDRepository):
         """Returns the count of verified teams."""
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
-        return await self._collection.count_documents({"is_verified": True})  # type: ignore
+        try:
+            count = await self._collection.count_documents({"is_verified": True})
+            return int(count)
+        except Exception as e:
+            LOG.exception(f"Failed to count verified random participants: {e}")
+            return 0
