@@ -52,8 +52,8 @@ export const Footer = () => {
                     <p className={OPTIONS_CLASS_NAME}>thehub@aubg.edu</p>
                 </div>
             </div>
-            <span className="mt-2 w-[60vw] h-[1px] bg-[#4D4D4D]" />
-            <div className="w-[60%]">
+            <span className="mt-2 w-[57vw] h-[1px] bg-[#4D4D4D]" />
+            <div className="w-[57%]">
                 <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2025</p>
             </div>
         </div>
