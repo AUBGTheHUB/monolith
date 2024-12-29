@@ -38,8 +38,10 @@ class ParticipantsRepository(CRUDRepository):
             if result:
                 LOG.debug(f"Successfully updated participant with id {obj_id}")
                 return Ok(result)
-            LOG.exception("There were no updated participants")
-            return Err("There were no updated participants")
+            LOG.exception(f"No updated participants because participant with id {obj_id} was not found")
+            return Err(
+                ParticipantNotFoundError(f"No updated participants because participant with id {obj_id} was not found")
+            )
         except Exception as e:
             LOG.exception(f"Updating participant with id {obj_id} failed due to err {e}")
             return Err(e)

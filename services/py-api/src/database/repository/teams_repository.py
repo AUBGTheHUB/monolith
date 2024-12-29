@@ -68,8 +68,8 @@ class TeamsRepository(CRUDRepository):
             if result:
                 LOG.debug(f"Successfully updated team with id {obj_id}")
                 return Ok(result)
-            LOG.exception("There were no updated teams")
-            return Err("There were no updated teams")
+            LOG.exception(f"No updated teams because team with id {obj_id} was not found")
+            return Err(TeamNotFoundError(f"No updated teams because team with id {obj_id} was not found"))
         except Exception as e:
             LOG.exception(f"Updating team with id {obj_id} failed due to err {e}")
             return Err(e)

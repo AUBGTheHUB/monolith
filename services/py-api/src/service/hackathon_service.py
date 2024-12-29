@@ -72,14 +72,14 @@ class HackathonService:
 
     async def verify_admin_participant_and_team_in_transaction(
         self, admin_id: str, team_id: str
-    ) -> Result[Tuple[Participant, Team], Exception]:
+    ) -> Result[Tuple[Participant, Team], ParticipantNotFoundError | TeamNotFoundError | Exception]:
         return await self._tx_manager.with_transaction(
             self.verify_admin_participant_and_team_callback, admin_id, team_id
         )
 
     async def verify_admin_participant_and_team_callback(
         self, admin_id: str, team_id: str, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Tuple[Participant, Team], Exception]:
+    ) -> Result[Tuple[Participant, Team], ParticipantNotFoundError | TeamNotFoundError | Exception]:
         result_admin = await self._participant_repo.update(
             obj_id=admin_id, input_data={"email_verified": True}, session=session
         )
@@ -129,7 +129,6 @@ class HackathonService:
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
-
     async def check_if_participant_exists_in_by_id(self, object_id: str) -> bool:
         result = await self._participant_repo.fetch_by_id(obj_id=object_id)
         return result is not None
@@ -141,4 +140,3 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
-

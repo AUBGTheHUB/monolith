@@ -1,5 +1,6 @@
 from result import is_err
 from fastapi import Response
+from src.server.exception import ParticipantNotFoundError, TeamNotFoundError
 from src.service.hackathon_service import HackathonService
 from starlette import status
 
@@ -40,6 +41,12 @@ class VerificationHandlers:
             )
 
             if is_err(result):
+                if isinstance(result, ParticipantNotFoundError):
+                    response.status_code = status.HTTP_404_NOT_FOUND
+                    return ErrResponse(error="The participant was not found")
+                if isinstance(result, TeamNotFoundError):
+                    response.status_code = status.HTTP_404_NOT_FOUND
+                    return ErrResponse(error="The team was not found")
                 return ErrResponse(
                     error="An unexpected error occurred during the verification of the admin participant"
                 )
