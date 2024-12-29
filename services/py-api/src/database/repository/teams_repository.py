@@ -62,10 +62,16 @@ class TeamsRepository(CRUDRepository):
     ) -> Result[Ok, Exception]:
         try:
             LOG.debug(f"Updating team with id {obj_id}")
-            await self._collection.find_one_and_update({"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session)
-            return Ok(value=True)
+            result = await self._collection.find_one_and_update(
+                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+            )
+            if result:
+                LOG.debug(f"Successfully updated team with id {obj_id}")
+                return Ok(result)
+            LOG.exception("There were no updated teams")
+            return Err("There were no updated teams")
         except Exception as e:
-            LOG.error(f"Updating team with id {obj_id} failed due to err {e}")
+            LOG.exception(f"Updating team with id {obj_id} failed due to err {e}")
             return Err(e)
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:

@@ -7,7 +7,6 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.verification_handlers import VerificationHandlers
 from src.service.hackathon_service import HackathonService
-from src.service.verification_service import VerificationService
 
 
 verification_router = APIRouter(prefix="/hackathon/participants/verify")
@@ -33,18 +32,12 @@ def _h_service(
     return HackathonService(p_repo, t_repo, tx_manager)
 
 
-def _v_service(
-    h_service: HackathonService = Depends(_h_service),
-) -> VerificationService:
-    return VerificationService(h_service)
+def _handler(h_service: HackathonService = Depends(_h_service)) -> VerificationHandlers:
+    return VerificationHandlers(h_service)
 
 
-def _handler(v_service: VerificationService = Depends(_v_service)) -> VerificationHandlers:
-    return VerificationHandlers(v_service)
-
-
-@verification_router.get("", status_code=200)
+@verification_router.patch("", status_code=200)
 async def verify_participant(
     response: Response, jwt_token: str, _handler: VerificationHandlers = Depends(_handler)
 ) -> Any:
-    return await _handler.verifyParticipant(response=response, jwt_token=jwt_token)
+    return await _handler.verify_participant(response=response, jwt_token=jwt_token)

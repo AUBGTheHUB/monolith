@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Any, Optional, Tuple
+from typing import Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import is_err, Ok, Result
@@ -65,23 +65,27 @@ class HackathonService:
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
 
-    async def verify_admin_participant_and_team_in_transaction(self, admin_id: str) -> Any:
-        return await self._tx_manager.with_transaction(self.verify_admin_participant_and_team_callback, admin_id)
+    async def verify_admin_participant_and_team_in_transaction(
+        self, admin_id: str, team_id: str
+    ) -> Result[Tuple[Participant, Team], Exception]:
+        return await self._tx_manager.with_transaction(
+            self.verify_admin_participant_and_team_callback, admin_id, team_id
+        )
 
     async def verify_admin_participant_and_team_callback(
-        self, admin_id: str, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Any:
+        self, admin_id: str, team_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[Tuple[Participant, Team], Exception]:
         result_admin = await self._participant_repo.update(
             obj_id=admin_id, input_data={"email_verified": True}, session=session
         )
         if is_err(result_admin):
             return result_admin
 
-        result_team = await self._team_repo.update(obj_id=admin_id, input_data={"is_verified": True}, session=session)
+        result_team = await self._team_repo.update(obj_id=team_id, input_data={"is_verified": True}, session=session)
         if is_err(result_team):
-            return result_admin
+            return result_team
 
-        return Ok(value=True)
+        return Ok((result_admin, result_team))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
@@ -121,4 +125,5 @@ class HackathonService:
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_if_participant_exists_in_by_id(self, object_id: str) -> bool:
-        return await self._participant_repo.check_if_participant_exists_by_id(obj_id=object_id)
+        result = await self._participant_repo.fetch_by_id(obj_id=object_id)
+        return result is not None

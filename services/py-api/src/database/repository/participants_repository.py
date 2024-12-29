@@ -22,7 +22,7 @@ class ParticipantsRepository(CRUDRepository):
         self._collection = db_manager.get_collection(collection_name)
 
     async def fetch_by_id(self, obj_id: str) -> Result:
-        raise NotImplementedError()
+        return await self._collection.find_one({"_id": ObjectId(obj_id)})
 
     async def fetch_all(self) -> Result:
         raise NotImplementedError()
@@ -32,10 +32,16 @@ class ParticipantsRepository(CRUDRepository):
     ) -> Result[Ok, Exception]:
         try:
             LOG.debug(f"Updating participant with id {obj_id}")
-            await self._collection.find_one_and_update({"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session)
-            return Ok(value=True)
+            result = await self._collection.find_one_and_update(
+                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+            )
+            if result:
+                LOG.debug(f"Successfully updated participant with id {obj_id}")
+                return Ok(result)
+            LOG.exception("There were no updated participants")
+            return Err("There were no updated participants")
         except Exception as e:
-            LOG.error(f"Updating participant with id {obj_id} failed due to err {e}")
+            LOG.exception(f"Updating participant with id {obj_id} failed due to err {e}")
             return Err(e)
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result:
@@ -70,6 +76,3 @@ class ParticipantsRepository(CRUDRepository):
         # Ignoring mypy type due to mypy err: 'Returning Any from function declared to return "int"  [no-any-return]'
         # which is not true
         return await self._collection.count_documents({"email_verified": True, "team_id": None})  # type: ignore
-
-    async def check_if_participant_exists_by_id(self, obj_id: str) -> bool:
-        return bool((await self._collection.count_documents({"_id": ObjectId(obj_id)})) == 1)
