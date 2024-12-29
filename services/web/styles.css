@@ -1,9 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+body{
+    background-color: #18305F;
+}
+
 .about-section{
     --primary: #18305F;
     --accent: #3348FF;
-    --accent-foreground: white; 
+    --accent-foreground: white;
     --card: white;
-    --card-foreground: #151515; 
+    --card-foreground: #151515;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
