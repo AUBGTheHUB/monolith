@@ -9,7 +9,12 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError
+from src.server.exception import (
+    DuplicateTeamNameError,
+    DuplicateEmailError,
+    ParticipantNotFoundError,
+    TeamNotFoundError,
+)
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
@@ -124,6 +129,16 @@ class HackathonService:
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
+
     async def check_if_participant_exists_in_by_id(self, object_id: str) -> bool:
         result = await self._participant_repo.fetch_by_id(obj_id=object_id)
         return result is not None
+
+    async def delete_participant(
+        self, participant_id: str
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        return await self._participant_repo.delete(obj_id=participant_id)
+
+    async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
+        return await self._team_repo.delete(obj_id=team_id)
+
