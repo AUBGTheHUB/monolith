@@ -5,7 +5,7 @@
             "conference",
             "fintech"
         ],
-        "cover_picture": "/sample.png"
+        "cover_picture": "/fintech.png"
     },
     {
         "title": "HackAUBG 5.0",
@@ -13,6 +13,6 @@
             "hackathon",
             "coding"
         ],
-        "cover_picture": "/sample.png"
+        "cover_picture": "/hackathon.png"
     }
 ]

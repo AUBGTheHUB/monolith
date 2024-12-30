@@ -1,8 +1,18 @@
 import React from 'react';
 import { EmblaOptionsType } from 'embla-carousel';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton.tsx';
-import { PrevButton, NextButton, usePrevNextButtons } from './EmblaCarouselArrowButtons';
+import { PrevButton, NextButton, usePrevNextButtons } from './EmblaCarouselArrowButtons.tsx';
 import useEmblaCarousel from 'embla-carousel-react';
+
+/*
+Embla Carousel is a lightweight library for creating Carousels in react
+Learn more about it: https://www.embla-carousel.com/
+This folliwng implementation is based on 'Slides Per View' example:
+https://www.embla-carousel.com/examples/predefined/#slides-per-view
+
+They have a couple more very useful examples that you can use, which you can
+check in their website.
+*/
 
 type PropType = {
     slides: React.ReactNode[];
