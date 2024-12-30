@@ -63,10 +63,4 @@ class ParticipantRegistrationService:
         if input_data.team_name != team_name_from_token:
             return Err(TeamNameDoesNotMatchTokenTeamNameError())
 
-        # Check Team Capacity
-        has_capacity = await self._hackathon_service.check_team_capacity(input_data.team_name)
-        if not has_capacity:
-            return Err(TeamCapacityExceededError())
-
-        # Proceed with registration if there is capacity
         return await self._hackathon_service.create_invite_link_participant(input_data)

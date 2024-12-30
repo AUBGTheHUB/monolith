@@ -71,6 +71,7 @@ class ParticipantsRepository(CRUDRepository):
                 is_admin=input_data.is_admin,
                 # If the team_id is passed as a kwarg the participant will be inserted in the given team
                 team_id=kwargs.get("team_id"),
+                email_verified=kwargs.get("email_verified", False),
             )
             LOG.debug("Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)

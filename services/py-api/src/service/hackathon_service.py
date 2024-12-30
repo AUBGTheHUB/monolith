@@ -2,7 +2,7 @@ from math import ceil
 from typing import Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import is_err, Ok, Result
+from result import Err, is_err, Ok, Result
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -13,6 +13,7 @@ from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
     ParticipantNotFoundError,
+    TeamCapacityExceededError,
     TeamNotFoundError,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
@@ -72,14 +73,29 @@ class HackathonService:
     
     async def create_invite_link_participant(
             self, input_data: ParticipantRequestBody
-    ) -> Result[Participant, DuplicateEmailError | Exception]:
+    ) -> Result[Tuple[Participant, None], DuplicateEmailError | TeamCapacityExceededError| Exception]:
         
-        participant_result = await self._participant_repo.create(input_data)
+        # Check Team Capacity
+        has_capacity = await self.check_team_capacity(input_data.team_name)
+        if not has_capacity:
+            return Err(TeamCapacityExceededError())
+        
+        team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
+        if is_err(team_result):
+            return team_result
+        
+        team = team_result.unwrap()
+
+        participant_result = await self._participant_repo.create(
+            input_data, 
+            team_id=team["_id"], 
+            email_verified=True
+            )
         if is_err(participant_result):
             return participant_result
         
         # Return the new participant
-        return Ok(participant_result.ok_value)
+        return Ok((participant_result.ok_value, None))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
