@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button.tsx';
 
 const EventTicket = ({ imgSrc, title, tags }: { imgSrc: string; title: string; tags: Array<string> }) => {
     return (
-        <div className="flex flex-col h-60 flex-1 max-w-80 p-2 border rounded-2xl font-semibold">
+        <div className="flex flex-col min-w-50 max-w-80 h-60 p-2 border rounded-2xl font-semibold">
             <div className="h-4/6 w-full">
                 <img src={imgSrc} alt="" className="object-cover w-full h-full rounded-xl" />
             </div>
