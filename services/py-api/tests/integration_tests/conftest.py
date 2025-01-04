@@ -86,7 +86,7 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
 
 @pytest_asyncio.fixture
 def generate_participant_request_body() -> Callable[..., Dict[str, Any]]:
-    def _generate_participant_request_body(
+    def create_participant_request_body_generator(
         name: str | None = "testtest",
         email: str | None = "testtest@test.com",
         is_admin: bool | None = False,
@@ -97,7 +97,7 @@ def generate_participant_request_body() -> Callable[..., Dict[str, Any]]:
         # A new dict without None values
         return {key: value for key, value in request_body.items() if value is not None}
 
-    return _generate_participant_request_body
+    return create_participant_request_body_generator
 
 
 @pytest.fixture
