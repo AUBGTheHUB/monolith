@@ -1,4 +1,3 @@
-import datetime
 from typing import TypedDict
 
 """
@@ -19,4 +18,4 @@ class JwtUserData(BaseTypedDict):
     team_name: str
     team_id: str
     is_invite: bool
-    exp: datetime
+    exp: int

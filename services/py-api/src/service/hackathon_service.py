@@ -16,7 +16,9 @@ from src.server.exception import (
     TeamCapacityExceededError,
     TeamNotFoundError,
 )
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.database.model.base_model import SerializableObjectId
 
 
 class HackathonService:
@@ -70,30 +72,30 @@ class HackathonService:
 
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
-    
+
     async def create_invite_link_participant(
-            self, input_data: ParticipantRequestBody
-    ) -> Result[Tuple[Participant, None], DuplicateEmailError | TeamCapacityExceededError| Exception]:
-        
+        self, input_data: ParticipantRequestBody, decoded_jwt_token: JwtUserData
+    ) -> Result[
+        Tuple[Participant, None], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
+    ]:
+
+        # Check if team still exists - Returns an error when it doesn't
+        result = await self._team_repo.fetch_by_team_name(input_data.team_name)  # type: ignore
+        if is_err(result):
+            return result
+
         # Check Team Capacity
-        has_capacity = await self.check_team_capacity(input_data.team_name)
+        has_capacity = await self.check_team_capacity(decoded_jwt_token["team_id"])
         if not has_capacity:
             return Err(TeamCapacityExceededError())
-        
-        team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
-        if is_err(team_result):
-            return team_result
-        
-        team = team_result.unwrap()
 
         participant_result = await self._participant_repo.create(
-            input_data, 
-            team_id=team["_id"], 
-            email_verified=True
-            )
+            input_data, team_id=SerializableObjectId(decoded_jwt_token["team_id"]), email_verified=True
+        )
+
         if is_err(participant_result):
             return participant_result
-        
+
         # Return the new participant
         return Ok((participant_result.ok_value, None))
 
@@ -134,6 +136,15 @@ class HackathonService:
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
+    async def check_team_capacity(self, team_id: str) -> bool:
+        """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
+
+        # Fetch number of registered participants in the team
+        registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
+
+        # Check against team capacity
+        return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+
     async def delete_participant(
         self, participant_id: str
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
@@ -141,12 +152,3 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
-    
-    async def check_team_capacity(self, team_name: str) -> bool:
-        """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
-
-        # Fetch number of registered participants in the team
-        registered_participants = await self._participant_repo.get_number_registered_teammates(team_name)
-
-        # Check against team capacity
-        return registered_participants + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS

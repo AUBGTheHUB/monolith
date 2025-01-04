@@ -20,8 +20,6 @@ class ParticipantNotFoundError(Exception):
 class TeamNotFoundError(Exception):
     """Exception raised when there are no teams that match the query to the database"""
 
+
 class TeamCapacityExceededError(Exception):
     """Exception raised when team capacity has been reached"""
-
-class TeamNameDoesNotMatchTokenTeamNameError(Exception):
-    """Exception raised when team name from the JWT token does not match that from the input data"""
