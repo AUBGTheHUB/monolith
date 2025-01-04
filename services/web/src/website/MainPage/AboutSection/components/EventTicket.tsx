@@ -1,13 +1,6 @@
 import { Button } from '@/components/ui/button.tsx';
-import React from 'react';
 
-type PropType = {
-    imgSrc: string;
-    title: string;
-    tags: Array<string>;
-};
-
-const EventTicket: React.FC<PropType> = ({ imgSrc, title, tags }) => {
+export default function EventTicket({ imgSrc, title, tags }: { imgSrc: string; title: string; tags: Array<string> }) {
     return (
         <div className="flex flex-col min-w-50 max-w-80 h-60 p-2 border rounded-2xl font-semibold">
             <div className="h-4/6 w-full">
@@ -25,6 +18,4 @@ const EventTicket: React.FC<PropType> = ({ imgSrc, title, tags }) => {
             </div>
         </div>
     );
-};
-
-export default EventTicket;
+}
