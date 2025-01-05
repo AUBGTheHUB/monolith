@@ -285,3 +285,26 @@ async def test_create_participant_link_case_duplicate_email_error(
     assert isinstance(result, ErrResponse)
     assert result.error == "Participant with this email already exists"
     response_mock.status_code = status.HTTP_409_CONFLICT
+
+@pytest.mark.asyncio
+async def test_create_participant_link_case_duplicate_team_name_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_link: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_invite_link_participant` to return an `Err` with `DuplicateTeamNameError`
+    participant_registration_service_mock.register_invite_link_participant.return_value = Err(
+        DuplicateTeamNameError(mock_input_data_link.team_name)
+    )
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_link, "example.token")
+
+    # Check that `register_invite_link_participant` was awaited once
+    participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(mock_input_data_link, "example.token")
+
+    # Assert the response indicates a conflict
+    assert isinstance(result, ErrResponse)
+    assert result.error == "Team with this name already exists"
+    response_mock.status_code = status.HTTP_409_CONFLICT
