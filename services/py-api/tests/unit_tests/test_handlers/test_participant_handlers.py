@@ -308,3 +308,24 @@ async def test_create_participant_link_case_duplicate_team_name_error(
     assert isinstance(result, ErrResponse)
     assert result.error == "Team with this name already exists"
     response_mock.status_code = status.HTTP_409_CONFLICT
+
+@pytest.mark.asyncio
+async def test_create_participant_invite_link_case_general_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_link: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_invite_link_participant` to return a general `Err`
+    participant_registration_service_mock.register_invite_link_participant.return_value = Err(Exception("General error"))
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_link, "example.token")
+
+    # Check that `register_admin_participant` was awaited once
+    participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(mock_input_data_link, "example.token")
+
+    # Assert the response indicates an internal server error
+    assert isinstance(result, ErrResponse)
+    assert result.error == "An unexpected error occurred during the creation of Participant"
+    response_mock.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
