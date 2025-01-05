@@ -1,4 +1,3 @@
-import React from 'react';
 import identityProposition from '../StaticContent/identityProposition.json';
 import { Button } from '@/components/ui/button.tsx';
 
