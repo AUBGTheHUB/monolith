@@ -5,7 +5,7 @@ from starlette import status
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, HackathonCapacityExceededError, TeamCapacityExceededError
+from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, HackathonCapacityExceededError, TeamCapacityExceededError, TeamNotFoundError
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantRegisteredResponse
@@ -374,4 +374,27 @@ async def test_create_participant_invite_link_case_team_capacity_exceeded_error(
     # Assert the response indicates a conflict with capacity reached
     assert isinstance(result, ErrResponse)
     assert result.error == "Max team capacity has been reached"
+    response_mock.status_code = status.HTTP_409_CONFLICT
+
+@pytest.mark.asyncio
+async def test_create_participant_invite_link_case_team_not_found_error(
+    participant_handlers: ParticipantHandlers,
+    participant_registration_service_mock: Mock,
+    mock_input_data_link: ParticipantRequestBody,
+    response_mock: MagicMock,
+) -> None:
+    # Mock `register_invite_link_participant` to return an `Err` with `TeamNotFoundError`
+    participant_registration_service_mock.register_invite_link_participant.return_value = Err(
+        TeamNotFoundError()
+    )
+
+    # Call the handler
+    result = await participant_handlers.create_participant(response_mock, mock_input_data_link, "example.token")
+
+    # Check that `register_invite_link_participant` was awaited once
+    participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(mock_input_data_link, "example.token")
+
+    # Assert the response indicates a conflict with capacity reached
+    assert isinstance(result, ErrResponse)
+    assert result.error == "The specified team was not found"
     response_mock.status_code = status.HTTP_409_CONFLICT
