@@ -114,6 +114,7 @@ def participant_registration_service_mock() -> Mock:
 
     p_reg_service = Mock(spec=ParticipantRegistrationService)
     p_reg_service.register_admin_participant.return_value = AsyncMock()
+    p_reg_service.register_invite_link_participant.return_value = AsyncMock()
 
     return p_reg_service
 
@@ -125,6 +126,10 @@ def mock_input_data() -> ParticipantRequestBody:
 @pytest.fixture
 def mock_input_data_random() -> ParticipantRequestBody:
     return ParticipantRequestBody(name="Test User", email="test@example.com", team_id=None, is_admin=False)
+
+@pytest.fixture
+def mock_input_data_link() -> ParticipantRequestBody:
+    return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=False)
 
 @pytest.fixture
 def response_mock() -> MagicMock:
