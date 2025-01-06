@@ -21,27 +21,36 @@ class ParticipantsRepository(CRUDRepository):
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
-    async def fetch_by_id(self, obj_id: str) -> Result:
-        return await self._collection.find_one({"_id": ObjectId(obj_id)})
+    async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        try:
+            participant = await self._collection.find_one()
+
+            if participant is None:
+                return Err(ParticipantNotFoundError())
+
+            return Ok(participant)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch participant with id {obj_id} due to err {e}")
+            return Err(e)
 
     async def fetch_all(self) -> Result:
         raise NotImplementedError()
 
     async def update(
         self, obj_id: str, input_data: BaseModel, session: Optional[AsyncIOMotorClientSession] = None, **kwargs: Any
-    ) -> Result[Ok, Exception]:
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
             LOG.debug(f"Updating participant with id {obj_id}")
             result = await self._collection.find_one_and_update(
-                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+                {"_id": ObjectId(obj_id)}, {"$set": input_data}, projection={"_id": 0}, session=session
             )
             if result:
                 LOG.debug(f"Successfully updated participant with id {obj_id}")
-                return Ok(result)
+                return Ok(Participant(id=obj_id, **result))
             LOG.exception(f"No updated participants because participant with id {obj_id} was not found")
-            return Err(
-                ParticipantNotFoundError(f"No updated participants because participant with id {obj_id} was not found")
-            )
+            return Err(ParticipantNotFoundError())
+
         except Exception as e:
             LOG.exception(f"Updating participant with id {obj_id} failed due to err {e}")
             return Err(e)

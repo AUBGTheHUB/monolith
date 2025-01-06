@@ -59,17 +59,18 @@ class TeamsRepository(CRUDRepository):
         input_data: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any],
-    ) -> Result[Ok, Exception]:
+    ) -> Result[Team, TeamNotFoundError | Exception]:
         try:
             LOG.debug(f"Updating team with id {obj_id}")
             result = await self._collection.find_one_and_update(
-                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+                {"_id": ObjectId(obj_id)}, {"$set": input_data}, projection={"_id": 0}, session=session
             )
             if result:
                 LOG.debug(f"Successfully updated team with id {obj_id}")
-                return Ok(result)
+                return Ok(Team(id=obj_id, **result))
             LOG.exception(f"No updated teams because team with id {obj_id} was not found")
-            return Err(TeamNotFoundError(f"No updated teams because team with id {obj_id} was not found"))
+            return Err(TeamNotFoundError())
+
         except Exception as e:
             LOG.exception(f"Updating team with id {obj_id} failed due to err {e}")
             return Err(e)
