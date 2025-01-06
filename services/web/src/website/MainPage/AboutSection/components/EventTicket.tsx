@@ -1,6 +1,12 @@
 import { Button } from '@/components/ui/button.tsx';
 
-export default function EventTicket({ imgSrc, title, tags }: { imgSrc: string; title: string; tags: Array<string> }) {
+type EventTicketType = {
+    imgSrc: string;
+    title: string;
+    tags: Array<string>;
+};
+
+export default function EventTicket({ imgSrc, title, tags }: EventTicketType) {
     return (
         <div className="flex flex-col min-w-50 max-w-80 max-[450px]:max-w-full h-60 p-2 border rounded-2xl font-semibold">
             <div className="h-4/6 w-full">
