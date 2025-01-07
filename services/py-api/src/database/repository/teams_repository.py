@@ -2,7 +2,6 @@ from typing import Final, Optional, Any, Dict
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
@@ -56,7 +55,7 @@ class TeamsRepository(CRUDRepository):
     async def update(
         self,
         obj_id: str,
-        input_data: BaseModel,
+        updated_data: Dict[str, Any],
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any],
     ) -> Result:

@@ -2,6 +2,7 @@ from typing import Optional, Any, Dict
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
@@ -19,8 +20,21 @@ class ParticipantsRepository(CRUDRepository):
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
-    async def fetch_by_id(self, obj_id: str) -> Result:
-        raise NotImplementedError()
+    async def fetch_by_id(self, obj_id: str) -> Result[Participant, Exception]:
+        try:
+            LOG.debug("Fetching participant by ObjectId...", obj_id=obj_id)
+
+            # Query the database for the participant with the given object id
+            participant = await self._collection.find_one({"_id": ObjectId(obj_id)})
+
+            if participant is None:  # If no participant is found, return an Err
+                return Err(ParticipantNotFoundError())
+
+            return Ok(participant)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch participant by ObjectId {obj_id} due to err {e}")
+            return Err(e)
 
     async def fetch_all(self) -> Result:
         raise NotImplementedError()
@@ -28,19 +42,32 @@ class ParticipantsRepository(CRUDRepository):
     async def update(
         self,
         obj_id: str,
-        input_data: Any,
+        updated_data: Dict[str, Any],
         session: Optional[AsyncIOMotorClientSession] = None,
-        **kwargs: Any,
-    ) -> Result[bool, Exception]:
+        **kwargs: Dict[str, Any],
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
+
+            LOG.debug(f"Updating participant with ObjectId={obj_id}, by setting {updated_data}.")
+
+            # The ReturnDocument.after return the updated document instead of the orignal document which is the
+            # default behaviour.
             result = await self._collection.find_one_and_update(
-                {"_id": ObjectId(obj_id)}, {"$set": input_data}, session=session
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": updated_data},
+                projection={"_id": 0},
+                return_document=ReturnDocument.AFTER,
+                session=session,
             )
-            if result is None:
-                return Err(ValueError("Participant not found"))
-            return Ok(True)
+
+            # The result is None when the participant with the specified ObjectId is not found
+            if result:
+                return Ok(Participant(id=obj_id, **result))
+
+            return Err(ParticipantNotFoundError())
+
         except Exception as e:
-            LOG.exception(f"Failed to update participant with id {obj_id}: {e}")
+            LOG.exception(f"Failed to update participant with id {obj_id} due to {e}")
             return Err(e)
 
     async def delete(

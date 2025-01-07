@@ -15,6 +15,7 @@ from src.server.exception import (
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
@@ -70,6 +71,19 @@ class HackathonService:
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
 
+    async def verify_random_participant(
+        self, jwt_data: JwtUserData
+    ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
+
+        # Updates the random participant if it exists
+        result = await self._participant_repo.update(jwt_data["sub"], {"email_verified": True})
+
+        if is_err(result):
+            return result
+
+        # As when first created, the random participant is not assigned to a team we return the team as None
+        return Ok((result.ok_value, None))
+
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
         teams in the hackathon. This is the Capacity Check 2 from the Excalidraw 'Adding a participant workflow'"""
@@ -114,11 +128,3 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
-
-    async def verify_random_participant_and_update(self, participant_id: str) -> Result[bool, Exception]:
-        """Verify a random participant by setting email_verified=True."""
-        return await self._participant_repo.update(participant_id, {"email_verified": True})
-
-    async def check_if_participant_exists_in_by_id(self, object_id: str) -> bool:
-        """Check if a participant exists in the database."""
-        return await self._participant_repo.check_if_participant_exists_by_id(object_id)
