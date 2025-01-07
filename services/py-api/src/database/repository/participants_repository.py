@@ -129,7 +129,3 @@ class ParticipantsRepository(CRUDRepository):
         except Exception as e:
             LOG.exception(f"Failed to count verified random participants: {e}")
             return 0
-
-    async def check_if_participant_exists_by_id(self, obj_id: str) -> bool:
-        document = await self._collection.find_one({"_id": ObjectId(obj_id)})
-        return bool(document)

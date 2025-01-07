@@ -98,5 +98,5 @@ class TeamsRepository(CRUDRepository):
             count = await self._collection.count_documents({"is_verified": True})
             return int(count)
         except Exception as e:
-            LOG.exception(f"Failed to count verified random participants: {e}")
+            LOG.exception(f"Failed to count verified teams: {e}")
             return 0
