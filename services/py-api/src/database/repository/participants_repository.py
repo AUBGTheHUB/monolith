@@ -50,7 +50,7 @@ class ParticipantsRepository(CRUDRepository):
 
             LOG.debug(f"Updating participant with ObjectId={obj_id}, by setting {updated_data}.")
 
-            # The ReturnDocument.after return the updated document instead of the orignal document which is the
+            # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
             # default behaviour.
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
