@@ -16,6 +16,7 @@ from src.server.exception import (
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
@@ -71,6 +72,19 @@ class HackathonService:
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
 
+    async def verify_random_participant(
+        self, jwt_data: JwtUserData
+    ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
+
+        # Updates the random participant if it exists
+        result = await self._participant_repo.update(jwt_data["sub"], {"email_verified": True})
+
+        if is_err(result):
+            return result
+
+        # As when first created, the random participant is not assigned to a team we return the team as None
+        return Ok((result.ok_value, None))
+
     async def verify_participant_and_team_in_transaction(
         self, is_admin: bool, participant_id: str, team_id: str
     ) -> Result[
@@ -104,13 +118,13 @@ class HackathonService:
                 return Err(HackathonCapacityExceededError())
 
             result_admin = await self._participant_repo.update(
-                obj_id=participant_id, input_data={"email_verified": True}, session=session
+                obj_id=participant_id, updated_data={"email_verified": True}, session=session
             )
             if is_err(result_admin):
                 return result_admin
 
             result_team = await self._team_repo.update(
-                obj_id=team_id, input_data={"is_verified": True}, session=session
+                obj_id=team_id, updated_data={"is_verified": True}, session=session
             )
             if is_err(result_team):
                 return result_team
