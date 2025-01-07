@@ -2,7 +2,7 @@ from math import ceil
 from typing import Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import Err, is_err, Ok, Result
+from result import is_err, Ok, Result
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -12,7 +12,6 @@ from src.database.transaction_manager import TransactionManager
 from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
-    HackathonCapacityExceededError,
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
@@ -85,52 +84,34 @@ class HackathonService:
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
 
-    async def verify_participant_and_team_in_transaction(
-        self, is_admin: bool, participant_id: str, team_id: str
-    ) -> Result[
+    async def verify_admin_participant_and_team_in_transaction(self, jwt_data: JwtUserData) -> Result[
         Tuple[Participant, Team],
-        ParticipantNotFoundError | TeamNotFoundError | HackathonCapacityExceededError | Exception,
+        ParticipantNotFoundError | TeamNotFoundError | Exception,
     ]:
-        return await self._tx_manager.with_transaction(
-            self.verify_participant_and_team_callback, is_admin, participant_id, team_id
-        )
+        return await self._tx_manager.with_transaction(self.verify_admin_participant_and_team_callback, jwt_data)
 
-    async def verify_participant_and_team_callback(
+    async def verify_admin_participant_and_team_callback(
         self,
-        is_admin: bool,
-        participant_id: str,
-        team_id: str,
+        jwt_data: JwtUserData,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[
         Tuple[Participant, Team],
-        ParticipantNotFoundError | TeamNotFoundError | HackathonCapacityExceededError | Exception,
+        ParticipantNotFoundError | TeamNotFoundError | Exception,
     ]:
 
-        participant_exists = await self._participant_repo.fetch_by_id(obj_id=participant_id)
+        result_admin = await self._participant_repo.update(
+            obj_id=jwt_data["sub"], updated_data={"email_verified": True}, session=session
+        )
+        if is_err(result_admin):
+            return result_admin
 
-        if is_err(participant_exists):
-            return participant_exists
+        result_team = await self._team_repo.update(
+            obj_id=jwt_data["team_id"], updated_data={"is_verified": True}, session=session
+        )
+        if is_err(result_team):
+            return result_team
 
-        # verifying admin participants
-        if is_admin:
-            has_capacity = await self.check_capacity_register_admin_participant_case()
-            if not has_capacity:
-                return Err(HackathonCapacityExceededError())
-
-            result_admin = await self._participant_repo.update(
-                obj_id=participant_id, updated_data={"email_verified": True}, session=session
-            )
-            if is_err(result_admin):
-                return result_admin
-
-            result_team = await self._team_repo.update(
-                obj_id=team_id, updated_data={"is_verified": True}, session=session
-            )
-            if is_err(result_team):
-                return result_team
-
-            return Ok((result_admin, result_team))
-        # verify random participant (the task of another issue)
+        return Ok((result_admin.ok_value, result_team.ok_value))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified

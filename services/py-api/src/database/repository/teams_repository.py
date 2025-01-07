@@ -2,6 +2,7 @@ from typing import Final, Optional, Any, Dict
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
@@ -58,8 +59,27 @@ class TeamsRepository(CRUDRepository):
         updated_data: Dict[str, Any],
         session: Optional[AsyncIOMotorClientSession] = None,
         **kwargs: Dict[str, Any],
-    ) -> Result:
-        raise NotImplementedError()
+    ) -> Result[Team, TeamNotFoundError | Exception]:
+        try:
+            LOG.debug(f"Updating team with ObjectId={obj_id}, by setting {updated_data}.")
+            result = await self._collection.find_one_and_update(
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": updated_data},
+                return_document=ReturnDocument.AFTER,
+                projection={"_id": 0},
+                session=session,
+            )
+
+            if not result:
+                LOG.exception(f"No updated teams because team with ObjectId={obj_id} was not found")
+                return Err(TeamNotFoundError())
+
+            LOG.debug(f"Successfully updated team with ObjectId={obj_id}")
+            return Ok(Team(id=obj_id, **result))
+
+        except Exception as e:
+            LOG.exception(f"Updating team with ObjectId={obj_id} failed due to err {e}")
+            return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None

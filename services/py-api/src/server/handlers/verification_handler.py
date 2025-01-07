@@ -1,6 +1,6 @@
 from result import is_err
 from fastapi import Response
-from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError
+from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError, TeamNotFoundError
 from src.service.participants_verification_service import ParticipantVerificationService
 from starlette import status
 from src.utils import JwtUtility
@@ -25,8 +25,7 @@ class VerificationHandlers:
 
         if jwt_payload["is_admin"]:
             # Call for the admin participant case
-            # result = await self._service.verify_admin_participant(jwt_data=jwt_payload)
-            return ErrResponse(NotImplementedError())
+            result = await self._service.verify_admin_participant(jwt_data=jwt_payload)
         else:
             result = await self._service.verify_random_participant(jwt_data=jwt_payload)
 
@@ -36,11 +35,15 @@ class VerificationHandlers:
                 response.status_code = status.HTTP_404_NOT_FOUND
                 return ErrResponse(error="The participant was not found")
 
+            if isinstance(result.err_value, TeamNotFoundError):
+                response.status_code = status.HTTP_404_NOT_FOUND
+                return ErrResponse(error="The team was not found")
+
             if isinstance(result.err_value, HackathonCapacityExceededError):
                 response.status_code = status.HTTP_409_CONFLICT
                 return ErrResponse(error="Max hackathon capacity has been reached")
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return ErrResponse(error="An unexpected error occurred during the creation of Participant")
+            return ErrResponse(error="An unexpected error occurred during the verification of Participant")
 
         return ParticipantVerifiedResponse(participant=result.ok_value[0], team=result.ok_value[1])
