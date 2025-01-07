@@ -65,11 +65,12 @@ class TeamsRepository(CRUDRepository):
             result = await self._collection.find_one_and_update(
                 {"_id": ObjectId(obj_id)}, {"$set": input_data}, projection={"_id": 0}, session=session
             )
-            if result:
-                LOG.debug(f"Successfully updated team with id {obj_id}")
-                return Ok(Team(id=obj_id, **result))
-            LOG.exception(f"No updated teams because team with id {obj_id} was not found")
-            return Err(TeamNotFoundError())
+            if not result:
+                LOG.exception(f"No updated teams because team with id {obj_id} was not found")
+                return Err(TeamNotFoundError())
+
+            LOG.debug(f"Successfully updated team with id {obj_id}")
+            return Ok(Team(id=obj_id, **result))
 
         except Exception as e:
             LOG.exception(f"Updating team with id {obj_id} failed due to err {e}")

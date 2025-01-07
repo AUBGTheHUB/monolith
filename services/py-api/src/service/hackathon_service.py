@@ -116,7 +116,7 @@ class HackathonService:
                 return result_team
 
             return Ok((result_admin, result_team))
-        # verify random participant
+        # verify random participant (the task of another issue)
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified

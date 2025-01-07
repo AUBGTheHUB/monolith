@@ -23,7 +23,7 @@ class ParticipantsRepository(CRUDRepository):
 
     async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
-            participant = await self._collection.find_one()
+            participant = await self._collection.find_one({"_id": ObjectId(obj_id)})
 
             if participant is None:
                 return Err(ParticipantNotFoundError())
@@ -45,11 +45,12 @@ class ParticipantsRepository(CRUDRepository):
             result = await self._collection.find_one_and_update(
                 {"_id": ObjectId(obj_id)}, {"$set": input_data}, projection={"_id": 0}, session=session
             )
-            if result:
-                LOG.debug(f"Successfully updated participant with id {obj_id}")
-                return Ok(Participant(id=obj_id, **result))
-            LOG.exception(f"No updated participants because participant with id {obj_id} was not found")
-            return Err(ParticipantNotFoundError())
+            if not result:
+                LOG.exception(f"No updated participants because participant with id {obj_id} was not found")
+                return Err(ParticipantNotFoundError())
+
+            LOG.debug(f"Successfully updated participant with id {obj_id}")
+            return Ok(Participant(id=obj_id, **result))
 
         except Exception as e:
             LOG.exception(f"Updating participant with id {obj_id} failed due to err {e}")
