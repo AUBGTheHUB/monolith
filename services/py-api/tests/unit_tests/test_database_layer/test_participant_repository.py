@@ -9,7 +9,7 @@ from result import Ok, Err
 from src.database.db_manager import PARTICIPANTS_COLLECTION
 from src.database.model.participant_model import Participant
 from src.database.repository.participants_repository import ParticipantsRepository
-from src.server.exception import DuplicateEmailError
+from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 
 
@@ -64,6 +64,62 @@ async def test_create_participant_general_exception(
     db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
     result = await repo.create(mock_input_data)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    # Check that the error message is the one in the Exception
+    assert str(result.err_value) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_delete_participant_success(
+    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        return_value={
+            "name": "testtest",
+            "email": "testtest@test.com",
+            "email_verified": False,
+            "is_admin": False,
+            "team_id": None,
+        }
+    )
+
+    result = await repo.delete(mock_obj_id)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.name == "testtest"
+    assert result.ok_value.email == "testtest@test.com"
+    assert result.ok_value.email_verified is False
+    assert result.ok_value.is_admin is False
+    assert result.ok_value.team_id is None
+
+
+@pytest.mark.asyncio
+async def test_delete_participant_not_found(
+    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+
+    # When the participant with the sepcified object id is not found find_one_and_delete returns None
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
+
+    result = await repo.delete(mock_obj_id)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_delete_participant_general_exception(
+    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+    # Simulate a general exception raised by insert_one
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(side_effect=Exception("Test error"))
+
+    result = await repo.delete(mock_obj_id)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
