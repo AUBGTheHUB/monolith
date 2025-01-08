@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 export default function HackAUBGSection() {
     return (
         <div className="flex flex-col justify-center">
-            <div className="w-[70%] flex mx-auto mb-[20px]">
+            <div className="w-[60%] flex mx-auto mb-[20px]">
                 <p className="font-mont text-[29px] font-semibold text-blue-950	">HackAUBG</p>
             </div>
-            <div className="flex flex-col items-center gap-5 w-[65%] mx-auto">
+            <div className="flex flex-col items-center gap-5 w-[60%] mx-auto">
                 <div className="flex justify-between  items-center w-full max-w-[1200px] gap-5">
                     <div className="flex-1 h-[240px] flex flex-col items-center justify-center border border-slate-300 box-border p-2.5 text-center rounded-3xl">
                         <p className=" font-mont text-[90px] font-semibold text-blue-700">52</p>
@@ -30,7 +30,7 @@ export default function HackAUBGSection() {
                 </div>
                 <div className="flex justify-between items-center w-full max-w-[1200px] gap-5 mb-[20px]">
                     <div className="flex-1 h-[240px] flex flex-col items-start justify-center border  rounded-3xl border-slate-300 box-border p-2.5">
-                        <div className=" w-[40%] font-mont font-semibold text-[19px] text-blue-950 mb-[40px] ml-[20px]">
+                        <div className=" w-[70%] font-mont font-semibold text-[19px] text-blue-950 mb-[40px] ml-[20px]">
                             <p>Guidance from current industry leaders</p>
                         </div>
                         <div className="flex flex-row  items-center ">
@@ -45,8 +45,8 @@ export default function HackAUBGSection() {
                                     <img src="../mentor.png" alt="" />
                                 </div>
                             </div>
-                            <div className="w-[60%] flex">
-                                <Button className="text-blue-700  " variant="outline_mono" size="round_sm">
+                            <div className="w-[60%] h-full flex items-end justify-center">
+                                <Button className="text-blue-700 w-fit" variant="outline_mono" size="round_sm">
                                     See all mentors
                                 </Button>
                             </div>
@@ -57,7 +57,7 @@ export default function HackAUBGSection() {
                             <p>Major prize pool</p>
                         </div>
 
-                        <div className="flex justify-center items-center items-baseline">
+                        <div className="flex justify-center  items-baseline">
                             <p className="font-mont text-[90px]  font-bold bg-gradient-to-r from-blue-700  to-teal-400 bg-clip-text text-transparent">
                                 6000
                             </p>
