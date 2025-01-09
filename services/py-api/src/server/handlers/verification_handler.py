@@ -47,4 +47,5 @@ class VerificationHandlers:
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the verification of Participant")
 
+        response.status_code = status.HTTP_200_OK
         return ParticipantVerifiedResponse(participant=result.ok_value[0], team=result.ok_value[1])
