@@ -22,8 +22,9 @@ class HackathonManagementHandlers:
                 return ErrResponse(error="Could not find the team with the specified id")
 
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return ErrResponse(error="An unexpected error occurred during the deletion of Participant")
+            return ErrResponse(error="An unexpected error occurred during the deletion of Team")
 
+        response.status_code = status.HTTP_200_OK
         return TeamDeletedResponse(team=result.ok_value)
 
     async def delete_participant(
@@ -40,4 +41,5 @@ class HackathonManagementHandlers:
             response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
             return ErrResponse(error="An unexpected error occurred during the deletion of Participant")
 
+        response.status_code = status.HTTP_200_OK
         return ParticipantDeletedResponse(participant=result.ok_value)
