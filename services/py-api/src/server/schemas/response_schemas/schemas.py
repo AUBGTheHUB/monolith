@@ -32,5 +32,27 @@ class ParticipantRegisteredResponse(BaseModel):
     def serialize_team(self, team: Team) -> Dict[str, Any] | None:
         if team:
             return team.dump_as_json()
-        
+
         return None
+
+
+class ParticipantDeletedResponse(BaseModel):
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    participant: Participant
+
+    @field_serializer("participant")
+    def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
+        return participant.dump_as_json()
+
+
+class TeamDeletedResponse(BaseModel):
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    team: Team
+
+    @field_serializer("team")
+    def serialize_team(self, team: Team) -> Dict[str, Any] | None:
+        return team.dump_as_json()
