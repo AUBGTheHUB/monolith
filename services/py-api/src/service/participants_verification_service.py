@@ -22,14 +22,3 @@ class ParticipantVerificationService:
             return Err(HackathonCapacityExceededError())
 
         return await self._hackathon_service.verify_admin_participant_and_team_in_transaction(jwt_data=jwt_data)
-
-    async def verify_random_participant(self, jwt_data: JwtUserData) -> Result[
-        Participant,
-        HackathonCapacityExceededError | Exception,
-    ]:
-        # Capacity Check 1
-        has_capacity = await self._hackathon_service.check_capacity_register_random_participant_case()
-        if not has_capacity:
-            return Err(HackathonCapacityExceededError())
-
-        return await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)

@@ -71,26 +71,13 @@ class HackathonService:
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
 
-    async def verify_random_participant(
-        self, jwt_data: JwtUserData
-    ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
-
-        # Updates the random participant if it exists
-        result = await self._participant_repo.update(jwt_data["sub"], {"email_verified": True})
-
-        if is_err(result):
-            return result
-
-        # As when first created, the random participant is not assigned to a team we return the team as None
-        return Ok((result.ok_value, None))
-
     async def verify_admin_participant_and_team_in_transaction(self, jwt_data: JwtUserData) -> Result[
         Tuple[Participant, Team],
         ParticipantNotFoundError | TeamNotFoundError | Exception,
     ]:
-        return await self._tx_manager.with_transaction(self.verify_admin_participant_and_team_callback, jwt_data)
+        return await self._tx_manager.with_transaction(self._verify_admin_participant_and_team_callback, jwt_data)
 
-    async def verify_admin_participant_and_team_callback(
+    async def _verify_admin_participant_and_team_callback(
         self,
         jwt_data: JwtUserData,
         session: Optional[AsyncIOMotorClientSession] = None,

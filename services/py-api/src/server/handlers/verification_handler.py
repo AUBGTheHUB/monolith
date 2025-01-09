@@ -1,4 +1,4 @@
-from result import is_err
+from result import Err, is_err
 from fastapi import Response
 from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError, TeamNotFoundError
 from src.service.participants_verification_service import ParticipantVerificationService
@@ -27,7 +27,8 @@ class VerificationHandlers:
             # Call for the admin participant case
             result = await self._service.verify_admin_participant(jwt_data=jwt_payload)
         else:
-            result = await self._service.verify_random_participant(jwt_data=jwt_payload)
+            # Call for the random participant case
+            result = Err(NotImplementedError())
 
         if is_err(result):
             # https://fastapi.tiangolo.com/advanced/response-change-status-code/
