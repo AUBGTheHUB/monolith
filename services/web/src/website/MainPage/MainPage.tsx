@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import IdentitySection from './AboutSection/components/IdentitySection.tsx';
 import PastEventSection from './AboutSection/components/PastEventSection.tsx';
-import HackAUBGSection from './HackAubgSection/HackAUBGSection.tsx';
+import HackAUBGSection from './HackAUBGSection/HackAUBGSection.tsx';
 
 export const MainPage = () => {
     return (
