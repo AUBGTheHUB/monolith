@@ -92,6 +92,7 @@ def hackathon_service_mock() -> Mock:
 
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
+    hackathon_service.check_team_capacity = AsyncMock()
 
     return hackathon_service
 
