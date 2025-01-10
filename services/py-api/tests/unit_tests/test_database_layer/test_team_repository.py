@@ -8,7 +8,7 @@ from result import Ok, Err
 
 from src.database.db_manager import TEAMS_COLLECTION
 from src.database.repository.teams_repository import TeamsRepository
-from src.server.exception import DuplicateTeamNameError
+from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.database.model.team_model import Team
 
@@ -61,6 +61,47 @@ async def test_create_team_general_exception(
     db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
     result = await repo.create(mock_input_data)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    # Check that the error message is the one in the Exception
+    assert str(result.err_value) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        return_value={"name": "testteam", "is_verified": False}
+    )
+
+    result = await repo.delete(mock_obj_id)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Team)
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.name == "testteam"
+    assert result.ok_value.is_verified is False
+
+
+@pytest.mark.asyncio
+async def test_delete_team_not_found(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+
+    # When the team with the sepcified object id is not found find_one_and_delete returns None
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
+
+    result = await repo.delete(mock_obj_id)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+    # Simulate a general exception raised by insert_one
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(side_effect=Exception("Test error"))
+
+    result = await repo.delete(mock_obj_id)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)

@@ -42,7 +42,7 @@ async def test_create_participant_admin_case_success(
     assert isinstance(result, ParticipantRegisteredResponse)
     assert result.participant.name == "Test User"
     assert result.team.name == "Test Team"
-    response_mock.status_code = status.HTTP_200_OK
+    assert response_mock.status_code == status.HTTP_201_CREATED
 
 
 @pytest.mark.asyncio
@@ -66,7 +66,7 @@ async def test_create_participant_admin_case_duplicate_email_error(
     # Assert the response indicates a conflict
     assert isinstance(result, ErrResponse)
     assert result.error == "Participant with this email already exists"
-    response_mock.status_code = status.HTTP_409_CONFLICT
+    assert response_mock.status_code == status.HTTP_409_CONFLICT
 
 
 @pytest.mark.asyncio
@@ -90,7 +90,7 @@ async def test_create_participant_admin_case_duplicate_team_name_error(
     # Assert the response indicates a conflict
     assert isinstance(result, ErrResponse)
     assert result.error == "Team with this name already exists"
-    response_mock.status_code = status.HTTP_409_CONFLICT
+    assert response_mock.status_code == status.HTTP_409_CONFLICT
 
 
 @pytest.mark.asyncio
@@ -112,7 +112,7 @@ async def test_create_participant_admin_case_general_error(
     # Assert the response indicates an internal server error
     assert isinstance(result, ErrResponse)
     assert result.error == "An unexpected error occurred during the creation of Participant"
-    response_mock.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert response_mock.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 @pytest.mark.asyncio
@@ -136,7 +136,8 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
     # Assert the response indicates a conflict with capacity reached
     assert isinstance(result, ErrResponse)
     assert result.error == "Max hackathon capacity has been reached"
-    response_mock.status_code = status.HTTP_409_CONFLICT
+    assert response_mock.status_code == status.HTTP_409_CONFLICT
+
 
 @pytest.mark.asyncio
 async def test_create_participant_random_case_success(
@@ -149,7 +150,7 @@ async def test_create_participant_random_case_success(
     # Mock the result from `register_random_participant`
     participant_registration_service_mock.register_random_participant.return_value = Ok(
         (
-            Participant(name="Test User", email="test@example.com", is_admin=False, team_id=None), 
+            Participant(name="Test User", email="test@example.com", is_admin=False, team_id=None),
             None,
         )
     )
@@ -163,7 +164,8 @@ async def test_create_participant_random_case_success(
     # Assert that the response is successful
     assert isinstance(result, ParticipantRegisteredResponse)
     assert result.participant.name == "Test User"
-    response_mock.status_code = status.HTTP_200_OK
+    assert response_mock.status_code == status.HTTP_201_CREATED
+
 
 @pytest.mark.asyncio
 async def test_create_participant_random_case_duplicate_email_error(
@@ -186,7 +188,8 @@ async def test_create_participant_random_case_duplicate_email_error(
     # Assert the response indicates a conflict
     assert isinstance(result, ErrResponse)
     assert result.error == "Participant with this email already exists"
-    response_mock.status_code = status.HTTP_409_CONFLICT
+    assert response_mock.status_code == status.HTTP_409_CONFLICT
+
 
 @pytest.mark.asyncio
 async def test_create_participant_random_case_general_error(
@@ -207,7 +210,8 @@ async def test_create_participant_random_case_general_error(
     # Assert the response indicates an internal server error
     assert isinstance(result, ErrResponse)
     assert result.error == "An unexpected error occurred during the creation of Participant"
-    response_mock.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert response_mock.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+
 
 @pytest.mark.asyncio
 async def test_create_participant_random_case_capacity_exceeded_error(
