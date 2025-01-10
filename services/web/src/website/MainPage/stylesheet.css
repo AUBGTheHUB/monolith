@@ -2,36 +2,3 @@
     min-width: 100vw;
     min-height: 100vh;
 }
-
-.logo {
-    max-height: 70px;
-    margin: 12px auto;
-}
-
-.nav-text-item {
-    padding: 12px 10px;
-}
-
-.nav-text-item a {
-    color: #fff;
-    text-align: center;
-}
-
-.nav-bar {
-    width: 100%;
-    background-color: rgb(7, 6, 77);
-    margin-bottom: 20px;
-    min-height: 30px;
-}
-
-.nav-section-right {
-    width: 50%;
-}
-
-.nav-section-left {
-    width: 50%;
-}
-
-.nav-items {
-    margin: 0 auto;
-}
