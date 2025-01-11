@@ -1,8 +1,10 @@
+import datetime
 from os import environ
 from typing import Any, Callable, Dict
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
+from src.utils import JwtUtility
 from tests.integration_tests.conftest import PARTICIPANT_ENDPOINT_URL
 
 
@@ -209,3 +211,43 @@ async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient,
 
     assert result.status_code == 404
     assert result.json()["error"] == "Could not find the participant with the specified id"
+
+@pytest.mark.asyncio
+async def test_create_invite_link_participant(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+    
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="Best team")
+    
+    payload = {
+    "sub": "test_sub",
+    "is_admin": False,
+    "team_name": "Best team",
+    "team_id": "677d889407501b15293addc5",
+    "is_invite": True,
+    "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
+    }
+
+    jwt_token = JwtUtility.encode_data(data=payload)
+    
+    # Log the request body and token for debugging
+    print("Generated participant request body:", link_participant_body)
+    print("Using JWT Token:", jwt_token)
+    
+    # Call the fixture to create the participant, passing both the participant body and JWT token
+    resp = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    
+    # Log the response body to understand why it failed
+    print("Response Body:", resp.text)  # Corrected: 'resp.text' instead of 'await resp.text()'
+
+    # Assert the response status
+    assert resp.status_code == 201, f"Expected 201, got {resp.status_code}"
+    
+    resp_json = resp.json()
+
+    # Assert the participant properties
+    assert resp_json["participant"]["name"] == "testtest"
+    assert resp_json["participant"]["email"] == "testtest@test.com"
+    assert resp_json["participant"]["is_admin"] is False
+    assert resp_json["participant"]["email_verified"] is True
