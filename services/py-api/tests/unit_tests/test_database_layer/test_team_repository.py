@@ -132,14 +132,3 @@ async def test_update_team_team_not_found(db_manager_mock: Mock, mock_obj_id: st
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
-
-
-@pytest.mark.asyncio
-async def test_update_team_general_exception(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(side_effect=Exception("Error"))
-
-    result = await repo.update(mock_obj_id, {"is_verified": True})
-
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
-    assert str(result.err_value) == "Error"

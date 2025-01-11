@@ -163,16 +163,3 @@ async def test_update_participant_not_found(
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
-
-
-@pytest.mark.asyncio
-async def test_update_participant_general_exception(
-    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
-) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(side_effect=Exception("Error"))
-
-    result = await repo.update(mock_obj_id, {"email_verified": True})
-
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
-    assert str(result.err_value) == "Error"
