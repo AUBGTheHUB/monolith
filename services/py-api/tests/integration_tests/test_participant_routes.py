@@ -218,36 +218,34 @@ async def test_create_invite_link_participant(
     generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
     
-    link_participant_body = generate_participant_request_body(is_admin=False, team_name="Best team")
+    admin_participant_body = generate_participant_request_body(
+        is_admin=True, team_name="testteam", email="testadmin@test.com"
+    )
+    resp_admin = await create_test_participant(participant_body=admin_participant_body)
+    assert resp_admin.status_code == 201
+
+    resp_admin_json = resp_admin.json()
+    
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="testteam")
     
     payload = {
-    "sub": "test_sub",
+    "sub": resp_admin_json["participant"]["team_id"],
     "is_admin": False,
-    "team_name": "Best team",
-    "team_id": "677d889407501b15293addc5",
+    "team_name": "testteam",
+    "team_id": resp_admin_json["team"]["id"],
     "is_invite": True,
     "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
     }
 
     jwt_token = JwtUtility.encode_data(data=payload)
     
-    # Log the request body and token for debugging
-    print("Generated participant request body:", link_participant_body)
-    print("Using JWT Token:", jwt_token)
-    
-    # Call the fixture to create the participant, passing both the participant body and JWT token
-    resp = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
-    
-    # Log the response body to understand why it failed
-    print("Response Body:", resp.text)  # Corrected: 'resp.text' instead of 'await resp.text()'
+    resp_link = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
 
-    # Assert the response status
-    assert resp.status_code == 201, f"Expected 201, got {resp.status_code}"
+    assert resp_link.status_code == 201
     
-    resp_json = resp.json()
+    resp_link_json = resp_link.json()
 
-    # Assert the participant properties
-    assert resp_json["participant"]["name"] == "testtest"
-    assert resp_json["participant"]["email"] == "testtest@test.com"
-    assert resp_json["participant"]["is_admin"] is False
-    assert resp_json["participant"]["email_verified"] is True
+    assert resp_link_json["participant"]["name"] == "testtest"
+    assert resp_link_json["participant"]["email"] == "testtest@test.com"
+    assert resp_link_json["participant"]["is_admin"] is False
+    assert resp_link_json["participant"]["email_verified"] is True
