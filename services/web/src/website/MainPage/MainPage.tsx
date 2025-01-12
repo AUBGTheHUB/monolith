@@ -12,9 +12,7 @@ export const MainPage = () => {
                     <PastEventSection />
                 </div>
             </div>
-            <div className="flex flex-col">
-                <Footer />
-            </div>
+            <Footer />
         </Fragment>
     );
 };
