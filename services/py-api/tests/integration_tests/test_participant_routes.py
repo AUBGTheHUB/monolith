@@ -249,3 +249,7 @@ async def test_create_invite_link_participant(
     assert resp_link_json["participant"]["email"] == "testtest@test.com"
     assert resp_link_json["participant"]["is_admin"] is False
     assert resp_link_json["participant"]["email_verified"] is True
+    assert resp_link_json["participant"]["team_id"] == resp_admin_json["participant"]["team_id"]
+    assert resp_link_json["participant"]["team_id"] == resp_admin_json["team"]["id"]
+    assert "created_at" in resp_link_json["participant"]
+    assert "updated_at" in resp_link_json["participant"]
