@@ -1,13 +1,13 @@
-.events{
+.team {
   max-width: 70rem;
   margin: auto;
   --slide-height: 19rem;
-  --slide-spacing: 1rem;
+  --slide-spacing: 0;
   --slide-size: 100%;
-  --slide-spacing-sm: 1.6rem;
+  --slide-spacing-sm: 0;
   --slide-size-sm: 50%;
-  --slide-spacing-lg: 2rem;
-  --slide-size-lg: calc(100% / 3);
+  --slide-spacing-lg: 0;
+  --slide-size-lg: calc(100% / 4);
   --text-high-contrast-rgb-value: #213547;
   --text-body: #213547;
   --detail-medium-contrast: rgba(255, 255, 255, 0.87);
@@ -32,6 +32,10 @@
   padding-left: var(--slide-spacing);
 }
 
+.embla__slide__inner {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
 
 .embla__controls {
   display: flex;
