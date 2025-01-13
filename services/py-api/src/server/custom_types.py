@@ -24,6 +24,6 @@ type ParticipantRegistrationErrors = Union[
     Exception,
 ]
 
-type ParticipantParticipantRegistrationOkValue = Tuple[Participant, Team]
+type ParticipantRegistrationOkValue = Tuple[Participant, Team | None]
 
-type DispatchResult = Awaitable[Result[ParticipantParticipantRegistrationOkValue, ParticipantRegistrationErrors]]
+type DispatchResult = Awaitable[Result[ParticipantRegistrationOkValue, ParticipantRegistrationErrors]]
