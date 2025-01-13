@@ -9,10 +9,11 @@ from result import Err
 from starlette.responses import Response
 
 from src.database.db_manager import DatabaseManager
+from src.database.model.participant_model import Participant
+from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 
@@ -118,13 +119,41 @@ def participant_registration_service_mock() -> Mock:
     return p_reg_service
 
 
-@pytest.fixture
-def mock_input_data() -> ParticipantRequestBody:
-    return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=True)
+# @pytest.fixture
+# def mock_input_data() -> ParticipantRequestBody:
+#     return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=True)
+#
+# @pytest.fixture
+# def mock_input_data_random_case() -> RandomParticipantRequestBody:
+#     return RandomParticipantRequestBody(type="random",name="Test User", email="test@example.com")
+
 
 @pytest.fixture
-def mock_input_data_random() -> ParticipantRequestBody:
-    return ParticipantRequestBody(name="Test User", email="test@example.com", team_id=None, is_admin=False)
+def mock_obj_id() -> str:
+    return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def mock_normal_team() -> Team:
+    return Team(name="Test Team")
+
+
+@pytest.fixture
+def mock_admin_participant(mock_normal_team: Team) -> Participant:
+    return Participant(name="Test", email="test@example.com", is_admin=True, team_id=mock_normal_team.id)
+
+
+@pytest.fixture
+def mock_invite_participant(mock_normal_team: Team) -> Participant:
+    return Participant(
+        name="Test", email="test@example.com", is_admin=False, email_verified=True, team_id=mock_normal_team.id
+    )
+
+
+@pytest.fixture
+def mock_random_participant() -> Participant:
+    return Participant(name="Test", email="test@example.com", is_admin=False, team_id=None)
+
 
 @pytest.fixture
 def response_mock() -> MagicMock:
