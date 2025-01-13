@@ -23,3 +23,9 @@ class TeamNotFoundError(Exception):
 
 class TeamCapacityExceededError(Exception):
     """Exception raised when team capacity has been reached"""
+
+
+class TeamNameMissmatchError(Exception):
+    """Exception raised when the ``team_name`` passed in the request body is different from the ``team_name`` in the
+    decoded JWT token, when a participant is registering via an invitation link.
+    """

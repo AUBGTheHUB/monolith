@@ -17,8 +17,7 @@ from src.server.exception import (
     TeamNotFoundError,
 )
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
-from src.database.model.base_model import SerializableObjectId
+from src.server.schemas.request_schemas.schemas import ParticipantRequestBody, RandomParticipantRequestBody
 
 
 class HackathonService:
@@ -41,11 +40,20 @@ class HackathonService:
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
         function.
         """
-        team = await self._team_repo.create(input_data, session)
+
+        team = await self._team_repo.create(Team(name=input_data.team_name), session)
         if is_err(team):
             return team
 
-        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        participant = await self._participant_repo.create(
+            Participant(
+                name=input_data.name,
+                email=str(input_data.email),
+                is_admin=input_data.is_admin,
+                team_id=team.ok_value.id,
+            ),
+            session,
+        )
         if is_err(participant):
             return participant
 
@@ -57,16 +65,23 @@ class HackathonService:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
         any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
         fails, and no permanent changes are made to the database."""
+        if input_data.team_name is None:
+            raise TypeError(
+                "input_data.team_name must not be None when this method is called! We expect that checks"
+                "have been made on an upper level, before this method has been called."
+            )
+
         return await self._tx_manager.with_transaction(
             self._create_participant_and_team_in_transaction_callback, input_data
         )
 
     async def create_random_participant(
-        self, input_data: ParticipantRequestBody
+        self, input_data: RandomParticipantRequestBody
     ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
 
-        result = await self._participant_repo.create(input_data)
-
+        result = await self._participant_repo.create(
+            Participant(name=input_data.name, email=str(input_data.email), is_admin=False, team_id=None)
+        )
         if is_err(result):
             return result
 
@@ -76,13 +91,13 @@ class HackathonService:
     async def create_invite_link_participant(
         self, input_data: ParticipantRequestBody, decoded_jwt_token: JwtUserData
     ) -> Result[
-        Tuple[Participant, None], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
+        Tuple[Participant, Team], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
     ]:
 
         # Check if team still exists - Returns an error when it doesn't
-        result = await self._team_repo.fetch_by_team_name(input_data.team_name)  # type: ignore
-        if is_err(result):
-            return result
+        team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
+        if is_err(team_result):
+            return team_result
 
         # Check Team Capacity
         has_capacity = await self.check_team_capacity(decoded_jwt_token["team_id"])
@@ -90,14 +105,19 @@ class HackathonService:
             return Err(TeamCapacityExceededError())
 
         participant_result = await self._participant_repo.create(
-            input_data, team_id=SerializableObjectId(decoded_jwt_token["team_id"]), email_verified=True
+            Participant(
+                name=input_data.name,
+                email=str(input_data.email),
+                is_admin=input_data.is_admin,
+                team_id=decoded_jwt_token["team_id"],
+                email_verified=True,
+            )
         )
-
         if is_err(participant_result):
             return participant_result
 
         # Return the new participant
-        return Ok((participant_result.ok_value, None))
+        return Ok((participant_result.ok_value, team_result.ok_value))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
