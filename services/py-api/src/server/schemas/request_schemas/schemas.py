@@ -30,5 +30,10 @@ class ParticipantRequestBody(BaseModel):
     email: EmailStr
 
 
+# TODO: Finish implementing the model below
 class UpdateParticipantParams(BaseModel):
-    email: Optional[str] = ""
+    name: Optional[str]
+    email: Optional[EmailStr]
+    email_verified: Optional[bool]
+    is_admin: Optional[bool]
+    team_name: Optional[str]

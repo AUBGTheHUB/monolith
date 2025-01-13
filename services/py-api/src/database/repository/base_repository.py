@@ -49,7 +49,7 @@ class CRUDRepository[T: BaseDbModel](ABC):
     async def update(
         self,
         obj_id: str,
-        obj: BaseModel,
+        obj_fields: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[T, Exception]:
         raise NotImplementedError()
