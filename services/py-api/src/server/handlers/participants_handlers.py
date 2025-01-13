@@ -34,21 +34,21 @@ class ParticipantHandlers(BaseHandler):
         jwt_token: str | None = None,
     ) -> Response:
 
-        if isinstance(input_data, AdminParticipantRequestBody):
-            result = await self._service.register_admin_participant(input_data)
+        if isinstance(input_data.registration_info, AdminParticipantRequestBody):
+            result = await self._service.register_admin_participant(input_data.registration_info)
 
-        elif isinstance(input_data, InviteLinkParticipantRequestBody) and jwt_token is not None:
-            result = await self._service.register_invite_link_participant(input_data, jwt_token)
+        elif isinstance(input_data.registration_info, InviteLinkParticipantRequestBody) and jwt_token is not None:
+            result = await self._service.register_invite_link_participant(input_data.registration_info, jwt_token)
 
         # To provide a better DX for the Frontend.
-        elif isinstance(input_data, InviteLinkParticipantRequestBody) and jwt_token is None:
+        elif isinstance(input_data.registration_info, InviteLinkParticipantRequestBody) and jwt_token is None:
             return Response(
                 ErrResponse(error="When `type` is 'invite_link' jwt_token is expected as a query param."),
                 status_code=status.HTTP_409_CONFLICT,
             )
 
         else:
-            result = await self._service.register_random_participant(input_data)
+            result = await self._service.register_random_participant(input_data.registration_info)
 
         if is_err(result):
             return self.handle_error(err=result.err_value)
