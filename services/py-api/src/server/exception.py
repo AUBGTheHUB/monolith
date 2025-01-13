@@ -1,6 +1,6 @@
 from abc import ABC
-from typing import Dict, Tuple, Type
-
+from typing import Any, Dict, Tuple, Type
+from starlette import status
 from pymongo.errors import DuplicateKeyError
 
 ERROR_MAPPING: Dict[Type[BaseException], Tuple[str, int]] = {}
@@ -14,7 +14,7 @@ class CustomError(ABC, BaseException):
     message: str
     status_code: int
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls, **kwargs: Any) -> None:
         super().__init_subclass__(**kwargs)
 
         # Add to the error mapping
@@ -23,40 +23,40 @@ class CustomError(ABC, BaseException):
 
 class DuplicateEmailError(CustomError, DuplicateKeyError):
     message = "Participant with this email already exists"
-    status_code = 409
+    status_code = status.HTTP_409_CONFLICT
 
 
 class DuplicateTeamNameError(CustomError, DuplicateKeyError):
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "Team with this name already exists"
+    status_code = status.HTTP_409_CONFLICT
 
 
 class HackathonCapacityExceededError(CustomError):
     """Exception raised when hackathon capacity has been reached."""
 
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "Max hackathon capacity has been reached"
+    status_code = status.HTTP_409_CONFLICT
 
 
 class ParticipantNotFoundError(CustomError):
     """Exception raised when there are no participants that match the query to the database"""
 
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "The specified participant was not found"
+    status_code = status.HTTP_404_NOT_FOUND
 
 
 class TeamNotFoundError(CustomError):
     """Exception raised when there are no teams that match the query to the database"""
 
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "The specified team was not found"
+    status_code = status.HTTP_404_NOT_FOUND
 
 
 class TeamCapacityExceededError(CustomError):
     """Exception raised when team capacity has been reached"""
 
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "Max team capacity has been reached"
+    status_code = status.HTTP_409_CONFLICT
 
 
 class TeamNameMissmatchError(CustomError):
@@ -64,25 +64,12 @@ class TeamNameMissmatchError(CustomError):
     decoded JWT token, when a participant is registering via an invitation link.
     """
 
-    message = "Participant with this email already exists"
-    status_code = 409
+    message = "team_name passed in the request body is different from the team_name in the" "decoded JWT token"
+    status_code = status.HTTP_400_BAD_REQUEST
 
 
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
-    message = "Participant with this email already exists"
-    status_code = 409
-
-
-# ERROR_MAPPING = {
-#     DuplicateEmailError: ("", status.HTTP_409_CONFLICT),
-#     DuplicateTeamNameError: ("Team with this name already exists", status.HTTP_409_CONFLICT),
-#     HackathonCapacityExceededError: ("Max hackathon capacity has been reached", status.HTTP_409_CONFLICT),
-#     TeamCapacityExceededError: ("Max team capacity has been reached", status.HTTP_409_CONFLICT),
-#     TeamNotFoundError: ("The specified team was not found", status.HTTP_404_NOT_FOUND),
-#     TeamNameMissmatchError: (
-#         "team_name passed in the request body is different from the team_name in the" "decoded JWT token",
-#         status.HTTP_400_BAD_REQUEST,
-#     ),
-# }
+    message = "The decoded token does not match the Jwt schema"
+    status_code = status.HTTP_400_BAD_REQUEST
