@@ -7,7 +7,10 @@ export const Footer = () => {
     return (
         <div className="relative flex flex-col">
             <div className="overflow-hidden relative flex w-full h-full bg-gradient-to-t to-[#0B2340] from-[#0a1320] justify-center py-20 flex-wrap z-10">
-                <img src="/footer/footer_blob.svg" className="absolute blur-[12.5rem] h-[35rem] top-[-20rem] right-0" />
+                <img
+                    src="/footer/footer_blob.svg"
+                    className="absolute blur-[12.5rem] h-[852px] top-[-35rem] right-[15rem] opacity-40 rotate-45"
+                />
                 <div className="flex flex-wrap lg:flex-nowrap w-[60%] z-10">
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
