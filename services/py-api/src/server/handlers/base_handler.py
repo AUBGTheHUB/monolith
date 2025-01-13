@@ -1,17 +1,18 @@
 from abc import ABC
 
-from src.server.custom_types import ERROR_MAPPING
+from src.server.exception import ERROR_MAPPING
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from starlette import status
 
 
-class BaseHandler(ABC): 
-    def handle_error(err: BaseException):
-        """Add all know custom errors that could occur during participant registration with a custom message and
-        If any new Custom errors regarding the participant registration are introduced, update the
-        ParticipantRegistrationErrors type alias"""
-
+class BaseHandler(ABC):
+    @staticmethod
+    def handle_error(err: BaseException) -> Response:
+        """
+        Accepts an Exception (custom or not) and returns an appropriate response with error message and status code
+        """
         # Check if the error is a known type
+        print(ERROR_MAPPING)
         for error_type, (message, code) in ERROR_MAPPING.items():
             if isinstance(err, error_type):
                 return Response(ErrResponse(error=message), status_code=code)

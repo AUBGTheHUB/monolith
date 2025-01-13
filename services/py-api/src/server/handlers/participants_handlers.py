@@ -10,7 +10,6 @@
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from starlette import status
-from src.server.custom_types import ParticipantRegistrationErrors
 from src.server.schemas.request_schemas.schemas import (
     ParticipantRequestBody,
     AdminParticipantRequestBody,
@@ -41,14 +40,15 @@ class ParticipantHandlers(BaseHandler):
                 ErrResponse(error="When `type` is 'invite_link' jwt_token is expected as a query param."),
                 status_code=status.HTTP_409_CONFLICT,
             )
-            
+
         if isinstance(input_data, AdminParticipantRequestBody):
             result = await self._service.register_admin_participant(input_data)
 
         elif isinstance(input_data, InviteLinkParticipantRequestBody) and jwt_token is not None:
             result = await self._service.register_invite_link_participant(input_data, jwt_token)
 
-        result = await self._service.register_random_participant(input_data)
+        else:
+            result = await self._service.register_random_participant(input_data)
 
         if is_err(result):
             return self.handle_error(err=result.err_value)
