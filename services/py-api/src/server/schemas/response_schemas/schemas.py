@@ -30,6 +30,7 @@ class Response(JSONResponse):
             media_type=media_type,
             background=background,
         )
+        self.response_model = response_model
 
 
 class ErrResponse(BaseModel):

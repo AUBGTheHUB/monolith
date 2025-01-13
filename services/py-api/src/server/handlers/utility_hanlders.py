@@ -1,8 +1,8 @@
-from fastapi import Response, status
+from starlette import status
 
 from src.database.db_manager import DB_MANAGER
 from src.server.handlers.base_handler import BaseHandler
-from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse
+from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse, Response
 
 
 class UtilityHandlers(BaseHandler):

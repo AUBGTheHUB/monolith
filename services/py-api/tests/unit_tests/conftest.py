@@ -6,7 +6,6 @@ from unittest.mock import Mock, MagicMock, AsyncMock
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err
-from starlette.responses import Response
 
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
@@ -153,12 +152,6 @@ def mock_invite_participant(mock_normal_team: Team) -> Participant:
 @pytest.fixture
 def mock_random_participant() -> Participant:
     return Participant(name="Test", email="test@example.com", is_admin=False, team_id=None)
-
-
-@pytest.fixture
-def response_mock() -> MagicMock:
-    # We use MagicMock as Response has magic methods such as __call__
-    return MagicMock(spec=Response)
 
 
 @pytest.fixture
