@@ -17,7 +17,11 @@ from src.server.exception import (
     TeamNotFoundError,
 )
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody, RandomParticipantRequestBody
+from src.server.schemas.request_schemas.schemas import (
+    RandomParticipantRequestBody,
+    AdminParticipantRequestBody,
+    InviteLinkParticipantRequestBody,
+)
 
 
 class HackathonService:
@@ -34,7 +38,7 @@ class HackathonService:
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction_callback(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self, input_data: AdminParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
@@ -60,16 +64,11 @@ class HackathonService:
         return Ok((participant.ok_value, team.ok_value))
 
     async def create_participant_and_team_in_transaction(
-        self, input_data: ParticipantRequestBody
+        self, input_data: AdminParticipantRequestBody
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
         any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
         fails, and no permanent changes are made to the database."""
-        if input_data.team_name is None:
-            raise TypeError(
-                "input_data.team_name must not be None when this method is called! We expect that checks"
-                "have been made on an upper level, before this method has been called."
-            )
 
         return await self._tx_manager.with_transaction(
             self._create_participant_and_team_in_transaction_callback, input_data
@@ -89,7 +88,7 @@ class HackathonService:
         return Ok((result.ok_value, None))
 
     async def create_invite_link_participant(
-        self, input_data: ParticipantRequestBody, decoded_jwt_token: JwtUserData
+        self, input_data: InviteLinkParticipantRequestBody, decoded_jwt_token: JwtUserData
     ) -> Result[
         Tuple[Participant, Team], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
     ]:
