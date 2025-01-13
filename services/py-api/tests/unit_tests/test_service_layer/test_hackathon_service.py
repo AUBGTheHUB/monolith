@@ -6,7 +6,10 @@ from result import Ok, Err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.exception import DuplicateTeamNameError, DuplicateEmailError
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.server.schemas.request_schemas.schemas import (
+    AdminParticipantInputData,
+    RandomParticipantInputData,
+)
 from src.service.hackathon_service import HackathonService
 
 
@@ -18,17 +21,17 @@ def hackathon_service(participant_repo_mock: Mock, team_repo_mock: Mock, tx_mana
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction(
     hackathon_service: HackathonService,
-    mock_input_data: ParticipantRequestBody,
+    mock_admin_case_input_data: AdminParticipantInputData,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
     tx_manager_mock: Mock,
 ) -> None:
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
-    team_repo_mock.create.return_value = Team(name=mock_input_data.team_name)
+    team_repo_mock.create.return_value = Team(name=mock_admin_case_input_data.team_name)
     participant_repo_mock.create.return_value = Participant(
-        name=mock_input_data.name,
-        email=mock_input_data.email,
+        name=mock_admin_case_input_data.name,
+        email=mock_admin_case_input_data.email,
         is_admin=True,
         team_id=team_repo_mock.create.return_value.id,
     )
@@ -38,7 +41,7 @@ async def test_create_participant_and_team_in_transaction(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
     )
 
-    result = await hackathon_service.create_participant_and_team_in_transaction(mock_input_data)
+    result = await hackathon_service.create_participant_and_team_in_transaction(mock_admin_case_input_data)
 
     # Check that the result is an `Ok` containing both the participant and team objects
     assert isinstance(result, Ok)
@@ -49,44 +52,44 @@ async def test_create_participant_and_team_in_transaction(
 
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction_duplicate_team_name_err(
-    hackathon_service: HackathonService, mock_input_data: ParticipantRequestBody, tx_manager_mock: Mock
+    hackathon_service: HackathonService, mock_admin_case_input_data: AdminParticipantInputData, tx_manager_mock: Mock
 ) -> None:
     # Mock an `Err` for duplicate team name returned from the passed callback to with_transaction. with_transaction
     # returns what the passed callback returns.
-    tx_manager_mock.with_transaction.return_value = Err(DuplicateTeamNameError(mock_input_data.team_name))
+    tx_manager_mock.with_transaction.return_value = Err(DuplicateTeamNameError(mock_admin_case_input_data.team_name))
 
-    result = await hackathon_service.create_participant_and_team_in_transaction(mock_input_data)
+    result = await hackathon_service.create_participant_and_team_in_transaction(mock_admin_case_input_data)
 
     # Check that the result is an `Err` with `DuplicateTeamNameError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
-    assert str(result.err_value) == mock_input_data.team_name
+    assert str(result.err_value) == mock_admin_case_input_data.team_name
 
 
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction_duplicate_email_err(
-    hackathon_service: HackathonService, mock_input_data: ParticipantRequestBody, tx_manager_mock: Mock
+    hackathon_service: HackathonService, mock_admin_case_input_data: AdminParticipantInputData, tx_manager_mock: Mock
 ) -> None:
     # Mock an `Err` for duplicate email returned from the passed callback to with_transaction. with_transaction
     # returns what the passed callback returns.
-    tx_manager_mock.with_transaction.return_value = Err(DuplicateEmailError(mock_input_data.email))
+    tx_manager_mock.with_transaction.return_value = Err(DuplicateEmailError(mock_admin_case_input_data.email))
 
-    result = await hackathon_service.create_participant_and_team_in_transaction(mock_input_data)
+    result = await hackathon_service.create_participant_and_team_in_transaction(mock_admin_case_input_data)
 
     # Check that the result is an `Err` with `DuplicateEmailError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
-    assert str(result.err_value) == mock_input_data.email
+    assert str(result.err_value) == mock_admin_case_input_data.email
 
 
 @pytest.mark.asyncio
 async def test_register_admin_participant_general_exception(
-    hackathon_service: HackathonService, mock_input_data: ParticipantRequestBody, tx_manager_mock: Mock
+    hackathon_service: HackathonService, mock_admin_case_input_data: AdminParticipantInputData, tx_manager_mock: Mock
 ) -> None:
     # Mock `with_transaction` to raise a general exception
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
 
-    result = await hackathon_service.create_participant_and_team_in_transaction(mock_input_data)
+    result = await hackathon_service.create_participant_and_team_in_transaction(mock_admin_case_input_data)
 
     # Verify the result is an `Err` containing a general Exception
     assert isinstance(result, Err)
@@ -150,16 +153,17 @@ async def test_check_capacity_admin_case_with_exceeded_capacity(
     # Assert the result is False (capacity exceeded)
     assert result is False
 
+
 @pytest.mark.asyncio
 async def test_create_random_participant(
     hackathon_service: HackathonService,
-    mock_input_data_random: ParticipantRequestBody,
+    mock_random_case_input_data: RandomParticipantInputData,
     participant_repo_mock: Mock,
 ) -> None:
     # Mock successful `create` response for random participant.
     participant_repo_mock.create.return_value = Participant(
-        name=mock_input_data_random.name,
-        email=mock_input_data_random.email,
+        name=mock_random_case_input_data.name,
+        email=mock_random_case_input_data.email,
         is_admin=False,
         team_id=None,
     )
@@ -167,48 +171,51 @@ async def test_create_random_participant(
     # Return the `Ok` result from the mocked `create` method
     participant_repo_mock.create.return_value = Ok(participant_repo_mock.create.return_value)
 
-    result = await hackathon_service.create_random_participant(mock_input_data_random)
+    result = await hackathon_service.create_random_participant(mock_random_case_input_data)
 
     # Validate that the result is an `Ok` instance containing the participant object
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value[0], Participant)  # Check the first element is a Participant
-    assert result.ok_value[0].name == mock_input_data_random.name
-    assert result.ok_value[0].email == mock_input_data_random.email
+    assert result.ok_value[0].name == mock_random_case_input_data.name
+    assert result.ok_value[0].email == mock_random_case_input_data.email
     assert not result.ok_value[0].is_admin  # Ensure it is not an admin
     assert result.ok_value[1] is None  # Ensure the second element is None
+
 
 @pytest.mark.asyncio
 async def test_create_random_participant_duplicate_email_err(
     hackathon_service: HackathonService,
-    mock_input_data_random: ParticipantRequestBody,
-    participant_repo_mock: Mock
+    mock_random_case_input_data: RandomParticipantInputData,
+    participant_repo_mock: Mock,
 ) -> None:
     # Mock the `create` method to simulate a duplicate email error
-    duplicate_email_error = DuplicateEmailError(mock_input_data_random.email)
+    duplicate_email_error = DuplicateEmailError(mock_random_case_input_data.email)
     participant_repo_mock.create.return_value = Err(duplicate_email_error)
 
-    result = await hackathon_service.create_random_participant(mock_input_data_random)
+    result = await hackathon_service.create_random_participant(mock_random_case_input_data)
 
     # Check that the result is an `Err` with `DuplicateEmailError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
-    assert str(result.err_value) == mock_input_data_random.email
+    assert str(result.err_value) == mock_random_case_input_data.email
+
 
 @pytest.mark.asyncio
 async def test_register_random_participant_general_exception(
     hackathon_service: HackathonService,
-    mock_input_data_random: ParticipantRequestBody,
-    participant_repo_mock: Mock
+    mock_random_case_input_data: RandomParticipantInputData,
+    participant_repo_mock: Mock,
 ) -> None:
     # Mock the `create` method to raise a general exception
     participant_repo_mock.create.return_value = Err(Exception("Test error"))
 
-    result = await hackathon_service.create_random_participant(mock_input_data_random)
+    result = await hackathon_service.create_random_participant(mock_random_case_input_data)
 
     # Verify the result is an `Err` containing a general Exception
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     assert str(result.err_value) == "Test error"
+
 
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_sufficient_capacity(
@@ -228,6 +235,7 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
     # Assert the result is True (enough capacity)
     assert result is True
 
+
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exact_limit(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -245,6 +253,7 @@ async def test_check_capacity_random_case_with_exact_limit(
 
     # Assert the result is False (capacity exactly reached)
     assert result is True
+
 
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exceeded_capacity(
