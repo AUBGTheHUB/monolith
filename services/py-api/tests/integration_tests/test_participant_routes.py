@@ -253,3 +253,153 @@ async def test_create_invite_link_participant(
     assert resp_link_json["participant"]["team_id"] == resp_admin_json["team"]["id"]
     assert "created_at" in resp_link_json["participant"]
     assert "updated_at" in resp_link_json["participant"]
+
+@pytest.mark.asyncio
+async def test_create_invite_link_participant_expired_token(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+
+    admin_participant_body = generate_participant_request_body(
+        is_admin=True, team_name="testteam", email="testadmin@test.com"
+    )
+    resp_admin = await create_test_participant(participant_body=admin_participant_body)
+    assert resp_admin.status_code == 201
+
+    resp_admin_json = resp_admin.json()
+
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="testteam")
+
+    payload = {
+        "sub": resp_admin_json["participant"]["team_id"],
+        "is_admin": False,
+        "team_name": "testteam",
+        "team_id": resp_admin_json["team"]["id"],
+        "is_invite": True,
+        "exp": datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1),  # Expired token
+    }
+
+    jwt_token = JwtUtility.encode_data(data=payload)
+
+    resp_link = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    assert resp_link.status_code == 400
+
+    resp_link_json = resp_link.json()
+    assert resp_link_json["error"] == "The JWT token has expired."
+
+@pytest.mark.asyncio
+async def test_create_invite_link_participant_invalid_token(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="testteam")
+    invalid_token = "invalid.jwt.token"
+
+    resp_link = await create_test_participant(participant_body=link_participant_body, jwt_token=invalid_token)
+    assert resp_link.status_code == 400
+
+    resp_link_json = resp_link.json()
+    assert resp_link_json["error"] == "There was a a general error while decoding the JWT token. Checks its format again."
+
+@pytest.mark.asyncio
+async def test_create_invite_link_participant_incorrect_team_name(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+
+    admin_participant_body = generate_participant_request_body(
+        is_admin=True, team_name="testteam", email="testadmin@test.com"
+    )
+    resp_admin = await create_test_participant(participant_body=admin_participant_body)
+    assert resp_admin.status_code == 201
+
+    resp_admin_json = resp_admin.json()
+
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="wrongteam")
+
+    payload = {
+        "sub": "incorrect_team_id",
+        "is_admin": False,
+        "team_name": "testteam",
+        "team_id": resp_admin_json["team"]["id"],
+        "is_invite": True,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
+    }
+
+    jwt_token = JwtUtility.encode_data(data=payload)
+
+    resp_link = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    assert resp_link.status_code == 400
+
+    resp_link_json = resp_link.json()
+    assert resp_link_json["error"] == "There is an issue with the provided team name"
+
+@pytest.mark.asyncio
+async def test_create_invite_link_participant_missing_token_fields(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+
+    admin_participant_body = generate_participant_request_body(
+        is_admin=True, team_name="testteam", email="testadmin@test.com"
+    )
+    resp_admin = await create_test_participant(participant_body=admin_participant_body)
+    assert resp_admin.status_code == 201
+
+    resp_admin_json = resp_admin.json()
+
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="testteam")
+
+    payload = {
+        "is_admin": False,
+        # Missing "team_name", "team_id", etc.
+        "is_invite": True,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
+    }
+
+    jwt_token = JwtUtility.encode_data(data=payload)
+
+    resp_link = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    assert resp_link.status_code == 400
+
+    resp_link_json = resp_link.json()
+    assert resp_link_json["error"] == "The decoded token does not correspond with the provided schema."
+
+@pytest.mark.asyncio
+async def test_create_invite_link_duplicate_participant(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
+
+    admin_participant_body = generate_participant_request_body(
+        is_admin=True, team_name="testteam", email="testadmin@test.com"
+    )
+    resp_admin = await create_test_participant(participant_body=admin_participant_body)
+    assert resp_admin.status_code == 201
+
+    resp_admin_json = resp_admin.json()
+
+    link_participant_body = generate_participant_request_body(is_admin=False, team_name="testteam")
+
+    payload = {
+        "sub": resp_admin_json["participant"]["team_id"],
+        "is_admin": False,
+        "team_name": "testteam",
+        "team_id": resp_admin_json["team"]["id"],
+        "is_invite": True,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1),
+    }
+
+    jwt_token = JwtUtility.encode_data(data=payload)
+
+    # Create the participant
+    resp_link_1 = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    assert resp_link_1.status_code == 201
+
+    # Attempt to create the same participant again
+    resp_link_2 = await create_test_participant(participant_body=link_participant_body, jwt_token=jwt_token)
+    assert resp_link_2.status_code == 409
+
+    resp_link_2_json = resp_link_2.json()
+    assert resp_link_2_json["error"] == "Participant with this email already exists"
