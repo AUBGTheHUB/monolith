@@ -12,7 +12,6 @@ class BaseHandler(ABC):
         Accepts an Exception (custom or not) and returns an appropriate response with error message and status code
         """
         # Check if the error is a known type
-        print(ERROR_MAPPING)
         for error_type, (message, code) in ERROR_MAPPING.items():
             if isinstance(err, error_type):
                 return Response(ErrResponse(error=message), status_code=code)

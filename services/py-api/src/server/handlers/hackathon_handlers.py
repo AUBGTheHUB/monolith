@@ -10,9 +10,8 @@
 from result import is_err
 from starlette import status
 
-from src.server.exception import ParticipantNotFoundError, TeamNotFoundError
+from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import (
-    ErrResponse,
     ParticipantDeletedResponse,
     TeamDeletedResponse,
     Response,
@@ -20,43 +19,23 @@ from src.server.schemas.response_schemas.schemas import (
 from src.service.hackathon_service import HackathonService
 
 
-class HackathonManagementHandlers:
+class HackathonManagementHandlers(BaseHandler):
 
     def __init__(self, service: HackathonService) -> None:
         self._service = service
 
     async def delete_team(self, team_id: str) -> Response:
-
         result = await self._service.delete_team(team_id)
 
         if is_err(result):
-            if isinstance(result.err_value, TeamNotFoundError):
-                return Response(
-                    ErrResponse(error="Could not find the team with the specified id"),
-                    status_code=status.HTTP_404_NOT_FOUND,
-                )
-
-            return Response(
-                ErrResponse(error="An unexpected error occurred during the deletion of Participant"),
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+            return self.handle_error(result.err_value)
 
         return Response(TeamDeletedResponse(team=result.ok_value), status_code=status.HTTP_200_OK)
 
     async def delete_participant(self, participant_id: str) -> Response:
-
         result = await self._service.delete_participant(participant_id)
 
         if is_err(result):
-            if isinstance(result.err_value, ParticipantNotFoundError):
-                return Response(
-                    ErrResponse(error="Could not find the participant with the specified id"),
-                    status_code=status.HTTP_404_NOT_FOUND,
-                )
-
-            return Response(
-                ErrResponse(error="An unexpected error occurred during the deletion of Participant"),
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+            return self.handle_error(result.err_value)
 
         return Response(ParticipantDeletedResponse(participant=result.ok_value), status_code=status.HTTP_200_OK)
