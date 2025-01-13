@@ -1,6 +1,5 @@
 from pymongo.errors import DuplicateKeyError
 
-
 class DuplicateEmailError(DuplicateKeyError):
     pass
 
@@ -28,4 +27,8 @@ class TeamCapacityExceededError(Exception):
 class TeamNameMissmatchError(Exception):
     """Exception raised when the ``team_name`` passed in the request body is different from the ``team_name`` in the
     decoded JWT token, when a participant is registering via an invitation link.
+    """
+
+class JwtDecodeSchemaMismatch(Exception):
+    """Exception raised when the decoded token does not match the structure of the defined JWT schema
     """
