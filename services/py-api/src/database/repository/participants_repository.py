@@ -4,6 +4,7 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
+from src.server.schemas.request_schemas.schemas import UpdateParticipantParams
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
@@ -29,7 +30,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def update(
         self,
         obj_id: str,
-        participant: Participant,
+        participant: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, Err]:
         raise NotImplementedError()

@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 from typing import Optional, List
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pydantic import BaseModel
 from result import Result, Err
 
 from src.database.model.base_model import BaseDbModel
@@ -48,7 +49,7 @@ class CRUDRepository[T: BaseDbModel](ABC):
     async def update(
         self,
         obj_id: str,
-        obj: T,
+        obj: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[T, Exception]:
         raise NotImplementedError()

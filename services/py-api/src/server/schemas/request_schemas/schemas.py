@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Optional, Union
 from pydantic import EmailStr, BaseModel, Field
 
 
@@ -28,3 +28,7 @@ class ParticipantRequestBody(BaseModel):
     ] = Field(discriminator="registration_type")
     name: str
     email: EmailStr
+
+
+class UpdateParticipantParams(BaseModel):
+    email: Optional[str] = ""
