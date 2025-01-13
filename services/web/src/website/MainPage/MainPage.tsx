@@ -8,8 +8,11 @@ export const MainPage = () => {
             <div className="sm:w-3/5 w-11/12 mx-auto">
                 <IdentitySection />
                 <PastEventSection />
+            </div>
+            <div className="mt-40 bg-gradient-to-b from-[#031e4a] to-[#063075] py-10">
                 <MeetTheTeam />
             </div>
         </div>
     );
 };
+
