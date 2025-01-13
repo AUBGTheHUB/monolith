@@ -1,34 +1,30 @@
 from typing import Literal, Union
-from pydantic import EmailStr, BaseModel
+from pydantic import EmailStr, BaseModel, Field
 
 
 # https://fastapi.tiangolo.com/tutorial/body/
 # https://docs.pydantic.dev/latest/concepts/unions/#discriminated-unions
 
 
-class ParticipantBaseRequestBody(BaseModel):
-    name: str
-    email: EmailStr
-
-
-class AdminParticipantRequestBody(ParticipantBaseRequestBody):
-    type: Literal["admin"]
+class AdminParticipantRequestBody(BaseModel):
+    registration_type: Literal["admin"]
     is_admin: Literal[True]
     team_name: str
 
 
-class InviteLinkParticipantRequestBody(ParticipantBaseRequestBody):
-    type: Literal["invite_link"]
+class InviteLinkParticipantRequestBody(BaseModel):
+    registration_type: Literal["invite_link"]
     is_admin: Literal[False]
     team_name: str
 
 
-class RandomParticipantRequestBody(ParticipantBaseRequestBody):
-    type: Literal["random"]
+class RandomParticipantRequestBody(BaseModel):
+    registration_type: Literal["random"]
 
 
-ParticipantRequestBody = Union[
-    AdminParticipantRequestBody,
-    RandomParticipantRequestBody,
-    InviteLinkParticipantRequestBody,
-]
+class ParticipantRequestBody(BaseModel):
+    registration_info: Union[
+        AdminParticipantRequestBody, InviteLinkParticipantRequestBody, RandomParticipantRequestBody
+    ] = Field(discriminator="registration_type")
+    name: str
+    email: EmailStr

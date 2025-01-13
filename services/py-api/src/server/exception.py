@@ -15,6 +15,10 @@ class CustomError(ABC, BaseException):
     status_code: int
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
+        """
+        This method is called when a class is subclassed.
+        The default implementation does nothing. It may be overridden to extend subclasses.
+        """
         super().__init_subclass__(**kwargs)
 
         # Add to the error mapping
