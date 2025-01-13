@@ -1,6 +1,8 @@
 import os
 from unittest.mock import patch
+from jwt import ExpiredSignatureError, InvalidSignatureError
 from result import Err, Ok
+from src.server.exception import JwtDecodeSchemaMismatch
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from datetime import datetime, timedelta, timezone
 from src.utils import JwtUtility
@@ -52,8 +54,7 @@ def test_encode_failure_missing_keys() -> None:
 
     decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
     assert isinstance(decoded_data, Err)
-    assert isinstance(decoded_data.err_value, str)
-    assert decoded_data.err_value == "The decoded token does not correspond with the provided schema."
+    assert isinstance(decoded_data.err_value, JwtDecodeSchemaMismatch)
 
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
@@ -63,8 +64,7 @@ def test_encode_failure_additional_keys() -> None:
 
     decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
     assert isinstance(decoded_data, Err)
-    assert isinstance(decoded_data.err_value, str)
-    assert decoded_data.err_value == "The decoded token does not correspond with the provided schema."
+    assert isinstance(decoded_data.err_value, JwtDecodeSchemaMismatch)
 
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
@@ -74,8 +74,7 @@ def test_decode_failure_expired_token() -> None:
 
     decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
     assert isinstance(decoded_data, Err)
-    assert isinstance(decoded_data.err_value, str)
-    assert decoded_data.err_value == "The JWT token has expired."
+    assert isinstance(decoded_data.err_value, ExpiredSignatureError)
 
 
 def test_encode_decode_secret_key_mismatch() -> None:
@@ -88,5 +87,4 @@ def test_encode_decode_secret_key_mismatch() -> None:
     with patch.dict(os.environ, {"SECRET_KEY": "tsrqponmlkjihgfedcab"}):
         decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
         assert isinstance(decoded_data, Err)  # Ensure the result is an error object
-        assert isinstance(decoded_data.err_value, str)  # Error value is a string
-        assert decoded_data.err_value == "The JWT token has invalid signature."
+        assert isinstance(decoded_data.err_value, InvalidSignatureError)  # Error value is a string

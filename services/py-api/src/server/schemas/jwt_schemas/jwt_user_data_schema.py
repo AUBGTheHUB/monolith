@@ -18,4 +18,4 @@ class JwtUserData(BaseTypedDict):
     team_name: str
     team_id: str
     is_invite: bool
-    exp: int
+    exp: float

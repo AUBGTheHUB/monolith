@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Final, Optional, List
 
 from bson import ObjectId
@@ -102,7 +103,13 @@ class TeamsRepository(CRUDRepository[Team]):
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=team["_id"], **team))
+            # Make a deep copy of the team dictionary
+            team_copy = deepcopy(team)
+
+            # Rename `_id` to `id`
+            team_copy["id"] = str(team_copy.pop("_id"))
+
+            return Ok(Team(**team_copy))
 
         except Exception as e:
             LOG.exception(f"Failed to fetch team by name {team_name} due to err {e}")
