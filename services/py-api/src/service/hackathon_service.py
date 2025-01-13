@@ -18,9 +18,9 @@ from src.server.exception import (
 )
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import (
-    RandomParticipantRequestBody,
-    AdminParticipantRequestBody,
-    InviteLinkParticipantRequestBody,
+    RandomParticipantInputData,
+    AdminParticipantInputData,
+    InviteLinkParticipantInputData,
 )
 
 
@@ -38,7 +38,7 @@ class HackathonService:
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction_callback(
-        self, input_data: AdminParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
@@ -64,7 +64,7 @@ class HackathonService:
         return Ok((participant.ok_value, team.ok_value))
 
     async def create_participant_and_team_in_transaction(
-        self, input_data: AdminParticipantRequestBody
+        self, input_data: AdminParticipantInputData
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
         any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
@@ -75,7 +75,7 @@ class HackathonService:
         )
 
     async def create_random_participant(
-        self, input_data: RandomParticipantRequestBody
+        self, input_data: RandomParticipantInputData
     ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
 
         result = await self._participant_repo.create(
@@ -88,7 +88,7 @@ class HackathonService:
         return Ok((result.ok_value, None))
 
     async def create_invite_link_participant(
-        self, input_data: InviteLinkParticipantRequestBody, decoded_jwt_token: JwtUserData
+        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserData
     ) -> Result[
         Tuple[Participant, Team], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
     ]:

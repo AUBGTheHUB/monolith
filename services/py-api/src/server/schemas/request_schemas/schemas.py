@@ -14,26 +14,26 @@ class BaseParticipantData(BaseModel):
     email: EmailStr
 
 
-class AdminParticipantRequestBody(BaseParticipantData):
+class AdminParticipantInputData(BaseParticipantData):
     registration_type: Literal["admin"]
     is_admin: Literal[True]
     team_name: str
 
 
-class InviteLinkParticipantRequestBody(BaseParticipantData):
+class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
     team_name: str
 
 
-class RandomParticipantRequestBody(BaseParticipantData):
+class RandomParticipantInputData(BaseParticipantData):
     registration_type: Literal["random"]
 
 
 class ParticipantRequestBody(BaseModel):
-    registration_info: Union[
-        AdminParticipantRequestBody, InviteLinkParticipantRequestBody, RandomParticipantRequestBody
-    ] = Field(discriminator="registration_type")
+    registration_info: Union[AdminParticipantInputData, InviteLinkParticipantInputData, RandomParticipantInputData] = (
+        Field(discriminator="registration_type")
+    )
 
 
 # TODO: Finish implementing the model below

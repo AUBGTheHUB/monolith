@@ -13,9 +13,9 @@ from src.server.exception import (
 )
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import (
-    AdminParticipantRequestBody,
-    RandomParticipantRequestBody,
-    InviteLinkParticipantRequestBody,
+    AdminParticipantInputData,
+    RandomParticipantInputData,
+    InviteLinkParticipantInputData,
 )
 from src.service.hackathon_service import HackathonService
 from src.utils import JwtUtility
@@ -27,7 +27,7 @@ class ParticipantRegistrationService:
     def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
 
-    async def register_admin_participant(self, input_data: AdminParticipantRequestBody) -> Result[
+    async def register_admin_participant(self, input_data: AdminParticipantInputData) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
     ]:
@@ -39,7 +39,7 @@ class ParticipantRegistrationService:
         # Proceed with registration if there is capacity
         return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
 
-    async def register_random_participant(self, input_data: RandomParticipantRequestBody) -> Result[
+    async def register_random_participant(self, input_data: RandomParticipantInputData) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | HackathonCapacityExceededError | Exception,
     ]:
@@ -52,7 +52,7 @@ class ParticipantRegistrationService:
         return await self._hackathon_service.create_random_participant(input_data)
 
     async def register_invite_link_participant(
-        self, input_data: InviteLinkParticipantRequestBody, jwt_token: str
+        self, input_data: InviteLinkParticipantInputData, jwt_token: str
     ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,

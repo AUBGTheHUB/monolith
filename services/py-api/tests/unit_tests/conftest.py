@@ -14,9 +14,10 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.schemas.request_schemas.schemas import (
-    AdminParticipantRequestBody,
-    InviteLinkParticipantRequestBody,
-    RandomParticipantRequestBody,
+    AdminParticipantInputData,
+    InviteLinkParticipantInputData,
+    RandomParticipantInputData,
+    ParticipantRequestBody,
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
@@ -124,8 +125,45 @@ def participant_registration_service_mock() -> Mock:
 
 
 @pytest.fixture
-def mock_admin_case_input_data(mock_normal_team: Team) -> AdminParticipantRequestBody:
-    return AdminParticipantRequestBody(
+def mock_participant_request_admin_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=AdminParticipantInputData(
+            registration_type="admin",
+            name="Test User",
+            email="test@example.com",
+            is_admin=True,
+            team_name=mock_normal_team.name,
+        )
+    )
+
+
+@pytest.fixture
+def mock_participant_request_invite_link_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=InviteLinkParticipantInputData(
+            registration_type="invite_link",
+            name="Test User",
+            email="test@example.com",
+            is_admin=False,
+            team_name=mock_normal_team.name,
+        )
+    )
+
+
+@pytest.fixture
+def mock_participant_request_random_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=RandomParticipantInputData(
+            registration_type="random",
+            name="Test User",
+            email="test@example.com",
+        )
+    )
+
+
+@pytest.fixture
+def mock_admin_case_input_data(mock_normal_team: Team) -> AdminParticipantInputData:
+    return AdminParticipantInputData(
         registration_type="admin",
         name="Test User",
         email="test@example.com",
@@ -135,8 +173,8 @@ def mock_admin_case_input_data(mock_normal_team: Team) -> AdminParticipantReques
 
 
 @pytest.fixture
-def mock_invite_link_case_input_data(mock_normal_team: Team) -> InviteLinkParticipantRequestBody:
-    return InviteLinkParticipantRequestBody(
+def mock_invite_link_case_input_data(mock_normal_team: Team) -> InviteLinkParticipantInputData:
+    return InviteLinkParticipantInputData(
         registration_type="invite_link",
         name="Test User",
         email="test@example.com",
@@ -146,8 +184,8 @@ def mock_invite_link_case_input_data(mock_normal_team: Team) -> InviteLinkPartic
 
 
 @pytest.fixture
-def mock_random_input_data() -> RandomParticipantRequestBody:
-    return RandomParticipantRequestBody(registration_type="random", name="Test User", email="test@example.com")
+def mock_random_case_input_data() -> RandomParticipantInputData:
+    return RandomParticipantInputData(registration_type="random", name="Test User", email="test@example.com")
 
 
 @pytest.fixture

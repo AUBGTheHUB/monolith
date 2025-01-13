@@ -40,11 +40,11 @@ def _h_handler(
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
-    input_data: ParticipantRequestBody,
+    participant_request_body: ParticipantRequestBody,
     jwt_token: Union[str, None] = None,
     handler: ParticipantHandlers = Depends(_p_handler),
 ) -> Response:
-    return await handler.create_participant(input_data, jwt_token)
+    return await handler.create_participant(participant_request_body, jwt_token)
 
 
 @participants_router.delete(
