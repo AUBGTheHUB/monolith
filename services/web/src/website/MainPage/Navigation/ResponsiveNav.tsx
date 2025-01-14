@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DesktopNavComponent from './DesktopNavComponent.tsx';
-import MobileNavComponent from './MobileNavComponent.tsx';
+import MobileNavComponent from './MobileNav.tsx';
 
 const ResponsiveNav = () => {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 700);
