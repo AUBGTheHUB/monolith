@@ -3,6 +3,7 @@ from typing import Final, Optional, List
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
@@ -50,7 +51,7 @@ class TeamsRepository(CRUDRepository[Team]):
     async def update(
         self,
         obj_id: str,
-        team: Team,
+        obj_fields: BaseModel,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Team, Err]:
         raise NotImplementedError()
@@ -102,6 +103,9 @@ class TeamsRepository(CRUDRepository[Team]):
 
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())
+
+            # Since the `Team` class has a parameter named `id` instead of `_id`,
+            # we make the following operations in order to rename the key appropriately
 
             # Make a deep copy of the team dictionary
             team_copy = deepcopy(team)

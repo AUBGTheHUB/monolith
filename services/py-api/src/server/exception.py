@@ -77,3 +77,24 @@ class JwtDecodeSchemaMismatch(CustomError):
 
     message = "The decoded token does not match the Jwt schema"
     status_code = status.HTTP_400_BAD_REQUEST
+
+
+class JwtInvalidSignatureError(CustomError):
+    """Exception raised by the Jwt Utility when the token has an invalid signature"""
+
+    message = "The JWT token has invalid signature."
+    status_code = status.HTTP_400_BAD_REQUEST
+
+
+class JwtExpiredSignatureError(CustomError):
+    """Exception raised by the Jwt Utility when the token has expired"""
+
+    message = "The JWT token has expired."
+    status_code = status.HTTP_400_BAD_REQUEST
+
+
+class JwtDecodeError(CustomError):
+    """Exception raised by the Jwt Utility when the token cannot be decoded"""
+
+    message = "There was a a general error while decoding the JWT token. Checks its format again."
+    status_code = status.HTTP_400_BAD_REQUEST

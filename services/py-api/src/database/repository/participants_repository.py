@@ -30,7 +30,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def update(
         self,
         obj_id: str,
-        participant: UpdateParticipantParams,
+        obj_fields: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, Err]:
         raise NotImplementedError()
@@ -67,6 +67,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
+            LOG.info(participant)
             LOG.debug("Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)

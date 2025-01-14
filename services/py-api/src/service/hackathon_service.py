@@ -22,6 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
+from src.database.model.base_model import SerializableObjectId
 
 
 class HackathonService:
@@ -108,7 +109,7 @@ class HackathonService:
                 name=input_data.name,
                 email=str(input_data.email),
                 is_admin=input_data.is_admin,
-                team_id=decoded_jwt_token["team_id"],
+                team_id=SerializableObjectId(decoded_jwt_token["team_id"]),
                 email_verified=True,
             )
         )
