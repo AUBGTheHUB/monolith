@@ -67,7 +67,6 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
-            LOG.info(participant)
             LOG.debug("Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)

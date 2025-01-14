@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
-from typing import Callable, Dict, Any, List, Literal
+from typing import Dict, Any, List, Literal, Optional, Protocol, Union
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -56,20 +56,27 @@ async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict
         )
 
 
+class CreateTestPartcipantParams(Protocol):
+    def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Dict[str, Any]: ...
+
+
 # The following is an exapmle of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
 # It uses the same philosophy for the teardown as it is suggested on the example of the docs above.
 # Learn more about fixture teardown here: https://docs.pytest.org/en/stable/how-to/fixtures.html#teardown-cleanup-aka-fixture-finalization
 @pytest_asyncio.fixture
-async def create_test_participant(async_client: AsyncClient) -> Callable[..., Dict[str, Any]]:
+async def create_test_participant(async_client: AsyncClient) -> CreateTestPartcipantParams:
 
     request_results = []
 
-    async def _create(participant_body: Dict[str, Any]) -> Response:
+    async def _create(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
 
         LOG.debug("Creating a test participant")
-        result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
+        if jwt_token is None:
+            result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
+        else:
+            result = await async_client.post(f"{PARTICIPANT_ENDPOINT_URL}?jwt_token={jwt_token}", json=participant_body)
         request_results.append(result)
         return result
 
@@ -84,8 +91,19 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
 
 
+class ParticipantRequestBodyParams(Protocol):
+    def __call__(
+        self,
+        registration_type: Literal["admin", "random", "invite_link"],
+        name: Optional[str] = ...,
+        email: Optional[str] = ...,
+        is_admin: Optional[bool] = ...,
+        **kwargs: Any,
+    ) -> Dict[str, Any]: ...
+
+
 @pytest_asyncio.fixture
-def generate_participant_request_body() -> Callable[..., Dict[str, Any]]:
+def generate_participant_request_body() -> ParticipantRequestBodyParams:
     def participant_request_body_generator(
         registration_type: Literal["admin", "random", "invite_link"],
         name: str | None = "testtest",
