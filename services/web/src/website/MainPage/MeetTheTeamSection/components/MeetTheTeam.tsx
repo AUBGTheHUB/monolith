@@ -4,10 +4,14 @@ import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/base.css';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-team.css';
 import EmblaCarousel from '@/components/EmblaCarousel/SlidesPerViewCarousel/js/EmblaCarousel.tsx';
 import { EmblaOptionsType } from 'embla-carousel';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
+// Because the grid for the meet the team secion is 2x4
+// each slide of the carousel is going to be of 2 elements above each other
+// chunkArray splits the array of members into an array where each element consists of another array of 2 members
+// which is then passed in order for the 2x4 grid carousel logic to work
 
-
+// TO-DO: make api call for the actual pictures and hubbers information
 
 function chunkArray(array: React.ReactElement[], chunkSize: number): React.ReactElement[][] {
     return array.reduce((resultArray, item, index) => {
@@ -20,12 +24,17 @@ function chunkArray(array: React.ReactElement[], chunkSize: number): React.React
     }, [] as React.ReactElement[][]);
 }
 
-const OPTIONS: EmblaOptionsType = { align: 'start', slidesToScroll: 'auto', loop:true,watchSlides:true };
+const OPTIONS: EmblaOptionsType = {
+    slidesToScroll: 'auto',
+    containScroll: 'trimSnaps',
+};
 
 export default function PastEventSection() {
-    const [selected, setSelected] = useState("All");
-
-    const handleSelect = (value:string)=>{setSelected(value);}
+    const [selected, setSelected] = useState('All');
+    console.log(OPTIONS);
+    const handleSelect = (value: string) => {
+    setSelected(value);
+    };
 
     const initialSlides: React.ReactElement[] = hubbers
         .filter((hubbers) => hubbers.departments.includes(selected))
@@ -33,11 +42,10 @@ export default function PastEventSection() {
 
     const SLIDES: React.ReactElement[][] = chunkArray(initialSlides, 2);
 
-    
     return (
         <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto">
             <h2 className="font-semibold text-3xl text-secondary text-[#9CBEFF] mb-10 ">Meet the team</h2>
-            <div className="flex flex-wrap gap-4 ">
+            <div className="flex flex-wrap gap-3 ">
                 {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) => (
                     <button
                         key={label}

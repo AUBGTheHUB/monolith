@@ -31,9 +31,8 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         <section className={emblaClass}>
             <div className="embla__viewport" ref={emblaRef}>
                 <div className="embla__container">
-                    {type == 'team' &&
-                        //@ts-expect-error I have no clue what the issue is but it works
-                        slides.map((slide: React.ReactNode[], index) => (
+                    {type == 'team' && Array.isArray(slides[0]) &&
+                        (slides as React.ReactNode[][]).map((slide: React.ReactNode[], index) => (
                             <div className="embla__slide" key={index}>
                                 <div className="embla__slide__inner">{slide[0]}</div>
                                 <div className="embla__slide__inner">{slide[1]}</div>
