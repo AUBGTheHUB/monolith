@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
-from typing import Callable, Dict, Any, List
+from typing import Callable, Dict, Any, List, Literal
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -82,3 +82,35 @@ async def create_test_participant(async_client: AsyncClient) -> Callable[..., Di
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
+
+
+@pytest_asyncio.fixture
+def generate_participant_request_body() -> Callable[..., Dict[str, Any]]:
+    def participant_request_body_generator(
+        registration_type: Literal["admin", "random", "invite_link"],
+        name: str | None = "testtest",
+        email: str | None = "testtest@test.com",
+        is_admin: bool | None = False,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """This method is flexible with generating participant request bodies. To disable a property just call it with
+        generate_participant_request_body(email=None) i.e.
+        """
+        registration_info = {
+            "registration_type": registration_type,
+            "name": name,
+            "email": email,
+            "is_admin": is_admin,
+            **kwargs,
+        }
+
+        cln_reg_info = {key: value for key, value in registration_info.items() if value is not None}
+        # A new dict without None values
+        return {"registration_info": cln_reg_info}
+
+    return participant_request_body_generator
+
+
+@pytest.fixture
+def mock_obj_id() -> str:
+    return "507f1f77bcf86cd799439011"

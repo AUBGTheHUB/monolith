@@ -18,6 +18,6 @@ class BaseHandler(ABC):
 
         # Default error response
         return Response(
-            ErrResponse(error="An unexpected error occurred during the creation of Participant"),
+            ErrResponse(error="An unexpected error occurred"),
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )

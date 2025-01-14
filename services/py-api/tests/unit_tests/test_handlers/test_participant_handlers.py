@@ -130,7 +130,7 @@ async def test_create_participant_admin_case_general_error(
     # Assert the response indicates an internal server error
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
-    assert resp.response_model.error == "An unexpected error occurred during the creation of Participant"
+    assert resp.response_model.error == "An unexpected error occurred"
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
@@ -243,7 +243,7 @@ async def test_create_participant_random_case_general_error(
     # Assert the response indicates an internal server error
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
-    assert resp.response_model.error == "An unexpected error occurred during the creation of Participant"
+    assert resp.response_model.error == "An unexpected error occurred"
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 

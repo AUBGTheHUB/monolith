@@ -1,31 +1,16 @@
-from typing import Any, Callable, Dict, Literal
+from os import environ
+from typing import Any, Callable, Dict
+from unittest.mock import patch
+from httpx import AsyncClient
 import pytest
-
-
-def generate_participant_request_body(
-    registration_type: Literal["admin", "random", "invite_link"],
-    name: str | None = "testtest",
-    email: str | None = "testtest@test.com",
-    is_admin: bool | None = False,
-    **kwargs: Any
-) -> Dict[str, Any]:
-    """This method is flexible with generating participant request bodies. To disable a property just call it with
-    generate_participant_request_body(email=None) i.e.
-    """
-    registration_info = {
-        "registration_type": registration_type,
-        "name": name,
-        "email": email,
-        "is_admin": is_admin,
-        **kwargs,
-    }
-    cln_reg_info = {key: value for key, value in registration_info.items() if value is not None}
-    # A new dict without None values
-    return {"registration_info": cln_reg_info}
+from tests.integration_tests.conftest import PARTICIPANT_ENDPOINT_URL
 
 
 @pytest.mark.asyncio
-async def test_create_random_participant(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
+async def test_create_random_participant(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
 
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
     resp = await create_test_participant(participant_body=random_participant_body)
@@ -43,7 +28,8 @@ async def test_create_random_participant(create_test_participant: Callable[..., 
 
 @pytest.mark.asyncio
 async def test_create_random_participant_email_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]]
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
 
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
@@ -57,7 +43,10 @@ async def test_create_random_participant_email_already_exists(
 
 
 @pytest.mark.asyncio
-async def test_create_admin_participant_no_team_name(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
+async def test_create_admin_participant_no_team_name(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
 
     is_admin_true_body = generate_participant_request_body(registration_type="admin", is_admin=True)
     resp = await create_test_participant(participant_body=is_admin_true_body)
@@ -70,7 +59,8 @@ async def test_create_admin_participant_no_team_name(create_test_participant: Ca
 
 @pytest.mark.asyncio
 async def test_create_random_participant_missing_required_fields(
-    create_test_participant: Callable[..., Dict[str, Any]]
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
 
     missing_req_fields_body = generate_participant_request_body(registration_type="admin", name=None)
@@ -84,7 +74,10 @@ async def test_create_random_participant_missing_required_fields(
 
 
 @pytest.mark.asyncio
-async def test_create_admin_participant(create_test_participant: Callable[..., Dict[str, Any]]) -> None:
+async def test_create_admin_participant(
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
+) -> None:
 
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name="testteam"
@@ -109,7 +102,8 @@ async def test_create_admin_participant(create_test_participant: Callable[..., D
 # We tried to create a team with the same name twice and the app throws an exception in that moment.
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_and_team_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]]
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -126,7 +120,8 @@ async def test_create_admin_participant_email_and_team_already_exists(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant_team_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]]
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -147,7 +142,8 @@ async def test_create_admin_participant_team_already_exists(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]]
+    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: Callable[..., Dict[str, Any]],
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -164,3 +160,64 @@ async def test_create_admin_participant_email_already_exists(
     resp_json = resp.json()
 
     assert resp_json["error"] == "Participant with this email already exists"
+
+
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@pytest.mark.asyncio
+async def test_delete_participant_success(
+    generate_participant_request_body: Callable[..., Dict[str, Any]], async_client: AsyncClient
+) -> None:
+
+    result_1 = await async_client.post(
+        PARTICIPANT_ENDPOINT_URL, json=generate_participant_request_body(registration_type="random", is_admin=None)
+    )
+    result_2 = await async_client.delete(
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{result_1.json()["participant"]["id"]}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+    )
+    assert result_2.status_code == 200
+
+    result_2_json = result_2.json()
+
+    assert result_2_json["participant"]["name"] == "testtest"
+    assert result_2_json["participant"]["email"] == "testtest@test.com"
+    assert result_2_json["participant"]["is_admin"] is False
+    assert result_2_json["participant"]["email_verified"] is False
+    assert result_2_json["participant"]["team_id"] is None
+
+
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@pytest.mark.asyncio
+async def test_delete_participant_unauthorized(async_client: AsyncClient, mock_obj_id: str) -> None:
+
+    result = await async_client.delete(
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{mock_obj_id}", headers={"Authorization": "Bearer FakeToken"}
+    )
+
+    assert result.status_code == 401
+    assert result.json()["detail"] == "Unauthorized"
+
+
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@pytest.mark.asyncio
+async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient) -> None:
+
+    result = await async_client.delete(
+        url=f"{PARTICIPANT_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
+    )
+
+    assert result.status_code == 400
+    assert result.json()["detail"] == "Wrong Object ID format"
+
+
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@pytest.mark.asyncio
+async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, mock_obj_id: str) -> None:
+
+    result = await async_client.delete(
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{mock_obj_id}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+    )
+
+    assert result.status_code == 404
+    assert result.json()["error"] == "The specified participant was not found"

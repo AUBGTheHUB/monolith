@@ -1,8 +1,7 @@
 import os
 from unittest.mock import patch
-from jwt import ExpiredSignatureError, InvalidSignatureError
 from result import Err, Ok
-from src.server.exception import JwtDecodeSchemaMismatch
+from src.server.exception import JwtDecodeSchemaMismatch, JwtExpiredSignatureError, JwtInvalidSignatureError
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from datetime import datetime, timedelta, timezone
 from src.utils import JwtUtility
@@ -74,7 +73,7 @@ def test_decode_failure_expired_token() -> None:
 
     decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
     assert isinstance(decoded_data, Err)
-    assert isinstance(decoded_data.err_value, ExpiredSignatureError)
+    assert isinstance(decoded_data.err_value, JwtExpiredSignatureError)
 
 
 def test_encode_decode_secret_key_mismatch() -> None:
@@ -87,4 +86,4 @@ def test_encode_decode_secret_key_mismatch() -> None:
     with patch.dict(os.environ, {"SECRET_KEY": "tsrqponmlkjihgfedcab"}):
         decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtUserData)
         assert isinstance(decoded_data, Err)  # Ensure the result is an error object
-        assert isinstance(decoded_data.err_value, InvalidSignatureError)  # Error value is a string
+        assert isinstance(decoded_data.err_value, JwtInvalidSignatureError)

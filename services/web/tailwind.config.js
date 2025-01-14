@@ -5,6 +5,10 @@ export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         extend: {
+            fontFamily: {
+                mont: ['Montserrat', 'serif'],
+                hank: ['Hanken Grotesk', 'serif']
+            },
             borderRadius: {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
@@ -14,15 +18,15 @@ export default {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 card: {
-                    DEFAULT: 'hsl(var(--card))',
-                    foreground: 'hsl(var(--card-foreground))',
+                    DEFAULT: 'var(--card)',
+                    foreground: 'var(--card-foreground)',
                 },
                 popover: {
                     DEFAULT: 'hsl(var(--popover))',
                     foreground: 'hsl(var(--popover-foreground))',
                 },
                 primary: {
-                    DEFAULT: 'hsl(var(--primary))',
+                    DEFAULT: 'var(--primary)',
                     foreground: 'hsl(var(--primary-foreground))',
                 },
                 secondary: {
@@ -34,8 +38,8 @@ export default {
                     foreground: 'hsl(var(--muted-foreground))',
                 },
                 accent: {
-                    DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))',
+                    DEFAULT: 'var(--accent)',
+                    foreground: 'var(--accent-foreground)',
                 },
                 destructive: {
                     DEFAULT: 'hsl(var(--destructive))',
