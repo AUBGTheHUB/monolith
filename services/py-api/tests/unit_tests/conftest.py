@@ -6,15 +6,24 @@ from unittest.mock import Mock, MagicMock, AsyncMock
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err
-from starlette.responses import Response
 
 from src.database.db_manager import DatabaseManager
+from src.database.model.participant_model import Participant
+from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.request_schemas.schemas import (
+    AdminParticipantInputData,
+    InviteLinkParticipantInputData,
+    RandomParticipantInputData,
+    ParticipantRequestBody,
+)
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
+from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
+from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
 @pytest.fixture
@@ -63,6 +72,7 @@ def participant_repo_mock() -> Mock:
     participant_repo.update = AsyncMock()
     participant_repo.create = AsyncMock()
     participant_repo.delete = AsyncMock()
+    participant_repo.get_number_registered_teammates = AsyncMock()
 
     return participant_repo
 
@@ -75,6 +85,7 @@ def team_repo_mock() -> Mock:
     team_repo = Mock(spec=TeamsRepository)
 
     team_repo.fetch_by_id = AsyncMock()
+    team_repo.fetch_by_team_name = AsyncMock()
     team_repo.fetch_all = AsyncMock()
     team_repo.update = AsyncMock()
     team_repo.create = AsyncMock()
@@ -121,8 +132,89 @@ def participant_registration_service_mock() -> Mock:
 
 
 @pytest.fixture
-def mock_input_data() -> ParticipantRequestBody:
-    return ParticipantRequestBody(name="Test User", email="test@example.com", team_name="Test Team", is_admin=True)
+def mock_participant_request_body_admin_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=AdminParticipantInputData(
+            registration_type="admin",
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            is_admin=True,
+            team_name=mock_normal_team.name,
+        )
+    )
+
+
+@pytest.fixture
+def mock_participant_request_body_invite_link_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=InviteLinkParticipantInputData(
+            registration_type="invite_link",
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            is_admin=False,
+            team_name=mock_normal_team.name,
+        )
+    )
+
+
+@pytest.fixture
+def mock_participant_request_body_random_case(mock_normal_team: Team) -> ParticipantRequestBody:
+    return ParticipantRequestBody(
+        registration_info=RandomParticipantInputData(
+            registration_type="random",
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+        )
+    )
+
+
+@pytest.fixture
+def mock_admin_case_input_data(mock_normal_team: Team) -> AdminParticipantInputData:
+    return AdminParticipantInputData(
+        registration_type="admin",
+        name=TEST_USER_NAME,
+        email=TEST_USER_EMAIL,
+        is_admin=True,
+        team_name=mock_normal_team.name,
+    )
+
+
+@pytest.fixture
+def mock_invite_link_case_input_data(mock_normal_team: Team) -> InviteLinkParticipantInputData:
+    return InviteLinkParticipantInputData(
+        registration_type="invite_link",
+        name=TEST_USER_NAME,
+        email=TEST_USER_EMAIL,
+        is_admin=False,
+        team_name=mock_normal_team.name,
+    )
+
+
+@pytest.fixture
+def mock_random_case_input_data() -> RandomParticipantInputData:
+    return RandomParticipantInputData(registration_type="random", name=TEST_USER_NAME, email=TEST_USER_EMAIL)
+
+
+@pytest.fixture
+def mock_normal_team() -> Team:
+    return Team(name=TEST_TEAM_NAME)
+
+
+@pytest.fixture
+def mock_admin_participant(mock_normal_team: Team) -> Participant:
+    return Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, team_id=mock_normal_team.id)
+
+
+@pytest.fixture
+def mock_invite_participant(mock_normal_team: Team) -> Participant:
+    return Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=mock_normal_team.id
+    )
+
+
+@pytest.fixture
+def mock_random_participant() -> Participant:
+    return Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None)
 
 
 @pytest.fixture
@@ -131,14 +223,15 @@ def mock_obj_id() -> str:
 
 
 @pytest.fixture
-def mock_input_data_random() -> ParticipantRequestBody:
-    return ParticipantRequestBody(name="Test User", email="test@example.com", team_id=None, is_admin=False)
-
-
-@pytest.fixture
-def response_mock() -> MagicMock:
-    # We use MagicMock as Response has magic methods such as __call__
-    return MagicMock(spec=Response)
+def mock_jwt_user_data(mock_obj_id: str) -> JwtUserData:
+    return JwtUserData(
+        sub=mock_obj_id,
+        is_admin=False,
+        team_name=TEST_TEAM_NAME,
+        team_id=mock_obj_id,
+        is_invite=True,
+        exp=sufficient_expiration_time,
+    )
 
 
 @pytest.fixture

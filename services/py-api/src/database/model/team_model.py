@@ -1,11 +1,11 @@
 from dataclasses import field, dataclass
 from typing import Dict, Any
 
-from src.database.model.base_model import Base
+from src.database.model.base_model import BaseDbModel
 
 
 @dataclass(kw_only=True)
-class Team(Base):
+class Team(BaseDbModel):
     """A representation of the Team entity in Mongo. It is also the schema of how the entity should look
     like in Mongo before it is inserted"""
 

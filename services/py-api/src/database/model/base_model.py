@@ -18,7 +18,7 @@ https://docs.pydantic.dev/latest/concepts/json_schema/#withjsonschema-annotation
 # https://stackoverflow.com/questions/51575931/class-inheritance-in-python-3-7-dataclasses ans with 150 up votes
 # https://www.trueblade.com/blogs/news/python-3-10-new-dataclass-features
 @dataclass(kw_only=True)
-class Base(SerializableDbModel, ABC):
+class BaseDbModel(SerializableDbModel, ABC):
     id: SerializableObjectId = field(default_factory=lambda: ObjectId())
     """We create the ID on demand in order to use the created object as a return type of a function and have all the
     info as type safe attributes"""

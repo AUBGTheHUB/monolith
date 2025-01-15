@@ -1,18 +1,16 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional
 
-from pydantic import EmailStr
-
-from src.database.model.base_model import Base, SerializableObjectId
+from src.database.model.base_model import BaseDbModel, SerializableObjectId
 
 
 @dataclass(kw_only=True)
-class Participant(Base):
+class Participant(BaseDbModel):
     """A representation of the Participant entity in Mongo. It is also the schema of how the entity should look
     like in Mongo before it is inserted"""
 
     name: str
-    email: EmailStr
+    email: str
     is_admin: bool
     email_verified: bool = field(default=False)
     team_id: Optional[SerializableObjectId]

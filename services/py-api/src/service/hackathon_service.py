@@ -15,7 +15,13 @@ from src.server.exception import (
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
-from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.request_schemas.schemas import (
+    RandomParticipantInputData,
+    AdminParticipantInputData,
+    InviteLinkParticipantInputData,
+)
+from src.database.model.base_model import SerializableObjectId
 
 
 class HackathonService:
@@ -32,43 +38,78 @@ class HackathonService:
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction_callback(
-        self, input_data: ParticipantRequestBody, session: Optional[AsyncIOMotorClientSession] = None
+        self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
         function.
         """
-        team = await self._team_repo.create(input_data, session)
+
+        team = await self._team_repo.create(Team(name=input_data.team_name), session)
         if is_err(team):
             return team
 
-        participant = await self._participant_repo.create(input_data, session, team_id=team.ok_value.id)
+        participant = await self._participant_repo.create(
+            Participant(
+                name=input_data.name,
+                email=str(input_data.email),
+                is_admin=input_data.is_admin,
+                team_id=team.ok_value.id,
+            ),
+            session,
+        )
         if is_err(participant):
             return participant
 
         return Ok((participant.ok_value, team.ok_value))
 
     async def create_participant_and_team_in_transaction(
-        self, input_data: ParticipantRequestBody
+        self, input_data: AdminParticipantInputData
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
         any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
         fails, and no permanent changes are made to the database."""
+
         return await self._tx_manager.with_transaction(
             self._create_participant_and_team_in_transaction_callback, input_data
         )
 
     async def create_random_participant(
-        self, input_data: ParticipantRequestBody
+        self, input_data: RandomParticipantInputData
     ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
 
-        result = await self._participant_repo.create(input_data)
-
+        result = await self._participant_repo.create(
+            Participant(name=input_data.name, email=str(input_data.email), is_admin=False, team_id=None)
+        )
         if is_err(result):
             return result
 
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
+
+    async def create_invite_link_participant(
+        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserData
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | Exception]:
+
+        # Check if team still exists - Returns an error when it doesn't
+        team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
+        if is_err(team_result):
+            return team_result
+
+        participant_result = await self._participant_repo.create(
+            Participant(
+                name=input_data.name,
+                email=str(input_data.email),
+                is_admin=input_data.is_admin,
+                team_id=SerializableObjectId(decoded_jwt_token["team_id"]),
+                email_verified=True,
+            )
+        )
+        if is_err(participant_result):
+            return participant_result
+
+        # Return the new participant
+        return Ok((participant_result.ok_value, team_result.ok_value))
 
     async def check_capacity_register_admin_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new team. Capacity is measured in max number of verified
@@ -106,6 +147,15 @@ class HackathonService:
 
         # Check against the hackathon capacity
         return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+
+    async def check_team_capacity(self, team_id: str) -> bool:
+        """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
+
+        # Fetch number of registered participants in the team
+        registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
+
+        # Check against team capacity
+        return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def delete_participant(
         self, participant_id: str
