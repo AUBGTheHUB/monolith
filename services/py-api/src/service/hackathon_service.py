@@ -2,7 +2,7 @@ from math import ceil
 from typing import Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import Err, is_err, Ok, Result
+from result import is_err, Ok, Result
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -13,7 +13,6 @@ from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
     ParticipantNotFoundError,
-    TeamCapacityExceededError,
     TeamNotFoundError,
 )
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
@@ -90,19 +89,12 @@ class HackathonService:
 
     async def create_invite_link_participant(
         self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserData
-    ) -> Result[
-        Tuple[Participant, Team], DuplicateEmailError | TeamCapacityExceededError | TeamNotFoundError | Exception
-    ]:
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
         team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
         if is_err(team_result):
             return team_result
-
-        # Check Team Capacity
-        has_capacity = await self.check_team_capacity(decoded_jwt_token["team_id"])
-        if not has_capacity:
-            return Err(TeamCapacityExceededError())
 
         participant_result = await self._participant_repo.create(
             Participant(

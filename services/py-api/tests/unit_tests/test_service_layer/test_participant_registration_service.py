@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 from unittest.mock import Mock
 
 import pytest
@@ -6,12 +6,21 @@ from result import Ok, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, HackathonCapacityExceededError
+from src.server.exception import (
+    DuplicateTeamNameError,
+    DuplicateEmailError,
+    HackathonCapacityExceededError,
+    TeamCapacityExceededError,
+    TeamNameMissmatchError,
+)
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
+    InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.utils import JwtUtility
 
 
 @pytest.fixture
@@ -304,3 +313,87 @@ async def test_register_random_participant_order_of_operations(
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@pytest.mark.asyncio
+async def test_register_link_participant_success(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    team_repo_mock: Mock,
+    participant_repo_mock: Mock,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+    # Mock team has available space
+    hackathon_service_mock.check_team_capacity = AsyncMock(return_value=True)
+
+    # Cereat a mock jwt_token to pass to the service method
+    jwt_token = JwtUtility.encode_data(data=mock_jwt_user_data)
+
+    # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
+    # to with_transaction
+    team_repo_mock.create.return_value = Team(id=mock_jwt_user_data["team_id"], name=mock_jwt_user_data["team_name"])
+    participant_repo_mock.create.return_value = Participant(
+        name=mock_invite_link_case_input_data.name,
+        email=mock_invite_link_case_input_data.email,
+        is_admin=False,
+        team_id=mock_jwt_user_data["team_id"],
+    )
+
+    hackathon_service_mock.create_invite_link_participant.return_value = Ok(
+        (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
+    )
+
+    # Call the function under test
+    result = await p_reg_service.register_invite_link_participant(mock_invite_link_case_input_data, jwt_token)
+
+    # Check that the result is an `Ok` containing both the participant and team objects
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], Participant)
+    assert isinstance(result.ok_value[1], Team)
+    assert result.ok_value[0].team_id == result.ok_value[1].id
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@pytest.mark.asyncio
+async def test_register_link_participant_capacity_exceeded(
+    p_reg_service: ParticipantRegistrationService,
+    hackathon_service_mock: Mock,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+    # Mock the check to return Team Capacity Exceeded Error
+    hackathon_service_mock.check_team_capacity = AsyncMock(return_value=False)
+
+    # Cereat a mock jwt_token to pass to the service method
+    jwt_token = JwtUtility.encode_data(data=mock_jwt_user_data)
+
+    # Call the function under test
+    result = await p_reg_service.register_invite_link_participant(mock_invite_link_case_input_data, jwt_token)
+
+    # Check the err type
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamCapacityExceededError)
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@pytest.mark.asyncio
+async def test_register_link_participant_team_name_mismatch(
+    p_reg_service: ParticipantRegistrationService,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+    # Modify the jwt_user_data to create a mismatch between the team names in the jwt and input data
+    mock_jwt_user_data["team_name"] = "modifiedteam"
+
+    # Create a mock jwt_token to pass to the service method
+    jwt_token = JwtUtility.encode_data(data=mock_jwt_user_data)
+
+    # Call the function under test
+    result = await p_reg_service.register_invite_link_participant(mock_invite_link_case_input_data, jwt_token)
+
+    # Check the err type
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNameMissmatchError)

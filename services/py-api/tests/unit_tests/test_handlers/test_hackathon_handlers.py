@@ -12,6 +12,7 @@ from src.server.schemas.response_schemas.schemas import (
     TeamDeletedResponse,
 )
 from starlette import status
+from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 
 
 @pytest.fixture
@@ -26,7 +27,7 @@ async def test_delete_participant_success(
     # Mock successful result from 'delete_participant'
     # Deleting an admin participant has no difference from deleting a random participant
     hackathon_service_mock.delete_participant.return_value = Ok(
-        Participant(id=mock_obj_id, name="Test User", email="test@example.com", is_admin=False, team_id=None),
+        Participant(id=mock_obj_id, name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None),
     )
 
     # Call the handler
@@ -38,7 +39,7 @@ async def test_delete_participant_success(
     # Assert that the response is successful
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ParticipantDeletedResponse)
-    assert resp.response_model.participant.name == "Test User"
+    assert resp.response_model.participant.name == TEST_USER_NAME
     assert resp.response_model.participant.id == mock_obj_id
     assert resp.status_code == status.HTTP_200_OK
 
@@ -89,7 +90,7 @@ async def test_delete_team_success(
     # Mock successful result from 'delete_team'
     # Deleting a verified team has no difference from deleting an unverified team
     hackathon_service_mock.delete_team.return_value = Ok(
-        Team(id=mock_obj_id, name="Test Team", is_verified=True),
+        Team(id=mock_obj_id, name=TEST_TEAM_NAME, is_verified=True),
     )
 
     # Call the handler
@@ -101,7 +102,7 @@ async def test_delete_team_success(
     # Assert that the response is successful
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, TeamDeletedResponse)
-    assert resp.response_model.team.name == "Test Team"
+    assert resp.response_model.team.name == TEST_TEAM_NAME
     assert resp.response_model.team.id == mock_obj_id
     assert resp.status_code == status.HTTP_200_OK
 

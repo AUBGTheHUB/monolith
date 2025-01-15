@@ -11,6 +11,9 @@ LOG = get_logger()
 
 PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
+TEST_USER_NAME = "Test User"
+TEST_TEAM_NAME = "Test Team"
+TEST_USER_EMAIL = "test@test.com"
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -139,8 +142,8 @@ class ParticipantRequestBodyCallable(Protocol):
     def __call__(
         self,
         registration_type: Literal["admin", "random", "invite_link"],
-        name: Union[str, None] = "testtest",
-        email: Union[str, None] = "testtest@test.com",
+        name: Union[str, None] = TEST_USER_NAME,
+        email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
         **kwargs: Any,
     ) -> Dict[str, Any]: ...
@@ -150,8 +153,8 @@ class ParticipantRequestBodyCallable(Protocol):
 def generate_participant_request_body() -> ParticipantRequestBodyCallable:
     def participant_request_body_generator(
         registration_type: Literal["admin", "random", "invite_link"],
-        name: Union[str, None] = "testtest",
-        email: Union[str, None] = "testtest@test.com",
+        name: Union[str, None] = TEST_USER_NAME,
+        email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
         **kwargs: Any,
     ) -> Dict[str, Any]:

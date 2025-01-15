@@ -5,6 +5,9 @@ import pytest
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from tests.integration_tests.conftest import (
     PARTICIPANT_ENDPOINT_URL,
+    TEST_TEAM_NAME,
+    TEST_USER_EMAIL,
+    TEST_USER_NAME,
     ParticipantRequestBodyCallable,
     CreateTestParticipantCallable,
 )
@@ -25,8 +28,8 @@ async def test_create_random_participant(
 
     resp_json = resp.json()
 
-    assert resp_json["participant"]["name"] == "testtest"
-    assert resp_json["participant"]["email"] == "testtest@test.com"
+    assert resp_json["participant"]["name"] == TEST_USER_NAME
+    assert resp_json["participant"]["email"] == TEST_USER_EMAIL
     assert resp_json["participant"]["is_admin"] is False
     assert resp_json["participant"]["email_verified"] is False
     assert resp_json["participant"]["team_id"] is None
@@ -87,19 +90,19 @@ async def test_create_admin_participant(
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
-        registration_type="admin", is_admin=True, team_name="testteam"
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
     resp = await create_test_participant(participant_body=admin_participant_body)
     assert resp.status_code == 201
 
     resp_json = resp.json()
 
-    assert resp_json["participant"]["name"] == "testtest"
-    assert resp_json["participant"]["email"] == "testtest@test.com"
+    assert resp_json["participant"]["name"] == TEST_USER_NAME
+    assert resp_json["participant"]["email"] == TEST_USER_EMAIL
     assert resp_json["participant"]["is_admin"] is True
     assert resp_json["participant"]["email_verified"] is False
     assert resp_json["participant"]["team_id"] == resp_json["team"]["id"]
-    assert resp_json["team"]["name"] == "testteam"
+    assert resp_json["team"]["name"] == TEST_TEAM_NAME
     assert resp_json["team"]["is_verified"] is False
 
 
@@ -114,7 +117,7 @@ async def test_create_admin_participant_email_and_team_already_exists(
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
-        registration_type="admin", is_admin=True, team_name="testteam"
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
     await create_test_participant(participant_body=admin_participant_body)
     resp = await create_test_participant(participant_body=admin_participant_body)
@@ -132,10 +135,10 @@ async def test_create_admin_participant_team_already_exists(
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
-        registration_type="admin", is_admin=True, team_name="testteam"
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
     existing_team_name_body = generate_participant_request_body(
-        registration_type="admin", email="testtest1@test.com", is_admin=True, team_name="testteam"
+        registration_type="admin", email="testtest1@test.com", is_admin=True, team_name=TEST_TEAM_NAME
     )
 
     await create_test_participant(participant_body=admin_participant_body)
@@ -154,7 +157,7 @@ async def test_create_admin_participant_email_already_exists(
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
-        registration_type="admin", is_admin=True, team_name="testteam"
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
     existing_team_name_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name="testteam1"
@@ -186,8 +189,8 @@ async def test_delete_participant_success(
 
     result_2_json = result_2.json()
 
-    assert result_2_json["participant"]["name"] == "testtest"
-    assert result_2_json["participant"]["email"] == "testtest@test.com"
+    assert result_2_json["participant"]["name"] == TEST_USER_NAME
+    assert result_2_json["participant"]["email"] == TEST_USER_EMAIL
     assert result_2_json["participant"]["is_admin"] is False
     assert result_2_json["participant"]["email_verified"] is False
     assert result_2_json["participant"]["team_id"] is None
@@ -237,18 +240,18 @@ async def test_create_link_participant_succesful(
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
-        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
+        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
     )
     admin_resp = await create_test_participant(participant_body=admin_partcipant_body)
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
 
-    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam")
+    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
     jwt_payload = JwtUserData(
         sub=admin_resp_json["id"],
         is_admin=False,
-        team_name="testteam",
+        team_name=TEST_TEAM_NAME,
         is_invite=True,
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,
@@ -259,7 +262,7 @@ async def test_create_link_participant_succesful(
     assert resp.status_code == 201
 
     resp_json = resp.json()["participant"]
-    assert resp_json["email"] == "testtest@test.com"
+    assert resp_json["email"] == TEST_USER_EMAIL
     assert resp_json["email_verified"] == True
     assert resp_json["team_id"] == admin_resp_json["team_id"]
 
@@ -271,7 +274,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
-        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
+        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
     )
     admin_resp = await create_test_participant(participant_body=admin_partcipant_body)
     assert admin_resp.status_code == 201
@@ -280,7 +283,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     jwt_payload = JwtUserData(
         sub=admin_resp_json["id"],
         is_admin=False,
-        team_name="testteam",
+        team_name=TEST_TEAM_NAME,
         is_invite=True,
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,
@@ -289,7 +292,7 @@ async def test_create_link_participant_team_capacity_exceeded(
 
     for num in range(1, TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS):
         link_participant_body = generate_participant_request_body(
-            registration_type="invite_link", email=f"testtest{num}@gmail.com", team_name="testteam"
+            registration_type="invite_link", email=f"testtest{num}@gmail.com", team_name=TEST_TEAM_NAME
         )
         resp = await create_test_participant(participant_body=link_participant_body, jwt_token=encoded_token)
         assert resp.status_code == 201
@@ -297,7 +300,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     link_participant_body = generate_participant_request_body(
         registration_type="invite_link",
         email=f"testtest{TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS}@gmail.com",
-        team_name="testteam",
+        team_name=TEST_TEAM_NAME,
     )
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token=encoded_token)
     assert resp.status_code == 409
@@ -311,7 +314,7 @@ async def test_create_link_participant_jwt_token_missing(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam")
+    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
     resp = await create_test_participant(participant_body=link_participant_body)
     assert resp.status_code == 409
 
@@ -325,7 +328,7 @@ async def test_create_link_participant_jwt_wrong_format(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam")
+    link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token="sldkf")
     assert resp.status_code == 400
 
@@ -340,7 +343,7 @@ async def test_create_link_participant_team_name_mismatch(
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
-        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
+        registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
     )
     admin_resp = await create_test_participant(participant_body=admin_partcipant_body)
     assert admin_resp.status_code == 201
@@ -351,7 +354,7 @@ async def test_create_link_participant_team_name_mismatch(
     jwt_payload = JwtUserData(
         sub=admin_resp_json["id"],
         is_admin=False,
-        team_name="testteam",
+        team_name=TEST_TEAM_NAME,
         is_invite=True,
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,

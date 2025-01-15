@@ -69,6 +69,11 @@ class ParticipantRegistrationService:
         if input_data.team_name != decoded_data["team_name"]:
             return Err(TeamNameMissmatchError())
 
+        # Check Team Capacity
+        has_capacity = await self._hackathon_service.check_team_capacity(decoded_data["team_id"])
+        if not has_capacity:
+            return Err(TeamCapacityExceededError())
+
         return await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )

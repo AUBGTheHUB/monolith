@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from httpx import AsyncClient
 import pytest
-from tests.integration_tests.conftest import TEAM_ENDPOINT_URL
+from tests.integration_tests.conftest import TEAM_ENDPOINT_URL, TEST_TEAM_NAME
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
@@ -17,7 +17,7 @@ async def test_delete_team_success(
 
     # The only way you can create a team currently is through the creation of an admin participant
     admin_participant_body = generate_participant_request_body(
-        registration_type="admin", is_admin=True, team_name="testteam"
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
     result_1 = await create_test_participant(participant_body=admin_participant_body)
     result_2 = await async_client.delete(

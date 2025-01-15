@@ -1,13 +1,16 @@
 from unittest.mock import Mock
 
+from bson import ObjectId
 import pytest
 from result import Ok, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError
+from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNotFoundError
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
+    InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
 from src.service.hackathon_service import HackathonService
@@ -161,15 +164,14 @@ async def test_create_random_participant(
     participant_repo_mock: Mock,
 ) -> None:
     # Mock successful `create` response for random participant.
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_random_case_input_data.name,
-        email=mock_random_case_input_data.email,
-        is_admin=False,
-        team_id=None,
+    participant_repo_mock.create.return_value = Ok(
+        Participant(
+            name=mock_random_case_input_data.name,
+            email=mock_random_case_input_data.email,
+            is_admin=False,
+            team_id=None,
+        )
     )
-
-    # Return the `Ok` result from the mocked `create` method
-    participant_repo_mock.create.return_value = Ok(participant_repo_mock.create.return_value)
 
     result = await hackathon_service.create_random_participant(mock_random_case_input_data)
 
@@ -201,7 +203,7 @@ async def test_create_random_participant_duplicate_email_err(
 
 
 @pytest.mark.asyncio
-async def test_register_random_participant_general_exception(
+async def test_create_random_participant_general_exception(
     hackathon_service: HackathonService,
     mock_random_case_input_data: RandomParticipantInputData,
     participant_repo_mock: Mock,
@@ -271,4 +273,124 @@ async def test_check_capacity_random_case_with_exceeded_capacity(
     result = await hackathon_service.check_capacity_register_random_participant_case()
 
     # Assert the result is False (capacity exceeded)
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_create_link_participant_success(
+    hackathon_service: HackathonService,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+
+    # Mock successful `fetch_by_team_name` response for link participant's team.
+    team_repo_mock.fetch_by_team_name.return_value = Ok(
+        Team(id=ObjectId(mock_obj_id), name=mock_invite_link_case_input_data.team_name)
+    )
+
+    # Mock successful `create` response for link participant.
+    participant_repo_mock.create.return_value = Ok(
+        Participant(
+            name=mock_invite_link_case_input_data.name,
+            email=mock_invite_link_case_input_data.email,
+            is_admin=False,
+            team_id=ObjectId(mock_obj_id),
+            email_verified=True,
+        )
+    )
+
+    result = await hackathon_service.create_invite_link_participant(
+        mock_invite_link_case_input_data, mock_jwt_user_data
+    )
+
+    # Validate that the result is an `Ok` instance containing the participant object
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value[0], Participant)  # Check the first element is a Participant
+    assert result.ok_value[0].name == mock_invite_link_case_input_data.name
+    assert result.ok_value[0].email == mock_invite_link_case_input_data.email
+    assert not result.ok_value[0].is_admin  # Ensure it is not an admin
+    assert result.ok_value[1].id == ObjectId(mock_obj_id)
+    assert result.ok_value[1].name == mock_invite_link_case_input_data.team_name
+    assert result.ok_value[0].team_id == result.ok_value[1].id
+
+
+@pytest.mark.asyncio
+async def test_create_link_participant_team_not_found(
+    hackathon_service: HackathonService,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    team_repo_mock: Mock,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+
+    # Mock TeamNotFoundError as `fetch_by_team_name` response for link participant's team.
+    team_repo_mock.fetch_by_team_name.return_value = Err(TeamNotFoundError())
+
+    result = await hackathon_service.create_invite_link_participant(
+        mock_invite_link_case_input_data, mock_jwt_user_data
+    )
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_create_link_participant_duplicate_email_error(
+    hackathon_service: HackathonService,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+    mock_jwt_user_data: JwtUserData,
+) -> None:
+
+    # Mock successful `fetch_by_team_name` response for link participant's team.
+    team_repo_mock.fetch_by_team_name.return_value = Ok(
+        Team(id=ObjectId(mock_obj_id), name=mock_invite_link_case_input_data.team_name)
+    )
+
+    # Mock successful `create` response for link participant.
+    participant_repo_mock.create.return_value = Err(DuplicateEmailError(mock_invite_link_case_input_data.email))
+
+    result = await hackathon_service.create_invite_link_participant(
+        mock_invite_link_case_input_data, mock_jwt_user_data
+    )
+
+    # Check that the result is an `Err` with `DuplicateEmailError`
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, DuplicateEmailError)
+    assert str(result.err_value) == mock_invite_link_case_input_data.email
+
+
+@pytest.mark.asyncio
+async def test_check_team_capacity_case_available_space(
+    hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock, mock_obj_id: str
+) -> None:
+    # Mock the get_number_registered_teammates() to return a number that is less that the MAX_NUMBER_OF_TEAM_MEMEBERS
+
+    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
+    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
+
+    participant_repo_mock.get_number_registered_teammates.return_value = team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS - 1
+
+    result = await hackathon_service.check_team_capacity(mock_obj_id)
+
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_check_team_capacity_case_capacity_exceeded(
+    hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock, mock_obj_id: str
+) -> None:
+    # Mock the get_number_registered_teammates() to return a number that is less that the MAX_NUMBER_OF_TEAM_MEMEBERS
+
+    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
+    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
+
+    participant_repo_mock.get_number_registered_teammates.return_value = team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS
+
+    result = await hackathon_service.check_team_capacity(mock_obj_id)
+
     assert result is False

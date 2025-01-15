@@ -10,6 +10,7 @@ from src.database.db_manager import PARTICIPANTS_COLLECTION
 from src.database.model.participant_model import Participant
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.server.exception import DuplicateEmailError
+from tests.integration_tests.conftest import TEST_USER_EMAIL
 
 
 @pytest.fixture
@@ -52,7 +53,7 @@ async def test_create_participant_duplicate_email_error(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     # Check that the error message is the duplicate email as expected
-    assert str(result.err_value) == "test@example.com"
+    assert str(result.err_value) == TEST_USER_EMAIL
 
 
 @pytest.mark.asyncio

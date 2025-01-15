@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Tuple
 from unittest.mock import Mock, AsyncMock
 
+from bson import ObjectId
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
@@ -10,6 +11,7 @@ from src.database.db_manager import TEAMS_COLLECTION
 from src.database.repository.teams_repository import TeamsRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 from src.database.model.team_model import Team
+from tests.integration_tests.conftest import TEST_TEAM_NAME
 
 
 @pytest.fixture
@@ -49,7 +51,7 @@ async def test_create_team_duplicate_name_error(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
     # Check that the error message contains the team name
-    assert str(result.err_value) == "Test Team"
+    assert str(result.err_value) == TEST_TEAM_NAME
 
 
 @pytest.mark.asyncio
@@ -71,7 +73,7 @@ async def test_create_team_general_exception(
 async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
 
     db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value={"name": "testteam", "is_verified": False}
+        return_value={"name": TEST_TEAM_NAME, "is_verified": False}
     )
 
     result = await repo.delete(mock_obj_id)
@@ -79,7 +81,7 @@ async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
     assert result.ok_value.id == mock_obj_id
-    assert result.ok_value.name == "testteam"
+    assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified is False
 
 
@@ -106,3 +108,39 @@ async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id:
     assert isinstance(result.err_value, Exception)
     # Check that the error message is the one in the Exception
     assert str(result.err_value) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_team_name_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+    db_manager_mock.get_collection.return_value.find_one = AsyncMock(
+        return_value={"_id": ObjectId(mock_obj_id), "name": TEST_TEAM_NAME, "is_verified": False}
+    )
+
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Team)
+
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.name == TEST_TEAM_NAME
+    assert result.ok_value.is_verified == False
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_team_name_team_not_found(db_manager_mock: Mock, repo: TeamsRepository) -> None:
+    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: TeamsRepository) -> None:
+    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
+
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
