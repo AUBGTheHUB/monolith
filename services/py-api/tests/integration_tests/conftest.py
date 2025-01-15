@@ -3,7 +3,7 @@ import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
-from typing import Dict, Any, List, Literal, Optional, Protocol, Union
+from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -31,12 +31,27 @@ def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
 # instead of initializing it on every test function invocation
 # Read More: https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 @pytest_asyncio.fixture(scope="session")
-async def async_client() -> AsyncClient:
+async def async_client() -> AsyncGenerator[AsyncClient, None]:
     LOG.debug("Opening Async Client")
     client = AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
     yield client
     LOG.debug("Closing Async Client")
     await client.aclose()
+
+
+class CreateTestParticipantCallable(Protocol):
+    """
+    A callable protocol that represents an asynchronous function to create a test participant.
+
+    This callable takes the following parameters:
+    - participant_body: A dictionary containing participant data.
+    - jwt_token: An optional JWT token as a string for authentication.
+
+    Returns:
+    - An awaitable dictionary containing the participant creation response.
+    """
+
+    async def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
@@ -56,22 +71,54 @@ async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict
         )
 
 
-class CreateTestPartcipantParams(Protocol):
-    def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Dict[str, Any]: ...
-
-
 # The following is an exapmle of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
 # It uses the same philosophy for the teardown as it is suggested on the example of the docs above.
 # Learn more about fixture teardown here: https://docs.pytest.org/en/stable/how-to/fixtures.html#teardown-cleanup-aka-fixture-finalization
-@pytest_asyncio.fixture
-async def create_test_participant(async_client: AsyncClient) -> CreateTestPartcipantParams:
 
+
+@pytest_asyncio.fixture
+async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[CreateTestParticipantCallable, None]:
+    """
+    A pytest fixture for managing the lifecycle of test participants in asynchronous tests.
+
+    This fixture provides a callable that allows tests to create participants using the application's API.
+    The fixture also ensures proper cleanup after tests, removing any participants or associated data created during the test.
+
+    Parameters:
+    - async_client (AsyncClient): An HTTP client instance for making asynchronous API requests.
+
+    Yields:
+    - CreateTestParticipantCallable: A callable to create participants. The callable signature is:
+      async def(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Dict[str, Any]
+
+      - participant_body: A dictionary containing the participant's details, such as email and registration type.
+      - jwt_token: An optional JWT token as a string to authenticate the request.
+
+    Example Usage:
+    ```python
+    async def test_create_participant(create_test_participant):
+        participant_body = {
+            "email": "test@example.com",
+            "registration_type": "admin",
+            "team_name": "testteam",
+        }
+        response = await create_test_participant(participant_body)
+        assert response["status"] == "success"
+    ```
+
+    Cleanup:
+    - The fixture automatically deletes any participants created during the test when the test completes.
+    - If the participant is an admin, the associated team will also be cleaned up.
+
+    Notes:
+    - This fixture is asynchronous and should be used in tests marked with `pytest.mark.asyncio`.
+    - It leverages the application's API endpoint to simulate participant creation and cleanup.
+    """
     request_results = []
 
     async def _create(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
-
         LOG.debug("Creating a test participant")
         if jwt_token is None:
             result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
@@ -82,33 +129,30 @@ async def create_test_participant(async_client: AsyncClient) -> CreateTestPartci
 
     yield _create
 
-    # Perform clean-up. If we are dealing with an admin participant, we should clean both the participant and the team.
-    # Otherwise, deleting only the participant is sufficient.
     for result in request_results:
-        # Status Code 201 -> Participant was sucessfully created
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
 
 
-class ParticipantRequestBodyParams(Protocol):
+class ParticipantRequestBodyCallable(Protocol):
     def __call__(
         self,
         registration_type: Literal["admin", "random", "invite_link"],
-        name: Optional[str] = ...,
-        email: Optional[str] = ...,
-        is_admin: Optional[bool] = ...,
+        name: Union[str, None] = "testtest",
+        email: Union[str, None] = "testtest@test.com",
+        is_admin: Union[bool, None] = False,
         **kwargs: Any,
     ) -> Dict[str, Any]: ...
 
 
 @pytest_asyncio.fixture
-def generate_participant_request_body() -> ParticipantRequestBodyParams:
+def generate_participant_request_body() -> ParticipantRequestBodyCallable:
     def participant_request_body_generator(
         registration_type: Literal["admin", "random", "invite_link"],
-        name: str | None = "testtest",
-        email: str | None = "testtest@test.com",
-        is_admin: bool | None = False,
+        name: Union[str, None] = "testtest",
+        email: Union[str, None] = "testtest@test.com",
+        is_admin: Union[bool, None] = False,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """This method is flexible with generating participant request bodies. To disable a property just call it with

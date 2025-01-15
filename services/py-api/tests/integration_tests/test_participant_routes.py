@@ -1,26 +1,22 @@
 from os import environ
-from typing import Any, Callable, Dict
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
 from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
-from structlog import get_logger
 from tests.integration_tests.conftest import (
     PARTICIPANT_ENDPOINT_URL,
-    ParticipantRequestBodyParams,
-    CreateTestPartcipantParams,
+    ParticipantRequestBodyCallable,
+    CreateTestParticipantCallable,
 )
 from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
 from src.database.repository.teams_repository import TeamsRepository
 from src.utils import JwtUtility
 
-LOG = get_logger()
-
 
 @pytest.mark.asyncio
 async def test_create_random_participant(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
@@ -39,8 +35,8 @@ async def test_create_random_participant(
 
 @pytest.mark.asyncio
 async def test_create_random_participant_email_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
@@ -55,8 +51,8 @@ async def test_create_random_participant_email_already_exists(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant_no_team_name(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     is_admin_true_body = generate_participant_request_body(registration_type="admin", is_admin=True)
@@ -70,8 +66,8 @@ async def test_create_admin_participant_no_team_name(
 
 @pytest.mark.asyncio
 async def test_create_random_participant_missing_required_fields(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     missing_req_fields_body = generate_participant_request_body(registration_type="admin", name=None)
@@ -86,8 +82,8 @@ async def test_create_random_participant_missing_required_fields(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -113,8 +109,8 @@ async def test_create_admin_participant(
 # We tried to create a team with the same name twice and the app throws an exception in that moment.
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_and_team_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -131,8 +127,8 @@ async def test_create_admin_participant_email_and_team_already_exists(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant_team_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -153,8 +149,8 @@ async def test_create_admin_participant_team_already_exists(
 
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_already_exists(
-    create_test_participant: Callable[..., Dict[str, Any]],
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
 
     admin_participant_body = generate_participant_request_body(
@@ -176,7 +172,7 @@ async def test_create_admin_participant_email_already_exists(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_participant_success(
-    generate_participant_request_body: Callable[..., Dict[str, Any]], async_client: AsyncClient
+    generate_participant_request_body: ParticipantRequestBodyCallable, async_client: AsyncClient
 ) -> None:
 
     result_1 = await async_client.post(
@@ -237,7 +233,8 @@ async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient,
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_succesful(
-    create_test_participant: CreateTestPartcipantParams, generate_participant_request_body: ParticipantRequestBodyParams
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
@@ -270,7 +267,8 @@ async def test_create_link_participant_succesful(
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(
-    create_test_participant: CreateTestPartcipantParams, generate_participant_request_body: ParticipantRequestBodyParams
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
@@ -310,7 +308,8 @@ async def test_create_link_participant_team_capacity_exceeded(
 
 @pytest.mark.asyncio
 async def test_create_link_participant_jwt_token_missing(
-    create_test_participant: CreateTestPartcipantParams, generate_participant_request_body: ParticipantRequestBodyParams
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam")
     resp = await create_test_participant(participant_body=link_participant_body)
@@ -320,9 +319,11 @@ async def test_create_link_participant_jwt_token_missing(
     assert resp_json["error"] == "When `type` is 'invite_link' jwt_token is expected as a query param."
 
 
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_jwt_wrong_format(
-    create_test_participant: CreateTestPartcipantParams, generate_participant_request_body: ParticipantRequestBodyParams
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam")
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token="sldkf")
@@ -335,7 +336,8 @@ async def test_create_link_participant_jwt_wrong_format(
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_name_mismatch(
-    create_test_participant: CreateTestPartcipantParams, generate_participant_request_body: ParticipantRequestBodyParams
+    create_test_participant: CreateTestParticipantCallable,
+    generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name="testteam"
