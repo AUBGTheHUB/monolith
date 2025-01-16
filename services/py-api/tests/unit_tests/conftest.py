@@ -13,7 +13,7 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration, JwtUserVerification
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -22,6 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
@@ -132,6 +133,15 @@ def participant_registration_service_mock() -> Mock:
 
 
 @pytest.fixture
+def participant_verification_service_mock() -> Mock:
+    """This is a mock obj of ParticipantVerificationService."""
+    p_verify_service = Mock(spec=ParticipantVerificationService)
+    p_verify_service.verify_random_participant.return_value = AsyncMock()
+
+    return p_verify_service
+
+
+@pytest.fixture
 def mock_participant_request_body_admin_case(mock_normal_team: Team) -> ParticipantRequestBody:
     return ParticipantRequestBody(
         registration_info=AdminParticipantInputData(
@@ -227,6 +237,24 @@ def mock_jwt_user_registration(mock_obj_id: str) -> JwtUserRegistration:
     return JwtUserRegistration(
         sub=mock_obj_id,
         team_id=mock_obj_id,
+        exp=sufficient_expiration_time,
+    )
+
+
+@pytest.fixture
+def mock_jwt_random_user_verification(mock_obj_id: str) -> JwtUserVerification:
+    return JwtUserVerification(
+        sub=mock_obj_id,
+        is_admin=False,
+        exp=sufficient_expiration_time,
+    )
+
+
+@pytest.fixture
+def mock_jwt_admin_user_verification(mock_obj_id: str) -> JwtUserVerification:
+    return JwtUserVerification(
+        sub=mock_obj_id,
+        is_admin=True,
         exp=sufficient_expiration_time,
     )
 

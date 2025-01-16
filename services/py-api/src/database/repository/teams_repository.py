@@ -17,6 +17,7 @@ LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository[Team]):
+
     MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
     MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
 

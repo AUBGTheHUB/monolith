@@ -264,6 +264,7 @@ async def test_create_link_participant_succesful(
     assert resp_json["team_id"] == admin_resp_json["team_id"]
 
 
+@patch.object(TeamsRepository, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(

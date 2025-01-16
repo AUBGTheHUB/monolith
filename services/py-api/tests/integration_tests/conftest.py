@@ -10,7 +10,9 @@ from os import environ
 LOG = get_logger()
 
 PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
+PARTICIPANT_VERIFY_URL = "/api/v3/hackathon/participants/verify"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
+
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
 TEST_USER_EMAIL = "test@test.com"
