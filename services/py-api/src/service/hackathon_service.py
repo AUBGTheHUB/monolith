@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import is_err, Ok, Result
 
-from src.database.model.participant_model import Participant
+from src.database.model.participant_model import Participant, UpdatedParticipant
 from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
@@ -156,6 +156,19 @@ class HackathonService:
 
         # Check against team capacity
         return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+
+    async def verify_random_participant(
+        self, jwt_data: JwtUserData
+    ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | Exception]:
+
+        # Updates the random participant if it exists
+        result = await self._participant_repo.update(jwt_data["sub"], UpdatedParticipant(email_verified=True))
+
+        if is_err(result):
+            return result
+
+        # As when first created, the random participant is not assigned to a team we return the team as None
+        return Ok((result.ok_value, None))
 
     async def delete_participant(
         self, participant_id: str
