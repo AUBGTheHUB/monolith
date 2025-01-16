@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 import pytest
 import pytest_asyncio
@@ -10,7 +11,9 @@ from os import environ
 LOG = get_logger()
 
 PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
+PARTICIPANT_VERIFY_URL = "/api/v3/hackathon/participants/verify"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
+
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
 TEST_USER_EMAIL = "test@test.com"
@@ -179,3 +182,8 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 @pytest.fixture
 def mock_obj_id() -> str:
     return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def thirty_sec_jwt_exp_limit() -> float:
+    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()

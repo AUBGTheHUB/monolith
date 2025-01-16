@@ -13,7 +13,7 @@ import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import BaseTypedDict
+from src.server.schemas.jwt_schemas.schemas import BaseTypedDict
 
 LOG = get_logger()
 

@@ -6,14 +6,15 @@ from result import Ok, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNotFoundError
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNameMissmatchError, TeamNotFoundError
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
 from src.service.hackathon_service import HackathonService
+from tests.integration_tests.conftest import TEST_TEAM_NAME
 
 
 @pytest.fixture
@@ -283,12 +284,12 @@ async def test_create_link_participant_success(
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
     mock_obj_id: str,
-    mock_jwt_user_data: JwtUserData,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
 
-    # Mock successful `fetch_by_team_name` response for link participant's team.
-    team_repo_mock.fetch_by_team_name.return_value = Ok(
-        Team(id=ObjectId(mock_obj_id), name=mock_invite_link_case_input_data.team_name)
+    # Mock successful `fetch_by_id` response for link participant's team.
+    team_repo_mock.fetch_by_id.return_value = Ok(
+        Team(id=ObjectId(mock_jwt_user_registration["team_id"]), name=mock_invite_link_case_input_data.team_name)
     )
 
     # Mock successful `create` response for link participant.
@@ -303,7 +304,7 @@ async def test_create_link_participant_success(
     )
 
     result = await hackathon_service.create_invite_link_participant(
-        mock_invite_link_case_input_data, mock_jwt_user_data
+        mock_invite_link_case_input_data, mock_jwt_user_registration
     )
 
     # Validate that the result is an `Ok` instance containing the participant object
@@ -322,14 +323,14 @@ async def test_create_link_participant_team_not_found(
     hackathon_service: HackathonService,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     team_repo_mock: Mock,
-    mock_jwt_user_data: JwtUserData,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
 
-    # Mock TeamNotFoundError as `fetch_by_team_name` response for link participant's team.
-    team_repo_mock.fetch_by_team_name.return_value = Err(TeamNotFoundError())
+    # Mock TeamNotFoundError as `fetch_by_id` response for link participant's team.
+    team_repo_mock.fetch_by_id.return_value = Err(TeamNotFoundError())
 
     result = await hackathon_service.create_invite_link_participant(
-        mock_invite_link_case_input_data, mock_jwt_user_data
+        mock_invite_link_case_input_data, mock_jwt_user_registration
     )
 
     assert isinstance(result, Err)
@@ -342,26 +343,50 @@ async def test_create_link_participant_duplicate_email_error(
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
-    mock_obj_id: str,
-    mock_jwt_user_data: JwtUserData,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
 
-    # Mock successful `fetch_by_team_name` response for link participant's team.
-    team_repo_mock.fetch_by_team_name.return_value = Ok(
-        Team(id=ObjectId(mock_obj_id), name=mock_invite_link_case_input_data.team_name)
+    # Mock successful `fetch_by_id` response for link participant's team.
+    team_repo_mock.fetch_by_id.return_value = Ok(
+        Team(id=ObjectId(mock_jwt_user_registration["team_id"]), name=mock_invite_link_case_input_data.team_name)
     )
 
     # Mock successful `create` response for link participant.
     participant_repo_mock.create.return_value = Err(DuplicateEmailError(mock_invite_link_case_input_data.email))
 
     result = await hackathon_service.create_invite_link_participant(
-        mock_invite_link_case_input_data, mock_jwt_user_data
+        mock_invite_link_case_input_data, mock_jwt_user_registration
     )
 
     # Check that the result is an `Err` with `DuplicateEmailError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     assert str(result.err_value) == mock_invite_link_case_input_data.email
+
+
+@pytest.mark.asyncio
+async def test_register_link_participant_team_name_mismatch(
+    hackathon_service: HackathonService,
+    team_repo_mock: Mock,
+    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
+) -> None:
+    # Modify the input_data to create a mismatch between the team names in the jwt and input data
+    mock_invite_link_case_input_data.team_name = "modifiedteam"
+
+    # Mock successful `fetch_by_id` response for link participant's team.
+    team_repo_mock.fetch_by_id.return_value = Ok(
+        Team(id=ObjectId(mock_jwt_user_registration["team_id"]), name=TEST_TEAM_NAME)
+    )
+
+    # Call the function under test
+    result = await hackathon_service.create_invite_link_participant(
+        mock_invite_link_case_input_data, mock_jwt_user_registration
+    )
+
+    # Check the err type
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNameMissmatchError)
 
 
 @pytest.mark.asyncio

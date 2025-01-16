@@ -2,13 +2,13 @@ from typing import Optional, List
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
-from src.server.schemas.request_schemas.schemas import UpdateParticipantParams
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.database.model.participant_model import Participant
+from src.database.model.participant_model import Participant, UpdatedParticipant
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 
@@ -30,10 +30,33 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: UpdateParticipantParams,
+        obj_fields: UpdatedParticipant,
         session: Optional[AsyncIOMotorClientSession] = None,
-    ) -> Result[Participant, Err]:
-        raise NotImplementedError()
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        try:
+            LOG.debug(
+                f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json()
+            )
+
+            # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
+            # default behaviour.
+            result = await self._collection.find_one_and_update(
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": obj_fields.model_dump()},
+                projection={"_id": 0},
+                return_document=ReturnDocument.AFTER,
+                session=session,
+            )
+
+            # The result is None when the participant with the specified ObjectId is not found
+            if result:
+                return Ok(Participant(id=obj_id, **result))
+
+            return Err(ParticipantNotFoundError())
+
+        except Exception as e:
+            LOG.exception(f"Failed to update participant with id {obj_id} due to {e}")
+            return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None

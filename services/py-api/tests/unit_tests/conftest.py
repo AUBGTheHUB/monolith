@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
 
 import pytest
@@ -13,7 +13,7 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -22,7 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
-from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
+from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
@@ -132,6 +132,15 @@ def participant_registration_service_mock() -> Mock:
 
 
 @pytest.fixture
+def participant_verification_service_mock() -> Mock:
+    """This is a mock obj of ParticipantVerificationService."""
+    p_verify_service = Mock(spec=ParticipantVerificationService)
+    p_verify_service.verify_random_participant.return_value = AsyncMock()
+
+    return p_verify_service
+
+
+@pytest.fixture
 def mock_participant_request_body_admin_case(mock_normal_team: Team) -> ParticipantRequestBody:
     return ParticipantRequestBody(
         registration_info=AdminParticipantInputData(
@@ -223,14 +232,35 @@ def mock_obj_id() -> str:
 
 
 @pytest.fixture
-def mock_jwt_user_data(mock_obj_id: str) -> JwtUserData:
-    return JwtUserData(
+def mock_jwt_user_registration(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantInviteRegistrationData:
+    return JwtParticipantInviteRegistrationData(
+        sub=mock_obj_id,
+        team_id=mock_obj_id,
+        exp=thirty_sec_jwt_exp_limit,
+    )
+
+
+@pytest.fixture
+def mock_jwt_random_user_verification(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantVerificationData:
+    return JwtParticipantVerificationData(
         sub=mock_obj_id,
         is_admin=False,
-        team_name=TEST_TEAM_NAME,
-        team_id=mock_obj_id,
-        is_invite=True,
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
+    )
+
+
+@pytest.fixture
+def mock_jwt_admin_user_verification(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantVerificationData:
+    return JwtParticipantVerificationData(
+        sub=mock_obj_id,
+        is_admin=True,
+        exp=thirty_sec_jwt_exp_limit,
     )
 
 
@@ -238,3 +268,8 @@ def mock_jwt_user_data(mock_obj_id: str) -> JwtUserData:
 def ten_sec_window() -> Tuple[datetime, datetime]:
     now = datetime.now()
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
+
+
+@pytest.fixture
+def thirty_sec_jwt_exp_limit() -> float:
+    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()

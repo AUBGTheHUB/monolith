@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Union
+from typing import Literal, Union
 from pydantic import EmailStr, BaseModel, Field, ConfigDict
 
 
@@ -34,12 +34,3 @@ class ParticipantRequestBody(BaseModel):
     registration_info: Union[AdminParticipantInputData, InviteLinkParticipantInputData, RandomParticipantInputData] = (
         Field(discriminator="registration_type")
     )
-
-
-# TODO: Finish implementing the model below
-class UpdateParticipantParams(BaseModel):
-    name: Optional[str]
-    email: Optional[EmailStr]
-    email_verified: Optional[bool]
-    is_admin: Optional[bool]
-    team_name: Optional[str]

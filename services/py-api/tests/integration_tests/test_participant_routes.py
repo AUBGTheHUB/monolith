@@ -2,7 +2,7 @@ from os import environ
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
 from tests.integration_tests.conftest import (
     PARTICIPANT_ENDPOINT_URL,
     TEST_TEAM_NAME,
@@ -11,7 +11,6 @@ from tests.integration_tests.conftest import (
     ParticipantRequestBodyCallable,
     CreateTestParticipantCallable,
 )
-from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
 from src.database.repository.teams_repository import TeamsRepository
 from src.utils import JwtUtility
 
@@ -238,6 +237,7 @@ async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient,
 async def test_create_link_participant_succesful(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
+    thirty_sec_jwt_exp_limit: float,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -248,13 +248,10 @@ async def test_create_link_participant_succesful(
     admin_resp_json = admin_resp.json()["participant"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
-    jwt_payload = JwtUserData(
+    jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
-        is_admin=False,
-        team_name=TEST_TEAM_NAME,
-        is_invite=True,
         team_id=admin_resp_json["team_id"],
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)
 
@@ -267,11 +264,13 @@ async def test_create_link_participant_succesful(
     assert resp_json["team_id"] == admin_resp_json["team_id"]
 
 
+@patch.object(TeamsRepository, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
+    thirty_sec_jwt_exp_limit: float,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -280,13 +279,10 @@ async def test_create_link_participant_team_capacity_exceeded(
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
-    jwt_payload = JwtUserData(
+    jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
-        is_admin=False,
-        team_name=TEST_TEAM_NAME,
-        is_invite=True,
         team_id=admin_resp_json["team_id"],
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)
 
@@ -341,6 +337,7 @@ async def test_create_link_participant_jwt_wrong_format(
 async def test_create_link_participant_team_name_mismatch(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
+    thirty_sec_jwt_exp_limit: float,
 ) -> None:
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -351,13 +348,10 @@ async def test_create_link_participant_team_name_mismatch(
     admin_resp_json = admin_resp.json()["participant"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam1")
-    jwt_payload = JwtUserData(
+    jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
-        is_admin=False,
-        team_name=TEST_TEAM_NAME,
-        is_invite=True,
         team_id=admin_resp_json["team_id"],
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)
 
@@ -367,5 +361,5 @@ async def test_create_link_participant_team_name_mismatch(
     resp_json = resp.json()
     assert (
         resp_json["error"]
-        == "team_name passed in the request body is different from the team_name in thedecoded JWT token"
+        == "team_name passed in the request body is different from the team_name in the decoded JWT token"
     )

@@ -71,6 +71,12 @@ class ParticipantDeletedResponse(BaseModel):
         return participant.dump_as_json()
 
 
+class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
+    """This response includes the updated body of the verified participant
+    and the body of the verified team in case we are verifying an admin participant.
+    """
+
+
 class TeamDeletedResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
