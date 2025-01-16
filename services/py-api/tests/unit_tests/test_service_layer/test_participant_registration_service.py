@@ -12,7 +12,7 @@ from src.server.exception import (
     HackathonCapacityExceededError,
     TeamCapacityExceededError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -322,7 +322,7 @@ async def test_register_link_participant_success(
     team_repo_mock: Mock,
     participant_repo_mock: Mock,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
-    mock_jwt_user_registration: JwtParticipantInviteRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
     # Mock team has available space
     hackathon_service_mock.check_team_capacity = AsyncMock(return_value=True)
@@ -363,7 +363,7 @@ async def test_register_link_participant_capacity_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
-    mock_jwt_user_registration: JwtParticipantInviteRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
     # Mock the check to return Team Capacity Exceeded Error
     hackathon_service_mock.check_team_capacity = AsyncMock(return_value=False)

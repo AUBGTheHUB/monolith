@@ -2,10 +2,9 @@ from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
 from src.database.repository.teams_repository import TeamsRepository
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 from src.utils import JwtUtility
 from tests.integration_tests.conftest import CreateTestParticipantCallable, ParticipantRequestBodyCallable
-from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
 from tests.integration_tests.conftest import PARTICIPANT_VERIFY_URL
 from starlette import status
 
@@ -16,6 +15,7 @@ async def test_verify_random_participant_success(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
+    thirty_sec_jwt_exp_limit: float,
 ) -> None:
     # Generate random participant body
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
@@ -27,8 +27,8 @@ async def test_verify_random_participant_success(
     create_resp_json = create_resp.json()
 
     # Generate jwt token based on the random participant that was created
-    verify_jwt_token_payload = JwtParticipantVerification(
-        sub=create_resp_json["participant"]["id"], is_admin=False, exp=sufficient_expiration_time
+    verify_jwt_token_payload = JwtParticipantVerificationData(
+        sub=create_resp_json["participant"]["id"], is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
     verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
 
@@ -52,11 +52,12 @@ async def test_verify_random_participant_success(
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
-async def test_verify_random_participant_not_found(async_client: AsyncClient, mock_obj_id: str) -> None:
-
+async def test_verify_random_participant_not_found(
+    async_client: AsyncClient, mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> None:
     # Generate jwt token based on a mock object id that does not exist on the database
-    verify_jwt_token_payload = JwtParticipantVerification(
-        sub=mock_obj_id, is_admin=False, exp=sufficient_expiration_time
+    verify_jwt_token_payload = JwtParticipantVerificationData(
+        sub=mock_obj_id, is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
     verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
 
@@ -79,6 +80,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
+    thirty_sec_jwt_exp_limit: float,
 ) -> None:
     # Buffer for the created unverified participants
     created_participant_ids = []
@@ -99,8 +101,8 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     # We try to verify each of them, but we should only be able to verify up to the capacity
     for i in range(TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
-        verify_jwt_token_payload = JwtParticipantVerification(
-            sub=created_participant_ids.pop(), is_admin=False, exp=sufficient_expiration_time
+        verify_jwt_token_payload = JwtParticipantVerificationData(
+            sub=created_participant_ids.pop(), is_admin=False, exp=thirty_sec_jwt_exp_limit
         )
         verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
         # Make call to the endpoint to verify participant

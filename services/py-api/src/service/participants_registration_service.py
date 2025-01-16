@@ -11,7 +11,7 @@ from src.server.exception import (
     TeamCapacityExceededError,
     TeamNameMissmatchError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     RandomParticipantInputData,
@@ -58,7 +58,7 @@ class ParticipantRegistrationService:
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
     ]:
         # Decode the token
-        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtParticipantInviteRegistration)
+        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtParticipantInviteRegistrationData)
         if is_err(decoded_result):
             return decoded_result
 

@@ -13,7 +13,7 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration, JwtParticipantVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -23,7 +23,6 @@ from src.server.schemas.request_schemas.schemas import (
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.service.participants_verification_service import ParticipantVerificationService
-from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
@@ -233,29 +232,35 @@ def mock_obj_id() -> str:
 
 
 @pytest.fixture
-def mock_jwt_user_registration(mock_obj_id: str) -> JwtParticipantInviteRegistration:
-    return JwtParticipantInviteRegistration(
+def mock_jwt_user_registration(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantInviteRegistrationData:
+    return JwtParticipantInviteRegistrationData(
         sub=mock_obj_id,
         team_id=mock_obj_id,
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
 
 
 @pytest.fixture
-def mock_jwt_random_user_verification(mock_obj_id: str) -> JwtParticipantVerification:
-    return JwtParticipantVerification(
+def mock_jwt_random_user_verification(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantVerificationData:
+    return JwtParticipantVerificationData(
         sub=mock_obj_id,
         is_admin=False,
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
 
 
 @pytest.fixture
-def mock_jwt_admin_user_verification(mock_obj_id: str) -> JwtParticipantVerification:
-    return JwtParticipantVerification(
+def mock_jwt_admin_user_verification(
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+) -> JwtParticipantVerificationData:
+    return JwtParticipantVerificationData(
         sub=mock_obj_id,
         is_admin=True,
-        exp=sufficient_expiration_time,
+        exp=thirty_sec_jwt_exp_limit,
     )
 
 

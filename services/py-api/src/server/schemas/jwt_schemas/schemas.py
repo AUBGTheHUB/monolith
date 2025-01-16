@@ -17,9 +17,9 @@ class JwtBase(BaseTypedDict):
     exp: float
 
 
-class JwtParticipantVerification(JwtBase):
+class JwtParticipantVerificationData(JwtBase):
     is_admin: bool
 
 
-class JwtParticipantInviteRegistration(JwtBase):
+class JwtParticipantInviteRegistrationData(JwtBase):
     team_id: str

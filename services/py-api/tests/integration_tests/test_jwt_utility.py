@@ -2,7 +2,7 @@ import os
 from unittest.mock import patch
 from result import Err, Ok
 from src.server.exception import JwtDecodeSchemaMismatch, JwtExpiredSignatureError, JwtInvalidSignatureError
-from src.server.schemas.jwt_schemas.schemas import JwtBase, JwtParticipantVerification
+from src.server.schemas.jwt_schemas.schemas import JwtBase, JwtParticipantVerificationData
 from datetime import datetime, timezone
 from src.utils import JwtUtility
 
@@ -24,7 +24,7 @@ def test_encode_failure_missing_keys(mock_obj_id: str, thirty_sec_jwt_exp_limit:
     encoded_data = JwtUtility.encode_data(data=JwtBase(sub=mock_obj_id, exp=thirty_sec_jwt_exp_limit))
     assert isinstance(encoded_data, str)
 
-    decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtParticipantVerification)
+    decoded_data = JwtUtility.decode_data(token=encoded_data, schema=JwtParticipantVerificationData)
     assert isinstance(decoded_data, Err)
     assert isinstance(decoded_data.err_value, JwtDecodeSchemaMismatch)
 
@@ -33,7 +33,7 @@ def test_encode_failure_missing_keys(mock_obj_id: str, thirty_sec_jwt_exp_limit:
 def test_encode_failure_additional_keys(mock_obj_id: str, thirty_sec_jwt_exp_limit: float) -> None:
     """Tests the case when the token is encoded with a schema that has more keys than our target"""
     encoded_data = JwtUtility.encode_data(
-        data=JwtParticipantVerification(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+        data=JwtParticipantVerificationData(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
     )
     assert isinstance(encoded_data, str)
 
