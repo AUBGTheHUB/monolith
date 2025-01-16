@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
 
 import pytest
@@ -268,3 +268,8 @@ def mock_jwt_admin_user_verification(
 def ten_sec_window() -> Tuple[datetime, datetime]:
     now = datetime.now()
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
+
+
+@pytest.fixture
+def thirty_sec_jwt_exp_limit() -> float:
+    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()
