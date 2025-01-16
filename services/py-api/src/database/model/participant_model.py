@@ -1,4 +1,6 @@
+from abc import ABC
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Dict, Any, Optional, Union
 
 from pydantic import BaseModel, EmailStr
@@ -41,7 +43,11 @@ class Participant(BaseDbModel):
         }
 
 
-class UpdatedParticipant(BaseModel):
+class UpdateParams(BaseModel, ABC):
+    updated_at: datetime = datetime.now()
+
+
+class UpdatedParticipant(UpdateParams):
     """This model makes each field of the Participant optional, so that you can
     only set values to the fields that you want to modify and pass to the
     MongoDB find_one_and_update() method.
