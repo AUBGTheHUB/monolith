@@ -68,7 +68,7 @@ class TeamNameMissmatchError(CustomError):
     decoded JWT token, when a participant is registering via an invitation link.
     """
 
-    message = "team_name passed in the request body is different from the team_name in the" "decoded JWT token"
+    message = "team_name passed in the request body is different from the team_name in the decoded JWT token"
     status_code = status.HTTP_400_BAD_REQUEST
 
 

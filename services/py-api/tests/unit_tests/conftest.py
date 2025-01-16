@@ -13,7 +13,7 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -223,13 +223,10 @@ def mock_obj_id() -> str:
 
 
 @pytest.fixture
-def mock_jwt_user_data(mock_obj_id: str) -> JwtUserData:
-    return JwtUserData(
+def mock_jwt_user_registration(mock_obj_id: str) -> JwtUserRegistration:
+    return JwtUserRegistration(
         sub=mock_obj_id,
-        is_admin=False,
-        team_name=TEST_TEAM_NAME,
         team_id=mock_obj_id,
-        is_invite=True,
         exp=sufficient_expiration_time,
     )
 

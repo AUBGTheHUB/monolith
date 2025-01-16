@@ -45,6 +45,7 @@ class UpdatedParticipant(BaseModel):
     """This model makes each field of the Participant optional, so that you can
     only set values to the fields that you want to modify and pass to the
     MongoDB find_one_and_update() method.
+    Build to be used for updating the Participant document in the database.
     """
 
     name: Union[str, None] = None

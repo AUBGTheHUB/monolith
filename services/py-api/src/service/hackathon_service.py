@@ -2,7 +2,7 @@ from math import ceil
 from typing import Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import is_err, Ok, Result
+from result import Err, is_err, Ok, Result
 
 from src.database.model.participant_model import Participant, UpdatedParticipant
 from src.database.model.team_model import Team
@@ -13,9 +13,10 @@ from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
     ParticipantNotFoundError,
+    TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration, JwtUserVerification
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     AdminParticipantInputData,
@@ -88,13 +89,18 @@ class HackathonService:
         return Ok((result.ok_value, None))
 
     async def create_invite_link_participant(
-        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserData
-    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | Exception]:
+        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserRegistration
+    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
-        team_result = await self._team_repo.fetch_by_team_name(input_data.team_name)
+        team_result = await self._team_repo.fetch_by_id(decoded_jwt_token["team_id"])
         if is_err(team_result):
             return team_result
+
+        # Check if the team_name from the token is consistent with the team_name from the request body
+        # A missmatch could occur if the frontend passes something different
+        if input_data.team_name != team_result.ok_value.name:
+            return Err(TeamNameMissmatchError())
 
         participant_result = await self._participant_repo.create(
             Participant(
@@ -158,7 +164,7 @@ class HackathonService:
         return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def verify_random_participant(
-        self, jwt_data: JwtUserData
+        self, jwt_data: JwtUserVerification
     ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | Exception]:
 
         # Updates the random participant if it exists

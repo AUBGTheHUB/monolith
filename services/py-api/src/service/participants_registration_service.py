@@ -11,7 +11,7 @@ from src.server.exception import (
     TeamCapacityExceededError,
     TeamNameMissmatchError,
 )
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     RandomParticipantInputData,
@@ -58,16 +58,11 @@ class ParticipantRegistrationService:
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
     ]:
         # Decode the token
-        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
+        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserRegistration)
         if is_err(decoded_result):
             return decoded_result
 
         decoded_data = decoded_result.ok_value
-
-        # Check if the team_name from the token is consistent with the team_name from the request body
-        # A missmatch could occur if the frontend passes something different
-        if input_data.team_name != decoded_data["team_name"]:
-            return Err(TeamNameMissmatchError())
 
         # Check Team Capacity
         has_capacity = await self._hackathon_service.check_team_capacity(decoded_data["team_id"])

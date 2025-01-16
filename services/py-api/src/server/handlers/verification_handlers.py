@@ -4,7 +4,7 @@ from src.service.participants_verification_service import ParticipantVerificatio
 from starlette import status
 from src.utils import JwtUtility
 from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantVerifiedResponse, Response
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserData
+from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserVerification
 
 
 class VerificationHandlers(BaseHandler):
@@ -15,7 +15,7 @@ class VerificationHandlers(BaseHandler):
     async def verify_participant(self, jwt_token: str) -> Response:
         # We decode the token here so that we can determine the case of verfication that we
         # are dealing with: `admin verification` or `random participant verification`.
-        result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserData)
+        result = JwtUtility.decode_data(token=jwt_token, schema=JwtUserVerification)
 
         if is_err(result):
             return self.handle_error(result.err_value)

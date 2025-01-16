@@ -42,8 +42,24 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.exception("Team insertion failed due to err {}".format(e))
             return Err(e)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[Team, Exception]:
-        raise NotImplementedError()
+    async def fetch_by_id(self, obj_id: str) -> Result[Team, TeamNotFoundError | Exception]:
+        """
+        Fetches a team by ObjectId
+        """
+        try:
+            LOG.debug("Fetching team by ObjectId...", obj_id=obj_id)
+
+            # Query the database for the team with the given ObjectId
+            team = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+
+            if team is None:  # If no team is found, return an Err
+                return Err(TeamNotFoundError())
+
+            return Ok(Team(id=obj_id, **team))
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch team by ObjectId {obj_id} due to err {e}")
+            return Err(e)
 
     async def fetch_all(self) -> Result[List[Team], Exception]:
         raise NotImplementedError()
