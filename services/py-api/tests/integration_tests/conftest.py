@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 import pytest
 import pytest_asyncio
@@ -181,3 +182,8 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 @pytest.fixture
 def mock_obj_id() -> str:
     return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def thirty_sec_jwt_exp_limit() -> float:
+    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()
