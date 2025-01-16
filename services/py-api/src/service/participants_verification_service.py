@@ -2,7 +2,7 @@ from typing import Tuple
 from result import Err, Result
 from src.database.model.participant_model import Participant
 from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerification
 from src.service.hackathon_service import HackathonService
 
 
@@ -12,7 +12,7 @@ class ParticipantVerificationService:
     def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
 
-    async def verify_random_participant(self, jwt_data: JwtUserVerification) -> Result[
+    async def verify_random_participant(self, jwt_data: JwtParticipantVerification) -> Result[
         Tuple[Participant, None],
         HackathonCapacityExceededError | ParticipantNotFoundError | Exception,
     ]:

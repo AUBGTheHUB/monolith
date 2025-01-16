@@ -2,7 +2,7 @@ from os import environ
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration
 from tests.integration_tests.conftest import (
     PARTICIPANT_ENDPOINT_URL,
     TEST_TEAM_NAME,
@@ -248,7 +248,7 @@ async def test_create_link_participant_succesful(
     admin_resp_json = admin_resp.json()["participant"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
-    jwt_payload = JwtUserRegistration(
+    jwt_payload = JwtParticipantInviteRegistration(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,
@@ -278,7 +278,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
-    jwt_payload = JwtUserRegistration(
+    jwt_payload = JwtParticipantInviteRegistration(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,
@@ -346,7 +346,7 @@ async def test_create_link_participant_team_name_mismatch(
     admin_resp_json = admin_resp.json()["participant"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam1")
-    jwt_payload = JwtUserRegistration(
+    jwt_payload = JwtParticipantInviteRegistration(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         exp=sufficient_expiration_time,

@@ -2,7 +2,7 @@ from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
 from src.database.repository.teams_repository import TeamsRepository
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerification
 from src.utils import JwtUtility
 from tests.integration_tests.conftest import CreateTestParticipantCallable, ParticipantRequestBodyCallable
 from tests.integration_tests.test_jwt_utility import sufficient_expiration_time
@@ -27,7 +27,7 @@ async def test_verify_random_participant_success(
     create_resp_json = create_resp.json()
 
     # Generate jwt token based on the random participant that was created
-    verify_jwt_token_payload = JwtUserVerification(
+    verify_jwt_token_payload = JwtParticipantVerification(
         sub=create_resp_json["participant"]["id"], is_admin=False, exp=sufficient_expiration_time
     )
     verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
@@ -55,7 +55,9 @@ async def test_verify_random_participant_success(
 async def test_verify_random_participant_not_found(async_client: AsyncClient, mock_obj_id: str) -> None:
 
     # Generate jwt token based on a mock object id that does not exist on the database
-    verify_jwt_token_payload = JwtUserVerification(sub=mock_obj_id, is_admin=False, exp=sufficient_expiration_time)
+    verify_jwt_token_payload = JwtParticipantVerification(
+        sub=mock_obj_id, is_admin=False, exp=sufficient_expiration_time
+    )
     verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
 
     # Make call to the endpoint to verify participant
@@ -97,7 +99,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     # We try to verify each of them, but we should only be able to verify up to the capacity
     for i in range(TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
-        verify_jwt_token_payload = JwtUserVerification(
+        verify_jwt_token_payload = JwtParticipantVerification(
             sub=created_participant_ids.pop(), is_admin=False, exp=sufficient_expiration_time
         )
         verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)

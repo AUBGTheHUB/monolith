@@ -13,7 +13,7 @@ from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration, JwtUserVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration, JwtParticipantVerification
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -233,8 +233,8 @@ def mock_obj_id() -> str:
 
 
 @pytest.fixture
-def mock_jwt_user_registration(mock_obj_id: str) -> JwtUserRegistration:
-    return JwtUserRegistration(
+def mock_jwt_user_registration(mock_obj_id: str) -> JwtParticipantInviteRegistration:
+    return JwtParticipantInviteRegistration(
         sub=mock_obj_id,
         team_id=mock_obj_id,
         exp=sufficient_expiration_time,
@@ -242,8 +242,8 @@ def mock_jwt_user_registration(mock_obj_id: str) -> JwtUserRegistration:
 
 
 @pytest.fixture
-def mock_jwt_random_user_verification(mock_obj_id: str) -> JwtUserVerification:
-    return JwtUserVerification(
+def mock_jwt_random_user_verification(mock_obj_id: str) -> JwtParticipantVerification:
+    return JwtParticipantVerification(
         sub=mock_obj_id,
         is_admin=False,
         exp=sufficient_expiration_time,
@@ -251,8 +251,8 @@ def mock_jwt_random_user_verification(mock_obj_id: str) -> JwtUserVerification:
 
 
 @pytest.fixture
-def mock_jwt_admin_user_verification(mock_obj_id: str) -> JwtUserVerification:
-    return JwtUserVerification(
+def mock_jwt_admin_user_verification(mock_obj_id: str) -> JwtParticipantVerification:
+    return JwtParticipantVerification(
         sub=mock_obj_id,
         is_admin=True,
         exp=sufficient_expiration_time,

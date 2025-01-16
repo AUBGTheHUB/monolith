@@ -16,7 +16,7 @@ from src.server.exception import (
     TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration, JwtUserVerification
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration, JwtParticipantVerification
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     AdminParticipantInputData,
@@ -89,7 +89,7 @@ class HackathonService:
         return Ok((result.ok_value, None))
 
     async def create_invite_link_participant(
-        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtUserRegistration
+        self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtParticipantInviteRegistration
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
@@ -164,7 +164,7 @@ class HackathonService:
         return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def verify_random_participant(
-        self, jwt_data: JwtUserVerification
+        self, jwt_data: JwtParticipantVerification
     ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | Exception]:
 
         # Updates the random participant if it exists

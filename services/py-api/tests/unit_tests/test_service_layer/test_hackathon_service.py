@@ -7,7 +7,7 @@ from result import Ok, Err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNameMissmatchError, TeamNotFoundError
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import JwtUserRegistration
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistration
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -284,7 +284,7 @@ async def test_create_link_participant_success(
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
     mock_obj_id: str,
-    mock_jwt_user_registration: JwtUserRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistration,
 ) -> None:
 
     # Mock successful `fetch_by_id` response for link participant's team.
@@ -323,7 +323,7 @@ async def test_create_link_participant_team_not_found(
     hackathon_service: HackathonService,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     team_repo_mock: Mock,
-    mock_jwt_user_registration: JwtUserRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistration,
 ) -> None:
 
     # Mock TeamNotFoundError as `fetch_by_id` response for link participant's team.
@@ -343,7 +343,7 @@ async def test_create_link_participant_duplicate_email_error(
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
-    mock_jwt_user_registration: JwtUserRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistration,
 ) -> None:
 
     # Mock successful `fetch_by_id` response for link participant's team.
@@ -369,7 +369,7 @@ async def test_register_link_participant_team_name_mismatch(
     hackathon_service: HackathonService,
     team_repo_mock: Mock,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
-    mock_jwt_user_registration: JwtUserRegistration,
+    mock_jwt_user_registration: JwtParticipantInviteRegistration,
 ) -> None:
     # Modify the input_data to create a mismatch between the team names in the jwt and input data
     mock_invite_link_case_input_data.team_name = "modifiedteam"
