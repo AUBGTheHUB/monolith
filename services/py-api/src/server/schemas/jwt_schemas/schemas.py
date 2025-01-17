@@ -12,9 +12,14 @@ class BaseTypedDict(TypedDict):
 
 
 # All the types within this should be required
-class JwtUserData(BaseTypedDict):
+class JwtBase(BaseTypedDict):
     sub: str
+    exp: float
+
+
+class JwtParticipantVerificationData(JwtBase):
     is_admin: bool
+
+
+class JwtParticipantInviteRegistrationData(JwtBase):
     team_id: str
-    exp: float | int
-    is_invite: bool

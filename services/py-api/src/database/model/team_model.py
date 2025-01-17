@@ -1,11 +1,11 @@
 from dataclasses import field, dataclass
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
-from src.database.model.base_model import Base
+from src.database.model.base_model import BaseDbModel, UpdateParams
 
 
 @dataclass(kw_only=True)
-class Team(Base):
+class Team(BaseDbModel):
     """A representation of the Team entity in Mongo. It is also the schema of how the entity should look
     like in Mongo before it is inserted"""
 
@@ -29,3 +29,14 @@ class Team(Base):
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
+
+
+class UpdatedTeam(UpdateParams):
+    """This model makes each field of the Team optional, so that you can
+    only set values to the fields that you want to modify and pass to the
+    MongoDB find_one_and_update() method.
+    Build to be used for updating the Team document in the database.
+    """
+
+    name: Union[str, None] = None
+    is_verified: Union[bool, None] = None

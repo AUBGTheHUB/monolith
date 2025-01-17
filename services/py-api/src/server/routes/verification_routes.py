@@ -1,7 +1,6 @@
-from typing import Any
-from fastapi import APIRouter, Response, Depends
-from src.server.handlers.verification_handler import VerificationHandlers
-from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantVerifiedResponse
+from fastapi import APIRouter, Depends
+from src.server.handlers.verification_handlers import VerificationHandlers
+from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantVerifiedResponse, Response
 from src.service.participants_verification_service import ParticipantVerificationService
 from src.service.hackathon_service import HackathonService
 from src.server.routes.dependency_factory import _h_service
@@ -23,7 +22,5 @@ def _handler(p_verify_service: ParticipantVerificationService = Depends(_p_verif
     status_code=200,
     responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}},
 )
-async def verify_participant(
-    response: Response, jwt_token: str, _handler: VerificationHandlers = Depends(_handler)
-) -> Any:
-    return await _handler.verify_participant(response=response, jwt_token=jwt_token)
+async def verify_participant(jwt_token: str, _handler: VerificationHandlers = Depends(_handler)) -> Response:
+    return await _handler.verify_participant(jwt_token=jwt_token)

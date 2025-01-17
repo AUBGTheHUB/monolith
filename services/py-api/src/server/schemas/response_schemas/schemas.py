@@ -1,11 +1,36 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Mapping
 
 from pydantic import BaseModel, field_serializer, ConfigDict
+from starlette.background import BackgroundTask
+from starlette.responses import JSONResponse
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 
-# https://fastapi.tiangolo.com/tutorial/response-model/#response_model-parameter
+
+class Response(JSONResponse):
+    """A thin wrapper over the Starlette JSONResponse class. This wrapper allows us to pass Response models, which are
+    automatically serialized to JSON under the hood.
+
+    For more info: https://fastapi.tiangolo.com/tutorial/response-model/
+    """
+
+    def __init__(
+        self,
+        response_model: BaseModel,
+        status_code: int,
+        headers: Mapping[str, str] | None = None,
+        media_type: str | None = None,
+        background: BackgroundTask | None = None,
+    ):
+        super().__init__(
+            content=response_model.model_dump(),
+            status_code=status_code,
+            headers=headers,
+            media_type=media_type,
+            background=background,
+        )
+        self.response_model = response_model
 
 
 class ErrResponse(BaseModel):
@@ -36,12 +61,7 @@ class ParticipantRegisteredResponse(BaseModel):
         return None
 
 
-class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
-    pass
-
-
 class ParticipantDeletedResponse(BaseModel):
-
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     participant: Participant
@@ -51,8 +71,13 @@ class ParticipantDeletedResponse(BaseModel):
         return participant.dump_as_json()
 
 
-class TeamDeletedResponse(BaseModel):
+class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
+    """This response includes the updated body of the verified participant
+    and the body of the verified team in case we are verifying an admin participant.
+    """
 
+
+class TeamDeletedResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     team: Team
