@@ -1,5 +1,5 @@
 from math import ceil
-from typing import Optional, Tuple
+from typing import Final, Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
@@ -27,6 +27,9 @@ from src.database.model.base_model import SerializableObjectId
 
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
+
+    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
+    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
 
     def __init__(
         self,
@@ -129,11 +132,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams
         number_ant_teams = verified_registered_teams + ceil(
-            verified_random_participants / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+            verified_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams < self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams < self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_capacity_register_random_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new random participant. Capacity is measured in max
@@ -148,11 +151,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams if a new random participant is added
         number_ant_teams = verified_registered_teams + ceil(
-            (verified_random_participants + 1) / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+            (verified_random_participants + 1) / self.MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams <= self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_team_capacity(self, team_id: str) -> bool:
         """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
@@ -161,7 +164,7 @@ class HackathonService:
         registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
 
         # Check against team capacity
-        return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+        return registered_teammates + 1 <= self.MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData

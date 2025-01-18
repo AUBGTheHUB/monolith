@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
-from src.database.repository.teams_repository import TeamsRepository
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
+from src.service.hackathon_service import HackathonService
 from src.utils import JwtUtility
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
@@ -132,8 +132,8 @@ async def test_verify_participant_admin_case_expired_token(
     assert verfiy_resp_json["error"] == "The JWT token has expired."
 
 
-@patch.object(TeamsRepository, "MAX_NUMBER_OF_TEAM_MEMBERS", 1)
-@patch.object(TeamsRepository, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 2)
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 1)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 2)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_admin_participant_hackathon_capacity_exceeded(
@@ -146,7 +146,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
     created_participant_ids = []
 
     # Create 3 unverified admin participants - Shows that you can create more unverified admin participants than the max cap.
-    for i in range(TeamsRepository.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
+    for i in range(HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
         # Generate admin participant body
         admin_participant_body = generate_participant_request_body(
             registration_type="admin", email=f"test{i}@test.com", is_admin=True, team_name=f"TEST_TEAM_NAME{i}"
@@ -159,7 +159,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
         created_participant_ids.append(create_resp_json["participant"]["id"])
 
     # We try to verify each of them, but we should only be able to verify up to the capacity
-    for i in range(TeamsRepository.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
+    for i in range(HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=True, exp=thirty_sec_jwt_exp_limit
@@ -171,7 +171,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
 
         # Make assertions conditionally
         # Verification is successful only up to capacity
-        if i < TeamsRepository.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON:
+        if i < HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON:
             assert verify_resp.status_code == status.HTTP_200_OK
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT
@@ -241,8 +241,8 @@ async def test_verify_random_participant_not_found(
     assert verify_resp_json["error"] == "The specified participant was not found"
 
 
-@patch.object(TeamsRepository, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
-@patch.object(TeamsRepository, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 1)
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 1)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_hackathon_capacity_exceeded(
@@ -255,7 +255,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     created_participant_ids = []
 
     # Create 3 unverified random participants - Shows that you can create more unverified random participants than the max cap.
-    for i in range(TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
+    for i in range(HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
         # Generate random participant body
         random_participant_body = generate_participant_request_body(
             registration_type="random", email=f"test{i}@test.com", is_admin=None
@@ -268,7 +268,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
         created_participant_ids.append(create_resp_json["participant"]["id"])
 
     # We try to verify each of them, but we should only be able to verify up to the capacity
-    for i in range(TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
+    for i in range(HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=False, exp=thirty_sec_jwt_exp_limit
@@ -280,7 +280,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
 
         # Make assertions conditionally
         # Verification is successful only up to capacity
-        if i < TeamsRepository.MAX_NUMBER_OF_TEAM_MEMBERS:
+        if i < HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS:
             assert verify_resp.status_code == status.HTTP_200_OK
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT

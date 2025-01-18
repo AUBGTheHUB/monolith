@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Final, Optional, List
+from typing import Optional, List
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -17,9 +17,6 @@ LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository[Team]):
-
-    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
-    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
 
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)

@@ -1,17 +1,21 @@
 from os import environ
-from typing import Any, Callable, Dict
 from unittest.mock import patch
 
 from httpx import AsyncClient
 import pytest
-from tests.integration_tests.conftest import TEAM_ENDPOINT_URL, TEST_TEAM_NAME
+from tests.integration_tests.conftest import (
+    TEAM_ENDPOINT_URL,
+    TEST_TEAM_NAME,
+    CreateTestParticipantCallable,
+    ParticipantRequestBodyCallable,
+)
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_team_success(
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
-    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
 ) -> None:
 
