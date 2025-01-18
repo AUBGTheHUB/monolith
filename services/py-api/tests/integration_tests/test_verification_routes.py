@@ -149,7 +149,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
     for i in range(HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
         # Generate admin participant body
         admin_participant_body = generate_participant_request_body(
-            registration_type="admin", email=f"test{i}@test.com", is_admin=True, team_name=f"TEST_TEAM_NAME{i}"
+            registration_type="admin", email=f"test{i}@test.com", is_admin=True, team_name=f"{TEST_TEAM_NAME}{i}"
         )
         # Create admin participant
         create_resp = await create_test_participant(participant_body=admin_participant_body)
