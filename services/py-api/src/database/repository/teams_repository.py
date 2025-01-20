@@ -1,15 +1,15 @@
 from copy import deepcopy
-from typing import Final, Optional, List
+from typing import Optional, List
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
-from pydantic import BaseModel
+from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.database.model.team_model import Team
+from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 
@@ -17,9 +17,6 @@ LOG = get_logger()
 
 
 class TeamsRepository(CRUDRepository[Team]):
-
-    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
-    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
 
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
@@ -68,10 +65,30 @@ class TeamsRepository(CRUDRepository[Team]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: BaseModel,
+        obj_fields: UpdateTeamParams,
         session: Optional[AsyncIOMotorClientSession] = None,
-    ) -> Result[Team, Err]:
-        raise NotImplementedError()
+    ) -> Result[Team, TeamNotFoundError | Exception]:
+        try:
+
+            LOG.debug(f"Updating team...", Team_obj_id=obj_id, updated_fields=obj_fields.model_dump_json())
+
+            result = await self._collection.find_one_and_update(
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": obj_fields.model_dump()},
+                return_document=ReturnDocument.AFTER,
+                projection={"_id": 0},
+                session=session,
+            )
+
+            # The result is None when the team with the specified ObjectId is not found
+            if result is None:
+                return Err(TeamNotFoundError())
+
+            return Ok(Team(id=obj_id, **result))
+
+        except Exception as e:
+            LOG.exception(f"Failed to update team with id {obj_id} due to {e}")
+            return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
@@ -93,7 +110,7 @@ class TeamsRepository(CRUDRepository[Team]):
             """
             The result is None when the team with the specified ObjectId is not found
             """
-            if not result:
+            if result is None:
                 return Err(TeamNotFoundError())
 
             return Ok(Team(id=obj_id, **result))

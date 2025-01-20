@@ -8,7 +8,7 @@ from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.database.model.participant_model import Participant, UpdatedParticipant
+from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 
@@ -20,9 +20,21 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[Participant, Exception]:
-        # TODO The implementer should catch invalid ObjectID format
-        raise NotImplementedError()
+    async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        try:
+            LOG.debug("Fetching participant by ObjectId...", obj_id=obj_id)
+
+            # Query the database for the participant with the given object id
+            participant = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+
+            if participant is None:  # If no participant is found, return an Err
+                return Err(ParticipantNotFoundError())
+
+            return Ok(Participant(id=obj_id, **participant))
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch participant by ObjectId {obj_id} due to err {e}")
+            return Err(e)
 
     async def fetch_all(self) -> Result[List[Participant], Exception]:
         raise NotImplementedError()
@@ -30,12 +42,12 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: UpdatedParticipant,
+        obj_fields: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
             LOG.debug(
-                f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json()
+                f"Updating participant...", Participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json()
             )
 
             # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
@@ -49,10 +61,10 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             )
 
             # The result is None when the participant with the specified ObjectId is not found
-            if result:
-                return Ok(Participant(id=obj_id, **result))
+            if result is None:
+                return Err(ParticipantNotFoundError())
 
-            return Err(ParticipantNotFoundError())
+            return Ok(Participant(id=obj_id, **result))
 
         except Exception as e:
             LOG.exception(f"Failed to update participant with id {obj_id} due to {e}")
@@ -75,10 +87,10 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             result = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
 
             # The result is None when the participant with the specified ObjectId is not found
-            if result:
-                return Ok(Participant(id=obj_id, **result))
+            if result is None:
+                return Err(ParticipantNotFoundError())
 
-            return Err(ParticipantNotFoundError())
+            return Ok(Participant(id=obj_id, **result))
 
         except Exception as e:
             LOG.exception("Participant deletion failed due to err {}".format(e))

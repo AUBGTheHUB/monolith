@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from bson import ObjectId
 import pytest
@@ -7,14 +7,14 @@ from result import Ok, Err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNameMissmatchError, TeamNotFoundError
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
+from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
 from src.service.hackathon_service import HackathonService
-from tests.integration_tests.conftest import TEST_TEAM_NAME
+from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 
 
 @pytest.fixture
@@ -101,6 +101,8 @@ async def test_register_admin_participant_general_exception(
     assert str(result.err_value) == "Test error"
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_sufficient_capacity(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -109,10 +111,6 @@ async def test_check_capacity_admin_case_with_sufficient_capacity(
     participant_repo_mock.get_verified_random_participants_count.return_value = 18
     team_repo_mock.get_verified_registered_teams_count.return_value = 4
 
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
     # Call the admin case capacity check function
     result = await hackathon_service.check_capacity_register_admin_participant_case()
 
@@ -120,6 +118,8 @@ async def test_check_capacity_admin_case_with_sufficient_capacity(
     assert result is True
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exact_limit(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -128,10 +128,6 @@ async def test_check_capacity_admin_case_with_exact_limit(
     participant_repo_mock.get_verified_random_participants_count.return_value = 10
     team_repo_mock.get_verified_registered_teams_count.return_value = 10
 
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
     # Call the admin case capacity check function
     result = await hackathon_service.check_capacity_register_admin_participant_case()
 
@@ -139,6 +135,8 @@ async def test_check_capacity_admin_case_with_exact_limit(
     assert result is False
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exceeded_capacity(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -146,10 +144,6 @@ async def test_check_capacity_admin_case_with_exceeded_capacity(
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 15
     team_repo_mock.get_verified_registered_teams_count.return_value = 11
-
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
 
     # Call the admin case capacity check function
     result = await hackathon_service.check_capacity_register_admin_participant_case()
@@ -220,6 +214,8 @@ async def test_create_random_participant_general_exception(
     assert str(result.err_value) == "Test error"
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_sufficient_capacity(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -228,10 +224,6 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
     participant_repo_mock.get_verified_random_participants_count.return_value = 18
     team_repo_mock.get_verified_registered_teams_count.return_value = 4
 
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
     # Call the random case capacity check function
     result = await hackathon_service.check_capacity_register_random_participant_case()
 
@@ -239,6 +231,8 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
     assert result is True
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exact_limit(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -247,10 +241,6 @@ async def test_check_capacity_random_case_with_exact_limit(
     participant_repo_mock.get_verified_random_participants_count.return_value = 10
     team_repo_mock.get_verified_registered_teams_count.return_value = 10
 
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
     # Call the random case capacity check function
     result = await hackathon_service.check_capacity_register_random_participant_case()
 
@@ -258,6 +248,8 @@ async def test_check_capacity_random_case_with_exact_limit(
     assert result is True
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exceeded_capacity(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock
@@ -265,10 +257,6 @@ async def test_check_capacity_random_case_with_exceeded_capacity(
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 15
     team_repo_mock.get_verified_registered_teams_count.return_value = 11
-
-    # Mock MAX_NUMBER_OF_TEAM_MEMBERS and MAX_NUMBER_OF_TEAMS_IN_HACKATHON
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
 
     # Call the admin case capacity check function
     result = await hackathon_service.check_capacity_register_random_participant_case()
@@ -278,63 +266,74 @@ async def test_check_capacity_random_case_with_exceeded_capacity(
 
 
 @pytest.mark.asyncio
-async def test_create_link_participant_success(
+async def verify_admin_participant_and_team_in_transaction_success(
     hackathon_service: HackathonService,
-    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
-    mock_obj_id: str,
-    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
+    tx_manager_mock: Mock,
+    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
-    # Mock successful `fetch_by_id` response for link participant's team.
-    team_repo_mock.fetch_by_id.return_value = Ok(
-        Team(id=ObjectId(mock_jwt_user_registration["team_id"]), name=mock_invite_link_case_input_data.team_name)
+    # Mocks update for team and participants repo
+    team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
+    participant_repo_mock.update.return_value = Participant(
+        name=TEST_USER_NAME,
+        email=TEST_USER_EMAIL,
+        email_verified=True,
+        is_admin=True,
+        team_id=team_repo_mock.update.return_value.id,
     )
 
-    # Mock successful `create` response for link participant.
-    participant_repo_mock.create.return_value = Ok(
-        Participant(
-            name=mock_invite_link_case_input_data.name,
-            email=mock_invite_link_case_input_data.email,
-            is_admin=False,
-            team_id=ObjectId(mock_obj_id),
-            email_verified=True,
-        )
+    # Result the callback passed to with_transaction
+    tx_manager_mock.with_transaction.return_value = Ok(
+        (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
     )
 
-    result = await hackathon_service.create_invite_link_participant(
-        mock_invite_link_case_input_data, mock_jwt_user_registration
+    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+        jwt_data=mock_jwt_admin_user_verification
     )
 
-    # Validate that the result is an `Ok` instance containing the participant object
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value[0], Participant)  # Check the first element is a Participant
-    assert result.ok_value[0].name == mock_invite_link_case_input_data.name
-    assert result.ok_value[0].email == mock_invite_link_case_input_data.email
-    assert not result.ok_value[0].is_admin  # Ensure it is not an admin
-    assert result.ok_value[1].id == ObjectId(mock_obj_id)
-    assert result.ok_value[1].name == mock_invite_link_case_input_data.team_name
-    assert result.ok_value[0].team_id == result.ok_value[1].id
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], Participant)
+    assert isinstance(result.ok_value[1], Team)
+    assert result.ok_value[0].email_verified == True
+    assert result.ok_value[1].is_verified == True
 
 
 @pytest.mark.asyncio
-async def test_create_link_participant_team_not_found(
+async def verify_admin_participant_and_team_in_transaction_team_not_found_error(
     hackathon_service: HackathonService,
-    mock_invite_link_case_input_data: InviteLinkParticipantInputData,
-    team_repo_mock: Mock,
-    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
+    tx_manager_mock: Mock,
+    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
-    # Mock TeamNotFoundError as `fetch_by_id` response for link participant's team.
-    team_repo_mock.fetch_by_id.return_value = Err(TeamNotFoundError())
+    tx_manager_mock.with_transaction.return_value = Err(TeamNotFoundError())
 
-    result = await hackathon_service.create_invite_link_participant(
-        mock_invite_link_case_input_data, mock_jwt_user_registration
+    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+        jwt_data=mock_jwt_admin_user_verification
     )
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@pytest.mark.asyncio
+async def verify_admin_participant_and_team_in_transaction_general_error(
+    hackathon_service: HackathonService,
+    tx_manager_mock: Mock,
+    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+) -> None:
+
+    tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
+
+    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+        jwt_data=mock_jwt_admin_user_verification
+    )
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
@@ -389,32 +388,29 @@ async def test_register_link_participant_team_name_mismatch(
     assert isinstance(result.err_value, TeamNameMissmatchError)
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_team_capacity_case_available_space(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock, mock_obj_id: str
 ) -> None:
     # Mock the get_number_registered_teammates() to return a number that is less that the MAX_NUMBER_OF_TEAM_MEMEBERS
 
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
-    participant_repo_mock.get_number_registered_teammates.return_value = team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS - 1
+    participant_repo_mock.get_number_registered_teammates.return_value = HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS - 1
 
     result = await hackathon_service.check_team_capacity(mock_obj_id)
 
     assert result is True
 
 
+@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
+@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_team_capacity_case_capacity_exceeded(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock, mock_obj_id: str
 ) -> None:
-    # Mock the get_number_registered_teammates() to return a number that is less that the MAX_NUMBER_OF_TEAM_MEMEBERS
 
-    team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS = 6
-    team_repo_mock.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON = 12
-
-    participant_repo_mock.get_number_registered_teammates.return_value = team_repo_mock.MAX_NUMBER_OF_TEAM_MEMBERS
+    participant_repo_mock.get_number_registered_teammates.return_value = HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS
 
     result = await hackathon_service.check_team_capacity(mock_obj_id)
 

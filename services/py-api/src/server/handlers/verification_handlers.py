@@ -3,7 +3,7 @@ from src.server.handlers.base_handler import BaseHandler
 from src.service.participants_verification_service import ParticipantVerificationService
 from starlette import status
 from src.utils import JwtUtility
-from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantVerifiedResponse, Response
+from src.server.schemas.response_schemas.schemas import ParticipantVerifiedResponse, Response
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 
 
@@ -23,7 +23,7 @@ class VerificationHandlers(BaseHandler):
         jwt_payload = result.ok_value
 
         if jwt_payload["is_admin"]:
-            return Response(response_model=ErrResponse("This feature is not yet implemented!"), status_code=501)
+            result = await self._service.verify_admin_participant(jwt_data=jwt_payload)
 
         else:
             result = await self._service.verify_random_participant(jwt_data=jwt_payload)

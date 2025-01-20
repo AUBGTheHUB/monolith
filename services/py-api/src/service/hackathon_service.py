@@ -1,11 +1,11 @@
 from math import ceil
-from typing import Optional, Tuple
+from typing import Final, Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 
-from src.database.model.participant_model import Participant, UpdatedParticipant
-from src.database.model.team_model import Team
+from src.database.model.participant_model import Participant, UpdateParticipantParams
+from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -27,6 +27,9 @@ from src.database.model.base_model import SerializableObjectId
 
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
+
+    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
+    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
 
     def __init__(
         self,
@@ -129,11 +132,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams
         number_ant_teams = verified_registered_teams + ceil(
-            verified_random_participants / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+            verified_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams < self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams < self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_capacity_register_random_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new random participant. Capacity is measured in max
@@ -148,11 +151,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams if a new random participant is added
         number_ant_teams = verified_registered_teams + ceil(
-            (verified_random_participants + 1) / self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+            (verified_random_participants + 1) / self.MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams <= self._team_repo.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams <= self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_team_capacity(self, team_id: str) -> bool:
         """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
@@ -161,20 +164,57 @@ class HackathonService:
         registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
 
         # Check against team capacity
-        return registered_teammates + 1 <= self._team_repo.MAX_NUMBER_OF_TEAM_MEMBERS
+        return registered_teammates + 1 <= self.MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData
     ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | Exception]:
 
         # Updates the random participant if it exists
-        result = await self._participant_repo.update(jwt_data["sub"], UpdatedParticipant(email_verified=True))
+        result = await self._participant_repo.update(
+            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True)
+        )
 
         if is_err(result):
             return result
 
         # As when first created, the random participant is not assigned to a team we return the team as None
         return Ok((result.ok_value, None))
+
+    async def verify_admin_participant_and_team_in_transaction(
+        self, jwt_data: JwtParticipantVerificationData
+    ) -> Result[
+        Tuple[Participant, Team],
+        ParticipantNotFoundError | TeamNotFoundError | Exception,
+    ]:
+        return await self._tx_manager.with_transaction(self._verify_admin_participant_and_team_callback, jwt_data)
+
+    async def _verify_admin_participant_and_team_callback(
+        self,
+        jwt_data: JwtParticipantVerificationData,
+        session: Optional[AsyncIOMotorClientSession] = None,
+    ) -> Result[
+        Tuple[Participant, Team],
+        ParticipantNotFoundError | TeamNotFoundError | Exception,
+    ]:
+
+        result_verified_admin = await self._participant_repo.update(
+            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True), session=session
+        )
+
+        if is_err(result_verified_admin):
+            return result_verified_admin
+
+        result_verified_team = await self._team_repo.update(
+            obj_id=str(result_verified_admin.ok_value.team_id),
+            obj_fields=UpdateTeamParams(is_verified=True),
+            session=session,
+        )
+
+        if is_err(result_verified_team):
+            return result_verified_team
+
+        return Ok((result_verified_admin.ok_value, result_verified_team.ok_value))
 
     async def delete_participant(
         self, participant_id: str

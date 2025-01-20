@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
 from src.database.db_manager import PARTICIPANTS_COLLECTION
-from src.database.model.participant_model import Participant
+from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
@@ -98,6 +98,7 @@ async def test_delete_successful(db_manager_mock: Mock, mock_obj_id: str, repo: 
 async def test_delete_participant_not_found(
     db_manager_mock: Mock, repo: ParticipantsRepository, mock_obj_id: str
 ) -> None:
+
     db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
 
     result = await repo.delete(mock_obj_id)
@@ -108,9 +109,48 @@ async def test_delete_participant_not_found(
 
 @pytest.mark.asyncio
 async def test_delete_general_error(db_manager_mock: Mock, repo: ParticipantsRepository, mock_obj_id: str) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=Exception("Test Error"))
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=Exception())
 
     result = await repo.delete(mock_obj_id)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_update_participant_success(
+    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+
+    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
+        return_value={
+            "name": TEST_USER_NAME,
+            "email": TEST_USER_EMAIL,
+            "email_verified": True,
+            "is_admin": True,
+            "team_id": None,
+        }
+    )
+
+    result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
+
+    assert isinstance(result, Ok)
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.email_verified is True
+    assert result.ok_value.name == TEST_USER_NAME
+    assert result.ok_value.email == TEST_USER_EMAIL
+    assert result.ok_value.is_admin is True
+    assert result.ok_value.team_id is None
+
+
+@pytest.mark.asyncio
+async def test_update_participant_not_found(
+    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+    # When a participant with the specified id is not found find_one_and_update returns None
+    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
+
+    result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantNotFoundError)

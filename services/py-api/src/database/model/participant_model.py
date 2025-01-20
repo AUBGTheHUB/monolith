@@ -1,10 +1,8 @@
-from abc import ABC
 from dataclasses import dataclass, field
-from datetime import datetime
 from typing import Dict, Any, Optional, Union
 
-from pydantic import BaseModel, EmailStr
-from src.database.model.base_model import BaseDbModel, SerializableObjectId
+from pydantic import EmailStr
+from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
 
 @dataclass(kw_only=True)
@@ -43,11 +41,7 @@ class Participant(BaseDbModel):
         }
 
 
-class UpdateParams(BaseModel, ABC):
-    updated_at: datetime = datetime.now()
-
-
-class UpdatedParticipant(UpdateParams):
+class UpdateParticipantParams(UpdateParams):
     """This model makes each field of the Participant optional, so that you can
     only set values to the fields that you want to modify and pass to the
     MongoDB find_one_and_update() method.
@@ -59,16 +53,3 @@ class UpdatedParticipant(UpdateParams):
     email_verified: Union[bool, None] = None
     is_admin: Union[bool, None] = None
     team_id: Union[str, None] = None
-
-    # Override the base class methods to exclude none by default, since we don't want the None values
-    # to be present in the model dumps.
-
-    # The base super().model_dump_json() returns a dict[str, Any], however mypy marks it as if it returns `Any`,
-    # for this reason we are ingoring it.
-    def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        return super().model_dump(exclude_none=exclude_none, **kwargs)  # type: ignore
-
-    # The base super().model_dump_json() returns a str, however mypy marks it as if it returns `Any`,
-    # for this reason we are ingoring it.
-    def model_dump_json(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> str:
-        return super().model_dump_json(exclude_none=exclude_none, **kwargs)  # type: ignore
