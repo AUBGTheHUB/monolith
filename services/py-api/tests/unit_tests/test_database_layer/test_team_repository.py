@@ -10,7 +10,7 @@ from result import Ok, Err
 from src.database.db_manager import TEAMS_COLLECTION
 from src.database.repository.teams_repository import TeamsRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
-from src.database.model.team_model import Team, UpdatedTeam
+from src.database.model.team_model import Team, UpdateTeamParams
 from tests.integration_tests.conftest import TEST_TEAM_NAME
 
 
@@ -116,7 +116,7 @@ async def test_update_team_success(db_manager_mock: Mock, mock_obj_id: str, repo
         return_value={"name": TEST_TEAM_NAME, "is_verified": True}
     )
 
-    result = await repo.update(mock_obj_id, UpdatedTeam(is_verified=True))
+    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
     assert isinstance(result, Ok)
     assert result.ok_value.id == mock_obj_id
@@ -129,7 +129,7 @@ async def test_update_team_team_not_found(db_manager_mock: Mock, mock_obj_id: st
     # When a team with the specified id is not found find_one_and_update returns none
     db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
-    result = await repo.update(mock_obj_id, UpdatedTeam(is_verified=True))
+    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)

@@ -1,7 +1,7 @@
 import pytest
 
 from result import Err, Ok
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import Mock
 
 from src.database.model.team_model import Team
 from src.database.model.participant_model import Participant
@@ -24,8 +24,7 @@ async def test_verify_admin_participant_success(
     participant_repo_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     # Mock update methods for team and participants repos
     team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
@@ -59,8 +58,7 @@ async def test_verify_admin_participant_participant_not_found_error(
     hackathon_service_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(
         ParticipantNotFoundError()
@@ -78,8 +76,7 @@ async def test_verify_admin_participant_team_not_found_error(
     hackathon_service_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(TeamNotFoundError())
 
@@ -95,8 +92,7 @@ async def test_verify_admin_participant_general_exeption(
     hackathon_service_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(
         Exception("Test exception")
@@ -117,8 +113,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
     participant_repo_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Mock update methods for team and participants repos
     team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
@@ -147,8 +142,7 @@ async def test_verify_random_participant_success(
     participant_repo_mock: Mock,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     participant_repo_mock.update.return_value = Participant(
         name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=None
@@ -174,8 +168,7 @@ async def test_verify_random_participant_participant_not_found_error(
     hackathon_service_mock: Mock,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     hackathon_service_mock.verify_random_participant.return_value = Err(ParticipantNotFoundError())
 
@@ -186,21 +179,19 @@ async def test_verify_random_participant_participant_not_found_error(
 
 
 @pytest.mark.asyncio
-async def test_verify_random_participant_general_exeption(
+async def test_verify_random_participant_general_exception(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
-
-    hackathon_service_mock.verify_random_participant.return_value = Err(Exception("Test exception"))
+    hackathon_service_mock.verify_random_participant.return_value = Err(Exception())
 
     result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    str(result.err_value) == "Test exception"
 
 
 @pytest.mark.asyncio
@@ -210,8 +201,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
     participant_repo_mock: Mock,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
     participant_repo_mock.update.return_value = Participant(
         name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=None

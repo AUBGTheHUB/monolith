@@ -8,7 +8,7 @@ from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.database.model.participant_model import Participant, UpdatedParticipant
+from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 
@@ -42,7 +42,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: UpdatedParticipant,
+        obj_fields: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:

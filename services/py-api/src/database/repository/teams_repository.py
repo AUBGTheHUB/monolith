@@ -9,7 +9,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
-from src.database.model.team_model import Team, UpdatedTeam
+from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 
@@ -65,7 +65,7 @@ class TeamsRepository(CRUDRepository[Team]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: UpdatedTeam,
+        obj_fields: UpdateTeamParams,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Team, TeamNotFoundError | Exception]:
         try:

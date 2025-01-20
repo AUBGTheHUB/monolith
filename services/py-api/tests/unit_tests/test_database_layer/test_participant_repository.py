@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
 from src.database.db_manager import PARTICIPANTS_COLLECTION
-from src.database.model.participant_model import Participant, UpdatedParticipant
+from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
@@ -132,7 +132,7 @@ async def test_update_participant_success(
         }
     )
 
-    result = await repo.update(mock_obj_id, UpdatedParticipant(email_verified=True))
+    result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
 
     assert isinstance(result, Ok)
     assert result.ok_value.id == mock_obj_id
@@ -150,7 +150,7 @@ async def test_update_participant_not_found(
     # When a participant with the specified id is not found find_one_and_update returns None
     db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
-    result = await repo.update(mock_obj_id, UpdatedParticipant(email_verified=True))
+    result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)

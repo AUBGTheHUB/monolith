@@ -31,7 +31,7 @@ class Team(BaseDbModel):
         }
 
 
-class UpdatedTeam(UpdateParams):
+class UpdateTeamParams(UpdateParams):
     """This model makes each field of the Team optional, so that you can
     only set values to the fields that you want to modify and pass to the
     MongoDB find_one_and_update() method.

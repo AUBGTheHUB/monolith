@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from os import environ
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
@@ -9,6 +10,7 @@ from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
     CreateTestParticipantCallable,
     ParticipantRequestBodyCallable,
+    TEAM_ENDPOINT_URL,
 )
 from tests.integration_tests.conftest import PARTICIPANT_VERIFY_URL
 from starlette import status
@@ -22,7 +24,6 @@ async def test_verify_participant_admin_case_success(
     async_client: AsyncClient,
     thirty_sec_jwt_exp_limit: float,
 ) -> None:
-
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
@@ -60,19 +61,18 @@ async def test_verify_participant_admin_case_when_participant_is_not_found(
     thirty_sec_jwt_exp_limit: float,
     async_client: AsyncClient,
 ) -> None:
-
     jwt_token = JwtUtility.encode_data(
         data=JwtParticipantVerificationData(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
     )
 
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
-    verfiy_resp_json = verify_resp.json()
+    verify_resp_json = verify_resp.json()
 
     assert verify_resp.status_code == status.HTTP_404_NOT_FOUND
-    assert verfiy_resp_json["error"] == "The specified participant was not found"
+    assert verify_resp_json["error"] == "The specified participant was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_team_is_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -80,26 +80,31 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     async_client: AsyncClient,
     thirty_sec_jwt_exp_limit: float,
 ) -> None:
-
-    # We generate a random participant for this case, because it has not team assigned
-    random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
-    create_resp = await create_test_participant(participant_body=random_participant_body)
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
+    create_resp = await create_test_participant(participant_body=admin_participant_body)
     assert create_resp.status_code == status.HTTP_201_CREATED
 
     create_resp_json = create_resp.json()
 
-    # token with the random participant ObjectId
     jwt_token = JwtUtility.encode_data(
         data=JwtParticipantVerificationData(
             sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
         )
     )
 
-    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
-    verfiy_resp_json = verify_resp.json()
+    delete_team_resp = await async_client.delete(
+        url=f"{TEAM_ENDPOINT_URL}/{create_resp_json["team"]["id"]}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+    )
+    assert delete_team_resp.status_code == status.HTTP_200_OK
 
-    assert verify_resp.status_code == 404
-    assert verfiy_resp_json["error"] == "The specified team was not found"
+    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+    verify_resp_json = verify_resp.json()
+
+    assert verify_resp.status_code == status.HTTP_404_NOT_FOUND
+    assert verify_resp_json["error"] == "The specified team was not found"
 
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
@@ -109,7 +114,6 @@ async def test_verify_participant_admin_case_expired_token(
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
 ) -> None:
-
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )

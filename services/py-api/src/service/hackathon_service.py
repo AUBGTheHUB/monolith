@@ -4,8 +4,8 @@ from typing import Final, Optional, Tuple
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 
-from src.database.model.participant_model import Participant, UpdatedParticipant
-from src.database.model.team_model import Team, UpdatedTeam
+from src.database.model.participant_model import Participant, UpdateParticipantParams
+from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -172,7 +172,7 @@ class HackathonService:
 
         # Updates the random participant if it exists
         result = await self._participant_repo.update(
-            obj_id=jwt_data["sub"], obj_fields=UpdatedParticipant(email_verified=True)
+            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True)
         )
 
         if is_err(result):
@@ -199,16 +199,16 @@ class HackathonService:
     ]:
 
         result_verified_admin = await self._participant_repo.update(
-            obj_id=jwt_data["sub"], obj_fields=UpdatedParticipant(email_verified=True), session=session
+            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True), session=session
         )
 
         if is_err(result_verified_admin):
             return result_verified_admin
 
-        result_verified_admin_dump_json = result_verified_admin.ok_value.dump_as_json()
-
         result_verified_team = await self._team_repo.update(
-            obj_id=result_verified_admin_dump_json["team_id"], obj_fields=UpdatedTeam(is_verified=True), session=session
+            obj_id=str(result_verified_admin.ok_value.team_id),
+            obj_fields=UpdateTeamParams(is_verified=True),
+            session=session,
         )
 
         if is_err(result_verified_team):
