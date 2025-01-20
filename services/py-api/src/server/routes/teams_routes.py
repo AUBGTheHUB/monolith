@@ -22,7 +22,5 @@ def _handler(
     responses={200: {"model": TeamDeletedResponse}, 404: {"model": ErrResponse}},
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
-async def delete_team(
-    response: Response, object_id: str, handler: HackathonManagementHandlers = Depends(_handler)
-) -> TeamDeletedResponse | ErrResponse:
-    return await handler.delete_team(response, object_id)
+async def delete_team(object_id: str, handler: HackathonManagementHandlers = Depends(_handler)) -> Response:
+    return await handler.delete_team(object_id)

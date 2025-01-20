@@ -1,22 +1,28 @@
 from os import environ
-from typing import Any, Callable, Dict
 from unittest.mock import patch
 
 from httpx import AsyncClient
 import pytest
-from tests.integration_tests.conftest import TEAM_ENDPOINT_URL
+from tests.integration_tests.conftest import (
+    TEAM_ENDPOINT_URL,
+    TEST_TEAM_NAME,
+    CreateTestParticipantCallable,
+    ParticipantRequestBodyCallable,
+)
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_team_success(
-    generate_participant_request_body: Callable[..., Dict[str, Any]],
-    create_test_participant: Callable[..., Dict[str, Any]],
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
 ) -> None:
 
     # The only way you can create a team currently is through the creation of an admin participant
-    admin_participant_body = generate_participant_request_body(is_admin=True, team_name="testteam")
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
     result_1 = await create_test_participant(participant_body=admin_participant_body)
     result_2 = await async_client.delete(
         url=f"{TEAM_ENDPOINT_URL}/{result_1.json()["team"]["id"]}",
@@ -65,4 +71,4 @@ async def test_delete_team_obj_id_doesnt_exist(async_client: AsyncClient, mock_o
     )
 
     assert result.status_code == 404
-    assert result.json()["error"] == "Could not find the team with the specified id"
+    assert result.json()["error"] == "The specified team was not found"

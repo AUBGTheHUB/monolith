@@ -1,6 +1,6 @@
+from typing import Union
 from fastapi import APIRouter, Depends
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-from starlette.responses import Response
 
 from src.server.routes.dependency_factory import _h_service
 from src.server.handlers.participants_handlers import ParticipantHandlers
@@ -9,6 +9,7 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantRegisteredResponse,
     ErrResponse,
     ParticipantDeletedResponse,
+    Response,
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
@@ -39,9 +40,11 @@ def _h_handler(
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
-    response: Response, input_data: ParticipantRequestBody, handler: ParticipantHandlers = Depends(_p_handler)
-) -> ParticipantRegisteredResponse | ErrResponse:
-    return await handler.create_participant(response, input_data)
+    participant_request_body: ParticipantRequestBody,
+    jwt_token: Union[str, None] = None,
+    handler: ParticipantHandlers = Depends(_p_handler),
+) -> Response:
+    return await handler.create_participant(participant_request_body, jwt_token)
 
 
 @participants_router.delete(
@@ -50,7 +53,5 @@ async def create_participant(
     responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
-async def delete_participant(
-    response: Response, object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)
-) -> ParticipantDeletedResponse | ErrResponse:
-    return await handler.delete_participant(response, object_id)
+async def delete_participant(object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)) -> Response:
+    return await handler.delete_participant(object_id)
