@@ -38,7 +38,9 @@ class ParticipantsRepository(CRUDRepository):
             result = await self._collection.find_one(filter={"email": email})
 
             if result:
-                return Ok(Participant(id=result["_id"], **result))
+                mapping = dict(result)  # Since result is immutable
+                mapping["id"] = str(mapping.pop("_id"))
+                return Ok(Participant(**mapping))
 
             return Err(ParticipantNotFoundError())
         except Exception as e:
