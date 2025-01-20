@@ -10,7 +10,7 @@
   --slide-size-lg: calc(100% / 4);
   --text-high-contrast-rgb-value: #213547;
   --text-body: #ffffff;
-  --detail-medium-contrast: rgba(40, 69, 168, 0.87);
+  --detail-medium-contrast: rgba(69, 92, 168, 0.87);
 }
 
 .embla__viewport {

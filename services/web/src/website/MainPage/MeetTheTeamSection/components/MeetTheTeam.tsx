@@ -31,9 +31,8 @@ const OPTIONS: EmblaOptionsType = {
 
 export default function PastEventSection() {
     const [selected, setSelected] = useState('All');
-    console.log(OPTIONS);
     const handleSelect = (value: string) => {
-    setSelected(value);
+        setSelected(value);
     };
 
     const initialSlides: React.ReactElement[] = hubbers
@@ -43,7 +42,7 @@ export default function PastEventSection() {
     const SLIDES: React.ReactElement[][] = chunkArray(initialSlides, 2);
 
     return (
-        <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto">
+        <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto ">
             <h2 className="font-semibold text-3xl text-secondary text-[#9CBEFF] mb-10 ">Meet the team</h2>
             <div className="flex flex-wrap gap-3 ">
                 {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) => (
