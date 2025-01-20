@@ -1,45 +1,41 @@
+# The HTTP handlers defined here are responsible for accepting requests passed from the routes, and returning responses
+# in JSON format. This separation is done in order to improve testability and modularity.
+#
+# To return a custom type-safe JSON response we recommend using the server.schemas.response_schemas.Response object. By
+# doing so you will be returning ResponseModels (aka ResponseSchemas in OpenAPI spec terms), and adhering to the
+# OpenAPI spec defined in the routes via `responses` or `response_model` arguments.
+#
+# For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
+
 from result import is_err
 from starlette import status
-from starlette.responses import Response
 
-from src.server.exception import ParticipantNotFoundError, TeamNotFoundError
-from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantDeletedResponse, TeamDeletedResponse
+from src.server.handlers.base_handler import BaseHandler
+from src.server.schemas.response_schemas.schemas import (
+    ParticipantDeletedResponse,
+    TeamDeletedResponse,
+    Response,
+)
 from src.service.hackathon_service import HackathonService
 
 
-class HackathonManagementHandlers:
+class HackathonManagementHandlers(BaseHandler):
 
     def __init__(self, service: HackathonService) -> None:
         self._service = service
 
-    async def delete_team(self, response: Response, team_id: str) -> TeamDeletedResponse | ErrResponse:
-
+    async def delete_team(self, team_id: str) -> Response:
         result = await self._service.delete_team(team_id)
 
         if is_err(result):
-            if isinstance(result.err_value, TeamNotFoundError):
-                response.status_code = status.HTTP_404_NOT_FOUND
-                return ErrResponse(error="Could not find the team with the specified id")
+            return self.handle_error(result.err_value)
 
-            response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return ErrResponse(error="An unexpected error occurred during the deletion of Team")
+        return Response(TeamDeletedResponse(team=result.ok_value), status_code=status.HTTP_200_OK)
 
-        response.status_code = status.HTTP_200_OK
-        return TeamDeletedResponse(team=result.ok_value)
-
-    async def delete_participant(
-        self, response: Response, participant_id: str
-    ) -> ParticipantDeletedResponse | ErrResponse:
-
+    async def delete_participant(self, participant_id: str) -> Response:
         result = await self._service.delete_participant(participant_id)
 
         if is_err(result):
-            if isinstance(result.err_value, ParticipantNotFoundError):
-                response.status_code = status.HTTP_404_NOT_FOUND
-                return ErrResponse(error="Could not find the participant with the specified id")
+            return self.handle_error(result.err_value)
 
-            response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-            return ErrResponse(error="An unexpected error occurred during the deletion of Participant")
-
-        response.status_code = status.HTTP_200_OK
-        return ParticipantDeletedResponse(participant=result.ok_value)
+        return Response(ParticipantDeletedResponse(participant=result.ok_value), status_code=status.HTTP_200_OK)

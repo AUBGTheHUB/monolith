@@ -3,11 +3,17 @@ from os import environ
 from threading import Lock
 from typing import Any, Dict, cast
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
+from src.server.exception import (
+    JwtDecodeError,
+    JwtDecodeSchemaMismatch,
+    JwtExpiredSignatureError,
+    JwtInvalidSignatureError,
+)
 import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 
-from src.server.schemas.jwt_schemas.jwt_user_data_schema import BaseTypedDict
+from src.server.schemas.jwt_schemas.schemas import BaseTypedDict
 
 LOG = get_logger()
 
@@ -68,22 +74,22 @@ class JwtUtility:
             # jwt token
             for key in schema.__annotations__.keys():
                 if key not in decoded_token:
-                    return Err("The decoded token does not correspond with the provided schema.")
+                    return Err(JwtDecodeSchemaMismatch())
 
             # We check both sides since we dont know which of the dictionaries is bigger than the other
             for key in decoded_token:
                 if key not in schema.__annotations__.keys():
-                    return Err("The decoded token does not correspond with the provided schema.")
+                    return Err(JwtDecodeSchemaMismatch())
 
             return Ok(cast(T, decoded_token))
 
         except ExpiredSignatureError:
-            return Err("The JWT token has expired.")
+            return Err(JwtExpiredSignatureError())
 
         except InvalidSignatureError:
-            return Err("The JWT token has invalid signature.")
+            return Err(JwtInvalidSignatureError())
 
         except DecodeError:
             # We log the exception DecodeError as we want to be able to trace what exactly has caused the error
             LOG.exception("There was a a general error while decoding the JWT token.")
-            return Err("There was a a general error while decoding the JWT token. Checks its format again.")
+            return Err(JwtDecodeError())
