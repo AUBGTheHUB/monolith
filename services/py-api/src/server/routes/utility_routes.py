@@ -15,7 +15,5 @@ def create_utility_handler(db_manager: DB_MANAGER) -> UtilityHandlers:
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
 @utility_router.get("/ping", responses={200: {"model": PongResponse}, 503: {"model": ErrResponse}})
-async def ping(
-    response: Response, handler: UtilityHandlers = Depends(create_utility_handler)
-) -> PongResponse | ErrResponse:
-    return await handler.ping_services(response)
+async def ping(handler: UtilityHandlers = Depends(create_utility_handler)) -> Response:
+    return await handler.ping_services()
