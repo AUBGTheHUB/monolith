@@ -31,3 +31,17 @@ services:
 networks:
   monolith:
     driver: bridge
+
+secrets:
+  env:
+    external: true
+  address:
+    external: true
+  domain:
+    external: true
+  db-url:
+    external: true
+  secret-key:
+    external: true
+  secret-auth-token:
+    external: true
