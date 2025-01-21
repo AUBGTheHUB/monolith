@@ -10,11 +10,11 @@ permissions:
 jobs:
   run-backend-tests:
     name: Call the backend test workflow
-    uses: AUBGTheHub/monolith/.github/workflows/pytests.yml@main
+    uses: AUBGTheHub/monolith/.github/workflows/pytests.yml@implement-cd-pipeline
 
   run-frontend-tests:
     name: Call the frontend test workflow
-    uses: AUBGTheHub/monolith/.github/workflows/webtests.yml@main
+    uses: AUBGTheHub/monolith/.github/workflows/webtests.yml@implement-cd-pipeline
 
   build-and-push-image:
     runs-on: ubuntu-latest
