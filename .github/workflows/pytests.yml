@@ -1,6 +1,7 @@
 name: Unit and Integration tests with pytest
 
 on:
+  workflow_call:
   pull_request:
     types: [ assigned, opened, synchronize, reopened ]
     paths:
