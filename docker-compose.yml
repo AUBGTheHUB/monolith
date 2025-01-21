@@ -1,11 +1,21 @@
 services:
   py-api:
-    build:
-      context: ./services/py-api
-      target: runtime
-    container_name: py-api
-    env_file:
-      - "./services/py-api/.env"
+    image: ghcr.io/AUBGTheHUB/monolith:${GIT_COMMIT_HASH:-latest}
+    secrets:
+      - env
+      - address
+      - domain
+      - db-url
+      - secret-key
+      - secret-auth-token
+    environment:
+      - ENV=/run/secrets/env
+      - ADDRESS=/run/secrets/address
+      - DOMAIN=/run/secrets/domain
+      - PORT=8080
+      - DATABASE_URL=/run/secrets/db-url
+      - SECRET_KEY=/run/secrets/secret-key
+      - SECRET_AUTH_TOKEN=/run/secrets/secret-auth-token
     expose:
       - "8080"
     ports:
