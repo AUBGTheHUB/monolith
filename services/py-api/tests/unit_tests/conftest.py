@@ -73,6 +73,7 @@ def participant_repo_mock() -> Mock:
     participant_repo.create = AsyncMock()
     participant_repo.delete = AsyncMock()
     participant_repo.get_number_registered_teammates = AsyncMock()
+    participant_repo.get_verified_random_participants_count = AsyncMock()
 
     return participant_repo
 
@@ -90,6 +91,7 @@ def team_repo_mock() -> Mock:
     team_repo.update = AsyncMock()
     team_repo.create = AsyncMock()
     team_repo.delete = AsyncMock()
+    team_repo.get_verified_registered_teams_count = AsyncMock()
 
     return team_repo
 
@@ -104,6 +106,11 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
+    hackathon_service.create_random_participant = AsyncMock()
+    hackathon_service.create_invite_link_participant = AsyncMock()
+    hackathon_service.check_team_capacity = AsyncMock()
+    hackathon_service.verify_random_participant = AsyncMock()
+    hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
 
@@ -127,7 +134,9 @@ def participant_registration_service_mock() -> Mock:
     `p_reg_service.method_name.return_value=some_return_value`"""
 
     p_reg_service = Mock(spec=ParticipantRegistrationService)
-    p_reg_service.register_admin_participant.return_value = AsyncMock()
+    p_reg_service.register_admin_participant = AsyncMock()
+    p_reg_service.register_random_participant = AsyncMock()
+    p_reg_service.register_admin_participant = AsyncMock()
 
     return p_reg_service
 
@@ -136,7 +145,8 @@ def participant_registration_service_mock() -> Mock:
 def participant_verification_service_mock() -> Mock:
     """This is a mock obj of ParticipantVerificationService."""
     p_verify_service = Mock(spec=ParticipantVerificationService)
-    p_verify_service.verify_random_participant.return_value = AsyncMock()
+    p_verify_service.verify_random_participant = AsyncMock()
+    p_verify_service.verify_admin_participant = AsyncMock()
 
     return p_verify_service
 

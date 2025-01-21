@@ -20,7 +20,8 @@ class DatabaseManager(metaclass=SingletonMeta):
     could safely use across our application through the interface of the DatabaseManager"""
 
     # Set the database name based on the environment variable, defaulting to "TheHubDEV".
-    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD"}.get(str(environ.get("ENV")), "TheHubDEV")
+    # DEV and LOCAL environments are both using the same database `TheHubDEV`
+    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD"}.get(str(environ["ENV"]), "TheHubDEV")
 
     def __init__(self) -> None:
         # The mongo client has a conn pool under the hood. We set a min number of idle connections that the pool has
