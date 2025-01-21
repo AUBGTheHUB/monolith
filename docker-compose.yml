@@ -7,7 +7,7 @@ services:
       - domain
       - db-url
       - secret-key
-      - secret-auth-token
+      - secret-auth-key
     environment:
       - ENV=/run/secrets/env
       - ADDRESS=/run/secrets/address
@@ -15,7 +15,7 @@ services:
       - PORT=8080
       - DATABASE_URL=/run/secrets/db-url
       - SECRET_KEY=/run/secrets/secret-key
-      - SECRET_AUTH_TOKEN=/run/secrets/secret-auth-token
+      - SECRET_AUTH_TOKEN=/run/secrets/secret-auth-key
     expose:
       - "8080"
     ports:
@@ -43,5 +43,5 @@ secrets:
     external: true
   secret-key:
     external: true
-  secret-auth-token:
+  secret-auth-key:
     external: true
