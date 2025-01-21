@@ -35,8 +35,8 @@ jobs:
           context: ./services/py-api/
           push: true
           tags: |
-            ghcr.io/AUBGTheHUB/monolith:latest
-            ghcr.io/AUBGTheHUB/monolith:${{ github.sha }}
+            ghcr.io/aubgthehub/monolith:latest
+            ghcr.io/aubgthehub/monolith:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
