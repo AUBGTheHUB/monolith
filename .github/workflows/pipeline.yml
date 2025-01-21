@@ -10,9 +10,11 @@ permissions:
 
 jobs:
   run-backend-tests:
+    name: Call the backend test workflow
     uses: ./.github/workflows/pytests.yml@main
 
   run-frontend-tests:
+    name: Call the frontend test workflow
     uses: ./.github/workflows/webtests.yml@main
 
   build-and-push-image:
