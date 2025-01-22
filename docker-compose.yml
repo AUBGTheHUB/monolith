@@ -30,7 +30,7 @@ services:
 
 networks:
   monolith:
-    driver: bridge
+    driver: overlay
 
 secrets:
   env:
