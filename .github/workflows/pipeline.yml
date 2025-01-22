@@ -1,8 +1,13 @@
 name: Deployment Pipeline
 
+
 on:
   workflow_dispatch:
   push:
+
+
+permissions:
+  packages: write
 
 jobs:
   build-and-push-image:
