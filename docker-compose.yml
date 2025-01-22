@@ -9,13 +9,13 @@ services:
       - secret-key
       - secret-auth-key
     environment:
-      - ENV=/run/secrets/env
-      - ADDRESS=/run/secrets/address
-      - DOMAIN=/run/secrets/domain
-      - PORT=8080
-      - DATABASE_URL=/run/secrets/db-url
-      - SECRET_KEY=/run/secrets/secret-key
-      - SECRET_AUTH_TOKEN=/run/secrets/secret-auth-key
+      - ENV: /run/secrets/env
+      - ADDRESS: /run/secrets/address
+      - DOMAIN: /run/secrets/domain
+      - PORT: 8080
+      - DATABASE_URL: /run/secrets/db-url
+      - SECRET_KEY: /run/secrets/secret-key
+      - SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
     expose:
       - "8080"
     ports:
