@@ -1,6 +1,6 @@
 services:
   py-api:
-    image: ghcr.io/AUBGTheHUB/monolith:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/AUBGTheHUB/monolith-py-api:${GIT_COMMIT_HASH:-latest}
     secrets:
       - env
       - address
