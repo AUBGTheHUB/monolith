@@ -24,14 +24,6 @@ services:
       - ./services/py-api/shared:/app/shared
       - /etc/letsencrypt:/etc/letsencrypt
 
-    networks:
-      - monolith
-    restart: always
-
-networks:
-  monolith:
-    driver: overlay
-
 secrets:
   env:
     external: true
