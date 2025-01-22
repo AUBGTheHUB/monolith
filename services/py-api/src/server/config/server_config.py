@@ -80,4 +80,6 @@ def start() -> None:
             workers=2 * (cpu_count() or 0) + 1,
         )
     else:
-        raise ValueError("The ENV environment variable should be PROD, DEV, LOCAL OR TEST")
+        raise ValueError(
+            f"The ENV environment variable should be PROD, DEV, LOCAL OR TEST. Actual value: {server_config.ENV}"
+        )
