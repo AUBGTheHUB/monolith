@@ -5,9 +5,7 @@ on:
   push:
 
 permissions:
-  packages:
-    - write
-    - read
+  packages: "write, read"
 
 jobs:
   build-and-push-image:
