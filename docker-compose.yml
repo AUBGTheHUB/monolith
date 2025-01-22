@@ -21,7 +21,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./services/py-api/shared:/app/shared
+      - /services/py-api/shared:/app/shared
       - /etc/letsencrypt:/etc/letsencrypt
 
 secrets:
