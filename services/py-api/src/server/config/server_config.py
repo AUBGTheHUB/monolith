@@ -14,6 +14,25 @@ from src.utils import SingletonMeta
 # across our codebase
 load_dotenv(override=True)
 
+import os
+
+
+def read_secret(secret_path):
+    try:
+        with open(secret_path, "r") as secret_file:
+            return secret_file.read().strip()
+    except FileNotFoundError:
+        raise Exception(f"Secret not found at {secret_path}")
+
+
+# Read secrets and set them as environment variables
+os.environ["ENV"] = read_secret("/run/secrets/env")
+os.environ["ADDRESS"] = read_secret("/run/secrets/address")
+os.environ["DOMAIN"] = read_secret("/run/secrets/domain")
+os.environ["DATABASE_URL"] = read_secret("/run/secrets/db-url")
+os.environ["SECRET_KEY"] = read_secret("/run/secrets/secret-key")
+os.environ["SECRET_AUTH_TOKEN"] = read_secret("/run/secrets/secret-auth-key")
+
 # We also configure the logger here. This should be done before calling LOG = get_logger(), which we use in almost
 # every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
 configure_app_logger(environ["ENV"])
