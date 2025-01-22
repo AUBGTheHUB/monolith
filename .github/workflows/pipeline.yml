@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   push:
 
-permissions:
-  packages: "write, read"
-
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
