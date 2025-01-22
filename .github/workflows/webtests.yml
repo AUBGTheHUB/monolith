@@ -1,7 +1,6 @@
 name: Build web and test internal library
 
 on:
-  workflow_call:
   pull_request:
       types: [assigned, opened, synchronize, reopened]
       paths:

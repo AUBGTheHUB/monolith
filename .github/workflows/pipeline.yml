@@ -8,19 +8,8 @@ permissions:
   packages: write
 
 jobs:
-  run-backend-tests:
-    name: Call the backend test workflow
-    uses: AUBGTheHub/monolith/.github/workflows/pytests.yml@implement-cd-pipeline
-
-  run-frontend-tests:
-    name: Call the frontend test workflow
-    uses: AUBGTheHub/monolith/.github/workflows/webtests.yml@implement-cd-pipeline
-
   build-and-push-image:
     runs-on: ubuntu-latest
-    needs:
-      - run-backend-tests
-      - run-frontend-tests
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

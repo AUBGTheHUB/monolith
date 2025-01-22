@@ -8,21 +8,6 @@ on:
       - 'services/py-api/**/*.lock'
       - 'services/py-api/**/*.toml'
 
-  workflow_call:
-    inputs:
-      python-version:
-        description: 'Python version to use for tests'
-        required: false
-        type: string
-        default: "3.12.6"
-
-    secrets:
-      ENV: ${{ secrets.ENV }}
-      PORT: ${{ secrets.PORT }}
-      ADDRESS: ${{ secrets.ADDRESS }}
-      DOMAIN: ${{ secrets.DOMAIN }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
 defaults:
   run:
     working-directory: services/py-api/tests/
