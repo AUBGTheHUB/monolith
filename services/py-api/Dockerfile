@@ -40,6 +40,9 @@ WORKDIR /app
 COPY src ./src
 COPY shared ./shared
 
+# For documentation between the person who builds the image and the person who runs the container, about which ports
+# are intended to be published
+# https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
 
 HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
@@ -52,4 +55,4 @@ HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
     fi
 
 # Run the uvicorn server
-ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
+ENTRYPOINT ["python", "-m", "src.app_entrypoint"]
