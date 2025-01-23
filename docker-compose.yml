@@ -6,6 +6,11 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
+      # in-memory filesystem.
+      # IMPORTANT: Services should implement an app-level logic to read the decrypted values from those mounted files,
+      # otherwise the values of these env variable will stay the mounted paths!
+      # https://docs.docker.com/engine/swarm/secrets/#how-docker-manages-secrets
       ENV: /run/secrets/env
       ADDRESS: /run/secrets/address
       DOMAIN: /run/secrets/domain
@@ -28,6 +33,8 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
 
 secrets:
+  # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
+  # To set a new secret key-value pair you may use: `prinf "toniMsecret" | docker secret create toni -`
   env:
     external: true
   address:
