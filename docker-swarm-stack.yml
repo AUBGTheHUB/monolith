@@ -7,6 +7,7 @@ services:
         published: 8080
         protocol: tcp
         mode: host
+
     environment:
       # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
       # in-memory filesystem.

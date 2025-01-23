@@ -1,4 +1,4 @@
-from src.environemnt import load_env
+from src.environment import load_env
 
 load_env()
 
