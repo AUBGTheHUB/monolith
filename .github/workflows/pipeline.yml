@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      # TODO: add docs about this
       - name: create env file
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
