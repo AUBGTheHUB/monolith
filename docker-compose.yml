@@ -1,8 +1,6 @@
 services:
   py-api:
     image: ghcr.io/aubgthehub/monolith:${GIT_COMMIT_HASH:-latest}
-    expose:
-      - "8080"
     ports:
       - "8080:8080"
     environment:
