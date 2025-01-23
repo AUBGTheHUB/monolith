@@ -44,6 +44,15 @@ jobs:
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
 
+          # Set DOMAIN based on the branch being pushed
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
+          elif [[ "${{ github.ref_name }}" == "master" ]]; then
+            echo "DOMAIN=thehub-aubg.com" >> ./envfile
+          else
+            echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
+          fi
+
       # Below we use a GitHub Actions template that is created for the purpose of deploying utilizing both Docker Stack and Docker Context.
       # You can find the source repo here: https://github.com/cssnr/stack-deploy-action
       # name - This will be used as a tag to the Docker Stack the we are going to deploy to Docker Swarm installed on the VPS

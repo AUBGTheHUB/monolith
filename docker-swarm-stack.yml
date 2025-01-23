@@ -15,16 +15,15 @@ services:
       # otherwise the values of these env variable will stay the mounted paths!
       # https://docs.docker.com/engine/swarm/secrets/#how-docker-manages-secrets
       ENV: /run/secrets/env
-      ADDRESS: /run/secrets/address
-      DOMAIN: /run/secrets/domain
+      # Getting the domain from the context of the Action runner
+      DOMAIN: ${DOMAIN}
+      ADDRESS: 0.0.0.0
       PORT: 8080
       DATABASE_URL: /run/secrets/db-url
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
     secrets:
       - env
-      - address
-      - domain
       - db-url
       - secret-key
       - secret-auth-key
@@ -39,10 +38,6 @@ secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMsecret" | docker secret create toni -`
   env:
-    external: true
-  address:
-    external: true
-  domain:
     external: true
   db-url:
     external: true
