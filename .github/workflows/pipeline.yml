@@ -23,8 +23,6 @@ jobs:
 
       - name: Build and push Docker image for the python API
         uses: docker/build-push-action@v6
-        env:
-          DOMAIN: "dev.thehub-aubg.com"
         with:
           context: ./services/py-api/
           push: true
