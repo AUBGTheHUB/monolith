@@ -67,6 +67,7 @@ class TransactionManager:
                     delay *= 2  # exponential backoff
                     continue
 
+                LOG.debug("Retrying of tx failed", err=exc, error_labels=exc._error_labels)
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
@@ -95,6 +96,7 @@ class TransactionManager:
                     delay *= 2  # exponential backoff
                     continue
 
+                LOG.debug("Retrying of commit tx failed", err=exc, error_labels=exc._error_labels)
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
                 raise exc
 
