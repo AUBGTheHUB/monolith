@@ -55,4 +55,4 @@ HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
     fi
 
 # Run the uvicorn server
-ENTRYPOINT ["python", "-m", "src.app_entrypoint"]
+ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]

@@ -60,7 +60,7 @@ def start() -> None:
         LOG.debug("To open swagger/docs of the API visit: https://localhost:8080/api/v3/docs")
 
     run(
-        app="src.app_entrypoint:app",
+        app="src.server.app_entrypoint:app",
         host=server_config.ADDRESS,
         port=server_config.PORT,
         reload=server_config.ENV == "LOCAL",

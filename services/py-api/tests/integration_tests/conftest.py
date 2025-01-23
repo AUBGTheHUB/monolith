@@ -5,7 +5,7 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
-from src.app_entrypoint import app
+from src.server.app_entrypoint import app
 from os import environ
 
 LOG = get_logger()
