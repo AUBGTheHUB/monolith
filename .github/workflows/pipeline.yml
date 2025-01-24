@@ -17,13 +17,10 @@ jobs:
       matrix:
         include:
           - dockerfile: ./services/py-api/Dockerfile
-            image: |
-              ghcr.io/aubgthehub/monolith-backend:latest
-              ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+            image: ghcr.io/aubgthehub/monolith-backend
           - dockerfile: ./services/web/Dockerfile
-            image: |
-              ghcr.io/aubgthehub/monolith-web:latest
-              ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+            image: ghcr.io/aubgthehub/monolith-web
+
     permissions:
       contents: read
       packages: write
