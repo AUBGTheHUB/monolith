@@ -38,6 +38,7 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 WORKDIR /app
 
 COPY src ./src
+
 COPY shared ./shared
 
 # For documentation between the person who builds the image and the person who runs the container, about which ports

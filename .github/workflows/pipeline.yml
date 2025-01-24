@@ -8,28 +8,13 @@ permissions:
   packages: write
 
 jobs:
+
   build-and-push-images:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - dockerfile: ./services/py-api/Dockerfile
-            image: ghcr.io/aubgthehub/monolith-backend
-          - dockerfile: ./services/web/Dockerfile
-            image: ghcr.io/aubgthehub/monolith-web
-
-    permissions:
-      contents: read
-      packages: write
-
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
@@ -37,20 +22,23 @@ jobs:
           username: ${{ github.actor }} # https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ matrix.image }}
-
-      - name: Build and push Docker images for the WEB client and PY-API
+      - name: Build and push Docker image for the python API
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: ./services/py-api/
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ghcr.io/aubgthehub/monolith-backend:latest
+            ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
+
+      - name: Build and push Docker image for the WEB client
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/web/
+          push: true
+          tags: |
+            ghcr.io/aubgthehub/monolith-web:latest
+            ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -65,16 +53,14 @@ jobs:
       - name: create env file
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
-
           # Set DOMAIN based on the branch being pushed
           if [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
-          elif [[ "${{ github.ref_name }}" == "production" ]]; then
+          elif [[ "${{ github.ref_name }}" == "master" ]]; then
             echo "DOMAIN=thehub-aubg.com" >> ./envfile
           else
             echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
           fi
-
       # Below we use a GitHub Actions template that is created for the purpose of deploying utilizing both Docker Stack and Docker Context.
       # You can find the source repo here: https://github.com/cssnr/stack-deploy-action
       # name - This will be used as a tag to the Docker Stack the we are going to deploy to Docker Swarm installed on the VPS
@@ -84,7 +70,6 @@ jobs:
       # ssh_key - The private ssh key that is used to authenticate into the VPS user that we are utilizing for deployment (Should be stored in the repository secrets)
       # and finally we pass the ./envfile that was created by the step above in the working directory of the GitHub Actions runner.
       # This ./envfile is sourced by the runner and then used by docker stack when doing docker stack deploy to the VPS to pull the latest project image.
-
       # Links for further reading
       # Read more about Docker Stack: https://docs.docker.com/reference/cli/docker/stack/deploy/
       # Read more about Docker Swarm: https://forums.docker.com/t/docker-swarm-series-8th-publishing-modes/136972
