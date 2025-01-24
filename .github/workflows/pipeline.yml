@@ -8,8 +8,27 @@ permissions:
   packages: write
 
 jobs:
-  build-and-push-image:
+  build-and-push-images:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./services/py-api/Dockerfile
+            image: |
+              ghcr.io/aubgthehub/monolith-backend:latest
+              ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+          - dockerfile: ./services/web/Dockerfile
+            image: |
+              ghcr.io/aubgthehub/monolith-web:latest
+              ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+    permissions:
+      contents: read
+      packages: write
+
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,14 +40,20 @@ jobs:
           username: ${{ github.actor }} # https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image for the python API
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+
+      - name: Build and push Docker images for the WEB client and PY-API
         uses: docker/build-push-action@v6
         with:
-          context: ./services/py-api/
+          context: .
+          file: ${{ matrix.dockerfile }}
           push: true
-          tags: |
-            ghcr.io/aubgthehub/monolith:latest
-            ghcr.io/aubgthehub/monolith:${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +72,7 @@ jobs:
           # Set DOMAIN based on the branch being pushed
           if [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
-          elif [[ "${{ github.ref_name }}" == "master" ]]; then
+          elif [[ "${{ github.ref_name }}" == "production" ]]; then
             echo "DOMAIN=thehub-aubg.com" >> ./envfile
           else
             echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile

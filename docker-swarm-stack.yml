@@ -1,6 +1,6 @@
 services:
   py-api:
-    image: ghcr.io/aubgthehub/monolith:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
     # TODO: Read more about this and add docs
     ports:
       - target: 8080
@@ -33,6 +33,25 @@ services:
     volumes:
       - /services/py-api/shared:/app/shared
       - /etc/letsencrypt:/etc/letsencrypt
+
+  client:
+    image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+
+    depends_on:
+      - py_api
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/data/certs:/etc/nginx/certs
 
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
