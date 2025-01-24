@@ -51,7 +51,7 @@ services:
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ~/data/certs:/etc/nginx/certs
+      - /data/certs:/etc/nginx/certs
 
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
