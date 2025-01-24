@@ -25,7 +25,8 @@ services:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
     # TODO: Read more about this and add docs
     ports:
-      - protocol: tcp
+      - mode: host
+        protocol: tcp
         published: 8080
         target: 8080
 
@@ -43,14 +44,13 @@ services:
       DATABASE_URL: /run/secrets/db-url
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
+
     secrets:
       - env
       - db-url
       - secret-key
       - secret-auth-key
-    deploy:
-      update_config:
-        order: start-first
+
     volumes:
       - /services/py-api/shared:/app/shared
       - /etc/letsencrypt:/etc/letsencrypt
