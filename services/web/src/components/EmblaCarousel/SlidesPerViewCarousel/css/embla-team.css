@@ -1,5 +1,6 @@
 .team {
   max-width: 100rem;
+  min-height: 45rem;
   margin: 0;
   --slide-height: 19rem;
   --slide-spacing: 0.5rem;

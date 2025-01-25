@@ -15,7 +15,7 @@ export const MainPage = () => {
                     <PastEventSection />
                 </div>
             </div>
-            <div className="mt-40 bg-[#0a1222] py-[7.5rem] min-h-[68rem] relative overflow-hidden">
+            <div className="mt-40 bg-[#0a1222] pt-[7.5rem] pb-[3rem]  relative overflow-hidden">
                 <MeetTheTeam />
             </div>
             <Footer />
