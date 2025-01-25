@@ -23,12 +23,15 @@ ENV NODE_ENV=production
 # Copy built assets from `builder` image
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Add your nginx.conf
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the correct nginx configuration based on the domain
+RUN if [ "$DOMAIN" = "dev.thehub-aubg.com" ]; then \
+        cp nginx.dev.conf /etc/nginx/conf.d/default.conf; \
+    else \
+        cp nginx.conf /etc/nginx/conf.d/default.conf; \
+    fi
 
 # Expose port
 EXPOSE 80 443
 
 # Start nginx
-COPY nginx.conf.template /etc/nginx/nginx.conf.template
-ENTRYPOINT ["sh", "-c", "envsubst '${DOMAIN}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
+CMD ["nginx", "-g", "daemon off;"]
