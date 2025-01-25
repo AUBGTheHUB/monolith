@@ -35,10 +35,14 @@ async def verify_participant(jwt_token: str, _handler: VerificationHandlers = De
 @verification_router.post(
     "/send-email",
     status_code=200,
-    responses={200: {"model": VerificationEmailSentSuccessfullyResponse}, 404: {"model": ErrResponse}},
+    responses={
+        200: {"model": VerificationEmailSentSuccessfullyResponse},
+        400: {"model": ErrResponse},
+        404: {"model": ErrResponse},
+        409: {"model": ErrResponse},
+    },
 )
-# TODO: Connect it with the proper method in the handlers layer
 async def send_verification_email(
-    participant_id_body: ResendEmailParticipantData, _handler: VerificationHandlers = Depends(_handler)
+    email_verification_request_body: ResendEmailParticipantData, _handler: VerificationHandlers = Depends(_handler)
 ) -> Response:
-    return await _handler.send_verification_email(participant_id=participant_id_body.participant_id)
+    return await _handler.send_verification_email(participant_id=email_verification_request_body.participant_id)
