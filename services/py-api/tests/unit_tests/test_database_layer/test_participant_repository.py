@@ -154,3 +154,36 @@ async def test_update_participant_not_found(
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
+
+@pytest.mark.asyncio
+async def test_fetch_all_success(
+    db_manager_mock: Mock,
+    repo: ParticipantsRepository,
+    mock_random_participant: Participant,
+) -> None:
+    mock_participants_data = [
+        {
+            "name": mock_random_participant.name,
+            "email": mock_random_participant.email,
+            "is_admin": mock_random_participant.is_admin,
+            "email_verified": mock_random_participant.email_verified,
+            "team_id": mock_random_participant.team_id,
+            "created_at": mock_random_participant.created_at,
+            "updated_at": mock_random_participant.updated_at,
+        }
+        for _ in range(5)
+    ]
+    
+    db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=mock_participants_data)
+    
+    result = await repo.fetch_all()
+    
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 5
+    
+    for i, participant in enumerate(result.ok_value):
+        assert participant.name == mock_participants_data[i]["name"]
+        assert participant.email == mock_participants_data[i]["email"]
+        assert participant.is_admin == mock_participants_data[i]["is_admin"]
+        assert participant.email_verified == mock_participants_data[i]["email_verified"]
+        assert participant.team_id == mock_participants_data[i]["team_id"]
