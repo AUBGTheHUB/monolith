@@ -1,4 +1,3 @@
-from pydoc import doc
 from typing import Optional, List
 
 from bson import ObjectId
