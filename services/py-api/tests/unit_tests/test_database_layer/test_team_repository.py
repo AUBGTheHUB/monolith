@@ -207,9 +207,14 @@ async def test_fetch_by_id_general_error(db_manager_mock: Mock, repo: TeamsRepos
     assert isinstance(result.err_value, Exception)
 
 @pytest.mark.asyncio
-async def test_fetch_all_success(db_manager_mock: Mock, repo: TeamsRepository, mock_normal_team: Team) -> None:
+async def test_fetch_all_success(
+    db_manager_mock: Mock,
+    repo: TeamsRepository,
+    mock_normal_team: Team,
+) -> None:
     mock_teams_data = [
         {
+            "_id": mock_normal_team.id,
             "name": mock_normal_team.name,
             "is_verified": mock_normal_team.is_verified,
             "created_at": mock_normal_team.created_at,
@@ -221,7 +226,62 @@ async def test_fetch_all_success(db_manager_mock: Mock, repo: TeamsRepository, m
     db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=mock_teams_data)
     
     result = await repo.fetch_all()
+    
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 5
+    
+    for i, team in enumerate(result.ok_value):
+        assert team.name == mock_teams_data[i]["name"]
+        assert team.is_verified == mock_teams_data[i]["is_verified"]
+        assert team.created_at == mock_teams_data[i]["created_at"]
+        assert team.updated_at == mock_teams_data[i]["updated_at"]
+        assert team.id == str(mock_teams_data[i]["_id"])
 
+@pytest.mark.asyncio
+async def test_fetch_all_empty(
+    db_manager_mock: Mock,
+    repo: TeamsRepository,
+) -> None:
+    db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=[])
+    
+    result = await repo.fetch_all()
+    
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 0
+
+@pytest.mark.asyncio
+async def test_fetch_all_error(
+    db_manager_mock: Mock,
+    repo: TeamsRepository,
+) -> None:
+    db_manager_mock.get_collection.return_value.find = AsyncMock(side_effect=Exception("Database error"))
+    
+    result = await repo.fetch_all()
+    
+    assert isinstance(result, Err)
+    assert str(result.err_value) == "Database error"
+
+@pytest.mark.asyncio
+async def test_fetch_all_team_conversion(
+    db_manager_mock: Mock,
+    repo: TeamsRepository,
+    mock_normal_team: Team,
+) -> None:
+    mock_teams_data = [
+        {
+            "_id": mock_normal_team.id,
+            "name": mock_normal_team.name,
+            "is_verified": mock_normal_team.is_verified,
+            "created_at": mock_normal_team.created_at,
+            "updated_at": mock_normal_team.updated_at,
+        }
+        for _ in range(5)
+    ]
+    
+    db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=mock_teams_data)
+    
+    result = await repo.fetch_all()
+    
     assert isinstance(result, Ok)
     assert len(result.ok_value) == 5
     
@@ -231,22 +291,4 @@ async def test_fetch_all_success(db_manager_mock: Mock, repo: TeamsRepository, m
         assert team.is_verified == mock_teams_data[i]["is_verified"]
         assert team.created_at == mock_teams_data[i]["created_at"]
         assert team.updated_at == mock_teams_data[i]["updated_at"]
-
-@pytest.mark.asyncio
-async def test_fetch_all_empty(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=[])
-    
-    result = await repo.fetch_all()
-
-    assert isinstance(result, Ok)
-    assert len(result.ok_value) == 0
-
-@pytest.mark.asyncio
-async def test_fetch_all_error(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-
-    db_manager_mock.get_collection.return_value.find = AsyncMock(side_effect=Exception("Database error"))
-    
-    result = await repo.fetch_all()
-    
-    assert isinstance(result, Err)
-    assert str(result.err_value) == "Database error"
+        assert team.id == str(mock_teams_data[i]["_id"])
