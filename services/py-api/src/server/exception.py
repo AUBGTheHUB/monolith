@@ -53,7 +53,7 @@ class EmailRateLimitExceededError(CustomError):
     """Exception raised when the user has exceeded the rate limit for sending emails"""
 
     message = "The rate limit for sending emails has been exceeded"
-    status_code = status.HTTP_409_CONFLICT
+    status_code = status.HTTP_400_BAD_REQUEST
 
 
 class ParticipantAlreadyVerifiedError(CustomError):

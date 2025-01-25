@@ -1,6 +1,12 @@
 from fastapi import APIRouter, Depends
 from src.server.handlers.verification_handlers import VerificationHandlers
-from src.server.schemas.response_schemas.schemas import ErrResponse, ParticipantVerifiedResponse, Response
+from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
+from src.server.schemas.response_schemas.schemas import (
+    ErrResponse,
+    ParticipantVerifiedResponse,
+    Response,
+    VerificationEmailSentSuccessfullyResponse,
+)
 from src.service.participants_verification_service import ParticipantVerificationService
 from src.service.hackathon_service import HackathonService
 from src.server.routes.dependency_factory import _h_service
@@ -29,8 +35,10 @@ async def verify_participant(jwt_token: str, _handler: VerificationHandlers = De
 @verification_router.post(
     "/send-email",
     status_code=200,
-    responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}},
+    responses={200: {"model": VerificationEmailSentSuccessfullyResponse}, 404: {"model": ErrResponse}},
 )
 # TODO: Connect it with the proper method in the handlers layer
-async def send_verification_email(jwt_token: str, _handler: VerificationHandlers = Depends(_handler)) -> Response:
-    return {"message": "Should be working!"}
+async def send_verification_email(
+    participant_id_body: ResendEmailParticipantData, _handler: VerificationHandlers = Depends(_handler)
+) -> Response:
+    return await _handler.send_verification_email(participant_id=participant_id_body.participant_id)
