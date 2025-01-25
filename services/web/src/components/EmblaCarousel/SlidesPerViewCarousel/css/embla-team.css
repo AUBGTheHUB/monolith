@@ -1,6 +1,5 @@
 .team {
   max-width: 100rem;
-  min-height: 45rem;
   margin: 0;
   --slide-height: 19rem;
   --slide-spacing: 0.5rem;
@@ -141,6 +140,11 @@
   }
 }
 
+@media (min-width: 1500px){
+    .team{
+      min-height: 33rem;
+  }
+}
 
 @media (min-width: 640px){
   .embla__buttons{
@@ -166,6 +170,7 @@
     padding-left: var(--slide-spacing-sm);
   }
 }
+
 
 @media (min-width: 1500px) {
   .team .embla__container {
