@@ -1,12 +1,9 @@
 import logo from './images/hublogo.png';
-import './navigation.css'; // navigation stylesheet
-// this is the navigation bar that is shown if the window size is >= 700
-// it includes the logo and navigation links
 
 const NAV_ITEM = 'py-[22.5px] px-[10px] text-lg';
 const NAV_ITEM_A = 'text-white font-light';
 
-export default function DesktopNavComponent() {
+export default function DesktopNav() {
     return (
         <div className="w-full">
             <div className="w-full flex flex-row align-top bg-[#07064d]">
