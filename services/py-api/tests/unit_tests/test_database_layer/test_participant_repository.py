@@ -163,6 +163,7 @@ async def test_fetch_all_success(
 ) -> None:
     mock_participants_data = [
         {
+            "_id": mock_random_participant.id,
             "name": mock_random_participant.name,
             "email": mock_random_participant.email,
             "is_admin": mock_random_participant.is_admin,
@@ -187,6 +188,7 @@ async def test_fetch_all_success(
         assert participant.is_admin == mock_participants_data[i]["is_admin"]
         assert participant.email_verified == mock_participants_data[i]["email_verified"]
         assert participant.team_id == mock_participants_data[i]["team_id"]
+        assert participant.id == str(mock_participants_data[i]["_id"])
 
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
@@ -218,8 +220,10 @@ async def test_fetch_all_participant_conversion(
     repo: ParticipantsRepository,
     mock_random_participant: Participant,
 ) -> None:
+    # Mock participants data with '_id' and other participant fields
     mock_participants_data = [
         {
+            "_id": mock_random_participant.id,
             "name": mock_random_participant.name,
             "email": mock_random_participant.email,
             "is_admin": mock_random_participant.is_admin,
@@ -241,3 +245,8 @@ async def test_fetch_all_participant_conversion(
     for i, participant in enumerate(result.ok_value):
         assert isinstance(participant, Participant)
         assert participant.name == mock_participants_data[i]["name"]
+        assert participant.email == mock_participants_data[i]["email"]
+        assert participant.is_admin == mock_participants_data[i]["is_admin"]
+        assert participant.email_verified == mock_participants_data[i]["email_verified"]
+        assert participant.team_id == mock_participants_data[i]["team_id"]
+        assert participant.id == str(mock_participants_data[i]["_id"])

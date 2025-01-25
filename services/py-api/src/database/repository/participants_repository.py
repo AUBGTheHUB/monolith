@@ -41,17 +41,22 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         try:
             LOG.debug("Fetching all participants...")
 
-            participants_data = await self._collection.find({}, projection={"_id": 0})
+            participants_data = await self._collection.find({})
 
-            participants = [Participant(**doc) for doc in participants_data]
+            participants = []
+            for doc in participants_data:
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                participants.append(Participant(**doc_copy))
 
             LOG.debug(f"Fetched {len(participants)} participants.")
             return Ok(participants)
-        
+
         except Exception as e:
             LOG.exception(f"Failed to fetch all participants due to err {e}")
             return Err(e)
-
 
     async def update(
         self,
