@@ -49,7 +49,7 @@ export default function MeetTheTeamSection() {
                 className=" z-0 absolute blur-[10rem] h-[1490.43px] w-[1505.76px] top-[0rem] right-[-8rem] opacity-65 rotate-210 "
             ></img>
             <div className=" space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative ">
-                <h2 className="font-semibold text-3xl text-secondary text-[#9cbeff] mb-10 ">Meet the team</h2>
+                <h2 className="font-semibold text-3xl  text-[#9cbeff] mb-10 ">Meet the team</h2>
                 <div className="flex flex-wrap gap-3 ">
                     {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) =>
                         selected === label ? (
