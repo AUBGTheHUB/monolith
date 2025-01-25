@@ -25,7 +25,7 @@ services:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
     # TODO: Read more about this and add docs
     ports:
-      - mode: ingress
+      - mode: host
         protocol: tcp
         target: 8080
 
