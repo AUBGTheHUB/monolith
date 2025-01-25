@@ -32,3 +32,9 @@ class ParticipantVerificationService:
             return Err(HackathonCapacityExceededError())
 
         return await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)
+
+    # TODO: Create a method send_verification_email that checks if the rate limit is not exceeded and passes the control
+    # to the hackathon servcie. The hackathon service should implement a method called or something along these lines
+    # check_send_verification_email_rate_limit() that checks the if the rate limit is exceeded or not.
+    # if the check passes you pass the control to the HackathonService.send_verification_email() that should send the email
+    # like a background task and update the participant with the last_email_sent.

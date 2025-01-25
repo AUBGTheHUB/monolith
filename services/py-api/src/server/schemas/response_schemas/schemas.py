@@ -77,6 +77,11 @@ class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
     """
 
 
+class VerificationEmailSentSuccessfullyResponse(ParticipantDeletedResponse):
+    pass
+    # TODO: Add a docstring to describe the response
+
+
 class TeamDeletedResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

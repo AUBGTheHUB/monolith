@@ -35,3 +35,6 @@ class VerificationHandlers(BaseHandler):
             response_model=ParticipantVerifiedResponse(participant=result.ok_value[0], team=result.ok_value[1]),
             status_code=status.HTTP_200_OK,
         )
+
+    # TODO: Create a method named `send_verification_email` that calls the send_verification_email in the Verification Service layer
+    # The handler method just like the other handler methods catches the errors and passes them to the error handler.
