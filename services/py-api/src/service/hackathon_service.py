@@ -231,24 +231,24 @@ class HackathonService:
         self, participant_id: str
     ) -> Result[bool, ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
         """Check if the verification email rate limit has been reached"""
-        participant_exists = await self._participant_repo.fetch_by_id(obj_id=participant_id)
+        participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
 
-        if is_err(participant_exists):
-            return participant_exists
+        if is_err(participant):
+            return participant
 
-        if participant_exists.ok_value.email_verified:
+        if participant.ok_value.email_verified:
             return Err(ParticipantAlreadyVerifiedError())
 
         # If there hasn't been sent an email then we should return True
         # so we can invoke send_verification_email from the verification service
 
-        if participant_exists.ok_value.last_sent_email is None:
+        if participant.ok_value.last_sent_email is None:
             return Ok(value=True)
 
-        return Ok(
-            value=datetime.now() - participant_exists.ok_value.last_sent_email
-            >= timedelta(seconds=self.RATE_LIMIT_SECONDS)
+        is_within_rate_limit = datetime.now() - participant.ok_value.last_sent_email >= timedelta(
+            seconds=self.RATE_LIMIT_SECONDS
         )
+        return Ok(is_within_rate_limit)
 
     async def send_verification_email(
         self, participant_id: str
