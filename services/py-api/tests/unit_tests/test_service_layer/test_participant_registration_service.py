@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 from unittest.mock import Mock
 
 import pytest
@@ -36,7 +36,7 @@ async def test_register_admin_participant_success(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
@@ -69,7 +69,7 @@ async def test_register_admin_participant_duplicate_team_name_error(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     # Mock `create_participant_and_team_in_transaction` to return an `Err` for duplicate team name
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(
@@ -92,7 +92,7 @@ async def test_register_admin_participant_duplicate_email_error(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     # Mock `create_participant_and_team_in_transaction` to return an `Err` for duplicate email err
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(
@@ -115,7 +115,7 @@ async def test_register_admin_participant_general_error(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     # Mock `create_participant_and_team_in_transaction` to raise a general exception
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(Exception("Test error"))
@@ -138,7 +138,7 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Everything else is as expected
     team_repo_mock.create.return_value = Team(name=mock_admin_case_input_data.team_name)
@@ -168,7 +168,7 @@ async def test_register_admin_participant_order_of_operations(
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock full hackathon
-    hackathon_service_mock.check_capacity_register_admin_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Mock `create_participant_and_team_in_transaction` to raise a general exception
     # This is in order to show that we should return the first faced err and that we check first the hackathon capacity
@@ -191,7 +191,7 @@ async def test_register_random_participant_success(
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
@@ -227,7 +227,7 @@ async def test_register_random_participant_duplicate_email_error(
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     # Mock `create_random_participant` to return an `Err` for duplicate email err
     hackathon_service_mock.create_random_participant.return_value = Err(
@@ -250,7 +250,7 @@ async def test_register_random_participant_general_error(
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=True)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     # Mock `create_random_participant` to raise a general exception
     hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
@@ -272,7 +272,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock full hackathon
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
     # Everything else is as expected
     participant_repo_mock.create.return_value = Participant(
@@ -299,7 +299,7 @@ async def test_register_random_participant_order_of_operations(
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock full hackathon
-    hackathon_service_mock.check_capacity_register_random_participant_case = AsyncMock(return_value=False)
+    hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
     # Mock `create_random_participant` to raise a general exception
     # This is in order to show that we should return the first faced err and that we check first the hackathon capacity
@@ -325,7 +325,7 @@ async def test_register_link_participant_success(
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
     # Mock team has available space
-    hackathon_service_mock.check_team_capacity = AsyncMock(return_value=True)
+    hackathon_service_mock.check_team_capacity.return_value = True
 
     # Cereat a mock jwt_token to pass to the service method
     jwt_token = JwtUtility.encode_data(data=mock_jwt_user_registration)
@@ -366,7 +366,7 @@ async def test_register_link_participant_capacity_exceeded(
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
     # Mock the check to return Team Capacity Exceeded Error
-    hackathon_service_mock.check_team_capacity = AsyncMock(return_value=False)
+    hackathon_service_mock.check_team_capacity.return_value = False
 
     # Cereat a mock jwt_token to pass to the service method
     jwt_token = JwtUtility.encode_data(data=mock_jwt_user_registration)
