@@ -12,9 +12,9 @@ export const MainPage = () => {
                     <IdentitySection />
                     <PastEventSection />
                 </div>
-                <div className="mt-40 bg-gradient-to-b from-[#081223] to-[#2845a8] py-10 min-h-[58rem]">
-                    <MeetTheTeam />
-                </div>
+            </div>
+            <div className="mt-40 bg-[#1E1E1E] py-10 min-h-[58rem] relative overflow-hidden">
+                <MeetTheTeam />
             </div>
             <Footer />
         </Fragment>

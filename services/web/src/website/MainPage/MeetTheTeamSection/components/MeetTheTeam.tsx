@@ -5,6 +5,7 @@ import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-team.css';
 import EmblaCarousel from '@/components/EmblaCarousel/SlidesPerViewCarousel/js/EmblaCarousel.tsx';
 import { EmblaOptionsType } from 'embla-carousel';
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button.tsx';
 
 // Because the grid for the meet the team secion is 2x4
 // each slide of the carousel is going to be of 2 elements above each other
@@ -29,7 +30,7 @@ const OPTIONS: EmblaOptionsType = {
     containScroll: 'trimSnaps',
 };
 
-export default function PastEventSection() {
+export default function MeetTheTeamSection() {
     const [selected, setSelected] = useState('All');
     const handleSelect = (value: string) => {
         setSelected(value);
@@ -39,25 +40,43 @@ export default function PastEventSection() {
         .filter((hubbers) => hubbers.departments.includes(selected))
         .map((hubber, index) => <HubberModule imgSrc={hubber.picture} name={hubber.name} key={index} />);
 
-    const SLIDES: React.ReactElement[][] = chunkArray(initialSlides, 2);
+    const SLIDES = chunkArray(initialSlides, 2);
 
     return (
-        <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto ">
-            <h2 className="font-semibold text-3xl text-secondary text-[#9CBEFF] mb-10 ">Meet the team</h2>
-            <div className="flex flex-wrap gap-3 ">
-                {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) => (
-                    <button
-                        key={label}
-                        className={`px-4 py-2 text-sm font-semibold rounded-2xl border focus:outline-none ${
-                            selected === label ? 'bg-white text-blue-900' : 'text-gray-300 hover:white hover:text-white'
-                        }`}
-                        onClick={() => handleSelect(label)}
-                    >
-                        {label}
-                    </button>
-                ))}
+        <div className="meet-team">
+            <img
+                src="/meetTheTeam/meet_the_team_blob.svg"
+                className=" z-0 absolute blur-[10rem] h-[1490.43px] w-[1505.76px] top-[0rem] right-[-8rem] opacity-65 rotate-210 "
+            ></img>
+            <div className=" space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative ">
+                <h2 className="font-semibold text-3xl text-secondary text-[#9cbeff] mb-10 ">Meet the team</h2>
+                <div className="flex flex-wrap gap-3 ">
+                    {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) =>
+                        selected === label ? (
+                            <Button
+                                variant="team_selected"
+                                size="round_sm"
+                                className="font-semibold"
+                                key={label}
+                                onClick={() => handleSelect(label)}
+                            >
+                                {label}
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="team"
+                                size="round_sm"
+                                className="font-semibold"
+                                key={label}
+                                onClick={() => handleSelect(label)}
+                            >
+                                {label}
+                            </Button>
+                        ),
+                    )}
+                </div>
+                <EmblaCarousel type="team" slides={SLIDES} options={OPTIONS} />
             </div>
-            <EmblaCarousel type="team" slides={SLIDES} options={OPTIONS} />
         </div>
     );
 }

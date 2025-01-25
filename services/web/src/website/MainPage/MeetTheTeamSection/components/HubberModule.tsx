@@ -5,7 +5,7 @@ type HubberModuleType = {
 
 export default function HubberModule({ imgSrc, name }: HubberModuleType) {
     return (
-        <div className="flex flex-col min-w-28 max-w-80 max-[450px]:max-w-full h-70 p-2 border rounded-2xl font-semibold">
+        <div className="flex flex-col min-w-28 max-w-80 max-[1122px]:max-w-full h-70 p-2 border-[1px] rounded-[15px] border-[rgb(255,255,255,0.2)] font-semibold ">
             <div className="h-5/6 w-full">
                 <img src={imgSrc} alt={name} className="object-cover w-full h-full rounded-xl" />
             </div>
