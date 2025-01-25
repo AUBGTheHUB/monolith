@@ -47,6 +47,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
             LOG.debug(f"Fetched {len(participants)} participants.")
             return Ok(participants)
+        
         except Exception as e:
             LOG.exception(f"Failed to fetch all participants due to err {e}")
             return Err(e)

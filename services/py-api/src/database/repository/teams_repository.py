@@ -60,7 +60,19 @@ class TeamsRepository(CRUDRepository[Team]):
             return Err(e)
 
     async def fetch_all(self) -> Result[List[Team], Exception]:
-        raise NotImplementedError()
+        try:
+            LOG.debug("Fetching all teams...")
+
+            teams_data = await self._collection.find({}, projection={"_id": 0})
+
+            teams = [Team(**doc) for doc in teams_data]
+
+            LOG.debug(f"Fetched {len(teams)} teams.")
+            return Ok(teams)
+        
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all teams due to err {e}")
+            return Err(e)
 
     async def update(
         self,
