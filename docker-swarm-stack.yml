@@ -2,7 +2,6 @@ services:
 
   client:
     image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
-
     ports:
       - mode: host
         protocol: tcp
@@ -12,22 +11,21 @@ services:
         protocol: tcp
         published: 443
         target: 443
-
+    environment:
+      DOMAIN: ${DOMAIN}
     depends_on:
       - py-api
-
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /data/certs:/etc/nginx/certs
-
+      - /etc/letsencrypt:/etc/letsencrypt
+    networks:
+      - monolith
 
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
     # TODO: Read more about this and add docs
     ports:
-      - mode: host
+      - mode: ingress
         protocol: tcp
-        published: 8080
         target: 8080
 
     environment:
@@ -55,6 +53,8 @@ services:
       - /services/py-api/shared:/app/shared
       - /etc/letsencrypt:/etc/letsencrypt
 
+    networks:
+      - monolith
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMsecret" | docker secret create toni -`
@@ -66,3 +66,7 @@ secrets:
     external: true
   secret-auth-key:
     external: true
+
+networks:
+  monolith:
+    driver: overlay
