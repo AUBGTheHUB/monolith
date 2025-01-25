@@ -1,3 +1,4 @@
+from pydoc import doc
 from typing import Optional, List
 
 from bson import ObjectId
@@ -37,7 +38,18 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Err(e)
 
     async def fetch_all(self) -> Result[List[Participant], Exception]:
-        raise NotImplementedError()
+        try:
+            LOG.debug("Fetching all participants...")
+
+            cursor = self._collection.find({}, projection={"_id": 0})
+
+            participants = [Participant(**doc) async for doc in cursor]
+
+            LOG.debug(f"Fetched {len(participants)} participants.")
+            return Ok(participants)
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all participants due to err {e}")
+            return Err(e)
 
     async def update(
         self,
