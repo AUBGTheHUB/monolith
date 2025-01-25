@@ -25,9 +25,9 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy the correct nginx configuration based on the domain
 RUN if [ "$DOMAIN" = "dev.thehub-aubg.com" ]; then \
-        cp nginx.dev.conf /etc/nginx/conf.d/default.conf; \
+        cp /app/nginx.dev.conf /etc/nginx/conf.d/default.conf; \
     else \
-        cp nginx.conf /etc/nginx/conf.d/default.conf; \
+        cp /app/nginx.conf /etc/nginx/conf.d/default.conf; \
     fi
 
 # Expose port
