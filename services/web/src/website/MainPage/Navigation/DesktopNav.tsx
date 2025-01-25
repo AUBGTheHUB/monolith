@@ -7,10 +7,12 @@ export default function DesktopNav() {
     return (
         <div className="w-full">
             <div className="w-full flex flex-row align-top bg-[#07064d]">
-                <div className="w-[45%] items-center">
-                    <img src={logo} className="h-[70px] my-[15px] mx-auto" />
+                <div className="w-[42%] items-center">
+                    <a href="#past-events">
+                        <img src={logo} className="h-[70px] my-[15px] mx-auto" />
+                    </a>
                 </div>
-                <div className="w-[55%] flex flex-row items-center">
+                <div className="w-[58%] flex flex-row items-center">
                     <div className="mx-auto">
                         <span className={NAV_ITEM}>
                             <a href="#past-events" className={NAV_ITEM_A}>
