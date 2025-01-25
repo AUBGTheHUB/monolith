@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import DesktopNavComponent from './DesktopNavComponent.tsx';
 import MobileNavComponent from './MobileNav.tsx';
 
@@ -19,7 +19,7 @@ const ResponsiveNav = () => {
         };
     }, []);
 
-    return <div>{isDesktop ? <DesktopNavComponent /> : <MobileNavComponent />}</div>;
+    return <Fragment>{isDesktop ? <DesktopNavComponent /> : <MobileNavComponent />}</Fragment>;
 };
 
 export default ResponsiveNav;

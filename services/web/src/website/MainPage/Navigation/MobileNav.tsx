@@ -10,38 +10,35 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/
 
 export default function MobileNavComponent() {
     return (
-        <div>
-            <div className="navigation">
-                <div className="nav-bar flex align-top">
-                    <div className="items-left">
-                        <img src={logo} className="mobile-logo" />
-                    </div>
+        <div className="navigation">
+            <div className="nav-bar flex align-top bg-cyan-200">
+                <div className="items-left">
+                    <img src={logo} className="mobile-logo" />
                 </div>
-                <Sheet>
-                    <SheetTrigger>
-                        <img className="icon" src={hamburgerMenuIcon} />
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader></SheetHeader>
-                        <br />
-                        <div className="mobile-nav-item">
-                            <img src={photoIcon} />
-                            <a href="#past-events">Past Events</a>
-                        </div>
-                        <br />
-                        <div className="mobile-nav-item">
-                            <img src={threeDots} />
-                            <a href="#departments">Departments</a>
-                        </div>
-                        <br />
-                        <div className="mobile-nav-item">
-                            <img src={codeIcon} />
-                            <a href="#hackathon">Hackathon</a>
-                        </div>
-                    </SheetContent>
-                </Sheet>
             </div>
-            <div className="spacing"></div>
+            <Sheet>
+                <SheetTrigger>
+                    <img className="icon" src={hamburgerMenuIcon} />
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader></SheetHeader>
+                    <br />
+                    <div className="mobile-nav-item">
+                        <img src={photoIcon} />
+                        <a href="#past-events">Past Events</a>
+                    </div>
+                    <br />
+                    <div className="mobile-nav-item">
+                        <img src={threeDots} />
+                        <a href="#departments">Departments</a>
+                    </div>
+                    <br />
+                    <div className="mobile-nav-item">
+                        <img src={codeIcon} />
+                        <a href="#hackathon">Hackathon</a>
+                    </div>
+                </SheetContent>
+            </Sheet>
         </div>
     );
 }
