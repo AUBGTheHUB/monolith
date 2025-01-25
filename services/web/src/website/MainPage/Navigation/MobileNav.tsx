@@ -5,9 +5,9 @@ import threeDots from './images/departments.svg';
 import codeIcon from './images/hackathon.svg';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
-const A = 'text-black hover:text-black';
-const B = 'text-[18pt] text-left leading-[1.5em] my-4';
-const C = 'mt-[5px] float-left mr-[9px] h-[25px] w-[25px] align-middle';
+const NAV_ITEM_A = 'text-black hover:text-black';
+const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
+const NAV_ITEM_IMG = 'mt-[5px] float-left mr-[9px] h-[25px] w-[25px] align-middle';
 
 export default function MobileNavComponent() {
     return (
@@ -20,27 +20,27 @@ export default function MobileNavComponent() {
                 </div>
             </div>
             <Sheet>
+                <SheetTitle />
+                <SheetDescription />
                 <SheetTrigger>
                     <img className="absolute right-[15px] top-[25px] h-[50px] text-right" src={hamburgerMenuIcon} />
                 </SheetTrigger>
-                <SheetTitle />
-                <SheetDescription />
                 <SheetContent>
-                    <div className={B}>
-                        <a href="#past-events" className={A}>
-                            <img src={photoIcon} className={C} />
+                    <div className={NAV_ITEM}>
+                        <a href="#past-events" className={NAV_ITEM_A}>
+                            <img src={photoIcon} className={NAV_ITEM_IMG} />
                             Past Events
                         </a>
                     </div>
-                    <div className={B}>
-                        <a href="#departments" className={A}>
-                            <img src={threeDots} className={C} />
+                    <div className={NAV_ITEM}>
+                        <a href="#departments" className={NAV_ITEM_A}>
+                            <img src={threeDots} className={NAV_ITEM_IMG} />
                             Departments
                         </a>
                     </div>
-                    <div className={B}>
-                        <a href="#hackathon" className={A}>
-                            <img src={codeIcon} className={C} />
+                    <div className={NAV_ITEM}>
+                        <a href="#hackathon" className={NAV_ITEM_A}>
+                            <img src={codeIcon} className={NAV_ITEM_IMG} />
                             Hackathon
                         </a>
                     </div>
