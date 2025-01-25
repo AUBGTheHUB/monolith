@@ -1,5 +1,6 @@
-services:
+version: "3.7"
 
+services:
   client:
     image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
     ports:
