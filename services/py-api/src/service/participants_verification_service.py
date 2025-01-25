@@ -1,10 +1,15 @@
 from typing import Tuple
-from result import Err, Result
+from result import Err, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError, TeamNotFoundError
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 from src.service.hackathon_service import HackathonService
+from src.server.exception import (
+    HackathonCapacityExceededError,
+    ParticipantNotFoundError,
+    TeamNotFoundError,
+    EmailRateLimitExceededError,
+)
 
 
 class ParticipantVerificationService:
@@ -33,8 +38,15 @@ class ParticipantVerificationService:
 
         return await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)
 
-    # TODO: Create a method send_verification_email that checks if the rate limit is not exceeded and passes the control
-    # to the hackathon servcie. The hackathon service should implement a method called or something along these lines
-    # check_send_verification_email_rate_limit() that checks the if the rate limit is exceeded or not.
-    # if the check passes you pass the control to the HackathonService.send_verification_email() that should send the email
-    # like a background task and update the participant with the last_email_sent.
+    async def send_verification_email(
+        self, participant_id: str
+    ) -> Result[Participant, EmailRateLimitExceededError | Exception]:
+        result = await self._hackathon_service.check_send_verification_email_rate_limit(participant_id=participant_id)
+
+        if is_err(result):
+            return result
+
+        if result.ok_value is True:
+            return await self._hackathon_service.send_verification_email(participant_id=participant_id)
+
+        return Err(EmailRateLimitExceededError())

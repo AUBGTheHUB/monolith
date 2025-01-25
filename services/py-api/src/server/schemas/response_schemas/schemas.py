@@ -78,8 +78,9 @@ class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
 
 
 class VerificationEmailSentSuccessfullyResponse(ParticipantDeletedResponse):
-    pass
-    # TODO: Add a docstring to describe the response
+    """This response includes the updated body of the participant
+    after successfully resending a verification email
+    """
 
 
 class TeamDeletedResponse(BaseModel):

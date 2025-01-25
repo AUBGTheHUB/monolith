@@ -1,5 +1,6 @@
 from math import ceil
 from typing import Final, Optional, Tuple
+from datetime import datetime, timedelta
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
@@ -12,6 +13,7 @@ from src.database.transaction_manager import TransactionManager
 from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
+    ParticipantAlreadyVerifiedError,
     ParticipantNotFoundError,
     TeamNameMissmatchError,
     TeamNotFoundError,
@@ -30,6 +32,7 @@ class HackathonService:
 
     MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
     MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
+    RATE_LIMIT_SECONDS: Final[int] = 90
 
     def __init__(
         self,
@@ -223,3 +226,40 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
+
+    async def check_send_verification_email_rate_limit(
+        self, participant_id: str
+    ) -> Result[bool, ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
+        """Check if the verification email rate limit has been reached"""
+        participant_exists = await self._participant_repo.fetch_by_id(obj_id=participant_id)
+
+        if is_err(participant_exists):
+            return participant_exists
+
+        if participant_exists.ok_value.email_verified:
+            return Err(ParticipantAlreadyVerifiedError())
+
+        # If there hasn't been sent an email then we should return True
+        # so we can invoke send_verification_email from the verification service
+
+        if participant_exists.ok_value.last_sent_email is None:
+            return Ok(value=True)
+
+        return Ok(
+            value=datetime.now() - participant_exists.ok_value.last_sent_email
+            >= timedelta(seconds=self.RATE_LIMIT_SECONDS)
+        )
+
+    async def send_verification_email(
+        self, participant_id: str
+    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
+        # TODO: send email like a background task (part of another issue)
+
+        update_result = await self._participant_repo.update(
+            obj_id=participant_id, obj_fields=UpdateParticipantParams(last_sent_email=datetime.now())
+        )
+
+        if is_err(update_result):
+            return update_result
+
+        return Ok(update_result.ok_value)

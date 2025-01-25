@@ -3,7 +3,11 @@ from src.server.handlers.base_handler import BaseHandler
 from src.service.participants_verification_service import ParticipantVerificationService
 from starlette import status
 from src.utils import JwtUtility
-from src.server.schemas.response_schemas.schemas import ParticipantVerifiedResponse, Response
+from src.server.schemas.response_schemas.schemas import (
+    ParticipantVerifiedResponse,
+    Response,
+    VerificationEmailSentSuccessfullyResponse,
+)
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 
 
@@ -36,5 +40,14 @@ class VerificationHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-    # TODO: Create a method named `send_verification_email` that calls the send_verification_email in the Verification Service layer
-    # The handler method just like the other handler methods catches the errors and passes them to the error handler.
+    async def send_verification_email(self, participant_id: str) -> Response:
+
+        result = await self._service.send_verification_email(participant_id=participant_id)
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(
+            response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
+            status_code=status.HTTP_200_OK,
+        )
