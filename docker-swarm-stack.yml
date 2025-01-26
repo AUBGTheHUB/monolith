@@ -25,12 +25,12 @@ services:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
     # TODO: Read more about this and add docs
     ports:
-      - mode: host
+      - mode: ingress
         protocol: tcp
         target: 8080
-        published: 8080
-
-
+    deploy:
+      update_config:
+        order: start-first
     environment:
       # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
       # in-memory filesystem.
