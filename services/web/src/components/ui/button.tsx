@@ -18,6 +18,8 @@ const buttonVariants = cva(
                 ghost: 'hover:bg-accent hover:text-accent-foreground',
                 tag_xs: 'bg-card border text-xs opacity-40 cursor-auto',
                 link: 'text-primary underline-offset-4 hover:underline',
+                team: 'border border-input border-accent text-accent bg-background hover:bg-white hover:text-accent-foreground',
+                team_selected: 'border border-input border-accent bg-white text-accent-foreground',
             },
             size: {
                 default: 'h-10 px-4 py-2',
