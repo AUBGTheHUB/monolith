@@ -1,6 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import IdentitySection from './AboutSection/components/IdentitySection.tsx';
 import PastEventSection from './AboutSection/components/PastEventSection.tsx';
+import HackAUBGSection from './HackAUBGSection/HackAUBGSection.tsx';
 import { Footer } from './Footer/Footer.tsx';
 import MeetTheTeam from './MeetTheTeamSection/components/MeetTheTeam.tsx';
 import { Navigation } from './Navigation/Navigation.tsx';
@@ -18,6 +19,7 @@ export const MainPage = () => {
             <div className="mt-40 bg-[#0a1222] pt-[7.5rem] pb-[7rem]  relative overflow-hidden">
                 <MeetTheTeam />
             </div>
+            <HackAUBGSection />
             <Footer />
         </Fragment>
     );
