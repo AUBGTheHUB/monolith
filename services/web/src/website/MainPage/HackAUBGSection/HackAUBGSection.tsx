@@ -7,7 +7,7 @@ export default function HackAUBGSection() {
     return (
         <div className="flex flex-col justify-center">
             <div className="sm:w-3/5 w-11/12 flex mx-auto mb-4">
-                <p className="font-mont text-2xl font-semibold text-blue-950">HackAUBG</p>
+                <p className="font-mont sm:text-2xl text-3xl font-semibold text-blue-950 mt-8">HackAUBG</p>
             </div>
             <div className="flex flex-col items-center gap-5 sm:w-3/5 w-11/12 mx-auto">
                 <div className="flex flex-wrap lg:flex-nowrap justify-between items-center w-full max-w-[75rem] gap-5">
@@ -39,7 +39,7 @@ export default function HackAUBGSection() {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-wrap lg:flex-nowrap justify-between items-center w-full max-w-[75rem] gap-5 mb-5">
+                <div className="flex flex-wrap lg:flex-nowrap justify-between items-center w-full max-w-[75rem] gap-5 mb-12">
                     <div className="w-full lg:w-1/2 h-[15rem] p-5 flex flex-col items-start justify-center border rounded-3xl border-slate-300 box-border">
                         <div className="w-[80%] font-mont font-semibold text-2xl text-blue-950 mb-10">
                             <p>Guidance from current industry leaders</p>
