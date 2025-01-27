@@ -37,7 +37,25 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Err(e)
 
     async def fetch_all(self) -> Result[List[Participant], Exception]:
-        raise NotImplementedError()
+        try:
+            LOG.debug("Fetching all participants...")
+
+            participants_data = await self._collection.find({})
+
+            participants = []
+            for doc in participants_data:
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                participants.append(Participant(**doc_copy))
+
+            LOG.debug(f"Fetched {len(participants)} participants.")
+            return Ok(participants)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all participants due to err {e}")
+            return Err(e)
 
     async def update(
         self,
