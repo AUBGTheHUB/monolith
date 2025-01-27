@@ -1,8 +1,25 @@
 name: Deployment Pipeline
 
 on:
-  workflow_dispatch:
   push:
+    branches:
+      - 'main'
+      - 'production'
+    paths:
+      # Back-end Paths that will trigger re-deployment
+      - 'services/py-api/src/*.py'
+      - 'services/py-api/Dockerfile'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
+
+      # Front-end paths that will trigger re-deployment
+      - 'services/web/src/**'
+      - 'services/web/Dockerfile'
+      - 'services/web/package-lock.json'
+      - 'services/web/package.json'
+      - 'services/web/nginx.*.conf'
+      - 'services/web/*.config.*'
+      - 'services/web/tsconfig.*'
 
 permissions:
   packages: write
@@ -22,7 +39,13 @@ jobs:
           username: ${{ github.actor }} # https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # We run the job conditionally so that we only build the python API when changes are made to it
       - name: Build and push Docker image for the python API
+        if: |
+          contains(github.event.head_commit.modified, 'services/py-api/src/*.py') ||
+          contains(github.event.head_commit.modified, 'services/py-api/Dockerfile') ||
+          contains(github.event.head_commit.modified, 'services/py-api/**/*.lock') ||
+          contains(github.event.head_commit.modified, 'services/py-api/**/*.toml')
         uses: docker/build-push-action@v6
         with:
           context: ./services/py-api/
@@ -31,7 +54,17 @@ jobs:
             ghcr.io/aubgthehub/monolith-backend:latest
             ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
 
+
+      # We run the job conditionally so that we only build the Web Client when changes are made to it
       - name: Build and push Docker image for the WEB client
+        if: |
+          contains(github.event.head_commit.modified, 'services/web/src/**') ||
+          contains(github.event.head_commit.modified, 'services/web/Dockerfile') ||
+          contains(github.event.head_commit.modified, 'services/web/package-lock.json') ||
+          contains(github.event.head_commit.modified, 'services/web/package.json') ||
+          contains(github.event.head_commit.modified, 'services/web/nginx.*.conf') ||
+          contains(github.event.head_commit.modified, 'services/web/*.config.*') ||
+          contains(github.event.head_commit.modified, 'services/web/tsconfig.*')
         uses: docker/build-push-action@v6
         with:
           context: ./services/web/
@@ -79,7 +112,7 @@ jobs:
         with:
           name: monolith
           file: docker-swarm-stack.yml
-          host: dev.thehub-aubg.com
+          host: ${{ github.ref_name == 'main' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
           user: deploy
-          ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          ssh_key: ${{ github.ref_name == 'main' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
           env_file: ./envfile
