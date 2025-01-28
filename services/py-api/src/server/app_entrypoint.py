@@ -1,7 +1,3 @@
-from src.environment import load_env
-
-load_env()
-
 from src.server.config.app_factory import create_app
 from src.server.config.server_config import start
 

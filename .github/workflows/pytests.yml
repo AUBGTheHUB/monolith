@@ -2,7 +2,7 @@ name: Unit and Integration tests with pytest
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened]
+    types: [ assigned, opened, synchronize, reopened ]
     paths:
       - 'services/py-api/**/*.py'
       - 'services/py-api/**/*.lock'

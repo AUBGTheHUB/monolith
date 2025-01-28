@@ -19,7 +19,9 @@ class DatabaseManager(metaclass=SingletonMeta):
     pinging the database. The singleton behaviour allows us to have one instance of the AsyncIOMotorClient which we
     could safely use across our application through the interface of the DatabaseManager"""
 
-    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[environ["ENV"]]
+    # Set the database name based on the environment variable, defaulting to "TheHubDEV".
+    # DEV and LOCAL environments are both using the same database `TheHubDEV`
+    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD"}.get(str(environ["ENV"]), "TheHubDEV")
 
     def __init__(self) -> None:
         # The mongo client has a conn pool under the hood. We set a min number of idle connections that the pool has

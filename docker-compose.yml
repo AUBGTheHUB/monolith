@@ -1,0 +1,23 @@
+services:
+  py-api:
+    build:
+      context: ./services/py-api
+      target: runtime
+    container_name: py-api
+    env_file:
+      - "./services/py-api/.env"
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/py-api/shared:/app/shared
+      - /etc/letsencrypt:/etc/letsencrypt
+
+    networks:
+      - monolith
+    restart: always
+
+networks:
+  monolith:
+    driver: bridge
