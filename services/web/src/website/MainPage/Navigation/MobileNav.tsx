@@ -11,8 +11,8 @@ const NAV_ITEM_IMG = 'mt-[5px] float-left mr-[9px] h-[25px] w-[25px] align-middl
 
 export default function MobileNavComponent() {
     return (
-        <div className="navigation">
-            <div className="nav-bar flex align-top bg-[#07064d]">
+        <div className="navigation h-[10%]">
+            <div className="nav-bar flex align-top bg-transparent">
                 <div className="items-left">
                     <a href="/">
                         <img src={logo} className="h-[70px] m-[15px]" />
