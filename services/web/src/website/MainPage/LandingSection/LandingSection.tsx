@@ -18,7 +18,7 @@ export default function LandingSection() {
             <img
                 src="/landingSection/circuit.png"
                 alt="Circuit board"
-                className={`absolute w-full h-full object-cover sm:opacity-30 opacity-15 `}
+                className={`absolute w-full h-full object-cover sm:opacity-30 opacity-5 `}
                 style={{
                     WebkitMaskImage:
                         window.innerWidth >= 640
@@ -35,24 +35,24 @@ export default function LandingSection() {
             <img
                 src="/landingSection/blob-blue.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[1490.43px] right-[0rem] z-0"
+                className="absolute opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
             />
             <img
                 src="/landingSection/blob-cyan.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[852.29px] w-[895.03px] right-[-8vh] top-[30vh] z-0"
+                className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8vh] top-[30vh] z-0"
             />
             <div className="flex flex-col bg-[#0b1224] h-[100vh]">
                 <Navigation />
                 <div className="flex items-center justify-center font-mont z-10 h-[80%]">
                     <div className="sm:w-2/5 w-11/12">
-                        <div className="flex flex-col items-center text-center space-y-6">
+                        <div className="flex flex-col items-center text-center">
                             <div>
-                                <p className="text-2xl text-blue-200">WELCOME TO</p>
-                                <p className="text-7xl sm:text-8xl  font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
+                                <p className="text-2xl text-[#9CBEFF] mb-[10px]">WELCOME TO</p>
+                                <h1 className="text-7xl sm:text-8xl  font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
                                     THE HUB
-                                </p>
-                                <p className="text-base  text-white">
+                                </h1>
+                                <p className="text-base  text-white mt-[18px] mb-[30px]">
                                     A group of passionate IT-oriented students who strive to make technological
                                     innovation thrive within AUBG and beyond.
                                 </p>
@@ -60,14 +60,14 @@ export default function LandingSection() {
                             <div className="flex space-x-4">
                                 <Button
                                     className="border-[0.5px] border-white text-white bg-transparent rounded-3xl 
-                   sm:hover:bg-white sm:hover:text-blue-950
+                   sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Find out more
                                 </Button>
                                 <Button
                                     className="border-[0.5px] border-white text-white bg-transparent rounded-3xl 
-                   sm:hover:bg-white sm:hover:text-blue-950
+                   sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Contact us
