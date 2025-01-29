@@ -6,7 +6,7 @@ const NAV_ITEM_A =
 
 export default function DesktopNav() {
     return (
-        <div className="w-full">
+        <div className="w-full h-[10%]">
             <div className="w-full flex flex-row align-top bg-transparent">
                 <div className="w-[42%] items-center">
                     <a href="/">
