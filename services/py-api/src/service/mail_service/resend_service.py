@@ -1,10 +1,9 @@
 from asyncio import to_thread
 from multiprocessing.util import get_logger
-from os import getenv
 from typing import Literal
-from dotenv import load_dotenv
 from asyncio import sleep
 from resend.exceptions import ResendError
+from resend import Email
 
 import resend
 from result import Result, Ok, Err
@@ -17,15 +16,13 @@ from src.service.mail_service.utils import (
     load_email_verify_participant_html_template,
 )
 
-SENDER_EMAIL = "onboarding@resend.dev"
-# SENDER_EMAIL = "thehubaubg.noreply@gmail.com" # We obviously need to supply our own email here.
+from os import getenv
 
 LOG = get_logger()
-load_dotenv()
 
+SENDER_EMAIL = "onboarding@resend.dev"
 MAX_RETRIES = 3
 INITIAL_RETRY_DELAY_SECONDS = 1  # seconds
-RATE_LIMIT_SECONDS = 60
 UNRETRYABLE_STATUS_CODES = {401, 422, 403, 400}
 
 
@@ -41,30 +38,28 @@ class ResendMailService(MailService):
         self.client = resend
 
     async def send_email(
-        self, participant: Participant, subject: str, body_content: str, content_type: Literal["text", "html"] = "text"
-    ) -> Result[resend.Email, str]:
+        self, participant_email: str, subject: str, body_content: str, content_type: Literal["text", "html"] = "text"
+    ) -> Result[Email, str]:
         # Prepare the email parameters
-        params: resend.Emails.SendParams = {
+        params = {
             "from": f"THE HUB <{SENDER_EMAIL}>",
-            "to": [participant.email],
+            "to": [participant_email],
             "subject": subject,
             content_type: body_content,
         }
-
-        # Retry logic
 
         # Retry logic
         retry_delay = INITIAL_RETRY_DELAY_SECONDS
         for attempt in range(1, MAX_RETRIES + 1):
             try:
                 # Send the email asynchronously
-                email: resend.Email = await to_thread(self.client.Emails.send, params)
+                email = await to_thread(self.client.Emails.send, params)
                 LOG.info(f"Email sent successfully: {email}")
                 return Ok(email)
 
             except ResendError as e:
                 if e.code in UNRETRYABLE_STATUS_CODES:
-                    LOG.error(f"Unretryable error occurred: {e.code} - {e.message}. Not retrying.")
+                    LOG.exception(f"Unretryable error occurred: {e.code} - {e.message}. Not retrying.")
                     return Err(f"Failed to send email: {e.message}")
 
                 # handle 500 ApplicationError transient issue, retry allowed
@@ -86,43 +81,47 @@ class ResendMailService(MailService):
             await sleep(retry_delay)
             retry_delay *= 2  # Exponential backoff
 
-        LOG.error(f"Failed to send email after {MAX_RETRIES} attempts.")
+        LOG.exception(f"Failed to send email after {MAX_RETRIES} attempts.")
         return Err(f"Failed to send email after {MAX_RETRIES} attempts.")
 
     async def send_participant_successful_registration_email(
         self,
         participant: Participant,
-        subject: str,
-        participant_name: str,
         team_name: str,
         invite_link: str,
-    ) -> Result[resend.Email, str]:
+    ) -> Result[Email, str]:
         try:
-            body_html = load_email_participant_html_template(participant_name, team_name, invite_link)
+            body_html = load_email_participant_html_template(participant.name, team_name, invite_link)
         except ValueError as e:
             LOG.exception(f"Error loading the HTML template: {str(e)}")
             return Err(f"Error loading the HTML template: {str(e)}")
 
         send_result = await self.send_email(
-            participant=participant, subject=subject, body_content=body_html, content_type="html"
+            # TODO: Fix the subject
+            participant_email=participant.email,
+            subject="successful registration subject",
+            body_content=body_html,
+            content_type="html",
         )
         return send_result
 
     async def send_participant_verification_email(
         self,
         participant: Participant,
-        subject: str,
-        participant_name: str,
         team_name: str,
         confirmation_link: str,
-    ) -> Result[resend.Email, str]:
+    ) -> Result[Email, str]:
         try:
-            body_html = load_email_verify_participant_html_template(participant_name, team_name, confirmation_link)
+            body_html = load_email_verify_participant_html_template(participant.name, team_name, confirmation_link)
         except ValueError as e:
             LOG.exception(f"Failed to load email template: {str(e)}")
             return Err(f"Failed to load email template: {str(e)}")
 
         send_result = await self.send_email(
-            participant=participant, subject=subject, body_content=body_html, content_type="html"
+            # TODO: Fix the subject
+            participant_email=participant.email,
+            subject="verification email subject",
+            body_content=body_html,
+            content_type="html",
         )
         return send_result

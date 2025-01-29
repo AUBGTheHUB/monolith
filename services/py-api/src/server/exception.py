@@ -48,8 +48,6 @@ class ParticipantNotFoundError(CustomError):
     message = "The specified participant was not found"
     status_code = status.HTTP_404_NOT_FOUND
 
-class EmailRateLimitExceededError(Exception):
-    """Exception raised when email rate limit has been exceeded"""
 
 class TeamNotFoundError(CustomError):
     """Exception raised when there are no teams that match the query to the database"""

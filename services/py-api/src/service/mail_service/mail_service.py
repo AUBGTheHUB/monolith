@@ -7,12 +7,12 @@ from database.model.participant_model import Participant
 class MailService(ABC):
     @abstractmethod
     async def send_email(
-        self, participant: Participant, subject: str, body_content: str, content_type: Literal["text", "html"] = "text"
+        self, participant_email: str, subject: str, body_content: str, content_type: Literal["text", "html"] = "text"
     ) -> None:
         """
         Sends an email to the specified receiver with the provided subject and body content.
         Supports both text and HTML bodies.
-        :param participant: Participant object
+        :param participant_email: Email of participant
         :param subject: Email subject line
         :param body_content: Body of the email, could be html or just plain text, must be specified in content_type
         :param content_type: Defines the type of the email body, could be "html" (for html body) or "text" (for a plain text body)
@@ -23,8 +23,6 @@ class MailService(ABC):
     async def send_participant_successful_registration_email(
         self,
         participant: Participant,
-        subject: str,
-        participant_name: str,
         team_name: str,
         invite_link: str,
     ) -> None:
@@ -34,8 +32,6 @@ class MailService(ABC):
         and a verification link. Both text and HTML versions of the email body can be provided.
 
         :param participant: Participant object.
-        :param subject: The subject line of the email.
-        :param participant_name: The name of the participant.
         :param team_name: The name of the participant's team (if applicable).
         :param invite_link: The invite link for the participant (To invite other team members).
         """
@@ -45,8 +41,6 @@ class MailService(ABC):
     async def send_participant_verification_email(
         self,
         participant: Participant,
-        subject: str,
-        participant_name: str,
         team_name: str,
         confirmation_link: str,
     ) -> None:
@@ -57,8 +51,6 @@ class MailService(ABC):
         can be provided.
 
         :param participant: Participant object.
-        :param subject: The subject line of the email.
-        :param participant_name: The name of the participant.
         :param team_name: The name of the participant's team (if applicable).
         :param confirmation_link: The verification link for the participant.
         """
