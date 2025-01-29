@@ -1,9 +1,10 @@
 from asyncio import to_thread
-from multiprocessing.util import get_logger
 from typing import Literal
 from asyncio import sleep
 from resend.exceptions import ResendError
 from resend import Email
+from os import environ
+from structlog.stdlib import get_logger
 
 import resend
 from result import Result, Ok, Err
@@ -15,8 +16,6 @@ from src.service.mail_service.utils import (
     load_email_participant_html_template,
     load_email_verify_participant_html_template,
 )
-
-from os import getenv
 
 LOG = get_logger()
 
@@ -30,7 +29,7 @@ class ResendMailService(MailService):
     """Service layer responsible for the resend MailService implementation"""
 
     def __init__(self) -> None:
-        api_key = getenv("RESEND_API_KEY")
+        api_key = environ["RESEND_API_KEY"]
         if not api_key:
             LOG.exception("RESEND_API_KEY environment variable is not set")
             raise ValueError("RESEND_API_KEY environment variable is not set")
