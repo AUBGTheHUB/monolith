@@ -49,7 +49,7 @@ export default function LandingSection() {
                         <div className="flex flex-col items-center text-center space-y-6">
                             <div>
                                 <p className="text-2xl text-blue-200">WELCOME TO</p>
-                                <p className="text-[4.2rem] sm:text-8xl  font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
+                                <p className="text-7xl sm:text-8xl  font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
                                     THE HUB
                                 </p>
                                 <p className="text-base  text-white">
