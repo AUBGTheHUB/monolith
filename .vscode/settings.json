@@ -80,5 +80,8 @@
     "python.formatting.provider": "none",
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[nginx]": {
+        "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
     }
 }
