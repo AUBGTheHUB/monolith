@@ -2,24 +2,24 @@ name: Deployment Pipeline
 
 on:
   push:
-    # branches:
-    #   - 'main'
-    #   - 'production'
-    # paths:
-    #   # Back-end Paths that will trigger re-deployment
-    #   - 'services/py-api/src/*.py'
-    #   - 'services/py-api/Dockerfile'
-    #   - 'services/py-api/**/*.lock'
-    #   - 'services/py-api/**/*.toml'
+    branches:
+      - 'main'
+      - 'production'
+    paths:
+      # Back-end Paths that will trigger re-deployment
+      - 'services/py-api/src/*.py'
+      - 'services/py-api/Dockerfile'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
 
-    #   # Front-end paths that will trigger re-deployment
-    #   - 'services/web/src/**'
-    #   - 'services/web/Dockerfile'
-    #   - 'services/web/package-lock.json'
-    #   - 'services/web/package.json'
-    #   - 'services/web/nginx.*.conf'
-    #   - 'services/web/*.config.*'
-    #   - 'services/web/tsconfig.*'
+      # Front-end paths that will trigger re-deployment
+      - 'services/web/src/**'
+      - 'services/web/Dockerfile'
+      - 'services/web/package-lock.json'
+      - 'services/web/package.json'
+      - 'services/web/nginx.*.conf'
+      - 'services/web/*.config.*'
+      - 'services/web/tsconfig.*'
 
 permissions:
   packages: write
@@ -74,7 +74,7 @@ jobs:
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
           # Set DOMAIN based on the branch being pushed
-          if [[ "${{ github.ref_name }}" == "secure-staging-environment" ]]; then
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DOMAIN=dev.thehub-aubg.com" >> ./envfile
           elif [[ "${{ github.ref_name }}" == "master" ]]; then
             echo "DOMAIN=thehub-aubg.com" >> ./envfile
@@ -99,7 +99,7 @@ jobs:
         with:
           name: monolith
           file: docker-swarm-stack.yml
-          host: ${{ github.ref_name == 'secure-staging-environment' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
+          host: ${{ github.ref_name == 'main' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
           user: deploy
-          ssh_key: ${{ github.ref_name == 'secure-staging-environment' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
+          ssh_key: ${{ github.ref_name == 'main' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
           env_file: ./envfile
