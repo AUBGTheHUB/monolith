@@ -22,7 +22,7 @@ services:
       - py-api
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
-      - /etc/nginx:/etc/nginx
+      - /etc/nginx:/conf/basic-auth/nginx
     networks:
       - monolith
 
