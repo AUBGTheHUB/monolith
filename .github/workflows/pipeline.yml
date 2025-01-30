@@ -2,24 +2,24 @@ name: Deployment Pipeline
 
 on:
   push:
-    branches:
-      - 'main'
-      - 'production'
-    paths:
-      # Back-end Paths that will trigger re-deployment
-      - 'services/py-api/src/*.py'
-      - 'services/py-api/Dockerfile'
-      - 'services/py-api/**/*.lock'
-      - 'services/py-api/**/*.toml'
+    # branches:
+    #   - 'main'
+    #   - 'production'
+    # paths:
+    #   # Back-end Paths that will trigger re-deployment
+    #   - 'services/py-api/src/*.py'
+    #   - 'services/py-api/Dockerfile'
+    #   - 'services/py-api/**/*.lock'
+    #   - 'services/py-api/**/*.toml'
 
-      # Front-end paths that will trigger re-deployment
-      - 'services/web/src/**'
-      - 'services/web/Dockerfile'
-      - 'services/web/package-lock.json'
-      - 'services/web/package.json'
-      - 'services/web/nginx.*.conf'
-      - 'services/web/*.config.*'
-      - 'services/web/tsconfig.*'
+    #   # Front-end paths that will trigger re-deployment
+    #   - 'services/web/src/**'
+    #   - 'services/web/Dockerfile'
+    #   - 'services/web/package-lock.json'
+    #   - 'services/web/package.json'
+    #   - 'services/web/nginx.*.conf'
+    #   - 'services/web/*.config.*'
+    #   - 'services/web/tsconfig.*'
 
 permissions:
   packages: write
