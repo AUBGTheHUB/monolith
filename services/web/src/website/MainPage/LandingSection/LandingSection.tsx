@@ -40,7 +40,7 @@ export default function LandingSection() {
             <img
                 src="/landingSection/blob-cyan.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8vh] top-[30vh] z-0"
+                className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
             />
             <div className="flex flex-col bg-transparent h-[100vh]">
                 <Navigation />

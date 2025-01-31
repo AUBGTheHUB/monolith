@@ -29,7 +29,7 @@ export const MainPage = () => {
                 <img
                     src="/landingSection/blob-cyan.png"
                     alt="a blob"
-                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8vh] bottom-[30vh] z-0"
+                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] bottom-[30rem] z-0"
                 />
             </div>
             <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden">
