@@ -42,7 +42,7 @@ export default function LandingSection() {
                 alt="a blob"
                 className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8vh] top-[30vh] z-0"
             />
-            <div className="flex flex-col bg-[#0b1224] h-[100vh]">
+            <div className="flex flex-col bg-transparent h-[100vh]">
                 <Navigation />
                 <div className="flex items-center justify-center font-mont z-10 h-[80%]">
                     <div className="sm:w-2/5 w-11/12">
@@ -59,14 +59,14 @@ export default function LandingSection() {
                             </div>
                             <div className="flex space-x-4">
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl 
+                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Find out more
                                 </Button>
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl 
+                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
