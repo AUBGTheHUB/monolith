@@ -5,7 +5,7 @@ const HACKAUBG_SECTION_SWITCH = false;
 
 export default function HackAUBGSection() {
     return (
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col bg-white rounded-2xl justify-center relative z-10">
             <div className="sm:w-3/5 w-11/12 flex mx-auto mb-4">
                 <p className="font-mont sm:text-2xl text-3xl font-semibold text-blue-950 mt-8">HackAUBG</p>
             </div>
