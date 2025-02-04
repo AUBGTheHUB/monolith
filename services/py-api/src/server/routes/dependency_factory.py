@@ -5,6 +5,7 @@ from src.database.db_manager import DB_MANAGER, PARTICIPANTS_COLLECTION, TEAMS_C
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
+from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
 
@@ -54,3 +55,7 @@ def is_auth(authorization: Annotated[str, Header()]) -> None:
 def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
     if not ObjectId.is_valid(object_id):
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
+
+def registration_open(handler: FeatureSwitchHandler = Depends()) -> None:
+    if not handler.check_registration_status():
+        raise HTTPException(detail="Registration is closed", status_code=409)
