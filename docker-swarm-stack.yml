@@ -1,0 +1,86 @@
+version: "3.7"
+
+services:
+  client:
+    image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
+    # By doing this we bind the ports 80 and 443 of the container to the host machine, so that
+    # the container is directly listening to the VPS ports to increase performance.
+    # This is an amazing video to get to learn more about docker networks:
+    # https://www.youtube.com/watch?v=bKFMS5C4CG0&ab_channel=NetworkChuck
+    ports:
+      - mode: host
+        protocol: tcp
+        published: 80
+        target: 80
+      - mode: host
+        protocol: tcp
+        published: 443
+        target: 443
+    environment:
+      DOMAIN: ${DOMAIN}
+    depends_on:
+      - py-api
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/nginx:/conf/basic-auth/nginx
+    networks:
+      - monolith
+
+  py-api:
+    image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
+    # We let the py-api to be part of the overlay network created by docker swarm and we rely on Docker DNS
+    # to forward the requests from nginx
+    # Read more:
+    # https://docs.docker.com/engine/swarm/ingress/
+    # https://docs.docker.com/engine/network/tutorials/overlay/
+    ports:
+      - mode: ingress
+        protocol: tcp
+        target: 8080
+
+    deploy:
+      update_config:
+        order: start-first
+
+    environment:
+      # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
+      # in-memory filesystem.
+      # IMPORTANT: Services should implement an app-level logic to read the decrypted values from those mounted files,
+      # otherwise the values of these env variable will stay the mounted paths!
+      # https://docs.docker.com/engine/swarm/secrets/#how-docker-manages-secrets
+      ENV: /run/secrets/env
+      # Getting the domain from the context of the Action runner
+      DOMAIN: ${DOMAIN}
+      ADDRESS: 0.0.0.0
+      PORT: 8080
+      DATABASE_URL: /run/secrets/db-url
+      SECRET_KEY: /run/secrets/secret-key
+      SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
+
+    secrets:
+      - env
+      - db-url
+      - secret-key
+      - secret-auth-key
+
+    volumes:
+      - /services/py-api/shared:/app/shared
+      - /etc/letsencrypt:/etc/letsencrypt
+
+    networks:
+      - monolith
+secrets:
+  # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
+  # To set a new secret key-value pair you may use: `prinf "toniMsecret" | docker secret create toni -`
+  env:
+    external: true
+  db-url:
+    external: true
+  secret-key:
+    external: true
+  secret-auth-key:
+    external: true
+
+networks:
+  monolith:
+    driver: overlay

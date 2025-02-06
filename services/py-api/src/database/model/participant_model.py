@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional, Union
 
+
 from pydantic import EmailStr
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
