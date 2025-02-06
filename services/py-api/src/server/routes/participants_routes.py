@@ -1,8 +1,8 @@
 from typing import Union
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 
-from src.server.routes.dependency_factory import _h_service
+from src.server.routes.dependency_factory import _h_service, _mailing_service
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -12,6 +12,7 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
 )
 from src.service.hackathon_service import HackathonService
+from src.service.mail_service.resend_service import ResendMailService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.server.routes.dependency_factory import is_auth, validate_obj_id
 
@@ -20,13 +21,13 @@ participants_router = APIRouter(prefix="/hackathon/participants")
 
 
 def _p_reg_service(
-    h_service: HackathonService = Depends(_h_service),
+    h_service: HackathonService = Depends(_h_service)
 ) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
 
 
-def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
-    return ParticipantHandlers(p_service)
+def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service), mailing_service: ResendMailService = Depends(_mailing_service)) -> ParticipantHandlers:
+    return ParticipantHandlers(p_service, mailing_service)
 
 
 def _h_handler(
@@ -41,10 +42,11 @@ def _h_handler(
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
+    background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
-    handler: ParticipantHandlers = Depends(_p_handler),
+    handler: ParticipantHandlers = Depends(_p_handler)
 ) -> Response:
-    return await handler.create_participant(participant_request_body, jwt_token)
+    return await handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
 
 @participants_router.delete(
