@@ -21,13 +21,13 @@ participants_router = APIRouter(prefix="/hackathon/participants")
 
 
 def _p_reg_service(
-    h_service: HackathonService = Depends(_h_service)
+    h_service: HackathonService = Depends(_h_service), mailing_service: ResendMailService = Depends(_mailing_service)
 ) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(h_service)
+    return ParticipantRegistrationService(h_service, mailing_service)
 
 
-def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service), mailing_service: ResendMailService = Depends(_mailing_service)) -> ParticipantHandlers:
-    return ParticipantHandlers(p_service, mailing_service)
+def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
+    return ParticipantHandlers(p_service)
 
 
 def _h_handler(
@@ -44,7 +44,7 @@ async def create_participant(
     participant_request_body: ParticipantRequestBody,
     background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
-    handler: ParticipantHandlers = Depends(_p_handler)
+    handler: ParticipantHandlers = Depends(_p_handler),
 ) -> Response:
     return await handler.create_participant(participant_request_body, background_tasks, jwt_token)
 

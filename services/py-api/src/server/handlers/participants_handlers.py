@@ -7,7 +7,6 @@
 #
 # For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
 
-from os import environ
 from fastapi import BackgroundTasks
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
@@ -23,14 +22,12 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
 )
 from src.service.participants_registration_service import ParticipantRegistrationService
-from src.service.mail_service.resend_service import ResendMailService
 
 
 class ParticipantHandlers(BaseHandler):
 
-    def __init__(self, service: ParticipantRegistrationService, mailing_service: ResendMailService) -> None:
+    def __init__(self, service: ParticipantRegistrationService) -> None:
         self._service = service
-        self._mailing_service = mailing_service
 
     async def create_participant(
         self,
@@ -65,21 +62,8 @@ class ParticipantHandlers(BaseHandler):
         if is_err(result):
             return self.handle_error(err=result.err_value)
 
-        # Send emails only if the env is not tests
-        # You can further extract this in its own function maybe in the service layer
-        # In this point you can actually call a method that does all of this for you in the participant registration service
-        if environ["ENV"] != "TEST":
-            participant_document = result.ok_value[0]
-            team_document = result.ok_value[1]
-
-            # Example on how it can be acheived
-            if participant_document.is_admin:
-                background_tasks.add_task(
-                    self._mailing_service.send_participant_verification_email,
-                    participant_document,
-                    team_document.name,
-                    "https://google.com",
-                )
+        # Call the service layer to send the email
+        await self._service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
 
         return Response(
             ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1]),

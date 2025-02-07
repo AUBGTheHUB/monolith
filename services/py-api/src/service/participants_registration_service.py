@@ -1,3 +1,4 @@
+from os import environ
 from typing import Tuple
 
 from result import Result, Err, is_err
@@ -19,13 +20,16 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.utils import JwtUtility
+from src.service.mail_service.resend_service import ResendMailService
+from fastapi import BackgroundTasks
 
 
 class ParticipantRegistrationService:
     """Service layer responsible for handling the business logic when registering a participant"""
 
-    def __init__(self, hackathon_service: HackathonService) -> None:
+    def __init__(self, hackathon_service: HackathonService, mailing_service: ResendMailService) -> None:
         self._hackathon_service = hackathon_service
+        self._mailing_service = mailing_service
 
     async def register_admin_participant(self, input_data: AdminParticipantInputData) -> Result[
         Tuple[Participant, Team],
@@ -72,3 +76,20 @@ class ParticipantRegistrationService:
         return await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
+
+    async def send_verification_email(
+        self, participant: Participant, team: Team, background_tasks: BackgroundTasks
+    ) -> None:
+
+        # Send emails only if the env is not tests
+        # We don't want to hit the resend limit with test registrations
+
+        if environ["ENV"] != "TEST":
+            # Example on how it can be acheived
+            if participant.is_admin:
+                background_tasks.add_task(
+                    self._mailing_service.send_participant_verification_email,
+                    participant,
+                    team.name,
+                    "https://google.com",
+                )
