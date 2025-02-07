@@ -56,6 +56,6 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
     if not ObjectId.is_valid(object_id):
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
-def registration_open(handler: FeatureSwitchHandler = Depends()) -> None:
-    if not handler.check_registration_status():
-        raise HTTPException(detail="Registration is closed", status_code=409)
+async def registration_open(handler: FeatureSwitchHandler = Depends()) -> None:
+    if not await handler.check_registration_status():
+        raise HTTPException(detail="Registration is closed", status_code=400)
