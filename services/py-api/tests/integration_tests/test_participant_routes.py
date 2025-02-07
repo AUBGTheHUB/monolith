@@ -15,6 +15,7 @@ from tests.integration_tests.conftest import (
 from src.utils import JwtUtility
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_random_participant(
     create_test_participant: CreateTestParticipantCallable,
@@ -35,6 +36,7 @@ async def test_create_random_participant(
     assert resp_json["team"] is None
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_random_participant_email_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -51,6 +53,7 @@ async def test_create_random_participant_email_already_exists(
     assert resp_json["error"] == "Participant with this email already exists"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_no_team_name(
     create_test_participant: CreateTestParticipantCallable,
@@ -66,6 +69,7 @@ async def test_create_admin_participant_no_team_name(
     assert resp_json["detail"][0]["msg"] == "Field required"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_random_participant_missing_required_fields(
     create_test_participant: CreateTestParticipantCallable,
@@ -82,6 +86,7 @@ async def test_create_random_participant_missing_required_fields(
     assert resp_json["detail"][0]["msg"] == "Field required"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant(
     create_test_participant: CreateTestParticipantCallable,
@@ -109,6 +114,7 @@ async def test_create_admin_participant(
 # We first create the team --> create the admin
 # That is why when trying to create the same admin we get the message that the team already exists.
 # We tried to create a team with the same name twice and the app throws an exception in that moment.
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_and_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -127,6 +133,7 @@ async def test_create_admin_participant_email_and_team_already_exists(
     assert resp_json["error"] == "Team with this name already exists"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -149,6 +156,7 @@ async def test_create_admin_participant_team_already_exists(
     assert resp_json["error"] == "Team with this name already exists"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -171,7 +179,7 @@ async def test_create_admin_participant_email_already_exists(
     assert resp_json["error"] == "Participant with this email already exists"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_success(
     generate_participant_request_body: ParticipantRequestBodyCallable, async_client: AsyncClient
@@ -195,7 +203,7 @@ async def test_delete_participant_success(
     assert result_2_json["participant"]["team_id"] is None
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_unauthorized(async_client: AsyncClient, mock_obj_id: str) -> None:
 
@@ -207,7 +215,7 @@ async def test_delete_participant_unauthorized(async_client: AsyncClient, mock_o
     assert result.json()["detail"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient) -> None:
 
@@ -219,7 +227,7 @@ async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient)
     assert result.json()["detail"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, mock_obj_id: str) -> None:
 
@@ -232,7 +240,7 @@ async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient,
     assert result.json()["error"] == "The specified participant was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_succesful(
     create_test_participant: CreateTestParticipantCallable,
@@ -265,7 +273,7 @@ async def test_create_link_participant_succesful(
 
 
 @patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
@@ -305,6 +313,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     assert resp_json["error"] == "Max team capacity has been reached"
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_jwt_token_missing(
     create_test_participant: CreateTestParticipantCallable,
@@ -318,7 +327,7 @@ async def test_create_link_participant_jwt_token_missing(
     assert resp_json["error"] == "When `type` is 'invite_link' jwt_token is expected as a query param."
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_jwt_wrong_format(
     create_test_participant: CreateTestParticipantCallable,
@@ -332,7 +341,7 @@ async def test_create_link_participant_jwt_wrong_format(
     assert resp_json["error"] == "There was a a general error while decoding the JWT token. Checks its format again."
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_name_mismatch(
     create_test_participant: CreateTestParticipantCallable,
