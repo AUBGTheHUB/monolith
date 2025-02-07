@@ -1,5 +1,6 @@
 from unittest.mock import Mock, patch
 from bson import ObjectId
+from fastapi import BackgroundTasks
 import pytest
 from result import Err, Ok
 from src.database.model.participant_model import Participant
@@ -263,13 +264,16 @@ async def test_verify_random_hackathon_capacity_reached(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_success(
-    verification_handlers: VerificationHandlers, participant_verification_service_mock: Mock, mock_obj_id: str
+    verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
+    participant_verification_service_mock: Mock,
+    mock_obj_id: str,
 ) -> None:
     participant_verification_service_mock.send_verification_email.return_value = Ok(
         Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, email_verified=False, team_id=None)
     )
 
-    result = await verification_handlers.send_verification_email(mock_obj_id)
+    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
 
     participant_verification_service_mock.send_verification_email.assert_awaited_once()
 
@@ -283,11 +287,14 @@ async def test_send_verification_email_success(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_rate_limit_exceeded_error(
-    verification_handlers: VerificationHandlers, participant_verification_service_mock: Mock, mock_obj_id: str
+    verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
+    participant_verification_service_mock: Mock,
+    mock_obj_id: str,
 ) -> None:
     participant_verification_service_mock.send_verification_email.return_value = Err(EmailRateLimitExceededError())
 
-    result = await verification_handlers.send_verification_email(mock_obj_id)
+    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
 
     participant_verification_service_mock.send_verification_email.assert_awaited_once()
 
@@ -299,11 +306,14 @@ async def test_send_verification_email_rate_limit_exceeded_error(
 
 @pytest.mark.asyncio
 async def test_send_verification_participant_alredy_verified_error(
-    verification_handlers: VerificationHandlers, participant_verification_service_mock: Mock, mock_obj_id: str
+    verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
+    participant_verification_service_mock: Mock,
+    mock_obj_id: str,
 ) -> None:
     participant_verification_service_mock.send_verification_email.return_value = Err(ParticipantAlreadyVerifiedError())
 
-    result = await verification_handlers.send_verification_email(mock_obj_id)
+    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
 
     participant_verification_service_mock.send_verification_email.assert_awaited_once()
 
@@ -315,11 +325,14 @@ async def test_send_verification_participant_alredy_verified_error(
 
 @pytest.mark.asyncio
 async def test_send_verification_participant_not_found_error(
-    verification_handlers: VerificationHandlers, participant_verification_service_mock: Mock, mock_obj_id: str
+    verification_handlers: VerificationHandlers,
+    participant_verification_service_mock: Mock,
+    background_tasks: BackgroundTasks,
+    mock_obj_id: str,
 ) -> None:
     participant_verification_service_mock.send_verification_email.return_value = Err(ParticipantNotFoundError())
 
-    result = await verification_handlers.send_verification_email(mock_obj_id)
+    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
 
     participant_verification_service_mock.send_verification_email.assert_awaited_once()
 

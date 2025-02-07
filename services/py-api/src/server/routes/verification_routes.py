@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from src.server.handlers.verification_handlers import VerificationHandlers
 from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
 from src.server.schemas.response_schemas.schemas import (
@@ -43,6 +43,10 @@ async def verify_participant(jwt_token: str, _handler: VerificationHandlers = De
     },
 )
 async def send_verification_email(
-    email_verification_request_body: ResendEmailParticipantData, _handler: VerificationHandlers = Depends(_handler)
+    email_verification_request_body: ResendEmailParticipantData,
+    background_tasks: BackgroundTasks,
+    _handler: VerificationHandlers = Depends(_handler),
 ) -> Response:
-    return await _handler.send_verification_email(participant_id=email_verification_request_body.participant_id)
+    return await _handler.send_verification_email(
+        participant_id=email_verification_request_body.participant_id, background_tasks=background_tasks
+    )

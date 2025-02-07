@@ -1,7 +1,9 @@
 from math import ceil
+from os import environ
 from typing import Final, Optional, Tuple
 from datetime import datetime, timedelta
 
+from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 
@@ -26,6 +28,8 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.database.model.base_model import SerializableObjectId
 
+from src.service.mail_service.resend_service import ResendMailService
+
 
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
@@ -39,10 +43,12 @@ class HackathonService:
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
         tx_manager: TransactionManager,
+        mailing_service: ResendMailService,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
         self._tx_manager = tx_manager
+        self._mailing_service = mailing_service
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
@@ -229,7 +235,7 @@ class HackathonService:
 
     async def check_send_verification_email_rate_limit(
         self, participant_id: str
-    ) -> Result[bool, ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
+    ) -> Result[Tuple[bool, Participant], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
         """Check if the verification email rate limit has been reached"""
         participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
 
@@ -243,20 +249,34 @@ class HackathonService:
         # so we can invoke send_verification_email from the verification service
 
         if participant.ok_value.last_sent_email is None:
-            return Ok(value=True)
+            return Ok((True, participant.ok_value))
 
         is_within_rate_limit = datetime.now() - participant.ok_value.last_sent_email >= timedelta(
             seconds=self.RATE_LIMIT_SECONDS
         )
-        return Ok(is_within_rate_limit)
+        return Ok((is_within_rate_limit, participant.ok_value))
 
     async def send_verification_email(
-        self, participant_id: str
-    ) -> Result[Participant, ParticipantNotFoundError | Exception]:
-        # TODO: send email like a background task (part of another issue)
+        self, participant: Participant, background_tasks: BackgroundTasks
+    ) -> Result[Participant, ParticipantNotFoundError | TeamNotFoundError | Exception]:
+
+        team = await self._team_repo.fetch_by_id(str(participant.team_id))
+
+        if is_err(team):
+            return team
+
+        if environ["ENV"] != "TEST":
+
+            background_tasks.add_task(
+                self._mailing_service.send_participant_verification_email,
+                participant,
+                team.ok_value.name,
+                # TODO add conformation link
+                "",
+            )
 
         update_result = await self._participant_repo.update(
-            obj_id=participant_id, obj_fields=UpdateParticipantParams(last_sent_email=datetime.now())
+            obj_id=participant.id, obj_fields=UpdateParticipantParams(last_sent_email=datetime.now())
         )
 
         if is_err(update_result):

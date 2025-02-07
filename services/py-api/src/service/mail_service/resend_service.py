@@ -10,7 +10,8 @@ import resend
 from result import Result, Ok, Err
 from requests.exceptions import RequestException
 
-from database.model.participant_model import Participant
+from src.database.model.participant_model import Participant
+
 from src.service.mail_service.mail_service import MailService
 from src.service.mail_service.utils import (
     load_email_participant_html_template,
@@ -19,7 +20,7 @@ from src.service.mail_service.utils import (
 
 LOG = get_logger()
 
-SENDER_EMAIL = "onboarding@resend.dev"
+SENDER_EMAIL = "no-reply@thehub-aubg.com"
 MAX_RETRIES = 3
 INITIAL_RETRY_DELAY_SECONDS = 1  # seconds
 UNRETRYABLE_STATUS_CODES = {401, 422, 403, 400}

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
 
+from fastapi import BackgroundTasks
 import pytest
 from unittest.mock import Mock, MagicMock, AsyncMock
 
@@ -21,6 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
     ParticipantRequestBody,
 )
 from src.service.hackathon_service import HackathonService
+from src.service.mail_service.resend_service import ResendMailService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
@@ -118,6 +120,17 @@ def hackathon_service_mock() -> Mock:
 
 
 @pytest.fixture
+def mailing_service_mock() -> Mock:
+    """This is a mock obj of Mailing Service. To change the return values of its methods use:
+    `tx_manager_mock.method_name.return_value=some_return_value`"""
+
+    mailing_service = Mock(spec=ResendMailService)
+    mailing_service.send_participant_verification_email = AsyncMock()
+
+    return mailing_service
+
+
+@pytest.fixture
 def tx_manager_mock() -> Mock:
     """This is a mock obj of TransactionManager. To change the return values of its methods use:
     `tx_manager_mock.method_name.return_value=some_return_value`"""
@@ -126,6 +139,13 @@ def tx_manager_mock() -> Mock:
     tx_manager.with_transaction = AsyncMock()
 
     return tx_manager
+
+
+@pytest.fixture
+def background_tasks() -> BackgroundTasks:
+    mock_background_tasks = MagicMock(spec=BackgroundTasks)
+    mock_background_tasks.add_task = MagicMock()
+    return mock_background_tasks
 
 
 @pytest.fixture

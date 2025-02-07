@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Literal
 
-from database.model.participant_model import Participant
+from src.database.model.participant_model import Participant
 
 
 class MailService(ABC):

@@ -7,6 +7,7 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
+from src.service.mail_service.resend_service import ResendMailService
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
@@ -24,12 +25,17 @@ def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
     return TransactionManager(db_manager)
 
 
+def _mailing_service() -> ResendMailService:
+    return ResendMailService()
+
+
 def _h_service(
     p_repo: ParticipantsRepository = Depends(_p_repo),
     t_repo: TeamsRepository = Depends(_t_repo),
     tx_manager: TransactionManager = Depends(_tx_manager),
+    mailing_service: ResendMailService = Depends(_mailing_service),
 ) -> HackathonService:
-    return HackathonService(p_repo, t_repo, tx_manager)
+    return HackathonService(p_repo, t_repo, tx_manager, mailing_service)
 
 
 def is_auth(authorization: Annotated[str, Header()]) -> None:
