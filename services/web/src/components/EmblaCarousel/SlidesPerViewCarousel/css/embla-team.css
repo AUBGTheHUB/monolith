@@ -126,7 +126,7 @@
 }
 
 .embla:has(.embla__dot:only-child) .embla__controls {
-  display: none;
+  visibility: hidden !important;
 }
 
 @media (min-width: 600px) {
