@@ -1,4 +1,5 @@
 from typing import Tuple
+from fastapi import BackgroundTasks
 from result import Err, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -39,14 +40,16 @@ class ParticipantVerificationService:
         return await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)
 
     async def send_verification_email(
-        self, participant_id: str
+        self, participant_id: str, background_tasks: BackgroundTasks
     ) -> Result[Participant, EmailRateLimitExceededError | Exception]:
         result = await self._hackathon_service.check_send_verification_email_rate_limit(participant_id=participant_id)
 
         if is_err(result):
             return result
 
-        if result.ok_value is True:
-            return await self._hackathon_service.send_verification_email(participant_id=participant_id)
+        if result.ok_value[0] is True:
+            return await self._hackathon_service.send_verification_email(
+                participant=result.ok_value[1], background_tasks=background_tasks
+            )
 
         return Err(EmailRateLimitExceededError())

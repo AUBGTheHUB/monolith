@@ -115,21 +115,19 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
-    hackathon_service.verify_admin_participant = AsyncMock()
-    hackathon_service.send_verification_email = AsyncMock()
 
     return hackathon_service
 
 
 @pytest.fixture
 def mailing_service_mock() -> Mock:
+    """This is a mock obj of Mailing Service. To change the return values of its methods use:
+    `tx_manager_mock.method_name.return_value=some_return_value`"""
 
-    mailing_service_mock = Mock(spec=ResendMailService)
-    mailing_service_mock.send_email = AsyncMock()
-    mailing_service_mock.send_participant_successful_registration_email = AsyncMock()
-    mailing_service_mock.send_participant_verification_email = AsyncMock()
+    mailing_service = Mock(spec=ResendMailService)
+    mailing_service.send_participant_verification_email = AsyncMock()
 
-    return mailing_service_mock
+    return mailing_service
 
 
 @pytest.fixture
@@ -168,6 +166,7 @@ def participant_verification_service_mock() -> Mock:
     """This is a mock obj of ParticipantVerificationService."""
     p_verify_service = Mock(spec=ParticipantVerificationService)
     p_verify_service.verify_random_participant = AsyncMock()
+    p_verify_service.verify_admin_participant = AsyncMock()
 
     return p_verify_service
 

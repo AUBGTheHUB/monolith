@@ -11,6 +11,7 @@ from result import Result, Ok, Err
 from requests.exceptions import RequestException
 
 from src.database.model.participant_model import Participant
+
 from src.service.mail_service.mail_service import MailService
 from src.service.mail_service.utils import (
     load_email_participant_html_template,
@@ -86,8 +87,8 @@ class ResendMailService(MailService):
     async def send_participant_successful_registration_email(
         self,
         participant: Participant,
-        invite_link: str | None = None,
-        team_name: str | None = None,
+        team_name: str,
+        invite_link: str,
     ) -> Result[Email, str]:
         try:
             body_html = load_email_participant_html_template(participant.name, team_name, invite_link)
@@ -105,7 +106,10 @@ class ResendMailService(MailService):
         return send_result
 
     async def send_participant_verification_email(
-        self, participant: Participant, confirmation_link: str, team_name: str | None = None
+        self,
+        participant: Participant,
+        team_name: str,
+        confirmation_link: str,
     ) -> Result[Email, str]:
         try:
             body_html = load_email_verify_participant_html_template(participant.name, team_name, confirmation_link)

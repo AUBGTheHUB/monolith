@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 from unittest.mock import Mock, patch
 
 from bson import ObjectId
+from fastapi import BackgroundTasks
 import pytest
 from result import Ok, Err
 
@@ -30,8 +31,10 @@ PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=3
 
 
 @pytest.fixture
-def hackathon_service(participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock)
+def hackathon_service(
+    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, mailing_service_mock: Mock
+) -> HackathonService:
+    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, mailing_service_mock)
 
 
 @pytest.mark.asyncio
@@ -448,8 +451,11 @@ async def test_check_send_verification_email_rate_limit_success(
     )
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, bool)
-    assert result.ok_value == True
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], bool)
+    assert isinstance(result.ok_value[1], Participant)
+    assert result.ok_value[0] == True
+    assert result.ok_value[1].name == TEST_USER_NAME
 
 
 @pytest.mark.asyncio
@@ -473,8 +479,11 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, bool)
-    assert result.ok_value == False
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], bool)
+    assert isinstance(result.ok_value[1], Participant)
+    assert result.ok_value[0] == False
+    assert result.ok_value[1].name == TEST_USER_NAME
 
 
 @pytest.mark.asyncio
@@ -498,8 +507,11 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, bool)
-    assert result.ok_value == True
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], bool)
+    assert isinstance(result.ok_value[1], Participant)
+    assert result.ok_value[0] == True
+    assert result.ok_value[1].name == TEST_USER_NAME
 
 
 @pytest.mark.asyncio
@@ -539,3 +551,70 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_send_verification_email_success(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+    background_tasks: BackgroundTasks,
+) -> None:
+
+    test_participant = Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, email_verified=True, is_admin=False, team_id=mock_obj_id
+    )
+
+    team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=True))
+
+    participant_repo_mock.update.return_value = Ok(test_participant)
+
+    result = await hackathon_service.send_verification_email(test_participant, background_tasks)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+    assert result.ok_value.name == TEST_USER_NAME
+
+
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_send_verification_email_team_not_found_error(
+    hackathon_service: HackathonService, team_repo_mock: Mock, mock_obj_id: str, background_tasks: BackgroundTasks
+) -> None:
+
+    test_participant = Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, email_verified=True, is_admin=False, team_id=mock_obj_id
+    )
+
+    team_repo_mock.fetch_by_id.return_value = Err(TeamNotFoundError())
+
+    result = await hackathon_service.send_verification_email(test_participant, background_tasks)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_send_verification_general_error(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+    background_tasks: BackgroundTasks,
+) -> None:
+
+    test_participant = Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, email_verified=True, is_admin=False, team_id=mock_obj_id
+    )
+
+    team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=True))
+
+    participant_repo_mock.update.return_value = Err(Exception("Test error"))
+
+    result = await hackathon_service.send_verification_email(test_participant, background_tasks)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "Test error"
