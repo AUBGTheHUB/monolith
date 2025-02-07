@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
 
+from fastapi import BackgroundTasks
 import pytest
 from unittest.mock import Mock, MagicMock, AsyncMock
 
@@ -137,8 +138,16 @@ def participant_registration_service_mock() -> Mock:
     p_reg_service.register_admin_participant = AsyncMock()
     p_reg_service.register_random_participant = AsyncMock()
     p_reg_service.register_admin_participant = AsyncMock()
+    p_reg_service.send_verification_email = AsyncMock()
 
     return p_reg_service
+
+
+@pytest.fixture
+def background_tasks() -> BackgroundTasks:
+    mock_background_tasks = MagicMock(spec=BackgroundTasks)
+    mock_background_tasks.add_task = MagicMock()
+    return mock_background_tasks
 
 
 @pytest.fixture

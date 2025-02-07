@@ -1,6 +1,7 @@
 from unittest.mock import patch
 from unittest.mock import Mock
 
+from fastapi import BackgroundTasks
 import pytest
 from result import Ok, Err
 
@@ -23,8 +24,8 @@ from src.utils import JwtUtility
 
 
 @pytest.fixture
-def p_reg_service(hackathon_service_mock: Mock) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(hackathon_service_mock)
+def p_reg_service(hackathon_service_mock: Mock, background_tasks: BackgroundTasks) -> ParticipantRegistrationService:
+    return ParticipantRegistrationService(hackathon_service_mock, background_tasks)
 
 
 @pytest.mark.asyncio
