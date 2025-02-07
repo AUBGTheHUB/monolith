@@ -1,4 +1,4 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from fastapi import BackgroundTasks
 import pytest
@@ -31,6 +31,7 @@ def participant_handlers(participant_registration_service_mock: Mock) -> Partici
     return ParticipantHandlers(participant_registration_service_mock)
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_success(
     participant_handlers: ParticipantHandlers,
@@ -65,6 +66,7 @@ async def test_create_participant_admin_case_success(
     assert resp.status_code == status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
@@ -93,6 +95,7 @@ async def test_create_participant_admin_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_duplicate_team_name_error(
     participant_handlers: ParticipantHandlers,
@@ -121,6 +124,7 @@ async def test_create_participant_admin_case_duplicate_team_name_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_general_error(
     participant_handlers: ParticipantHandlers,
@@ -147,6 +151,7 @@ async def test_create_participant_admin_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_capacity_exceeded_error(
     participant_handlers: ParticipantHandlers,
@@ -175,6 +180,7 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_success(
     participant_handlers: ParticipantHandlers,
@@ -210,6 +216,7 @@ async def test_create_participant_random_case_success(
     resp.status_code = status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
@@ -238,6 +245,7 @@ async def test_create_participant_random_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_general_error(
     participant_handlers: ParticipantHandlers,
@@ -264,6 +272,7 @@ async def test_create_participant_random_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_capacity_exceeded_error(
     participant_handlers: ParticipantHandlers,
@@ -292,6 +301,7 @@ async def test_create_participant_random_case_capacity_exceeded_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_success(
     participant_handlers: ParticipantHandlers,
@@ -330,6 +340,7 @@ async def test_create_participant_link_case_success(
     assert resp.status_code == status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
@@ -359,6 +370,7 @@ async def test_create_participant_link_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_general_error(
     participant_handlers: ParticipantHandlers,
@@ -388,6 +400,7 @@ async def test_create_participant_link_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_team_capacity_exceeded(
     participant_handlers: ParticipantHandlers,
@@ -417,6 +430,7 @@ async def test_create_participant_link_case_team_capacity_exceeded(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_team_not_found(
     participant_handlers: ParticipantHandlers,
