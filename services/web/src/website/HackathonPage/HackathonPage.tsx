@@ -1,3 +1,5 @@
+import ScheduleSection from './ScheduleSection/ScheduleSection';
+
 export const HackathonPage = () => {
-    return <h1>HackPage</h1>;
+    return <ScheduleSection />;
 };
