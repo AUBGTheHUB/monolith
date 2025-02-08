@@ -114,6 +114,7 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
+    hackathon_service.verify_admin_participant = AsyncMock()
 
     return hackathon_service
 
@@ -155,7 +156,6 @@ def participant_verification_service_mock() -> Mock:
     """This is a mock obj of ParticipantVerificationService."""
     p_verify_service = Mock(spec=ParticipantVerificationService)
     p_verify_service.verify_random_participant = AsyncMock()
-    p_verify_service.verify_admin_participant = AsyncMock()
 
     return p_verify_service
 

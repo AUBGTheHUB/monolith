@@ -1,4 +1,5 @@
 from math import ceil
+from os import environ
 from typing import Final, Optional, Tuple
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -23,6 +24,7 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
 )
 from src.database.model.base_model import SerializableObjectId
+from src.service.mail_service.resend_service import ResendMailService
 
 
 class HackathonService:
@@ -36,10 +38,12 @@ class HackathonService:
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
         tx_manager: TransactionManager,
+        mailing_service: ResendMailService,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
         self._tx_manager = tx_manager
+        self._mailing_service = mailing_service
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
@@ -223,3 +227,9 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
+
+    async def send_verification_email(self, participant: Participant, team: Team) -> None:
+        if environ["ENV"] != "TEST":
+            await self._mailing_service.send_participant_verification_email(
+                participant, team.name, "https://google.com"
+            )

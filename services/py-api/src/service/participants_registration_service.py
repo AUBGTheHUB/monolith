@@ -1,4 +1,3 @@
-from os import environ
 from typing import Tuple
 
 from result import Result, Err, is_err
@@ -20,16 +19,13 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.utils import JwtUtility
-from src.service.mail_service.resend_service import ResendMailService
-from fastapi import BackgroundTasks
 
 
 class ParticipantRegistrationService:
     """Service layer responsible for handling the business logic when registering a participant"""
 
-    def __init__(self, hackathon_service: HackathonService, mailing_service: ResendMailService) -> None:
+    def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
-        self._mailing_service = mailing_service
 
     async def register_admin_participant(self, input_data: AdminParticipantInputData) -> Result[
         Tuple[Participant, Team],
@@ -41,7 +37,15 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
+        result = await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
+
+        if is_err(result):
+            return result
+
+        # Send the email if we have a valid response
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1])
+
+        return result
 
     async def register_random_participant(self, input_data: RandomParticipantInputData) -> Result[
         Tuple[Participant, Team],
@@ -53,7 +57,15 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        return await self._hackathon_service.create_random_participant(input_data)
+        result = await self._hackathon_service.create_random_participant(input_data)
+
+        if is_err(result):
+            return result
+
+        # Send the email if we have a valid response
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1])
+
+        return result
 
     async def register_invite_link_participant(
         self, input_data: InviteLinkParticipantInputData, jwt_token: str
@@ -73,23 +85,9 @@ class ParticipantRegistrationService:
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 
+        # Here we should sen the successful registration email instead of verification email
+        # so it would be better if we put the sending functions in the hackathon service so that we can access them
+        # from both the verify and register routes
         return await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
-
-    async def send_verification_email(
-        self, participant: Participant, team: Team, background_tasks: BackgroundTasks
-    ) -> None:
-
-        # Send emails only if the env is not tests
-        # We don't want to hit the resend limit with test registrations
-
-        if environ["ENV"] != "TEST":
-            # Example on how it can be acheived
-            if participant.is_admin:
-                background_tasks.add_task(
-                    self._mailing_service.send_participant_verification_email,
-                    participant,
-                    team.name,
-                    "https://google.com",
-                )

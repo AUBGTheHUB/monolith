@@ -7,7 +7,6 @@
 #
 # For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
 
-from fastapi import BackgroundTasks
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from starlette import status
@@ -32,7 +31,6 @@ class ParticipantHandlers(BaseHandler):
     async def create_participant(
         self,
         participant_request_body: ParticipantRequestBody,
-        background_tasks: BackgroundTasks,
         jwt_token: str | None = None,
     ) -> Response:
 
@@ -61,9 +59,6 @@ class ParticipantHandlers(BaseHandler):
 
         if is_err(result):
             return self.handle_error(err=result.err_value)
-
-        # Call the service layer to send the email
-        await self._service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
 
         return Response(
             ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1]),
