@@ -14,7 +14,7 @@ export const Footer = () => {
                 <div className="flex flex-wrap lg:flex-nowrap w-[60%] z-10">
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
-                        <a href="#home" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a href="/" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             Home
                         </a>
                         <a href="#about-us" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
@@ -26,7 +26,7 @@ export const Footer = () => {
                         <a href="#meet-team" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             The team
                         </a>
-                        <a href="#hackAUBG" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a href="/hackathon" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             HackAUBG
                         </a>
                     </div>
