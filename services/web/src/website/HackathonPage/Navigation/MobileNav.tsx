@@ -30,25 +30,25 @@ export const MobileNavComponent = () => {
                 </SheetTrigger>
                 <SheetContent>
                     <div className={NAV_ITEM}>
-                        <a href="/hackathon/about" className={NAV_ITEM_A}>
+                        <a href="#about" className={NAV_ITEM_A}>
                             <img src={about} className={NAV_ITEM_IMG} />
                             About
                         </a>
                     </div>
                     <div className={NAV_ITEM}>
-                        <a href="/hackathon/schedule" className={NAV_ITEM_A}>
+                        <a href="#schedule" className={NAV_ITEM_A}>
                             <img src={schedule} className={NAV_ITEM_IMG} />
                             Schedule
                         </a>
                     </div>
                     <div className={NAV_ITEM}>
-                        <a href="/hackathon/grading-criteria" className={NAV_ITEM_A}>
+                        <a href="#grading-criteria" className={NAV_ITEM_A}>
                             <img src={grading} className={NAV_ITEM_IMG} />
                             Grading Criteria
                         </a>
                     </div>
                     <div className={NAV_ITEM}>
-                        <a href="/hackathon/faq" className={NAV_ITEM_A}>
+                        <a href="#faq" className={NAV_ITEM_A}>
                             <img src={faq} className={NAV_ITEM_IMG} />
                             FAQ
                         </a>
