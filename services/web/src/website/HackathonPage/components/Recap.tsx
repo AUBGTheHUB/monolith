@@ -22,9 +22,9 @@ export const Recap = () => {
                 <div className="relative rounded-lg overflow-hidden bg-black/20">
                     <video
                         className="w-full rounded-lg aspect-[16/7] object-cover"
+                        controls
                         autoPlay
                         muted
-                        loop
                         playsInline
                     >
                         {/* TODO: change the big buck bunnny video with the actual recap... */}
