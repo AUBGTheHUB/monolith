@@ -3,6 +3,7 @@ import { EmblaOptionsType } from 'embla-carousel';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton.tsx';
 import { PrevButton, NextButton, usePrevNextButtons } from './EmblaCarouselArrowButtons.tsx';
 import useEmblaCarousel from 'embla-carousel-react';
+import ClassNames from 'embla-carousel-class-names';
 
 /*
 Embla Carousel is a lightweight library for creating Carousels in react
@@ -22,7 +23,7 @@ type PropType = {
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
     const { slides, options, type } = props;
-    const [emblaRef, emblaApi] = useEmblaCarousel(options);
+    const [emblaRef, emblaApi] = useEmblaCarousel(options, [ClassNames()]);
     const emblaClass = 'embla ' + type;
     const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
 
@@ -39,12 +40,13 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                                 <div className="embla__slide__inner">{slide[1]}</div>
                             </div>
                         ))}
-                    {type == 'events' &&
-                        slides.map((slide, index) => (
-                            <div className="embla__slide" key={index}>
-                                {slide}
-                            </div>
-                        ))}
+                    {type == 'events' ||
+                        (type == 'jury' &&
+                            slides.map((slide, index) => (
+                                <div className="embla__slide " key={index}>
+                                    {slide}
+                                </div>
+                            )))}
                 </div>
             </div>
 
