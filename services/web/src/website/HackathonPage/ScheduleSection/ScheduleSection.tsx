@@ -8,17 +8,17 @@ export default function ScheduleSection() {
                 <div className="absolute inset-0 bg-gradient-to-b from-[#000912] via-transparent to-[#000912]" />
             </div>
             <div className="relative w-4/5 flex flex-col z-10 my-24">
-                <div className="sm:text-4xl text-3xl mb-20 flex items-center ">
-                    <img src="./n.png" alt="" className="w-[25px]" />
-                    <p className="text-white ml-6">S C H E D U L E</p>
+                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <p className="text-white ml-5 tracking-[0.2em]">SCHEDULE</p>
                 </div>
                 <div className="flex flex-col">
                     {scheduleData.map(({ day, events }) => (
                         <div key={day} className="flex flex-col sm:flex-row items-start mb-10 relative">
-                            <p className="w-full sm:w-2/5 text-white text-3xl sm:sticky sm:top-0 mb-6 sm:mb-0 ">
+                            <p className="w-full sm:w-2/5 text-white sm:text-3xl text-2xl sm:sticky sm:top-0 mb-6 sm:mb-0 ">
                                 {day}
                             </p>
-                            <div className="w-full sm:w-3/5">
+                            <div className="w-full sm:w-3/5 sm:text-lg text-base">
                                 <table className="w-full sm:mt-14 border border-separate border-gray-600 rounded-lg bg-[#13181C]/80 backdrop-blur-md">
                                     <tbody>
                                         {events.map(({ time, event }, idx) => (
