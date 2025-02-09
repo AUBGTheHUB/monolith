@@ -6,16 +6,16 @@ export const DesktopNavComponent = () => {
         <div className="w-full h-[10%] bg-transparent border-b-2 border-gray-600 py-5">
             <div className="w-full flex flex-row justify-center items-center">
                 <div className="flex flex-row w-[70%] gap-7">
-                    <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="/hackathon/about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         About
                     </a>
-                    <a href="#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="/hackathon/schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         Schedule
                     </a>
-                    <a href="#grading-criteria" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="/hackathon/grading-criteria" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         Grading Criteria
                     </a>
-                    <a href="#faq" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="/hackathon/faq" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         FAQ
                     </a>
                 </div>
