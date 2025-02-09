@@ -12,9 +12,20 @@ export default function LandingSection() {
             y: e.clientY - rect.top,
         });
     };
+    // Get the user-agent string
+    const userAgentString = navigator.userAgent;
+
+    // Detect Chrome
+    const chromeAgent = userAgentString.indexOf('Chrome') > -1;
+
+    // Detect Safari
+    let safariAgent = userAgentString.indexOf('Safari') > -1;
+
+    // Discard Safari since it also matches Chrome
+    if (chromeAgent && safariAgent) safariAgent = false;
 
     return (
-        <div className="relative overflow-hidden h-[100vh] select-none" onMouseMove={handleMouseMove}>
+        <div className="relative overflow-hidden h-[100vh] select-none scroll-smooth" onMouseMove={handleMouseMove}>
             <img
                 src="/landingSection/circuit.png"
                 alt="Circuit board"
@@ -41,6 +52,9 @@ export default function LandingSection() {
                 src="/landingSection/blob-cyan.png"
                 alt="a blob"
                 className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
+                style={{
+                    display: window.innerWidth < 640 && safariAgent == true ? 'none' : 'inherit',
+                }}
             />
             <div className="flex flex-col bg-transparent h-[100vh]">
                 <Navigation />
@@ -59,14 +73,14 @@ export default function LandingSection() {
                             </div>
                             <div className="flex space-x-4">
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
+                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Find out more
                                 </Button>
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
+                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
                                 >
