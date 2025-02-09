@@ -35,6 +35,7 @@ def verification_handlers(participant_verification_service_mock: Mock) -> Verifi
 async def test_verify_participant_admin_case_success(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
@@ -55,7 +56,7 @@ async def test_verify_participant_admin_case_success(
 
     jwt_token = JwtUtility.encode_data(data=mock_jwt_admin_user_verification)
 
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     participant_verification_service_mock.verify_admin_participant.assert_awaited_once()
     assert isinstance(resp, Response)
@@ -68,6 +69,7 @@ async def test_verify_participant_admin_case_success(
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_participant_not_found_error(
     participant_verification_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     verification_handlers: VerificationHandlers,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
@@ -75,7 +77,7 @@ async def test_verify_participant_admin_case_participant_not_found_error(
     participant_verification_service_mock.verify_admin_participant.return_value = Err(ParticipantNotFoundError())
     jwt_token = JwtUtility.encode_data(data=mock_jwt_admin_user_verification)
 
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     participant_verification_service_mock.verify_admin_participant.assert_awaited_once()
 
@@ -90,13 +92,14 @@ async def test_verify_participant_admin_case_participant_not_found_error(
 async def test_verify_participant_admin_case_team_not_found_error(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
     participant_verification_service_mock.verify_admin_participant.return_value = Err(TeamNotFoundError())
     jwt_token = JwtUtility.encode_data(data=mock_jwt_admin_user_verification)
 
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     participant_verification_service_mock.verify_admin_participant.assert_awaited_once()
 
@@ -111,13 +114,14 @@ async def test_verify_participant_admin_case_team_not_found_error(
 async def test_verify_participant_admin_case_hackation_capacity_reached_error(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
     participant_verification_service_mock.verify_admin_participant.return_value = Err(HackathonCapacityExceededError())
     jwt_token = JwtUtility.encode_data(data=mock_jwt_admin_user_verification)
 
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     participant_verification_service_mock.verify_admin_participant.assert_awaited_once()
 
@@ -132,13 +136,14 @@ async def test_verify_participant_admin_case_hackation_capacity_reached_error(
 async def test_verify_participant_admin_case_general_error(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
 
     participant_verification_service_mock.verify_admin_participant.return_value = Err(Exception())
     jwt_token = JwtUtility.encode_data(data=mock_jwt_admin_user_verification)
 
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     participant_verification_service_mock.verify_admin_participant.assert_awaited_once()
 
@@ -153,6 +158,7 @@ async def test_verify_participant_admin_case_general_error(
 async def test_verify_random_participant_case_success(
     verification_handlers: VerificationHandlers,
     participant_verification_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
     mock_obj_id: str,
 ) -> None:
@@ -174,11 +180,11 @@ async def test_verify_random_participant_case_success(
     jwt_token = JwtUtility.encode_data(data=mock_jwt_random_user_verification)
 
     # Call the verification handler
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification
+        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks
     )
 
     # Assert that the response is successful
@@ -196,13 +202,14 @@ async def test_verify_random_participant_case_success(
 @pytest.mark.asyncio
 async def test_verify_random_participant_decode_error(
     verification_handlers: VerificationHandlers,
+    background_tasks: BackgroundTasks,
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
     # Create the token with the wrong schema
     jwt_token = JwtUtility.encode_data(data=mock_jwt_user_registration)
 
     # Call the verification handler
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     # Assert that the response is unsuccessful
     assert isinstance(resp, Response)
@@ -215,6 +222,7 @@ async def test_verify_random_participant_decode_error(
 async def test_verify_random_participant_not_found(
     verification_handlers: VerificationHandlers,
     participant_verification_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
     # Mock unsuccessful result from `verify_random_participant`
@@ -223,11 +231,11 @@ async def test_verify_random_participant_not_found(
     jwt_token = JwtUtility.encode_data(data=mock_jwt_random_user_verification)
 
     # Call the verification handler
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification
+        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks
     )
 
     # Assert that the response is unsuccessful
@@ -241,6 +249,7 @@ async def test_verify_random_participant_not_found(
 async def test_verify_random_hackathon_capacity_reached(
     verification_handlers: VerificationHandlers,
     participant_verification_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
     # Mock unsuccessful result from `verify_random_participant`
@@ -249,11 +258,11 @@ async def test_verify_random_hackathon_capacity_reached(
     jwt_token = JwtUtility.encode_data(data=mock_jwt_random_user_verification)
 
     # Call the verification handler
-    resp = await verification_handlers.verify_participant(jwt_token=jwt_token)
+    resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification
+        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks
     )
 
     # Assert that the response is unsuccessful
@@ -269,13 +278,13 @@ async def test_send_verification_email_success(
     participant_verification_service_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_verification_service_mock.send_verification_email.return_value = Ok(
+    participant_verification_service_mock.resend_verification_email.return_value = Ok(
         Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, email_verified=False, team_id=None)
     )
 
-    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
+    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks)
 
-    participant_verification_service_mock.send_verification_email.assert_awaited_once()
+    participant_verification_service_mock.resend_verification_email.assert_awaited_once()
 
     assert isinstance(result, Response)
     assert isinstance(result.response_model, VerificationEmailSentSuccessfullyResponse)
@@ -292,11 +301,11 @@ async def test_send_verification_email_rate_limit_exceeded_error(
     participant_verification_service_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_verification_service_mock.send_verification_email.return_value = Err(EmailRateLimitExceededError())
+    participant_verification_service_mock.resend_verification_email.return_value = Err(EmailRateLimitExceededError())
 
-    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
+    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks)
 
-    participant_verification_service_mock.send_verification_email.assert_awaited_once()
+    participant_verification_service_mock.resend_verification_email.assert_awaited_once()
 
     assert isinstance(result, Response)
     assert isinstance(result.response_model, ErrResponse)
@@ -311,11 +320,13 @@ async def test_send_verification_participant_alredy_verified_error(
     participant_verification_service_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_verification_service_mock.send_verification_email.return_value = Err(ParticipantAlreadyVerifiedError())
+    participant_verification_service_mock.resend_verification_email.return_value = Err(
+        ParticipantAlreadyVerifiedError()
+    )
 
-    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
+    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks)
 
-    participant_verification_service_mock.send_verification_email.assert_awaited_once()
+    participant_verification_service_mock.resend_verification_email.assert_awaited_once()
 
     assert isinstance(result, Response)
     assert isinstance(result.response_model, ErrResponse)
@@ -330,11 +341,11 @@ async def test_send_verification_participant_not_found_error(
     background_tasks: BackgroundTasks,
     mock_obj_id: str,
 ) -> None:
-    participant_verification_service_mock.send_verification_email.return_value = Err(ParticipantNotFoundError())
+    participant_verification_service_mock.resend_verification_email.return_value = Err(ParticipantNotFoundError())
 
-    result = await verification_handlers.send_verification_email(mock_obj_id, background_tasks)
+    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks)
 
-    participant_verification_service_mock.send_verification_email.assert_awaited_once()
+    participant_verification_service_mock.resend_verification_email.assert_awaited_once()
 
     assert isinstance(result, Response)
     assert isinstance(result.response_model, ErrResponse)
