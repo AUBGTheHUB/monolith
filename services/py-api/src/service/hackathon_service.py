@@ -251,7 +251,7 @@ class HackathonService:
 
         # We fetch the team so that we take advantage of the team info we have to pass to the mailing service
         team = (
-            self._team_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
+            await self._team_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
             if participant.ok_value.is_admin
             else None
         )
@@ -308,6 +308,11 @@ class HackathonService:
             participant,
             verification_link,
             team.name if team else None,
+        )
+
+        # Update the last sent field
+        await self._participant_repo.update(
+            obj_id=str(participant.id), obj_fields=UpdateParticipantParams(last_sent_email=datetime.now())
         )
 
     async def send_successful_registration_email(

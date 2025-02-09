@@ -1,6 +1,6 @@
 from typing import Tuple
 from fastapi import BackgroundTasks
-from result import Err, Result, is_err
+from result import Err, Ok, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
@@ -67,6 +67,8 @@ class ParticipantVerificationService:
         if is_err(result):
             return result
 
-        return await self._hackathon_service.send_verification_email(
+        await self._hackathon_service.send_verification_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
+
+        return Ok(result.ok_value[0])
