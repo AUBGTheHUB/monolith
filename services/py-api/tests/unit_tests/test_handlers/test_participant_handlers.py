@@ -1,5 +1,6 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+from fastapi import BackgroundTasks
 import pytest
 from bson import ObjectId
 from result import Ok, Err
@@ -30,10 +31,12 @@ def participant_handlers(participant_registration_service_mock: Mock) -> Partici
     return ParticipantHandlers(participant_registration_service_mock)
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
@@ -46,11 +49,11 @@ async def test_create_participant_admin_case_success(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case, background_tasks)
 
     # Check that `register_admin_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert that the response is successful
@@ -63,10 +66,12 @@ async def test_create_participant_admin_case_success(
     assert resp.status_code == status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
@@ -76,11 +81,11 @@ async def test_create_participant_admin_case_duplicate_email_error(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case, background_tasks)
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -90,10 +95,12 @@ async def test_create_participant_admin_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_duplicate_team_name_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
@@ -103,11 +110,11 @@ async def test_create_participant_admin_case_duplicate_team_name_error(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case, background_tasks)
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -117,10 +124,12 @@ async def test_create_participant_admin_case_duplicate_team_name_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_general_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
@@ -128,11 +137,11 @@ async def test_create_participant_admin_case_general_error(
     participant_registration_service_mock.register_admin_participant.return_value = Err(Exception("General error"))
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case, background_tasks)
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates an internal server error
@@ -142,10 +151,12 @@ async def test_create_participant_admin_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_admin_case_capacity_exceeded_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
@@ -155,11 +166,11 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_admin_case, background_tasks)
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict with capacity reached
@@ -169,10 +180,12 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
     mock_participant_request_body_random_case: ParticipantRequestBody,
 ) -> None:
@@ -186,11 +199,11 @@ async def test_create_participant_random_case_success(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case, background_tasks)
 
     # Check that `register_random_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert that the response is successful
@@ -203,10 +216,12 @@ async def test_create_participant_random_case_success(
     resp.status_code = status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
     mock_participant_request_body_random_case: ParticipantRequestBody,
 ) -> None:
@@ -216,11 +231,11 @@ async def test_create_participant_random_case_duplicate_email_error(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case, background_tasks)
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -230,10 +245,12 @@ async def test_create_participant_random_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_general_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
     mock_participant_request_body_random_case: ParticipantRequestBody,
 ) -> None:
@@ -241,11 +258,11 @@ async def test_create_participant_random_case_general_error(
     participant_registration_service_mock.register_random_participant.return_value = Err(Exception("General error"))
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case, background_tasks)
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates an internal server error
@@ -255,10 +272,12 @@ async def test_create_participant_random_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_random_case_capacity_exceeded_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
     mock_participant_request_body_random_case: ParticipantRequestBody,
 ) -> None:
@@ -268,11 +287,11 @@ async def test_create_participant_random_case_capacity_exceeded_error(
     )
 
     # Call the handler
-    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case)
+    resp = await participant_handlers.create_participant(mock_participant_request_body_random_case, background_tasks)
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict with capacity reached
@@ -282,10 +301,12 @@ async def test_create_participant_random_case_capacity_exceeded_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
     mock_obj_id: str,
@@ -300,12 +321,12 @@ async def test_create_participant_link_case_success(
 
     # Call the handler
     resp = await participant_handlers.create_participant(
-        mock_participant_request_body_invite_link_case, "mock_jwt_token"
+        mock_participant_request_body_invite_link_case, background_tasks, "mock_jwt_token"
     )
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert that the response is successful
@@ -319,10 +340,12 @@ async def test_create_participant_link_case_success(
     assert resp.status_code == status.HTTP_201_CREATED
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_duplicate_email_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
 ) -> None:
@@ -332,12 +355,12 @@ async def test_create_participant_link_case_duplicate_email_error(
 
     # Call the handler
     resp = await participant_handlers.create_participant(
-        mock_participant_request_body_invite_link_case, "mock_jwt_token"
+        mock_participant_request_body_invite_link_case, background_tasks, "mock_jwt_token"
     )
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -347,10 +370,12 @@ async def test_create_participant_link_case_duplicate_email_error(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_general_error(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
 ) -> None:
@@ -360,12 +385,12 @@ async def test_create_participant_link_case_general_error(
 
     # Call the handler
     resp = await participant_handlers.create_participant(
-        mock_participant_request_body_invite_link_case, "mock_jwt_token"
+        mock_participant_request_body_invite_link_case, background_tasks, "mock_jwt_token"
     )
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -375,10 +400,12 @@ async def test_create_participant_link_case_general_error(
     resp.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_team_capacity_exceeded(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
 ) -> None:
@@ -388,12 +415,12 @@ async def test_create_participant_link_case_team_capacity_exceeded(
 
     # Call the handler
     resp = await participant_handlers.create_participant(
-        mock_participant_request_body_invite_link_case, "mock_jwt_token"
+        mock_participant_request_body_invite_link_case, background_tasks, "mock_jwt_token"
     )
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -403,10 +430,12 @@ async def test_create_participant_link_case_team_capacity_exceeded(
     resp.status_code = status.HTTP_409_CONFLICT
 
 
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_participant_link_case_team_not_found(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
 ) -> None:
@@ -414,12 +443,12 @@ async def test_create_participant_link_case_team_not_found(
 
     # Call the handler
     resp = await participant_handlers.create_participant(
-        mock_participant_request_body_invite_link_case, "mock_jwt_token"
+        mock_participant_request_body_invite_link_case, background_tasks, "mock_jwt_token"
     )
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
