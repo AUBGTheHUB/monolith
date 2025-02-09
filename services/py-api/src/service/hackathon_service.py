@@ -253,7 +253,7 @@ class HackathonService:
         team = (
             await self._team_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
             if participant.ok_value.is_admin
-            else None
+            else Ok(None)
         )
 
         # If there was an error fetching the team return that error as it is as it will be handled further up by the
@@ -267,7 +267,7 @@ class HackathonService:
 
         # The last_sent_mail field is None when there has not been any email sent previously
         if participant.ok_value.last_sent_email is None:
-            return Ok((participant.ok_value, team.ok_value))  # type: ignore
+            return Ok((participant.ok_value, team.ok_value))
 
         # Calculate the rate limit
         is_within_rate_limit = datetime.now() - participant.ok_value.last_sent_email >= timedelta(
@@ -278,7 +278,7 @@ class HackathonService:
         if not is_within_rate_limit:
             return Err(EmailRateLimitExceededError())
 
-        return Ok((participant.ok_value, team.ok_value))  # type: ignore
+        return Ok((participant.ok_value, team.ok_value))
 
     async def send_verification_email(
         self, participant: Participant, team: Team | None, background_tasks: BackgroundTasks
