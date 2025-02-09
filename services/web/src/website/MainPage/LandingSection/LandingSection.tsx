@@ -12,20 +12,9 @@ export default function LandingSection() {
             y: e.clientY - rect.top,
         });
     };
-    // Get the user-agent string
-    const userAgentString = navigator.userAgent;
-
-    // Detect Chrome
-    const chromeAgent = userAgentString.indexOf('Chrome') > -1;
-
-    // Detect Safari
-    let safariAgent = userAgentString.indexOf('Safari') > -1;
-
-    // Discard Safari since it also matches Chrome
-    if (chromeAgent && safariAgent) safariAgent = false;
 
     return (
-        <div className="relative overflow-hidden h-[100vh] select-none scroll-smooth" onMouseMove={handleMouseMove}>
+        <div className="relative overflow-hidden h-[100vh] select-none" onMouseMove={handleMouseMove}>
             <img
                 src="/landingSection/circuit.png"
                 alt="Circuit board"
@@ -46,15 +35,12 @@ export default function LandingSection() {
             <img
                 src="/landingSection/blob-blue.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
+                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
             />
             <img
                 src="/landingSection/blob-cyan.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
-                style={{
-                    display: window.innerWidth < 640 && safariAgent == true ? 'none' : 'inherit',
-                }}
+                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
             />
             <div className="flex flex-col bg-transparent h-[100vh]">
                 <Navigation />
