@@ -1,0 +1,27 @@
+@font-face {
+  font-family: 'SF Distant Galaxy';
+  src: url('/fonts/GalaxyFont/SFDistantGalaxy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Distant Galaxy';
+  src: url('/fonts/GalaxyFont/SFDistantGalaxy-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'SF Distant Galaxy Outline';
+  src: url('/fonts/GalaxyFont/SFDistantGalaxy-Outline.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Distant Galaxy Outline';
+  src: url('/fonts/GalaxyFont/SFDistantGalaxy-OutlineItalic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}

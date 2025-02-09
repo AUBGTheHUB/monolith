@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from fastapi import BackgroundTasks
 from result import Result, Err, is_err
 
 from src.database.model.participant_model import Participant
@@ -27,7 +28,9 @@ class ParticipantRegistrationService:
     def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
 
-    async def register_admin_participant(self, input_data: AdminParticipantInputData) -> Result[
+    async def register_admin_participant(
+        self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
     ]:
@@ -37,9 +40,19 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        return await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
+        result = await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
 
-    async def register_random_participant(self, input_data: RandomParticipantInputData) -> Result[
+        if is_err(result):
+            return result
+
+        # Send the email if we have a valid response
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
+
+        return result
+
+    async def register_random_participant(
+        self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | HackathonCapacityExceededError | Exception,
     ]:
@@ -49,10 +62,18 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        return await self._hackathon_service.create_random_participant(input_data)
+        result = await self._hackathon_service.create_random_participant(input_data)
+
+        if is_err(result):
+            return result
+
+        # Send the email if we have a valid response
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
+
+        return result
 
     async def register_invite_link_participant(
-        self, input_data: InviteLinkParticipantInputData, jwt_token: str
+        self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
@@ -69,6 +90,15 @@ class ParticipantRegistrationService:
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 
-        return await self._hackathon_service.create_invite_link_participant(
+        result = await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
+
+        if is_err(result):
+            return result
+
+        # Send the successful registration email
+        # We set the second argument to None because we don't want to send an email with a verification link
+        await self._hackathon_service.send_successful_registration_email(result.ok_value[0], None, background_tasks)
+
+        return result

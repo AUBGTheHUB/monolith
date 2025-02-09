@@ -28,8 +28,10 @@ def _handler(p_verify_service: ParticipantVerificationService = Depends(_p_verif
     status_code=200,
     responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}},
 )
-async def verify_participant(jwt_token: str, _handler: VerificationHandlers = Depends(_handler)) -> Response:
-    return await _handler.verify_participant(jwt_token=jwt_token)
+async def verify_participant(
+    jwt_token: str, background_tasks: BackgroundTasks, _handler: VerificationHandlers = Depends(_handler)
+) -> Response:
+    return await _handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
 
 @verification_router.post(
@@ -47,6 +49,6 @@ async def send_verification_email(
     background_tasks: BackgroundTasks,
     _handler: VerificationHandlers = Depends(_handler),
 ) -> Response:
-    return await _handler.send_verification_email(
+    return await _handler.resend_verification_email(
         participant_id=email_verification_request_body.participant_id, background_tasks=background_tasks
     )

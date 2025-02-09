@@ -6,6 +6,7 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.service.hackathon_service import HackathonService
+from src.service.mail_service.resend_service import ResendMailService
 from bson import ObjectId
 from src.service.mail_service.resend_service import ResendMailService
 

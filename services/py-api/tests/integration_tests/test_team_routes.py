@@ -11,7 +11,7 @@ from tests.integration_tests.conftest import (
 )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_team_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -38,7 +38,7 @@ async def test_delete_team_success(
     assert result_2_json["team"]["is_verified"] == result_1_json["team"]["is_verified"]
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_team_unauthorized(async_client: AsyncClient, mock_obj_id: str) -> None:
 
@@ -62,7 +62,7 @@ async def test_delete_team_wrong_obj_id_format(async_client: AsyncClient) -> Non
     assert result.json()["detail"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_team_obj_id_doesnt_exist(async_client: AsyncClient, mock_obj_id: str) -> None:
 

@@ -23,8 +23,8 @@ class MailService(ABC):
     async def send_participant_successful_registration_email(
         self,
         participant: Participant,
-        team_name: str,
-        invite_link: str,
+        invite_link: str | None = None,
+        team_name: str | None = None,
     ) -> None:
         """
         Sends a confirmation email to a participant, confirming their acceptance into the event.
@@ -41,8 +41,8 @@ class MailService(ABC):
     async def send_participant_verification_email(
         self,
         participant: Participant,
-        team_name: str,
         confirmation_link: str,
+        team_name: str | None = None,
     ) -> None:
         """
         Sends a verification email to a participant, informing them that they need to verify their application

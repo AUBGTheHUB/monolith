@@ -8,6 +8,8 @@ export default {
             fontFamily: {
                 mont: ['Montserrat', 'serif'],
                 hank: ['Hanken Grotesk', 'serif'],
+                distant: ['SF Distant Galaxy', 'sans-serif'],
+                distantOutline: ['SF Distant Galaxy Outline', 'sans-serif'],
             },
             borderRadius: {
                 lg: 'var(--radius)',
