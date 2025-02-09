@@ -14,7 +14,7 @@ export default function LandingSection() {
     };
 
     return (
-        <div className="relative overflow-hidden h-[100vh] select-none" onMouseMove={handleMouseMove}>
+        <div className="relative overflow-hidden h-[100vh] select-none scroll-smooth" onMouseMove={handleMouseMove}>
             <img
                 src="/landingSection/circuit.png"
                 alt="Circuit board"

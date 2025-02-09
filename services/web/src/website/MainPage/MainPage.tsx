@@ -10,7 +10,7 @@ export const MainPage = () => {
     return (
         <Fragment>
             <LandingSection />
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden scroll-smooth">
                 <div className="about-section bg-white rounded-2xl py-8 z-10 relative">
                     <div className="sm:w-3/5 w-11/12 mx-auto">
                         <IdentitySection />
@@ -32,7 +32,7 @@ export const MainPage = () => {
                     className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] bottom-[30rem] z-0"
                 />
             </div>
-            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden">
+            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden" id="meet-team">
                 <MeetTheTeam />
             </div>
             <div className="relative overflow-hidden">

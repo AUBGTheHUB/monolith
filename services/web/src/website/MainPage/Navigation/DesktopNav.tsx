@@ -21,7 +21,7 @@ export default function DesktopNav() {
                             </a>
                         </span>
                         <span className={NAV_ITEM}>
-                            <a href="#departments" className={NAV_ITEM_A}>
+                            <a href="#meet-team" className={NAV_ITEM_A}>
                                 Departments
                             </a>
                         </span>
