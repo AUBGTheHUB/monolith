@@ -10,20 +10,23 @@ export const Footer = () => {
                 <div className="flex flex-wrap lg:flex-nowrap w-[60%] z-10">
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
-                        <a href="#home" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a href="/hackathon" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             Home
                         </a>
-                        <a href="#about-us" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
-                            About us
+                        <a href="#mission" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            Mission
                         </a>
-                        <a href="#events" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
-                            Events
+                        <a href="#journey" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            Journey
                         </a>
-                        <a href="#meet-the-team" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
-                            The team
+                        <a href="#mentors" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            Mentors/Jury
                         </a>
-                        <a href="#hackAUBG" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
-                            HackAUBG
+                        <a href="#schedule" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            Schedule
+                        </a>
+                        <a href="/" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            The Hub
                         </a>
                     </div>
                     <div className={SECTIONS_CLASS_NAME}>
@@ -31,13 +34,25 @@ export const Footer = () => {
                         <a
                             href="https://www.instagram.com/thehubaubg/"
                             className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}
+                            target="_blank"
+                            rel="noreferrer"
                         >
                             Instagram
                         </a>
-                        <a href="" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a
+                            href="https://www.facebook.com/TheHubAUBG/"
+                            className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
                             Facebook
                         </a>
-                        <a href="" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a
+                            href="https://www.youtube.com/channel/UChdtBZBvaK9XZurP3GjPDug"
+                            className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
                             Youtube
                         </a>
                     </div>
