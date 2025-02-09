@@ -69,7 +69,7 @@ async def test_create_admin_participant_no_team_name(
     assert resp_json["detail"][0]["msg"] == "Field required"
 
 
-@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_random_participant_missing_required_fields(
     create_test_participant: CreateTestParticipantCallable,
@@ -86,7 +86,7 @@ async def test_create_random_participant_missing_required_fields(
     assert resp_json["detail"][0]["msg"] == "Field required"
 
 
-@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant(
     create_test_participant: CreateTestParticipantCallable,
@@ -114,7 +114,7 @@ async def test_create_admin_participant(
 # We first create the team --> create the admin
 # That is why when trying to create the same admin we get the message that the team already exists.
 # We tried to create a team with the same name twice and the app throws an exception in that moment.
-@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_and_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -133,7 +133,7 @@ async def test_create_admin_participant_email_and_team_already_exists(
     assert resp_json["error"] == "Team with this name already exists"
 
 
-@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
@@ -156,7 +156,7 @@ async def test_create_admin_participant_team_already_exists(
     assert resp_json["error"] == "Team with this name already exists"
 
 
-@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_admin_participant_email_already_exists(
     create_test_participant: CreateTestParticipantCallable,
