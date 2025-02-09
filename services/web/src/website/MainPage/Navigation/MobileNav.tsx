@@ -3,7 +3,7 @@ import hamburgerMenuIcon from './images/hamburger_menu.svg';
 import photoIcon from './images/past_events.svg';
 import threeDots from './images/departments.svg';
 import codeIcon from './images/hackathon.svg';
-import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 
 const NAV_ITEM_A = 'text-black hover:text-black';
 const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
@@ -27,13 +27,15 @@ export default function MobileNavComponent() {
                 </SheetTrigger>
                 <SheetContent>
                     <div className={NAV_ITEM}>
-                        <a href="#past-events" className={NAV_ITEM_A}>
-                            <img src={photoIcon} className={NAV_ITEM_IMG} />
-                            Past Events
-                        </a>
+                        <SheetClose asChild>
+                            <a href="#past-events" className={NAV_ITEM_A}>
+                                <img src={photoIcon} className={NAV_ITEM_IMG} />
+                                Past Events
+                            </a>
+                        </SheetClose>
                     </div>
                     <div className={NAV_ITEM}>
-                        <a href="#departments" className={NAV_ITEM_A}>
+                        <a href="#meet-team" className={NAV_ITEM_A}>
                             <img src={threeDots} className={NAV_ITEM_IMG} />
                             Departments
                         </a>
