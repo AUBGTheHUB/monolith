@@ -5,6 +5,7 @@ import about from './images/about.svg';
 import schedule from './images/schedule.svg';
 import grading from './images/grading.svg';
 import faq from './images/faq.svg';
+import participate from './images/participate.svg';
 
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
@@ -51,6 +52,15 @@ export const MobileNavComponent = () => {
                         <a href="#faq" className={NAV_ITEM_A}>
                             <img src={faq} className={NAV_ITEM_IMG} />
                             FAQ
+                        </a>
+                    </div>
+                    <div className={`${NAV_ITEM} flex`}>
+                        <img src={participate} className={`${NAV_ITEM_IMG}`} />
+                        <a
+                            className="text-sky-600 rounded-2xl px-5 border border-sky-600 hover:bg-sky-600 hover:text-white transition-colors duration-500"
+                            href="#participate-now"
+                        >
+                            Participate now
                         </a>
                     </div>
                 </SheetContent>

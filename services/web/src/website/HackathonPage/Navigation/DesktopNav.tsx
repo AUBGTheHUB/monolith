@@ -22,7 +22,7 @@ export const DesktopNavComponent = () => {
                 <div>
                     <a
                         href="#participate-now"
-                        className={`${NAV_ITEM_A} border-2 border-sky-600 rounded-3xl px-4 py-1 hover:text-white hover:bg-sky-600`}
+                        className={`${NAV_ITEM_A} border-2 border-sky-600 rounded-3xl px-4 py-1 hover:text-white hover:bg-sky-600 transition-colors duration-500`}
                     >
                         Participate now
                     </a>
