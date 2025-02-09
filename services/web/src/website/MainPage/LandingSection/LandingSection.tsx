@@ -4,7 +4,7 @@ import { Navigation } from '../Navigation/Navigation';
 
 export default function LandingSection() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
+    const [isHovered, setIsHovered] = useState(() => window.innerWidth < 640);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
