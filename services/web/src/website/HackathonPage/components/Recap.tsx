@@ -15,9 +15,9 @@ export const Recap = () => {
                 }}
             />
             <div className="max-w-7xl mx-auto px-12 relative">
-                <div className="flex items-center gap-3 mb-24">
-                    <img src="/yellow-n-icon.svg" alt="N icon" className="w-6 h-6" />
-                    <h1 className="font-mont text-white text-3xl mb">RECAP</h1>
+                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <p className="text-white ml-5 tracking-[0.2em]">RECAP</p>
                 </div>
                 <div className="relative rounded-lg overflow-hidden bg-black/20">
                     <video
