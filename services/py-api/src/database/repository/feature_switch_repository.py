@@ -1,11 +1,13 @@
 from typing import Optional
 from pymongo.collection import Collection
+from src.database.db_manager import DatabaseManager
 from src.database.repository.base_repository import CRUDRepository
 from src.server.schemas.feature_switch_schemas.feature_switch_schema import FeatureSwitch
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, collection: Collection):
-        self._collection = collection
+
+    def __init__(self, db_manager: DatabaseManager, collection_name: str):
+        self._collection = db_manager.get_collection(collection_name)
 
     async def get_feature_switch(self, feature: str) -> Optional[FeatureSwitch]:
         data = await self._collection.find_one({"feature": feature})
