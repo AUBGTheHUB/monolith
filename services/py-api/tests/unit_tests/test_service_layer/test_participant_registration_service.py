@@ -24,8 +24,8 @@ from src.utils import JwtUtility
 
 
 @pytest.fixture
-def p_reg_service(hackathon_service_mock: Mock, background_tasks: BackgroundTasks) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(hackathon_service_mock, background_tasks)
+def p_reg_service(hackathon_service_mock: Mock) -> ParticipantRegistrationService:
+    return ParticipantRegistrationService(hackathon_service_mock)
 
 
 @pytest.mark.asyncio
@@ -33,6 +33,7 @@ async def test_register_admin_participant_success(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
+    background_tasks: BackgroundTasks,
     participant_repo_mock: Mock,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
@@ -54,7 +55,7 @@ async def test_register_admin_participant_success(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Check that the result is an `Ok` containing both the participant and team objects
     assert isinstance(result, Ok)
@@ -67,6 +68,7 @@ async def test_register_admin_participant_success(
 async def test_register_admin_participant_duplicate_team_name_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -78,7 +80,7 @@ async def test_register_admin_participant_duplicate_team_name_error(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Check that the result is an `Err` with `DuplicateTeamNameError`
     assert isinstance(result, Err)
@@ -90,6 +92,7 @@ async def test_register_admin_participant_duplicate_team_name_error(
 async def test_register_admin_participant_duplicate_email_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -101,7 +104,7 @@ async def test_register_admin_participant_duplicate_email_error(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Check that the result is an `Err` with `DuplicateTeamNameError`
     assert isinstance(result, Err)
@@ -113,6 +116,7 @@ async def test_register_admin_participant_duplicate_email_error(
 async def test_register_admin_participant_general_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -122,7 +126,7 @@ async def test_register_admin_participant_general_error(
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Verify the result is an `Err` containing a general Exception
     assert isinstance(result, Err)
@@ -135,6 +139,7 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
+    background_tasks: BackgroundTasks,
     participant_repo_mock: Mock,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
@@ -155,7 +160,7 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
@@ -166,6 +171,7 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
 async def test_register_admin_participant_order_of_operations(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock full hackathon
@@ -177,7 +183,7 @@ async def test_register_admin_participant_order_of_operations(
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data)
+    result = await p_reg_service.register_admin_participant(mock_admin_case_input_data, background_tasks)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
@@ -188,6 +194,7 @@ async def test_register_admin_participant_order_of_operations(
 async def test_register_random_participant_success(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     participant_repo_mock: Mock,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
@@ -208,7 +215,7 @@ async def test_register_random_participant_success(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_random_case_input_data)
+    result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
 
     # Validate that the result is an `Ok` instance containing the created participant
     assert isinstance(result, Ok)
@@ -225,6 +232,7 @@ async def test_register_random_participant_success(
 async def test_register_random_participant_duplicate_email_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -236,7 +244,7 @@ async def test_register_random_participant_duplicate_email_error(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_random_case_input_data)
+    result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
 
     # Check that the result is an `Err` with `DuplicateTeamNameError`
     assert isinstance(result, Err)
@@ -248,6 +256,7 @@ async def test_register_random_participant_duplicate_email_error(
 async def test_register_random_participant_general_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -257,7 +266,7 @@ async def test_register_random_participant_general_error(
     hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_random_case_input_data)
+    result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
 
     # Verify the result is an `Err` containing a general Exception
     assert isinstance(result, Err)
@@ -270,6 +279,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock full hackathon
@@ -286,7 +296,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_random_case_input_data)
+    result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
@@ -297,6 +307,7 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
 async def test_register_random_participant_order_of_operations(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock full hackathon
@@ -308,7 +319,7 @@ async def test_register_random_participant_order_of_operations(
     hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # Call the function under test
-    result = await p_reg_service.register_random_participant(mock_random_case_input_data)
+    result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
 
     # Check that the result is an `Err` of type HackathonCapacityExceededError
     assert isinstance(result, Err)
@@ -322,6 +333,7 @@ async def test_register_link_participant_success(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     participant_repo_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
@@ -348,7 +360,9 @@ async def test_register_link_participant_success(
     )
 
     # Call the function under test
-    result = await p_reg_service.register_invite_link_participant(mock_invite_link_case_input_data, jwt_token)
+    result = await p_reg_service.register_invite_link_participant(
+        mock_invite_link_case_input_data, jwt_token, background_tasks
+    )
 
     # Check that the result is an `Ok` containing both the participant and team objects
     assert isinstance(result, Ok)
@@ -363,6 +377,7 @@ async def test_register_link_participant_success(
 async def test_register_link_participant_capacity_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
@@ -373,7 +388,9 @@ async def test_register_link_participant_capacity_exceeded(
     jwt_token = JwtUtility.encode_data(data=mock_jwt_user_registration)
 
     # Call the function under test
-    result = await p_reg_service.register_invite_link_participant(mock_invite_link_case_input_data, jwt_token)
+    result = await p_reg_service.register_invite_link_participant(
+        mock_invite_link_case_input_data, jwt_token, background_tasks
+    )
 
     # Check the err type
     assert isinstance(result, Err)

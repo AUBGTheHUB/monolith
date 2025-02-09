@@ -53,7 +53,7 @@ async def test_create_participant_admin_case_success(
 
     # Check that `register_admin_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert that the response is successful
@@ -85,7 +85,7 @@ async def test_create_participant_admin_case_duplicate_email_error(
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -114,7 +114,7 @@ async def test_create_participant_admin_case_duplicate_team_name_error(
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -141,7 +141,7 @@ async def test_create_participant_admin_case_general_error(
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates an internal server error
@@ -170,7 +170,7 @@ async def test_create_participant_admin_case_capacity_exceeded_error(
 
     # Check that `register_admin_participant` was awaited once
     participant_registration_service_mock.register_admin_participant.assert_awaited_once_with(
-        mock_admin_case_input_data
+        mock_admin_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict with capacity reached
@@ -203,7 +203,7 @@ async def test_create_participant_random_case_success(
 
     # Check that `register_random_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert that the response is successful
@@ -235,7 +235,7 @@ async def test_create_participant_random_case_duplicate_email_error(
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -262,7 +262,7 @@ async def test_create_participant_random_case_general_error(
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates an internal server error
@@ -291,7 +291,7 @@ async def test_create_participant_random_case_capacity_exceeded_error(
 
     # Check that `register_random_participant` was awaited once
     participant_registration_service_mock.register_random_participant.assert_awaited_once_with(
-        mock_random_case_input_data
+        mock_random_case_input_data, background_tasks
     )
 
     # Assert the response indicates a conflict with capacity reached
@@ -326,7 +326,7 @@ async def test_create_participant_link_case_success(
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert that the response is successful
@@ -360,7 +360,7 @@ async def test_create_participant_link_case_duplicate_email_error(
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -390,7 +390,7 @@ async def test_create_participant_link_case_general_error(
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -420,7 +420,7 @@ async def test_create_participant_link_case_team_capacity_exceeded(
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict
@@ -448,7 +448,7 @@ async def test_create_participant_link_case_team_not_found(
 
     # Check that `register_invite_link_participant` was awaited once with the expected input_data
     participant_registration_service_mock.register_invite_link_participant.assert_awaited_once_with(
-        mock_invite_link_case_input_data, "mock_jwt_token"
+        mock_invite_link_case_input_data, "mock_jwt_token", background_tasks
     )
 
     # Assert the response indicates a conflict

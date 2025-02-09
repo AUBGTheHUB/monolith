@@ -22,6 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
     ParticipantRequestBody,
 )
 from src.service.hackathon_service import HackathonService
+from src.service.mail_service.resend_service import ResendMailService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
@@ -115,8 +116,20 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
     hackathon_service.verify_admin_participant = AsyncMock()
+    hackathon_service.send_verification_email = AsyncMock()
 
     return hackathon_service
+
+
+@pytest.fixture
+def mailing_service_mock() -> Mock:
+
+    mailing_service_mock = Mock(spec=ResendMailService)
+    mailing_service_mock.send_email = AsyncMock()
+    mailing_service_mock.send_participant_successful_registration_email = AsyncMock()
+    mailing_service_mock.send_participant_verification_email = AsyncMock()
+
+    return mailing_service_mock
 
 
 @pytest.fixture
@@ -139,7 +152,6 @@ def participant_registration_service_mock() -> Mock:
     p_reg_service.register_admin_participant = AsyncMock()
     p_reg_service.register_random_participant = AsyncMock()
     p_reg_service.register_admin_participant = AsyncMock()
-    p_reg_service.send_verification_email = AsyncMock()
 
     return p_reg_service
 
