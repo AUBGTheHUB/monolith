@@ -16,11 +16,14 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
-            LOG.debug("Fetching feature switch by feature...", feature=feature)
-            data = await self._collection.find_one({"feature": feature})
-            if data:
-                return Ok(FeatureSwitch(**data))
-            return Err(FeatureSwitchNotFoundError())
+            LOG.debug("Fetching feature switch by name...", feature=feature)
+            data = await self._collection.find_one({"name": feature}, projection={"_id": 0})
+            
+            if data is None:
+                return Err(FeatureSwitchNotFoundError())
+            
+            return Ok(FeatureSwitch(**data))
+            
         except Exception as e:
             LOG.exception(f"Failed to fetch feature switch by feature {feature} due to err {e}")
             return Err(e)
@@ -33,16 +36,16 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
         )
 
     async def create(self, obj: FeatureSwitch, session: Optional[AsyncIOMotorClientSession] = None) -> Result[FeatureSwitch, Exception]:
-        raise NotImplementedError("Create method is not implemented")
+        return Err(NotImplementedError())
 
     async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result[FeatureSwitch, Exception]:
-        raise NotImplementedError("Delete method is not implemented")
+        return Err(NotImplementedError())
 
     async def fetch_all(self) -> Result[List[FeatureSwitch], Exception]:
-        raise NotImplementedError("Fetch all method is not implemented")
+        return Err(NotImplementedError())
 
     async def fetch_by_id(self, obj_id: str) -> Result[FeatureSwitch, Exception]:
-        raise NotImplementedError("Fetch by ID method is not implemented")
+        return Err(NotImplementedError())
 
     async def update(self, obj_id: str, obj: FeatureSwitch, session: Optional[AsyncIOMotorClientSession] = None) -> Result[FeatureSwitch, Exception]:
-        raise NotImplementedError("Update method is not implemented")
+        return Err(NotImplementedError())

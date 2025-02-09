@@ -55,7 +55,8 @@ async def create_participant(
     participant_handler: ParticipantHandlers = Depends(_p_handler),
     feature_switch_handler: FeatureSwitchHandler = Depends(_fs_handler),
 ) -> Response:
-    registration_status_result = await feature_switch_handler.check_registration_status()
+    
+    registration_status_result = await feature_switch_handler.handle_feature_switch("isRegistrationOpen")
     
     if is_err(registration_status_result):
         return Response(
