@@ -41,7 +41,7 @@ export default function MobileNavComponent() {
                         </a>
                     </div>
                     <div className={NAV_ITEM}>
-                        <a href="#hackathon" className={NAV_ITEM_A}>
+                        <a href="/hackathon" className={NAV_ITEM_A}>
                             <img src={codeIcon} className={NAV_ITEM_IMG} />
                             Hackathon
                         </a>

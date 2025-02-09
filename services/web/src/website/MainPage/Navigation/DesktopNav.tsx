@@ -26,7 +26,7 @@ export default function DesktopNav() {
                             </a>
                         </span>
                         <span className={NAV_ITEM}>
-                            <a href="#hackathon" className={NAV_ITEM_A}>
+                            <a href="/hackathon" className={NAV_ITEM_A}>
                                 Hackathon
                             </a>
                         </span>
