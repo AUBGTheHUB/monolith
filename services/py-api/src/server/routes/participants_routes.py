@@ -1,5 +1,7 @@
 from typing import Union
 from fastapi import APIRouter, Depends
+from result import is_err
+from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 
 from src.server.routes.dependency_factory import _h_service
@@ -11,9 +13,11 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     Response,
 )
+from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.server.routes.dependency_factory import is_auth, validate_obj_id
+from starlette import status
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
@@ -23,6 +27,9 @@ def _p_reg_service(
     h_service: HackathonService = Depends(_h_service),
 ) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
+
+def _fs_service(h_service: HackathonService = Depends(_h_service),) -> FeatureSwitchService:
+    return FeatureSwitchService(h_service._fs_repo)
 
 
 def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
@@ -34,6 +41,9 @@ def _h_handler(
 ) -> HackathonManagementHandlers:
     return HackathonManagementHandlers(h_service)
 
+def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> FeatureSwitchHandler:
+    return FeatureSwitchHandler(fs_service)
+
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
 @participants_router.post(
@@ -42,9 +52,18 @@ def _h_handler(
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
     jwt_token: Union[str, None] = None,
-    handler: ParticipantHandlers = Depends(_p_handler),
+    participant_handler: ParticipantHandlers = Depends(_p_handler),
+    feature_switch_handler: FeatureSwitchHandler = Depends(_fs_handler),
 ) -> Response:
-    return await handler.create_participant(participant_request_body, jwt_token)
+    registration_status_result = await feature_switch_handler.check_registration_status()
+    
+    if is_err(registration_status_result):
+        return Response(
+            ErrResponse(error=registration_status_result.err_value),
+            status_code=status.HTTP_409_CONFLICT,
+        )
+
+    return await participant_handler.create_participant(participant_request_body, jwt_token)
 
 
 @participants_router.delete(

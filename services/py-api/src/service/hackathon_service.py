@@ -6,6 +6,7 @@ from result import Err, is_err, Ok, Result
 
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -35,10 +36,12 @@ class HackathonService:
         self,
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
+        feature_switch_repo: FeatureSwitchRepository,
         tx_manager: TransactionManager,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
+        self._fs_repo = feature_switch_repo
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction_callback(
