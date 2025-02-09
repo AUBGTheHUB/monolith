@@ -1,5 +1,5 @@
 import { Fragment } from 'react/jsx-runtime';
-import { Footer } from './Footer/footer';
+import { Footer } from './Footer/HackathonFooter';
 import ScheduleSection from './ScheduleSection/ScheduleSection';
 
 export const HackathonPage = () => {
