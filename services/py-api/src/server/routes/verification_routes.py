@@ -37,8 +37,6 @@ async def verify_participant(jwt_token: str, _handler: VerificationHandlers = De
     status_code=200,
     responses={
         200: {"model": VerificationEmailSentSuccessfullyResponse},
-        400: {"model": ErrResponse},
-        404: {"model": ErrResponse},
         409: {"model": ErrResponse},
     },
 )
