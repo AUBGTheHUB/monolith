@@ -1,5 +1,5 @@
 export const DesktopNavComponent = () => {
-    const NAV_ITEM_A = 'text-white font-light';
+    const NAV_ITEM_A = 'text-white font-light font-mont';
     const NAV_ITEM_A_EFFECT =
         'hover:text-white relative after:content-[""] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left';
     return (
@@ -22,7 +22,7 @@ export const DesktopNavComponent = () => {
                 <div>
                     <a
                         href="#participate-now"
-                        className={`${NAV_ITEM_A} border-2 border-sky-600 rounded-3xl px-4 py-1 hover:text-white`}
+                        className={`${NAV_ITEM_A} border-2 border-sky-600 rounded-3xl px-4 py-1 hover:text-white hover:bg-sky-600`}
                     >
                         Participate now
                     </a>
