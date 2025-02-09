@@ -90,9 +90,15 @@ class ParticipantRegistrationService:
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 
-        # Here we should sen the successful registration email instead of verification email
-        # so it would be better if we put the sending functions in the hackathon service so that we can access them
-        # from both the verify and register routes
-        return await self._hackathon_service.create_invite_link_participant(
+        result = await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
+
+        if is_err(result):
+            return result
+
+        # Send the successful registration email
+        # We set the second argument to None because we don't want to send an email with a verification link
+        await self._hackathon_service.send_successful_registration_email(result.ok_value[0], None, background_tasks)
+
+        return result
