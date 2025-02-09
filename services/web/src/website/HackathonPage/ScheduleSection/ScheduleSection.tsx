@@ -15,7 +15,7 @@ export default function ScheduleSection() {
                 <div className="flex flex-col">
                     {scheduleData.map(({ day, events }) => (
                         <div key={day} className="flex flex-col sm:flex-row items-start mb-10 relative">
-                            <p className="w-full sm:w-2/5 text-white sm:text-3xl text-2xl sm:sticky sm:top-0 mb-6 sm:mb-0 ">
+                            <p className="w-full sm:w-2/5 text-white sm:text-3xl text-2xl sm:sticky sm:top-5 mb-6 sm:mb-0 ">
                                 {day}
                             </p>
                             <div className="w-full sm:w-3/5 sm:text-lg text-base">
