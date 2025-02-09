@@ -4,6 +4,7 @@ import { Navigation } from '../Navigation/Navigation';
 
 export default function LandingSection() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -14,19 +15,26 @@ export default function LandingSection() {
     };
 
     return (
-        <div className="relative overflow-hidden h-[100vh] select-none" onMouseMove={handleMouseMove}>
+        <div
+            className="relative overflow-hidden h-[100vh] select-none"
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <img
                 src="/landingSection/circuit.png"
                 alt="Circuit board"
-                className={`absolute w-full h-full object-cover sm:opacity-30 opacity-5 `}
+                className={`absolute w-full h-full object-cover sm:opacity-30 opacity-5`}
                 style={{
+                    opacity: isHovered ? (window.innerWidth >= 640 ? 0.3 : 0.05) : 0,
+                    transition: 'opacity 0ms ease-in-out',
                     WebkitMaskImage:
-                        window.innerWidth >= 640
-                            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 0, 0, 1) 112.5px, rgba(0, 0, 0, 0) 225px)`
+                        window.innerWidth >= 640 && isHovered
+                            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 0, 0, 1) 75px, rgba(0, 0, 0, 0) 150px)`
                             : 'none',
                     maskImage:
-                        window.innerWidth >= 640
-                            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 0, 0, 1) 112.5px, rgba(0, 0, 0, 0) 225px)`
+                        window.innerWidth >= 640 && isHovered
+                            ? `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 0, 0, 1) 75px, rgba(0, 0, 0, 0) 150px)`
                             : 'none',
                     WebkitMaskRepeat: 'no-repeat',
                     maskRepeat: 'no-repeat',
@@ -49,10 +57,10 @@ export default function LandingSection() {
                         <div className="flex flex-col items-center text-center">
                             <div>
                                 <p className="text-2xl text-[#9CBEFF] mb-[10px]">WELCOME TO</p>
-                                <h1 className="text-7xl sm:text-8xl  font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
+                                <h1 className="text-7xl sm:text-8xl font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent">
                                     THE HUB
                                 </h1>
-                                <p className="text-base  text-white mt-[18px] mb-[30px]">
+                                <p className="text-base text-white mt-[18px] mb-[30px]">
                                     A group of passionate IT-oriented students who strive to make technological
                                     innovation thrive within AUBG and beyond.
                                 </p>
