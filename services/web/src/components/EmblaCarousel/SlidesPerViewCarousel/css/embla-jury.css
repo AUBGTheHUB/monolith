@@ -14,7 +14,7 @@
   --detail-medium-contrast: rgba(69, 92, 168, 0.87);
 }
 
-.embla__viewport {
+.jury .embla__viewport {
   overflow: hidden;
 }
 
@@ -38,18 +38,18 @@ transition: opacity 0.2s ease-in-out;
   padding-left: var(--slide-spacing-xs);
 }
 
-.embla__slide__inner {
+.jury  .embla__slide__inner {
   position: relative;
   margin-bottom: 1.5rem;
 }
 
-.embla__controls {
+.jury  .embla__controls {
   display: flex;
   justify-content: center;
   position:absolute;
 }
 
-.embla__buttons {
+.jury  .embla__buttons {
   display: none;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.6rem;
@@ -82,11 +82,11 @@ transition: opacity 0.2s ease-in-out;
   border-width: 1px;
 }
 
-.embla__button:disabled {
+.jury .embla__button:disabled {
  opacity:0.45;
 }
 
-.embla__button__svg {
+.jury  .embla__button__svg {
   width: 35%;
   height: 35%;
 }
@@ -129,11 +129,11 @@ transition: opacity 0.2s ease-in-out;
   content: '';
 }
 
-.embla__dot--selected:after {
+.jury .embla__dot--selected:after {
   background-color: var(--text-body) !important;
 }
 
-.embla:has(.embla__dot:only-child) .embla__controls {
+.jury .embla:has(.embla__dot:only-child) .embla__controls {
   visibility: hidden !important;
 }
 
@@ -155,17 +155,18 @@ transition: opacity 0.2s ease-in-out;
 }
 
 @media (min-width: 640px){
-  .embla__buttons{
+  .jury .embla__buttons{
     display: grid;
   }
 
-  .embla__controls{
-     position:absolute;
+  .jury .embla__controls{
+    position:absolute;
     right:10rem;
-    top:1rem;
+    top:3rem;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
     gap: 1.2rem;
+    z-index: 20;
   }
 
 }

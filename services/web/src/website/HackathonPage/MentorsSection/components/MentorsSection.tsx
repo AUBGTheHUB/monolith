@@ -3,7 +3,10 @@ import mentors from '../StaticContent/mentors.json';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/base.css';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-jury.css';
 import EmblaCarousel from '@/components/EmblaCarousel/SlidesPerViewCarousel/js/EmblaCarousel.tsx';
-import { EmblaOptionsType } from 'embla-carousel';
+import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
+import { useCallback, useEffect, useState } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import ClassNames from 'embla-carousel-class-names';
 
 const OPTIONS: EmblaOptionsType = {
     breakpoints: {
@@ -26,16 +29,58 @@ const OPTIONS: EmblaOptionsType = {
 };
 
 export default function MentorsSection() {
+    const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [ClassNames()]);
+    const [progress, setProgress] = useState(0);
+    const logEmblaEvent = useCallback((emblaApi: EmblaCarouselType) => {
+        console.log(emblaApi.scrollProgress());
+        setProgress(emblaApi.scrollProgress());
+        if (!emblaApi.canScrollNext()) {
+            const element = document.querySelector('#mentors');
+            if (element) {
+                element.classList.remove('ml-auto');
+                element.classList.add('m-auto');
+            }
+        } else {
+            const element = document.querySelector('#mentors');
+
+            if (element) {
+                element.classList.remove('m-auto');
+                element.classList.add('ml-auto');
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if (emblaApi) emblaApi.on('slidesInView', logEmblaEvent);
+    }, [emblaApi, logEmblaEvent]);
+
     const SLIDES = mentors.map((mentor, index) => (
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
     return (
-        <div className="bg-[#000912] py-10">
-            <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 ml-auto z-10 relative ">
+        <div className="bg-[#000912] py-10 relative">
+            <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
                 <img src="/mentors/mentors_title.svg"></img>
-                <img className="w-[90%]" src="/jury/jury_page_break.svg"></img>
-                <EmblaCarousel type="jury" slides={SLIDES} options={OPTIONS} />
+                {/* <img className="w-[90%]" src="/jury/jury_page_break.svg"></img> */}
+                <div className="w-full  h-2 rounded-full overflow-hidden relative">
+                    <div
+                        className="h-full bg-white  transition-all duration-500"
+                        style={{
+                            width: `${(progress + 0.12) * 100}%`,
+                        }}
+                    ></div>
+                    <hr></hr>
+                </div>
+            </div>
+            <div id="mentors" className="ml-auto space-y-7 py-10 sm:w-11/12 w-11/12 z-10">
+                <EmblaCarousel
+                    type="jury"
+                    slides={SLIDES}
+                    options={OPTIONS}
+                    emblaRefs={emblaRef}
+                    emblaApis={emblaApi}
+                />
             </div>
         </div>
     );
