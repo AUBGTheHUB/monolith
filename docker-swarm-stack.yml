@@ -56,12 +56,14 @@ services:
       DATABASE_URL: /run/secrets/db-url
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
+      RESEND_API_KEY: /run/secrets/resend-api-key
 
     secrets:
       - env
       - db-url
       - secret-key
       - secret-auth-key
+      - resend-api-key
 
     volumes:
       - /services/py-api/shared:/app/shared
@@ -79,6 +81,8 @@ secrets:
   secret-key:
     external: true
   secret-auth-key:
+    external: true
+  resend-api-key:
     external: true
 
 networks:

@@ -1,6 +1,9 @@
+from datetime import timezone, datetime, timedelta
 from math import ceil
+from os import environ
 from typing import Final, Optional, Tuple
 
+from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 
@@ -23,6 +26,8 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
 )
 from src.database.model.base_model import SerializableObjectId
+from src.service.mail_service.resend_service import ResendMailService
+from src.utils import JwtUtility
 
 
 class HackathonService:
@@ -36,10 +41,12 @@ class HackathonService:
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
         tx_manager: TransactionManager,
+        mailing_service: ResendMailService,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
         self._tx_manager = tx_manager
+        self._mailing_service = mailing_service
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
@@ -223,3 +230,73 @@ class HackathonService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
+
+    async def send_verification_email(
+        self, participant: Participant, team: Team | None, background_tasks: BackgroundTasks
+    ) -> None:
+
+        if environ["ENV"] == "TEST":
+            return None
+
+        # Build the payload for the Jwt token
+        expiration = (datetime.now(timezone.utc) + timedelta(hours=24)).timestamp()
+        payload = JwtParticipantVerificationData(sub=str(participant.id), is_admin=participant.is_admin, exp=expiration)
+
+        # Create the Jwt Token
+        jwt_token = JwtUtility.encode_data(data=payload)
+
+        # Append the Jwt to the endpoint
+        # TODO: Change the path to a front-end path where we will send a post request towards this endpoint
+        if environ["ENV"] == "PROD":
+            verification_link = f"https://thehub-aubg.com/api/v3/hackathon/participants/verify?jwt_token={jwt_token}"
+        else:
+            verification_link = (
+                f"https://dev.thehub-aubg.com/api/v3/hackathon/participants/verify?jwt_token={jwt_token}"
+            )
+
+        background_tasks.add_task(
+            self._mailing_service.send_participant_verification_email,
+            participant,
+            verification_link,
+            team.name if team else None,
+        )
+
+    async def send_successful_registration_email(
+        self, participant: Participant, team: Team | None, background_tasks: BackgroundTasks
+    ) -> None:
+
+        if environ["ENV"] == "TEST":
+            return None
+
+        if team is None:
+            # If we are dealing with a random participant or a participant with a link we dont need to create an
+            # invite link
+            background_tasks.add_task(
+                self._mailing_service.send_participant_successful_registration_email,
+                participant,
+                None,
+                None,
+            )
+
+            return None
+
+        # Build the payload for the Jwt token
+        expiration = (datetime.now(timezone.utc) + timedelta(days=15)).timestamp()
+        payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
+
+        # Create the Jwt Token
+        jwt_token = JwtUtility.encode_data(data=payload)
+
+        # Append the Jwt to the endpoint
+        # TODO: Change the path to a front-end path where we will send a post request towards this endpoint
+        if environ["ENV"] == "PROD":
+            invite_link = f"https://thehub-aubg.com/hackathon/register?jwt_token={jwt_token}"
+        else:
+            invite_link = f"https://dev.thehub-aubg.com/hackthon/register?jwt_token={jwt_token}"
+
+        background_tasks.add_task(
+            self._mailing_service.send_participant_successful_registration_email,
+            participant,
+            invite_link,
+            team.name,
+        )

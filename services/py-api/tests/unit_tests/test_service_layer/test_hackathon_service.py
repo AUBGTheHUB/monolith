@@ -18,8 +18,10 @@ from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TE
 
 
 @pytest.fixture
-def hackathon_service(participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock)
+def hackathon_service(
+    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, mailing_service_mock: Mock
+) -> HackathonService:
+    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, mailing_service_mock)
 
 
 @pytest.mark.asyncio

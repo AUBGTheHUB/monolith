@@ -16,7 +16,7 @@ from tests.integration_tests.conftest import PARTICIPANT_VERIFY_URL
 from starlette import status
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -54,7 +54,7 @@ async def test_verify_participant_admin_case_success(
     assert verify_resp_json["participant"]["email_verified"] is True
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_participant_is_not_found(
     mock_obj_id: str,
@@ -72,7 +72,10 @@ async def test_verify_participant_admin_case_when_participant_is_not_found(
     assert verify_resp_json["error"] == "The specified participant was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(
+    "os.environ",
+    {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"},
+)
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_team_is_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -107,7 +110,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     assert verify_resp_json["error"] == "The specified team was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_expired_token(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -138,7 +141,7 @@ async def test_verify_participant_admin_case_expired_token(
 
 @patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 1)
 @patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 2)
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_admin_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
@@ -182,7 +185,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_success(
     create_test_participant: CreateTestParticipantCallable,
@@ -223,7 +226,7 @@ async def test_verify_random_participant_success(
     assert verify_resp_json["team"] is None
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_not_found(
     async_client: AsyncClient, mock_obj_id: str, thirty_sec_jwt_exp_limit: float
@@ -247,7 +250,7 @@ async def test_verify_random_participant_not_found(
 
 @patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 1)
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,

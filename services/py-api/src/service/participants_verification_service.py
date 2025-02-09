@@ -1,5 +1,6 @@
 from typing import Tuple
-from result import Err, Result
+from fastapi import BackgroundTasks
+from result import Err, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError, TeamNotFoundError
@@ -13,7 +14,9 @@ class ParticipantVerificationService:
     def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
 
-    async def verify_admin_participant(self, jwt_data: JwtParticipantVerificationData) -> Result[
+    async def verify_admin_participant(
+        self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, Team],
         HackathonCapacityExceededError | ParticipantNotFoundError | TeamNotFoundError | Exception,
     ]:
@@ -21,9 +24,20 @@ class ParticipantVerificationService:
         if not has_capacity:
             return Err(HackathonCapacityExceededError())
 
-        return await self._hackathon_service.verify_admin_participant_and_team_in_transaction(jwt_data=jwt_data)
+        result = await self._hackathon_service.verify_admin_participant_and_team_in_transaction(jwt_data=jwt_data)
 
-    async def verify_random_participant(self, jwt_data: JwtParticipantVerificationData) -> Result[
+        if is_err(result):
+            return result
+
+        await self._hackathon_service.send_successful_registration_email(
+            result.ok_value[0], result.ok_value[1], background_tasks
+        )
+
+        return result
+
+    async def verify_random_participant(
+        self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, None],
         HackathonCapacityExceededError | ParticipantNotFoundError | Exception,
     ]:
@@ -31,4 +45,11 @@ class ParticipantVerificationService:
         if not has_capacity:
             return Err(HackathonCapacityExceededError())
 
-        return await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)
+        result = await self._hackathon_service.verify_random_participant(jwt_data=jwt_data)
+
+        if is_err(result):
+            return result
+
+        await self._hackathon_service.send_successful_registration_email(result.ok_value[0], None, background_tasks)
+
+        return result

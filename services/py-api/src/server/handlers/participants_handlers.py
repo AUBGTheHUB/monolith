@@ -7,6 +7,7 @@
 #
 # For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
 
+from fastapi import BackgroundTasks
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from starlette import status
@@ -31,18 +32,21 @@ class ParticipantHandlers(BaseHandler):
     async def create_participant(
         self,
         participant_request_body: ParticipantRequestBody,
+        background_tasks: BackgroundTasks,
         jwt_token: str | None = None,
     ) -> Response:
 
         if isinstance(participant_request_body.registration_info, AdminParticipantInputData):
-            result = await self._service.register_admin_participant(participant_request_body.registration_info)
+            result = await self._service.register_admin_participant(
+                participant_request_body.registration_info, background_tasks
+            )
 
         elif (
             isinstance(participant_request_body.registration_info, InviteLinkParticipantInputData)
             and jwt_token is not None
         ):
             result = await self._service.register_invite_link_participant(
-                participant_request_body.registration_info, jwt_token
+                participant_request_body.registration_info, jwt_token, background_tasks
             )
 
         # To provide a better DX for the Frontend.
@@ -55,7 +59,9 @@ class ParticipantHandlers(BaseHandler):
             )
 
         else:
-            result = await self._service.register_random_participant(participant_request_body.registration_info)
+            result = await self._service.register_random_participant(
+                participant_request_body.registration_info, background_tasks
+            )
 
         if is_err(result):
             return self.handle_error(err=result.err_value)

@@ -1,7 +1,7 @@
 from os.path import dirname, join
 
 
-def load_email_participant_html_template(participant_name: str, team_name: str, invite_link: str) -> str:
+def load_email_participant_html_template(participant_name: str, team_name: str | None, invite_link: str | None) -> str:
     base_dir = dirname(__file__)
     template_path = join(base_dir, "email_templates", "email-participant.html")
 
@@ -22,7 +22,9 @@ def load_email_participant_html_template(participant_name: str, team_name: str, 
     )
 
 
-def load_email_verify_participant_html_template(participant_name: str, team_name: str, confirmation_link: str) -> str:
+def load_email_verify_participant_html_template(
+    participant_name: str, team_name: str | None, confirmation_link: str
+) -> str:
     base_dir = dirname(__file__)
     template_path = join(base_dir, "email_templates", "email-verify-participant.html")
     with open(template_path, "r", encoding="utf-8") as file:
