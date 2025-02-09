@@ -22,8 +22,8 @@ export default function ScheduleSection() {
                                 <table className="w-full sm:mt-14 border border-separate border-gray-600 rounded-lg bg-[#13181C]/80 backdrop-blur-md">
                                     <tbody>
                                         {events.map(({ time, event }, idx) => (
-                                            <Fragment key={event}>
-                                                <tr key={idx} className="w-full">
+                                            <Fragment key={idx}>
+                                                <tr className="w-full">
                                                     <td className="w-1/12 p-4 text-[#A9B4C3]">{time}</td>
                                                     <td className="text-white">{event}</td>
                                                 </tr>
