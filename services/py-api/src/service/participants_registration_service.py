@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from fastapi import BackgroundTasks
 from result import Result, Err, is_err
 
 from src.database.model.participant_model import Participant
@@ -27,7 +28,9 @@ class ParticipantRegistrationService:
     def __init__(self, hackathon_service: HackathonService) -> None:
         self._hackathon_service = hackathon_service
 
-    async def register_admin_participant(self, input_data: AdminParticipantInputData) -> Result[
+    async def register_admin_participant(
+        self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
     ]:
@@ -43,11 +46,13 @@ class ParticipantRegistrationService:
             return result
 
         # Send the email if we have a valid response
-        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1])
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
 
         return result
 
-    async def register_random_participant(self, input_data: RandomParticipantInputData) -> Result[
+    async def register_random_participant(
+        self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
+    ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | HackathonCapacityExceededError | Exception,
     ]:
@@ -63,12 +68,12 @@ class ParticipantRegistrationService:
             return result
 
         # Send the email if we have a valid response
-        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1])
+        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
 
         return result
 
     async def register_invite_link_participant(
-        self, input_data: InviteLinkParticipantInputData, jwt_token: str
+        self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,

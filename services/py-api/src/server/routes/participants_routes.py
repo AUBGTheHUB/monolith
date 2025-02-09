@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 
 from src.server.routes.dependency_factory import _h_service
@@ -39,10 +39,11 @@ def _h_handler(
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
+    background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
     handler: ParticipantHandlers = Depends(_p_handler),
 ) -> Response:
-    return await handler.create_participant(participant_request_body, jwt_token)
+    return await handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
 
 @participants_router.delete(
