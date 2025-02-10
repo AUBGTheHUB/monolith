@@ -4,8 +4,8 @@ export default function AwardsSection() {
             className="w-full flex flex-col items-center font-mont bg-[#000912] py-10 relative"
             style={{
                 backgroundImage: "url('/AwardsSection/awards_bg.png')",
-                backgroundSize: '80%',
-                backgroundPosition: 'center top -190px',
+                backgroundSize: '180vh',
+                backgroundPosition: 'center top -30vh',
                 backgroundRepeat: 'no-repeat',
             }}
         >
@@ -18,11 +18,7 @@ export default function AwardsSection() {
             <div className="flex flex-row justify-center items-center w-[100%] space-x-16 mb-28 relative">
                 {/* Left */}
                 <div className="flex flex-col items-center">
-                    <img
-                        src="/AwardsSection/blue_stone.png"
-                        alt=""
-                        className="h-[5.8rem] w-[3.2rem] mr-[3.2rem] mb-4"
-                    />
+                    <img src="/AwardsSection/blue_stone.png" alt="" className="vw-20 mr-[3.2rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-6xl bg-gradient-to-b from-[#00DCFF] to-[#CBE1FF] text-transparent bg-clip-text">
                             2000
@@ -32,8 +28,8 @@ export default function AwardsSection() {
                 </div>
 
                 {/* Middle - Adjust to Center */}
-                <div className="flex flex-col items-center mb-[4.7rem] relative z-10">
-                    <img src="/AwardsSection/red_stone.png" alt="" className="h-[10rem] w-[5.5rem] mr-[3.2rem] mb-4" />
+                <div className="flex flex-col items-center mb-[3.4rem] relative z-10">
+                    <img src="/AwardsSection/red_stone.png" alt="" className="vw-25 mr-[3.5rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-7xl bg-gradient-to-b from-[#FE4646] to-[#A9B4C3] text-transparent bg-clip-text">
                             3000
@@ -44,7 +40,7 @@ export default function AwardsSection() {
 
                 {/* Right */}
                 <div className="flex flex-col items-center mt-[1rem]">
-                    <img src="/AwardsSection/white_stone.png" alt="" className="h-[5rem] w-[3rem] mr-[3.2rem] mb-4" />
+                    <img src="/AwardsSection/white_stone.png" alt="" className="vw-20 mr-[3.2rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-6xl bg-gradient-to-b from-[#CBE1FF] to-[#A9B4C3] text-transparent bg-clip-text">
                             1000
