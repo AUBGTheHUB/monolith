@@ -28,7 +28,7 @@ export default function AwardsSection() {
                 </div>
 
                 {/* Middle - Adjust to Center */}
-                <div className="flex flex-col items-center mb-[3.4rem] relative z-10">
+                <div className="flex flex-col items-center mb-[9vh] relative z-10">
                     <img src="/AwardsSection/red_stone.png" alt="" className="w-[6vw] mr-[3.5rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-7xl bg-gradient-to-b from-[#FE4646] to-[#A9B4C3] text-transparent bg-clip-text">
