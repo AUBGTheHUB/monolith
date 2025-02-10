@@ -18,7 +18,7 @@ export default function AwardsSection() {
             <div className="flex flex-row justify-center items-center w-[100%] space-x-16 mb-28 relative">
                 {/* Left */}
                 <div className="flex flex-col items-center">
-                    <img src="/AwardsSection/blue_stone.png" alt="" className="vw-20 mr-[3.2rem] mb-4" />
+                    <img src="/AwardsSection/blue_stone.png" alt="" className="w-[4vw] mr-[3.2rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-6xl bg-gradient-to-b from-[#00DCFF] to-[#CBE1FF] text-transparent bg-clip-text">
                             2000
@@ -29,7 +29,7 @@ export default function AwardsSection() {
 
                 {/* Middle - Adjust to Center */}
                 <div className="flex flex-col items-center mb-[3.4rem] relative z-10">
-                    <img src="/AwardsSection/red_stone.png" alt="" className="vw-25 mr-[3.5rem] mb-4" />
+                    <img src="/AwardsSection/red_stone.png" alt="" className="w-[6vw] mr-[3.5rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-7xl bg-gradient-to-b from-[#FE4646] to-[#A9B4C3] text-transparent bg-clip-text">
                             3000
@@ -40,7 +40,7 @@ export default function AwardsSection() {
 
                 {/* Right */}
                 <div className="flex flex-col items-center mt-[1rem]">
-                    <img src="/AwardsSection/white_stone.png" alt="" className="vw-20 mr-[3.2rem] mb-4" />
+                    <img src="/AwardsSection/white_stone.png" alt="" className="w-[3.5vw] mr-[3.2rem] mb-4" />
                     <div className="flex items-end">
                         <p className="font-bold text-6xl bg-gradient-to-b from-[#CBE1FF] to-[#A9B4C3] text-transparent bg-clip-text">
                             1000
