@@ -41,12 +41,13 @@ class ParticipantRegistrationService:
 
         # Proceed with registration if there is capacity
         result = await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
-
         if is_err(result):
             return result
 
-        # Send the email if we have a valid response
-        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
+        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
+        await self._hackathon_service.send_verification_email(
+            participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
+        )
 
         return result
 
@@ -63,12 +64,15 @@ class ParticipantRegistrationService:
 
         # Proceed with registration if there is capacity
         result = await self._hackathon_service.create_random_participant(input_data)
-
         if is_err(result):
             return result
 
-        # Send the email if we have a valid response
-        await self._hackathon_service.send_verification_email(result.ok_value[0], result.ok_value[1], background_tasks)
+        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
+        err = await self._hackathon_service.send_verification_email(
+            participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
+        )
+        if err is not None:
+            return err
 
         return result
 
@@ -93,12 +97,13 @@ class ParticipantRegistrationService:
         result = await self._hackathon_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
-
         if is_err(result):
             return result
 
-        # Send the successful registration email
+        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
         # We set the second argument to None because we don't want to send an email with a verification link
-        await self._hackathon_service.send_successful_registration_email(result.ok_value[0], None, background_tasks)
+        self._hackathon_service.send_successful_registration_email(
+            participant=result.ok_value[0], background_tasks=background_tasks
+        )
 
         return result
