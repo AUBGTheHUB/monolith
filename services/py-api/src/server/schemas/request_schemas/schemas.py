@@ -6,6 +6,10 @@ from pydantic import EmailStr, BaseModel, Field, ConfigDict
 # https://docs.pydantic.dev/latest/concepts/unions/#discriminated-unions
 
 
+class ResendEmailParticipantData(BaseModel):
+    participant_id: str
+
+
 class BaseParticipantData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")

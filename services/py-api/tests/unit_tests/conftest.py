@@ -144,6 +144,13 @@ def tx_manager_mock() -> Mock:
 
 
 @pytest.fixture
+def background_tasks() -> BackgroundTasks:
+    mock_background_tasks = MagicMock(spec=BackgroundTasks)
+    mock_background_tasks.add_task = MagicMock()
+    return mock_background_tasks
+
+
+@pytest.fixture
 def participant_registration_service_mock() -> Mock:
     """This is a mock obj of ParticipantRegistrationService. To change the return values of its methods use:
     `p_reg_service.method_name.return_value=some_return_value`"""
@@ -154,13 +161,6 @@ def participant_registration_service_mock() -> Mock:
     p_reg_service.register_admin_participant = AsyncMock()
 
     return p_reg_service
-
-
-@pytest.fixture
-def background_tasks() -> BackgroundTasks:
-    mock_background_tasks = MagicMock(spec=BackgroundTasks)
-    mock_background_tasks.add_task = MagicMock()
-    return mock_background_tasks
 
 
 @pytest.fixture

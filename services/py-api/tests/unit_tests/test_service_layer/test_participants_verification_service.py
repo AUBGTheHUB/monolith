@@ -6,7 +6,12 @@ from unittest.mock import Mock
 
 from src.database.model.team_model import Team
 from src.database.model.participant_model import Participant
-from src.server.exception import HackathonCapacityExceededError, ParticipantNotFoundError, TeamNotFoundError
+from src.server.exception import (
+    EmailRateLimitExceededError,
+    HackathonCapacityExceededError,
+    ParticipantNotFoundError,
+    TeamNotFoundError,
+)
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
@@ -225,3 +230,60 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
+
+
+@pytest.mark.asyncio
+async def test_send_verification_email_success(
+    p_ver_service: ParticipantVerificationService,
+    hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
+    mock_obj_id: str,
+) -> None:
+    participant_mock_value = Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, email_verified=False, team_id=None
+    )
+
+    team_mock_value = Team(name=TEST_TEAM_NAME, is_verified=False)
+
+    hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Ok(
+        (participant_mock_value, team_mock_value)
+    )
+
+    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+    assert result.ok_value.name == TEST_USER_NAME
+    assert result.ok_value.email == TEST_USER_EMAIL
+
+
+@pytest.mark.asyncio
+async def test_send_verification_email_rate_limit_exceeded_error(
+    p_ver_service: ParticipantVerificationService,
+    hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
+    mock_obj_id: str,
+) -> None:
+
+    hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(EmailRateLimitExceededError())
+
+    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, EmailRateLimitExceededError)
+
+
+@pytest.mark.asyncio
+async def test_send_verification_email_participant_not_found_error(
+    p_ver_service: ParticipantVerificationService,
+    hackathon_service_mock: Mock,
+    background_tasks: BackgroundTasks,
+    mock_obj_id: str,
+) -> None:
+
+    hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(ParticipantNotFoundError())
+
+    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantNotFoundError)

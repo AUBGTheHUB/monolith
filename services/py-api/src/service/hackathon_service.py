@@ -2,6 +2,7 @@ from datetime import timezone, datetime, timedelta
 from math import ceil
 from os import environ
 from typing import Final, Optional, Tuple
+from datetime import datetime, timedelta
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -15,6 +16,8 @@ from src.database.transaction_manager import TransactionManager
 from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
+    EmailRateLimitExceededError,
+    ParticipantAlreadyVerifiedError,
     ParticipantNotFoundError,
     TeamNameMissmatchError,
     TeamNotFoundError,
@@ -29,12 +32,15 @@ from src.database.model.base_model import SerializableObjectId
 from src.service.mail_service.resend_service import ResendMailService
 from src.utils import JwtUtility
 
+from src.service.mail_service.resend_service import ResendMailService
+
 
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
 
     MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
     MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
+    RATE_LIMIT_SECONDS: Final[int] = 90
 
     def __init__(
         self,
@@ -231,6 +237,49 @@ class HackathonService:
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
 
+    async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
+        Tuple[Participant, Team],
+        ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,
+    ]:
+        """Check if the verification email rate limit has been reached"""
+        participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
+
+        # If there was an error fetching the participant return that error as it is as it will be handled further up by the
+        # handler
+        if is_err(participant):
+            return participant
+
+        # We fetch the team so that we take advantage of the team info we have to pass to the mailing service
+        team = (
+            await self._team_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
+            if participant.ok_value.is_admin
+            else Ok(None)
+        )
+
+        # If there was an error fetching the team return that error as it is as it will be handled further up by the
+        # handler
+        if is_err(team):
+            return team
+
+        # Check if the participant is already verified before sending another verification email
+        if participant.ok_value.email_verified:
+            return Err(ParticipantAlreadyVerifiedError())
+
+        # The last_sent_mail field is None when there has not been any email sent previously
+        if participant.ok_value.last_sent_email is None:
+            return Ok((participant.ok_value, team.ok_value))
+
+        # Calculate the rate limit
+        is_within_rate_limit = datetime.now() - participant.ok_value.last_sent_email >= timedelta(
+            seconds=self.RATE_LIMIT_SECONDS
+        )
+
+        # If it is not within the rate limit raise an error
+        if not is_within_rate_limit:
+            return Err(EmailRateLimitExceededError())
+
+        return Ok((participant.ok_value, team.ok_value))
+
     async def send_verification_email(
         self, participant: Participant, team: Team | None, background_tasks: BackgroundTasks
     ) -> None:
@@ -259,6 +308,11 @@ class HackathonService:
             participant,
             verification_link,
             team.name if team else None,
+        )
+
+        # Update the last sent field
+        await self._participant_repo.update(
+            obj_id=str(participant.id), obj_fields=UpdateParticipantParams(last_sent_email=datetime.now())
         )
 
     async def send_successful_registration_email(

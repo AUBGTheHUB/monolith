@@ -49,6 +49,20 @@ class ParticipantNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class EmailRateLimitExceededError(CustomError):
+    """Exception raised when the user has exceeded the rate limit for sending emails"""
+
+    message = "The rate limit for sending emails has been exceeded"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class ParticipantAlreadyVerifiedError(CustomError):
+    """Exception raised when the user has already been verified"""
+
+    message = "You have already been verified"
+    status_code = status.HTTP_400_BAD_REQUEST
+
+
 class TeamNotFoundError(CustomError):
     """Exception raised when there are no teams that match the query to the database"""
 

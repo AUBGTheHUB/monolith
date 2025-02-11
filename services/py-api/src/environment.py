@@ -36,6 +36,7 @@ def _load_docker_secrets() -> None:
         "DATABASE_URL": "/run/secrets/db-url",
         "SECRET_KEY": "/run/secrets/secret-key",
         "SECRET_AUTH_TOKEN": "/run/secrets/secret-auth-key",
+        "RESEND_API_KEY": "/run/secrets/resend-api-key",
     }
 
     # We set the env var value only if we are in a deployed env, and the env var has been set on the given Node

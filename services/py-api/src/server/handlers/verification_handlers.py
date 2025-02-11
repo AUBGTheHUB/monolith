@@ -4,7 +4,11 @@ from src.server.handlers.base_handler import BaseHandler
 from src.service.participants_verification_service import ParticipantVerificationService
 from starlette import status
 from src.utils import JwtUtility
-from src.server.schemas.response_schemas.schemas import ParticipantVerifiedResponse, Response
+from src.server.schemas.response_schemas.schemas import (
+    ParticipantVerifiedResponse,
+    Response,
+    VerificationEmailSentSuccessfullyResponse,
+)
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
 
 
@@ -38,5 +42,19 @@ class VerificationHandlers(BaseHandler):
 
         return Response(
             response_model=ParticipantVerifiedResponse(participant=result.ok_value[0], team=result.ok_value[1]),
+            status_code=status.HTTP_200_OK,
+        )
+
+    async def resend_verification_email(self, participant_id: str, background_tasks: BackgroundTasks) -> Response:
+
+        result = await self._service.resend_verification_email(
+            participant_id=participant_id, background_tasks=background_tasks
+        )
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(
+            response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
