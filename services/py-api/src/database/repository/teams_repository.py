@@ -28,7 +28,7 @@ class TeamsRepository(CRUDRepository[Team]):
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         try:
-            LOG.debug("Inserting team...", team=team.dump_as_json())
+            LOG.info("Inserting team...", team=team.dump_as_json())
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
@@ -59,27 +59,28 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.exception(f"Failed to fetch team by ObjectId {obj_id} due to err {e}")
             return Err(e)
 
+    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Team], Exception]:
-        try:
-            LOG.debug("Fetching all teams...")
-
-            teams_data = await self._collection.find({})
-
-            teams = []
-            for doc in teams_data:
-                doc_copy = dict(doc)
-
-                doc_copy["id"] = str(doc_copy.pop("_id"))
-
-                teams.append(Team(**doc_copy))
-
-            LOG.debug(f"Fetched {len(teams)} teams.")
-            return Ok(teams)
-
-        except Exception as e:
-            LOG.exception(f"Failed to fetch all teams due to err {e}")
-            return Err(e)
-
+        raise NotImplementedError()
+        # try:
+        #     LOG.debug("Fetching all teams...")
+        #
+        #     teams_data = await self._collection.find({})
+        #
+        #     teams = []
+        #     for doc in teams_data:
+        #         doc_copy = dict(doc)
+        #
+        #         doc_copy["id"] = str(doc_copy.pop("_id"))
+        #
+        #         teams.append(Team(**doc_copy))
+        #
+        #     LOG.debug(f"Fetched {len(teams)} teams.")
+        #     return Ok(teams)
+        #
+        # except Exception as e:
+        #     LOG.exception(f"Failed to fetch all teams due to err {e}")
+        #     return Err(e)
 
     async def update(
         self,
