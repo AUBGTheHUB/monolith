@@ -99,7 +99,7 @@ def team_repo_mock() -> Mock:
 
 
 @pytest.fixture
-def hackathon_service_mock() -> Mock:
+def hackathon_service_mock() -> HackathonService:
     """This is a mock obj of HackathonService. To change the return values of its methods use:
     `hackathon_service_mock.method_name.return_value=some_return_value`"""
 
@@ -108,6 +108,7 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
+    hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
     hackathon_service.create_random_participant = AsyncMock()
     hackathon_service.create_invite_link_participant = AsyncMock()
     hackathon_service.check_team_capacity = AsyncMock()
@@ -117,6 +118,7 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.delete_team = AsyncMock()
     hackathon_service.verify_admin_participant = AsyncMock()
     hackathon_service.send_verification_email = AsyncMock()
+    hackathon_service.send_successful_registration_email = Mock()
 
     return hackathon_service
 
@@ -143,7 +145,7 @@ def tx_manager_mock() -> Mock:
 
 
 @pytest.fixture
-def background_tasks() -> BackgroundTasks:
+def background_tasks() -> MagicMock:
     mock_background_tasks = MagicMock(spec=BackgroundTasks)
     mock_background_tasks.add_task = MagicMock()
     return mock_background_tasks

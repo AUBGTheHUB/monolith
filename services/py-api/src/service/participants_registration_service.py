@@ -44,10 +44,11 @@ class ParticipantRegistrationService:
         if is_err(result):
             return result
 
-        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
-        await self._hackathon_service.send_verification_email(
+        err = await self._hackathon_service.send_verification_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
+        if err is not None:
+            return err
 
         return result
 
@@ -67,9 +68,8 @@ class ParticipantRegistrationService:
         if is_err(result):
             return result
 
-        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
         err = await self._hackathon_service.send_verification_email(
-            participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
+            participant=result.ok_value[0], background_tasks=background_tasks
         )
         if err is not None:
             return err
@@ -100,10 +100,11 @@ class ParticipantRegistrationService:
         if is_err(result):
             return result
 
-        # Send the email if capacity check, and insertion of participant, and team documents have passed successfully
-        # We set the second argument to None because we don't want to send an email with a verification link
-        self._hackathon_service.send_successful_registration_email(
-            participant=result.ok_value[0], background_tasks=background_tasks
+        # Invite link participants are automatically verified, that's why we don't send a verification email
+        err = self._hackathon_service.send_successful_registration_email(
+            participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
+        if err is not None:
+            return err
 
         return result
