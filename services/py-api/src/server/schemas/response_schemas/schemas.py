@@ -51,17 +51,21 @@ class RegistrationOpenResponse(BaseModel):
     def serialize_participant(self, feature: Result) -> Dict[str, Any]:
         return feature.dump_as_json()
 
-class ParticipantRegisteredResponse(BaseModel):
+class ParticipantResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
     # schema for <class 'bson.objectid.ObjectId'>
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     participant: Participant
-    team: Optional[Team]
 
     @field_serializer("participant")
     def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
         return participant.dump_as_json()
+
+
+class ParticipantAndTeamResponse(ParticipantResponse):
+
+    team: Optional[Team]
 
     @field_serializer("team")
     def serialize_team(self, team: Team) -> Dict[str, Any] | None:
@@ -71,23 +75,8 @@ class ParticipantRegisteredResponse(BaseModel):
         return None
 
 
-class ParticipantDeletedResponse(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+class TeamResponse(BaseModel):
 
-    participant: Participant
-
-    @field_serializer("participant")
-    def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
-        return participant.dump_as_json()
-
-
-class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
-    """This response includes the updated body of the verified participant
-    and the body of the verified team in case we are verifying an admin participant.
-    """
-
-
-class TeamDeletedResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     team: Team
@@ -95,3 +84,34 @@ class TeamDeletedResponse(BaseModel):
     @field_serializer("team")
     def serialize_team(self, team: Team) -> Dict[str, Any] | None:
         return team.dump_as_json()
+
+
+class ParticipantRegisteredResponse(ParticipantAndTeamResponse):
+    """
+    Responds with the registred documents of the Participant and Team. The Team object is only
+    returned when we are registering an admin participant
+    """
+
+
+class ParticipantDeletedResponse(ParticipantResponse):
+    """
+    Responds with the deleted participant body when we are deleting a participant.
+    """
+
+
+class ParticipantVerifiedResponse(ParticipantAndTeamResponse):
+    """This response includes the updated body of the verified participant
+    and the body of the verified team in case we are verifying an admin participant.
+    """
+
+
+class VerificationEmailSentSuccessfullyResponse(ParticipantResponse):
+    """This response includes the updated body of the participant
+    after successfully resending a verification email
+    """
+
+
+class TeamDeletedResponse(TeamResponse):
+    """
+    Responds with the deleted team body when we are deleting a team.
+    """

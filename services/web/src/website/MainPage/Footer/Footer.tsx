@@ -51,7 +51,9 @@ export const Footer = () => {
                     </div>
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Contact</h3>
-                        <p className={OPTIONS_CLASS_NAME}>thehub@aubg.edu</p>
+                        <a href="mailto:thehubaubg@gmail.com" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                            thehubaubg@gmail.com
+                        </a>
                     </div>
                 </div>
                 <span className="mt-2 w-[60%] h-[1px] bg-[#4D4D4D]" />

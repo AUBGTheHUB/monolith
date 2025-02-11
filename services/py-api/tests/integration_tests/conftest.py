@@ -36,6 +36,8 @@ def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
 # The scope is set to session so that that Async Client is only initialized once throughout the testing session,
 # instead of initializing it on every test function invocation
 # Read More: https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
+
+
 @pytest_asyncio.fixture(scope="session")
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
     LOG.debug("Opening Async Client")
@@ -60,7 +62,7 @@ class CreateTestParticipantCallable(Protocol):
     async def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
 
     participant_id = result_json["participant"]["id"]
@@ -84,6 +86,7 @@ async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict
 # Learn more about fixture teardown here: https://docs.pytest.org/en/stable/how-to/fixtures.html#teardown-cleanup-aka-fixture-finalization
 
 
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest_asyncio.fixture
 async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[CreateTestParticipantCallable, None]:
     """

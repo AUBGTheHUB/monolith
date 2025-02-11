@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 from unittest.mock import Mock, patch
 
 from bson import ObjectId
@@ -6,7 +8,15 @@ from result import Ok, Err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import DuplicateTeamNameError, DuplicateEmailError, TeamNameMissmatchError, TeamNotFoundError
+from src.server.exception import (
+    DuplicateTeamNameError,
+    DuplicateEmailError,
+    EmailRateLimitExceededError,
+    ParticipantAlreadyVerifiedError,
+    ParticipantNotFoundError,
+    TeamNameMissmatchError,
+    TeamNotFoundError,
+)
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
@@ -14,12 +24,20 @@ from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
 )
 from src.service.hackathon_service import HackathonService
+from structlog import get_logger
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
+
+PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE = datetime.now() - timedelta(seconds=180)
+PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=30)
+
+LOG = get_logger()
 
 
 @pytest.fixture
-def hackathon_service(participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock)
+def hackathon_service(
+    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, mailing_service_mock: Mock
+) -> HackathonService:
+    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, mailing_service_mock)
 
 
 @pytest.mark.asyncio
@@ -415,3 +433,151 @@ async def test_check_team_capacity_case_capacity_exceeded(
     result = await hackathon_service.check_team_capacity(mock_obj_id)
 
     assert result is False
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_success_random(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(
+        Participant(
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            email_verified=False,
+            is_admin=False,
+            team_id=None,
+            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
+        )
+    )
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], Participant)
+    assert result.ok_value[1] is None
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_success_admin(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(
+        Participant(
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            email_verified=False,
+            is_admin=True,
+            team_id=mock_obj_id,
+            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
+        )
+    )
+
+    team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=False))
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], Participant)
+    assert isinstance(result.ok_value[1], Team)
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_limit_reached(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(
+        Participant(
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            email_verified=False,
+            is_admin=False,
+            team_id=None,
+            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE,
+        )
+    )
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    LOG.info(result)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, EmailRateLimitExceededError)
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_participant_without_last_sent_email(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(
+        Participant(
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            email_verified=False,
+            is_admin=False,
+            team_id=None,
+            last_sent_email=None,
+        )
+    )
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, tuple)
+    assert isinstance(result.ok_value[0], Participant)
+    assert result.ok_value[1] == None
+    assert result.ok_value[0].name == TEST_USER_NAME
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_participant_already_verified(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(
+        Participant(
+            name=TEST_USER_NAME,
+            email=TEST_USER_EMAIL,
+            email_verified=True,
+            is_admin=False,
+            team_id=None,
+            last_sent_email=None,
+        )
+    )
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantAlreadyVerifiedError)
+
+
+@pytest.mark.asyncio
+async def test_check_send_verification_email_rate_limit_participant_not_found(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    mock_obj_id: str,
+) -> None:
+
+    participant_repo_mock.fetch_by_id.return_value = Err(ParticipantNotFoundError())
+
+    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
+
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantNotFoundError)

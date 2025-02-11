@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from result import is_err
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
@@ -23,9 +23,7 @@ from starlette import status
 participants_router = APIRouter(prefix="/hackathon/participants")
 
 
-def _p_reg_service(
-    h_service: HackathonService = Depends(_h_service),
-) -> ParticipantRegistrationService:
+def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
 
 def _fs_service(h_service: HackathonService = Depends(_h_service),) -> FeatureSwitchService:
@@ -51,6 +49,7 @@ def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> Feat
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
+    background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
     participant_handler: ParticipantHandlers = Depends(_p_handler),
     feature_switch_handler: FeatureSwitchHandler = Depends(_fs_handler),
