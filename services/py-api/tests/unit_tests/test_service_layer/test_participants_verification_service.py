@@ -2,7 +2,7 @@ from fastapi import BackgroundTasks
 import pytest
 
 from result import Err, Ok
-from unittest.mock import Mock
+from unittest.mock import Mock, AsyncMock
 
 from src.database.model.team_model import Team
 from src.database.model.participant_model import Participant
@@ -32,6 +32,7 @@ async def test_verify_admin_participant_success(
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
+    hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
     # Mock update methods for team and participants repos
     team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
@@ -155,6 +156,7 @@ async def test_verify_random_participant_success(
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
+    hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
     participant_repo_mock.update.return_value = Participant(
         name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=None
@@ -248,6 +250,8 @@ async def test_send_verification_email_success(
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Ok(
         (participant_mock_value, team_mock_value)
     )
+    # Mock no err when sending verification email
+    hackathon_service_mock.send_verification_email = AsyncMock(return_value=None)
 
     result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
 
@@ -264,8 +268,9 @@ async def test_send_verification_email_rate_limit_exceeded_error(
     background_tasks: BackgroundTasks,
     mock_obj_id: str,
 ) -> None:
-
-    hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(EmailRateLimitExceededError())
+    hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(
+        EmailRateLimitExceededError(seconds_to_retry_after=30)
+    )
 
     result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
 
@@ -280,7 +285,6 @@ async def test_send_verification_email_participant_not_found_error(
     background_tasks: BackgroundTasks,
     mock_obj_id: str,
 ) -> None:
-
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(ParticipantNotFoundError())
 
     result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
