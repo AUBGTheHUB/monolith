@@ -1,6 +1,9 @@
 from os import environ
 from dotenv import load_dotenv
 
+# Something to keep in mind is that in deployed env, we don't use .env files, but for local development we use them.
+load_dotenv(override=True)
+
 
 def _read_docker_secret(secret_path: str) -> str | None:
     """
@@ -50,10 +53,28 @@ def load_env() -> None:
     loaded into the process before we start using them across our codebase."""
     _load_docker_secrets()
 
-    # Something to keep in mind is that in deployed env, we don't use .env files, but for local development we use them.
-    load_dotenv(override=True)
-
     if environ["ENV"] not in ("PROD", "DEV", "LOCAL", "TEST"):
         raise ValueError(
             f"The ENV environment variable should be PROD, DEV, LOCAL OR TEST. Actual value: {environ["ENV"]}"
         )
+
+
+def is_prod_env() -> bool:
+    return environ["ENV"] == "PROD"
+
+
+def is_dev_env() -> bool:
+    return environ["ENV"] == "DEV"
+
+
+def is_test_env() -> bool:
+    return environ["ENV"] == "TEST"
+
+
+def is_local_env() -> bool:
+    return environ["ENV"] == "LOCAL"
+
+
+DOMAIN = environ["DOMAIN"]
+PORT = environ["PORT"]
+SUBDOMAIN = "dev"
