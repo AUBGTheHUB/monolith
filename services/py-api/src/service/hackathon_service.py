@@ -257,6 +257,7 @@ class HackathonService:
         ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,
     ]:
         """Check if the verification email rate limit has been reached"""
+
         participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
 
         # If there was an error fetching the participant return that error as it is as it will be handled further up by
@@ -308,8 +309,8 @@ class HackathonService:
         Args:
             participant: the participant who should receive the email. Admin or random participant only, invite_link
                 participants are automatically verified.
-            team: the team which the admin participant created. Should be omitted when sending an email to a random
-                participant, as random teams are created only after hackathon registration closes.
+            team: The team which the admin participant created. Should be passed only when sending emails to admin
+             participants, as random teams are created only after hackathon registration closes.
             background_tasks: This is passed initially from the routes as part of the FastAPI Dependency Injection
                 system. It is auto-wired for us. We use background tasks as we want to send an email only once we
                 have returned a response. In this way we are able to keep our response times sub-second as we don't
@@ -368,13 +369,13 @@ class HackathonService:
         Sends an email confirming the successful registration of a participant.
         Args:
             participant: The participant who should receive the email. Could be admin, random or invite_link
-            participant.
-            team: the team which the admin participant created. Should be omitted when sending an email to a random
-             or invite_link participants.
+             participant.
+            team: The team which the admin participant created. Should be passed only when sending emails to admin or
+             invite_link participants.
             background_tasks: This is passed initially from the routes as part of the FastAPI Dependency Injection
-                system. It is auto-wired for us. We use background tasks as we want to send an email only once we
-                have returned a response. In this way we are able to keep our response times sub-second as we don't
-                wait for the email to be sent, which could take more than 2 seconds.
+             system. It is auto-wired for us. We use background tasks as we want to send an email only once we have
+             returned a response. In this way we are able to keep our response times sub-second as we don't wait for
+             the email to be sent, which could take more than 2 seconds.
         Returns:
             An Err if sending the successful registration email fails
         """
