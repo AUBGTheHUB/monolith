@@ -11,7 +11,6 @@ from src.service.participants_verification_service import ParticipantVerificatio
 from src.service.hackathon_service import HackathonService
 from src.server.routes.dependency_factory import _h_service
 
-
 verification_router = APIRouter(prefix="/hackathon/participants/verify")
 
 
