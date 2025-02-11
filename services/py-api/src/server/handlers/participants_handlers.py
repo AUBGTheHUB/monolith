@@ -22,6 +22,9 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
 )
 from src.service.participants_registration_service import ParticipantRegistrationService
+from structlog import get_logger
+
+LOG = get_logger()
 
 
 class ParticipantHandlers(BaseHandler):
@@ -37,6 +40,7 @@ class ParticipantHandlers(BaseHandler):
     ) -> Response:
 
         if isinstance(participant_request_body.registration_info, AdminParticipantInputData):
+            LOG.info(participant_request_body)
             result = await self._service.register_admin_participant(
                 participant_request_body.registration_info, background_tasks
             )

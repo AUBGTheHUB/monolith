@@ -68,9 +68,7 @@ class HackathonService:
 
         participant = await self._participant_repo.create(
             Participant(
-                name=input_data.name,
-                email=str(input_data.email),
-                is_admin=input_data.is_admin,
+                **input_data.model_dump(),
                 team_id=team.ok_value.id,
             ),
             session,
@@ -96,7 +94,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
 
         result = await self._participant_repo.create(
-            Participant(name=input_data.name, email=str(input_data.email), is_admin=False, team_id=None)
+            Participant(**input_data.model_dump(), is_admin=False, team_id=None)
         )
         if is_err(result):
             return result
@@ -120,9 +118,7 @@ class HackathonService:
 
         participant_result = await self._participant_repo.create(
             Participant(
-                name=input_data.name,
-                email=str(input_data.email),
-                is_admin=input_data.is_admin,
+                **input_data.model_dump(),
                 team_id=SerializableObjectId(decoded_jwt_token["team_id"]),
                 email_verified=True,
             )
