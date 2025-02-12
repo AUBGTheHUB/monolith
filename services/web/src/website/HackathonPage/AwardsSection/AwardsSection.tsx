@@ -4,8 +4,8 @@ export default function AwardsSection() {
             className="w-full flex flex-col items-center font-mont bg-[#000912] py-10 relative"
             style={{
                 backgroundImage: "url('/AwardsSection/awards_bg.png')",
-                backgroundSize: '180vh',
-                backgroundPosition: 'center top -30vh',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
             }}
         >
