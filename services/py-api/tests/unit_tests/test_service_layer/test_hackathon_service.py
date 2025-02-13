@@ -573,7 +573,7 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
 
 
 # As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV"})
+@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_success(
     hackathon_service: HackathonService,
@@ -596,7 +596,7 @@ async def test_send_verification_email_success(
 
 
 # As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV"})
+@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_err_validation_err_body_generation(
     hackathon_service: HackathonService,
@@ -620,7 +620,7 @@ async def test_send_verification_email_err_validation_err_body_generation(
 
 
 # As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV"})
+@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_err_participant_deleted_before_verifying_email(
     hackathon_service: HackathonService,
