@@ -350,7 +350,7 @@ class HackathonService:
         if is_err(result):
             return result
 
-        LOG.info("Sending verification email...", email=participant.email)
+        LOG.info("Sending verification email...", participant=participant)
         err = self._mail_service.send_participant_verification_email(
             participant=participant,
             verification_link=verification_link,
@@ -358,6 +358,7 @@ class HackathonService:
             team_name=team.name if team else None,
         )
         if err is not None:
+            LOG.error("Sending of verification email failed...", participant=participant, err=err)
             return err
 
         return None
@@ -389,6 +390,7 @@ class HackathonService:
                 participant=participant, background_tasks=background_tasks
             )
             if err is not None:
+                LOG.error("Sending of successful registration email failed...", participant=participant, err=err)
                 return err
 
             return None
@@ -399,6 +401,7 @@ class HackathonService:
                 participant=participant, team_name=team.name, background_tasks=background_tasks
             )
             if err is not None:
+                LOG.error("Sending of successful registration email failed...", participant=participant, err=err)
                 return err
 
             return None
@@ -418,11 +421,12 @@ class HackathonService:
         else:
             invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
-        LOG.info("Sending successful registration email...", email=participant.email)
+        LOG.info("Sending successful registration email...", participant=participant)
         err = self._mail_service.send_participant_successful_registration_email(
             participant=participant, background_tasks=background_tasks, invite_link=invite_link, team_name=team.name
         )
         if err is not None:
+            LOG.error("Sending of successful registration email failed...", participant=participant, err=err)
             return err
 
         return None
