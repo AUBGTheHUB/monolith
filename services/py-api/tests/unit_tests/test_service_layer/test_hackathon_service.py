@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 
 from bson import ObjectId
 import pytest
@@ -35,9 +35,9 @@ LOG = get_logger()
 
 @pytest.fixture
 def hackathon_service(
-    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, mailing_service_mock: Mock
+    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, hackathon_mail_service_mock: Mock
 ) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, mailing_service_mock)
+    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, hackathon_mail_service_mock)
 
 
 @pytest.mark.asyncio
@@ -291,7 +291,6 @@ async def verify_admin_participant_and_team_in_transaction_success(
     tx_manager_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     # Mocks update for team and participants repo
     team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
     participant_repo_mock.update.return_value = Participant(
@@ -325,7 +324,6 @@ async def verify_admin_participant_and_team_in_transaction_team_not_found_error(
     tx_manager_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     tx_manager_mock.with_transaction.return_value = Err(TeamNotFoundError())
 
     result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
@@ -342,7 +340,6 @@ async def verify_admin_participant_and_team_in_transaction_general_error(
     tx_manager_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
 
     result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
@@ -362,7 +359,6 @@ async def test_create_link_participant_duplicate_email_error(
     team_repo_mock: Mock,
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
-
     # Mock successful `fetch_by_id` response for link participant's team.
     team_repo_mock.fetch_by_id.return_value = Ok(
         Team(id=ObjectId(mock_jwt_user_registration["team_id"]), name=mock_invite_link_case_input_data.team_name)
@@ -427,7 +423,6 @@ async def test_check_team_capacity_case_available_space(
 async def test_check_team_capacity_case_capacity_exceeded(
     hackathon_service: HackathonService, participant_repo_mock: Mock, team_repo_mock: Mock, mock_obj_id: str
 ) -> None:
-
     participant_repo_mock.get_number_registered_teammates.return_value = HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS
 
     result = await hackathon_service.check_team_capacity(mock_obj_id)
@@ -442,7 +437,6 @@ async def test_check_send_verification_email_rate_limit_success_random(
     team_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Ok(
         Participant(
             name=TEST_USER_NAME,
@@ -450,7 +444,7 @@ async def test_check_send_verification_email_rate_limit_success_random(
             email_verified=False,
             is_admin=False,
             team_id=None,
-            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
+            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
         )
     )
 
@@ -463,13 +457,12 @@ async def test_check_send_verification_email_rate_limit_success_random(
 
 
 @pytest.mark.asyncio
-async def test_check_send_verification_email_rate_limit_success_admin(
+async def test_check_send_verification_email_rate_limit_not_reached_admin(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Ok(
         Participant(
             name=TEST_USER_NAME,
@@ -477,7 +470,7 @@ async def test_check_send_verification_email_rate_limit_success_admin(
             email_verified=False,
             is_admin=True,
             team_id=mock_obj_id,
-            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
+            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
         )
     )
 
@@ -497,7 +490,6 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
     participant_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Ok(
         Participant(
             name=TEST_USER_NAME,
@@ -505,7 +497,7 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
             email_verified=False,
             is_admin=False,
             team_id=None,
-            last_sent_email=PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE,
+            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE,
         )
     )
 
@@ -523,7 +515,6 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
     participant_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Ok(
         Participant(
             name=TEST_USER_NAME,
@@ -531,7 +522,7 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
             email_verified=False,
             is_admin=False,
             team_id=None,
-            last_sent_email=None,
+            last_sent_verification_email=None,
         )
     )
 
@@ -550,7 +541,6 @@ async def test_check_send_verification_email_rate_limit_participant_already_veri
     participant_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Ok(
         Participant(
             name=TEST_USER_NAME,
@@ -558,7 +548,7 @@ async def test_check_send_verification_email_rate_limit_participant_already_veri
             email_verified=True,
             is_admin=False,
             team_id=None,
-            last_sent_email=None,
+            last_sent_verification_email=None,
         )
     )
 
@@ -574,10 +564,80 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
     participant_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-
     participant_repo_mock.fetch_by_id.return_value = Err(ParticipantNotFoundError())
 
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
+
+
+# As we don't send emails for testing env due to integration tests we have to patch this
+@patch.dict("os.environ", {"ENV": "DEV"})
+@pytest.mark.asyncio
+async def test_send_verification_email_success(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    background_tasks: MagicMock,
+    hackathon_mail_service_mock: Mock,
+    mock_admin_participant: Participant,
+) -> None:
+    # Given no err from mail service
+    hackathon_mail_service_mock.send_participant_verification_email.return_value = None
+    # And no err from repo
+    participant_repo_mock.update.return_value = Ok(mock_admin_participant)
+
+    err = await hackathon_service.send_verification_email(
+        participant=mock_admin_participant, background_tasks=background_tasks
+    )
+
+    # Assert no err while sending the email from hackathon service
+    assert err is None
+
+
+# As we don't send emails for testing env due to integration tests we have to patch this
+@patch.dict("os.environ", {"ENV": "DEV"})
+@pytest.mark.asyncio
+async def test_send_verification_email_err_validation_err_body_generation(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    background_tasks: MagicMock,
+    hackathon_mail_service_mock: Mock,
+    mock_admin_participant: Participant,
+) -> None:
+    # Given ValueError due to invalid html template from mail service
+    hackathon_mail_service_mock.send_participant_verification_email.return_value = Err(ValueError("Test Error"))
+    # And no err from repo
+    participant_repo_mock.update.return_value = Ok(mock_admin_participant)
+
+    err = await hackathon_service.send_verification_email(
+        participant=mock_admin_participant, background_tasks=background_tasks
+    )
+
+    # Assert err value returned while sending the email from hackathon service
+    assert isinstance(err, Err)
+    assert isinstance(err.err_value, ValueError)
+
+
+# As we don't send emails for testing env due to integration tests we have to patch this
+@patch.dict("os.environ", {"ENV": "DEV"})
+@pytest.mark.asyncio
+async def test_send_verification_email_err_participant_deleted_before_verifying_email(
+    hackathon_service: HackathonService,
+    participant_repo_mock: Mock,
+    background_tasks: MagicMock,
+    hackathon_mail_service_mock: Mock,
+    mock_admin_participant: Participant,
+) -> None:
+    # Given no err from mail service
+    hackathon_mail_service_mock.send_participant_verification_email.return_value = None
+    # But ParticipantNotFoundError from update operation in repo
+    participant_repo_mock.update.return_value = Err(ParticipantNotFoundError())
+
+    err = await hackathon_service.send_verification_email(
+        participant=mock_admin_participant, background_tasks=background_tasks
+    )
+
+    # Assert err value returned while sending the email from hackathon service
+    assert isinstance(err, Err)
+    assert isinstance(err.err_value, ParticipantNotFoundError)

@@ -125,10 +125,12 @@ def hackathon_service_mock() -> HackathonService:
 
 @pytest.fixture
 def hackathon_mail_service_mock() -> Mock:
+    """This is a mock obj of HackathonMailService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
 
     mailing_service_mock = Mock(spec=HackathonMailService)
-    mailing_service_mock.send_participant_verification_email = AsyncMock()
-    mailing_service_mock.send_participant_successful_registration_email = AsyncMock()
+    mailing_service_mock.send_participant_verification_email = Mock()
+    mailing_service_mock.send_participant_successful_registration_email = Mock()
 
     return mailing_service_mock
 
