@@ -328,7 +328,7 @@ async def test_register_random_participant_send_verification_email_failure_parti
 
     # Call the function under test
     result = await p_reg_service.register_random_participant(mock_random_case_input_data, background_tasks)
-    # Check that the result is an `Err` with `ValueError`
+    # Check that the result is an `Err` with `ParticipantNotFoundError`
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
 

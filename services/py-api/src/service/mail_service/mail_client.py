@@ -80,7 +80,6 @@ class ResendMailClient(MailClient):
                 _ = self._client.send(params)
                 return
             except ResendError as e:
-                print(e)
                 if e.code in self._UNRETRYABLE_STATUS_CODES:
                     LOG.exception(f"Unretryable error occurred while sending email via Resend: {e.code} - {e.message}")
                     return
