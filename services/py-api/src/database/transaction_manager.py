@@ -58,18 +58,23 @@ class TransactionManager:
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
-            try:
-                return await func(*args, **kwargs)
-            except PyMongoError as exc:
-                if exc.has_error_label("TransientTransactionError"):
+
+            result = await func(*args, **kwargs)
+
+            if is_err(result) and isinstance(result.err_value, PyMongoError):
+
+                if result.err_value.has_error_label("TransientTransactionError"):
+
                     LOG.debug("Retrying transaction retry {}".format(retry))
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
 
-                LOG.debug("Retrying of tx failed", err=exc, error_labels=exc._error_labels)
+                LOG.debug("Retrying of tx failed", err=result.err_value, error_labels=result.err_value._error_labels)
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
-                raise exc
+                raise result.err_value
+
+            return result
 
         raise PyMongoError("Transaction failed after maximum retries")
 
