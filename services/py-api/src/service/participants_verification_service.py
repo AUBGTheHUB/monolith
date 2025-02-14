@@ -37,6 +37,7 @@ class ParticipantVerificationService:
         err = self._hackathon_service.send_successful_registration_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
+
         if err is not None:
             return err
 

@@ -196,7 +196,16 @@ class HackathonService:
 
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData
-    ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | Exception]:
+    ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
+
+        # This step is taken to ensure that we are not verifying an already verified participant
+        result = await self._participant_repo.fetch_by_id(jwt_data["sub"])
+
+        if is_err(result):
+            return result
+
+        if result.ok_value.email_verified:
+            return Err(ParticipantAlreadyVerifiedError())
 
         # Updates the random participant if it exists
         result = await self._participant_repo.update(
@@ -223,8 +232,16 @@ class HackathonService:
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[
         Tuple[Participant, Team],
-        ParticipantNotFoundError | TeamNotFoundError | Exception,
+        ParticipantNotFoundError | TeamNotFoundError | ParticipantAlreadyVerifiedError | Exception,
     ]:
+        # This step is taken to ensure that we are not verifying an already verified participant
+        result = await self._participant_repo.fetch_by_id(jwt_data["sub"])
+
+        if is_err(result):
+            return result
+
+        if result.ok_value.email_verified:
+            return Err(ParticipantAlreadyVerifiedError())
 
         result_verified_admin = await self._participant_repo.update(
             obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True), session=session
@@ -357,6 +374,7 @@ class HackathonService:
             background_tasks=background_tasks,
             team_name=team.name if team else None,
         )
+
         if err is not None:
             LOG.error("Sending of verification email failed...", participant=participant, err=err)
             return err
