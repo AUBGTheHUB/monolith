@@ -6,7 +6,7 @@ import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
-from src.database.db_manager import PARTICIPANTS_COLLECTION
+from src.database.db_managers import PARTICIPANTS_COLLECTION_NAME
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
@@ -15,7 +15,7 @@ from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
 
 @pytest.fixture
 def repo(db_manager_mock: Mock) -> ParticipantsRepository:
-    return ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION)
+    return ParticipantsRepository(db_manager_mock, PARTICIPANTS_COLLECTION_NAME)
 
 
 @pytest.mark.asyncio

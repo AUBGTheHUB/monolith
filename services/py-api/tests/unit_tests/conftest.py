@@ -1,19 +1,18 @@
 from datetime import datetime, timedelta, timezone
-from typing import Tuple, Optional
-
-from fastapi import BackgroundTasks
-import pytest
+from typing import Tuple, cast
 from unittest.mock import Mock, MagicMock, AsyncMock
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import Err
+import pytest
+from fastapi import BackgroundTasks
+from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorClient
+from typing_extensions import Protocol
 
-from src.database.db_manager import DatabaseManager
+from src.database.db_managers import MongoDatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.database.transaction_managers import MongoTransactionManager
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
@@ -28,36 +27,91 @@ from src.service.participants_verification_service import ParticipantVerificatio
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
-@pytest.fixture
-def db_client_session_mock() -> MagicMock:
-    mock_session = MagicMock(spec=AsyncIOMotorClientSession)
+def _create_typed_mock[T](class_type: T) -> T:
+    """
+    Helper function to create a type annotated MagicMock with a spec modeling the provided class_type.
+    Args:
+        class_type: the class to mock (type should be provided, not an instance)
+    Returns:
+        A MagickMock speced to the provided class. This MagickMock is cast to the actual class, for type checkers.
+         During runtime the type is actually MagickMock, cast is used only for type checkers.
+    """
 
-    mock_session.start_transaction = MagicMock()
-    # We use AsyncMock, as the original AsyncIOMotorClient class has async methods
+    return cast(T, MagicMock(spec=class_type))
+
+
+def _create_typed_async_mock[T](class_type: T) -> T:
+    """
+    Helper function to create a type annotated AsyncMock with a spec modeling the provided class_type.
+    Args:
+        class_type: the class to mock (type should be provided, not an instance)
+    Returns:
+        A AsyncMock speced to the provided class. This AsyncMock is cast to the actual class, for type checkers.
+         During runtime the type is actually AsyncMock, cast is used only for type checkers.
+    """
+
+    return cast(T, AsyncMock(spec=class_type))
+
+
+# ======================================
+# Mocking Motor library classes start
+# ======================================
+
+
+class MotorDbClientMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient"""
+
+    start_session: AsyncMock  # `start_session` is async
+    # Add more methods if needed
+
+
+@pytest.fixture
+def db_client_mock() -> MotorDbClientMock:
+    mock_client = _create_typed_mock(AsyncIOMotorClient)
+    mock_client.start_session = AsyncMock()  # `start_session` is async
+    # Add more methods if needed
+    return cast(MotorDbClientMock, mock_client)
+
+
+class MotorDbClientSessionMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncIOMotorClientSession"""
+
+    start_transaction: MagicMock  # `start_transaction` is not async
+    commit_transaction: AsyncMock  # `commit_transaction` is async
+    abort_transaction: AsyncMock  # `abort_transaction` is async
+    end_session: AsyncMock  # `end_session` is async
+
+
+@pytest.fixture
+def db_client_session_mock() -> MotorDbClientSessionMock:
+    mock_session = _create_typed_mock(AsyncIOMotorClientSession)
+
+    mock_session.start_transaction = MagicMock()  # `start_transaction` is not async
     mock_session.commit_transaction = AsyncMock()  # `commit_transaction` is async
     mock_session.abort_transaction = AsyncMock()  # `abort_transaction` is async
     mock_session.end_session = AsyncMock()  # `end_session` is async
 
-    return mock_session
+    return cast(MotorDbClientSessionMock, mock_session)
+
+
+# ======================================
+# Mocking Motor library classes end
+# ======================================
+
+
+# ======================================
+# Mocking Repository layer classes end
+# ======================================
 
 
 @pytest.fixture
-def db_manager_mock(db_client_session_mock: Mock) -> Mock:
-    db_manager = Mock(spec=DatabaseManager)
+def db_manager_mock(db_client_session_mock: MotorDbClientSessionMock, db_client_mock: MotorDbClientMock) -> Mock:
+    db_manager = _create_typed_mock(MongoDatabaseManager)
     # We use AsyncMock, as the original AsyncIOMotorClient class has async methods
-    db_manager.client = AsyncMock()
-    db_manager.get_collection.return_value = AsyncMock()
-    db_manager.client.start_session.return_value = db_client_session_mock
-    db_manager.async_ping_db = AsyncMock(return_value=None)
-
-    # Handle close_all_connections with a conditional side effect for uninitialized client
-    def close_side_effect() -> Optional[Err[str]]:
-        if db_manager.client:
-            return None
-        else:
-            return Err("The database client is not initialized!")
-
-    db_manager.close_all_connections.side_effect = close_side_effect
+    db_manager._client = db_client_mock
+    db_manager.get_collection = Mock()
+    db_manager.async_ping_db = AsyncMock()
+    db_manager.close_all_connections = Mock()
 
     return db_manager
 
@@ -98,13 +152,29 @@ def team_repo_mock() -> Mock:
     return team_repo
 
 
+class HackathonServiceMock(Protocol):
+    create_participant_and_team_in_transaction: AsyncMock
+    check_capacity_register_admin_participant_case: AsyncMock
+    check_capacity_register_random_participant_case: AsyncMock
+    check_send_verification_email_rate_limit: AsyncMock
+    create_random_participant: AsyncMock
+    create_invite_link_participant: AsyncMock
+    check_team_capacity: AsyncMock
+    verify_random_participant: AsyncMock
+    verify_admin_participant_and_team_in_transaction: AsyncMock
+    delete_participant: AsyncMock
+    delete_team: AsyncMock
+    verify_admin_participant: AsyncMock
+    send_verification_email: AsyncMock
+    send_successful_registration_email: Mock
+
+
 @pytest.fixture
-def hackathon_service_mock() -> HackathonService:
+def hackathon_service_mock() -> HackathonServiceMock:
     """This is a mock obj of HackathonService. To change the return values of its methods use:
     `hackathon_service_mock.method_name.return_value=some_return_value`"""
 
-    hackathon_service = Mock(spec=HackathonService)
-
+    hackathon_service = create_typed_mock(HackathonService)
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
@@ -120,7 +190,10 @@ def hackathon_service_mock() -> HackathonService:
     hackathon_service.send_verification_email = AsyncMock()
     hackathon_service.send_successful_registration_email = Mock()
 
-    return hackathon_service
+    return cast(HackathonServiceMock, hackathon_service)
+
+
+test = hackathon_service_mock()
 
 
 @pytest.fixture
@@ -140,7 +213,7 @@ def tx_manager_mock() -> Mock:
     """This is a mock obj of TransactionManager. To change the return values of its methods use:
     `tx_manager_mock.method_name.return_value=some_return_value`"""
 
-    tx_manager = Mock(spec=TransactionManager)
+    tx_manager = Mock(spec=MongoTransactionManager)
     tx_manager.with_transaction = AsyncMock()
 
     return tx_manager

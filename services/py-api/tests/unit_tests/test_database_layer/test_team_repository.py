@@ -7,7 +7,7 @@ import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
-from src.database.db_manager import TEAMS_COLLECTION
+from src.database.db_managers import TEAMS_COLLECTION_NAME
 from src.database.repository.teams_repository import TeamsRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 from src.database.model.team_model import Team, UpdateTeamParams
@@ -16,7 +16,7 @@ from tests.integration_tests.conftest import TEST_TEAM_NAME
 
 @pytest.fixture
 def repo(db_manager_mock: Mock) -> TeamsRepository:
-    return TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
+    return TeamsRepository(db_manager_mock, TEAMS_COLLECTION_NAME)
 
 
 @pytest.mark.asyncio

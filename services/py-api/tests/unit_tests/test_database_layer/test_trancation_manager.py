@@ -4,13 +4,13 @@ import pytest
 from pymongo.errors import PyMongoError
 from result import Ok, Err
 
-from src.database.db_manager import DatabaseManager
-from src.database.transaction_manager import TransactionManager
+from src.database.db_managers import MongoDatabaseManager
+from src.database.transaction_managers import MongoTransactionManager
 
 
 @pytest.fixture
-def tx_manager(db_manager_mock: DatabaseManager) -> TransactionManager:
-    return TransactionManager(db_manager_mock)
+def tx_manager(db_manager_mock: MongoDatabaseManager) -> MongoTransactionManager:
+    return MongoTransactionManager(db_manager_mock)
 
 
 # Define a custom exception to simulate transient transaction error
@@ -27,7 +27,7 @@ class UnknownTransactionCommitResult(PyMongoError):
 
 @pytest.mark.asyncio
 async def test_with_transaction_success(
-    tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Mock a successful db operation
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
@@ -43,7 +43,7 @@ async def test_with_transaction_success(
 
 @pytest.mark.asyncio
 async def test_with_transaction_transient_error(
-    tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Simulate transient error on the first call, then success
     mock_db_operation = AsyncMock(side_effect=[TransientTransactionError(), Ok("Success")])
@@ -65,7 +65,7 @@ async def test_with_transaction_transient_error(
 
 @pytest.mark.asyncio
 async def test_with_transaction_unknown_commit_result_error(
-    tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Mock a successful db operation
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
@@ -90,7 +90,7 @@ async def test_with_transaction_unknown_commit_result_error(
 
 @pytest.mark.asyncio
 async def test_with_transaction_exhaust_retries(
-    tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Simulate a transient error that keeps failing
     mock_db_operation = AsyncMock(side_effect=TransientTransactionError())
@@ -113,7 +113,7 @@ async def test_with_transaction_exhaust_retries(
 
 @pytest.mark.asyncio
 async def test_with_transaction_unknown_commit_result_exhaust_retries(
-    tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Mock a successful db operation
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
