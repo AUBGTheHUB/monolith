@@ -46,7 +46,7 @@ async def test_with_transaction_transient_error(
     tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Simulate transient error on the first call, then success
-    mock_db_operation = AsyncMock(side_effect=[TransientTransactionError(), Ok("Success")])
+    mock_db_operation = AsyncMock(side_effect=[Err(TransientTransactionError()), Ok("Success")])
 
     # We patch the sleep function for faster testing
     with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
@@ -93,7 +93,7 @@ async def test_with_transaction_exhaust_retries(
     tx_manager: TransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
 ) -> None:
     # Simulate a transient error that keeps failing
-    mock_db_operation = AsyncMock(side_effect=TransientTransactionError())
+    mock_db_operation = AsyncMock(return_value=Err(TransientTransactionError()))
 
     # We patch the sleep function for faster testing
     with patch("src.database.transaction_manager.sleep", new=AsyncMock()):

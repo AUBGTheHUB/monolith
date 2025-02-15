@@ -130,11 +130,13 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
     async def _create(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
         LOG.debug("Creating a test participant")
         if jwt_token is None:
-            result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
+            participant_result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
         else:
-            result = await async_client.post(f"{PARTICIPANT_ENDPOINT_URL}?jwt_token={jwt_token}", json=participant_body)
-        request_results.append(result)
-        return result
+            participant_result = await async_client.post(
+                f"{PARTICIPANT_ENDPOINT_URL}?jwt_token={jwt_token}", json=participant_body
+            )
+        request_results.append(participant_result)
+        return participant_result
 
     yield _create
 
