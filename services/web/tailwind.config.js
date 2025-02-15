@@ -4,6 +4,22 @@ export default {
     darkMode: ['class'],
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
+        screens: {
+            xs: '30rem',
+            sm: '640px',
+            // => @media (min-width: 640px) { ... }
+
+            md: '768px',
+            // => @media (min-width: 768px) { ... }
+
+            lg: '1024px',
+            // => @media (min-width: 1024px) { ... }
+
+            xl: '1280px',
+            // => @media (min-width: 1280px) { ... }
+
+            xxl:'1700px'
+        },
         extend: {
             fontFamily: {
                 mont: ['Montserrat', 'serif'],
@@ -19,6 +35,7 @@ export default {
             colors: {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
+                hackBg: 'rgb(0,4,7)',
                 card: {
                     DEFAULT: 'var(--card)',
                     foreground: 'var(--card-foreground)',
