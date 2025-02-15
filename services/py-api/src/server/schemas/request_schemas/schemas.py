@@ -1,5 +1,8 @@
 from typing import Literal, Union
-from pydantic import EmailStr, BaseModel, Field, ConfigDict
+
+from bson import ObjectId
+from fastapi import HTTPException
+from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
 
 
 # https://fastapi.tiangolo.com/tutorial/body/
@@ -8,6 +11,15 @@ from pydantic import EmailStr, BaseModel, Field, ConfigDict
 
 class ResendEmailParticipantData(BaseModel):
     participant_id: str
+
+    # https://docs.pydantic.dev/latest/concepts/validators/#field-validators
+    @field_validator("participant_id", mode="before")
+    @classmethod
+    def validate_obj_id_format(cls, participant_id: str) -> str:
+        if not ObjectId.is_valid(participant_id):
+            raise HTTPException(detail="Wrong Object ID format", status_code=400)
+
+        return participant_id
 
 
 class BaseParticipantData(BaseModel):
