@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Optional, List, Annotated
+from typing import Optional, List, Annotated, cast
 
 from bson import ObjectId
 from fastapi import Depends
@@ -164,7 +164,7 @@ class TeamsRepository(CRUDRepository[Team]):
             # we make the following operations in order to rename the key appropriately
 
             # Make a deep copy of the team dictionary
-            team_copy = deepcopy(team)
+            team_copy = cast(deepcopy(team), dict)
 
             # Rename `_id` to `id`
             team_copy["id"] = str(team_copy.pop("_id"))

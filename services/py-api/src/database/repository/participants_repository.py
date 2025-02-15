@@ -17,7 +17,6 @@ LOG = get_logger()
 
 
 class ParticipantsRepository(CRUDRepository[Participant]):
-    # TODO: Implement the rest of the methods
     def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 

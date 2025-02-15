@@ -13,7 +13,7 @@ from src.database.model.participant_model import Participant, UpdateParticipantP
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.participants_repository import ParticipantsRepository, ParticipantsRepoDep
 from src.database.repository.teams_repository import TeamsRepository, TeamsRepoDep
-from src.database.transaction_managers import TransactionManagerDep
+from src.database.transaction_managers import TransactionManagerDep, MongoTransactionManager
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
 from src.server.exception import (
     DuplicateTeamNameError,
@@ -61,7 +61,7 @@ class HackathonService:
         self,
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
-        tx_manager: TransactionManager,
+        tx_manager: MongoTransactionManager,
         mail_service: HackathonMailService,
     ) -> None:
         self._participant_repo = participant_repo

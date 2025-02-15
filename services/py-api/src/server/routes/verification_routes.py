@@ -1,5 +1,6 @@
-from fastapi import APIRouter, BackgroundTasks, Depends
-from src.server.handlers.verification_handlers import VerificationHandlers
+from fastapi import APIRouter, BackgroundTasks
+
+from src.server.handlers.verification_handlers import VerificationHandlersDep
 from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
@@ -17,9 +18,9 @@ verification_router = APIRouter(prefix="/hackathon/participants/verify")
     responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}, 400: {"model": ErrResponse}},
 )
 async def verify_participant(
-    jwt_token: str, background_tasks: BackgroundTasks, _handler: VerificationHandlers = Depends(_handler)
+    jwt_token: str, background_tasks: BackgroundTasks, handler: VerificationHandlersDep
 ) -> Response:
-    return await _handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
+    return await handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
 
 @verification_router.post(

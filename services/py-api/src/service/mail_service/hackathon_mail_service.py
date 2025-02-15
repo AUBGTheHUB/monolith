@@ -31,7 +31,7 @@ class HackathonMailService:
         verification_link: str,
         background_tasks: BackgroundTasks,
         team_name: str | None = None,
-    ) -> Err[ValueError]:
+    ) -> Err[ValueError] | None:
         """
         Sends a verification email to admin and random participants via FastAPI BackgroundTasks
 
@@ -71,13 +71,15 @@ class HackathonMailService:
             content_type="html",
         )
 
+        return None
+
     def send_participant_successful_registration_email(
         self,
         participant: Participant,
         background_tasks: BackgroundTasks,
         invite_link: str | None = None,
         team_name: str | None = None,
-    ) -> Err[ValueError]:
+    ) -> Err[ValueError] | None:
         """
         Sends an email confirming the successful registration of a participant.
 
@@ -117,6 +119,8 @@ class HackathonMailService:
             body_content=body_html,
             content_type="html",
         )
+
+        return None
 
 
 def hackathon_mail_service_provider(client: MailClientDep) -> HackathonMailService:
