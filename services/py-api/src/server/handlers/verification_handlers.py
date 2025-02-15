@@ -18,7 +18,7 @@ class VerificationHandlers(BaseHandler):
         self._service = service
 
     async def verify_participant(self, jwt_token: str, background_tasks: BackgroundTasks) -> Response:
-        # We decode the token here so that we can determine the case of verfication that we
+        # We decode the token here so that we can determine the case of verification that we
         # are dealing with: `admin verification` or `random participant verification`.
         result = JwtUtility.decode_data(token=jwt_token, schema=JwtParticipantVerificationData)
 
@@ -56,5 +56,5 @@ class VerificationHandlers(BaseHandler):
 
         return Response(
             response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
-            status_code=status.HTTP_200_OK,
+            status_code=status.HTTP_202_ACCEPTED,
         )

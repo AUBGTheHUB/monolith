@@ -44,6 +44,7 @@ def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> Feat
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
+# https://fastapi.tiangolo.com/tutorial/background-tasks/#dependency-injection
 @participants_router.post(
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )

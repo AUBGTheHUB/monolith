@@ -22,7 +22,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
     async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
-            LOG.debug("Fetching participant by ObjectId...", obj_id=obj_id)
+            LOG.debug("Fetching participant by ObjectID...", participant_id=obj_id)
 
             # Query the database for the participant with the given object id
             participant = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
@@ -33,29 +33,31 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Ok(Participant(id=obj_id, **participant))
 
         except Exception as e:
-            LOG.exception(f"Failed to fetch participant by ObjectId {obj_id} due to err {e}")
+            LOG.exception("Failed to fetch participant due to error", participant_id=obj_id, error=e)
             return Err(e)
 
+    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Participant], Exception]:
-        try:
-            LOG.debug("Fetching all participants...")
-
-            participants_data = await self._collection.find({})
-
-            participants = []
-            for doc in participants_data:
-                doc_copy = dict(doc)
-
-                doc_copy["id"] = str(doc_copy.pop("_id"))
-
-                participants.append(Participant(**doc_copy))
-
-            LOG.debug(f"Fetched {len(participants)} participants.")
-            return Ok(participants)
-
-        except Exception as e:
-            LOG.exception(f"Failed to fetch all participants due to err {e}")
-            return Err(e)
+        raise NotImplementedError()
+        # try:
+        #     LOG.info("Fetching all participants...")
+        #
+        #     participants_data = await self._collection.find({})
+        #
+        #     participants = []
+        #     for doc in participants_data:
+        #         doc_copy = dict(doc)
+        #
+        #         doc_copy["id"] = str(doc_copy.pop("_id"))
+        #
+        #         participants.append(Participant(**doc_copy))
+        #
+        #     LOG.debug(f"Fetched {len(participants)} participants.")
+        #     return Ok(participants)
+        #
+        # except Exception as e:
+        #     LOG.exception(f"Failed to fetch all participants due to err {e}")
+        #     return Err(e)
 
     async def update(
         self,
@@ -64,9 +66,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
-            LOG.debug(
-                f"Updating participant...", Participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json()
-            )
+            LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json())
 
             # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
             # default behaviour.
@@ -85,7 +85,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Ok(Participant(id=obj_id, **result))
 
         except Exception as e:
-            LOG.exception(f"Failed to update participant with id {obj_id} due to {e}")
+            LOG.exception("Failed to update participant", participant_id=obj_id, error=e)
             return Err(e)
 
     async def delete(
@@ -96,7 +96,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         """
         try:
 
-            LOG.debug("Deleting participant...", participant_obj_id=obj_id)
+            LOG.info("Deleting participant...", participant_id=obj_id)
 
             # According to mongodb docs result is of type _DocumentType:
             # https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
@@ -111,7 +111,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Ok(Participant(id=obj_id, **result))
 
         except Exception as e:
-            LOG.exception("Participant deletion failed due to err {}".format(e))
+            LOG.exception("Participant deletion failed due to error", participant_id=obj_id, error=e)
             return Err(e)
 
     async def create(
@@ -120,14 +120,14 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
-            LOG.debug("Inserting participant...", participant=participant.dump_as_json())
+            LOG.info("Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
         except DuplicateKeyError:
             LOG.warning("Participant insertion failed due to duplicate email", email=participant.email)
             return Err(DuplicateEmailError(participant.email))
         except Exception as e:
-            LOG.exception("Participant insertion failed due to err {}".format(e))
+            LOG.exception("Participant insertion failed due to error", participant_id=str(participant.id), error=e)
             return Err(e)
 
     async def get_verified_random_participants_count(self) -> int:

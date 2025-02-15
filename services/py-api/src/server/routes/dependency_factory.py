@@ -9,9 +9,11 @@ from src.database.transaction_manager import TransactionManager
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
-from src.service.mail_service.resend_service import ResendMailService
 from bson import ObjectId
-from src.service.mail_service.resend_service import ResendMailService
+
+from src.service.mail_service.hackathon_mail_service import HackathonMailService
+from src.service.mail_service.mail_client import ResendMailClient
+
 from starlette import status
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
@@ -28,8 +30,9 @@ def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
     return TransactionManager(db_manager)
 
 
-def _mailing_service() -> ResendMailService:
-    return ResendMailService()
+def _mail_service() -> HackathonMailService:
+    # The client initialization could be made as a factory if more mailing clients are added
+    return HackathonMailService(client=ResendMailClient())
 
 def _fs_repo(db_manager: DB_MANAGER) -> FeatureSwitchRepository:
     return FeatureSwitchRepository(db_manager, FEATURE_SWITCH_COLLECTION)
@@ -39,9 +42,9 @@ def _h_service(
     t_repo: TeamsRepository = Depends(_t_repo),
     fs_repo: FeatureSwitchRepository = Depends(_fs_repo),
     tx_manager: TransactionManager = Depends(_tx_manager),
-    mailing_service: ResendMailService = Depends(_mailing_service),
+    mail_service: HackathonMailService = Depends(_mail_service),
 ) -> HackathonService:
-    return HackathonService(p_repo, t_repo, fs_repo, tx_manager, mailing_service)
+    return HackathonService(p_repo, t_repo, fs_repo, tx_manager, mail_service)
 
 
 def is_auth(authorization: Annotated[str, Header()]) -> None:
