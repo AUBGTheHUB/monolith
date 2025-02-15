@@ -284,7 +284,7 @@ async def test_send_verification_email_success(
 
     assert isinstance(result, Response)
     assert isinstance(result.response_model, VerificationEmailSentSuccessfullyResponse)
-    assert result.status_code == status.HTTP_200_OK
+    assert result.status_code == status.HTTP_202_ACCEPTED
     assert result.response_model.participant.name == TEST_USER_NAME
     assert result.response_model.participant.email == TEST_USER_EMAIL
     assert result.response_model.participant.is_admin is True

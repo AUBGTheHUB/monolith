@@ -61,7 +61,7 @@ class VerificationHandlers(BaseHandler):
 
         return Response(
             response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
-            status_code=status.HTTP_200_OK,
+            status_code=status.HTTP_202_ACCEPTED,
         )
 
 
