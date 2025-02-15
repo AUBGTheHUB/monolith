@@ -14,7 +14,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
     def __init__(self, db_manager: DatabaseManager, collection_name: str):
         self._collection = db_manager.get_collection(collection_name)
 
-    async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+    async def get_feature_switch(self, feature: str) -> Result[Ok, Err | Exception]:
         try:
             LOG.debug("Fetching feature switch by name...", feature=feature)
             data = await self._collection.find_one({"name": feature}, projection={"_id": 0})

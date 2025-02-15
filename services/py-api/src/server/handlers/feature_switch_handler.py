@@ -16,11 +16,13 @@ class FeatureSwitchHandler(BaseHandler):
 
         if is_err(result):
             return Response(
-                content=ErrResponse(error=result.err_value),
+                content=ErrResponse(error=result.err_value).model_dump_json(),
                 status_code=status.HTTP_409_CONFLICT,
+                media_type="application/json"
             )
 
         return Response(
-            content=RegistrationOpenResponse(feature=result),
+            content=RegistrationOpenResponse(feature=result.ok_value).model_dump_json(),
             status_code=status.HTTP_200_OK,
-        )
+            media_type="application/json"
+            )

@@ -12,5 +12,5 @@ class FeatureSwitchService:
         if is_err(result):
             return Err("Feature switch not found or registration is closed")
 
-        return Ok(result.ok_value)
+        return result
         

@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-
+from structlog.stdlib import get_logger
 
 class Response(JSONResponse):
     """A thin wrapper over the Starlette JSONResponse class. This wrapper allows us to pass Response models, which are
@@ -45,11 +45,11 @@ class PongResponse(BaseModel):
 class RegistrationOpenResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    feature: Result
+    feature: FeatureSwitch
 
     @field_serializer("feature")
-    def serialize_participant(self, feature: Result) -> Dict[str, Any]:
-        return feature.dump_as_json()
+    def serialize_feature(self, feature: FeatureSwitch) -> Dict[str, Any]:
+        return feature
 
 class ParticipantResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
