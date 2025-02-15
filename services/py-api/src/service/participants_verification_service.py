@@ -40,6 +40,9 @@ class ParticipantVerificationService:
         if err is not None:
             return err
 
+        if err is not None:
+            return err
+
         return result
 
     async def verify_random_participant(
