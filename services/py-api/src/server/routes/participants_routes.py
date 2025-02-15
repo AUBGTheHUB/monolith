@@ -4,7 +4,7 @@ from result import is_err
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 
-from src.server.routes.dependency_factory import _h_service
+from src.server.routes.dependency_factory import _h_service, registration_open
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -46,25 +46,16 @@ def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> Feat
 # https://fastapi.tiangolo.com/advanced/additional-responses/
 # https://fastapi.tiangolo.com/tutorial/background-tasks/#dependency-injection
 @participants_router.post(
-    "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
+    "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}},
+    dependencies=[Depends(registration_open)]
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
     background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
     participant_handler: ParticipantHandlers = Depends(_p_handler),
-    feature_switch_handler: FeatureSwitchHandler = Depends(_fs_handler),
 ) -> Response:
-    
-    registration_status_result = await feature_switch_handler.handle_feature_switch("isRegistrationOpen")
-    
-    if is_err(registration_status_result):
-        return Response(
-            ErrResponse(error=registration_status_result.err_value),
-            status_code=status.HTTP_409_CONFLICT,
-        )
-
-    return await participant_handler.create_participant(participant_request_body, jwt_token)
+    return await participant_handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
 
 @participants_router.delete(
