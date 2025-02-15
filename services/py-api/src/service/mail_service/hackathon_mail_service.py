@@ -49,8 +49,15 @@ class HackathonMailService:
         try:
             body_html = load_email_verify_participant_html_template(participant.name, team_name, verification_link)
         except ValueError as e:
-            LOG.exception("Error loading the HTML template", err=str(e))
+            LOG.exception(
+                "Error loading the HTML template for verification email",
+                err=e,
+                participant=participant,
+                team_name=team_name,
+            )
             return Err(e)
+
+        LOG.info("Sending verification email...", participant=participant, team_name=team_name)
 
         background_tasks.add_task(
             self._client.send_email,
@@ -89,8 +96,15 @@ class HackathonMailService:
         try:
             body_html = load_email_registration_confirmation_html_template(participant.name, team_name, invite_link)
         except ValueError as e:
-            LOG.exception("Error loading the HTML template", err=str(e))
+            LOG.exception(
+                "Error loading the HTML template for successful registration email",
+                err=e,
+                participant=participant,
+                team_name=team_name,
+            )
             return Err(e)
+
+        LOG.info("Sending successful registration email...", participant=participant, team_name=team_name)
 
         background_tasks.add_task(
             self._client.send_email,
