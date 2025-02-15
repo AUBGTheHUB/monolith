@@ -23,7 +23,7 @@ from uvicorn.config import LOGGING_CONFIG
 
 class _CustomConsoleRenderer(ConsoleRenderer):
     """We override the standard ConsoleRenderer in order to have the logs displayed like this in the console:
-    "2024-10-23 13:18:22 [debug    ] db_manager.py:83 (ping_db) Pong"
+    "2024-10-23 13:18:22 [debug    ] db_managers.py:83 (ping_db) Pong"
     """
 
     def __call__(self, logger: WrappedLogger, name: str, event_dict: EventDict) -> str:

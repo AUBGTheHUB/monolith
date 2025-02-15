@@ -1,10 +1,10 @@
-from typing import Tuple
-from fastapi import BackgroundTasks
+from typing import Tuple, Annotated
+from fastapi import BackgroundTasks, Depends
 from result import Err, Ok, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon_service import HackathonService, HackathonServiceDep
 from src.server.exception import (
     HackathonCapacityExceededError,
     ParticipantNotFoundError,
@@ -83,3 +83,22 @@ class ParticipantVerificationService:
             return err
 
         return Ok(result.ok_value[0])
+
+
+def participant_ver_service_provider(hackathon_service: HackathonServiceDep) -> ParticipantVerificationService:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the ParticipantVerificationService instance into its
+    intended consumers by calling this provider.
+
+    Args:
+        hackathon_service: An automatically injected HackathonService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A ParticipantVerificationService instance
+    """
+    return ParticipantVerificationService(hackathon_service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+ParticipantVerificationServiceDep = Annotated[ParticipantVerificationService, Depends(participant_ver_service_provider)]
+"""FastAPI dependency for automatically injecting a ParticipantVerificationService instance into consumers"""

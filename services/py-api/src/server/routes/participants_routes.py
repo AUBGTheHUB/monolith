@@ -1,9 +1,10 @@
 from typing import Union
-from fastapi import APIRouter, Depends, BackgroundTasks
-from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 
-from src.server.routes.dependency_factory import _h_service
-from src.server.handlers.participants_handlers import ParticipantHandlers
+from fastapi import APIRouter, Depends, BackgroundTasks
+
+from src.server.routes.path_operation_decorators import is_auth, validate_obj_id
+from src.server.handlers.hackathon_handlers import HackathonManagementHandlersDep
+from src.server.handlers.participants_handlers import ParticipantHandlersDep
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
     ParticipantRegisteredResponse,
@@ -11,39 +12,31 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
-from src.service.participants_registration_service import ParticipantRegistrationService
-from src.server.routes.dependency_factory import is_auth, validate_obj_id
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
 
 
-def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(h_service)
-
-
-def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
-    return ParticipantHandlers(p_service)
-
-
-def _h_handler(
-    h_service: HackathonService = Depends(_h_service),
-) -> HackathonManagementHandlers:
-    return HackathonManagementHandlers(h_service)
-
-
 # https://fastapi.tiangolo.com/advanced/additional-responses/
-# https://fastapi.tiangolo.com/tutorial/background-tasks/#dependency-injection
 @participants_router.post(
     "", status_code=201, responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}}
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,
     background_tasks: BackgroundTasks,
+    handler: ParticipantHandlersDep,
     jwt_token: Union[str, None] = None,
-    handler: ParticipantHandlers = Depends(_p_handler),
 ) -> Response:
+    """
+    Args:
+        participant_request_body: https://fastapi.tiangolo.com/tutorial/body/
+        background_tasks: https://fastapi.tiangolo.com/tutorial/background-tasks/#dependency-injection
+        handler: https://fastapi.tiangolo.com/tutorial/dependencies/
+        jwt_token: https://fastapi.tiangolo.com/tutorial/query-params-str-validations/
+
+    Returns:
+        A JSON response
+    """
     return await handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
 
@@ -53,5 +46,5 @@ async def create_participant(
     responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
-async def delete_participant(object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)) -> Response:
+async def delete_participant(object_id: str, handler: HackathonManagementHandlersDep) -> Response:
     return await handler.delete_participant(object_id)

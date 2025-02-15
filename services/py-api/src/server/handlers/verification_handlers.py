@@ -1,7 +1,12 @@
-from fastapi import BackgroundTasks
+from typing import Annotated
+
+from fastapi import BackgroundTasks, Depends
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
-from src.service.participants_verification_service import ParticipantVerificationService
+from src.service.participants_verification_service import (
+    ParticipantVerificationService,
+    ParticipantVerificationServiceDep,
+)
 from starlette import status
 from src.utils import JwtUtility
 from src.server.schemas.response_schemas.schemas import (
@@ -58,3 +63,22 @@ class VerificationHandlers(BaseHandler):
             response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
+
+
+def verification_handlers_provider(service: ParticipantVerificationServiceDep) -> VerificationHandlers:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the VerificationHandlers instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        service: An automatically injected ParticipantVerificationService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A VerificationHandlers instance
+    """
+    return VerificationHandlers(service=service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+VerificationHandlersDep = Annotated[VerificationHandlers, Depends(verification_handlers_provider)]
+"""FastAPI dependency for automatically injecting a VerificationHandlers instance into consumers"""

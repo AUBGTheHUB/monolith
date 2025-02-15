@@ -1,14 +1,15 @@
 from copy import deepcopy
-from typing import Optional, List
+from typing import Optional, List, Annotated
 
 from bson import ObjectId
+from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import DatabaseManager
+from src.database.db_managers import MongoDatabaseManager, TEAMS_COLLECTION_NAME, MongoDatabaseManagerDep
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
@@ -18,7 +19,7 @@ LOG = get_logger()
 
 class TeamsRepository(CRUDRepository[Team]):
 
-    def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
     async def create(
@@ -155,7 +156,8 @@ class TeamsRepository(CRUDRepository[Team]):
             # Query the database for the team with the given name
             team = await self._collection.find_one({"name": team_name})
 
-            if team is None:  # If no team is found, return an Err
+            # If no team is found, return an Err
+            if team is None:
                 return Err(TeamNotFoundError())
 
             # Since the `Team` class has a parameter named `id` instead of `_id`,
@@ -172,3 +174,22 @@ class TeamsRepository(CRUDRepository[Team]):
         except Exception as e:
             LOG.exception(f"Failed to fetch team by name {team_name} due to err {e}")
             return Err(e)
+
+
+def teams_repo_provider(db_manager: MongoDatabaseManagerDep) -> TeamsRepository:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the TeamsRepository instance into its intended consumers
+    by calling this provider.
+
+    Args:
+        db_manager: An automatically injected MongoDatabaseManager instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A TeamsRepository instance
+    """
+    return TeamsRepository(db_manager, TEAMS_COLLECTION_NAME)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+TeamsRepoDep = Annotated[TeamsRepository, Depends(teams_repo_provider)]
+"""FastAPI dependency for automatically injecting a TeamsRepository instance into consumers"""

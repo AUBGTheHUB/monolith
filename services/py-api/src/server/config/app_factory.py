@@ -3,13 +3,16 @@ from typing import AsyncIterator
 
 from fastapi import FastAPI
 
-from src.database.db_manager import get_db_manager
 from src.server.routes.routes import Routes
 from src.server.middleware.middleware import Middleware
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    # Local import to avoid circular import
+    from src.database.db_clients import mongo_db_client_provider
+    from src.database.db_managers import mongo_db_manager_provider
+
     """
     To learn more about lifespan events, visit:
     https://fastapi.tiangolo.com/advanced/events/#lifespan
@@ -19,7 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     yield
     # We ignore the error as we know that the client is initialized
-    _ = get_db_manager().close_all_connections()
+    _ = mongo_db_manager_provider(client=mongo_db_client_provider()).close_all_connections()
 
 
 def create_app() -> FastAPI:

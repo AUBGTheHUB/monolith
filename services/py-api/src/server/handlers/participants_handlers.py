@@ -6,11 +6,13 @@
 # OpenAPI spec defined in the routes via `responses` or `response_model` arguments.
 #
 # For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
+from typing import Annotated
 
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, Depends
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from starlette import status
+
 from src.server.schemas.request_schemas.schemas import (
     ParticipantRequestBody,
     AdminParticipantInputData,
@@ -21,7 +23,10 @@ from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     Response,
 )
-from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.participants_registration_service import (
+    ParticipantRegistrationService,
+    ParticipantRegistrationServiceDep,
+)
 
 
 class ParticipantHandlers(BaseHandler):
@@ -70,3 +75,22 @@ class ParticipantHandlers(BaseHandler):
             ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1]),
             status_code=status.HTTP_201_CREATED,
         )
+
+
+def participant_handlers_provider(service: ParticipantRegistrationServiceDep) -> ParticipantHandlers:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the ParticipantHandlers instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        service: An automatically injected ParticipantRegistrationService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A ParticipantHandlers instance
+    """
+    return ParticipantHandlers(service=service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+ParticipantHandlersDep = Annotated[ParticipantHandlers, Depends(participant_handlers_provider)]
+"""FastAPI dependency for automatically injecting a ParticipantHandlers instance into consumers"""

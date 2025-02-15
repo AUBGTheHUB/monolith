@@ -1,9 +1,12 @@
-from fastapi import BackgroundTasks
+from typing import Annotated
+
+from fastapi import BackgroundTasks, Depends
 from result import Err
 from structlog.stdlib import get_logger
 
 from src.database.model.participant_model import Participant
-from src.service.mail_service.mail_client import MailClient
+from src.service.mail_service.mail_clients.base_mail_client import MailClient
+from src.service.mail_service.mail_clients.mail_client_factory import MailClientDep
 from src.service.mail_service.utils import (
     load_email_registration_confirmation_html_template,
     load_email_verify_participant_html_template,
@@ -100,3 +103,22 @@ class HackathonMailService:
             body_content=body_html,
             content_type="html",
         )
+
+
+def hackathon_mail_service_provider(client: MailClientDep) -> HackathonMailService:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the HackathonMailService instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        client: An automatically injected concrete implementation of MailClient by FastAPI using ``fastapi.Depends``
+
+    Returns:
+         A HackathonMailService instance.
+    """
+    return HackathonMailService(client=client)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+HackathonMailServiceDep = Annotated[HackathonMailService, Depends(hackathon_mail_service_provider)]
+"""FastAPI dependency for automatically injecting a HackathonMailService instance into consumers"""

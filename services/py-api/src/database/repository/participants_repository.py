@@ -1,13 +1,14 @@
-from typing import Optional, List
+from typing import Optional, List, Annotated
 
 from bson import ObjectId
+from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import DatabaseManager
+from src.database.db_managers import MongoDatabaseManager, PARTICIPANTS_COLLECTION_NAME, MongoDatabaseManagerDep
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
@@ -17,7 +18,7 @@ LOG = get_logger()
 
 class ParticipantsRepository(CRUDRepository[Participant]):
     # TODO: Implement the rest of the methods
-    def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
     async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
@@ -141,3 +142,22 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def get_number_registered_teammates(self, team_id: str) -> int:
         """Returns the count of registered participants already in the team."""
         return await self._collection.count_documents({"team_id": ObjectId(team_id)})  # type: ignore
+
+
+def participants_repo_provider(db_manager: MongoDatabaseManagerDep) -> ParticipantsRepository:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the ParticipantsRepository instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        db_manager: An automatically injected MongoDatabaseManager instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A ParticipantsRepository instance
+    """
+    return ParticipantsRepository(db_manager, PARTICIPANTS_COLLECTION_NAME)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+ParticipantsRepoDep = Annotated[ParticipantsRepository, Depends(participants_repo_provider)]
+"""FastAPI dependency for automatically injecting a ParticipantsRepository instance into consumers"""

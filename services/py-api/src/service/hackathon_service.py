@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
-from typing import Final, Optional, Tuple
+from typing import Final, Optional, Tuple, Annotated
 
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, Depends
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
@@ -11,9 +11,9 @@ from structlog.stdlib import get_logger
 from src.database.model.base_model import SerializableObjectId
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.model.team_model import Team, UpdateTeamParams
-from src.database.repository.participants_repository import ParticipantsRepository
-from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.database.repository.participants_repository import ParticipantsRepository, ParticipantsRepoDep
+from src.database.repository.teams_repository import TeamsRepository, TeamsRepoDep
+from src.database.transaction_managers import MongoTransactionManager, TransactionManagerDep
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
 from src.server.exception import (
     DuplicateTeamNameError,
@@ -30,7 +30,7 @@ from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.mail_service.hackathon_mail_service import HackathonMailService
+from src.service.mail_service.hackathon_mail_service import HackathonMailService, HackathonMailServiceDep
 from src.utils import JwtUtility
 
 LOG = get_logger()
@@ -61,7 +61,7 @@ class HackathonService:
         self,
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
-        tx_manager: TransactionManager,
+        tx_manager: MongoTransactionManager,
         mail_service: HackathonMailService,
     ) -> None:
         self._participant_repo = participant_repo
@@ -430,3 +430,31 @@ class HackathonService:
             return err
 
         return None
+
+
+def hackathon_service_provider(
+    p_repo: ParticipantsRepoDep,
+    t_repo: TeamsRepoDep,
+    tx_manager: TransactionManagerDep,
+    mail_service: HackathonMailServiceDep,
+) -> HackathonService:
+    """
+    This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the HackathonService instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        p_repo: An automatically injected ParticipantsRepository instance by FastAPI using ``fastapi.Depends``
+        t_repo: An automatically injected TeamsRepository instance by FastAPI using ``fastapi.Depends``
+        tx_manager: An automatically injected MongoTransactionManager instance by FastAPI using ``fastapi.Depends``
+        mail_service: An automatically injected HackathonMailService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A HackathonService instance.
+    """
+    return HackathonService(p_repo, t_repo, tx_manager, mail_service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+HackathonServiceDep = Annotated[HackathonService, Depends(hackathon_service_provider)]
+"""FastAPI dependency for automatically injecting a HackathonService instance into consumers"""

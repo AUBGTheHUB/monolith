@@ -6,7 +6,9 @@
 # OpenAPI spec defined in the routes via `responses` or `response_model` arguments.
 #
 # For more info: https://fastapi.tiangolo.com/advanced/additional-responses/
+from typing import Annotated
 
+from fastapi import Depends
 from result import is_err
 from starlette import status
 
@@ -16,7 +18,7 @@ from src.server.schemas.response_schemas.schemas import (
     TeamDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon_service import HackathonService, HackathonServiceDep
 
 
 class HackathonManagementHandlers(BaseHandler):
@@ -39,3 +41,22 @@ class HackathonManagementHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(ParticipantDeletedResponse(participant=result.ok_value), status_code=status.HTTP_200_OK)
+
+
+def hackathon_management_handlers_provider(service: HackathonServiceDep) -> HackathonManagementHandlers:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the HackathonManagementHandlers instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        service: An automatically injected HackathonService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A HackathonManagementHandlers instance
+    """
+    return HackathonManagementHandlers(service=service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+HackathonManagementHandlersDep = Annotated[HackathonManagementHandlers, Depends(hackathon_management_handlers_provider)]
+"""FastAPI dependency for automatically injecting a HackathonManagementHandlers instance into consumers"""

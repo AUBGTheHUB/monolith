@@ -1,19 +1,20 @@
 # mypy: disable-error-code=no-any-return
 # This is because we have Generic methods
 from asyncio import sleep
-from typing import Callable, Any, Awaitable
+from typing import Callable, Any, Awaitable, Annotated
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from fastapi import Depends
+from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorClient
 from pymongo.errors import PyMongoError
 from result import Err, is_err, Result
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import DatabaseManager
+from src.database.db_clients import MotorClientDep
 
 LOG = get_logger()
 
 
-class TransactionManager:
+class MongoTransactionManager:
     """This class is responsible for executing multiple mongo db queries such as insert_one or update_on in a
     transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction.
     The terms you will see in the code below:
@@ -36,8 +37,8 @@ class TransactionManager:
     https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/
     """
 
-    def __init__(self, db_manager: DatabaseManager) -> None:
-        self._client = db_manager.client
+    def __init__(self, client: AsyncIOMotorClient) -> None:
+        self._client = client
 
     @staticmethod
     async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
@@ -151,3 +152,22 @@ class TransactionManager:
             LOG.debug("Closing DB session")
             # Finish this session. If a transaction has started, abort it.
             await session.end_session()
+
+
+def mongo_db_transaction_manager_provider(client: MotorClientDep) -> MongoTransactionManager:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the MongoTransactionManager instance into its intended
+    consumers by calling this provider.
+
+    Args:
+        client: An automatically injected singleton AsyncIOMotorClient instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A MongoTransactionManager instance
+    """
+    return MongoTransactionManager(client=client)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+TransactionManagerDep = Annotated[MongoTransactionManager, Depends(mongo_db_transaction_manager_provider)]
+"""FastAPI dependency for automatically injecting a MongoTransactionManager instance into consumers"""

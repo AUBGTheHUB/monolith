@@ -1,6 +1,6 @@
-from typing import Tuple
+from typing import Tuple, Annotated
 
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, Depends
 from result import Result, Err, is_err
 
 from src.database.model.participant_model import Participant
@@ -18,7 +18,7 @@ from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon_service import HackathonService, HackathonServiceDep
 from src.utils import JwtUtility
 
 
@@ -108,3 +108,22 @@ class ParticipantRegistrationService:
             return err
 
         return result
+
+
+def participant_reg_service_provider(hackathon_service: HackathonServiceDep) -> ParticipantRegistrationService:
+    """This function is designed to be passes to the ``fastapi.Depends`` function which expects a "provider" of an
+    instance. ``fastapi.Depends`` will automatically inject the ParticipantRegistrationService instance into its
+    intended consumers by calling this provider.
+
+    Args:
+        hackathon_service: An automatically injected HackathonService instance by FastAPI using ``fastapi.Depends``
+
+    Returns:
+        A ParticipantRegistrationService instance
+    """
+    return ParticipantRegistrationService(hackathon_service)
+
+
+# https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies
+ParticipantRegistrationServiceDep = Annotated[ParticipantRegistrationService, Depends(participant_reg_service_provider)]
+"""FastAPI dependency for automatically injecting a ParticipantRegistrationService instance into consumers"""
