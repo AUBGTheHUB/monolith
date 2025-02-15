@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Annotated, Dict, Any, Literal, Optional, Union
+from typing import Annotated, Literal, Dict, Any, Optional, Union
 from pydantic import Field, field_validator, EmailStr
+
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
 TSHIRT_SIZE = Literal[
@@ -54,9 +55,12 @@ class Participant(BaseDbModel):
 
     name: str
     email: str
-    email_verified: bool = field(default=False)
     is_admin: bool
+    email_verified: bool = field(default=False)
     team_id: Optional[SerializableObjectId]
+    last_sent_verification_email: Optional[datetime] = field(default=None)
+    """The last time a verification email was sent. Used for rate-limiting purposed when the participant clicks
+    resend email."""
     last_sent_email: Optional[datetime] = field(default=None)
     tshirt_size: Optional[TSHIRT_SIZE] = None
     university: UNIVERSITIES_LIST
@@ -82,7 +86,6 @@ class Participant(BaseDbModel):
         return None if value == "" else value
 
     def dump_as_mongo_db_document(self) -> Dict[str, Any]:
-
         return {
             "_id": self.id,
             "name": self.name,
@@ -90,7 +93,6 @@ class Participant(BaseDbModel):
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
             "team_id": self.team_id,
-            "last_sent_email": self.last_sent_email,
             "tshirt_size": self.tshirt_size,
             "university": self.university,
             "location": self.location,
@@ -105,6 +107,7 @@ class Participant(BaseDbModel):
             "share_info_with_sponsors": self.share_info_with_sponsors,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "last_sent_verification_email": self.last_sent_verification_email,
         }
 
     def dump_as_json(self) -> Dict[str, Any]:
@@ -115,7 +118,6 @@ class Participant(BaseDbModel):
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
             "team_id": str(self.team_id) if self.team_id else None,
-            "last_sent_email": self.last_sent_email.strftime("%Y-%m-%d %H:%M:%S") if self.last_sent_email else None,
             "tshirt_size": self.tshirt_size,
             "university": self.university,
             "location": self.location,
@@ -130,6 +132,11 @@ class Participant(BaseDbModel):
             "share_info_with_sponsors": self.share_info_with_sponsors,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "last_sent_verification_email": (
+                self.last_sent_verification_email.strftime("%Y-%m-%d %H:%M:%S")
+                if self.last_sent_verification_email
+                else None
+            ),
         }
 
 
@@ -145,7 +152,6 @@ class UpdateParticipantParams(UpdateParams):
     email_verified: Union[bool, None] = None
     is_admin: Union[bool, None] = None
     team_id: Union[str, None] = None
-    last_sent_email: Union[datetime, None] = None
     tshirt_size: Union[TSHIRT_SIZE, None] = None
     university: Union[UNIVERSITIES_LIST, None] = None
     location: Union[str, None] = None
@@ -158,3 +164,4 @@ class UpdateParticipantParams(UpdateParams):
     has_participated_in_hackathons: Union[bool, None] = None
     has_previous_coding_experience: Union[bool, None] = None
     share_info_with_sponsors: Union[bool, None] = None
+    last_sent_verification_email: Union[datetime, None] = None

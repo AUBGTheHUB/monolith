@@ -5,7 +5,7 @@ from pymongo.errors import DuplicateKeyError
 
 ERROR_MAPPING: Dict[Type[BaseException], Tuple[str, int]] = {}
 """Maps custom errors to their representation (message, status_code), dynamically populated once a subclass of
-CustomError is instantiated."""
+CustomError is created (not instantiated)"""
 
 
 class CustomError(ABC, BaseException):
@@ -52,8 +52,16 @@ class ParticipantNotFoundError(CustomError):
 class EmailRateLimitExceededError(CustomError):
     """Exception raised when the user has exceeded the rate limit for sending emails"""
 
-    message = "The rate limit for sending emails has been exceeded"
-    status_code = status.HTTP_409_CONFLICT
+    # placeholder value to satisfy __init_subclass__, message is overridden in the __init__
+    message = ""
+    status_code = status.HTTP_429_TOO_MANY_REQUESTS
+
+    def __init__(self, seconds_to_retry_after: int):
+        self.message = (
+            f"The rate limit for sending emails has been exceeded. Try again after {seconds_to_retry_after} seconds."
+        )
+        # Overriding the saved cls in the error_mapping when __init_subclass__ was first called
+        ERROR_MAPPING[self.__class__] = (self.message, self.status_code)
 
 
 class ParticipantAlreadyVerifiedError(CustomError):

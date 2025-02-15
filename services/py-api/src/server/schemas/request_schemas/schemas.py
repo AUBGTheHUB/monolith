@@ -1,6 +1,10 @@
+from typing import Literal, Union
+
+from bson import ObjectId
+from fastapi import HTTPException
+from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
 from typing import Any, Literal, Optional, Union
 from fastapi.types import IncEx
-from pydantic import EmailStr, BaseModel, Field, ConfigDict
 from src.database.model.participant_model import (
     ALLOWED_AGE,
     PROGRAMMING_LANGUAGES_LIST,
@@ -17,6 +21,15 @@ from src.database.model.participant_model import (
 
 class ResendEmailParticipantData(BaseModel):
     participant_id: str
+
+    # https://docs.pydantic.dev/latest/concepts/validators/#field-validators
+    @field_validator("participant_id", mode="before")
+    @classmethod
+    def validate_obj_id_format(cls, participant_id: str) -> str:
+        if not ObjectId.is_valid(participant_id):
+            raise HTTPException(detail="Wrong Object ID format", status_code=400)
+
+        return participant_id
 
 
 class BaseParticipantData(BaseModel):
