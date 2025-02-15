@@ -5,7 +5,7 @@ from typing import Callable, Any, Awaitable
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo.errors import PyMongoError
-from result import Err, is_err, Result
+from result import Err, is_err, Result, is_ok
 from structlog.stdlib import get_logger
 
 from src.database.db_manager import DatabaseManager
@@ -45,40 +45,44 @@ class TransactionManager:
         If there was a TransientTransactionError during execution, retries the transaction with exponential backoff up
         to max_retries times. Having an exponential backoff increases our chances of success if there was a temporary
         network issue.
+
         Inspired by:
         https://www.mongodb.com/docs/manual/core/transactions-in-applications/#example-1
         https://motor.readthedocs.io/en/stable/api-tornado/motor_client_session.html#motor.motor_tornado.MotorClientSession.with_transaction
         https://stackoverflow.com/questions/52153538/what-is-a-transienttransactionerror-in-mongoose-or-mongodb
 
-        Raises:
-            PyMongoError
+        Args:
+            func: The func is the callback that is passed to the with_transaction() method. It should return a
+             Result[Ok, Err]
         """
         max_retries = 3
-        delay = 1  # initial delay in seconds
+        delay = 0.1  # initial delay in seconds
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
 
-            # The callback uses the result pattern, for this reason we have to check the errors
-            # using is_err.
+            # Call the callback.
             result = await func(*args, **kwargs)
 
-            if is_err(result) and isinstance(result.err_value, PyMongoError):
+            if is_ok(result):
+                return result
 
-                if result.err_value.has_error_label("TransientTransactionError"):
+            # Check if it is a retryable error - a TransientTransactionError
+            if isinstance(result.err_value, PyMongoError) and result.err_value.has_error_label(
+                "TransientTransactionError"
+            ):
 
-                    LOG.debug("Retrying transaction retry {}".format(retry))
-                    await sleep(delay)
-                    delay *= 2  # exponential backoff
-                    continue
+                # Retry the transaction by taking the control to the start of the loop using `continue`
+                LOG.debug("Retrying transaction...", retry=retry, callback=func)
+                await sleep(delay)
+                delay *= 2  # Apply Exponential Backoff
+                continue
 
-                LOG.debug("Retrying of tx failed", err=result.err_value, error_labels=result.err_value._error_labels)
-                # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
-                raise result.err_value
-
+            # If the exception it's a non-retryable error return it in order to be caught on an upper level
+            LOG.error("Un-retryable error during transaction!", err=result.err_value, callback=func)
             return result
 
-        raise PyMongoError("Transaction failed after maximum retries")
+        return Err(PyMongoError("Transaction failed after maximum retries"))
 
     @staticmethod
     async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
@@ -86,9 +90,12 @@ class TransactionManager:
         Uses the same logic for the retries as the _retry_tx (exponential backoff)
         Inspired by:
         https://www.mongodb.com/docs/manual/core/transactions-in-applications/#example-1
+
+        Raises:
+            PyMongoError
         """
         max_retries = 3
-        delay = 1  # initial delay in seconds
+        delay = 0.1  # initial delay in seconds
 
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
@@ -98,13 +105,13 @@ class TransactionManager:
                 return await session.commit_transaction()
             except PyMongoError as exc:
                 if exc.has_error_label("UnknownTransactionCommitResult"):
-                    LOG.debug("Retrying to commit transaction retry {}".format(retry))
+                    LOG.debug("Retrying to commit transaction...", retry=retry)
                     await sleep(delay)
                     delay *= 2  # exponential backoff
                     continue
 
-                LOG.debug("Retrying of commit tx failed", err=exc, error_labels=exc._error_labels)
                 # If the exception it's a non-retryable error re-raise it in order to be caught on an upper level
+                LOG.error("Commiting the transaction failed", err=exc)
                 raise exc
 
         raise PyMongoError("Commiting transaction failed after maximum retries")
@@ -150,7 +157,7 @@ class TransactionManager:
             return result
 
         except Exception as e:
-            LOG.exception("Aborting transaction due to err {}".format(e))
+            LOG.exception("Aborting transaction due to error", error=e)
             await session.abort_transaction()
             return Err(e)
 
