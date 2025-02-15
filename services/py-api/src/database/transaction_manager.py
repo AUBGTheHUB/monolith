@@ -59,6 +59,8 @@ class TransactionManager:
         # range is exclusive that's why we do max_retries + 1
         for retry in range(1, max_retries + 1):
 
+            # The callback uses the result pattern, for this reason we have to check the errors
+            # using is_err.
             result = await func(*args, **kwargs)
 
             if is_err(result) and isinstance(result.err_value, PyMongoError):
