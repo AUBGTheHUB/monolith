@@ -4,6 +4,7 @@ import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { FEATURE_SWITCHES } from './constants';
+import { useFetchFeatureSwitches } from './config';
 
 function App() {
     const queryClient = new QueryClient();
@@ -19,5 +20,7 @@ function App() {
         </QueryClientProvider>
     );
 }
+
+useFetchFeatureSwitches();
 
 export default App;

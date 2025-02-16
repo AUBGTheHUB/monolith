@@ -30,5 +30,3 @@ export async function useFetchFeatureSwitches() {
         console.error('Error fetching feature switches:', error);
     }
 }
-
-useFetchFeatureSwitches();
