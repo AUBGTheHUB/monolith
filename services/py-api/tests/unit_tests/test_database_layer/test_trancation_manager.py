@@ -1,17 +1,17 @@
-from unittest.mock import AsyncMock, patch, MagicMock, Mock
+from typing import cast
+from unittest.mock import AsyncMock, patch
+from motor.motor_asyncio import AsyncIOMotorClient
 
 import pytest
 from pymongo.errors import PyMongoError
 from result import Ok, Err
 
-from src.database.db_managers import MongoDatabaseManager
 from src.database.transaction_managers import MongoTransactionManager
-
+from tests.unit_tests.conftest import MotorDbClientMock, MotorDbClientSessionMock
 
 @pytest.fixture
-def tx_manager(db_manager_mock: MongoDatabaseManager) -> MongoTransactionManager:
-    return MongoTransactionManager(db_manager_mock)
-
+def tx_manager(motor_db_client_mock: MotorDbClientMock,motor_db_session_mock:MotorDbClientSessionMock ) -> MongoTransactionManager:
+    return MongoTransactionManager(cast(AsyncIOMotorClient,motor_db_client_mock))
 
 # Define a custom exception to simulate transient transaction error
 class TransientTransactionError(PyMongoError):
@@ -27,85 +27,102 @@ class UnknownTransactionCommitResult(PyMongoError):
 
 @pytest.mark.asyncio
 async def test_with_transaction_success(
-    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+   motor_db_client_mock: MotorDbClientMock, motor_db_session_mock:MotorDbClientSessionMock , tx_manager: MongoTransactionManager,
 ) -> None:
-    # Mock a successful db operation
+    
+    #Given a successful db operation
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
+       
+    #When we execute the with_transaction method
     result = await tx_manager.with_transaction(mock_db_operation)
 
-    db_manager_mock.client.start_session.assert_called_once()
-    db_client_session_mock.start_transaction.assert_called_once()
-    db_client_session_mock.commit_transaction.assert_awaited_once()
-    db_client_session_mock.abort_transaction.assert_not_called()
-    db_client_session_mock.end_session.assert_awaited_once()
+    #Then the session would have started and the transaction would be successfully completed
+    motor_db_client_mock.start_session.assert_called_once() 
+
+    motor_db_session_mock.start_transaction.assert_called_once()
+    motor_db_session_mock.commit_transaction.assert_awaited_once()
+    motor_db_session_mock.abort_transaction.assert_not_called()
+    motor_db_session_mock.end_session.assert_awaited_once()
+
     assert result == Ok("Success")
 
 
 @pytest.mark.asyncio
 async def test_with_transaction_transient_error(
-    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+    motor_db_session_mock:MotorDbClientSessionMock ,motor_db_client_mock: MotorDbClientMock, tx_manager: MongoTransactionManager,
 ) -> None:
-    # Simulate transient error on the first call, then success
+    
+    #Given a transient error on the first call and a success on the second one
     mock_db_operation = AsyncMock(side_effect=[Err(TransientTransactionError()), Ok("Success")])
 
-    # We patch the sleep function for faster testing
-    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
+    #We patch the sleep function for faster testing
+    with patch("src.database.transaction_managers.sleep", new=AsyncMock()):
+
+        #When we execute the with_transaction method
         result = await tx_manager.with_transaction(mock_db_operation)
 
-        db_manager_mock.client.start_session.assert_called_once()
-        db_client_session_mock.start_transaction.assert_called_once()
-        db_client_session_mock.commit_transaction.assert_awaited_once()
-        db_client_session_mock.abort_transaction.assert_not_called()
-        db_client_session_mock.end_session.assert_awaited_once()
+        #Then the transaction should have failed on the first try
+        motor_db_client_mock.start_session.assert_called_once()
+        motor_db_session_mock.start_transaction.assert_called_once()
+        motor_db_session_mock.commit_transaction.assert_awaited_once()
+        motor_db_session_mock.abort_transaction.assert_not_called()
+        motor_db_session_mock.end_session.assert_awaited_once()
 
-        # On the first call it failed and on the second call it succeeded
+        #And succeeded on the second
         assert mock_db_operation.call_count == 2
         assert result == Ok("Success")
 
 
 @pytest.mark.asyncio
 async def test_with_transaction_unknown_commit_result_error(
-    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+     motor_db_session_mock:MotorDbClientSessionMock ,motor_db_client_mock: MotorDbClientMock, tx_manager: MongoTransactionManager,
 ) -> None:
-    # Mock a successful db operation
+    
+    #Given a successful db operation and commit_transaction failing first and then succeeding
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
-    # Mock a commit failing first and then succeeding
-    db_client_session_mock.commit_transaction = AsyncMock(
+
+    motor_db_session_mock.commit_transaction = AsyncMock(
         side_effect=[UnknownTransactionCommitResult("Test err"), None]
     )
 
     # We patch the sleep function for faster testing
-    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
+    with patch("src.database.transaction_managers.sleep", new=AsyncMock()):
+
+        #When we execute the with_transaction method
         result = await tx_manager.with_transaction(mock_db_operation)
 
-        db_manager_mock.client.start_session.assert_called_once()
-        db_client_session_mock.start_transaction.assert_called_once()
-        db_client_session_mock.abort_transaction.assert_not_called()
-        db_client_session_mock.end_session.assert_awaited_once()
+        #Then it fails on the first call
+        motor_db_client_mock.start_session.assert_called_once()
+        motor_db_session_mock.start_transaction.assert_called_once()
+        motor_db_session_mock.abort_transaction.assert_not_called()
+        motor_db_session_mock.end_session.assert_awaited_once()
 
-        # On the first call it failed and on the second call it succeeded
-        assert db_client_session_mock.commit_transaction.call_count == 2
+        #And succeeds on the second
+        assert motor_db_session_mock.commit_transaction.call_count == 2
         assert result == Ok("Success")
 
 
 @pytest.mark.asyncio
 async def test_with_transaction_exhaust_retries(
-    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+     motor_db_session_mock:MotorDbClientSessionMock ,motor_db_client_mock: MotorDbClientMock, tx_manager: MongoTransactionManager,
 ) -> None:
-    # Simulate a transient error that keeps failing
+    
+    # Given a transient error that keeps failing
     mock_db_operation = AsyncMock(return_value=Err(TransientTransactionError()))
 
     # We patch the sleep function for faster testing
-    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
+    with patch("src.database.transaction_managers.sleep", new=AsyncMock()):
+
+        #When we execute the with_transaction method
         result = await tx_manager.with_transaction(mock_db_operation)
 
-        db_manager_mock.client.start_session.assert_called_once()
-        db_client_session_mock.start_transaction.assert_called_once()
-        db_client_session_mock.commit_transaction.assert_not_called()
-        db_client_session_mock.abort_transaction.assert_awaited_once()
-        db_client_session_mock.end_session.assert_awaited_once()
+        motor_db_client_mock.start_session.assert_called_once()
+        motor_db_session_mock.start_transaction.assert_called_once()
+        motor_db_session_mock.commit_transaction.assert_not_called()
+        motor_db_session_mock.abort_transaction.assert_awaited_once()
+        motor_db_session_mock.end_session.assert_awaited_once()
 
-        # Should be called max_retries times
+        #Then it should be called max_retries times
         assert mock_db_operation.call_count == 3
         assert isinstance(result, Err)
         assert isinstance(result.err_value, PyMongoError)
@@ -113,23 +130,24 @@ async def test_with_transaction_exhaust_retries(
 
 @pytest.mark.asyncio
 async def test_with_transaction_unknown_commit_result_exhaust_retries(
-    tx_manager: MongoTransactionManager, db_manager_mock: Mock, db_client_session_mock: MagicMock
+     motor_db_session_mock:MotorDbClientSessionMock ,motor_db_client_mock: MotorDbClientMock, tx_manager: MongoTransactionManager,
 ) -> None:
-    # Mock a successful db operation
+    # Given a successful db operation and a commit error that keeps failing
     mock_db_operation = AsyncMock(return_value=Ok("Success"))
-    # Simulate a commit error that keeps failing
-    db_client_session_mock.commit_transaction = AsyncMock(side_effect=UnknownTransactionCommitResult("Test err"))
+    motor_db_session_mock.commit_transaction = AsyncMock(side_effect=UnknownTransactionCommitResult("Test err"))
 
     # We patch the sleep function for faster testing
-    with patch("src.database.transaction_manager.sleep", new=AsyncMock()):
+    with patch("src.database.transaction_managers.sleep", new=AsyncMock()):
+
+        #When we execute the with_transaction method
         result = await tx_manager.with_transaction(mock_db_operation)
 
-        db_manager_mock.client.start_session.assert_called_once()
-        db_client_session_mock.start_transaction.assert_called_once()
-        db_client_session_mock.abort_transaction.assert_awaited_once()
-        db_client_session_mock.end_session.assert_awaited_once()
+        motor_db_client_mock.start_session.assert_called_once()
+        motor_db_session_mock.start_transaction.assert_called_once()
+        motor_db_session_mock.abort_transaction.assert_awaited_once()
+        motor_db_session_mock.end_session.assert_awaited_once()
 
-        # Should be called max_retries times
-        assert db_client_session_mock.commit_transaction.call_count == 3
+        #Then it should be called max_retries times
+        assert motor_db_session_mock.commit_transaction.call_count == 3
         assert isinstance(result, Err)
         assert isinstance(result.err_value, PyMongoError)
