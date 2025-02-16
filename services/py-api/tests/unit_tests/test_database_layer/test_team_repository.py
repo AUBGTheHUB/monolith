@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Tuple, cast
 
-from bson import ObjectId
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
@@ -176,7 +175,7 @@ async def test_fetch_by_team_name_success(
 ) -> None:
     # Given a successful response by find_one
     motor_collection_mock.find_one.return_value = {
-        "_id": ObjectId(mock_obj_id),
+        "_id": mock_obj_id,
         "name": TEST_TEAM_NAME,
         "is_verified": False,
     }
@@ -262,6 +261,7 @@ async def test_fetch_by_id_team_not_found(
 async def test_fetch_by_id_general_error(
     motor_collection_mock: MotorCollectionMock, repo: TeamsRepository, mock_obj_id: str
 ) -> None:
+    # Given a general exception raised by find_one
     motor_collection_mock.find_one.side_effect = Exception("Test Error")
 
     # When we fetch the Team document in Mongo
