@@ -13,7 +13,7 @@ export default function AwardsSection() {
                 <img src="./n.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">AWARDS</p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-center items-end w-[100%] space-x-0 sm:space-x-16 space-y-20 sm:space-y-0 mb-32 relative">
+            <div className="flex flex-col sm:flex-row justify-center  items-center sm:items-end w-[100%] space-x-0 sm:space-x-16 space-y-20 sm:space-y-0 mb-32 relative">
                 <div className="flex flex-col items-center">
                     <img
                         src="/AwardsSection/blue_stone.png"
@@ -27,7 +27,7 @@ export default function AwardsSection() {
                         <p className="text-white text-lg mb-1 ml-2">BGN</p>
                     </div>
                 </div>
-                <div className="flex flex-col items-center z-10">
+                <div className="flex flex-col items-center z-10 sm:!mb-0 !mb-16">
                     <img
                         src="/AwardsSection/red_stone.png"
                         alt=""
