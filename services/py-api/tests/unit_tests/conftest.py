@@ -11,6 +11,7 @@ from result import Err
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -97,6 +98,24 @@ def team_repo_mock() -> Mock:
     team_repo.get_verified_registered_teams_count = AsyncMock()
 
     return team_repo
+
+@pytest.fixture
+def feature_switch_repo_mock() -> Mock:
+    """This is a mock obj of FeatureSwitchRepository. To change the return values of its methods use:
+    `feature_switch_repo_mock.method_name.return_value=some_return_value`"""
+
+    feature_switch_repo = Mock(spec=FeatureSwitchRepository)
+
+    feature_switch_repo.fetch_by_id = AsyncMock()
+    feature_switch_repo.fetch_by_team_name = AsyncMock()
+    feature_switch_repo.fetch_all = AsyncMock()
+    feature_switch_repo.update = AsyncMock()
+    feature_switch_repo.create = AsyncMock()
+    feature_switch_repo.delete = AsyncMock()
+    feature_switch_repo.get_feature_switch = AsyncMock()
+    feature_switch_repo.set_feature_switch = AsyncMock()
+
+    return feature_switch_repo
 
 
 @pytest.fixture
