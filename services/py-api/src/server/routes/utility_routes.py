@@ -21,6 +21,13 @@ async def ping(handler: UtilityHandlers = Depends(create_utility_handler)) -> Re
     return await handler.ping_services()
 
 
-@utility_router.get("/feature-switch", responses={200: {"model": FeatureSwitchResponse}, 409: {"model": ErrResponse}})
-async def registration_open_status(feature: str, handler: FeatureSwitchHandler = Depends(_fs_handler)) -> Response:
+@utility_router.get(
+    "/feature-switches/{feature}", responses={200: {"model": FeatureSwitchResponse}, 404: {"model": ErrResponse}}
+)
+async def get_feature_switch(feature: str, handler: FeatureSwitchHandler = Depends(_fs_handler)) -> Response:
     return await handler.handle_feature_switch(feature=feature)
+
+
+@utility_router.get("/feature-switches", responses={200: {"model": FeatureSwitchResponse}})
+async def get_all_feature_switches(handler: FeatureSwitchHandler = Depends(_fs_handler)) -> Response:
+    return await handler.handle_all_feature_switches()
