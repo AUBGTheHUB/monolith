@@ -3,13 +3,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
-import { API_URLS, useFetchFeatureSwitches } from './website/constants';
+import { useFetchFeatureSwitches, FEATURE_SWITCHES } from './constants';
 
 function App() {
     const queryClient = new QueryClient();
 
-    useFetchFeatureSwitches(); // Fetch feature switches and update the array
-    console.log(API_URLS);
+    console.log(FEATURE_SWITCHES);
     return (
         <QueryClientProvider client={queryClient}>
             <Routes>
