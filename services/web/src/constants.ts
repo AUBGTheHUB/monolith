@@ -14,7 +14,15 @@ export const FEATURE_SWITCHES = [
 
 export async function useFetchFeatureSwitches() {
     try {
-        const response = await fetch(`${API_URL}/feature-switches`);
+        const username = import.meta.env.VITE_DEV_USER;
+        const password = import.meta.env.VITE_DEV_PASS;
+        const headers = new Headers();
+        headers.set('Authorization', 'Basic ' + btoa(username + ':' + password));
+
+        const response = await fetch(`${API_URL}/feature-switches`, {
+            method: 'GET',
+            headers: headers,
+        });
 
         const data = await response.json();
         console.log('Server data:', data);
