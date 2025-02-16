@@ -2,25 +2,25 @@ name: Deployment Pipeline
 
 on:
   push:
-    # branches:
-    #   - 'main'
-    #   - 'production'
-    # paths:
-    #   # Back-end Paths that will trigger re-deployment
-    #   - 'services/py-api/src/**'
-    #   - 'services/py-api/Dockerfile'
-    #   - 'services/py-api/**/*.lock'
-    #   - 'services/py-api/**/*.toml'
+    branches:
+      - 'main'
+      - 'production'
+    paths:
+      # Back-end Paths that will trigger re-deployment
+      - 'services/py-api/src/**'
+      - 'services/py-api/Dockerfile'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
 
-    #   # Front-end paths that will trigger re-deployment
-    #   - 'services/web/src/**'
-    #   - 'services/web/Dockerfile'
-    #   - 'services/web/package-lock.json'
-    #   - 'services/web/package.json'
-    #   - 'services/web/nginx.*.conf'
-    #   - 'services/web/*.config.*'
-    #   - 'services/web/tsconfig.*'
-    #   - 'services/web/*.html'
+      # Front-end paths that will trigger re-deployment
+      - 'services/web/src/**'
+      - 'services/web/Dockerfile'
+      - 'services/web/package-lock.json'
+      - 'services/web/package.json'
+      - 'services/web/nginx.*.conf'
+      - 'services/web/*.config.*'
+      - 'services/web/tsconfig.*'
+      - 'services/web/*.html'
 
 permissions:
   packages: write
@@ -50,7 +50,7 @@ jobs:
             ghcr.io/aubgthehub/monolith-backend:latest
             ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
 
-      - name: Set environment variables based on branch
+      - name: Set environment variables based on branch to pass them to the WEB builder
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "VITE_ENV=DEV" >> $GITHUB_ENV
@@ -71,7 +71,7 @@ jobs:
             ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
           # We pass the build arguments for the frontend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
-          secrets: |
+          build-args: |
             VITE_ENV=${{ env.VITE_ENV }}
 
   deploy:
@@ -108,12 +108,12 @@ jobs:
       # Read more about Docker Stack: https://docs.docker.com/reference/cli/docker/stack/deploy/
       # Read more about Docker Swarm: https://forums.docker.com/t/docker-swarm-series-8th-publishing-modes/136972
       # Read more about Docker Context:  https://docs.docker.com/engine/manage-resources/contexts/
-      # - name: Docker Stack Deploy
-      #   uses: cssnr/stack-deploy-action@v1
-      #   with:
-      #     name: monolith
-      #     file: docker-swarm-stack.yml
-      #     host: ${{ github.ref_name == 'main' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
-      #     user: deploy
-      #     ssh_key: ${{ github.ref_name == 'main' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
-      #     env_file: ./envfile
+      - name: Docker Stack Deploy
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: monolith
+          file: docker-swarm-stack.yml
+          host: ${{ github.ref_name == 'main' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
+          user: deploy
+          ssh_key: ${{ github.ref_name == 'main' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
+          env_file: ./envfile
