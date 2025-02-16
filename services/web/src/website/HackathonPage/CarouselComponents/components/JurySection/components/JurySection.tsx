@@ -1,4 +1,4 @@
-import JuryModule from '../../JuryAndMentorModule';
+import JuryModule from '../../../JuryAndMentorModule';
 import jury from '../StaticContent/jury.json';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/base.css';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-jury.css';
@@ -7,7 +7,7 @@ import { EmblaCarouselType } from 'embla-carousel';
 import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import ClassNames from 'embla-carousel-class-names';
-import { OPTIONS } from '../../JudgesAndMentorsOptions';
+import { OPTIONS } from '../../../JudgesAndMentorsOptions';
 
 export default function JurySection() {
     const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [ClassNames()]);

@@ -1,6 +1,6 @@
 import { Fragment } from 'react/jsx-runtime';
-import JurySection from './JurySection/components/JurySection';
-import MentorsSection from './MentorsSection/components/MentorsSection';
+import JurySection from './CarouselComponents/components/JurySection/components/JurySection';
+import MentorsSection from './CarouselComponents/components/MentorsSection/components/MentorsSection';
 import ScheduleSection from './ScheduleSection/ScheduleSection';
 
 export const HackathonPage = () => {
