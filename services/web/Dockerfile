@@ -17,8 +17,10 @@ RUN npm run build
 # Bundle static assets with nginx
 FROM nginx:1.27.3-alpine AS production
 
+ARG VITE_ENV
 
-ENV NODE_ENV=production
+# Set environment variable based on build argument
+ENV VITE_ENV=$VITE_ENV
 
 # Copy built assets from `builder` image
 COPY --from=builder /app/dist /usr/share/nginx/html

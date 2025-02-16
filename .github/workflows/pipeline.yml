@@ -71,7 +71,7 @@ jobs:
             ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
           # We pass the build arguments for the frontend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
-          secrets: |
+          build-args: |
             VITE_ENV=${{ env.VITE_ENV }}
 
   deploy:
