@@ -12,7 +12,7 @@ from src.server.schemas.response_schemas.schemas import (
     TeamDeletedResponse,
 )
 from starlette import status
-from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
+from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
 
 
 @pytest.fixture
@@ -22,13 +22,14 @@ def hackathon_handlers(hackathon_service_mock: Mock) -> HackathonManagementHandl
 
 @pytest.mark.asyncio
 async def test_delete_participant_success(
-    hackathon_handlers: HackathonManagementHandlers, hackathon_service_mock: Mock, mock_obj_id: str
+    hackathon_handlers: HackathonManagementHandlers,
+    hackathon_service_mock: Mock,
+    mock_obj_id: str,
+    mock_admin_participant: Participant,
 ) -> None:
     # Mock successful result from 'delete_participant'
     # Deleting an admin participant has no difference from deleting a random participant
-    hackathon_service_mock.delete_participant.return_value = Ok(
-        Participant(id=mock_obj_id, name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None),
-    )
+    hackathon_service_mock.delete_participant.return_value = Ok(mock_admin_participant)
 
     # Call the handler
     resp = await hackathon_handlers.delete_participant(mock_obj_id)
@@ -85,13 +86,12 @@ async def test_delete_participant_general_exception(
 async def test_delete_team_success(
     hackathon_handlers: HackathonManagementHandlers,
     hackathon_service_mock: Mock,
+    mock_verified_team: Team,
     mock_obj_id: str,
 ) -> None:
     # Mock successful result from 'delete_team'
     # Deleting a verified team has no difference from deleting an unverified team
-    hackathon_service_mock.delete_team.return_value = Ok(
-        Team(id=mock_obj_id, name=TEST_TEAM_NAME, is_verified=True),
-    )
+    hackathon_service_mock.delete_team.return_value = Ok(mock_verified_team)
 
     # Call the handler
     resp = await hackathon_handlers.delete_team(mock_obj_id)

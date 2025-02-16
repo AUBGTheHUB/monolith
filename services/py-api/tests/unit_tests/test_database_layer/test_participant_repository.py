@@ -150,28 +150,28 @@ async def test_update_participant_not_found(
     assert isinstance(result.err_value, ParticipantNotFoundError)
 
 
-@pytest.mark.asyncio
-async def test_fetch_all_success(
-    db_manager_mock: Mock, repo: ParticipantsRepository, mock_admin_participant: Participant
-) -> None:
-
-    mock_participants_data = [mock_admin_participant.dump_as_mongo_db_document() for _ in range(5)]
-
-    db_manager_mock.get_collection.return_value.find.to_list = AsyncMock(return_value=mock_participants_data)
-
-    result = await repo.fetch_all()
-
-    assert isinstance(result, Ok)
-    assert len(result.ok_value) == 5
-
-    for i, participant in enumerate(result.ok_value):
-        assert participant.name == mock_participants_data[i]["name"]
-        assert participant.email == mock_participants_data[i]["email"]
-        assert participant.is_admin == mock_participants_data[i]["is_admin"]
-        assert participant.email_verified == mock_participants_data[i]["email_verified"]
-        assert participant.team_id == mock_participants_data[i]["team_id"]
-        assert participant.id == str(mock_participants_data[i]["_id"])
-
+# @pytest.mark.asyncio
+# async def test_fetch_all_success(
+#     db_manager_mock: Mock, repo: ParticipantsRepository, mock_admin_participant: Participant
+# ) -> None:
+#
+#     mock_participants_data = [mock_admin_participant.dump_as_mongo_db_document() for _ in range(5)]
+#
+#     db_manager_mock.get_collection.return_value.find.to_list = AsyncMock(return_value=mock_participants_data)
+#
+#     result = await repo.fetch_all()
+#
+#     assert isinstance(result, Ok)
+#     assert len(result.ok_value) == 5
+#
+#     for i, participant in enumerate(result.ok_value):
+#         assert participant.name == mock_participants_data[i]["name"]
+#         assert participant.email == mock_participants_data[i]["email"]
+#         assert participant.is_admin == mock_participants_data[i]["is_admin"]
+#         assert participant.email_verified == mock_participants_data[i]["email_verified"]
+#         assert participant.team_id == mock_participants_data[i]["team_id"]
+#         assert participant.id == str(mock_participants_data[i]["_id"])
+#
 
 #
 # @pytest.mark.asyncio

@@ -2,7 +2,6 @@ from unittest.mock import Mock, patch
 
 from fastapi import BackgroundTasks
 import pytest
-from bson import ObjectId
 from result import Ok, Err
 from starlette import status
 
@@ -37,14 +36,16 @@ async def test_create_participant_admin_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_admin_participant: Participant,
+    mock_unverified_team: Team,
     mock_admin_case_input_data: AdminParticipantInputData,
     mock_participant_request_body_admin_case: ParticipantRequestBody,
 ) -> None:
     # Mock successful result from `register_admin_participant`
     participant_registration_service_mock.register_admin_participant.return_value = Ok(
         (
-            Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, team_id=ObjectId()),
-            Team(name=TEST_TEAM_NAME),
+            mock_admin_participant,
+            mock_unverified_team,
         )
     )
 
@@ -186,6 +187,7 @@ async def test_create_participant_random_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_random_participant: Participant,
     mock_random_case_input_data: RandomParticipantInputData,
     mock_participant_request_body_random_case: ParticipantRequestBody,
 ) -> None:
@@ -193,7 +195,7 @@ async def test_create_participant_random_case_success(
     # Mock the result from `register_random_participant`
     participant_registration_service_mock.register_random_participant.return_value = Ok(
         (
-            Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None),
+            mock_random_participant,
             None,
         )
     )
@@ -307,6 +309,8 @@ async def test_create_participant_link_case_success(
     participant_handlers: ParticipantHandlers,
     participant_registration_service_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_invite_participant: Participant,
+    mock_verified_team: Team,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_participant_request_body_invite_link_case: ParticipantRequestBody,
     mock_obj_id: str,
@@ -314,8 +318,8 @@ async def test_create_participant_link_case_success(
     # Mock successful result from `register_invite_link_participant`
     participant_registration_service_mock.register_invite_link_participant.return_value = Ok(
         (
-            Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=ObjectId(mock_obj_id)),
-            Team(id=ObjectId(mock_obj_id), name=TEST_TEAM_NAME),
+            mock_invite_participant,
+            mock_verified_team,
         )
     )
 
