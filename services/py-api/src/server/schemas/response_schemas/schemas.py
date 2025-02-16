@@ -1,14 +1,12 @@
 from typing import Dict, Any, Optional, Mapping
 
 from pydantic import BaseModel, field_serializer, ConfigDict
-from result import Ok, Result
-from src.server.schemas.feature_switch_schemas.feature_switch_schema import FeatureSwitch
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from structlog.stdlib import get_logger
+from src.database.model.feature_switch_model import FeatureSwitch
 
 class Response(JSONResponse):
     """A thin wrapper over the Starlette JSONResponse class. This wrapper allows us to pass Response models, which are
@@ -42,14 +40,14 @@ class ErrResponse(BaseModel):
 class PongResponse(BaseModel):
     message: str
 
-class RegistrationOpenResponse(BaseModel):
+class FeatureSwitchResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     feature: FeatureSwitch
 
     @field_serializer("feature")
     def serialize_feature(self, feature: FeatureSwitch) -> Dict[str, Any]:
-        return feature
+        return feature.dump_as_json()
 
 class ParticipantResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core

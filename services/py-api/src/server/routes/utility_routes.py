@@ -5,7 +5,7 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.routes.dependency_factory import _fs_repo
-from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse, RegistrationOpenResponse
+from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, PongResponse, ErrResponse
 from src.service.feature_switch_service import FeatureSwitchService
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
@@ -29,6 +29,6 @@ async def ping(handler: UtilityHandlers = Depends(create_utility_handler)) -> Re
     return await handler.ping_services()
 
 @utility_router.get("/feature-switch", 
-                    responses={200: {"model": RegistrationOpenResponse}, 409: {"model": ErrResponse}})
+                    responses={200: {"model": FeatureSwitchResponse}, 409: {"model": ErrResponse}})
 async def registration_open_status(feature: str, handler: FeatureSwitchHandler = Depends(_fs_handler)) -> Response:
     return await handler.handle_feature_switch(feature=feature)

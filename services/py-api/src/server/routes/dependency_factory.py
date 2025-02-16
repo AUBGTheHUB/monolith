@@ -2,6 +2,7 @@ from os import environ
 from typing import Annotated
 from fastapi import Depends, HTTPException, Header, Path, Response
 from fastapi.responses import JSONResponse
+from result import is_err
 from src.database.db_manager import DB_MANAGER, FEATURE_SWITCH_COLLECTION, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
@@ -82,12 +83,17 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
     if not ObjectId.is_valid(object_id):
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
-async def registration_open(handler: FeatureSwitchHandler = Depends(_fs_handler)) -> None:
-    response = await handler.handle_feature_switch(feature="isRegistrationOpen")
+async def registration_open(service: FeatureSwitchService = Depends(_fs_service)) -> None:
 
-    decoded_response = json.loads(response.body.decode())
+    result = await service.check_feature_switch(feature="isRegistrationOpen")
 
-    if not decoded_response['feature']['state']:
+    if is_err(result):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occured"
+        )
+
+    if result.ok_value.state is False:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Registration is closed"
