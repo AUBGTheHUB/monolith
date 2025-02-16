@@ -1,5 +1,5 @@
 # mypy: disable_error_code=method-assign
-# This is because we have TypedMocks which mypy thinks are actual classes
+# This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
 from typing import Tuple, cast
@@ -257,6 +257,8 @@ def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDb
     """
 
     mock_db_manager = _create_typed_mock(MongoDatabaseManager)
+    mock_db_manager.get_collection = Mock()
+    mock_db_manager.async_ping_db = AsyncMock()
 
     mock_db_manager.async_ping_db = AsyncMock()
     # make get_collection return a motor_collection_mock

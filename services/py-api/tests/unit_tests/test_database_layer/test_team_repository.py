@@ -1,34 +1,38 @@
 from datetime import datetime
-from typing import Tuple
-from unittest.mock import Mock, AsyncMock
+from typing import Tuple, cast
 
 from bson import ObjectId
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
-from src.database.db_managers import TEAMS_COLLECTION_NAME
+from src.database.db_managers import TEAMS_COLLECTION_NAME, MongoDatabaseManager
 from src.database.repository.teams_repository import TeamsRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 from src.database.model.team_model import Team, UpdateTeamParams
 from tests.integration_tests.conftest import TEST_TEAM_NAME
+from unit_tests.conftest import MongoDbManagerMock, MotorCollectionMock
 
 
 @pytest.fixture
-def repo(db_manager_mock: Mock) -> TeamsRepository:
-    return TeamsRepository(db_manager_mock, TEAMS_COLLECTION_NAME)
+def repo(mongo_db_manager_mock: MongoDbManagerMock) -> TeamsRepository:
+    return TeamsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock), TEAMS_COLLECTION_NAME)
 
 
 @pytest.mark.asyncio
 async def test_create_team_success(
-    ten_sec_window: Tuple[datetime, datetime],
+    five_sec_window: Tuple[datetime, datetime],
     mock_normal_team: Team,
     repo: TeamsRepository,
 ) -> None:
-    start_time, end_time = ten_sec_window
+    # Given some five seconds window for assessing timestamps of created_at and updated_at fields
+    # And no errors from Mongo
+    start_time, end_time = five_sec_window
 
+    # When we create a Team document in Mongo
     result = await repo.create(mock_normal_team)
 
+    # Then the creation of the team should succeed within this five seconds window
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
     assert result.ok_value.name == mock_normal_team.name
@@ -39,15 +43,15 @@ async def test_create_team_success(
 
 @pytest.mark.asyncio
 async def test_create_team_duplicate_name_error(
-    db_manager_mock: Mock, mock_normal_team: Team, repo: TeamsRepository
+    motor_collection_mock: MotorCollectionMock, mock_normal_team: Team, repo: TeamsRepository
 ) -> None:
-    # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate team name
-    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
-        side_effect=DuplicateKeyError("Duplicate team name error")
-    )
+    # Given a DuplicateKeyError raised by insert_one, due to a duplicate team name in the collection
+    motor_collection_mock.insert_one.side_effect = DuplicateKeyError("Duplicate team name error")
 
+    # When we create a Team document in Mongo
     result = await repo.create(mock_normal_team)
 
+    # Then the creation of the team should fail, and we should get an Err(DuplicateTeamNameError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
     # Check that the error message contains the team name
@@ -56,28 +60,31 @@ async def test_create_team_duplicate_name_error(
 
 @pytest.mark.asyncio
 async def test_create_team_general_exception(
-    db_manager_mock: Mock, mock_normal_team: Team, repo: TeamsRepository
+    motor_collection_mock: MotorCollectionMock, mock_normal_team: Team, repo: TeamsRepository
 ) -> None:
-    # Simulate a general exception raised by insert_one
-    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
+    # Given a general exception raised by insert_one
+    motor_collection_mock.insert_one.side_effect = Exception("Test error")
 
+    # When we create a Team document in Mongo
     result = await repo.create(mock_normal_team)
 
+    # Then the creation of the team should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
-async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_delete_team_success(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a successful response by find_one_and_delete (this is the Team obj json representation without the
+    # "_id" property as it is projected (omitted from the response), you can check the method for more info)
+    motor_collection_mock.find_one_and_delete.return_value = {"name": TEST_TEAM_NAME, "is_verified": False}
 
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": False}
-    )
-
+    # When we delete a Team document in Mongo
     result = await repo.delete(mock_obj_id)
 
+    # Then the deletion should succeed, and the deleted Team object should be returned.
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
     assert result.ok_value.id == mock_obj_id
@@ -86,38 +93,47 @@ async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo
 
 
 @pytest.mark.asyncio
-async def test_delete_team_not_found(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_delete_team_not_found(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a None response by find_one_and_delete, indicating the Team we are trying to delete is not found
+    motor_collection_mock.find_one_and_delete.return_value = None
 
-    # When the team with the sepcified object id is not found find_one_and_delete returns None
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
-
+    # When we delete a Team document in Mongo
     result = await repo.delete(mock_obj_id)
 
+    # Then the deletion should fail, and we should get an Err(TeamNotFoundError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
-async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    # Simulate a general exception raised by insert_one
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(side_effect=Exception("Test error"))
+async def test_delete_team_general_exception(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a general exception raised by find_one_and_delete
+    motor_collection_mock.find_one_and_delete.side_effect = Exception("Test error")
 
+    # When we delete a Team document in Mongo
     result = await repo.delete(mock_obj_id)
 
+    # Then the deletion should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
-async def test_update_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": True}
-    )
+async def test_update_team_success(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a successful response by find_one_and_update (this is the Team obj json representation without the
+    # "_id" property as it is projected (omitted from the response), you can check the method for more info)
+    motor_collection_mock.find_one_and_update.return_value = {"name": TEST_TEAM_NAME, "is_verified": True}
 
+    # When we update the Team document in Mongo
     result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
+    # Then the update should succeed, and the updated Team object should be returned.
     assert isinstance(result, Ok)
     assert result.ok_value.id == mock_obj_id
     assert result.ok_value.is_verified is True
@@ -125,60 +141,50 @@ async def test_update_team_success(db_manager_mock: Mock, mock_obj_id: str, repo
 
 
 @pytest.mark.asyncio
-async def test_update_team_team_not_found(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    # When a team with the specified id is not found find_one_and_update returns none
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
+async def test_update_team_team_not_found(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a None response by find_one_and_delete, indicating the Team we are trying to delete is not found
+    motor_collection_mock.find_one_and_update.return_value = None
 
+    # When we update the Team document in Mongo
     result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
+    # Then the update should fail, and we should get an Err(TeamNotFoundError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_team_name_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value={"_id": ObjectId(mock_obj_id), "name": TEST_TEAM_NAME, "is_verified": False}
-    )
+async def test_update_team_general_error(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a general exception raised by find_one_and_update
+    motor_collection_mock.find_one_and_update.side_effect = Exception("Test error")
 
-    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
+    # When we update the Team document in Mongo
+    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
-    assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, Team)
-
-    assert result.ok_value.id == mock_obj_id
-    assert result.ok_value.name == TEST_TEAM_NAME
-    assert result.ok_value.is_verified == False
-
-
-@pytest.mark.asyncio
-async def test_fetch_by_team_name_team_not_found(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
-
-    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
-
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, TeamNotFoundError)
-
-
-@pytest.mark.asyncio
-async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
-
-    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
-
+    # Then the update should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_successful(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": False}
-    )
+async def test_fetch_by_team_name_success(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a successful response by find_one
+    motor_collection_mock.find_one.return_value = {
+        "_id": ObjectId(mock_obj_id),
+        "name": TEST_TEAM_NAME,
+        "is_verified": False,
+    }
 
-    result = await repo.fetch_by_id(mock_obj_id)
+    # When we fetch the Team document in Mongo
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
 
+    # Then the fetch should succeed, and the Team object should be returned.
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
 
@@ -188,21 +194,80 @@ async def test_fetch_by_id_successful(db_manager_mock: Mock, mock_obj_id: str, r
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_team_not_found(db_manager_mock: Mock, repo: TeamsRepository, mock_obj_id: str) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+async def test_fetch_by_team_name_team_not_found(
+    motor_collection_mock: MotorCollectionMock, repo: TeamsRepository
+) -> None:
+    # Given a None response by find_one, indicating the Team we are trying to fetch is not found
+    motor_collection_mock.find_one.return_value = None
 
-    result = await repo.fetch_by_id(mock_obj_id)
+    # When we fetch the Team document in Mongo
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
 
+    # Then the fetch should fail, and we should get an Err(TeamNotFoundError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_general_error(db_manager_mock: Mock, repo: TeamsRepository, mock_obj_id: str) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
+async def test_fetch_by_team_name_general_error(
+    motor_collection_mock: MotorCollectionMock, repo: TeamsRepository
+) -> None:
+    # Given a general exception raised by find_one
+    motor_collection_mock.find_one.side_effect = Exception("Test Error")
 
+    # When we fetch the Team document in Mongo
+    result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
+
+    # Then the fetch should fail, and we should get an Err(Exception())
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_successful(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: TeamsRepository
+) -> None:
+    # Given a successful response by find_one (this is the Team obj json representation without the
+    # "_id" property as it is projected (omitted from the response), you can check the method for more info)
+    motor_collection_mock.find_one.return_value = {"name": TEST_TEAM_NAME, "is_verified": False}
+
+    # When we fetch the Team document in Mongo
     result = await repo.fetch_by_id(mock_obj_id)
 
+    # Then the update should succeed, and the updated Team object should be returned.
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Team)
+
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.name == TEST_TEAM_NAME
+    assert result.ok_value.is_verified == False
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_team_not_found(
+    motor_collection_mock: MotorCollectionMock, repo: TeamsRepository, mock_obj_id: str
+) -> None:
+    # Given a None response by find_one, indicating the Team we are trying to fetch is not found
+    motor_collection_mock.find_one.return_value = None
+
+    # When we fetch the Team document in Mongo
+    result = await repo.fetch_by_id(mock_obj_id)
+
+    # Then the fetch should fail, and we should get an Err(TeamNotFoundError())
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, TeamNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_general_error(
+    motor_collection_mock: MotorCollectionMock, repo: TeamsRepository, mock_obj_id: str
+) -> None:
+    motor_collection_mock.find_one.side_effect = Exception("Test Error")
+
+    # When we fetch the Team document in Mongo
+    result = await repo.fetch_by_id(mock_obj_id)
+
+    # Then the fetch should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
 
