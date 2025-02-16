@@ -3,13 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
-import { FEATURE_SWITCHES } from './constants';
 import { useFetchFeatureSwitches } from './config';
 
 function App() {
     const queryClient = new QueryClient();
 
-    console.log(FEATURE_SWITCHES);
     return (
         <QueryClientProvider client={queryClient}>
             <Routes>

@@ -23,8 +23,6 @@ export async function useFetchFeatureSwitches() {
             }
         });
 
-        console.log(FEATURE_SWITCHES);
-
         return FEATURE_SWITCHES;
     } catch (error) {
         console.error('Error fetching feature switches:', error);
