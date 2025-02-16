@@ -12,7 +12,7 @@ export const FEATURE_SWITCHES = [
     { name: 'JurySwitch', defaultValue: false },
 ];
 
-export async function fetchFeatureSwitches() {
+export async function useFetchFeatureSwitches() {
     const response = await fetch(`${API_URL}/feature-switches`);
     return response.json();
 }
