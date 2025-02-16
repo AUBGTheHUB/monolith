@@ -4,7 +4,7 @@ import { Navigation } from '../Navigation/Navigation';
 
 export default function LandingSection() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [isHovered, setIsHovered] = useState(false);
+    const [isHovered, setIsHovered] = useState(() => window.innerWidth < 640);
 
     const handleMouseMove = (e: React.MouseEvent) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -43,12 +43,12 @@ export default function LandingSection() {
             <img
                 src="/landingSection/blob-blue.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[93rem] right-0 z-0"
+                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
             />
             <img
                 src="/landingSection/blob-cyan.png"
                 alt="a blob"
-                className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
+                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
             />
             <div className="flex flex-col bg-transparent h-[100vh]">
                 <Navigation />
@@ -67,16 +67,16 @@ export default function LandingSection() {
                             </div>
                             <div className="flex space-x-4">
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
-                                    sm:hover:bg-white sm:hover:text-[#26368E]
-                                    sm:transition sm:duration-300 sm:ease-in-out"
+                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
+                   sm:hover:bg-white sm:hover:text-[#26368E]
+                   sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Find out more
                                 </Button>
                                 <Button
-                                    className="border-[0.5px] border-white text-white bg-transparent rounded-3xl
-                                    sm:hover:bg-white sm:hover:text-[#26368E]
-                                    sm:transition sm:duration-300 sm:ease-in-out"
+                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
+                   sm:hover:bg-white sm:hover:text-[#26368E]
+                   sm:transition sm:duration-300 sm:ease-in-out"
                                 >
                                     Contact us
                                 </Button>

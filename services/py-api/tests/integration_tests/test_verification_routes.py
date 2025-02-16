@@ -16,7 +16,7 @@ from tests.integration_tests.conftest import PARTICIPANT_VERIFY_URL
 from starlette import status
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -54,7 +54,7 @@ async def test_verify_participant_admin_case_success(
     assert verify_resp_json["participant"]["email_verified"] is True
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_participant_is_not_found(
     mock_obj_id: str,
@@ -72,7 +72,10 @@ async def test_verify_participant_admin_case_when_participant_is_not_found(
     assert verify_resp_json["error"] == "The specified participant was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
+@patch.dict(
+    "os.environ",
+    {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"},
+)
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_team_is_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -107,7 +110,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     assert verify_resp_json["error"] == "The specified team was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_expired_token(
     generate_participant_request_body: ParticipantRequestBodyCallable,
@@ -138,7 +141,7 @@ async def test_verify_participant_admin_case_expired_token(
 
 @patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 1)
 @patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 2)
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_admin_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
@@ -182,7 +185,41 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_verify_admin_participant_case_already_verified(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+    thirty_sec_jwt_exp_limit: float,
+) -> None:
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
+    create_resp = await create_test_participant(participant_body=admin_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+
+    # Generate jwt token based on the Object Id of the admin participant that we just created
+    verify_jwt_token_payload = JwtParticipantVerificationData(
+        sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
+    )
+
+    jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+
+    # Try to verify the participant twice
+    await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+    assert verify_resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    verify_resp_json = verify_resp.json()
+
+    # Check the error message
+    assert verify_resp_json["error"] == "You have already been verified"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_success(
     create_test_participant: CreateTestParticipantCallable,
@@ -223,7 +260,7 @@ async def test_verify_random_participant_success(
     assert verify_resp_json["team"] is None
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_not_found(
     async_client: AsyncClient, mock_obj_id: str, thirty_sec_jwt_exp_limit: float
@@ -247,7 +284,7 @@ async def test_verify_random_participant_not_found(
 
 @patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 1)
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
@@ -289,3 +326,36 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_verify_random_participant_case_already_verified(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+    thirty_sec_jwt_exp_limit: float,
+) -> None:
+    # Generate random participant body
+    random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
+    # Create random participant
+    create_resp = await create_test_participant(participant_body=random_participant_body)
+    # Assert that the participant was created successfully
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+
+    # Generate jwt token based on the random participant that was created
+    verify_jwt_token_payload = JwtParticipantVerificationData(
+        sub=create_resp_json["participant"]["id"], is_admin=False, exp=thirty_sec_jwt_exp_limit
+    )
+    verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+
+    await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
+    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
+    assert verify_resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    verify_resp_json = verify_resp.json()
+
+    # Check the error message
+    assert verify_resp_json["error"] == "You have already been verified"

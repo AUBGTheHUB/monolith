@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, Mapping
+from typing import Dict, Any, Optional, Mapping, List
 
 from pydantic import BaseModel, field_serializer, ConfigDict
 from starlette.background import BackgroundTask
@@ -6,6 +6,7 @@ from starlette.responses import JSONResponse
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
+from src.database.model.feature_switch_model import FeatureSwitch
 
 
 class Response(JSONResponse):
@@ -41,17 +42,41 @@ class PongResponse(BaseModel):
     message: str
 
 
-class ParticipantRegisteredResponse(BaseModel):
+class FeatureSwitchResponse(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    feature: FeatureSwitch
+
+    @field_serializer("feature")
+    def serialize_feature(self, feature: FeatureSwitch) -> Dict[str, Any]:
+        return feature.dump_as_json()
+
+
+class AllFeatureSwitchesResponse(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    features: List[FeatureSwitch]
+
+    @field_serializer("features")
+    def serialize_features(self, features: List[FeatureSwitch]) -> List[Dict[str, Any]]:
+        return [feature.dump_as_json() for feature in features]
+
+
+class ParticipantResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
     # schema for <class 'bson.objectid.ObjectId'>
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     participant: Participant
-    team: Optional[Team]
 
     @field_serializer("participant")
     def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
         return participant.dump_as_json()
+
+
+class ParticipantAndTeamResponse(ParticipantResponse):
+
+    team: Optional[Team]
 
     @field_serializer("team")
     def serialize_team(self, team: Team) -> Dict[str, Any] | None:
@@ -61,23 +86,8 @@ class ParticipantRegisteredResponse(BaseModel):
         return None
 
 
-class ParticipantDeletedResponse(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+class TeamResponse(BaseModel):
 
-    participant: Participant
-
-    @field_serializer("participant")
-    def serialize_participant(self, participant: Participant) -> Dict[str, Any]:
-        return participant.dump_as_json()
-
-
-class ParticipantVerifiedResponse(ParticipantRegisteredResponse):
-    """This response includes the updated body of the verified participant
-    and the body of the verified team in case we are verifying an admin participant.
-    """
-
-
-class TeamDeletedResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     team: Team
@@ -85,3 +95,34 @@ class TeamDeletedResponse(BaseModel):
     @field_serializer("team")
     def serialize_team(self, team: Team) -> Dict[str, Any] | None:
         return team.dump_as_json()
+
+
+class ParticipantRegisteredResponse(ParticipantAndTeamResponse):
+    """
+    Responds with the registred documents of the Participant and Team. The Team object is only
+    returned when we are registering an admin participant
+    """
+
+
+class ParticipantDeletedResponse(ParticipantResponse):
+    """
+    Responds with the deleted participant body when we are deleting a participant.
+    """
+
+
+class ParticipantVerifiedResponse(ParticipantAndTeamResponse):
+    """This response includes the updated body of the verified participant
+    and the body of the verified team in case we are verifying an admin participant.
+    """
+
+
+class VerificationEmailSentSuccessfullyResponse(ParticipantResponse):
+    """This response includes the updated body of the participant
+    after successfully resending a verification email
+    """
+
+
+class TeamDeletedResponse(TeamResponse):
+    """
+    Responds with the deleted team body when we are deleting a team.
+    """

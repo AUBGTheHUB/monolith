@@ -1,13 +1,19 @@
 import { Fragment } from 'react/jsx-runtime';
+
+import { Navigation } from './Navigation/Navigation';
+import { Footer } from './Footer/HackathonFooter';
 import ScheduleSection from './ScheduleSection/ScheduleSection';
 import AwardsSection from './AwardsSection/AwardsSection';
+import { Recap } from './components/Recap';
 
 export const HackathonPage = () => {
     return (
         <Fragment>
-            <h1 className="font-distant text-white">SF Distant Galaxy Regular</h1>
+            <Navigation />
             <ScheduleSection />
+            <Recap />
             <AwardsSection />
+            <Footer />
         </Fragment>
     );
 };
