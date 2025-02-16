@@ -35,9 +35,9 @@ LOG = get_logger()
 
 @pytest.fixture
 def hackathon_service(
-    participant_repo_mock: Mock, team_repo_mock: Mock, tx_manager_mock: Mock, hackathon_mail_service_mock: Mock
+    participant_repo_mock: Mock, team_repo_mock: Mock, feature_switch_repo_mock : Mock, tx_manager_mock: Mock, hackathon_mail_service_mock: Mock
 ) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, tx_manager_mock, hackathon_mail_service_mock)
+    return HackathonService(participant_repo_mock, team_repo_mock, feature_switch_repo_mock, tx_manager_mock, hackathon_mail_service_mock)
 
 
 @pytest.mark.asyncio
