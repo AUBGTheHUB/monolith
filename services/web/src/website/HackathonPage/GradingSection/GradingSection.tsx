@@ -1,27 +1,24 @@
 import { Fragment } from 'react/jsx-runtime';
 const POINTS_TD_CLASS_NAME = 'p-4 text-right text-[#009CF9]';
 const CRITERIA_TD_CLASS_NAME = 'p-4 text-white w-full';
-const TABLE_CLASS_NAME = 'w-full sm:mt-14 border border-separate border-gray-600 rounded-lg  backdrop-blur-md';
+const TABLE_CLASS_NAME = 'w-full align-top mb-5 h-fit';
 const BORDER_ROW_CLASS_NAME = 'w-[95%] mx-auto border-gray-600 border-[0.5px]';
 const HEADER_TD_CLASS_NAME = 'text-[#A9B4C2] p-4';
 
 export default function GradingSection() {
     return (
         <div className="relative w-full flex font-mont bg-[#000912] justify-center">
-            <div className="relative flex flex-col z-10 my-24 w-full sm:w-4/5">
-                <div className="sm:text-4xl text-3xl flex text-left items-center mb-7 ">
+            <div className="relative flex flex-col z-10 my-24 w-full sm:w-4/5 mx-3 sm:mx-0">
+                <div className="sm:text-4xl text-2xl flex text-left items-center mb-7">
                     <img src="./n.png" alt="" className="w-[1.6rem]" />
                     <p className="text-white ml-5 tracking-[0.2em]">GRADING CRITERIA</p>
                 </div>
 
                 <div className="flex flex-col justify-center">
-                    <div
-                        key={projectIdea.category}
-                        className="flex flex-col sm:flex-row items-start mb-10 relative justify-center"
-                    >
+                    <div className="flex flex-col sm:flex-row items-start relative justify-center">
                         <div className="w-full sm:text-lg text-base">
-                            <table className={TABLE_CLASS_NAME}>
-                                <td className="w-1/2">
+                            <div className="sm:mt-10 border border-separate border-gray-600 rounded-lg backdrop-blur-md flex sm:mb-14 w-full flex-wrap sm:flex-nowrap">
+                                <table className={TABLE_CLASS_NAME} key={projectIdea.category}>
                                     <tr className="w-full">
                                         <td className={HEADER_TD_CLASS_NAME}>{projectIdea.category}</td>
                                         <td className={HEADER_TD_CLASS_NAME}>Points</td>
@@ -43,8 +40,8 @@ export default function GradingSection() {
                                             </Fragment>
                                         ))}
                                     </tbody>
-                                </td>
-                                <td className="w-1/2">
+                                </table>
+                                <table className={TABLE_CLASS_NAME} key={projectRealization.category}>
                                     <tr className="w-full">
                                         <td className="text-[#A9B4C2] p-4">{projectRealization.category}</td>
                                         <td className="text-[#A9B4C2] p-4 text-right">Points</td>
@@ -66,21 +63,17 @@ export default function GradingSection() {
                                             </Fragment>
                                         ))}
                                     </tbody>
-                                </td>
-                            </table>
-                            <table></table>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex flex-col justify-center">
-                    <div
-                        key={projectComplexity.category}
-                        className="flex flex-col sm:flex-row items-start mb-10 relative justify-center"
-                    >
-                        <div className="w-full sm:text-lg text-base justify-center">
-                            <table className={TABLE_CLASS_NAME}>
-                                <td className="w-1/2">
+                    <div className="flex flex-col sm:flex-row items-start relative justify-center">
+                        <div className="w-full sm:text-lg text-base">
+                            <div className="sm:mt-10 border border-separate border-gray-600 rounded-lg backdrop-blur-md flex sm:mb-14 w-full flex-wrap sm:flex-nowrap">
+                                <table className={TABLE_CLASS_NAME} key={projectComplexity.category}>
                                     <tr className="w-full">
                                         <td className={HEADER_TD_CLASS_NAME}>{projectComplexity.category}</td>
                                         <td className={HEADER_TD_CLASS_NAME}>Points</td>
@@ -102,11 +95,11 @@ export default function GradingSection() {
                                             </Fragment>
                                         ))}
                                     </tbody>
-                                </td>
-                                <td className="w-1/2">
+                                </table>
+                                <table className={TABLE_CLASS_NAME} key={presentation.category}>
                                     <tr className="w-full">
-                                        <td className={HEADER_TD_CLASS_NAME}>{presentation.category}</td>
-                                        <td className={HEADER_TD_CLASS_NAME}>Points</td>
+                                        <td className="text-[#A9B4C2] p-4">{presentation.category}</td>
+                                        <td className="text-[#A9B4C2] p-4 text-right">Points</td>
                                     </tr>
                                     <tbody>
                                         {presentation.criteria.map(({ criteria, points }, idx) => (
@@ -125,8 +118,8 @@ export default function GradingSection() {
                                             </Fragment>
                                         ))}
                                     </tbody>
-                                </td>
-                            </table>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
