@@ -7,7 +7,7 @@ type JuryModule = {
 
 export default function JutyAndMentorModule({ imgSrc, name, job, company }: JuryModule) {
     return (
-        <div className="relative min-w-[19rem] max-w-[19rem] max-[1122px]:max-w-full h-96 border-[1px] rounded-[6px] border-[#A9B4C3] font-semibold ">
+        <div className="relative min-w-[19rem] max-w-[19rem]  h-96 border-[1px] rounded-[6px] border-[#A9B4C3] font-semibold ">
             <div className="h-full w-full">
                 <img src={imgSrc} alt={name} className="object-fill w-full h-full rounded-[6px]" />
             </div>

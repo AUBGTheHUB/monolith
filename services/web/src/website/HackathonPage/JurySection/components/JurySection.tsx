@@ -41,7 +41,10 @@ export default function JurySection() {
     return (
         <div className="bg-[#000912] py-10 relative">
             <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
-                <img src="/jury/jury_title.svg"></img>
+                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <p className="text-white ml-5 tracking-[0.2em]">JUDGES</p>
+                </div>
                 <div className="w-full  h-2 rounded-full overflow-hidden relative">
                     <div
                         className="h-full bg-white  transition-all duration-500"
