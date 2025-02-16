@@ -16,7 +16,7 @@ export default function LandingSection() {
 
     return (
         <div
-            className="relative overflow-hidden h-[100vh] select-none scroll-smooth"
+            className="relative overflow-hidden h-[100vh] select-none"
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

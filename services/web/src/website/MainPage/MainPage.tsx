@@ -10,7 +10,7 @@ export const MainPage = () => {
     return (
         <Fragment>
             <LandingSection />
-            <div className="relative overflow-hidden scroll-smooth">
+            <div className="relative overflow-hidden">
                 <div className="about-section bg-white rounded-2xl py-8 z-10 relative">
                     <div className="sm:w-3/5 w-11/12 mx-auto">
                         <IdentitySection />
