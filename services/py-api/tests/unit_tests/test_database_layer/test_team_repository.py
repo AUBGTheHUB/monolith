@@ -10,7 +10,7 @@ from src.database.repository.teams_repository import TeamsRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
 from src.database.model.team_model import Team, UpdateTeamParams
 from tests.integration_tests.conftest import TEST_TEAM_NAME
-from unit_tests.conftest import MongoDbManagerMock, MotorCollectionMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MotorCollectionMock
 
 
 @pytest.fixture

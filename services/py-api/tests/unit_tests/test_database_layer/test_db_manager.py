@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure
 
 from src.database.db_managers import MongoDatabaseManager
-from unit_tests.conftest import MotorDbClientMock, MotorDatabaseMock
+from tests.unit_tests.conftest import MotorDbClientMock, MotorDatabaseMock
 
 
 @pytest.fixture

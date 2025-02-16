@@ -10,7 +10,7 @@ from src.database.model.participant_model import Participant, UpdateParticipantP
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
-from unit_tests.conftest import MongoDbManagerMock, MotorCollectionMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MotorCollectionMock
 
 
 @pytest.fixture

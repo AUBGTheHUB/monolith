@@ -15,7 +15,7 @@ from starlette import status
 
 from src.service.hackathon_service import HackathonService
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
-from unit_tests.conftest import HackathonServiceMock
+from tests.unit_tests.conftest import HackathonServiceMock
 
 
 @pytest.fixture
