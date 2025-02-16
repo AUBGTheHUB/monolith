@@ -61,7 +61,6 @@ class Participant(BaseDbModel):
     last_sent_verification_email: Optional[datetime] = field(default=None)
     """The last time a verification email was sent. Used for rate-limiting purposed when the participant clicks
     resend email."""
-    last_sent_email: Optional[datetime] = field(default=None)
     tshirt_size: Optional[TSHIRT_SIZE] = None
     university: UNIVERSITIES_LIST
     location: str
