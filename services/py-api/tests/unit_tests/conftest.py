@@ -143,43 +143,6 @@ def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorData
     return cast(MotorDatabaseMock, mock_db)
 
 
-class MotorDbClientMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
-
-    Should not be initialized directly by application developers to create a MotorDbClientMock instance. It is
-    used just for type hinting purposes.
-    """
-
-    start_session: AsyncMock
-    get_database: MotorDatabaseMock
-    # Add more methods if needed
-
-
-@pytest.fixture
-def motor_db_client_mock(motor_database_mock: MotorDatabaseMock) -> MotorDbClientMock:
-    """Mock object for AsyncIOMotorClient.
-
-    For mocking purposes, you can modify the return values of its methods::
-
-        motor_db_client_mock.method_name.return_value = some_value
-
-    To simulate raising exceptions, set the side effects::
-
-        motor_db_client_mock.method_name.side_effect = SomeException()
-
-    Returns:
-        A mocked AsyncIOMotorClient
-    """
-    mock_client = _create_typed_mock(AsyncIOMotorClient)
-
-    mock_client.start_session = AsyncMock()
-    # make get_database return a motor_database_mock
-    mock_client.get_database = Mock(return_value=motor_database_mock)
-    # Add more methods if needed
-
-    return cast(MotorDbClientMock, mock_client)
-
-
 class MotorDbClientSessionMock(Protocol):
     """A Static Duck Type, modeling a Mocked AsyncIOMotorClientSession
 
@@ -217,6 +180,45 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
     mock_session.end_session = AsyncMock()
 
     return cast(MotorDbClientSessionMock, mock_session)
+
+
+class MotorDbClientMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
+
+    Should not be initialized directly by application developers to create a MotorDbClientMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    start_session: AsyncMock
+    get_database: MotorDatabaseMock
+    # Add more methods if needed
+
+
+@pytest.fixture
+def motor_db_client_mock(
+    motor_database_mock: MotorDatabaseMock, motor_db_session_mock: MotorDbClientSessionMock
+) -> MotorDbClientMock:
+    """Mock object for AsyncIOMotorClient.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        motor_db_client_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        motor_db_client_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked AsyncIOMotorClient
+    """
+    mock_client = _create_typed_mock(AsyncIOMotorClient)
+
+    mock_client.start_session = AsyncMock(return_value=motor_db_session_mock)
+    # make get_database return a motor_database_mock
+    mock_client.get_database = Mock(return_value=motor_database_mock)
+    # Add more methods if needed
+
+    return cast(MotorDbClientMock, mock_client)
 
 
 # ======================================
