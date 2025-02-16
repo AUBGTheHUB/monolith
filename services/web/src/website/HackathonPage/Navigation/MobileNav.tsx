@@ -54,12 +54,9 @@ export const MobileNavComponent = () => {
                             FAQ
                         </a>
                     </div>
-                    <div className={`${NAV_ITEM} flex`}>
+                    <div className={`${NAV_ITEM}`}>
                         <img src={participate} className={`${NAV_ITEM_IMG}`} />
-                        <a
-                            className="text-sky-600 rounded-2xl px-5 border border-sky-600 hover:bg-sky-600 hover:text-white transition-colors duration-500"
-                            href="#participate-now"
-                        >
+                        <a className="text-sky-600 hover:text-sky-600" href="#participate-now">
                             Participate now
                         </a>
                     </div>
