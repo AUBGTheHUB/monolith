@@ -17,6 +17,11 @@ TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
 TEST_USER_EMAIL = "test@test.com"
+TEST_UNIVERSITY_NAME = "American University in Bulgaria"
+TEST_LOCATION = "Blagoevgrad"
+TEST_ALLOWED_AGE = 21
+
+
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests

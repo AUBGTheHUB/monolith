@@ -25,7 +25,8 @@ from src.service.hackathon_service import HackathonService
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.service.participants_verification_service import ParticipantVerificationService
-from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
+from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME, TEST_UNIVERSITY_NAME, \
+    TEST_ALLOWED_AGE, TEST_LOCATION
 
 
 @pytest.fixture
@@ -246,19 +247,32 @@ def mock_normal_team() -> Team:
 
 @pytest.fixture
 def mock_admin_participant(mock_normal_team: Team) -> Participant:
-    return Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, team_id=mock_normal_team.id)
+    return Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, team_id=mock_normal_team.id,
+        university=TEST_UNIVERSITY_NAME, location=TEST_LOCATION, age=TEST_ALLOWED_AGE,
+        has_participated_in_hackathons=True, has_participated_in_hackaubg=True,
+        has_internship_interest=True, has_previous_coding_experience=True, share_info_with_sponsors=True
+    )
 
 
 @pytest.fixture
 def mock_invite_participant(mock_normal_team: Team) -> Participant:
     return Participant(
-        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=mock_normal_team.id
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=mock_normal_team.id,
+        university=TEST_UNIVERSITY_NAME, location=TEST_LOCATION, age=TEST_ALLOWED_AGE,
+        has_participated_in_hackathons=True, has_participated_in_hackaubg=True,
+        has_internship_interest=True, has_previous_coding_experience=True, share_info_with_sponsors=True
     )
 
 
 @pytest.fixture
 def mock_random_participant() -> Participant:
-    return Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None)
+    return Participant(
+        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None, university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION, age=TEST_ALLOWED_AGE,
+        has_participated_in_hackathons=True, has_participated_in_hackaubg=True,
+        has_internship_interest=True, has_previous_coding_experience=True, share_info_with_sponsors=True
+    )
 
 
 @pytest.fixture
@@ -268,7 +282,7 @@ def mock_obj_id() -> str:
 
 @pytest.fixture
 def mock_jwt_user_registration(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+        mock_obj_id: str, thirty_sec_jwt_exp_limit: float
 ) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
         sub=mock_obj_id,
@@ -279,7 +293,7 @@ def mock_jwt_user_registration(
 
 @pytest.fixture
 def mock_jwt_random_user_verification(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+        mock_obj_id: str, thirty_sec_jwt_exp_limit: float
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
         sub=mock_obj_id,
@@ -290,7 +304,7 @@ def mock_jwt_random_user_verification(
 
 @pytest.fixture
 def mock_jwt_admin_user_verification(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+        mock_obj_id: str, thirty_sec_jwt_exp_limit: float
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
         sub=mock_obj_id,
