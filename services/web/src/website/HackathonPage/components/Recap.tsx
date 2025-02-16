@@ -1,5 +1,7 @@
 export const Recap = () => {
     return (
+        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912]">
+
         <div className="relative w-full lg:py-20 pb-20">
             <div
                 className="absolute sm:top-16 md:top-20 right-0 w-1/12 h-full opacity-70"
@@ -30,6 +32,7 @@ export const Recap = () => {
                     </video>
                 </div>
             </div>
+        </div>
         </div>
     );
 };
