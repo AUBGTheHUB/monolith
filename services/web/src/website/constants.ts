@@ -1,8 +1,8 @@
 const ENV: 'DEV' | 'LOCAL' | 'PROD' = import.meta.env.ENV || 'DEV';
-const API_URLS = {
-    DEV: import.meta.env.API_URL_DEV,
-    LOCAL: import.meta.env.API_URL_STAGING,
-    PROD: import.meta.env.API_URL_PROD,
+export const API_URLS = {
+    DEV: import.meta.env.VITE_API_URL_DEV,
+    LOCAL: import.meta.env.VITE_API_URL_STAGING,
+    PROD: import.meta.env.VITE_API_URL_PROD,
 };
 
 export const API_URL = API_URLS[ENV] || API_URLS['DEV'];
