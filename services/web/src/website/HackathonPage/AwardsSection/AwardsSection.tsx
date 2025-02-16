@@ -24,23 +24,23 @@ export default function AwardsSection() {
                         <p className="font-bold text-7xl sm:text-6xl bg-gradient-to-b from-[#00DCFF] to-[#CBE1FF] text-transparent bg-clip-text">
                             2000
                         </p>
-                        <p className="text-white text-lg ml-2">BGN</p>
+                        <p className="text-white text-lg mb-1 ml-2">BGN</p>
                     </div>
                 </div>
-                <div className="flex flex-col items-center z-10 !mb-[9.3vh]">
+                <div className="flex flex-col items-center z-10 !mb-16">
                     <img
                         src="/AwardsSection/red_stone.png"
                         alt=""
-                        className="w-[21vw] sm:w-[6vw] mr-0 sm:mr-[3.5rem] mb-4"
+                        className="w-[21vw] sm:w-[6vw] mr-0 sm:mr-[3.5rem] mb-[1.2rem]"
                     />
                     <div className="flex items-end">
                         <p className="font-bold  text-8xl sm:text-7xl bg-gradient-to-b from-[#FE4646] to-[#A9B4C3] text-transparent bg-clip-text">
                             3000
                         </p>
-                        <p className="text-white text-lg ml-2">BGN</p>
+                        <p className="text-white text-lg ml-2 mb-1">BGN</p>
                     </div>
                 </div>
-                <div className="flex flex-col items-center !mt-0 sm:!mt-[1.9vh] ">
+                <div className="flex flex-col items-center !mt-0 sm:!mt-2 ">
                     <img
                         src="/AwardsSection/white_stone.png"
                         alt=""
@@ -50,11 +50,10 @@ export default function AwardsSection() {
                         <p className="font-bold text-7xl sm:text-6xl bg-gradient-to-b from-[#9daec6] to-[#c8d0dc] text-transparent bg-clip-text">
                             1000
                         </p>
-                        <p className="text-white text-lg ml-2">BGN</p>
+                        <p className="text-white text-lg ml-2 mb-[0.1rem]">BGN</p>
                     </div>
                 </div>
             </div>
-            {/* Bottom Section */}
             <div className="flex flex-col w-11/12 sm:w-3/5 text-[#A9B4C3] text-sm relative z-10">
                 <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
                 <div className="mt-10 flex flex-col gap-y-4">
