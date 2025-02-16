@@ -1,6 +1,7 @@
 type envType = 'DEV' | 'LOCAL' | 'PROD';
 
 const ENV: envType = import.meta.env.VITE_ENV || 'LOCAL';
+
 export const API_URLS = {
     DEV: import.meta.env.VITE_API_URL_DEV,
     LOCAL: import.meta.env.VITE_API_URL_LOCAL,
