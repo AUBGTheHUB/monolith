@@ -20,12 +20,16 @@ from starlette import status
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
 
+REGISTRATION_FEATURE_SWITCH = "isRegistrationOpen"
+
 
 def _p_repo(db_manager: DB_MANAGER) -> ParticipantsRepository:
     return ParticipantsRepository(db_manager, PARTICIPANTS_COLLECTION)
 
+
 def _t_repo(db_manager: DB_MANAGER) -> TeamsRepository:
     return TeamsRepository(db_manager, TEAMS_COLLECTION)
+
 
 def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
     return TransactionManager(db_manager)
@@ -35,14 +39,18 @@ def _mail_service() -> HackathonMailService:
     # The client initialization could be made as a factory if more mailing clients are added
     return HackathonMailService(client=ResendMailClient())
 
+
 def _fs_repo(db_manager: DB_MANAGER) -> FeatureSwitchRepository:
     return FeatureSwitchRepository(db_manager, FEATURE_SWITCH_COLLECTION)
+
 
 def _fs_service(fs_repo: FeatureSwitchRepository = Depends(_fs_repo)) -> FeatureSwitchService:
     return FeatureSwitchService(fs_repo)
 
+
 def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> FeatureSwitchHandler:
     return FeatureSwitchHandler(fs_service)
+
 
 def _h_service(
     p_repo: ParticipantsRepository = Depends(_p_repo),
@@ -77,18 +85,13 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
     if not ObjectId.is_valid(object_id):
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
+
 async def registration_open(service: FeatureSwitchService = Depends(_fs_service)) -> None:
 
-    result = await service.check_feature_switch(feature="isRegistrationOpen")
+    result = await service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
 
     if is_err(result):
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occured"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
 
     if result.ok_value.state is False:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Registration is closed"
-        )
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")

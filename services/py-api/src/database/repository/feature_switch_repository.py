@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Optional, List, cast
+from typing import Optional, List, cast, Any
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
 from src.database.db_manager import DatabaseManager
@@ -23,7 +23,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             if feature_switch is None:
                 return Err(FeatureSwitchNotFoundError())
 
-            feature_switch_copy = cast(deepcopy(feature_switch), dict)
+            feature_switch_copy = cast(dict[str, Any], deepcopy(feature_switch))
 
             feature_switch_copy["id"] = str(feature_switch_copy.pop("_id"))
 

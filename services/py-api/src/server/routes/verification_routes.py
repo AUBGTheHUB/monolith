@@ -9,7 +9,7 @@ from src.server.schemas.response_schemas.schemas import (
 )
 from src.service.participants_verification_service import ParticipantVerificationService
 from src.service.hackathon_service import HackathonService
-from src.server.routes.dependency_factory import _h_service
+from src.server.routes.dependency_factory import _h_service, registration_open
 
 verification_router = APIRouter(prefix="/hackathon/participants/verify")
 
@@ -26,6 +26,7 @@ def _handler(p_verify_service: ParticipantVerificationService = Depends(_p_verif
     "",
     status_code=200,
     responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}, 400: {"model": ErrResponse}},
+    dependencies=[Depends(registration_open)],
 )
 async def verify_participant(
     jwt_token: str, background_tasks: BackgroundTasks, _handler: VerificationHandlers = Depends(_handler)
@@ -42,6 +43,7 @@ async def verify_participant(
         404: {"model": ErrResponse},
         429: {"model": ErrResponse},
     },
+    dependencies=[Depends(registration_open)],
 )
 async def send_verification_email(
     email_verification_request_body: ResendEmailParticipantData,
