@@ -1,34 +1,42 @@
 import { Fragment } from 'react/jsx-runtime';
+const POINTS_TD_CLASS_NAME = 'p-4 text-right text-[#009CF9]';
+const CRITERIA_TD_CLASS_NAME = 'p-4 text-white w-full';
+const TABLE_CLASS_NAME = 'w-full sm:mt-14 border border-separate border-gray-600 rounded-lg  backdrop-blur-md';
+const BORDER_ROW_CLASS_NAME = 'w-[95%] mx-auto border-gray-600 border-[0.5px]';
+const HEADER_TD_CLASS_NAME = 'text-[#A9B4C2] p-4';
 
 export default function GradingSection() {
     return (
-        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912]">
-            <div className="relative w-full flex flex-col z-10 my-24">
-                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+        <div className="relative w-full flex font-mont bg-[#000912] justify-center">
+            <div className="relative flex flex-col z-10 my-24 w-full sm:w-4/5">
+                <div className="sm:text-4xl text-3xl flex text-left items-center mb-7 ">
                     <img src="./n.png" alt="" className="w-[1.6rem]" />
                     <p className="text-white ml-5 tracking-[0.2em]">GRADING CRITERIA</p>
                 </div>
 
-                <div className="flex flex-col">
-                    <div key={projectIdea.category} className="flex flex-col sm:flex-row items-start mb-10 relative">
-                        <div className="w-full sm:w-3/5 sm:text-lg text-base">
-                            <table className="w-full sm:mt-14 border border-separate border-gray-600 rounded-lg bg-[#13181C]/80 backdrop-blur-md">
+                <div className="flex flex-col justify-center">
+                    <div
+                        key={projectIdea.category}
+                        className="flex flex-col sm:flex-row items-start mb-10 relative justify-center"
+                    >
+                        <div className="w-full sm:text-lg text-base">
+                            <table className={TABLE_CLASS_NAME}>
                                 <td className="w-1/2">
                                     <tr className="w-full">
-                                        <td className="text-[#A9B4C2] p-4">{projectIdea.category}</td>
-                                        <td className="text-[#A9B4C2] p-4">Points</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>{projectIdea.category}</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>Points</td>
                                     </tr>
                                     <tbody className="w-full">
                                         {projectIdea.criteria.map(({ criteria, points }, idx) => (
                                             <Fragment key={idx}>
                                                 <tr className="w-full">
-                                                    <td className="p-4 text-white">{criteria}</td>
-                                                    <td className="p-4 text-right text-[#009CF9]">{points}</td>
+                                                    <td className={CRITERIA_TD_CLASS_NAME}>{criteria}</td>
+                                                    <td className={POINTS_TD_CLASS_NAME}>{points}</td>
                                                 </tr>
                                                 {idx !== criteria.length - 1 && (
                                                     <tr>
                                                         <td colSpan={2} className="text-center">
-                                                            <hr className="w-[95%] mx-auto border-gray-600 border-[0.5px]" />
+                                                            <hr className={BORDER_ROW_CLASS_NAME} />
                                                         </td>
                                                     </tr>
                                                 )}
@@ -36,7 +44,7 @@ export default function GradingSection() {
                                         ))}
                                     </tbody>
                                 </td>
-                                <td className="w-half">
+                                <td className="w-1/2">
                                     <tr className="w-full">
                                         <td className="text-[#A9B4C2] p-4">{projectRealization.category}</td>
                                         <td className="text-[#A9B4C2] p-4 text-right">Points</td>
@@ -45,13 +53,13 @@ export default function GradingSection() {
                                         {projectRealization.criteria.map(({ criteria, points }, idx) => (
                                             <Fragment key={idx}>
                                                 <tr className="w-full">
-                                                    <td className="p-4 text-white">{criteria}</td>
-                                                    <td className="text-right p-4 text-[#009CF9]">{points}</td>
+                                                    <td className={CRITERIA_TD_CLASS_NAME}>{criteria}</td>
+                                                    <td className={POINTS_TD_CLASS_NAME}>{points}</td>
                                                 </tr>
                                                 {idx !== criteria.length - 1 && (
                                                     <tr>
                                                         <td colSpan={2} className="text-center">
-                                                            <hr className="w-[95%] mx-auto border-gray-600 border-[0.5px]" />
+                                                            <hr className={BORDER_ROW_CLASS_NAME} />
                                                         </td>
                                                     </tr>
                                                 )}
@@ -60,33 +68,34 @@ export default function GradingSection() {
                                     </tbody>
                                 </td>
                             </table>
+                            <table></table>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col justify-center">
                     <div
                         key={projectComplexity.category}
-                        className="flex flex-col sm:flex-row items-start mb-10 relative"
+                        className="flex flex-col sm:flex-row items-start mb-10 relative justify-center"
                     >
-                        <div className="w-full sm:w-3/5 sm:text-lg text-base">
-                            <table className="w-full sm:mt-14 border border-separate border-gray-600 rounded-lg bg-[#13181C]/80 backdrop-blur-md">
+                        <div className="w-full sm:text-lg text-base justify-center">
+                            <table className={TABLE_CLASS_NAME}>
                                 <td className="w-1/2">
                                     <tr className="w-full">
-                                        <td className="text-[#A9B4C2] p-4">{projectIdea.category}</td>
-                                        <td className="text-[#A9B4C2] p-4">Points</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>{projectComplexity.category}</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>Points</td>
                                     </tr>
                                     <tbody className="w-full">
                                         {projectComplexity.criteria.map(({ criteria, points }, idx) => (
                                             <Fragment key={idx}>
                                                 <tr className="w-full">
-                                                    <td className="p-4 text-white">{criteria}</td>
-                                                    <td className="p-4 text-[#009CF9] text-right">{points}</td>
+                                                    <td className={CRITERIA_TD_CLASS_NAME}>{criteria}</td>
+                                                    <td className={POINTS_TD_CLASS_NAME}>{points}</td>
                                                 </tr>
                                                 {idx !== criteria.length - 1 && (
                                                     <tr>
                                                         <td colSpan={2} className="text-center">
-                                                            <hr className="w-[95%] mx-auto border-gray-600 border-[0.5px]" />
+                                                            <hr className={BORDER_ROW_CLASS_NAME} />
                                                         </td>
                                                     </tr>
                                                 )}
@@ -96,20 +105,20 @@ export default function GradingSection() {
                                 </td>
                                 <td className="w-1/2">
                                     <tr className="w-full">
-                                        <td className="text-[#A9B4C2] p-4">{presentation.category}</td>
-                                        <td className="text-[#A9B4C2] p-4">Points</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>{presentation.category}</td>
+                                        <td className={HEADER_TD_CLASS_NAME}>Points</td>
                                     </tr>
                                     <tbody>
                                         {presentation.criteria.map(({ criteria, points }, idx) => (
                                             <Fragment key={idx}>
                                                 <tr className="w-full">
-                                                    <td className="p-4 text-white">{criteria}</td>
-                                                    <td className="p-4 text-[#009CF9] text-right">{points}</td>
+                                                    <td className={CRITERIA_TD_CLASS_NAME}>{criteria}</td>
+                                                    <td className={POINTS_TD_CLASS_NAME}>{points}</td>
                                                 </tr>
                                                 {idx !== criteria.length - 1 && (
                                                     <tr>
                                                         <td colSpan={2} className="text-center">
-                                                            <hr className="w-[95%] mx-auto border-gray-600 border-[0.5px]" />
+                                                            <hr className={BORDER_ROW_CLASS_NAME} />
                                                         </td>
                                                     </tr>
                                                 )}
