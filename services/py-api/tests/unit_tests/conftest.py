@@ -23,6 +23,7 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
+from src.service.hackathon_service import HackathonService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
@@ -396,45 +397,52 @@ def thirty_sec_jwt_exp_limit() -> float:
 #     return team_repo
 #
 #
-# class HackathonServiceMock(Protocol):
-#     create_participant_and_team_in_transaction: AsyncMock
-#     check_capacity_register_admin_participant_case: AsyncMock
-#     check_capacity_register_random_participant_case: AsyncMock
-#     check_send_verification_email_rate_limit: AsyncMock
-#     create_random_participant: AsyncMock
-#     create_invite_link_participant: AsyncMock
-#     check_team_capacity: AsyncMock
-#     verify_random_participant: AsyncMock
-#     verify_admin_participant_and_team_in_transaction: AsyncMock
-#     delete_participant: AsyncMock
-#     delete_team: AsyncMock
-#     verify_admin_participant: AsyncMock
-#     send_verification_email: AsyncMock
-#     send_successful_registration_email: Mock
-#
-#
-# @pytest.fixture
-# def hackathon_service_mock() -> HackathonServiceMock:
-#     """This is a mock obj of HackathonService. To change the return values of its methods use:
-#     `hackathon_service_mock.method_name.return_value=some_return_value`"""
-#
-#     hackathon_service = create_typed_mock(HackathonService)
-#     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
-#     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
-#     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
-#     hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-#     hackathon_service.create_random_participant = AsyncMock()
-#     hackathon_service.create_invite_link_participant = AsyncMock()
-#     hackathon_service.check_team_capacity = AsyncMock()
-#     hackathon_service.verify_random_participant = AsyncMock()
-#     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-#     hackathon_service.delete_participant = AsyncMock()
-#     hackathon_service.delete_team = AsyncMock()
-#     hackathon_service.verify_admin_participant = AsyncMock()
-#     hackathon_service.send_verification_email = AsyncMock()
-#     hackathon_service.send_successful_registration_email = Mock()
-#
-#     return cast(HackathonServiceMock, hackathon_service)
+
+# ======================================
+# Mocking Service layer classes start
+# ======================================
+
+
+class HackathonServiceMock(Protocol):
+    create_participant_and_team_in_transaction: AsyncMock
+    check_capacity_register_admin_participant_case: AsyncMock
+    check_capacity_register_random_participant_case: AsyncMock
+    check_send_verification_email_rate_limit: AsyncMock
+    create_random_participant: AsyncMock
+    create_invite_link_participant: AsyncMock
+    check_team_capacity: AsyncMock
+    verify_random_participant: AsyncMock
+    verify_admin_participant_and_team_in_transaction: AsyncMock
+    delete_participant: AsyncMock
+    delete_team: AsyncMock
+    verify_admin_participant: AsyncMock
+    send_verification_email: AsyncMock
+    send_successful_registration_email: Mock
+
+
+@pytest.fixture
+def hackathon_service_mock() -> HackathonServiceMock:
+    """This is a mock obj of HackathonService. To change the return values of its methods use:
+    `hackathon_service_mock.method_name.return_value=some_return_value`"""
+
+    hackathon_service = _create_typed_mock(HackathonService)
+    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
+    hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
+    hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
+    hackathon_service.create_random_participant = AsyncMock()
+    hackathon_service.create_invite_link_participant = AsyncMock()
+    hackathon_service.check_team_capacity = AsyncMock()
+    hackathon_service.verify_random_participant = AsyncMock()
+    hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service.delete_participant = AsyncMock()
+    hackathon_service.delete_team = AsyncMock()
+    hackathon_service.send_verification_email = AsyncMock()
+    hackathon_service.send_successful_registration_email = Mock()
+
+    return cast(HackathonServiceMock, hackathon_service)
+
+
 #
 #
 # @pytest.fixture
