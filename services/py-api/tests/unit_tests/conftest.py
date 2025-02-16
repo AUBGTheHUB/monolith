@@ -1,3 +1,6 @@
+# mypy: disable_error_code=method-assign
+# This is because we have TypedMocks which mypy thinks are actual classes
+
 from datetime import datetime, timedelta, timezone
 from typing import Tuple, cast
 from unittest.mock import Mock, MagicMock, AsyncMock
@@ -11,6 +14,7 @@ from motor.motor_asyncio import (
 )
 from typing_extensions import Protocol
 
+from src.database.db_managers import MongoDatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
@@ -30,8 +34,9 @@ def _create_typed_mock[T](class_type: T) -> T:
         class_type: the class to mock (type should be provided, not an instance)
 
     Returns:
-        A MagickMock speced to the provided class. This MagickMock is cast to the actual class, for type checkers.
-         During runtime the type is actually MagickMock, cast is used only for type checkers.
+        A MagickMock speced to the provided class. This MagickMock is cast to the actual class, for autocompletion of
+         its methods when mocking them. During runtime the type is actually MagickMock, cast is used only for type
+         checkers.
     """
 
     return cast(T, MagicMock(spec=class_type))
@@ -45,8 +50,9 @@ def _create_typed_async_mock[T](class_type: T) -> T:
         class_type: the class to mock (type should be provided, not an instance)
 
     Returns:
-        A AsyncMock speced to the provided class. This AsyncMock is cast to the actual class, for type checkers.
-         During runtime the type is actually AsyncMock, cast is used only for type checkers.
+       A AsyncMock speced to the provided class. This AsyncMock is cast to the actual class, for autocompletion of
+        its methods when mocking them. During runtime the type is actually AsyncMock, cast is used only for type
+        checkers.
     """
 
     return cast(T, AsyncMock(spec=class_type))
@@ -89,6 +95,7 @@ def motor_collection_mock() -> MotorCollectionMock:
     """
 
     mock_collection = _create_typed_mock(AsyncIOMotorCollection)
+
     mock_collection.insert_one = AsyncMock()
     mock_collection.find_one_and_update = AsyncMock()
     mock_collection.find_one_and_delete = AsyncMock()
@@ -126,6 +133,7 @@ def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorData
         A mocked AsyncIOMotorDatabase
     """
     mock_db = _create_typed_mock(AsyncIOMotorDatabase)
+
     mock_db.command = AsyncMock()
     # make get_collection return a motor_database_mock
     mock_db.get_collection = Mock(return_value=motor_database_mock)
@@ -141,7 +149,7 @@ class MotorDbClientMock(Protocol):
     used just for type hinting purposes.
     """
 
-    start_session: AsyncMock  # `start_session` is async
+    start_session: AsyncMock
     get_database: MotorDatabaseMock
     # Add more methods if needed
 
@@ -162,6 +170,7 @@ def motor_db_client_mock(motor_database_mock: MotorDatabaseMock) -> MotorDbClien
         A mocked AsyncIOMotorClient
     """
     mock_client = _create_typed_mock(AsyncIOMotorClient)
+
     mock_client.start_session = AsyncMock()
     # make get_database return a motor_database_mock
     mock_client.get_database = Mock(return_value=motor_database_mock)
@@ -177,10 +186,10 @@ class MotorDbClientSessionMock(Protocol):
     used just for type hinting purposes.
     """
 
-    start_transaction: MagicMock  # `start_transaction` is not async
-    commit_transaction: AsyncMock  # `commit_transaction` is async
-    abort_transaction: AsyncMock  # `abort_transaction` is async
-    end_session: AsyncMock  # `end_session` is async
+    start_transaction: MagicMock
+    commit_transaction: AsyncMock
+    abort_transaction: AsyncMock
+    end_session: AsyncMock
 
 
 @pytest.fixture
@@ -201,10 +210,10 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
 
     mock_session = _create_typed_mock(AsyncIOMotorClientSession)
 
-    mock_session.start_transaction = MagicMock()  # `start_transaction` is not async
-    mock_session.commit_transaction = AsyncMock()  # `commit_transaction` is async
-    mock_session.abort_transaction = AsyncMock()  # `abort_transaction` is async
-    mock_session.end_session = AsyncMock()  # `end_session` is async
+    mock_session.start_transaction = MagicMock()
+    mock_session.commit_transaction = AsyncMock()
+    mock_session.abort_transaction = AsyncMock()
+    mock_session.end_session = AsyncMock()
 
     return cast(MotorDbClientSessionMock, mock_session)
 
@@ -217,6 +226,44 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
 # ======================================
 # Mocking Repository layer classes start
 # ======================================
+
+
+class MongoDbManagerMock(Protocol):
+    """A Static Duck Type, modeling a Mocked MongoDatabaseManager
+
+    Should not be initialized directly by application developers to create a MongoDbManagerMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    get_collection: Mock
+    async_ping_db: AsyncMock
+    close_all_connections: Mock
+
+
+@pytest.fixture
+def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDbManagerMock:
+    """Mock object for MongoDatabaseManager.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        mongo_db_manager_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        mongo_db_manager_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked MongoDatabaseManager
+    """
+
+    mock_db_manager = _create_typed_mock(MongoDatabaseManager)
+
+    mock_db_manager.async_ping_db = AsyncMock()
+    # make get_collection return a motor_collection_mock
+    mock_db_manager.get_collection = Mock(return_value=motor_collection_mock)
+    mock_db_manager.close_all_connections = Mock()
+
+    return cast(MongoDbManagerMock, mock_db_manager)
 
 
 @pytest.fixture
@@ -285,9 +332,9 @@ def mock_jwt_user_registration(
 
 
 @pytest.fixture
-def ten_sec_window() -> Tuple[datetime, datetime]:
+def five_sec_window() -> Tuple[datetime, datetime]:
     now = datetime.now()
-    return now - timedelta(seconds=10), now + timedelta(seconds=10)
+    return now - timedelta(seconds=5), now + timedelta(seconds=5)
 
 
 @pytest.fixture
