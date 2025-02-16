@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Tuple, Optional
 
+from fastapi import BackgroundTasks
 import pytest
 from unittest.mock import Mock, MagicMock, AsyncMock
 
@@ -10,6 +11,7 @@ from result import Err
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -21,6 +23,7 @@ from src.server.schemas.request_schemas.schemas import (
     ParticipantRequestBody,
 )
 from src.service.hackathon_service import HackathonService
+from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
@@ -95,9 +98,27 @@ def team_repo_mock() -> Mock:
 
     return team_repo
 
+@pytest.fixture
+def feature_switch_repo_mock() -> Mock:
+    """This is a mock obj of FeatureSwitchRepository. To change the return values of its methods use:
+    `feature_switch_repo_mock.method_name.return_value=some_return_value`"""
+
+    feature_switch_repo = Mock(spec=FeatureSwitchRepository)
+
+    feature_switch_repo.fetch_by_id = AsyncMock()
+    feature_switch_repo.fetch_by_team_name = AsyncMock()
+    feature_switch_repo.fetch_all = AsyncMock()
+    feature_switch_repo.update = AsyncMock()
+    feature_switch_repo.create = AsyncMock()
+    feature_switch_repo.delete = AsyncMock()
+    feature_switch_repo.get_feature_switch = AsyncMock()
+    feature_switch_repo.set_feature_switch = AsyncMock()
+
+    return feature_switch_repo
+
 
 @pytest.fixture
-def hackathon_service_mock() -> Mock:
+def hackathon_service_mock() -> HackathonService:
     """This is a mock obj of HackathonService. To change the return values of its methods use:
     `hackathon_service_mock.method_name.return_value=some_return_value`"""
 
@@ -106,6 +127,7 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
+    hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
     hackathon_service.create_random_participant = AsyncMock()
     hackathon_service.create_invite_link_participant = AsyncMock()
     hackathon_service.check_team_capacity = AsyncMock()
@@ -113,8 +135,23 @@ def hackathon_service_mock() -> Mock:
     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
+    hackathon_service.verify_admin_participant = AsyncMock()
+    hackathon_service.send_verification_email = AsyncMock()
+    hackathon_service.send_successful_registration_email = Mock()
 
     return hackathon_service
+
+
+@pytest.fixture
+def hackathon_mail_service_mock() -> Mock:
+    """This is a mock obj of HackathonMailService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
+
+    mailing_service_mock = Mock(spec=HackathonMailService)
+    mailing_service_mock.send_participant_verification_email = Mock()
+    mailing_service_mock.send_participant_successful_registration_email = Mock()
+
+    return mailing_service_mock
 
 
 @pytest.fixture
@@ -126,6 +163,13 @@ def tx_manager_mock() -> Mock:
     tx_manager.with_transaction = AsyncMock()
 
     return tx_manager
+
+
+@pytest.fixture
+def background_tasks() -> MagicMock:
+    mock_background_tasks = MagicMock(spec=BackgroundTasks)
+    mock_background_tasks.add_task = MagicMock()
+    return mock_background_tasks
 
 
 @pytest.fixture
@@ -146,7 +190,6 @@ def participant_verification_service_mock() -> Mock:
     """This is a mock obj of ParticipantVerificationService."""
     p_verify_service = Mock(spec=ParticipantVerificationService)
     p_verify_service.verify_random_participant = AsyncMock()
-    p_verify_service.verify_admin_participant = AsyncMock()
 
     return p_verify_service
 

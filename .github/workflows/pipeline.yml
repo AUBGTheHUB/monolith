@@ -7,7 +7,7 @@ on:
       - 'production'
     paths:
       # Back-end Paths that will trigger re-deployment
-      - 'services/py-api/src/*.py'
+      - 'services/py-api/src/**'
       - 'services/py-api/Dockerfile'
       - 'services/py-api/**/*.lock'
       - 'services/py-api/**/*.toml'
@@ -20,6 +20,7 @@ on:
       - 'services/web/nginx.*.conf'
       - 'services/web/*.config.*'
       - 'services/web/tsconfig.*'
+      - 'services/web/*.html'
 
 permissions:
   packages: write
