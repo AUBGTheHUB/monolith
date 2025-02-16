@@ -29,7 +29,7 @@ async def test_verify_admin_participant_success(
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
     participant_repo_mock: Mock,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    mock_jwt_admin_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
@@ -48,7 +48,7 @@ async def test_verify_admin_participant_success(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification_data, background_tasks)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
@@ -65,7 +65,7 @@ async def test_verify_admin_participant_participant_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    mock_jwt_admin_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
@@ -73,7 +73,7 @@ async def test_verify_admin_participant_participant_not_found_error(
         ParticipantNotFoundError()
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
@@ -84,13 +84,13 @@ async def test_verify_admin_participant_team_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    mock_jwt_admin_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(TeamNotFoundError())
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
@@ -101,7 +101,7 @@ async def test_verify_admin_participant_general_exeption(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    mock_jwt_admin_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
@@ -109,7 +109,7 @@ async def test_verify_admin_participant_general_exeption(
         Exception("Test exception")
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
@@ -123,7 +123,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
     participant_repo_mock: Mock,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    mock_jwt_admin_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
@@ -141,7 +141,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
@@ -153,7 +153,7 @@ async def test_verify_random_participant_success(
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    mock_jwt_random_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
@@ -166,7 +166,7 @@ async def test_verify_random_participant_success(
         (participant_repo_mock.update.return_value, None)
     )
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification_data, background_tasks)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
@@ -181,13 +181,13 @@ async def test_verify_random_participant_participant_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    mock_jwt_random_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     hackathon_service_mock.verify_random_participant.return_value = Err(ParticipantNotFoundError())
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
@@ -198,13 +198,13 @@ async def test_verify_random_participant_general_exception(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    mock_jwt_random_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     hackathon_service_mock.verify_random_participant.return_value = Err(Exception())
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
@@ -216,7 +216,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    mock_jwt_random_user_verification_data: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
@@ -228,7 +228,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
         (participant_repo_mock.update.return_value, None)
     )
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification_data, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)

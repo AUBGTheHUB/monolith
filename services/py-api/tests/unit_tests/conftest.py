@@ -27,6 +27,7 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.participants_verification_service import ParticipantVerificationService
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME, TEST_TEAM_NAME
 
 
@@ -457,6 +458,42 @@ def participant_registration_service_mock() -> ParticipantRegistrationServiceMoc
     return cast(ParticipantRegistrationServiceMock, service)
 
 
+class ParticipantVerificationServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked ParticipantVerificationService
+
+    Should not be initialized directly by application developers to create a ParticipantVerificationServiceMock
+    instance. It is used just for type hinting purposes.
+    """
+
+    verify_random_participant: AsyncMock
+    verify_admin_participant: AsyncMock
+    resend_verification_email: AsyncMock
+
+
+@pytest.fixture
+def participant_verification_service_mock() -> ParticipantVerificationServiceMock:
+    """Mock object for ParticipantVerificationService.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        participant_verification_service_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        participant_verification_service_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked ParticipantVerificationService
+    """
+
+    service = _create_typed_mock(ParticipantVerificationService)
+    service.verify_random_participant = AsyncMock()
+    service.verify_admin_participant = AsyncMock()
+    service.resend_verification_email = AsyncMock()
+
+    return cast(ParticipantVerificationServiceMock, service)
+
+
 #
 #
 # @pytest.fixture
@@ -472,13 +509,6 @@ def participant_registration_service_mock() -> ParticipantRegistrationServiceMoc
 #
 #
 #
-# @pytest.fixture
-# def participant_verification_service_mock() -> Mock:
-#     """This is a mock obj of ParticipantVerificationService."""
-#     p_verify_service = Mock(spec=ParticipantVerificationService)
-#     p_verify_service.verify_random_participant = AsyncMock()
-#
-#     return p_verify_service
 
 
 # =================================================
@@ -600,7 +630,7 @@ def mock_participant_request_body_random_case(mock_normal_team: Team) -> Partici
 
 
 @pytest.fixture
-def mock_jwt_random_user_verification(
+def mock_jwt_random_user_verification_data(
     mock_obj_id: str, thirty_sec_jwt_exp_limit: float
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
@@ -611,7 +641,7 @@ def mock_jwt_random_user_verification(
 
 
 @pytest.fixture
-def mock_jwt_admin_user_verification(
+def mock_jwt_admin_user_verification_data(
     mock_obj_id: str, thirty_sec_jwt_exp_limit: float
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
@@ -619,6 +649,11 @@ def mock_jwt_admin_user_verification(
         is_admin=True,
         exp=thirty_sec_jwt_exp_limit,
     )
+
+
+@pytest.fixture
+def mock_jwt_token() -> str:
+    return "mock_jwt_token"
 
 
 # =================================================

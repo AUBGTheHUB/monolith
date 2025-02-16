@@ -1,6 +1,9 @@
 from typing import cast
+
 import pytest
 from result import Err, Ok
+from starlette import status
+
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
 from src.server.exception import ParticipantNotFoundError, TeamNotFoundError
@@ -11,10 +14,8 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
     TeamDeletedResponse,
 )
-from starlette import status
-
 from src.service.hackathon_service import HackathonService
-from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
+from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
 from tests.unit_tests.conftest import HackathonServiceMock
 
 
@@ -25,25 +26,25 @@ def hackathon_handlers(hackathon_service_mock: HackathonServiceMock) -> Hackatho
 
 @pytest.mark.asyncio
 async def test_delete_participant_success(
-    hackathon_handlers: HackathonManagementHandlers, hackathon_service_mock: HackathonServiceMock, mock_obj_id: str
+    hackathon_handlers: HackathonManagementHandlers,
+    hackathon_service_mock: HackathonServiceMock,
+    mock_random_participant: Participant,
 ) -> None:
     # Given an OK result from 'delete_participant'
     # Note: Deleting an admin participant has no difference from deleting a random participant
-    hackathon_service_mock.delete_participant.return_value = Ok(
-        Participant(id=mock_obj_id, name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, team_id=None),
-    )
+    hackathon_service_mock.delete_participant.return_value = Ok(mock_random_participant)
 
     # When we call the handler
-    resp = await hackathon_handlers.delete_participant(mock_obj_id)
+    resp = await hackathon_handlers.delete_participant(mock_random_participant.id)
 
     # Then the delete_participant should have been awaited once with the expected object_id
-    hackathon_service_mock.delete_participant.assert_awaited_once_with(mock_obj_id)
+    hackathon_service_mock.delete_participant.assert_awaited_once_with(mock_random_participant.id)
 
     # And the response is a 200 one
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ParticipantDeletedResponse)
     assert resp.response_model.participant.name == TEST_USER_NAME
-    assert resp.response_model.participant.id == mock_obj_id
+    assert resp.response_model.participant.id == mock_random_participant.id
     assert resp.status_code == status.HTTP_200_OK
 
 
