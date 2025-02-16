@@ -84,8 +84,6 @@ jobs:
       # Here we create the ./envfile that the GitHub Actions runner is going to use for the next step - Deployment! (see below)
       # Since we don't have the repository cloned in the VPS, we have no information of the git commit that the image that we want to
       # pull and run is coming from. For this reason, we pass the commit hash to the next step, which is explained below.
-      - name: Install mktemp
-        run: sudo apt-get update && sudo apt-get install -y mktemp
       - name: create env file
         run: |
           echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
