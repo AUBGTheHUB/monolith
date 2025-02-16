@@ -3,9 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
+import { useFetchFeatureSwitches } from './config';
 
 function App() {
     const queryClient = new QueryClient();
+
     return (
         <QueryClientProvider client={queryClient}>
             <Routes>
@@ -16,5 +18,7 @@ function App() {
         </QueryClientProvider>
     );
 }
+
+useFetchFeatureSwitches();
 
 export default App;
