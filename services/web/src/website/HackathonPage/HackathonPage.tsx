@@ -7,7 +7,6 @@ export const HackathonPage = () => {
     return (
         <Fragment>
             <Navigation />
-            <h1 className="font-distant text-white">SF Distant Galaxy Regular</h1>
             <ScheduleSection />
         </Fragment>
     );
