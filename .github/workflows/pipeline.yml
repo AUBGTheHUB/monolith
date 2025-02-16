@@ -50,6 +50,13 @@ jobs:
             ghcr.io/aubgthehub/monolith-backend:latest
             ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
 
+      - name: Set environment variables based on branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "VITE_ENV=DEV" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            echo "VITE_ENV=PROD" >> $GITHUB_ENV
+          fi
 
       # We run the job conditionally so that we only build the Web Client when changes are made to it
       - name: Build and push Docker image for the WEB client
@@ -60,6 +67,14 @@ jobs:
           tags: |
             ghcr.io/aubgthehub/monolith-web:latest
             ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+          # We pass the build arguments for the frontend
+          # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+          build-args: |
+            VITE_ENV=${{ env.VITE_ENV }}
+            VITE_ENV=PROD
+            VITE_API_URL_DEV=https://dev.example.com
+            VITE_API_URL_LOCAL=http://localhost:3000
+            VITE_API_URL_PROD=https://api.example.com
 
   deploy:
     runs-on: ubuntu-latest
