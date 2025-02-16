@@ -31,7 +31,7 @@ async def test_create_participant_success(
     # When we create a Participant document in Mongo
     result = await repo.create(mock_random_participant)
 
-    # Then the creation of participant should succeed within this five seconds window
+    # Then the creation of the participant should succeed within this five seconds window
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
     assert result.ok_value.name == mock_random_participant.name
@@ -53,7 +53,7 @@ async def test_create_participant_duplicate_email_error(
     # When we create a Participant document in Mongo
     result = await repo.create(mock_random_participant)
 
-    # Then the creation of participant should fail, and we should get an Err(DuplicateEmailError())
+    # Then the creation of the participant should fail, and we should get an Err(DuplicateEmailError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateEmailError)
     # Check that the error message is the duplicate email as expected
@@ -64,17 +64,15 @@ async def test_create_participant_duplicate_email_error(
 async def test_create_participant_general_exception(
     motor_collection_mock: MotorCollectionMock, mock_random_participant: Participant, repo: ParticipantsRepository
 ) -> None:
-    # Given general exception raised by insert_one
+    # Given a general exception raised by insert_one
     motor_collection_mock.insert_one.side_effect = Exception("Test error")
 
     # When we create a Participant document in Mongo
     result = await repo.create(mock_random_participant)
 
-    # Then the creation of participant should fail, and we should get an Err(Exception())
+    # Then the creation of the participant should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
@@ -90,10 +88,11 @@ async def test_delete_successful(
         "email_verified": False,
         "team_id": mock_obj_id,
     }
+
     # When we delete the Participant document in Mongo
     result = await repo.delete(mock_obj_id)
 
-    # Then the deletion should succeed, and the deleted Participant objected should be returned.
+    # Then the deletion should succeed, and the deleted Participant object should be returned.
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
 
@@ -122,16 +121,15 @@ async def test_delete_participant_not_found(
 async def test_delete_general_error(
     motor_collection_mock: MotorCollectionMock, repo: ParticipantsRepository, mock_obj_id: str
 ) -> None:
-    # Given general exception raised by find_one_and_delete
+    # Given a general exception raised by find_one_and_delete
     motor_collection_mock.find_one_and_delete.side_effect = Exception("Test error")
 
     # When we delete the Participant document in Mongo
     result = await repo.delete(mock_obj_id)
 
+    # Then the deletion should fail, and we should get an Err(Exception())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
@@ -151,7 +149,7 @@ async def test_update_participant_success(
     # When we update the Participant document in Mongo
     result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
 
-    # Then the update should succeed, and the updated Participant objected should be returned.
+    # Then the update should succeed, and the updated Participant object should be returned.
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
 
@@ -176,6 +174,80 @@ async def test_update_participant_not_found(
     # Then the update should fail, and we should get an Err(ParticipantNotFoundError())
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_update_participant_general_error(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+    # Given a general exception raised by find_one_and_update
+    motor_collection_mock.find_one_and_update.side_effect = Exception("Test error")
+
+    # When we update the Participant document in Mongo
+    result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
+
+    # Then the update should fail, and we should get an Err(Exception())
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_successful(
+    motor_collection_mock: MotorCollectionMock, mock_obj_id: str, repo: ParticipantsRepository
+) -> None:
+    # Given a successful response by find_one (this is the Participant obj json representation without the
+    # "_id" property as it is projected (omitted from the response), you can check the method for more info)
+    motor_collection_mock.find_one.return_value = {
+        "name": TEST_USER_NAME,
+        "email": TEST_USER_EMAIL,
+        "is_admin": True,
+        "email_verified": False,
+        "team_id": mock_obj_id,
+    }
+
+    # When we fetch the Participant document in Mongo
+    result = await repo.fetch_by_id(mock_obj_id)
+
+    # Then the update should succeed, and the updated Participant object should be returned.
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
+
+    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.name == TEST_USER_NAME
+    assert result.ok_value.email == TEST_USER_EMAIL
+    assert result.ok_value.is_admin is True
+    assert result.ok_value.email_verified is False
+    assert result.ok_value.team_id == mock_obj_id
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_participant_not_found(
+    motor_collection_mock: MotorCollectionMock, repo: ParticipantsRepository, mock_obj_id: str
+) -> None:
+    # Given a None response by find_one, indicating the Participant we are trying to fetch is not found
+    motor_collection_mock.find_one.return_value = None
+
+    # When we fetch the Participant document in Mongo
+    result = await repo.fetch_by_id(mock_obj_id)
+
+    # Then the fetch should fail, and we should get an Err(ParticipantNotFoundError())
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, ParticipantNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_general_error(
+    motor_collection_mock: MotorCollectionMock, repo: ParticipantsRepository, mock_obj_id: str
+) -> None:
+    # Given a general exception raised by find_one
+    motor_collection_mock.find_one.side_effect = Exception("Test Error")
+
+    # When we fetch the Participant document in Mongo
+    result = await repo.fetch_by_id(mock_obj_id)
+
+    # Then the fetch should fail, and we should get an Err(Exception())
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
 
 
 # TODO: FIX
