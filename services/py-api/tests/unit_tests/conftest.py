@@ -484,6 +484,8 @@ def participant_registration_service_mock() -> ParticipantRegistrationServiceMoc
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
+
+
 @pytest.fixture
 def mock_admin_case_input_data(mock_normal_team: Team) -> AdminParticipantInputData:
     return AdminParticipantInputData(
