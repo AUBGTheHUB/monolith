@@ -1,8 +1,9 @@
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
-from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, Response
+from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, Response, AllFeatureSwitchesResponse
 from src.service.feature_switch_service import FeatureSwitchService
 from starlette import status
+
 
 class FeatureSwitchHandler(BaseHandler):
 
@@ -17,5 +18,16 @@ class FeatureSwitchHandler(BaseHandler):
 
         return Response(
             response_model=FeatureSwitchResponse(feature=result.ok_value),
+            status_code=status.HTTP_200_OK,
+        )
+
+    async def handle_all_feature_switches(self) -> Response:
+        result = await self._service.check_all_feature_switches()
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(
+            response_model=AllFeatureSwitchesResponse(features=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
