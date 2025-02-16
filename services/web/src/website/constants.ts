@@ -1,7 +1,7 @@
 const ENV: 'DEV' | 'LOCAL' | 'PROD' = import.meta.env.ENV || 'DEV';
 export const API_URLS = {
     DEV: import.meta.env.VITE_API_URL_DEV,
-    LOCAL: import.meta.env.VITE_API_URL_STAGING,
+    LOCAL: import.meta.env.VITE_API_URL_LOCAL,
     PROD: import.meta.env.VITE_API_URL_PROD,
 };
 
