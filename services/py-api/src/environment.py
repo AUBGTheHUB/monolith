@@ -1,6 +1,9 @@
 from os import environ
 from dotenv import load_dotenv
 
+# Something to keep in mind is that in deployed env, we don't use .env files, but for local development we use them.
+load_dotenv(override=True)
+
 
 def _read_docker_secret(secret_path: str) -> str | None:
     """
@@ -36,6 +39,7 @@ def _load_docker_secrets() -> None:
         "DATABASE_URL": "/run/secrets/db-url",
         "SECRET_KEY": "/run/secrets/secret-key",
         "SECRET_AUTH_TOKEN": "/run/secrets/secret-auth-key",
+        "RESEND_API_KEY": "/run/secrets/resend-api-key",
     }
 
     # We set the env var value only if we are in a deployed env, and the env var has been set on the given Node
@@ -49,10 +53,28 @@ def load_env() -> None:
     loaded into the process before we start using them across our codebase."""
     _load_docker_secrets()
 
-    # Something to keep in mind is that in deployed env, we don't use .env files, but for local development we use them.
-    load_dotenv(override=True)
-
     if environ["ENV"] not in ("PROD", "DEV", "LOCAL", "TEST"):
         raise ValueError(
             f"The ENV environment variable should be PROD, DEV, LOCAL OR TEST. Actual value: {environ["ENV"]}"
         )
+
+
+def is_prod_env() -> bool:
+    return environ["ENV"] == "PROD"
+
+
+def is_dev_env() -> bool:
+    return environ["ENV"] == "DEV"
+
+
+def is_test_env() -> bool:
+    return environ["ENV"] == "TEST"
+
+
+def is_local_env() -> bool:
+    return environ["ENV"] == "LOCAL"
+
+
+DOMAIN = environ["DOMAIN"]
+PORT = int(environ["PORT"])
+SUBDOMAIN = "dev"

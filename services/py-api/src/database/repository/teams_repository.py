@@ -28,7 +28,7 @@ class TeamsRepository(CRUDRepository[Team]):
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         try:
-            LOG.debug("Inserting team...", team=team.dump_as_json())
+            LOG.info("Inserting team...", team=team.dump_as_json())
             await self._collection.insert_one(document=team.dump_as_mongo_db_document(), session=session)
             return Ok(team)
 
@@ -37,7 +37,7 @@ class TeamsRepository(CRUDRepository[Team]):
             return Err(DuplicateTeamNameError(team.name))
 
         except Exception as e:
-            LOG.exception("Team insertion failed due to err {}".format(e))
+            LOG.exception("Team insertion failed due to error", team_id=str(team.id), error=e)
             return Err(e)
 
     async def fetch_by_id(self, obj_id: str) -> Result[Team, TeamNotFoundError | Exception]:
@@ -45,7 +45,7 @@ class TeamsRepository(CRUDRepository[Team]):
         Fetches a team by ObjectId
         """
         try:
-            LOG.debug("Fetching team by ObjectId...", obj_id=obj_id)
+            LOG.debug("Fetching team by ObjectId...", team_id=obj_id)
 
             # Query the database for the team with the given ObjectId
             team = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
@@ -56,30 +56,31 @@ class TeamsRepository(CRUDRepository[Team]):
             return Ok(Team(id=obj_id, **team))
 
         except Exception as e:
-            LOG.exception(f"Failed to fetch team by ObjectId {obj_id} due to err {e}")
+            LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
             return Err(e)
 
+    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Team], Exception]:
-        try:
-            LOG.debug("Fetching all teams...")
-
-            teams_data = await self._collection.find({})
-
-            teams = []
-            for doc in teams_data:
-                doc_copy = dict(doc)
-
-                doc_copy["id"] = str(doc_copy.pop("_id"))
-
-                teams.append(Team(**doc_copy))
-
-            LOG.debug(f"Fetched {len(teams)} teams.")
-            return Ok(teams)
-
-        except Exception as e:
-            LOG.exception(f"Failed to fetch all teams due to err {e}")
-            return Err(e)
-
+        raise NotImplementedError()
+        # try:
+        #     LOG.debug("Fetching all teams...")
+        #
+        #     teams_data = await self._collection.find({})
+        #
+        #     teams = []
+        #     for doc in teams_data:
+        #         doc_copy = dict(doc)
+        #
+        #         doc_copy["id"] = str(doc_copy.pop("_id"))
+        #
+        #         teams.append(Team(**doc_copy))
+        #
+        #     LOG.debug(f"Fetched {len(teams)} teams.")
+        #     return Ok(teams)
+        #
+        # except Exception as e:
+        #     LOG.exception(f"Failed to fetch all teams due to err {e}")
+        #     return Err(e)
 
     async def update(
         self,
@@ -89,7 +90,7 @@ class TeamsRepository(CRUDRepository[Team]):
     ) -> Result[Team, TeamNotFoundError | Exception]:
         try:
 
-            LOG.debug(f"Updating team...", Team_obj_id=obj_id, updated_fields=obj_fields.model_dump_json())
+            LOG.info(f"Updating team...", team_id=obj_id, updated_fields=obj_fields.model_dump_json())
 
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
@@ -106,7 +107,7 @@ class TeamsRepository(CRUDRepository[Team]):
             return Ok(Team(id=obj_id, **result))
 
         except Exception as e:
-            LOG.exception(f"Failed to update team with id {obj_id} due to {e}")
+            LOG.exception(f"Failed to update team due to error", team_id=obj_id, error=e)
             return Err(e)
 
     async def delete(
@@ -117,7 +118,7 @@ class TeamsRepository(CRUDRepository[Team]):
         """
         try:
 
-            LOG.debug("Deleting team...", team_obj_id=obj_id)
+            LOG.info("Deleting team...", team_id=obj_id)
             """
             According to mongodb docs result is of type _DocumentType:
             https://pymongo.readthedocs.io/en/4.8.0/api/pymongo/collection.html#pymongo.collection.Collection.find_one_and_delete
@@ -135,7 +136,7 @@ class TeamsRepository(CRUDRepository[Team]):
             return Ok(Team(id=obj_id, **result))
 
         except Exception as e:
-            LOG.exception("Team deletion failed due to err {}".format(e))
+            LOG.exception("Team deletion failed due to error", team_id=obj_id, error=e)
             return Err(e)
 
     async def get_verified_registered_teams_count(self) -> int:
@@ -169,5 +170,5 @@ class TeamsRepository(CRUDRepository[Team]):
             return Ok(Team(**team_copy))
 
         except Exception as e:
-            LOG.exception(f"Failed to fetch team by name {team_name} due to err {e}")
+            LOG.exception(f"Failed to fetch team due to err", team_name=team_name, error=e)
             return Err(e)
