@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
-import { useFetchFeatureSwitches, FEATURE_SWITCHES } from './constants';
+import { FEATURE_SWITCHES } from './constants';
 
 function App() {
     const queryClient = new QueryClient();
