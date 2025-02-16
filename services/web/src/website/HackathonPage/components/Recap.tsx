@@ -8,10 +8,10 @@ export const Recap = () => {
                     backgroundSize: 'cover',
                     backgroundPosition: `right -${5}vw top`,
                     backgroundRepeat: 'no-repeat',
-                    height: "50vw",
-                    maxHeight: "600px",
-                    width: "50vw",
-                    maxWidth: "600px"
+                    height: '50vw',
+                    maxHeight: '600px',
+                    width: '50vw',
+                    maxWidth: '600px',
                 }}
             />
             <div className="max-w-7xl mx-auto px-12 relative">
@@ -20,19 +20,16 @@ export const Recap = () => {
                     <p className="text-white ml-5 tracking-[0.2em]">RECAP</p>
                 </div>
                 <div className="relative rounded-lg overflow-hidden bg-black/20">
-                    <video
-                        className="w-full rounded-lg aspect-[16/7] object-cover"
-                        controls
-                        autoPlay
-                        muted
-                        playsInline
-                    >
+                    <video className="w-full rounded-lg aspect-[16/7] object-cover" controls autoPlay muted playsInline>
                         {/* TODO: change the big buck bunnny video with the actual recap... */}
-                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                        <source
+                            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                            type="video/mp4"
+                        />
                         Your browser does not support the video tag.
                     </video>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
