@@ -1,9 +1,6 @@
 from typing import Union
 from fastapi import APIRouter, Depends, BackgroundTasks
-from result import is_err
-from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-
 from src.server.routes.dependency_factory import _h_service, registration_open
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
@@ -13,7 +10,6 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     Response,
 )
-from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from src.service.participants_registration_service import ParticipantRegistrationService
 from src.server.routes.dependency_factory import is_auth, validate_obj_id
@@ -26,21 +22,14 @@ participants_router = APIRouter(prefix="/hackathon/participants")
 def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
 
-def _fs_service(h_service: HackathonService = Depends(_h_service),) -> FeatureSwitchService:
-    return FeatureSwitchService(h_service._fs_repo)
-
-
 def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
     return ParticipantHandlers(p_service)
-
 
 def _h_handler(
     h_service: HackathonService = Depends(_h_service),
 ) -> HackathonManagementHandlers:
     return HackathonManagementHandlers(h_service)
 
-def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> FeatureSwitchHandler:
-    return FeatureSwitchHandler(fs_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/

@@ -46,9 +46,7 @@ async def test_create_participant_and_team_in_transaction(
     mock_admin_case_input_data: AdminParticipantInputData,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
-    feature_switch_repo_mock: Mock,
     tx_manager_mock: Mock,
-    hackathon_mail_service_mock: Mock,
 ) -> None:
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction

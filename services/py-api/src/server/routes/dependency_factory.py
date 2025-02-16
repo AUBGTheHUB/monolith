@@ -1,7 +1,6 @@
 from os import environ
 from typing import Annotated
-from fastapi import Depends, HTTPException, Header, Path, Response
-from fastapi.responses import JSONResponse
+from fastapi import Depends, HTTPException, Header, Path
 from result import is_err
 from src.database.db_manager import DB_MANAGER, FEATURE_SWITCH_COLLECTION, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -12,16 +11,11 @@ from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
-import json
 
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.mail_service.mail_client import ResendMailClient
 
 from starlette import status
-
-from structlog.stdlib import get_logger
-
-LOG = get_logger()
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
