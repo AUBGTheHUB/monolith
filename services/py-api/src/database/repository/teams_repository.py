@@ -59,28 +59,26 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
             return Err(e)
 
-    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Team], Exception]:
-        raise NotImplementedError()
-        # try:
-        #     LOG.debug("Fetching all teams...")
-        #
-        #     teams_data = await self._collection.find({})
-        #
-        #     teams = []
-        #     for doc in teams_data:
-        #         doc_copy = dict(doc)
-        #
-        #         doc_copy["id"] = str(doc_copy.pop("_id"))
-        #
-        #         teams.append(Team(**doc_copy))
-        #
-        #     LOG.debug(f"Fetched {len(teams)} teams.")
-        #     return Ok(teams)
-        #
-        # except Exception as e:
-        #     LOG.exception(f"Failed to fetch all teams due to err {e}")
-        #     return Err(e)
+        try:
+            LOG.debug("Fetching all teams...")
+
+            teams_data = await self._collection.find({}).to_list(length=None)
+
+            teams = []
+            for doc in teams_data:
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                teams.append(Team(**doc_copy))
+
+            LOG.debug(f"Fetched {len(teams)} teams.")
+            return Ok(teams)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all teams due to err {e}")
+            return Err(e)
 
     async def update(
         self,
