@@ -1,12 +1,14 @@
 import { API_URL, FEATURE_SWITCHES } from './constants';
 
+//   this will be required for dev machine
+//   const username = import.meta.env.VITE_DEV_USER;
+//   const password = import.meta.env.VITE_DEV_PASS;
+
 export async function useFetchFeatureSwitches() {
     try {
-        const username = import.meta.env.VITE_DEV_USER;
-        const password = import.meta.env.VITE_DEV_PASS;
         const headers = new Headers();
-        headers.set('Authorization', 'Basic ' + btoa(username + ':' + password));
-
+        //   this will be required for dev machine
+        // headers.set('Authorization', 'Basic ' + btoa(username + ':' + password));
         const response = await fetch(`${API_URL}/feature-switches`, {
             method: 'GET',
             headers: headers,
