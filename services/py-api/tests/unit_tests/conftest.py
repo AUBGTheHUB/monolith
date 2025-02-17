@@ -329,14 +329,20 @@ def mock_verified_team(mock_obj_id: str) -> Team:
 
 
 @pytest.fixture
-def mock_unverified_team_no_id(mock_unverified_team: Team) -> Dict[str, Any]:
+def mock_unverified_team_dump_no_id(mock_unverified_team: Team) -> Dict[str, Any]:
+    """
+    This method is used when trying to mock the MongoDB operations in the database layers
+    """
     mock_unverified_team_db_document = mock_unverified_team.dump_as_mongo_db_document()
     mock_unverified_team_db_document.pop("_id")
     return mock_unverified_team_db_document
 
 
 @pytest.fixture
-def mock_verified_team_no_id(mock_verified_team: Team) -> Dict[str, Any]:
+def mock_verified_team_dump_no_id(mock_verified_team: Team) -> Dict[str, Any]:
+    """
+    This method is used when trying to mock the MongoDB operations in the database layers
+    """
     mock_verified_team_db_document = mock_verified_team.dump_as_mongo_db_document()
     mock_verified_team_db_document.pop("_id")
     return mock_verified_team_db_document

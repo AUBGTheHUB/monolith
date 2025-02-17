@@ -70,10 +70,12 @@ async def test_create_team_general_exception(
 
 @pytest.mark.asyncio
 async def test_delete_team_success(
-    db_manager_mock: Mock, mock_unverified_team_no_id, mock_obj_id: str, repo: TeamsRepository
+    db_manager_mock: Mock, mock_unverified_team_dump_no_id: Dict[str, Any], mock_obj_id: str, repo: TeamsRepository
 ) -> None:
 
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=mock_unverified_team_no_id)
+    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        return_value=mock_unverified_team_dump_no_id
+    )
 
     result = await repo.delete(mock_obj_id)
 
@@ -111,9 +113,11 @@ async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id:
 
 @pytest.mark.asyncio
 async def test_update_team_success(
-    db_manager_mock: Mock, mock_obj_id: str, mock_verified_team_no_id: Dict[str, Any], repo: TeamsRepository
+    db_manager_mock: Mock, mock_obj_id: str, mock_verified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
 ) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=mock_verified_team_no_id)
+    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
+        return_value=mock_verified_team_dump_no_id
+    )
 
     result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
@@ -174,9 +178,9 @@ async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: Tea
 
 @pytest.mark.asyncio
 async def test_fetch_by_id_successful(
-    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team_no_id: Dict[str, Any], repo: TeamsRepository
+    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
 ) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=mock_unverified_team_no_id)
+    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=mock_unverified_team_dump_no_id)
 
     result = await repo.fetch_by_id(mock_obj_id)
 
