@@ -43,9 +43,11 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 # result = JwtUtility.decode_data(token=jwt_token, schema=DecodedJwtToken)
 # result is not of type DecodedJwtToken but is actually the standard dict type: dict[str, str | float], meaning
 # when accessing the attributes of the schema (result["sub"]), they won't be autocompleted as the type is a normal dict
-# and to a TypedDict
+# and not a TypedDict
 
-# Here I had to use the old Generics syntax, to tell my-py that this var is covariant explicitly
+# Here we had to use the old Generics syntax, to tell my-py that this TypeVar is covariant explicitly, as otherwise it
+# was giving incompatible type "JwtParticipantVerificationData"; expected "JwtBase[DecodedJwtTokenBase]", even though:
+# JwtParticipantVerificationData is a subtype of JwtBase[DecodedJwtTokenBase]
 # To learn more:
 # https://typing.readthedocs.io/en/latest/spec/generics.html#variance-inference
 # https://typing.readthedocs.io/en/latest/spec/generics.html#variance
