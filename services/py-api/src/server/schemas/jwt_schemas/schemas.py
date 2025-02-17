@@ -6,7 +6,7 @@ knowing what the JWT token should contain depending on the use case.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypedDict, Self, Any, Dict
+from typing import TypedDict, Self
 
 
 class DecodedJwtTokenBase(TypedDict):
@@ -67,7 +67,7 @@ class JwtBase[T: DecodedJwtTokenBase](ABC):
 
     @classmethod
     @abstractmethod
-    def deserialize(cls, decoded_token: Dict[str, Any]) -> Self:
+    def deserialize(cls, decoded_token: T) -> Self:
         """Creates a Schema object from the passed decoded_token (raw dict).
 
         Implementations are not responsible for verifying if the passed decoded_token (raw dict) contains the same
@@ -86,7 +86,7 @@ class JwtParticipantVerificationData(JwtBase[_DecodedJwtParticipantVerificationT
         return {"sub": self.sub, "is_admin": self.is_admin, "exp": self.exp}
 
     @classmethod
-    def deserialize(cls, decoded_token: Dict[str, Any]) -> Self:
+    def deserialize(cls, decoded_token: _DecodedJwtParticipantVerificationToken) -> Self:
         return cls(sub=decoded_token["sub"], is_admin=decoded_token["is_admin"], exp=decoded_token["exp"])
 
 
@@ -100,5 +100,5 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
         return {"sub": self.sub, "team_id": self.team_id, "exp": self.exp}
 
     @classmethod
-    def deserialize(cls, decoded_token: Dict[str, Any]) -> Self:
+    def deserialize(cls, decoded_token: _DecodedJwtInviteRegistrationToken) -> Self:
         return cls(sub=decoded_token["sub"], team_id=decoded_token["team_id"], exp=decoded_token["exp"])
