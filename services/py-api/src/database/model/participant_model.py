@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Dict, Any, Optional, Union
-
 
 from pydantic import EmailStr
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
@@ -16,6 +16,9 @@ class Participant(BaseDbModel):
     is_admin: bool
     email_verified: bool = field(default=False)
     team_id: Optional[SerializableObjectId]
+    last_sent_verification_email: Optional[datetime] = field(default=None)
+    """The last time a verification email was sent. Used for rate-limiting purposed when the participant clicks
+    resend email."""
 
     def dump_as_mongo_db_document(self) -> Dict[str, Any]:
         return {
@@ -27,6 +30,7 @@ class Participant(BaseDbModel):
             "team_id": self.team_id,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
+            "last_sent_verification_email": self.last_sent_verification_email,
         }
 
     def dump_as_json(self) -> Dict[str, Any]:
@@ -37,6 +41,11 @@ class Participant(BaseDbModel):
             "is_admin": self.is_admin,
             "email_verified": self.email_verified,
             "team_id": str(self.team_id) if self.team_id else None,
+            "last_sent_verification_email": (
+                self.last_sent_verification_email.strftime("%Y-%m-%d %H:%M:%S")
+                if self.last_sent_verification_email
+                else None
+            ),
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
@@ -54,3 +63,4 @@ class UpdateParticipantParams(UpdateParams):
     email_verified: Union[bool, None] = None
     is_admin: Union[bool, None] = None
     team_id: Union[str, None] = None
+    last_sent_verification_email: Union[datetime, None] = None

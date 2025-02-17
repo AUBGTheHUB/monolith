@@ -102,6 +102,7 @@ def get_db_manager() -> DatabaseManager:
 DB_MANAGER = Annotated[DatabaseManager, Depends(get_db_manager)]
 PARTICIPANTS_COLLECTION = "participants"
 TEAMS_COLLECTION = "teams"
+FEATURE_SWITCH_COLLECTION = "feature-switches"
 
 # To learn more about FastAPI Dependency injection system, visit:
 # https://fastapi.tiangolo.com/tutorial/dependencies/#share-annotated-dependencies

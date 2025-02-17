@@ -1,3 +1,4 @@
+from abc import ABCMeta
 from collections.abc import Callable
 from os import environ
 from threading import Lock
@@ -37,6 +38,10 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 
+class SingletonABCMeta(SingletonMeta, ABCMeta):
+    """A metaclass that combines SingletonMeta and ABCMeta."""
+
+
 class AsyncClient(metaclass=SingletonMeta):
     # https://stackoverflow.com/questions/71031816/how-do-you-properly-reuse-an-httpx-asyncclient-within-a-fastapi-application
     # TODO: Finish implementation. we use this wrapper class to provide an abstraction over the async http library we
@@ -65,7 +70,11 @@ class JwtUtility:
         return str(encode(payload=data, key=environ["SECRET_KEY"], algorithm="HS256"))
 
     @staticmethod
-    def decode_data[T: BaseTypedDict](token: str, schema: Callable[..., T]) -> Result[T, str]:
+    def decode_data[
+        T: BaseTypedDict
+    ](token: str, schema: Callable[..., T]) -> Result[
+        T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtDecodeError
+    ]:
         try:
             decoded_token: dict[str, Any] = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
 
