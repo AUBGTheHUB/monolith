@@ -35,11 +35,11 @@ class UpdateParams(BaseModel, ABC):
     # to be present in the model dumps.
 
     # The base super().model_dump_json() returns a dict[str, Any], however mypy marks it as if it returns `Any`,
-    # for this reason we are ingoring it.
+    # for this reason we are ignoring it.
     def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
         return super().model_dump(exclude_none=exclude_none, **kwargs)  # type: ignore
 
     # The base super().model_dump_json() returns a str, however mypy marks it as if it returns `Any`,
-    # for this reason we are ingoring it.
+    # for this reason we are ignoring it.
     def model_dump_json(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> str:
         return super().model_dump_json(exclude_none=exclude_none, **kwargs)  # type: ignore
