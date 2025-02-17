@@ -2,25 +2,26 @@ name: Deployment Pipeline
 
 on:
   push:
-    branches:
-      - 'main'
-      - 'production'
-    paths:
-      # Back-end Paths that will trigger re-deployment
-      - 'services/py-api/src/**'
-      - 'services/py-api/Dockerfile'
-      - 'services/py-api/**/*.lock'
-      - 'services/py-api/**/*.toml'
+    # sl
+    # branches:
+    #   - 'main'
+    #   - 'production'
+    # paths:
+    #   # Back-end Paths that will trigger re-deployment
+    #   - 'services/py-api/src/**'
+    #   - 'services/py-api/Dockerfile'
+    #   - 'services/py-api/**/*.lock'
+    #   - 'services/py-api/**/*.toml'
 
-      # Front-end paths that will trigger re-deployment
-      - 'services/web/src/**'
-      - 'services/web/Dockerfile'
-      - 'services/web/package-lock.json'
-      - 'services/web/package.json'
-      - 'services/web/nginx.*.conf'
-      - 'services/web/*.config.*'
-      - 'services/web/tsconfig.*'
-      - 'services/web/*.html'
+    #   # Front-end paths that will trigger re-deployment
+    #   - 'services/web/src/**'
+    #   - 'services/web/Dockerfile'
+    #   - 'services/web/package-lock.json'
+    #   - 'services/web/package.json'
+    #   - 'services/web/nginx.*.conf'
+    #   - 'services/web/*.config.*'
+    #   - 'services/web/tsconfig.*'
+    #   - 'services/web/*.html'
 
 permissions:
   packages: write
@@ -113,7 +114,7 @@ jobs:
         with:
           name: monolith
           file: docker-swarm-stack.yml
-          host: ${{ github.ref_name == 'main' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
+          host: ${{ github.ref_name == 'fix-env-variable-for-deployed-frontend' && 'dev.thehub-aubg.com' || 'thehub-aubg.com' }}
           user: deploy
-          ssh_key: ${{ github.ref_name == 'main' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
+          ssh_key: ${{ github.ref_name == 'fix-env-variable-for-deployed-frontend' && secrets.DEV_DEPLOY_SSH_PRIVATE_KEY || secrets.PROD_DEPLOY_SSH_PRIVATE_KEY }}
           env_file: ./envfile
