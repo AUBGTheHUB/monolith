@@ -28,6 +28,8 @@ async def test_verify_admin_participant_success(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_verified_team: Team,
+    mock_verified_admin_participant: Participant,
     participant_repo_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
@@ -35,14 +37,8 @@ async def test_verify_admin_participant_success(
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
     # Mock update methods for team and participants repos
-    team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
-    participant_repo_mock.update.return_value = Participant(
-        name=TEST_USER_NAME,
-        email=TEST_USER_EMAIL,
-        is_admin=True,
-        email_verified=True,
-        team_id=team_repo_mock.update.return_value.id,
-    )
+    team_repo_mock.update.return_value = mock_verified_team
+    participant_repo_mock.update.return_value = mock_verified_admin_participant
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
@@ -122,20 +118,16 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_verified_team: Team,
+    mock_verified_admin_participant: Participant,
     participant_repo_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Mock update methods for team and participants repos
-    team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
-    participant_repo_mock.update.return_value = Participant(
-        name=TEST_USER_NAME,
-        email=TEST_USER_EMAIL,
-        is_admin=True,
-        email_verified=True,
-        team_id=team_repo_mock.update.return_value.id,
-    )
+    team_repo_mock.update.return_value = mock_verified_team
+    participant_repo_mock.update.return_value = mock_verified_admin_participant
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
@@ -152,15 +144,14 @@ async def test_verify_random_participant_success(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
+    mock_verified_random_participant: Participant,
     background_tasks: BackgroundTasks,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
-    participant_repo_mock.update.return_value = Participant(
-        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=None
-    )
+    participant_repo_mock.update.return_value = mock_verified_random_participant
 
     hackathon_service_mock.verify_random_participant.return_value = Ok(
         (participant_repo_mock.update.return_value, None)
@@ -216,13 +207,12 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_verified_random_participant: Participant,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
-    participant_repo_mock.update.return_value = Participant(
-        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=False, email_verified=True, team_id=None
-    )
+    participant_repo_mock.update.return_value = mock_verified_random_participant
 
     hackathon_service_mock.verify_random_participant.return_value = Ok(
         (participant_repo_mock.update.return_value, None)
@@ -238,14 +228,14 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
 async def test_send_verification_email_success(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
+    mock_admin_participant: Participant,
+    mock_unverified_team: Team,
     background_tasks: BackgroundTasks,
     mock_obj_id: str,
 ) -> None:
-    participant_mock_value = Participant(
-        name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, email_verified=False, team_id=None
-    )
+    participant_mock_value = mock_admin_participant
 
-    team_mock_value = Team(name=TEST_TEAM_NAME, is_verified=False)
+    team_mock_value = mock_unverified_team
 
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Ok(
         (participant_mock_value, team_mock_value)
