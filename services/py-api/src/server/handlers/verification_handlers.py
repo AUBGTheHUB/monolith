@@ -32,7 +32,7 @@ class VerificationHandlers(BaseHandler):
 
         jwt_payload = result.ok_value
 
-        if jwt_payload["is_admin"]:
+        if jwt_payload.is_admin:
             result = await self._service.verify_admin_participant(
                 jwt_data=jwt_payload, background_tasks=background_tasks
             )

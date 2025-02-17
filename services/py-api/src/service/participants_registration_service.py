@@ -91,7 +91,7 @@ class ParticipantRegistrationService:
         decoded_data = decoded_result.ok_value
 
         # Check Team Capacity
-        has_capacity = await self._hackathon_service.check_team_capacity(decoded_data["team_id"])
+        has_capacity = await self._hackathon_service.check_team_capacity(decoded_data.team_id)
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 

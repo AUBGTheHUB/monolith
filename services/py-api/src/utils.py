@@ -1,6 +1,6 @@
 from os import environ
 from threading import Lock
-from typing import Any, Dict, cast, Callable
+from typing import Any, Dict, Callable, Type
 
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 from result import Err, Ok, Result
@@ -12,7 +12,7 @@ from src.server.exception import (
     JwtExpiredSignatureError,
     JwtInvalidSignatureError,
 )
-from src.server.schemas.jwt_schemas.schemas import BaseTypedDict
+from src.server.schemas.jwt_schemas.schemas import JwtBase, DecodedJwtTokenBase
 
 LOG = get_logger()
 
@@ -65,35 +65,47 @@ class SingletonMeta(type):
 
 
 class JwtUtility:
-    """A class providing generic methods for encoding data in with a predefined format into a JWT token, or decoding a JWT
-    token into a predefined format (TypedDict)"""
+    """A class providing generic methods for encoding data in with a predefined format into a JWT token, or decoding a
+    JWT token into a predefined format"""
 
     @staticmethod
-    def encode_data[T: BaseTypedDict](data: T) -> str:
-        return str(encode(payload=data, key=environ["SECRET_KEY"], algorithm="HS256"))
+    def encode_data(data: JwtBase[DecodedJwtTokenBase]) -> str:
+        """Encode a predefined payload (data) into a JWT token.
+
+        Args:
+            data: An instance of a class implementation of JwtBase, resenting the format of the token
+        """
+        return str(encode(payload=data.serialize(), key=environ["SECRET_KEY"], algorithm="HS256"))
 
     @staticmethod
     def decode_data[
-        T: BaseTypedDict
-    ](token: str, schema: Callable[..., T]) -> Result[
+        T: JwtBase[DecodedJwtTokenBase]
+    ](token: str, schema: Type[T]) -> Result[
         T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtInvalidSignatureError | JwtDecodeError
     ]:
-        try:
-            decoded_token: dict[str, Any] = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
+        """Decode a JWT token into a predefined format (schema). This method also verifies the signature of the raw
+        JWT token, and checks if the decode version matches the passed predefined format (format)
 
-            # schema.__annotations___.keys() gets all the defined fields of the TypedDict without initializing it
+        Args:
+            token: The raw JWT token in a str format
+            schema: The type of the schema to decode the token into (not an instance, only a type)
+        """
+        try:
+            decoded_token = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
+
+            # schema.__annotations___.keys() gets all the defined fields of the Schema without initializing it
             # this will help us see if all the fields that we have defined in the schema are present in the decoded
             # jwt token
             for key in schema.__annotations__.keys():
                 if key not in decoded_token:
                     return Err(JwtDecodeSchemaMismatch())
 
-            # We check both sides since we dont know which of the dictionaries is bigger than the other
+            # We check both sides since we don't know which of the dictionaries is bigger than the other
             for key in decoded_token:
                 if key not in schema.__annotations__.keys():
                     return Err(JwtDecodeSchemaMismatch())
 
-            return Ok(cast(T, decoded_token))
+            return Ok(schema.deserialize(decoded_token=decoded_token))
 
         except ExpiredSignatureError:
             return Err(JwtExpiredSignatureError())
