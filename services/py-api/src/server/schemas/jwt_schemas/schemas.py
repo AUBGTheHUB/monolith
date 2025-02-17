@@ -6,7 +6,7 @@ knowing what the JWT token should contain depending on the use case.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypedDict, Self, TypeVar
+from typing import TypedDict, Self, TypeVar, Generic
 
 
 class DecodedJwtTokenBase(TypedDict):
@@ -45,11 +45,15 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 # when accessing the attributes of the schema (result["sub"]), they won't be autocompleted as the type is a normal dict
 # and to a TypedDict
 
+# Here I had to use the old Generics syntax, to tell my-py that this var is covariant explicitly
+# To learn more:
+# https://typing.readthedocs.io/en/latest/spec/generics.html#variance-inference
+# https://typing.readthedocs.io/en/latest/spec/generics.html#variance
 T_co = TypeVar("T_co", bound=DecodedJwtTokenBase, covariant=True)
 
 
 @dataclass(kw_only=True, frozen=True)
-class JwtBase[T_co](ABC):
+class JwtBase(Generic[T_co], ABC):
     """Generic Schema (model) representing the base fields that every JWT token issued by us includes"""
 
     sub: str
