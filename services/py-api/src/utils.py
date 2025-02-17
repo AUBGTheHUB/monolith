@@ -105,6 +105,7 @@ class JwtUtility:
                 if key not in schema.__annotations__.keys():
                     return Err(JwtDecodeSchemaMismatch())
 
+            # By this time we are sure that the decoded_token is in one of the formats, that we expect
             return Ok(schema.deserialize(decoded_token=decoded_token))
 
         except ExpiredSignatureError:
