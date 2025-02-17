@@ -25,7 +25,7 @@ from src.server.schemas.request_schemas.schemas import (
 )
 from src.service.hackathon_service import HackathonService
 from structlog import get_logger
-from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
+from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
 
 PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE = datetime.now() - timedelta(seconds=180)
 PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=30)
@@ -35,9 +35,15 @@ LOG = get_logger()
 
 @pytest.fixture
 def hackathon_service(
-    participant_repo_mock: Mock, team_repo_mock: Mock, feature_switch_repo_mock : Mock, tx_manager_mock: Mock, hackathon_mail_service_mock: Mock
+    participant_repo_mock: Mock,
+    team_repo_mock: Mock,
+    feature_switch_repo_mock: Mock,
+    tx_manager_mock: Mock,
+    hackathon_mail_service_mock: Mock,
 ) -> HackathonService:
-    return HackathonService(participant_repo_mock, team_repo_mock, feature_switch_repo_mock, tx_manager_mock, hackathon_mail_service_mock)
+    return HackathonService(
+        participant_repo_mock, team_repo_mock, feature_switch_repo_mock, tx_manager_mock, hackathon_mail_service_mock
+    )
 
 
 @pytest.mark.asyncio
@@ -45,19 +51,15 @@ async def test_create_participant_and_team_in_transaction(
     hackathon_service: HackathonService,
     mock_admin_case_input_data: AdminParticipantInputData,
     participant_repo_mock: Mock,
+    mock_admin_participant: Participant,
+    mock_unverified_team: Team,
     team_repo_mock: Mock,
     tx_manager_mock: Mock,
 ) -> None:
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
-    team_repo_mock.create.return_value = Team(name=mock_admin_case_input_data.team_name)
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_admin_case_input_data.name,
-        email=mock_admin_case_input_data.email,
-        is_admin=True,
-        team_id=team_repo_mock.create.return_value.id,
-    )
-
+    team_repo_mock.create.return_value = mock_unverified_team
+    participant_repo_mock.create.return_value = mock_admin_participant
     # This is the result of the callback passed to with_transaction
     tx_manager_mock.with_transaction.return_value = Ok(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
@@ -174,17 +176,11 @@ async def test_check_capacity_admin_case_with_exceeded_capacity(
 async def test_create_random_participant(
     hackathon_service: HackathonService,
     mock_random_case_input_data: RandomParticipantInputData,
+    mock_random_participant: Participant,
     participant_repo_mock: Mock,
 ) -> None:
     # Mock successful `create` response for random participant.
-    participant_repo_mock.create.return_value = Ok(
-        Participant(
-            name=mock_random_case_input_data.name,
-            email=mock_random_case_input_data.email,
-            is_admin=False,
-            team_id=None,
-        )
-    )
+    participant_repo_mock.create.return_value = Ok(mock_random_participant)
 
     result = await hackathon_service.create_random_participant(mock_random_case_input_data)
 
@@ -288,18 +284,16 @@ async def verify_admin_participant_and_team_in_transaction_success(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
     team_repo_mock: Mock,
+    mock_verified_team: Team,
+    mock_admin_participant: Participant,
     tx_manager_mock: Mock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
+    mock_admin_participant.email_verified = True
+    mock_verified_admin_participant = mock_admin_participant
     # Mocks update for team and participants repo
-    team_repo_mock.update.return_value = Team(name=TEST_TEAM_NAME, is_verified=True)
-    participant_repo_mock.update.return_value = Participant(
-        name=TEST_USER_NAME,
-        email=TEST_USER_EMAIL,
-        email_verified=True,
-        is_admin=True,
-        team_id=team_repo_mock.update.return_value.id,
-    )
+    team_repo_mock.update.return_value = mock_verified_team
+    participant_repo_mock.update.return_value = mock_verified_admin_participant
 
     # Result the callback passed to with_transaction
     tx_manager_mock.with_transaction.return_value = Ok(
@@ -434,19 +428,11 @@ async def test_check_team_capacity_case_capacity_exceeded(
 async def test_check_send_verification_email_rate_limit_success_random(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     team_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_repo_mock.fetch_by_id.return_value = Ok(
-        Participant(
-            name=TEST_USER_NAME,
-            email=TEST_USER_EMAIL,
-            email_verified=False,
-            is_admin=False,
-            team_id=None,
-            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
-        )
-    )
+    participant_repo_mock.fetch_by_id.return_value = Ok(mock_random_participant)
 
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
@@ -460,19 +446,12 @@ async def test_check_send_verification_email_rate_limit_success_random(
 async def test_check_send_verification_email_rate_limit_not_reached_admin(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
+    mock_admin_participant: Participant,
     team_repo_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_repo_mock.fetch_by_id.return_value = Ok(
-        Participant(
-            name=TEST_USER_NAME,
-            email=TEST_USER_EMAIL,
-            email_verified=False,
-            is_admin=True,
-            team_id=mock_obj_id,
-            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE,
-        )
-    )
+    mock_admin_participant.last_sent_verification_email = datetime.now() - timedelta(seconds=180)
+    participant_repo_mock.fetch_by_id.return_value = Ok(mock_admin_participant)
 
     team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=False))
 
@@ -488,18 +467,13 @@ async def test_check_send_verification_email_rate_limit_not_reached_admin(
 async def test_check_send_verification_email_rate_limit_limit_reached(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_obj_id: str,
 ) -> None:
-    participant_repo_mock.fetch_by_id.return_value = Ok(
-        Participant(
-            name=TEST_USER_NAME,
-            email=TEST_USER_EMAIL,
-            email_verified=False,
-            is_admin=False,
-            team_id=None,
-            last_sent_verification_email=PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE,
-        )
-    )
+    # Mock insufficient time delta for sending the emails
+    mock_random_participant.last_sent_verification_email = datetime.now() - timedelta(seconds=30)
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(mock_random_participant)
 
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
@@ -513,18 +487,13 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
 async def test_check_send_verification_email_rate_limit_participant_without_last_sent_email(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_obj_id: str,
 ) -> None:
-    participant_repo_mock.fetch_by_id.return_value = Ok(
-        Participant(
-            name=TEST_USER_NAME,
-            email=TEST_USER_EMAIL,
-            email_verified=False,
-            is_admin=False,
-            team_id=None,
-            last_sent_verification_email=None,
-        )
-    )
+    # Mock participant who has not received a verification email yet
+    mock_random_participant.last_sent_verification_email = None
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(mock_random_participant)
 
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 
@@ -539,18 +508,12 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
 async def test_check_send_verification_email_rate_limit_participant_already_verified(
     hackathon_service: HackathonService,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_obj_id: str,
 ) -> None:
-    participant_repo_mock.fetch_by_id.return_value = Ok(
-        Participant(
-            name=TEST_USER_NAME,
-            email=TEST_USER_EMAIL,
-            email_verified=True,
-            is_admin=False,
-            team_id=None,
-            last_sent_verification_email=None,
-        )
-    )
+    mock_random_participant.email_verified = True
+
+    participant_repo_mock.fetch_by_id.return_value = Ok(mock_random_participant)
 
     result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=mock_obj_id)
 

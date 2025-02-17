@@ -73,11 +73,14 @@ async def test_create_participant_general_exception(
 
 @pytest.mark.asyncio
 async def test_delete_successful(
-    db_manager_mock: Mock, mock_obj_id: str, mock_admin_participant_no_id: Dict[str, Any], repo: ParticipantsRepository
+    db_manager_mock: Mock,
+    mock_obj_id: str,
+    mock_admin_participant_dump_no_id: Dict[str, Any],
+    repo: ParticipantsRepository,
 ) -> None:
     # Since the id is projected in the actual find_one_and_delete we shall do a deep copy of the mock_admin_participant without the id
     db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=mock_admin_participant_no_id
+        return_value=mock_admin_participant_dump_no_id
     )
 
     result = await repo.delete(mock_obj_id)
@@ -119,11 +122,11 @@ async def test_update_participant_success(
     db_manager_mock: Mock,
     mock_obj_id: str,
     repo: ParticipantsRepository,
-    mock_admin_participant_verified: Dict[str, Any],
+    mock_admin_participant_dump_verified: Dict[str, Any],
 ) -> None:
 
     db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=mock_admin_participant_verified
+        return_value=mock_admin_participant_dump_verified
     )
 
     result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))

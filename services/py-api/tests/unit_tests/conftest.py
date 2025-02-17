@@ -33,7 +33,6 @@ from tests.integration_tests.conftest import (
     TEST_UNIVERSITY_NAME,
     TEST_ALLOWED_AGE,
     TEST_LOCATION,
-    mock_obj_id,
 )
 
 
@@ -363,7 +362,13 @@ def mock_admin_participant(mock_unverified_team: Team, mock_obj_id: str) -> Part
 
 
 @pytest.fixture
-def mock_admin_participant_no_id(mock_admin_participant: Participant) -> Dict[str, Any]:
+def mock_verified_admin_participant(mock_admin_participant: Participant) -> Participant:
+    mock_admin_participant.email_verified = True
+    return mock_admin_participant
+
+
+@pytest.fixture
+def mock_admin_participant_dump_no_id(mock_admin_participant: Participant) -> Dict[str, Any]:
     mock_admin_participant_mongo_db_document = mock_admin_participant.dump_as_mongo_db_document()
     # Remove the id here
     mock_admin_participant_mongo_db_document.pop("_id")
@@ -371,7 +376,7 @@ def mock_admin_participant_no_id(mock_admin_participant: Participant) -> Dict[st
 
 
 @pytest.fixture
-def mock_admin_participant_verified(mock_admin_participant: Participant) -> Dict[str, Any]:
+def mock_admin_participant_dump_verified(mock_admin_participant: Participant) -> Dict[str, Any]:
     mock_admin_participant.email_verified = True
     mock_admin_participant_mongo_db_document = mock_admin_participant.dump_as_mongo_db_document()
     # Remove the id here
@@ -400,7 +405,13 @@ def mock_invite_participant(mock_unverified_team: Team, mock_obj_id: str) -> Par
 
 
 @pytest.fixture
-def mock_invite_participant_no_id(mock_invite_participant: Participant) -> Dict[str, Any]:
+def mock_verified_invite_participant(mock_invite_participant: Participant) -> Participant:
+    mock_invite_participant.email_verified = True
+    return mock_invite_participant
+
+
+@pytest.fixture
+def mock_invite_participant_dump_no_id(mock_invite_participant: Participant) -> Dict[str, Any]:
     mock_invite_participant_mongo_db_document = mock_invite_participant.dump_as_mongo_db_document()
     # Remove the id here
     mock_invite_participant_mongo_db_document.pop("_id")
@@ -408,7 +419,7 @@ def mock_invite_participant_no_id(mock_invite_participant: Participant) -> Dict[
 
 
 @pytest.fixture
-def mock_invite_participant_verified(mock_invite_participant: Participant) -> Dict[str, Any]:
+def mock_invite_participant_dump_verified(mock_invite_participant: Participant) -> Dict[str, Any]:
     mock_invite_participant.email_verified = True
     mock_invite_participant_mongo_db_document = mock_invite_participant.dump_as_mongo_db_document()
     # Remove the id here
@@ -436,7 +447,13 @@ def mock_random_participant(mock_obj_id: str) -> Participant:
 
 
 @pytest.fixture
-def mock_random_participant_no_id(mock_random_participant: Participant) -> Dict[str, Any]:
+def mock_verified_random_participant(mock_random_participant: Participant) -> Participant:
+    mock_random_participant.email_verified = True
+    return mock_random_participant
+
+
+@pytest.fixture
+def mock_random_participant_dump_no_id(mock_random_participant: Participant) -> Dict[str, Any]:
     mock_random_participant_mongo_db_document = mock_random_participant.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
@@ -444,8 +461,8 @@ def mock_random_participant_no_id(mock_random_participant: Participant) -> Dict[
 
 
 @pytest.fixture
-def mock_random_participant_verified(mock_random_participant: Participant) -> Dict[str, Any]:
-    mock_random_participant.is_verified = True
+def mock_random_participant_dump_verified(mock_random_participant: Participant) -> Dict[str, Any]:
+    mock_random_participant.email_verified = True
     mock_random_participant_mongo_db_document = mock_random_participant.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
