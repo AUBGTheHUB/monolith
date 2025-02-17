@@ -6,7 +6,7 @@ knowing what the JWT token should contain depending on the use case.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypedDict, Self
+from typing import TypedDict, Self, TypeVar
 
 
 class DecodedJwtTokenBase(TypedDict):
@@ -45,12 +45,11 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 # when accessing the attributes of the schema (result["sub"]), they won't be autocompleted as the type is a normal dict
 # and to a TypedDict
 
-# https://typing.readthedocs.io/en/latest/spec/generics.html#variance-inference
-# https://typing.readthedocs.io/en/latest/spec/generics.html#variance
+T_co = TypeVar("T_co", bound=DecodedJwtTokenBase, covariant=True)
 
 
 @dataclass(kw_only=True, frozen=True)
-class JwtBase[T: DecodedJwtTokenBase](ABC):
+class JwtBase[T_co](ABC):
     """Generic Schema (model) representing the base fields that every JWT token issued by us includes"""
 
     sub: str
@@ -61,13 +60,13 @@ class JwtBase[T: DecodedJwtTokenBase](ABC):
     """Time after which the JWT expires (represented in Epoch time)"""
 
     @abstractmethod
-    def serialize(self) -> T:
-        """Creates a dict format of the schema"""
+    def serialize(self) -> T_co:
+        """Creates a dict format of the schema. The format of the dict is the passed Type in the Generic class."""
         raise NotImplementedError()
 
     @classmethod
     @abstractmethod
-    def deserialize(cls, decoded_token: T) -> Self:
+    def deserialize(cls, decoded_token: T_co) -> Self:
         """Creates a Schema object from the passed decoded_token (raw dict).
 
         Implementations are not responsible for verifying if the passed decoded_token (raw dict) contains the same
