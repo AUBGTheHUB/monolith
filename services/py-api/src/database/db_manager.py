@@ -36,7 +36,7 @@ class DatabaseManager(metaclass=SingletonMeta):
             host=environ["DATABASE_URL"], minPoolSize=ceil(0.1 * 25), maxConnecting=25, maxIdleTimeMS=5 * 60 * 1000
         )
 
-    def close_all_connections(self) -> Err[str]:
+    def close_all_connections(self) -> Err[str] | None:
         """Closes all connections in the pool managed by Mongo"""
         if self._client is None:
             LOG.error("The database client is not initialized!")
@@ -45,11 +45,15 @@ class DatabaseManager(metaclass=SingletonMeta):
         LOG.debug("Closing all database connections")
         self._client.close()
 
-    async def async_ping_db(self) -> Err[str]:
+        return None
+
+    async def async_ping_db(self) -> Err[str] | None:
         try:
             LOG.debug("Pinging MongoDB...")
             await self._client.admin.command("ping")
             LOG.debug("Pong")
+
+            return None
         except ConnectionFailure as cf:
             LOG.exception("Pinging db failed due to err {}".format(cf))
             return Err("Database is unavailable!")
@@ -57,17 +61,13 @@ class DatabaseManager(metaclass=SingletonMeta):
             LOG.exception("Pinging db failed due to err {}".format(err))
             return Err("Database authentication failed!")
 
-    @property
-    def client(self) -> AsyncIOMotorClient:
-        return self._client
-
     def get_collection(self, collection_name: str) -> AsyncIOMotorCollection:
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-database
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
         return self._client[self._DB_NAME][collection_name]
 
 
-def ping_db() -> Err[str]:
+def ping_db() -> Err[str] | None:
     """This method is used only on application startup. It is different from the async_ping_db defined in the
     DatabaseManager as it uses the synchronous MongoClient. We need this method because if we used the async_ping_db we
     had to await it. The await keyword is used only is async ctx and the start() method should not and cannot be async,
@@ -78,6 +78,8 @@ def ping_db() -> Err[str]:
         LOG.debug("Pinging MongoDB...")
         mongo_client.admin.command("ping")
         LOG.debug("Pong")
+
+        return None
     except ConnectionFailure as cf:
         LOG.exception("Pinging db failed due to err {}".format(cf))
         return Err("Database is unavailable!")
