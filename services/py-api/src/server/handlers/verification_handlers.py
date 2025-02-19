@@ -58,3 +58,14 @@ class VerificationHandlers(BaseHandler):
             response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
             status_code=status.HTTP_202_ACCEPTED,
         )
+
+
+def verification_handlers_provider(service: ParticipantVerificationService) -> VerificationHandlers:
+    """
+    Args:
+        service: A ParticipantVerificationService instance
+
+    Returns:
+        A VerificationHandlers instance
+    """
+    return VerificationHandlers(service=service)

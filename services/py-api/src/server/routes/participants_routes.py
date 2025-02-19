@@ -1,8 +1,13 @@
 from typing import Union
 from fastapi import APIRouter, Depends, BackgroundTasks
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-from src.server.routes.dependency_factory import _h_service
 from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.routes.routes_dependencies import (
+    get_participant_handlers,
+    is_auth,
+    validate_obj_id,
+    get_hackathon_management_handlers,
+)
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
     ParticipantRegisteredResponse,
@@ -10,26 +15,9 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
-from src.service.participants_registration_service import ParticipantRegistrationService
-from src.server.routes.dependency_factory import is_auth, validate_obj_id
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
-
-
-def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(h_service)
-
-
-def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
-    return ParticipantHandlers(p_service)
-
-
-def _h_handler(
-    h_service: HackathonService = Depends(_h_service),
-) -> HackathonManagementHandlers:
-    return HackathonManagementHandlers(h_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
@@ -41,7 +29,7 @@ async def create_participant(
     participant_request_body: ParticipantRequestBody,
     background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
-    participant_handler: ParticipantHandlers = Depends(_p_handler),
+    participant_handler: ParticipantHandlers = Depends(get_participant_handlers),
 ) -> Response:
     return await participant_handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
@@ -52,5 +40,7 @@ async def create_participant(
     responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
-async def delete_participant(object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)) -> Response:
+async def delete_participant(
+    object_id: str, handler: HackathonManagementHandlers = Depends(get_hackathon_management_handlers)
+) -> Response:
     return await handler.delete_participant(object_id)

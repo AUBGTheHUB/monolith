@@ -84,3 +84,14 @@ class ParticipantVerificationService:
             return err
 
         return Ok(result.ok_value[0])
+
+
+def participant_verification_service_provider(hackathon_service: HackathonService) -> ParticipantVerificationService:
+    """
+    Args:
+        hackathon_service: A HackathonService instance
+
+    Returns:
+        A ParticipantVerificationService instance
+    """
+    return ParticipantVerificationService(hackathon_service)

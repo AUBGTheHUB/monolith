@@ -15,3 +15,14 @@ class FeatureSwitchService:
 
     async def check_all_feature_switches(self) -> Result[List[FeatureSwitch], Exception]:
         return await self._repository.fetch_all()
+
+
+def feature_switch_service_provider(repository: FeatureSwitchRepository) -> FeatureSwitchService:
+    """
+    Args:
+        repository: A FeatureSwitchRepository instance
+
+    Returns:
+        A FeatureSwitchService instance
+    """
+    return FeatureSwitchService(repository)

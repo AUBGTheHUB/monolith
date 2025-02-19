@@ -1,8 +1,7 @@
-from abc import ABCMeta
 from collections.abc import Callable
 from os import environ
 from threading import Lock
-from typing import Any, Dict, cast
+from typing import Any, cast
 from jwt import DecodeError, ExpiredSignatureError, InvalidSignatureError, decode, encode
 from src.server.exception import (
     JwtDecodeError,
@@ -10,7 +9,6 @@ from src.server.exception import (
     JwtExpiredSignatureError,
     JwtInvalidSignatureError,
 )
-import httpx
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 
@@ -19,46 +17,31 @@ from src.server.schemas.jwt_schemas.schemas import BaseTypedDict
 LOG = get_logger()
 
 
-class SingletonMeta(type):
+def singleton[T](provider_func: Callable[..., T]) -> Callable[..., T]:
     """
-    Thread-safe implementation of Singleton. As a metaclass in provides the singleton behaviour to classes using it.
-    https://refactoring.guru/design-patterns/singleton/python/example#example-1
+    Thread-safe implementation of Singleton. Should be as a decorator of a "provider" function. A "provider" function
+    is one which provides an instance of a class.
+    Notes:
+        The lock in the singleton decorator ensures that only one thread at a time can create an instance. However, it
+        does not automatically make the created instance of the underlying class thread-safe!
     """
+    providers = {}
+    lock = Lock()
 
-    _instances: Dict[Any, Any] = {}
-    _lock = Lock()
+    def get_instance(*args: Any, **kwargs: Any) -> T:
+        # As multiple threads could access `if cls not in instances` at the same time, this creates a race condition,
+        # and we could have two different instances created. By using a lock, only ont thread at a time could execute
+        # the check below.
+        with lock:
+            # if the provider func is not in the dict
+            if provider_func not in providers:
+                # We set in the dict: the provider type as key, and the provided instance as value
+                providers[provider_func] = provider_func(*args, **kwargs)
 
-    def __call__(cls, *args: Any, **kwargs: Any) -> Any:
-        # On the first call a thread acquires the lock
-        with cls._lock:
-            if cls not in cls._instances:
-                instance = super().__call__(*args, **kwargs)
-                cls._instances[cls] = instance
+        # we return the value from the dict (a.k.a the instance of the class)
+        return providers[provider_func]
 
-        return cls._instances[cls]
-
-
-class SingletonABCMeta(SingletonMeta, ABCMeta):
-    """A metaclass that combines SingletonMeta and ABCMeta."""
-
-
-class AsyncClient(metaclass=SingletonMeta):
-    # https://stackoverflow.com/questions/71031816/how-do-you-properly-reuse-an-httpx-asyncclient-within-a-fastapi-application
-    # TODO: Finish implementation. we use this wrapper class to provide an abstraction over the async http library we
-    #  use. It is somewhat of a [Facade Pattern](https://refactoring.guru/design-patterns/facade) so that if we decide
-    #  to swap the underlying library for another one we do it only here, and all of the callers which use this class
-    #  won't break. If we use the library directly we get coupled to the interface and implementations of the given
-    #  libray, which makes our code harder to change in the future.
-
-    def __init__(self) -> None:
-        self._async_client = httpx.AsyncClient()
-
-    async def stop(self) -> None:
-        """Raises RuntimeError if the client has not been initialized"""
-        if self._async_client is None:
-            raise RuntimeError("The AsyncClient has not been initialized!")
-
-        await self._async_client.aclose()
+    return get_instance
 
 
 class JwtUtility:
@@ -73,7 +56,7 @@ class JwtUtility:
     def decode_data[
         T: BaseTypedDict
     ](token: str, schema: Callable[..., T]) -> Result[
-        T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtDecodeError
+        T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtInvalidSignatureError | JwtDecodeError
     ]:
         try:
             decoded_token: dict[str, Any] = decode(jwt=token, key=environ["SECRET_KEY"], algorithms=["HS256"])
