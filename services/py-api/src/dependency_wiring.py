@@ -88,8 +88,8 @@ _feature_switch_service = feature_switch_service_provider(repository=_feature_sw
 # ===============================
 
 # These Dependencies are public as they are imported in the `routes/routes_dependencies.py`
-# For every handler we should create a function to be passed to the ``fastapi.Depends`` in the
-# `routes/routes_dependencies.py` file
+# There for every handler we should create a wrapper function which returns the already created instance.
+# For more info, check the docs in the `routes/routes_dependencies.py` file.
 
 FEATURE_SWITCH_HANDLERS = feature_switch_handlers_provider(service=_feature_switch_service)
 HACKATHON_MANAGEMENT_HANDLERS = hackathon_management_handlers_provider(service=_hackathon_service)
