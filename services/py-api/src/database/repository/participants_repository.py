@@ -64,7 +64,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
-            LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json())
+            LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump())
 
             # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
             # default behaviour.

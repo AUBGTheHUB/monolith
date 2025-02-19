@@ -109,3 +109,22 @@ class ParticipantRegistrationService:
             return err
 
         return result
+
+    # Returns true if the operation was successful or some shit like that
+    async def create_random_participant_teams(self) -> bool:
+
+        result = await self._hackathon_service.retrieve_and_categorize_random_participants()
+
+        if is_err(result):
+            return False
+
+        (prog_participants, non_prog_participants) = result.ok_value
+
+        random_teams = self._hackathon_service.form_random_participant_teams(prog_participants, non_prog_participants)
+
+        result = await self._hackathon_service.create_random_participant_teams_in_transaction(random_teams)
+
+        if is_err(result):
+            return False
+
+        return True

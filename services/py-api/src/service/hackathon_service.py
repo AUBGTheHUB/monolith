@@ -444,7 +444,9 @@ class HackathonService:
 
         return None
 
-    async def categorize_random_participants(self) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
+    async def retrieve_and_categorize_random_participants(
+        self,
+    ) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
         programming_oriented = []
         non_programming_oriented = []
         # Fetch all the verified random participants
@@ -458,7 +460,8 @@ class HackathonService:
         for participant in result.ok_value:
             if participant.programming_level == "I am not participating as a programmer":
                 non_programming_oriented.append(participant)
-            programming_oriented.append(participant)
+            else:
+                programming_oriented.append(participant)
 
         return Ok((programming_oriented, non_programming_oriented))
 
@@ -476,13 +479,13 @@ class HackathonService:
         for i in range(number_of_teams):
             teams.append(RandomTeam(team=Team(name=f"RandomTeam{i}", is_verified=True), participants=[]))
 
-        # Spread all the programming experienced participants to the teams in a Round Robin manner
+        # Spread all the programming experienced participants to the teams in a Round Robin (RR) manner
         ctr = 0  # initialize a counter
         while len(prog_participants) > 0:
             teams[ctr % number_of_teams]["participants"].append(prog_participants.pop())
             ctr += 1
 
-        # Spread all the non-programming experienced participants to the teams in a Round Robin manner
+        # Spread all the non-programming experienced participants to the teams in a Round Robin (RR) manner
         ctr = 0  # reset counter
         while len(non_prog_participants) > 0:
             teams[ctr % number_of_teams]["participants"].append(non_prog_participants.pop())
@@ -507,7 +510,7 @@ class HackathonService:
 
                 result = await self._participant_repo.update(
                     obj_id=str(participant.id),
-                    obj_fields=UpdateParticipantParams(team_id=str(random_team["team"].id)),
+                    obj_fields=UpdateParticipantParams(team_id=random_team["team"].id),
                     session=session,
                 )
 

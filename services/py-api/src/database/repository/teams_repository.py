@@ -88,7 +88,7 @@ class TeamsRepository(CRUDRepository[Team]):
     ) -> Result[Team, TeamNotFoundError | Exception]:
         try:
 
-            LOG.info(f"Updating team...", team_id=obj_id, updated_fields=obj_fields.model_dump_json())
+            LOG.info(f"Updating team...", team_id=obj_id, updated_fields=obj_fields.model_dump())
 
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},

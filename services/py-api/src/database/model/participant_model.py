@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Annotated, Literal, Dict, Any, Optional, Union
-from pydantic import Field, field_validator, EmailStr
+from pydantic import Field, field_validator, EmailStr, ConfigDict
+from bson import ObjectId
+from structlog.stdlib import get_logger
+
+LOG = get_logger()
 
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
@@ -145,11 +149,13 @@ class UpdateParticipantParams(UpdateParams):
     Build to be used for updating the Participant document in the database.
     """
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     name: Union[str, None] = None
     email: Union[EmailStr, None] = None
     email_verified: Union[bool, None] = None
     is_admin: Union[bool, None] = None
-    team_id: Union[str, None] = None
+    team_id: Union[ObjectId, None] = None
     tshirt_size: Union[TSHIRT_SIZE, None] = None
     university: Union[UNIVERSITIES_LIST, None] = None
     location: Union[str, None] = None
@@ -163,3 +169,8 @@ class UpdateParticipantParams(UpdateParams):
     has_previous_coding_experience: Union[bool, None] = None
     share_info_with_sponsors: Union[bool, None] = None
     last_sent_verification_email: Union[datetime, None] = None
+
+    def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
+        dump = super().model_dump(exclude_none=exclude_none, exclude=["team_id"], **kwargs)  # type: ignore
+        dump["team_id"] = self.team_id
+        return dump

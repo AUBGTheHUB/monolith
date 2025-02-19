@@ -1,5 +1,7 @@
+from asyncio.tasks import create_task
 from os import environ
 from typing import Annotated
+from starlette import status
 from fastapi import Depends, HTTPException, Header, Path
 from src.database.db_manager import DB_MANAGER, FEATURE_SWITCH_COLLECTION, PARTICIPANTS_COLLECTION, TEAMS_COLLECTION
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -7,18 +9,19 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
+from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
 
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.mail_service.mail_client import ResendMailClient
-
+from src.service.participants_registration_service import ParticipantRegistrationService
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
 
-REGISTRATION_FEATURE_SWITCH = "isRegistrationOpen"
+REGISTRATION_FEATURE_SWITCH = "isRegTeamsFull"
 
 
 def _p_repo(db_manager: DB_MANAGER) -> ParticipantsRepository:
@@ -60,6 +63,14 @@ def _h_service(
     return HackathonService(p_repo, t_repo, fs_repo, tx_manager, mail_service)
 
 
+def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
+    return ParticipantRegistrationService(h_service)
+
+
+def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
+    return ParticipantHandlers(p_service)
+
+
 def is_auth(authorization: Annotated[str, Header()]) -> None:
     # This follows the dependency pattern that is provided to us by FastAPI
     # You can read more about it here:
@@ -85,12 +96,20 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
 
 
 # TODO: Since Alex has created more specific feature switches this logic shall be changed
-# async def registration_open(service: FeatureSwitchService = Depends(_fs_service)) -> None:
-#
-#     result = await service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
-#
-#     if is_err(result):
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
-#
-#     if result.ok_value.state is False:
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
+def is_err(result):
+    pass
+
+
+async def registration_open(
+    fs_service: FeatureSwitchService = Depends(_fs_service),
+    p_service: ParticipantRegistrationService = Depends(_p_reg_service),
+) -> None:
+
+    result = await fs_service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
+
+    if is_err(result):
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
+
+    if result.ok_value.state is True:
+        create_task(p_service.create_random_participant_teams())
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
