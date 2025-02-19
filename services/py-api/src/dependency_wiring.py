@@ -1,4 +1,16 @@
 """Here we do our Manual Dependency Wiring (building the object dependency graph)
+
+A graphical representation of this graph looks something like this:
+
+```
+                          Repositories -> DbManagers -> DbClients
+                         /
+Routes -> Handlers -> Services -> OtherServices -> OtherComponents
+                         \
+                          MailServices ->  MailClients
+```
+
+* Note: -> Means accepts (e.g. Routes -> Handlers, means Routes accept handlers as dependencies)
 """
 
 from src.database.db_clients import mongo_db_client_provider
