@@ -137,3 +137,29 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def get_number_registered_teammates(self, team_id: str) -> int:
         """Returns the count of registered participants already in the team."""
         return await self._collection.count_documents({"team_id": ObjectId(team_id)})  # type: ignore
+
+    async def get_verified_random_participants(self) -> List[Participant]:
+        """Returns a list of verified random participants."""
+
+        try:
+            LOG.info("Fetching all random participants...")
+
+            participants_data = await self._collection.find(filter={"email_verified": True, "team_id": None}).to_list(
+                length=None
+            )
+
+            participants = []
+
+            for doc in participants_data:
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                participants.append(Participant(**doc_copy))
+
+            LOG.debug(f"Fetched {len(participants)} verified random participants.")
+            return Ok(participants)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch the verified random participants due to err {e}")
+            return Err(e)

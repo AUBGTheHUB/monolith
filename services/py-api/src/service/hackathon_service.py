@@ -441,3 +441,28 @@ class HackathonService:
             return err
 
         return None
+
+    def categorize_random_participants(self) -> None:
+        pass
+
+        # Fetch all the verified random participants
+        self._participant_repo.get_verified_random_participants()
+        # Group the into categories (programming oriented, business oriented, design oriented)
+
+        # Return the groups
+
+
+    def form_random_participant_teams(self) -> None:
+        # Gets the categorized participants and spreads them into teams in a Round Robin manner
+
+        # Returns the array of teams
+
+        pass
+
+    def _create_random_participant_teams_callback(self) -> None:
+
+        pass
+
+    def create_random_participant_teams(self) -> None:
+
+        pass
