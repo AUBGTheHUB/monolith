@@ -7,7 +7,7 @@ from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import DatabaseManager
+from src.database.db_manager import MongoDatabaseManager
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
@@ -17,7 +17,7 @@ LOG = get_logger()
 
 class TeamsRepository(CRUDRepository[Team]):
 
-    def __init__(self, db_manager: DatabaseManager, collection_name: str) -> None:
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
         self._collection = db_manager.get_collection(collection_name)
 
     async def create(
@@ -165,3 +165,15 @@ class TeamsRepository(CRUDRepository[Team]):
         except Exception as e:
             LOG.exception(f"Failed to fetch team due to err", team_name=team_name, error=e)
             return Err(e)
+
+
+def teams_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> TeamsRepository:
+    """
+    Args:
+        db_manager: A MongoDatabaseManager implementation instance
+        collection_name: The name of the collection in the Mongo database
+
+    Returns:
+         A TeamsRepository instance.
+    """
+    return TeamsRepository(db_manager=db_manager, collection_name=collection_name)

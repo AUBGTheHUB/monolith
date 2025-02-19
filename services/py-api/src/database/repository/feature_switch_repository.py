@@ -1,19 +1,20 @@
 from typing import Optional, List, cast, Any, Dict
+
+from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
-from src.database.db_manager import DatabaseManager
+
+from src.database.db_manager import MongoDatabaseManager
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from structlog.stdlib import get_logger
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import FeatureSwitchNotFoundError
-from pymongo import ReturnDocument
-from bson import ObjectId
 
 LOG = get_logger()
 
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, db_manager: DatabaseManager, collection_name: str):
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str):
         self._collection = db_manager.get_collection(collection_name)
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
@@ -136,3 +137,15 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
         except Exception as e:
             LOG.exception("Failed to update the feature switch", feature_switch_name=name, error=e)
             return Err(e)
+
+
+def feature_switch_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> FeatureSwitchRepository:
+    """
+    Args:
+        db_manager: A MongoDatabaseManager implementation instance
+        collection_name: The name of the collection in the Mongo database
+
+    Returns:
+         A FeatureSwitchRepository instance.
+    """
+    return FeatureSwitchRepository(db_manager=db_manager, collection_name=collection_name)

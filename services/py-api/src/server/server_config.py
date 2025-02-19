@@ -7,12 +7,8 @@ from uvicorn import run
 
 from src.database.db_manager import ping_db
 from src.environment import DOMAIN, PORT
-from src.server.logger.logger_factory import get_uvicorn_logger, configure_app_logger
-from src.utils import SingletonMeta
-
-# This should be done before calling LOG = get_logger(), which we use in almost
-# every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
-configure_app_logger(environ["ENV"])
+from src.server.logger.logger_factory import get_uvicorn_logger
+from src.utils import singleton
 
 LOG = get_logger()
 
@@ -36,12 +32,13 @@ def _get_ssl_config() -> Tuple[str, str]:
 
 
 @dataclass
-class _ServerConfig(metaclass=SingletonMeta):
+class _ServerConfig:
     ENV = environ["ENV"]
     ADDRESS = environ["ADDRESS"]
     SSL_CERT, SSL_KEY = _get_ssl_config()
 
 
+@singleton
 def _load_server_config() -> "_ServerConfig":
     """Returns a Singleton Server Config"""
     return _ServerConfig()
@@ -59,7 +56,7 @@ def start() -> None:
         LOG.debug("To open swagger/docs of the API visit: https://localhost:8080/api/v3/docs")
 
     run(
-        app="src.server.app_entrypoint:app",
+        app="src.app_entrypoint:app",
         host=server_config.ADDRESS,
         port=PORT,
         reload=server_config.ENV == "LOCAL",

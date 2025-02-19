@@ -104,3 +104,14 @@ class ParticipantVerificationService:
             # If the registration switch was flipped successfully create the random participant teams
             if not is_err(result):
                 await self._hackathon_service.create_random_participant_teams()
+
+
+def participant_verification_service_provider(hackathon_service: HackathonService) -> ParticipantVerificationService:
+    """
+    Args:
+        hackathon_service: A HackathonService instance
+
+    Returns:
+        A ParticipantVerificationService instance
+    """
+    return ParticipantVerificationService(hackathon_service)

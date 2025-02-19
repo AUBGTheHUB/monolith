@@ -3,17 +3,15 @@
 from asyncio import sleep
 from typing import Callable, Any, Awaitable
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorClient
 from pymongo.errors import PyMongoError
 from result import Err, is_err, Result, is_ok
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import DatabaseManager
-
 LOG = get_logger()
 
 
-class TransactionManager:
+class MongoTransactionManager:
     """This class is responsible for executing multiple mongo db queries such as insert_one or update_on in a
     transactional context. It manages operations such as starting, commiting, aborting and retrying a transaction.
     The terms you will see in the code below:
@@ -36,8 +34,8 @@ class TransactionManager:
     https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/
     """
 
-    def __init__(self, db_manager: DatabaseManager) -> None:
-        self._client = db_manager.client
+    def __init__(self, client: AsyncIOMotorClient) -> None:
+        self._client = client
 
     @staticmethod
     async def _retry_tx(func: Callable[..., Awaitable[Result]], *args: Any, **kwargs: Any) -> Result:
@@ -165,3 +163,14 @@ class TransactionManager:
             LOG.debug("Closing DB session")
             # Finish this session. If a transaction has started, abort it.
             await session.end_session()
+
+
+def mongo_tx_manager_provider(client: AsyncIOMotorClient) -> MongoTransactionManager:
+    """
+    Args:
+        client: A singleton AsyncIOMotorClient instance
+
+    Returns:
+        A TransactionManager instance
+    """
+    return MongoTransactionManager(client=client)

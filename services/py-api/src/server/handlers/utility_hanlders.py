@@ -1,13 +1,13 @@
 from starlette import status
 
-from src.database.db_manager import DB_MANAGER
+from src.database.db_manager import MongoDatabaseManager
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse, Response
 
 
 class UtilityHandlers(BaseHandler):
 
-    def __init__(self, db_manger: DB_MANAGER) -> None:
+    def __init__(self, db_manger: MongoDatabaseManager) -> None:
         self.db_manger = db_manger
 
     async def ping_services(self) -> Response:
@@ -21,3 +21,14 @@ class UtilityHandlers(BaseHandler):
             return Response(ErrResponse(error="Database not available!"), status.HTTP_503_SERVICE_UNAVAILABLE)
 
         return Response(PongResponse(message="pong"), status_code=status.HTTP_200_OK)
+
+
+def utility_handlers_provider(db_manger: MongoDatabaseManager) -> UtilityHandlers:
+    """
+    Args:
+        db_manger: A MongoDatabaseManager instance
+
+    Returns:
+        A UtilityHandlers instance
+    """
+    return UtilityHandlers(db_manger=db_manger)

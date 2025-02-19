@@ -36,3 +36,14 @@ class FeatureSwitchService:
         )
 
         return update_result
+
+
+def feature_switch_service_provider(repository: FeatureSwitchRepository) -> FeatureSwitchService:
+    """
+    Args:
+        repository: A FeatureSwitchRepository instance
+
+    Returns:
+        A FeatureSwitchService instance
+    """
+    return FeatureSwitchService(repository)

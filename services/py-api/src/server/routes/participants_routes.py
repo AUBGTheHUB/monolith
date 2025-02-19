@@ -3,6 +3,12 @@ from fastapi import APIRouter, Depends, BackgroundTasks
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 from src.server.routes.dependency_factory import registration_open, _p_handler, _h_handler
 from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.routes.routes_dependencies import (
+    get_participant_handlers,
+    is_auth,
+    validate_obj_id,
+    get_hackathon_management_handlers,
+)
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
     ParticipantRegisteredResponse,
@@ -28,7 +34,7 @@ async def create_participant(
     participant_request_body: ParticipantRequestBody,
     background_tasks: BackgroundTasks,
     jwt_token: Union[str, None] = None,
-    participant_handler: ParticipantHandlers = Depends(_p_handler),
+    participant_handler: ParticipantHandlers = Depends(get_participant_handlers),
 ) -> Response:
     return await participant_handler.create_participant(participant_request_body, background_tasks, jwt_token)
 
@@ -39,5 +45,7 @@ async def create_participant(
     responses={200: {"model": ParticipantDeletedResponse}, 404: {"model": ErrResponse}},
     dependencies=[Depends(is_auth), Depends(validate_obj_id)],
 )
-async def delete_participant(object_id: str, handler: HackathonManagementHandlers = Depends(_h_handler)) -> Response:
+async def delete_participant(
+    object_id: str, handler: HackathonManagementHandlers = Depends(get_hackathon_management_handlers)
+) -> Response:
     return await handler.delete_participant(object_id)
