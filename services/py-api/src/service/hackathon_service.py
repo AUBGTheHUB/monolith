@@ -14,7 +14,7 @@ from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.database.transaction_manager import MongoTransactionManager
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
 from src.server.exception import (
     DuplicateTeamNameError,
@@ -63,14 +63,16 @@ class HackathonService:
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
         feature_switch_repo: FeatureSwitchRepository,
-        tx_manager: TransactionManager,
+        tx_manager: MongoTransactionManager,
         mail_service: HackathonMailService,
+        jwt_utility: JwtUtility,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
         self._fs_repo = feature_switch_repo
         self._tx_manager = tx_manager
         self._mail_service = mail_service
+        self._jwt_utility = jwt_utility
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
@@ -345,7 +347,7 @@ class HackathonService:
         payload = JwtParticipantVerificationData(sub=str(participant.id), is_admin=participant.is_admin, exp=expiration)
 
         # Create the Jwt Token
-        jwt_token = JwtUtility.encode_data(data=payload)
+        jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
         if is_prod_env():
@@ -424,7 +426,7 @@ class HackathonService:
         payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
 
         # Create the Jwt Token
-        jwt_token = JwtUtility.encode_data(data=payload)
+        jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
         if is_prod_env():
@@ -441,3 +443,33 @@ class HackathonService:
             return err
 
         return None
+
+
+def hackathon_service_provider(
+    p_repo: ParticipantsRepository,
+    t_repo: TeamsRepository,
+    fs_repo: FeatureSwitchRepository,
+    tx_manager: MongoTransactionManager,
+    mail_service: HackathonMailService,
+    jwt_utility: JwtUtility,
+) -> HackathonService:
+    """
+    Args:
+        p_repo: A ParticipantsRepository instance
+        t_repo: A TeamsRepository instance
+        fs_repo: A FeatureSwitchRepository instance
+        tx_manager: A MongoTransactionManager instance
+        mail_service: A HackathonMailService instance
+        jwt_utility: A JwtUtility instance
+
+    Returns:
+        A HackathonService instance.
+    """
+    return HackathonService(
+        participant_repo=p_repo,
+        team_repo=t_repo,
+        feature_switch_repo=fs_repo,
+        tx_manager=tx_manager,
+        mail_service=mail_service,
+        jwt_utility=jwt_utility,
+    )

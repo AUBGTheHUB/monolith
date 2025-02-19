@@ -3,7 +3,7 @@ from result import Err
 from structlog.stdlib import get_logger
 
 from src.database.model.participant_model import Participant
-from src.service.mail_service.mail_client import MailClient
+from src.service.mail_service.mail_clients.base_mail_client import MailClient
 from src.service.mail_service.utils import (
     load_email_registration_confirmation_html_template,
     load_email_verify_participant_html_template,
@@ -114,3 +114,14 @@ class HackathonMailService:
             body_content=body_html,
             content_type="html",
         )
+
+
+def hackathon_mail_service_provider(client: MailClient) -> HackathonMailService:
+    """
+    Args:
+        client: A MailClient implementation instance
+
+    Returns:
+         A HackathonMailService instance.
+    """
+    return HackathonMailService(client=client)

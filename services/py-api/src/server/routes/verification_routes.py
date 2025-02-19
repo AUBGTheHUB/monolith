@@ -1,5 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends
 from src.server.handlers.verification_handlers import VerificationHandlers
+from src.server.routes.routes_dependencies import get_verification_handlers
 from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
@@ -7,19 +8,8 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
     VerificationEmailSentSuccessfullyResponse,
 )
-from src.service.participants_verification_service import ParticipantVerificationService
-from src.service.hackathon_service import HackathonService
-from src.server.routes.dependency_factory import _h_service
 
 verification_router = APIRouter(prefix="/hackathon/participants/verify")
-
-
-def _p_verify_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantVerificationService:
-    return ParticipantVerificationService(h_service)
-
-
-def _handler(p_verify_service: ParticipantVerificationService = Depends(_p_verify_service)) -> VerificationHandlers:
-    return VerificationHandlers(p_verify_service)
 
 
 @verification_router.patch(
@@ -28,9 +18,11 @@ def _handler(p_verify_service: ParticipantVerificationService = Depends(_p_verif
     responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}, 400: {"model": ErrResponse}},
 )
 async def verify_participant(
-    jwt_token: str, background_tasks: BackgroundTasks, _handler: VerificationHandlers = Depends(_handler)
+    jwt_token: str,
+    background_tasks: BackgroundTasks,
+    handler: VerificationHandlers = Depends(get_verification_handlers),
 ) -> Response:
-    return await _handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
+    return await handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
 
 
 @verification_router.post(
@@ -46,8 +38,8 @@ async def verify_participant(
 async def send_verification_email(
     email_verification_request_body: ResendEmailParticipantData,
     background_tasks: BackgroundTasks,
-    _handler: VerificationHandlers = Depends(_handler),
+    handler: VerificationHandlers = Depends(get_verification_handlers),
 ) -> Response:
-    return await _handler.resend_verification_email(
+    return await handler.resend_verification_email(
         participant_id=email_verification_request_body.participant_id, background_tasks=background_tasks
     )

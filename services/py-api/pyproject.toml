@@ -28,7 +28,7 @@ pytest-cov = "^5.0.0"
 locust = "^2.31.8"
 
 [tool.poetry.scripts]
-start = "src.server.app_entrypoint:start"
+start = "src.app_entrypoint:start"
 
 [build-system]
 requires = ["poetry-core"]

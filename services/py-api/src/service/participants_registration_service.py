@@ -109,3 +109,14 @@ class ParticipantRegistrationService:
             return err
 
         return result
+
+
+def participant_reg_service_provider(hackathon_service: HackathonService) -> ParticipantRegistrationService:
+    """
+    Args:
+        hackathon_service: A HackathonService instance
+
+    Returns:
+        A ParticipantRegistrationService instance
+    """
+    return ParticipantRegistrationService(hackathon_service)

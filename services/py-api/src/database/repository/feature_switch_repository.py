@@ -2,7 +2,8 @@ from copy import deepcopy
 from typing import Optional, List, cast, Any
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
-from src.database.db_manager import DatabaseManager
+
+from src.database.db_manager import MongoDatabaseManager
 from src.database.model.feature_switch_model import FeatureSwitch
 from structlog.stdlib import get_logger
 from src.database.repository.base_repository import CRUDRepository
@@ -12,7 +13,7 @@ LOG = get_logger()
 
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, db_manager: DatabaseManager, collection_name: str):
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str):
         self._collection = db_manager.get_collection(collection_name)
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
@@ -76,3 +77,15 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
         self, obj_id: str, obj: FeatureSwitch, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[FeatureSwitch, Exception]:
         return Err(NotImplementedError())
+
+
+def feature_switch_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> FeatureSwitchRepository:
+    """
+    Args:
+        db_manager: A MongoDatabaseManager implementation instance
+        collection_name: The name of the collection in the Mongo database
+
+    Returns:
+         A FeatureSwitchRepository instance.
+    """
+    return FeatureSwitchRepository(db_manager=db_manager, collection_name=collection_name)
