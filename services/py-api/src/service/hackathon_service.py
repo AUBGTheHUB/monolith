@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
-from typing import Final, Optional, Tuple
+from typing import Final, Optional, Tuple, List
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -31,6 +31,7 @@ from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
+from src.server.schemas.schemas import RandomTeam
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.utils import JwtUtility
 
@@ -81,6 +82,7 @@ class HackathonService:
         """
 
         team = await self._team_repo.create(Team(name=input_data.team_name), session)
+
         if is_err(team):
             return team
 
@@ -442,27 +444,81 @@ class HackathonService:
 
         return None
 
-    def categorize_random_participants(self) -> None:
-        pass
-
+    async def categorize_random_participants(self) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
+        programming_oriented = []
+        non_programming_oriented = []
         # Fetch all the verified random participants
-        self._participant_repo.get_verified_random_participants()
-        # Group the into categories (programming oriented, business oriented, design oriented)
+        result = await self._participant_repo.get_verified_random_participants()
 
-        # Return the groups
+        # Return the result to the upper layer in case of an Exception
+        if is_err(result):
+            return result
 
+        # Group the into categories programming oriented, non-programming oriented
+        for participant in result.ok_value:
+            if participant.programming_level == "I am not participating as a programmer":
+                non_programming_oriented.append(participant)
+            programming_oriented.append(participant)
 
-    def form_random_participant_teams(self) -> None:
-        # Gets the categorized participants and spreads them into teams in a Round Robin manner
+        return Ok((programming_oriented, non_programming_oriented))
 
-        # Returns the array of teams
+    def form_random_participant_teams(
+        self, prog_participants: list[Participant], non_prog_participants: list[Participant]
+    ) -> List[RandomTeam]:
+        # Calculate the number of hackathon participants
+        number_of_random_participants = len(prog_participants) + len(non_prog_participants)
+        # Calculate the number of teams that are going to be needed for the given number of participants
+        number_of_teams = ceil(number_of_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS)
 
-        pass
+        # Create a dictionary that is going to hold the participants for each team
+        teams = []
+        # Populate the dictionary with the Random Teams named `RandomTeam{i}`
+        for i in range(number_of_teams):
+            teams.append(RandomTeam(team=Team(name=f"RandomTeam{i}", is_verified=True), participants=[]))
 
-    def _create_random_participant_teams_callback(self) -> None:
+        # Spread all the programming experienced participants to the teams in a Round Robin manner
+        ctr = 0  # initialize a counter
+        while len(prog_participants) > 0:
+            teams[ctr % number_of_teams]["participants"].append(prog_participants.pop())
+            ctr += 1
 
-        pass
+        # Spread all the non-programming experienced participants to the teams in a Round Robin manner
+        ctr = 0  # reset counter
+        while len(non_prog_participants) > 0:
+            teams[ctr % number_of_teams]["participants"].append(non_prog_participants.pop())
+            ctr += 1
 
-    def create_random_participant_teams(self) -> None:
+        return teams
 
-        pass
+    async def _create_random_participant_teams_in_transaction_callback(
+        self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        # Loop through each tuple in the list. Create the team. Update all the participants with the id of the team
+        # created
+        for random_team in random_teams:
+            # Create the team
+            result = await self._team_repo.create(team=random_team["team"], session=session)
+
+            if is_err(result):
+                return result
+
+            # Insert all the participants in the team that was created
+            for participant in random_team["participants"]:
+
+                result = await self._participant_repo.update(
+                    obj_id=str(participant.id),
+                    obj_fields=UpdateParticipantParams(team_id=str(random_team["team"].id)),
+                    session=session,
+                )
+
+                if is_err(result):
+                    return result
+
+        return Ok(random_teams)
+
+    async def create_random_participant_teams_in_transaction(
+        self, input_data: List[RandomTeam]
+    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        return await self._tx_manager.with_transaction(
+            self._create_random_participant_teams_in_transaction_callback, input_data
+        )

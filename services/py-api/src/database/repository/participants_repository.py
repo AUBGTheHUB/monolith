@@ -138,7 +138,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         """Returns the count of registered participants already in the team."""
         return await self._collection.count_documents({"team_id": ObjectId(team_id)})  # type: ignore
 
-    async def get_verified_random_participants(self) -> List[Participant]:
+    async def get_verified_random_participants(self) -> Result[List[Participant], Exception]:
         """Returns a list of verified random participants."""
 
         try:
