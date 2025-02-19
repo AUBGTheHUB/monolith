@@ -1,15 +1,15 @@
 from fastapi import BackgroundTasks
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
-from src.service.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from starlette import status
-from src.utils import JwtUtility
 from src.server.schemas.response_schemas.schemas import (
     ParticipantVerifiedResponse,
     Response,
     VerificationEmailSentSuccessfullyResponse,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 
 
 class VerificationHandlers(BaseHandler):

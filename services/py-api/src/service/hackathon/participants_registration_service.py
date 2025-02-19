@@ -5,21 +5,21 @@ from result import Result, Err, is_err
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.exception import (
+from src.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
     TeamCapacityExceededError,
     TeamNameMissmatchError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.hackathon_service import HackathonService
-from src.utils import JwtUtility
+from src.service.hackathon.hackathon_service import HackathonService
 
 
 class ParticipantRegistrationService:

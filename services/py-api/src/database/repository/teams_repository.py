@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import MongoDatabaseManager
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
+from src.exception import DuplicateTeamNameError, TeamNotFoundError
 
 LOG = get_logger()
 

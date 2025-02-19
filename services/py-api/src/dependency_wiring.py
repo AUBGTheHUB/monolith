@@ -31,12 +31,12 @@ from src.server.handlers.participants_handlers import participant_handlers_provi
 from src.server.handlers.utility_hanlders import utility_handlers_provider
 from src.server.handlers.verification_handlers import verification_handlers_provider
 from src.service.feature_switch_service import feature_switch_service_provider
-from src.service.hackathon_service import hackathon_service_provider
-from src.service.mail_service.hackathon_mail_service import hackathon_mail_service_provider
+from src.service.hackathon.hackathon_service import hackathon_service_provider
+from src.service.hackathon.hackathon_mail_service import hackathon_mail_service_provider
+from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
-from src.service.participants_registration_service import participant_reg_service_provider
-from src.service.participants_verification_service import participant_verification_service_provider
-from src.utils import JwtUtility
+from src.service.hackathon.participants_registration_service import participant_reg_service_provider
+from src.service.hackathon.participants_verification_service import participant_verification_service_provider
 
 # ===============================
 # Database layer wiring start

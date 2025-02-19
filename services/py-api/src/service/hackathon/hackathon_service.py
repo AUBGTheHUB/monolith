@@ -16,7 +16,7 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import MongoTransactionManager
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
-from src.server.exception import (
+from src.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
     EmailRateLimitExceededError,
@@ -25,14 +25,14 @@ from src.server.exception import (
     TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.mail_service.hackathon_mail_service import HackathonMailService
-from src.utils import JwtUtility
+from src.service.hackathon.hackathon_mail_service import HackathonMailService
 
 LOG = get_logger()
 

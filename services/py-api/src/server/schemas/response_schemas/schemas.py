@@ -1,3 +1,9 @@
+"""Here we store schemas modeling how the response of a given request should look like. These schemas are also used
+by FastAPI for swagger docs.
+
+We use the term "schema" as it is in accordance with the OpenAPI spec:
+https://swagger.io/docs/specification/v3_0/data-models/data-models/"""
+
 from typing import Dict, Any, Optional, Mapping, List
 
 from pydantic import BaseModel, field_serializer, ConfigDict

@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import MongoDatabaseManager
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
+from src.exception import DuplicateEmailError, ParticipantNotFoundError
 
 LOG = get_logger()
 

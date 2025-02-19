@@ -21,7 +21,7 @@ from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     Response,
 )
-from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 
 
 class ParticipantHandlers(BaseHandler):

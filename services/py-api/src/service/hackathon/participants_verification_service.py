@@ -3,9 +3,9 @@ from fastapi import BackgroundTasks
 from result import Err, Ok, Result, is_err
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
-from src.service.hackathon_service import HackathonService
-from src.server.exception import (
+from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.hackathon.hackathon_service import HackathonService
+from src.exception import (
     HackathonCapacityExceededError,
     ParticipantNotFoundError,
     TeamNotFoundError,

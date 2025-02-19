@@ -1,10 +1,16 @@
-from typing import Literal, Union
+"""Here we store schemas modeling how the request body of a given request should look like. These schemas are also used
+by FastAPI for swagger docs.
+
+We use the term "schema" as it is in accordance with the OpenAPI spec:
+https://swagger.io/docs/specification/v3_0/data-models/data-models/"""
+
+from typing import Any, Literal, Optional, Union
 
 from bson import ObjectId
 from fastapi import HTTPException
-from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
-from typing import Any, Literal, Optional, Union
 from fastapi.types import IncEx
+from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
+
 from src.database.model.participant_model import (
     ALLOWED_AGE,
     PROGRAMMING_LANGUAGES_LIST,
