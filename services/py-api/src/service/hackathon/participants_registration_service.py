@@ -3,8 +3,8 @@ from typing import Tuple
 from fastapi import BackgroundTasks
 from result import Result, Err, is_err, Ok
 
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
 from src.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,

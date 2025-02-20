@@ -3,7 +3,7 @@ from typing import Optional, List, cast, Any
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
 
-from src.database.db_manager import MongoDatabaseManager
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.model.feature_switch_model import FeatureSwitch
 from structlog.stdlib import get_logger
 from src.database.repository.base_repository import CRUDRepository

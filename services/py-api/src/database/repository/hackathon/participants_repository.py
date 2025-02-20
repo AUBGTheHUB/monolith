@@ -7,8 +7,8 @@ from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import MongoDatabaseManager
-from src.database.model.participant_model import Participant, UpdateParticipantParams
+from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import DuplicateEmailError, ParticipantNotFoundError
 

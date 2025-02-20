@@ -9,12 +9,12 @@ from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.model.base_model import SerializableObjectId
-from src.database.model.participant_model import Participant, UpdateParticipantParams
-from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
+from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.database.repository.participants_repository import ParticipantsRepository
-from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import MongoTransactionManager
+from src.database.repository.hackathon.participants_repository import ParticipantsRepository
+from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
 from src.exception import (
     DuplicateTeamNameError,

@@ -11,7 +11,7 @@ from fastapi import HTTPException
 from fastapi.types import IncEx
 from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
 
-from src.database.model.participant_model import (
+from src.database.model.hackathon.participant_model import (
     ALLOWED_AGE,
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,

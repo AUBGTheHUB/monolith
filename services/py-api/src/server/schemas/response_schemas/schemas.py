@@ -10,8 +10,8 @@ from pydantic import BaseModel, field_serializer, ConfigDict
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
 from src.database.model.feature_switch_model import FeatureSwitch
 
 

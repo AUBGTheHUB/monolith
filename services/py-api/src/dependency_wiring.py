@@ -14,16 +14,16 @@ Routes -> Handlers -> Services -> OtherServices -> OtherComponents
 """
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.db_manager import (
+from src.database.mongo.db_manager import (
     FEATURE_SWITCH_COLLECTION,
     PARTICIPANTS_COLLECTION,
     TEAMS_COLLECTION,
     mongo_db_manager_provider,
 )
 from src.database.repository.feature_switch_repository import feature_switch_repo_provider
-from src.database.repository.participants_repository import participants_repo_provider
-from src.database.repository.teams_repository import teams_repo_provider
-from src.database.transaction_manager import mongo_tx_manager_provider
+from src.database.repository.hackathon.participants_repository import participants_repo_provider
+from src.database.repository.hackathon.teams_repository import teams_repo_provider
+from src.database.mongo.transaction_manager import mongo_tx_manager_provider
 
 from src.server.handlers.feature_switch_handler import feature_switch_handlers_provider
 from src.server.handlers.hackathon_handlers import hackathon_management_handlers_provider
