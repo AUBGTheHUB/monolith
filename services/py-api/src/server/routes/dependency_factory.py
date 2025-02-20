@@ -1,4 +1,3 @@
-from asyncio.tasks import create_task
 from os import environ
 from typing import Annotated
 from starlette import status
@@ -13,6 +12,7 @@ from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
+from result import is_err
 
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.mail_service.mail_client import ResendMailClient
@@ -21,7 +21,7 @@ from src.service.participants_registration_service import ParticipantRegistratio
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
 
-REGISTRATION_FEATURE_SWITCH = "isRegTeamsFull"
+REGISTRATION_FEATURE_SWITCH = "RegSwitch"
 
 
 def _p_repo(db_manager: DB_MANAGER) -> ParticipantsRepository:
@@ -77,16 +77,11 @@ def is_auth(authorization: Annotated[str, Header()]) -> None:
     # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
     # I have exported this function on a separate dependencies file likes suggested in:
     # https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
-    if environ["ENV"] != "PROD":
-        if not (
-            authorization
-            and authorization.startswith("Bearer ")
-            and authorization[len("Bearer ") :] == environ["SECRET_AUTH_TOKEN"]
-        ):
-            raise HTTPException(detail="Unauthorized", status_code=401)
-    else:
-        # TODO: Implement JWT Bearer token authorization logic if we decide on an admin panel.
-        #  For now every effort to access protected routes in a PROD env will not be authorized!
+    if not (
+        authorization
+        and authorization.startswith("Bearer ")
+        and authorization[len("Bearer ") :] == environ["SECRET_AUTH_TOKEN"]
+    ):
         raise HTTPException(detail="Unauthorized", status_code=401)
 
 
@@ -95,21 +90,12 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
 
-# TODO: Since Alex has created more specific feature switches this logic shall be changed
-def is_err(result):
-    pass
+async def registration_open(fs_service: FeatureSwitchService = Depends(_fs_service)) -> None:
 
+    is_registration_open = await fs_service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
 
-async def registration_open(
-    fs_service: FeatureSwitchService = Depends(_fs_service),
-    p_service: ParticipantRegistrationService = Depends(_p_reg_service),
-) -> None:
-
-    result = await fs_service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
-
-    if is_err(result):
+    if is_err(is_registration_open):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
 
-    if result.ok_value.state is True:
-        create_task(p_service.create_random_participant_teams())
+    if is_registration_open.ok_value.state is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")

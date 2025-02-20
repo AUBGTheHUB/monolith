@@ -9,6 +9,7 @@ from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.model.base_model import SerializableObjectId
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -24,6 +25,7 @@ from src.server.exception import (
     ParticipantNotFoundError,
     TeamNameMissmatchError,
     TeamNotFoundError,
+    FeatureSwitchNotFoundError,
 )
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
@@ -537,4 +539,15 @@ class HackathonService:
     ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         return await self._tx_manager.with_transaction(
             self._create_random_participant_teams_in_transaction_callback, input_data
+        )
+
+    async def close_registration_for_new_teams(self) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        # Check if the feature switch exists
+        feature_switch = await self._fs_repo.get_feature_switch(feature="isRegTeamsFull")
+
+        if is_err(feature_switch):
+            return feature_switch
+
+        return await self._fs_repo.update(
+            obj_id=str(feature_switch.ok_value.id), obj_fields=UpdateFeatureSwitchParams(state=True)
         )

@@ -41,6 +41,10 @@ class ParticipantVerificationService:
         if err is not None:
             return err
 
+        # Check if the current registration of the participant reached the capacity of the hackathon
+        # and take the neccessary steps to finalize it
+        background_tasks.add_task(self.finalize_verification)
+
         return result
 
     async def verify_random_participant(
@@ -61,6 +65,10 @@ class ParticipantVerificationService:
         )
         if err is not None:
             return err
+
+        # Check if the current registration of the participant reached the capacity of the hackathon
+        # and take the neccessary steps to finalize it
+        background_tasks.add_task(self.finalize_verification)
 
         return result
 
@@ -84,3 +92,33 @@ class ParticipantVerificationService:
             return err
 
         return Ok(result.ok_value[0])
+
+    async def create_random_participant_teams(self) -> bool:
+
+        result = await self._hackathon_service.retrieve_and_categorize_random_participants()
+
+        if is_err(result):
+            return False
+
+        (prog_participants, non_prog_participants) = result.ok_value
+
+        random_teams = self._hackathon_service.form_random_participant_teams(prog_participants, non_prog_participants)
+
+        result = await self._hackathon_service.create_random_participant_teams_in_transaction(random_teams)
+
+        if is_err(result):
+            return False
+
+        return True
+
+    async def finalize_verification(self) -> None:
+        # The registration form is considered closed when the last random participant cannot enter the hackathon
+        has_capacity = await self._hackathon_service.check_capacity_register_random_participant_case()
+
+        if not has_capacity:
+            # Flip the new team registration switch to false
+            result = await self._hackathon_service.close_registration_for_new_teams()
+
+            # If the registration switch was flipped successfully create the random participant teams
+            if not is_err(result):
+                await self.create_random_participant_teams()
