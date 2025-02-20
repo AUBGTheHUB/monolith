@@ -26,8 +26,9 @@ from src.service.hackathon.hackathon_service import HackathonService
 class ParticipantRegistrationService:
     """Service layer responsible for handling the business logic when registering a participant"""
 
-    def __init__(self, hackathon_service: HackathonService) -> None:
+    def __init__(self, hackathon_service: HackathonService, jwt_utility: JwtUtility) -> None:
         self._hackathon_service = hackathon_service
+        self._jwt_utility = jwt_utility
 
     async def register_admin_participant(
         self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
@@ -94,14 +95,14 @@ class ParticipantRegistrationService:
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
     ]:
         # Decode the token
-        decoded_result = JwtUtility.decode_data(token=jwt_token, schema=JwtParticipantInviteRegistrationData)
+        decoded_result = self._jwt_utility.decode_data(token=jwt_token, schema=JwtParticipantInviteRegistrationData)
         if is_err(decoded_result):
             return decoded_result
 
         decoded_data = decoded_result.ok_value
 
         # Check Team Capacity
-        has_capacity = await self._hackathon_service.check_team_capacity(decoded_data["team_id"])
+        has_capacity = await self._hackathon_service.check_team_capacity(decoded_data.team_id)
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 
@@ -121,12 +122,15 @@ class ParticipantRegistrationService:
         return result
 
 
-def participant_reg_service_provider(hackathon_service: HackathonService) -> ParticipantRegistrationService:
+def participant_reg_service_provider(
+    hackathon_service: HackathonService, jwt_utility: JwtUtility
+) -> ParticipantRegistrationService:
     """
     Args:
         hackathon_service: A HackathonService instance
+        jwt_utility: A JwtUtility instance
 
     Returns:
         A ParticipantRegistrationService instance
     """
-    return ParticipantRegistrationService(hackathon_service)
+    return ParticipantRegistrationService(hackathon_service=hackathon_service, jwt_utility=jwt_utility)
