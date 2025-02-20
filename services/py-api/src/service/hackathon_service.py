@@ -34,6 +34,7 @@ from src.server.schemas.request_schemas.schemas import (
 from src.server.schemas.schemas import RandomTeam
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.utils import JwtUtility
+from secrets import token_hex
 
 LOG = get_logger()
 
@@ -432,6 +433,7 @@ class HackathonService:
         if is_prod_env():
             invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
         elif is_dev_env():
+            # TODO: This resolves to dev.dev.thehub-aubg.com on the dev environment since the dev domain is dev.thehub-aubg.com
             invite_link = f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
         else:
             invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
@@ -477,7 +479,7 @@ class HackathonService:
         teams = []
         # Populate the dictionary with the Random Teams named `RandomTeam{i}`
         for i in range(number_of_teams):
-            teams.append(RandomTeam(team=Team(name=f"RandomTeam{i}", is_verified=True), participants=[]))
+            teams.append(RandomTeam(team=Team(name=f"RT_{token_hex(8)}", is_verified=True), participants=[]))
 
         # Spread all the programming experienced participants to the teams in a Round Robin (RR) manner
         ctr = 0  # initialize a counter
@@ -496,11 +498,22 @@ class HackathonService:
     async def _create_random_participant_teams_in_transaction_callback(
         self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
-        # Loop through each tuple in the list. Create the team. Update all the participants with the id of the team
+        # Loop through each RandomTeam in the list. Create the team. Update all the participants with the id of the team
         # created
         for random_team in random_teams:
             # Create the team
             result = await self._team_repo.create(team=random_team["team"], session=session)
+
+            if is_err(result):
+                return result
+
+            # Take out one of the participants and assign them as an admin in the newly created random team
+            admin_participant = random_team["participants"].pop()
+            result = await self._participant_repo.update(
+                obj_id=str(admin_participant.id),
+                obj_fields=UpdateParticipantParams(team_id=random_team["team"].id, is_admin=True),
+                session=session,
+            )
 
             if is_err(result):
                 return result

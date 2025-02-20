@@ -172,5 +172,6 @@ class UpdateParticipantParams(UpdateParams):
 
     def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
         dump = super().model_dump(exclude_none=exclude_none, exclude=["team_id"], **kwargs)  # type: ignore
-        dump["team_id"] = self.team_id
+        if self.team_id is not None:
+            dump["team_id"] = self.team_id
         return dump
