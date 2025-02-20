@@ -15,7 +15,7 @@ class SerializableDbModel(ABC):
     @abstractmethod
     def dump_as_mongo_db_document(self) -> Dict[str, Any]:
         """This method should be used when constructing the document to be inserted/updated in Mongo. When implementing
-        it the id field of the db model should be mapped to a dcit key starting with an underscore as MongoDB expects it
+        it the id field of the db model should be mapped to a dict key starting with an underscore as MongoDB expects it
         like this: "_id": obj.id.
 
         https://www.mongodb.com/docs/languages/python/pymongo-driver/current/write/insert/#the-_id-field"""
