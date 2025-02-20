@@ -272,9 +272,22 @@ class HackathonService:
 
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
         Tuple[Participant, Team],
-        ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,
+        ParticipantNotFoundError
+        | TeamNotFoundError
+        | ParticipantAlreadyVerifiedError
+        | EmailRateLimitExceededError
+        | Exception,
     ]:
-        """Check if the verification email rate limit has been reached"""
+        """Check if the verification email rate limit has been reached
+
+        Returns:
+            * A Tuple[Participant, Team] if the participant has not exceeded their email sending rate
+            * A ParticipantNotFoundError if the participant resending the email is not found in the Database
+            * A TeamNotFoundError if the team of the participant is not found in the Database
+            * A ParticipantAlreadyVerifiedError if the participant has already been verified
+            * An EmailRateLimitExceededError if the participant has exceeded their email sending rate
+            * An Exception if some unexpected error occurred
+        """
 
         participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
 
@@ -320,7 +333,7 @@ class HackathonService:
 
     async def send_verification_email(
         self, participant: Participant, background_tasks: BackgroundTasks, team: Team | None = None
-    ) -> Err[ParticipantNotFoundError | ValueError | Exception] | None:
+    ) -> Result[Participant, ParticipantNotFoundError | ValueError | Exception] | None:
         """
         Sends a verification email to admin and random participants and adds a timestamp when the last verification
         email has been sent, for rate-limiting purposes
@@ -334,8 +347,12 @@ class HackathonService:
                 have returned a response. In this way we are able to keep our response times sub-second as we don't
                 wait for the email to be sent, which could take more than 2 seconds.
         Returns:
-            An Err if adding of the updating the participant document last_sent_verification_email property fails, or
-            sending the verification emails fails. Otherwise, returns None.
+            * The updated Participant document (last_sent_verification_email and updated_at fields)
+
+            * An Err if adding of the updating the participant document last_sent_verification_email property fails, or
+            sending the verification emails fails.
+
+            * None if we are in Test env, and we should not send emails
         """
 
         # Don't send emails when we are running tests
@@ -364,21 +381,22 @@ class HackathonService:
             obj_id=str(participant.id), obj_fields=UpdateParticipantParams(last_sent_verification_email=datetime.now())
         )
 
-        # If the update fails, do not send the email and return the error
+        # If the update fails, do not send the email and return the error (could happen if the participant is deleted
+        # from the DB before it is updated, highly unlikely in PROD env)
         if is_err(result):
             return result
 
         err = self._mail_service.send_participant_verification_email(
-            participant=participant,
+            participant=result.ok_value,
             verification_link=verification_link,
             background_tasks=background_tasks,
             team_name=team.name if team else None,
         )
-
         if err is not None:
             return err
 
-        return None
+        # Return the updated participant
+        return result
 
     def send_successful_registration_email(
         self, participant: Participant, background_tasks: BackgroundTasks, team: Team | None = None

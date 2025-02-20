@@ -57,7 +57,7 @@ class HackathonMailService:
             )
             return Err(e)
 
-        LOG.info("Sending verification email...", participant=participant, team_name=team_name)
+        LOG.info("Sending verification email...", participant=participant.dump_as_json(), team_name=team_name)
 
         background_tasks.add_task(
             self._client.send_email,
@@ -106,7 +106,9 @@ class HackathonMailService:
             )
             return Err(e)
 
-        LOG.info("Sending successful registration email...", participant=participant, team_name=team_name)
+        LOG.info(
+            "Sending successful registration email...", participant=participant.dump_as_json(), team_name=team_name
+        )
 
         background_tasks.add_task(
             self._client.send_email,

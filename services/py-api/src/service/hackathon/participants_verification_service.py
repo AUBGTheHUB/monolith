@@ -67,6 +67,7 @@ class ParticipantVerificationService:
     async def resend_verification_email(self, participant_id: str, background_tasks: BackgroundTasks) -> Result[
         Participant,
         ParticipantNotFoundError
+        | TeamNotFoundError
         | ParticipantAlreadyVerifiedError
         | EmailRateLimitExceededError
         | ValueError

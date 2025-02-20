@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from fastapi import BackgroundTasks
-from result import Result, Err, is_err
+from result import Result, Err, is_err, Ok
 
 from src.database.model.participant_model import Participant
 from src.database.model.team_model import Team
@@ -11,6 +11,7 @@ from src.exception import (
     HackathonCapacityExceededError,
     TeamCapacityExceededError,
     TeamNameMissmatchError,
+    ParticipantNotFoundError,
 )
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
@@ -32,7 +33,11 @@ class ParticipantRegistrationService:
         self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, Team],
-        DuplicateEmailError | DuplicateTeamNameError | HackathonCapacityExceededError | Exception,
+        DuplicateEmailError
+        | DuplicateTeamNameError
+        | HackathonCapacityExceededError
+        | ParticipantNotFoundError
+        | Exception,
     ]:
         # Capacity Check 2
         has_capacity = await self._hackathon_service.check_capacity_register_admin_participant_case()
@@ -40,24 +45,26 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        result = await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
-        if is_err(result):
-            return result
+        create_result = await self._hackathon_service.create_participant_and_team_in_transaction(input_data)
+        if is_err(create_result):
+            return create_result
 
-        err = await self._hackathon_service.send_verification_email(
-            participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
+        # Send verification email
+        update_result = await self._hackathon_service.send_verification_email(
+            participant=create_result.ok_value[0], team=create_result.ok_value[1], background_tasks=background_tasks
         )
+        # Update result could be None if we are in Test ENV, and we should not send emails
+        if update_result is not None and is_err(update_result):
+            return update_result
 
-        if err is not None:
-            return err
-
-        return result
+        # If we are in Test env we should return the original created participant as update_result is None
+        return Ok((update_result.ok_value if update_result else create_result.ok_value[0], create_result.ok_value[1]))
 
     async def register_random_participant(
         self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, Team],
-        DuplicateEmailError | HackathonCapacityExceededError | Exception,
+        Tuple[Participant, None],
+        DuplicateEmailError | HackathonCapacityExceededError | ParticipantNotFoundError | Exception,
     ]:
         # Capacity Check 1
         has_capacity = await self._hackathon_service.check_capacity_register_random_participant_case()
@@ -65,17 +72,20 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        result = await self._hackathon_service.create_random_participant(input_data)
-        if is_err(result):
-            return result
+        create_result = await self._hackathon_service.create_random_participant(input_data)
+        if is_err(create_result):
+            return create_result
 
-        err = await self._hackathon_service.send_verification_email(
-            participant=result.ok_value[0], background_tasks=background_tasks
+        # Send verification email
+        update_result = await self._hackathon_service.send_verification_email(
+            participant=create_result.ok_value[0], background_tasks=background_tasks
         )
-        if err is not None:
-            return err
+        # Update result could be None if we are in Test ENV, and we should not send emails
+        if update_result is not None and is_err(update_result):
+            return update_result
 
-        return result
+        # If we are in Test env we should return the original created participant as update_result is None
+        return Ok((update_result.ok_value if update_result else create_result.ok_value[0], None))
 
     async def register_invite_link_participant(
         self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
