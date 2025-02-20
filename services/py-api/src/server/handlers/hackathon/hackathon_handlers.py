@@ -16,7 +16,7 @@ from src.server.schemas.response_schemas.schemas import (
     TeamDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon.hackathon_service import HackathonService
 
 
 class HackathonManagementHandlers(BaseHandler):

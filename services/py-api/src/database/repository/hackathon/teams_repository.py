@@ -8,10 +8,10 @@ from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
-from src.database.db_manager import MongoDatabaseManager
-from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
+from src.exception import DuplicateTeamNameError, TeamNotFoundError
 
 LOG = get_logger()
 

@@ -51,10 +51,10 @@ from src.dependency_wiring import (
     UTILITY_HANDLERS,
 )
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
-from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
+from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.handlers.verification_handlers import VerificationHandlers
+from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 
 # ===============================
 # Request Handlers start

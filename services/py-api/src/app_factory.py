@@ -4,7 +4,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.db_manager import mongo_db_manager_provider
+from src.database.mongo.db_manager import mongo_db_manager_provider
 from src.server.routes.routes import Routes
 from src.server.middleware.middleware import Middleware
 

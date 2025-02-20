@@ -14,29 +14,29 @@ Routes -> Handlers -> Services -> OtherServices -> OtherComponents
 """
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.db_manager import (
+from src.database.mongo.db_manager import (
     FEATURE_SWITCH_COLLECTION,
     PARTICIPANTS_COLLECTION,
     TEAMS_COLLECTION,
     mongo_db_manager_provider,
 )
 from src.database.repository.feature_switch_repository import feature_switch_repo_provider
-from src.database.repository.participants_repository import participants_repo_provider
-from src.database.repository.teams_repository import teams_repo_provider
-from src.database.transaction_manager import mongo_tx_manager_provider
+from src.database.repository.hackathon.participants_repository import participants_repo_provider
+from src.database.repository.hackathon.teams_repository import teams_repo_provider
+from src.database.mongo.transaction_manager import mongo_tx_manager_provider
 
 from src.server.handlers.feature_switch_handler import feature_switch_handlers_provider
-from src.server.handlers.hackathon_handlers import hackathon_management_handlers_provider
-from src.server.handlers.participants_handlers import participant_handlers_provider
+from src.server.handlers.hackathon.hackathon_handlers import hackathon_management_handlers_provider
+from src.server.handlers.hackathon.participants_handlers import participant_handlers_provider
 from src.server.handlers.utility_hanlders import utility_handlers_provider
-from src.server.handlers.verification_handlers import verification_handlers_provider
+from src.server.handlers.hackathon.verification_handlers import verification_handlers_provider
 from src.service.feature_switch_service import feature_switch_service_provider
-from src.service.hackathon_service import hackathon_service_provider
-from src.service.mail_service.hackathon_mail_service import hackathon_mail_service_provider
+from src.service.hackathon.hackathon_service import hackathon_service_provider
+from src.service.hackathon.hackathon_mail_service import hackathon_mail_service_provider
+from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
-from src.service.participants_registration_service import participant_reg_service_provider
-from src.service.participants_verification_service import participant_verification_service_provider
-from src.utils import JwtUtility
+from src.service.hackathon.participants_registration_service import participant_reg_service_provider
+from src.service.hackathon.participants_verification_service import participant_verification_service_provider
 
 # ===============================
 # Database layer wiring start
