@@ -1,11 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Annotated, Literal, Dict, Any, Optional, Union
-from pydantic import Field, field_validator, EmailStr, ConfigDict
+from pydantic import Field, EmailStr, ConfigDict
 from bson import ObjectId
-from structlog.stdlib import get_logger
-
-LOG = get_logger()
 
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
@@ -76,16 +73,6 @@ class Participant(BaseDbModel):
     has_participated_in_hackathons: bool
     has_previous_coding_experience: bool
     share_info_with_sponsors: bool
-
-    @field_validator("share_info_with_sponsors", mode="before")
-    def check_if_true(cls, value: bool) -> bool:
-        if not value:
-            raise ValueError("share_info_with_sponsors shall be true")
-        return value
-
-    @field_validator("tshirt_size", "team_name", mode="before")
-    def convert_empty_string_to_none(cls, value: str) -> str | None:
-        return None if value == "" else value
 
     def dump_as_mongo_db_document(self) -> Dict[str, Any]:
         return {

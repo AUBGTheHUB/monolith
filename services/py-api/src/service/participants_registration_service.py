@@ -110,7 +110,6 @@ class ParticipantRegistrationService:
 
         return result
 
-    # Returns true if the operation was successful or some shit like that
     async def create_random_participant_teams(self) -> bool:
 
         result = await self._hackathon_service.retrieve_and_categorize_random_participants()

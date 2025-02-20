@@ -3,10 +3,12 @@ from typing import Optional, List, cast, Any
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
 from src.database.db_manager import DatabaseManager
-from src.database.model.feature_switch_model import FeatureSwitch
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from structlog.stdlib import get_logger
 from src.database.repository.base_repository import CRUDRepository
 from src.server.exception import FeatureSwitchNotFoundError
+from pymongo import ReturnDocument
+from bson import ObjectId
 
 LOG = get_logger()
 
@@ -69,10 +71,44 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             LOG.exception("Failed to fetch all feature switches due to error", error=e)
             return Err(e)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[FeatureSwitch, Exception]:
-        return Err(NotImplementedError())
+    async def fetch_by_id(self, obj_id: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        try:
+            LOG.debug("Fetching feature switch by ObjectID...", participant_id=obj_id)
+
+            # Query the database for the feature switch with the given object id
+            feature_switch = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+
+            if feature_switch is None:  # If no feature switch is found, return an Err
+                return Err(FeatureSwitchNotFoundError())
+
+            return Ok(FeatureSwitch(id=obj_id, **feature_switch))
+
+        except Exception as e:
+            LOG.exception("Failed to fetch feature switch due to error", participant_id=obj_id, error=e)
+            return Err(e)
 
     async def update(
-        self, obj_id: str, obj: FeatureSwitch, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[FeatureSwitch, Exception]:
-        return Err(NotImplementedError())
+        self, obj_id: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        try:
+            LOG.info(f"Updating FeatureSwitch...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump())
+
+            # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
+            # default behaviour.
+            result = await self._collection.find_one_and_update(
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": obj_fields.model_dump()},
+                projection={"_id": 0},
+                return_document=ReturnDocument.AFTER,
+                session=session,
+            )
+
+            # The result is None when the feature switch with the specified ObjectId is not found
+            if result is None:
+                return Err(FeatureSwitchNotFoundError())
+
+            return Ok(FeatureSwitch(id=obj_id, **result))
+
+        except Exception as e:
+            LOG.exception("Failed to update the feature switch", participant_id=obj_id, error=e)
+            return Err(e)

@@ -1,13 +1,14 @@
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Union
+from pydantic import ConfigDict
 
-from src.database.model.base_model import BaseDbModel
+from src.database.model.base_model import BaseDbModel, UpdateParams
+
 
 @dataclass(kw_only=True)
 class FeatureSwitch(BaseDbModel):
     name: str
     state: bool
-    
 
     def dump_as_json(self) -> Dict[str, Any]:
         return {
@@ -26,3 +27,11 @@ class FeatureSwitch(BaseDbModel):
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
+
+
+class UpdateFeatureSwitchParams(UpdateParams):
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    name: Union[str, None] = None
+    state: Union[bool, None] = None
