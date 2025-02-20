@@ -1,7 +1,7 @@
 from typing import Union
 from fastapi import APIRouter, Depends, BackgroundTasks
-from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
+from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.routes.routes_dependencies import (
     get_participant_handlers,
     is_auth,

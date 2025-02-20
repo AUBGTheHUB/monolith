@@ -26,10 +26,10 @@ from src.database.repository.hackathon.teams_repository import teams_repo_provid
 from src.database.mongo.transaction_manager import mongo_tx_manager_provider
 
 from src.server.handlers.feature_switch_handler import feature_switch_handlers_provider
-from src.server.handlers.hackathon_handlers import hackathon_management_handlers_provider
-from src.server.handlers.participants_handlers import participant_handlers_provider
+from src.server.handlers.hackathon.hackathon_handlers import hackathon_management_handlers_provider
+from src.server.handlers.hackathon.participants_handlers import participant_handlers_provider
 from src.server.handlers.utility_hanlders import utility_handlers_provider
-from src.server.handlers.verification_handlers import verification_handlers_provider
+from src.server.handlers.hackathon.verification_handlers import verification_handlers_provider
 from src.service.feature_switch_service import feature_switch_service_provider
 from src.service.hackathon.hackathon_service import hackathon_service_provider
 from src.service.hackathon.hackathon_mail_service import hackathon_mail_service_provider

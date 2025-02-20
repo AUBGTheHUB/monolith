@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.routes.routes_dependencies import is_auth, validate_obj_id, get_hackathon_management_handlers
-from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
+from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.schemas.response_schemas.schemas import ErrResponse, TeamDeletedResponse
 from starlette.responses import Response
 
