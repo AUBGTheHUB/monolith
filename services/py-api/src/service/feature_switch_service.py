@@ -3,7 +3,7 @@ from typing import List
 from result import Result, is_err
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.server.exception import FeatureSwitchNotFoundError
+from src.exception import FeatureSwitchNotFoundError
 
 
 class FeatureSwitchService:

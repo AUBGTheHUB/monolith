@@ -5,9 +5,9 @@ from typing import Tuple
 from structlog.stdlib import get_logger
 from uvicorn import run
 
-from src.database.db_manager import ping_db
+from src.database.mongo.db_manager import ping_db
 from src.environment import DOMAIN, PORT
-from src.server.logger.logger_factory import get_uvicorn_logger
+from src.logger.logger_factory import get_uvicorn_logger
 from src.utils import singleton
 
 LOG = get_logger()

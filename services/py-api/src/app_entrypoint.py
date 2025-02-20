@@ -1,7 +1,7 @@
 from os import environ
 
 from src.environment import load_env
-from src.server.logger.logger_factory import configure_app_logger
+from src.logger.logger_factory import configure_app_logger
 
 load_env()
 

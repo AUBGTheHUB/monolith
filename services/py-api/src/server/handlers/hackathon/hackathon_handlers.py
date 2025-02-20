@@ -18,7 +18,7 @@ from src.server.schemas.response_schemas.schemas import (
     AllTeamsResponse,
     FeatureSwitchResponse,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon.hackathon_service import HackathonService
 
 
 class HackathonManagementHandlers(BaseHandler):

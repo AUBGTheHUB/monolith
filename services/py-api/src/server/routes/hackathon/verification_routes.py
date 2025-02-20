@@ -1,5 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks, Depends
-from src.server.handlers.verification_handlers import VerificationHandlers
+from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.routes.routes_dependencies import get_verification_handlers
 from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
 from src.server.schemas.response_schemas.schemas import (

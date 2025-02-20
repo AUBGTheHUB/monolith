@@ -2,7 +2,7 @@ from fastapi import BackgroundTasks
 from result import Err
 from structlog.stdlib import get_logger
 
-from src.database.model.participant_model import Participant
+from src.database.model.hackathon.participant_model import Participant
 from src.service.mail_service.mail_clients.base_mail_client import MailClient
 from src.service.mail_service.utils import (
     load_email_registration_confirmation_html_template,
@@ -28,7 +28,7 @@ class HackathonMailService:
         verification_link: str,
         background_tasks: BackgroundTasks,
         team_name: str | None = None,
-    ) -> Err[ValueError]:
+    ) -> Err[ValueError] | None:
         """
         Sends a verification email to admin and random participants via FastAPI BackgroundTasks
 
@@ -57,7 +57,7 @@ class HackathonMailService:
             )
             return Err(e)
 
-        LOG.info("Sending verification email...", participant=participant, team_name=team_name)
+        LOG.info("Sending verification email...", participant=participant.dump_as_json(), team_name=team_name)
 
         background_tasks.add_task(
             self._client.send_email,
@@ -68,13 +68,15 @@ class HackathonMailService:
             content_type="html",
         )
 
+        return None
+
     def send_participant_successful_registration_email(
         self,
         participant: Participant,
         background_tasks: BackgroundTasks,
         invite_link: str | None = None,
         team_name: str | None = None,
-    ) -> Err[ValueError]:
+    ) -> Err[ValueError] | None:
         """
         Sends an email confirming the successful registration of a participant.
 
@@ -104,7 +106,9 @@ class HackathonMailService:
             )
             return Err(e)
 
-        LOG.info("Sending successful registration email...", participant=participant, team_name=team_name)
+        LOG.info(
+            "Sending successful registration email...", participant=participant.dump_as_json(), team_name=team_name
+        )
 
         background_tasks.add_task(
             self._client.send_email,
@@ -114,6 +118,8 @@ class HackathonMailService:
             body_content=body_html,
             content_type="html",
         )
+
+        return None
 
 
 def hackathon_mail_service_provider(client: MailClient) -> HackathonMailService:

@@ -1,6 +1,6 @@
 from starlette import status
 
-from src.database.db_manager import MongoDatabaseManager
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse, Response
 
