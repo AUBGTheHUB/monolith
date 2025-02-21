@@ -51,24 +51,61 @@ const UNIVERSITY_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
+// dropdown error message problem
 const registrationSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.string().email('Invalid email'),
-    tshirt_size: z.enum(['Small (S)', 'Medium (M)', 'Large (L)']),
-    university: z.string().min(1, 'University is required'),
-    location: z.string().min(1, 'Location is required'),
-    age: z.coerce.number().min(16, 'You must be at least 16 years old'),
-    source_of_referral: z.string().optional(),
-    programming_language: z.string().optional(),
-    programming_level: z.enum(['Beginner', 'Intermediate', 'Advanced']),
-    has_participated_in_hackaubg: z.enum(['true', 'false']).transform((val) => val === 'true'), //don't judge it's the only thing that worked lol
-    has_internship_interest: z.enum(['true', 'false']).transform((val) => val === 'true'),
-    has_participated_in_hackathons: z.enum(['true', 'false']).transform((val) => val === 'true'),
-    has_previous_coding_experience: z.enum(['true', 'false']).transform((val) => val === 'true'),
-    share_info_with_sponsors: z.enum(['true', 'false']).transform((val) => val === 'true'),
-    registration_type: z.string(),
-    is_admin: z.enum(['true', 'false']).transform((val) => val === 'true'),
-    team_name: z.string().optional(),
+    name: z
+        .string()
+        .min(3, { message: 'Name must be at least 3 characters long.' })
+        .max(50, { message: 'Name cannot exceed 50 characters.' })
+        .regex(/^[a-zA-Z\s]+$/, { message: 'Name can only contain letters and spaces.' }),
+
+    email: z
+        .string()
+        .min(1, { message: 'Email is required' })
+        .email({ message: 'Invalid email format.' })
+        .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Please enter a valid email address.' }),
+
+    tshirt_size: z.string().min(1, { message: 'Size is required.' }),
+
+    university: z.string().min(1, { message: 'University is required.' }),
+
+    location: z
+        .string()
+        .min(3, { message: 'Location must be at least 3 characters long.' })
+        .max(100, { message: 'Location cannot exceed 100 characters.' }),
+
+    age: z
+        .number({ message: 'Age is required.' })
+        .int({ message: 'Age must be a whole number.' })
+        .min(16, { message: 'You must be at least 16 years old.' })
+        .max(69, { message: 'Age cannot exceed 69.' })
+        .refine((val) => !isNaN(val), { message: 'Age is required.' }),
+
+    source_of_referral: z.string().min(1, { message: 'Please select an option.' }),
+
+    programming_language: z.string().min(1, { message: 'Please select an option.' }),
+
+    programming_level: z.string().min(1, { message: 'Please select an option.' }),
+
+    has_participated_in_hackaubg: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    has_internship_interest: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    has_participated_in_hackathons: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    has_previous_coding_experience: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    share_info_with_sponsors: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    registration_type: z.string().min(1, { message: 'Please select an option.' }),
+
+    is_admin: z.enum(['true', 'false'], { message: 'Please select an option.' }),
+
+    team_name: z
+        .string()
+        .min(3, { message: 'Team Name must be at least 3 characters long.' })
+        .max(50, { message: 'Team Name cannot exceed 50 characters.' })
+        .optional(),
 });
 
 export default function RegistrationForm() {
@@ -77,20 +114,20 @@ export default function RegistrationForm() {
         defaultValues: {
             name: '',
             email: '',
-            tshirt_size: 'Small (S)',
+            tshirt_size: '',
             university: '',
             location: '',
-            age: 16,
+            age: undefined,
             source_of_referral: '',
             programming_language: '',
-            programming_level: 'Beginner',
-            has_participated_in_hackaubg: false,
-            has_internship_interest: false,
-            has_participated_in_hackathons: false,
-            has_previous_coding_experience: false,
-            share_info_with_sponsors: false,
-            registration_type: '',
-            is_admin: false,
+            programming_level: undefined,
+            has_participated_in_hackaubg: undefined,
+            has_internship_interest: undefined,
+            has_participated_in_hackathons: undefined,
+            has_previous_coding_experience: undefined,
+            share_info_with_sponsors: undefined,
+            registration_type: undefined,
+            is_admin: undefined,
             team_name: '',
         },
     });
@@ -133,7 +170,7 @@ export default function RegistrationForm() {
                 <InputComponent
                     control={form.control}
                     name="location"
-                    label="Location:"
+                    label="Location"
                     type="text"
                     placeholder="Enter your location"
                 />
