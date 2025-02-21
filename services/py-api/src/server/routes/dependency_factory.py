@@ -8,7 +8,10 @@ from src.database.repository.participants_repository import ParticipantsReposito
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
+from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.handlers.verification_handlers import VerificationHandlers
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon_service import HackathonService
 from bson import ObjectId
@@ -17,6 +20,7 @@ from result import is_err
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.service.mail_service.mail_client import ResendMailClient
 from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.participants_verification_service import ParticipantVerificationService
 
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
@@ -32,6 +36,10 @@ def _t_repo(db_manager: DB_MANAGER) -> TeamsRepository:
     return TeamsRepository(db_manager, TEAMS_COLLECTION)
 
 
+def _fs_repo(db_manager: DB_MANAGER) -> FeatureSwitchRepository:
+    return FeatureSwitchRepository(db_manager, FEATURE_SWITCH_COLLECTION)
+
+
 def _tx_manager(db_manager: DB_MANAGER) -> TransactionManager:
     return TransactionManager(db_manager)
 
@@ -41,16 +49,8 @@ def _mail_service() -> HackathonMailService:
     return HackathonMailService(client=ResendMailClient())
 
 
-def _fs_repo(db_manager: DB_MANAGER) -> FeatureSwitchRepository:
-    return FeatureSwitchRepository(db_manager, FEATURE_SWITCH_COLLECTION)
-
-
 def _fs_service(fs_repo: FeatureSwitchRepository = Depends(_fs_repo)) -> FeatureSwitchService:
     return FeatureSwitchService(fs_repo)
-
-
-def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> FeatureSwitchHandler:
-    return FeatureSwitchHandler(fs_service)
 
 
 def _h_service(
@@ -63,12 +63,37 @@ def _h_service(
     return HackathonService(p_repo, t_repo, fs_repo, tx_manager, mail_service)
 
 
+def _p_verify_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantVerificationService:
+    return ParticipantVerificationService(h_service)
+
+
 def _p_reg_service(h_service: HackathonService = Depends(_h_service)) -> ParticipantRegistrationService:
     return ParticipantRegistrationService(h_service)
 
 
+# https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
+def _utility_handler(db_manager: DB_MANAGER) -> UtilityHandlers:
+    return UtilityHandlers(db_manager)
+
+
 def _p_handler(p_service: ParticipantRegistrationService = Depends(_p_reg_service)) -> ParticipantHandlers:
     return ParticipantHandlers(p_service)
+
+
+def _h_handler(
+    h_service: HackathonService = Depends(_h_service),
+) -> HackathonManagementHandlers:
+    return HackathonManagementHandlers(h_service)
+
+
+def _p_verify_handler(
+    p_verify_service: ParticipantVerificationService = Depends(_p_verify_service),
+) -> VerificationHandlers:
+    return VerificationHandlers(p_verify_service)
+
+
+def _fs_handler(fs_service: FeatureSwitchService = Depends(_fs_service)) -> FeatureSwitchHandler:
+    return FeatureSwitchHandler(fs_service)
 
 
 def is_auth(authorization: Annotated[str, Header()]) -> None:

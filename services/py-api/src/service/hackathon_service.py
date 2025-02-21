@@ -501,7 +501,6 @@ class HackathonService:
 
         return teams
 
-    # TODO: This should be extracted in a bulk transaction
     async def _create_random_participant_teams_in_transaction_callback(
         self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
@@ -553,3 +552,43 @@ class HackathonService:
         return await self._fs_repo.update(
             obj_id=str(feature_switch.ok_value.id), obj_fields=UpdateFeatureSwitchParams(state=True)
         )
+
+    async def close_hackathon_registration(self) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        """
+        Serves to close the hackathon registration for all kinds of participants: random, invite-link, and admin
+        participants. Includes possible creation of random teams, if such process has not taken place and flips
+        the RegSwitch to false.
+        Flipping the registration switch to false ultimately closes the registration. You can't use the registration
+        API anymore. Moreover, there is also no front-end interface for it.
+        """
+
+        # Start by flipping the feature switch first.
+        feature_switch = await self._fs_repo.get_feature_switch(feature="RegSwitch")
+
+        if is_err(feature_switch):
+            return feature_switch
+
+        feature_switch = await self._fs_repo.update(
+            obj_id=str(feature_switch.ok_value.id), obj_fields=UpdateFeatureSwitchParams(state=False)
+        )
+
+        if is_err(feature_switch):
+            return feature_switch
+
+        # Now that we have disabled the switch we can run the random team creation proccess
+
+        result = await self.retrieve_and_categorize_random_participants()
+
+        if is_err(result):
+            return result
+
+        (prog_participants, non_prog_participants) = result.ok_value
+
+        random_teams = self.form_random_participant_teams(prog_participants, non_prog_participants)
+
+        result = await self.create_random_participant_teams_in_transaction(random_teams)
+
+        if is_err(result):
+            return result
+
+        return Ok(feature_switch.ok_value)

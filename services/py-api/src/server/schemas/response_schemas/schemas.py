@@ -136,3 +136,9 @@ class TeamDeletedResponse(TeamResponse):
     """
     Responds with the deleted team body when we are deleting a team.
     """
+
+
+class RegistrationClosedSuccessfullyResponse(FeatureSwitchResponse):
+    """
+    Response sent when the endpoint for closing the application is triggered.
+    """

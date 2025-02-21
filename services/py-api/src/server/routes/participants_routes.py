@@ -1,7 +1,7 @@
 from typing import Union
 from fastapi import APIRouter, Depends, BackgroundTasks
 from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
-from src.server.routes.dependency_factory import _h_service, registration_open, _p_handler
+from src.server.routes.dependency_factory import registration_open, _p_handler, _h_handler
 from src.server.handlers.participants_handlers import ParticipantHandlers
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -10,17 +10,10 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
 from src.server.routes.dependency_factory import is_auth, validate_obj_id
 
 # https://fastapi.tiangolo.com/tutorial/bigger-applications/#apirouter
 participants_router = APIRouter(prefix="/hackathon/participants")
-
-
-def _h_handler(
-    h_service: HackathonService = Depends(_h_service),
-) -> HackathonManagementHandlers:
-    return HackathonManagementHandlers(h_service)
 
 
 # https://fastapi.tiangolo.com/advanced/additional-responses/
