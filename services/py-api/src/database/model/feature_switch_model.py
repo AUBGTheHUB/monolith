@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Any, Dict, Union
-from pydantic import ConfigDict
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
@@ -30,8 +29,11 @@ class FeatureSwitch(BaseDbModel):
 
 
 class UpdateFeatureSwitchParams(UpdateParams):
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    """This model makes each field of the Feature Switch optional, so that you can
+    only set values to the fields that you want to modify and pass to the
+    MongoDB find_one_and_update() method.
+    Build to be used for updating the Feature Switch document in the database.
+    """
 
     name: Union[str, None] = None
     state: Union[bool, None] = None

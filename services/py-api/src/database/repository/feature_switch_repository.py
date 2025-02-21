@@ -1,5 +1,4 @@
-from copy import deepcopy
-from typing import Optional, List, cast, Any
+from typing import Optional, List, cast, Any, Dict
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err, Ok
 from src.database.db_manager import DatabaseManager
@@ -20,16 +19,14 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
             LOG.debug("Fetching feature switch by name...", feature=feature)
-            feature_switch = await self._collection.find_one({"name": feature})
+            feature_switch = cast(Dict[str, Any], await self._collection.find_one({"name": feature}))
 
             if feature_switch is None:
                 return Err(FeatureSwitchNotFoundError())
 
-            feature_switch_copy = cast(dict[str, Any], deepcopy(feature_switch))
+            feature_switch["id"] = str(feature_switch.pop("_id"))
 
-            feature_switch_copy["id"] = str(feature_switch_copy.pop("_id"))
-
-            return Ok(FeatureSwitch(**feature_switch_copy))
+            return Ok(FeatureSwitch(**feature_switch))
 
         except Exception as e:
             LOG.exception("Failed to fetch feature switch due to error", error=e, feature_name=feature)
@@ -58,11 +55,9 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
 
             for doc in feature_switches_data:
 
-                doc_copy = dict(doc)
+                doc["id"] = str(doc.pop("_id"))
 
-                doc_copy["id"] = str(doc_copy.pop("_id"))
-
-                feature_switches.append(FeatureSwitch(**doc_copy))
+                feature_switches.append(FeatureSwitch(**doc))
 
             LOG.debug(f"Fetched {len(feature_switches)} feature switches.")
             return Ok(feature_switches)
@@ -73,7 +68,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
 
     async def fetch_by_id(self, obj_id: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
-            LOG.debug("Fetching feature switch by ObjectID...", participant_id=obj_id)
+            LOG.debug("Fetching feature switch by ObjectID...", feature_switch_id=obj_id)
 
             # Query the database for the feature switch with the given object id
             feature_switch = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
@@ -84,16 +79,16 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             return Ok(FeatureSwitch(id=obj_id, **feature_switch))
 
         except Exception as e:
-            LOG.exception("Failed to fetch feature switch due to error", participant_id=obj_id, error=e)
+            LOG.exception("Failed to fetch feature switch due to error", feature_switch_id=obj_id, error=e)
             return Err(e)
 
     async def update(
         self, obj_id: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
-            LOG.info(f"Updating FeatureSwitch...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump())
+            LOG.info(f"Updating Feature Switch...", feature_switch_id=obj_id, updated_fields=obj_fields.model_dump())
 
-            # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
+            # ReturnDocument.AFTER returns the updated document instead of the original document which is the
             # default behaviour.
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
@@ -110,5 +105,5 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             return Ok(FeatureSwitch(id=obj_id, **result))
 
         except Exception as e:
-            LOG.exception("Failed to update the feature switch", participant_id=obj_id, error=e)
+            LOG.exception("Failed to update the feature switch", feature_switch_id=obj_id, error=e)
             return Err(e)

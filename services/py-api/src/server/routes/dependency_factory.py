@@ -77,6 +77,8 @@ def is_auth(authorization: Annotated[str, Header()]) -> None:
     # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
     # I have exported this function on a separate dependencies file likes suggested in:
     # https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
+    # TODO: When the admin panel is implemented, the secret auth toke env variable should be removed as tokens
+    #  will be automatically rotated
     if not (
         authorization
         and authorization.startswith("Bearer ")

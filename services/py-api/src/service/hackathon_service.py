@@ -7,7 +7,7 @@ from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
-
+from bson import ObjectId
 from src.database.model.base_model import SerializableObjectId
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.participant_model import Participant, UpdateParticipantParams
@@ -477,8 +477,9 @@ class HackathonService:
         # Calculate the number of teams that are going to be needed for the given number of participants
         number_of_teams = ceil(number_of_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS)
 
-        # Create a dictionary that is going to hold the participants for each team
+        # Create a list for storing the Random Teams
         teams = []
+
         # Populate the dictionary with the Random Teams named `RandomTeam{i}`
         for i in range(number_of_teams):
             teams.append(RandomTeam(team=Team(name=f"RT_{token_hex(8)}", is_verified=True), participants=[]))
@@ -497,6 +498,7 @@ class HackathonService:
 
         return teams
 
+    # TODO: This should be extracted in a bulk transaction
     async def _create_random_participant_teams_in_transaction_callback(
         self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
@@ -521,16 +523,13 @@ class HackathonService:
                 return result
 
             # Insert all the participants in the team that was created
-            for participant in random_team["participants"]:
+            result = await self._participant_repo.bulk_update(
+                obj_ids=[ObjectId(participant.id) for participant in random_team["participants"]],
+                obj_fields=UpdateParticipantParams(team_id=random_team["team"].id),
+            )
 
-                result = await self._participant_repo.update(
-                    obj_id=str(participant.id),
-                    obj_fields=UpdateParticipantParams(team_id=random_team["team"].id),
-                    session=session,
-                )
-
-                if is_err(result):
-                    return result
+            if is_err(result):
+                return result
 
         return Ok(random_teams)
 

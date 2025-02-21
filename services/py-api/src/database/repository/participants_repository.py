@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
+from src.server.exception import DuplicateEmailError, ParticipantNotFoundError, OperationNotAcknowledgedError
 
 LOG = get_logger()
 
@@ -44,11 +44,10 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
             participants = []
             for doc in participants_data:
-                doc_copy = dict(doc)
 
-                doc_copy["id"] = str(doc_copy.pop("_id"))
+                doc["id"] = str(doc.pop("_id"))
 
-                participants.append(Participant(**doc_copy))
+                participants.append(Participant(**doc))
 
             LOG.debug(f"Fetched {len(participants)} participants.")
             return Ok(participants)
@@ -84,6 +83,30 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
         except Exception as e:
             LOG.exception("Failed to update participant", participant_id=obj_id, error=e)
+            return Err(e)
+
+    async def bulk_update(
+        self,
+        obj_ids: List[ObjectId],
+        obj_fields: UpdateParticipantParams,
+        session: Optional[AsyncIOMotorClientSession] = None,
+    ) -> Result[bool, Exception]:
+        try:
+            LOG.info(f"Updating participants...", participant_ids=obj_ids, updated_fields=obj_fields.model_dump())
+
+            result = await self._collection.update_many(
+                filter={"_id": {"$in": obj_ids}}, update={"$set": obj_fields.model_dump()}, session=session
+            )
+
+            LOG.info(f"Updated {result.modified_count} participants")
+
+            # Return whether the operation was acknowledged or not
+            if not result.acknowledged:
+                return Err(OperationNotAcknowledgedError())
+
+            return Ok(result.acknowledged)
+        except Exception as e:
+            LOG.exception("Failed to update participants", participant_ids=obj_ids, error=e)
             return Err(e)
 
     async def delete(
@@ -151,11 +174,10 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             participants = []
 
             for doc in participants_data:
-                doc_copy = dict(doc)
 
-                doc_copy["id"] = str(doc_copy.pop("_id"))
+                doc["id"] = str(doc.pop("_id"))
 
-                participants.append(Participant(**doc_copy))
+                participants.append(Participant(**doc))
 
             LOG.debug(f"Fetched {len(participants)} verified random participants.")
             return Ok(participants)

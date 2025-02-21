@@ -29,7 +29,4 @@ class FeatureSwitchService:
             obj_id=feature_switch_id, obj_fields=UpdateFeatureSwitchParams(state=(not get_result.ok_value))
         )
 
-        if is_err(update_result):
-            return update_result
-
         return update_result
