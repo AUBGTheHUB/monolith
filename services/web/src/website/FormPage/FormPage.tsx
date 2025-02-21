@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
 import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
+import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
 
 const RADIO_OPTIONS = [
     { label: 'Yes', value: 'true' },
@@ -20,6 +21,34 @@ const LEVEL_OPTIONS = [
     { label: 'Beginner', value: 'Beginner' },
     { label: 'Intermediate', value: 'Intermediate' },
     { label: 'Advanced', value: 'Advanced' },
+];
+
+const REFERRAL_OPTIONS = [
+    { label: 'Friend', value: 'Friend' },
+    { label: 'Social Media', value: 'Social Media' },
+    { label: 'University Announcement', value: 'University Announcement' },
+    { label: 'Other', value: 'Other' },
+];
+
+const PROGRAMMING_LANGUAGE_OPTIONS = [
+    { label: 'JavaScript', value: 'JavaScript' },
+    { label: 'Python', value: 'Python' },
+    { label: 'Java', value: 'Java' },
+    { label: 'C++', value: 'C++' },
+    { label: 'C#', value: 'C#' },
+    { label: 'Other', value: 'Other' },
+];
+
+const REGISTRATION_TYPE_OPTIONS = [
+    { label: 'Individual', value: 'Individual' },
+    { label: 'Team', value: 'Team' },
+];
+
+const UNIVERSITY_OPTIONS = [
+    { label: 'American University in Bulgaria', value: 'American University in Bulgaria' },
+    { label: 'Sofiiskiq', value: 'Sofiiskiq' },
+    { label: 'Tehnicheski', value: 'Tehnicheski' },
+    { label: 'Other', value: 'Other' },
 ];
 
 const registrationSchema = z.object({
@@ -87,23 +116,24 @@ export default function RegistrationForm() {
                     type="email"
                     placeholder="Enter your email"
                 />
-                <RadioComponent
+                <DropdownComponent
                     control={form.control}
                     name="tshirt_size"
-                    options={TSHIRT_OPTIONS}
-                    groupLabel="T-Shirt Size"
+                    label="T-Shirt Size"
+                    placeholder="Select your size"
+                    items={TSHIRT_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                 />
-                <InputComponent
+                <DropdownComponent
                     control={form.control}
                     name="university"
                     label="University"
-                    type="text"
-                    placeholder="Enter your university"
+                    placeholder="Select your university"
+                    items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                 />
                 <InputComponent
                     control={form.control}
                     name="location"
-                    label="Location"
+                    label="Location:"
                     type="text"
                     placeholder="Enter your location"
                 />
@@ -114,19 +144,19 @@ export default function RegistrationForm() {
                     type="number"
                     placeholder="Enter your age"
                 />
-                <InputComponent
+                <DropdownComponent
                     control={form.control}
                     name="source_of_referral"
                     label="Source of Referral"
-                    type="text"
                     placeholder="How did you hear about us?"
+                    items={REFERRAL_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                 />
-                <InputComponent
+                <DropdownComponent
                     control={form.control}
                     name="programming_language"
                     label="Programming Language"
-                    type="text"
-                    placeholder="Your favorite programming language"
+                    placeholder="Select your preferred language"
+                    items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                 />
                 <RadioComponent
                     control={form.control}
@@ -164,12 +194,11 @@ export default function RegistrationForm() {
                     options={RADIO_OPTIONS}
                     groupLabel="Do you agree to share your info with sponsors?"
                 />
-                <InputComponent
+                <RadioComponent
                     control={form.control}
                     name="registration_type"
-                    label="Registration Type"
-                    type="text"
-                    placeholder="Enter registration type"
+                    options={REGISTRATION_TYPE_OPTIONS}
+                    groupLabel="Enter registration type"
                 />
                 <RadioComponent
                     control={form.control}
@@ -184,7 +213,9 @@ export default function RegistrationForm() {
                     type="text"
                     placeholder="Enter your team name (optional)"
                 />
-                <Button type="submit">Register</Button>
+                <Button type="submit" className="text-black border border-black">
+                    Register
+                </Button>
             </form>
         </FormProvider>
     );
