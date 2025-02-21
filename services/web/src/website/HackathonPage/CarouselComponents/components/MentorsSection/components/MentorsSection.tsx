@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import ClassNames from 'embla-carousel-class-names';
 import { OPTIONS } from '../../../JudgesAndMentorsOptions';
+import { FEATURE_SWITCHES } from '@/constants';
 
 export default function MentorsSection() {
     const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [ClassNames()]);
@@ -38,32 +39,47 @@ export default function MentorsSection() {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    return (
-        <div className="bg-[#000912] py-10 relative">
-            <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
-                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
-                    <p className="text-white ml-5 tracking-[0.2em]">MENTORS</p>
+    const mentorsSwitch = FEATURE_SWITCHES.filter((switchObj) => switchObj.name === 'JurySwitch');
+
+    if (mentorsSwitch) {
+        return (
+            <div className="bg-[#000912] py-10 relative">
+                <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
+                    <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                        <img src="./n.png" alt="" className="w-[1.6rem]" />
+                        <p className="text-white ml-5 tracking-[0.2em]">MENTORS</p>
+                    </div>
+                    <div className="w-full  h-1 rounded-full overflow-hidden relative">
+                        <div
+                            className="h-full bg-white  transition-all duration-500"
+                            style={{
+                                width: `${(progress + 0.12) * 100}%`,
+                            }}
+                        ></div>
+                        <hr></hr>
+                    </div>
                 </div>
-                <div className="w-full  h-2 rounded-full overflow-hidden relative">
-                    <div
-                        className="h-full bg-white  transition-all duration-500"
-                        style={{
-                            width: `${(progress + 0.12) * 100}%`,
-                        }}
-                    ></div>
-                    <hr></hr>
+                <div id="mentors" className="ml-auto space-y-7 py-10 sm:w-11/12 w-11/12 z-10">
+                    <EmblaCarousel
+                        type="jury"
+                        slides={SLIDES}
+                        options={OPTIONS}
+                        emblaRefs={emblaRef}
+                        emblaApis={emblaApi}
+                    />
                 </div>
             </div>
-            <div id="mentors" className="ml-auto space-y-7 py-10 sm:w-11/12 w-11/12 z-10">
-                <EmblaCarousel
-                    type="jury"
-                    slides={SLIDES}
-                    options={OPTIONS}
-                    emblaRefs={emblaRef}
-                    emblaApis={emblaApi}
-                />
+        );
+    } else {
+        return (
+            <div className="bg-[#000912] py-10 relative">
+                <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
+                    <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                        <img src="./n.png" alt="" className="w-[1.6rem]" />
+                        <p className="text-white ml-5 tracking-[0.2em]">MENTORS COMMING SOON . . .</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
