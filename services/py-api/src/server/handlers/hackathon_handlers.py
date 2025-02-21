@@ -15,6 +15,7 @@ from src.server.schemas.response_schemas.schemas import (
     ParticipantDeletedResponse,
     TeamDeletedResponse,
     Response,
+    AllTeamsResponse,
 )
 from src.service.hackathon_service import HackathonService
 
@@ -31,6 +32,14 @@ class HackathonManagementHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(TeamDeletedResponse(team=result.ok_value), status_code=status.HTTP_200_OK)
+
+    async def get_all_teams(self) -> Response:
+        result = await self._service.fetch_all_teams()
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(AllTeamsResponse(teams=result.ok_value), status_code=status.HTTP_200_OK)
 
     async def delete_participant(self, participant_id: str) -> Response:
         result = await self._service.delete_participant(participant_id)

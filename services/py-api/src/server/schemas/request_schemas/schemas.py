@@ -103,3 +103,8 @@ class ParticipantRequestBody(BaseModel):
     registration_info: Union[AdminParticipantInputData, InviteLinkParticipantInputData, RandomParticipantInputData] = (
         Field(discriminator="registration_type")
     )
+
+
+class FeatureSwitchUpdateBody(BaseModel):
+    name: str
+    state: bool

@@ -273,6 +273,9 @@ class HackathonService:
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
 
+    async def fetch_all_teams(self) -> Result[List[Team], Exception]:
+        return await self._team_repo.fetch_all()
+
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
         Tuple[Participant, Team],
         ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,

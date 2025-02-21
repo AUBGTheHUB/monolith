@@ -97,6 +97,16 @@ class TeamResponse(BaseModel):
         return team.dump_as_json()
 
 
+class AllTeamsResponse(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    teams: List[Team]
+
+    @field_serializer("teams")
+    def serialize_teams(self, teams: List[Team]) -> List[Dict[str, Any]]:
+        return [team.dump_as_json() for team in teams]
+
+
 class ParticipantRegisteredResponse(ParticipantAndTeamResponse):
     """
     Responds with the registred documents of the Participant and Team. The Team object is only

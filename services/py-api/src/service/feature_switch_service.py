@@ -16,6 +16,18 @@ class FeatureSwitchService:
     async def check_all_feature_switches(self) -> Result[List[FeatureSwitch], Exception]:
         return await self._repository.fetch_all()
 
+    async def update_feature_switch(
+        self, name: str, state: bool
+    ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        result = await self._repository.get_feature_switch(feature=name)
+
+        if is_err(result):
+            return result
+
+        return await self._repository.update(
+            obj_id=str(result.ok_value.id), obj_fields=UpdateFeatureSwitchParams(state=state)
+        )
+
     async def toggle_feature_switch(
         self, feature_switch_id: str
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
