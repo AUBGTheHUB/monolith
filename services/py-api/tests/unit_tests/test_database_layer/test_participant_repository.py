@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Dict, Any
 from unittest.mock import Mock, AsyncMock
 
 import pytest
@@ -72,15 +72,15 @@ async def test_create_participant_general_exception(
 
 
 @pytest.mark.asyncio
-async def test_delete_successful(db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository) -> None:
+async def test_delete_successful(
+    db_manager_mock: Mock,
+    mock_obj_id: str,
+    mock_admin_participant_dump_no_id: Dict[str, Any],
+    repo: ParticipantsRepository,
+) -> None:
+    # Since the id is projected in the actual find_one_and_delete we shall do a deep copy of the mock_admin_participant without the id
     db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value={
-            "name": TEST_USER_NAME,
-            "email": TEST_USER_EMAIL,
-            "is_admin": False,
-            "email_verified": False,
-            "team_id": mock_obj_id,
-        }
+        return_value=mock_admin_participant_dump_no_id
     )
 
     result = await repo.delete(mock_obj_id)
@@ -119,17 +119,14 @@ async def test_delete_general_error(db_manager_mock: Mock, repo: ParticipantsRep
 
 @pytest.mark.asyncio
 async def test_update_participant_success(
-    db_manager_mock: Mock, mock_obj_id: str, repo: ParticipantsRepository
+    db_manager_mock: Mock,
+    mock_obj_id: str,
+    repo: ParticipantsRepository,
+    mock_admin_participant_dump_verified: Dict[str, Any],
 ) -> None:
 
     db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value={
-            "name": TEST_USER_NAME,
-            "email": TEST_USER_EMAIL,
-            "email_verified": True,
-            "is_admin": True,
-            "team_id": None,
-        }
+        return_value=mock_admin_participant_dump_verified
     )
 
     result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
@@ -140,7 +137,7 @@ async def test_update_participant_success(
     assert result.ok_value.name == TEST_USER_NAME
     assert result.ok_value.email == TEST_USER_EMAIL
     assert result.ok_value.is_admin is True
-    assert result.ok_value.team_id is None
+    assert result.ok_value.team_id is not None
 
 
 @pytest.mark.asyncio
@@ -156,28 +153,14 @@ async def test_update_participant_not_found(
     assert isinstance(result.err_value, ParticipantNotFoundError)
 
 
-# TODO: FIX
 # @pytest.mark.asyncio
 # async def test_fetch_all_success(
-#     db_manager_mock: Mock,
-#     repo: ParticipantsRepository,
-#     mock_random_participant: Participant,
+#     db_manager_mock: Mock, repo: ParticipantsRepository, mock_admin_participant: Participant
 # ) -> None:
-#     mock_participants_data = [
-#         {
-#             "_id": mock_random_participant.id,
-#             "name": mock_random_participant.name,
-#             "email": mock_random_participant.email,
-#             "is_admin": mock_random_participant.is_admin,
-#             "email_verified": mock_random_participant.email_verified,
-#             "team_id": mock_random_participant.team_id,
-#             "created_at": mock_random_participant.created_at,
-#             "updated_at": mock_random_participant.updated_at,
-#         }
-#         for _ in range(5)
-#     ]
 #
-#     db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=mock_participants_data)
+#     mock_participants_data = [mock_admin_participant.dump_as_mongo_db_document() for _ in range(5)]
+#
+#     db_manager_mock.get_collection.return_value.find.to_list = AsyncMock(return_value=mock_participants_data)
 #
 #     result = await repo.fetch_all()
 #
@@ -191,6 +174,8 @@ async def test_update_participant_not_found(
 #         assert participant.email_verified == mock_participants_data[i]["email_verified"]
 #         assert participant.team_id == mock_participants_data[i]["team_id"]
 #         assert participant.id == str(mock_participants_data[i]["_id"])
+#
+
 #
 # @pytest.mark.asyncio
 # async def test_fetch_all_empty(

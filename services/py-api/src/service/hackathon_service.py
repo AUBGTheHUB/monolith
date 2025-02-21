@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from src.database.model.base_model import SerializableObjectId
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
@@ -61,11 +62,13 @@ class HackathonService:
         self,
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
+        feature_switch_repo: FeatureSwitchRepository,
         tx_manager: TransactionManager,
         mail_service: HackathonMailService,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
+        self._fs_repo = feature_switch_repo
         self._tx_manager = tx_manager
         self._mail_service = mail_service
 
@@ -83,9 +86,7 @@ class HackathonService:
 
         participant = await self._participant_repo.create(
             Participant(
-                name=input_data.name,
-                email=str(input_data.email),
-                is_admin=input_data.is_admin,
+                **input_data.model_dump(),
                 team_id=team.ok_value.id,
             ),
             session,
@@ -111,7 +112,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
 
         result = await self._participant_repo.create(
-            Participant(name=input_data.name, email=str(input_data.email), is_admin=False, team_id=None)
+            Participant(**input_data.model_dump(), is_admin=False, team_id=None)
         )
         if is_err(result):
             return result
@@ -135,9 +136,7 @@ class HackathonService:
 
         participant_result = await self._participant_repo.create(
             Participant(
-                name=input_data.name,
-                email=str(input_data.email),
-                is_admin=input_data.is_admin,
+                **input_data.model_dump(),
                 team_id=SerializableObjectId(decoded_jwt_token["team_id"]),
                 email_verified=True,
             )

@@ -5,6 +5,7 @@ import { Footer } from './Footer/HackathonFooter';
 import ScheduleSection from './ScheduleSection/ScheduleSection';
 import LandingSection from './LandingSection/LandingSection';
 import MissionSection from './MissionSection/MissionSection';
+import AwardsSection from './AwardsSection/AwardsSection';
 import { Recap } from './components/Recap';
 
 export const HackathonPage = () => {
@@ -17,6 +18,7 @@ export const HackathonPage = () => {
             </div>
             <ScheduleSection />
             <Recap />
+            <AwardsSection />
             <Footer />
         </Fragment>
     );
