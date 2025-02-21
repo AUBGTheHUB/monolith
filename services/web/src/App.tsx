@@ -4,6 +4,7 @@ import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { useFetchFeatureSwitches } from './config';
+import FormPage from './website/FormPage/FormPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/old" element={<OldAppPage />} />
                 <Route path="/" element={<MainPage />} />
                 <Route path="/hackathon" element={<HackathonPage />} />
+                <Route path="/hackathon/registration" element={<FormPage />} />
             </Routes>
         </QueryClientProvider>
     );
