@@ -4,7 +4,7 @@ import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { useFetchFeatureSwitches } from './config';
-import FormPage from './website/FormPage/FormPage';
+import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 
 function App() {
     const queryClient = new QueryClient();
