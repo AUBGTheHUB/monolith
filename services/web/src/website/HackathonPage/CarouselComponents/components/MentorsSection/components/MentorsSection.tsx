@@ -57,7 +57,7 @@ export default function MentorsSection() {
                         <hr></hr>
                     </div>
                 </div>
-                <div id="mentors" className="ml-auto space-y-7 py-10 sm:w-11/12 w-11/12 z-10">
+                <div id="mentors" className="ml-auto space-y-7 py-10  w-[90%] z-10">
                     <EmblaCarousel
                         type="jury"
                         slides={SLIDES}
