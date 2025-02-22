@@ -26,7 +26,7 @@ export default function LandingSection() {
                         className="lg:w-auto z-10 absolute z-0 lg:top-0 right-0 top-[20rem] w-1/2 "
                         src="/public/hackLanding/death_star.svg"
                     ></img>
-                    <div className="w-full z-10 absolute lg:top-[11rem] md:top-[8rem] top-[6rem] inset-x-0 flex justify-center items-center">
+                    <div className="w-full z-10 absolute lg:top-[16rem] md:top-[15rem] top-[10rem] inset-x-0 flex justify-center items-center">
                         <img className="lg:w-1/2 w-4/5 z-10" src="/public/hackLanding/title.svg"></img>
                     </div>
                 </div>
@@ -39,17 +39,17 @@ export default function LandingSection() {
                             className="lg:w-auto z-30 absolute z-0 lg:top-0 right-0 top-[20rem] w-1/2 "
                             src="/public/hackLanding/death_star.svg"
                         ></img>
-                        <div className="w-full z-20 absolute lg:top-[11rem] md:top-[8rem] top-[6rem] inset-x-0 flex justify-center items-center">
+                        <div className="w-full z-20 absolute lg:top-[11rem] md:top-[8rem] top-[10rem] inset-x-0 flex justify-center items-center">
                             <img className="lg:w-1/2 w-4/5 z-10" src="/public/hackLanding/title.svg"></img>
                         </div>
-                        <div className="relative w-full min-h-[5rem]   bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
+                        <div className="relative w-full min-h-[5rem] pt-[3rem]   bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
                             <img className="absolute top-[0rem] w-full z-10" src="/public/hackLanding/space.svg"></img>
                             <div className="w-4/5 relative lg:top-[11rem] top-[10rem] inset-x-0 z-20 flex-column ">
                                 <div className="sm:text-4xl text-3xl sm:mb-5 mb-5 flex items-center ">
                                     <img src="./n.png" alt="" className="w-[1.6rem]" />
                                     <p className="text-white ml-5 tracking-[0.2em] font-normal">MISSION</p>
                                 </div>
-                                <div className=" text-mont text-[#A9B4C3] lg:py-20 py-10 sm:text-lg">
+                                <div className=" text-mont text-[#A9B4C3] lg:py-20 pt-10 pb-6 sm:text-lg">
                                     <p>
                                         Over the course of 52 hours, you will work in teams to brainstorm and prototype
                                         your project idea based on the topic we will reveal during the Opening Ceremony,
@@ -65,7 +65,7 @@ export default function LandingSection() {
                                     </p>
                                 </div>
                                 <img
-                                    className="w-full pb-[15rem] lg:pb-[30rem]"
+                                    className="w-full z-50 pb-[15rem] lg:pb-[30rem]"
                                     src="/public/hackMission/underline.svg"
                                 ></img>
                             </div>
