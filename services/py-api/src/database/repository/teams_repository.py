@@ -52,7 +52,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **team))
+            return Ok(Team(id=ObjectId(obj_id), **team))
 
         except Exception as e:
             LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
@@ -67,7 +67,7 @@ class TeamsRepository(CRUDRepository[Team]):
             teams = []
             for doc in teams_data:
 
-                doc["id"] = str(doc.pop("_id"))
+                doc["id"] = doc.pop("_id")
 
                 teams.append(Team(**doc))
 
@@ -100,7 +100,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if result is None:
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **result))
+            return Ok(Team(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception(f"Failed to update team due to error", team_id=obj_id, error=e)
@@ -129,7 +129,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if result is None:
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **result))
+            return Ok(Team(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Team deletion failed due to error", team_id=obj_id, error=e)
@@ -158,7 +158,7 @@ class TeamsRepository(CRUDRepository[Team]):
             # we make the following operations in order to rename the key appropriately
 
             # Rename `_id` to `id`
-            team["id"] = str(team.pop("_id"))
+            team["id"] = team.pop("_id")
 
             return Ok(Team(**team))
 

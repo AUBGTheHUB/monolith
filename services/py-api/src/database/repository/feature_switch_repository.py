@@ -24,7 +24,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             if feature_switch is None:
                 return Err(FeatureSwitchNotFoundError())
 
-            feature_switch["id"] = str(feature_switch.pop("_id"))
+            feature_switch["id"] = feature_switch.pop("_id")
 
             return Ok(FeatureSwitch(**feature_switch))
 
@@ -55,7 +55,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
 
             for doc in feature_switches_data:
 
-                doc["id"] = str(doc.pop("_id"))
+                doc["id"] = doc.pop("_id")
 
                 feature_switches.append(FeatureSwitch(**doc))
 
@@ -76,7 +76,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             if feature_switch is None:  # If no feature switch is found, return an Err
                 return Err(FeatureSwitchNotFoundError())
 
-            return Ok(FeatureSwitch(id=obj_id, **feature_switch))
+            return Ok(FeatureSwitch(id=ObjectId(obj_id), **feature_switch))
 
         except Exception as e:
             LOG.exception("Failed to fetch feature switch due to error", feature_switch_id=obj_id, error=e)
@@ -102,8 +102,37 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             if result is None:
                 return Err(FeatureSwitchNotFoundError())
 
-            return Ok(FeatureSwitch(id=obj_id, **result))
+            return Ok(FeatureSwitch(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Failed to update the feature switch", feature_switch_id=obj_id, error=e)
+            return Err(e)
+
+    async def update_by_name(
+        self, name: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        try:
+            LOG.info(f"Updating Feature Switch...", feature_switch_name=name, updated_fields=obj_fields.model_dump())
+
+            # ReturnDocument.AFTER returns the updated document instead of the original document which is the
+            # default behaviour.
+            result = await self._collection.find_one_and_update(
+                filter={"name": name},
+                update={"$set": obj_fields.model_dump()},
+                return_document=ReturnDocument.AFTER,
+                session=session,
+            )
+
+            # The result is None when the feature switch with the specified ObjectId is not found
+            if result is None:
+                return Err(FeatureSwitchNotFoundError())
+
+            result_dict = cast(Dict[str, Any], result)
+
+            result_dict["id"] = result_dict.pop("_id")
+
+            return Ok(FeatureSwitch(**result))
+
+        except Exception as e:
+            LOG.exception("Failed to update the feature switch", feature_switch_name=name, error=e)
             return Err(e)

@@ -125,7 +125,3 @@ class JwtDecodeError(CustomError):
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
     status_code = status.HTTP_404_NOT_FOUND
-
-
-class OperationNotAcknowledgedError(Exception):
-    """Exception raised when a MongoDB bulk operation is not acknowledged"""

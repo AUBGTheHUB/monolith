@@ -52,7 +52,7 @@ class HackathonManagementHandlers(BaseHandler):
 
     async def close_registration(self) -> Response:
 
-        result = await self._service.close_hackathon_registration()
+        result = await self._service.close_reg_for_all_participants()
 
         if is_err(result):
             return self.handle_error(result.err_value)

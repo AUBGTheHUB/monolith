@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from src.database.db_manager import DatabaseManager
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import DuplicateEmailError, ParticipantNotFoundError, OperationNotAcknowledgedError
+from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
 
 LOG = get_logger()
 
@@ -30,7 +30,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if participant is None:  # If no participant is found, return an Err
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **participant))
+            return Ok(Participant(id=ObjectId(obj_id), **participant))
 
         except Exception as e:
             LOG.exception("Failed to fetch participant due to error", participant_id=obj_id, error=e)
@@ -45,7 +45,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             participants = []
             for doc in participants_data:
 
-                doc["id"] = str(doc.pop("_id"))
+                doc["id"] = doc.pop("_id")
 
                 participants.append(Participant(**doc))
 
@@ -79,7 +79,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if result is None:
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **result))
+            return Ok(Participant(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Failed to update participant", participant_id=obj_id, error=e)
@@ -90,7 +90,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         obj_ids: List[ObjectId],
         obj_fields: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
-    ) -> Result[bool, Exception]:
+    ) -> Result[List[ObjectId], Exception]:
         try:
             LOG.info(f"Updating participants...", participant_ids=obj_ids, updated_fields=obj_fields.model_dump())
 
@@ -100,11 +100,8 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
             LOG.info(f"Updated {result.modified_count} participants")
 
-            # Return whether the operation was acknowledged or not
-            if not result.acknowledged:
-                return Err(OperationNotAcknowledgedError())
+            return Ok(obj_ids)
 
-            return Ok(result.acknowledged)
         except Exception as e:
             LOG.exception("Failed to update participants", participant_ids=obj_ids, error=e)
             return Err(e)
@@ -129,7 +126,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if result is None:
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **result))
+            return Ok(Participant(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Participant deletion failed due to error", participant_id=obj_id, error=e)
@@ -175,7 +172,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
             for doc in participants_data:
 
-                doc["id"] = str(doc.pop("_id"))
+                doc["id"] = doc.pop("_id")
 
                 participants.append(Participant(**doc))
 

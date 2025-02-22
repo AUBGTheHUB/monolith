@@ -25,7 +25,7 @@ from src.service.participants_verification_service import ParticipantVerificatio
 # https://fastapi.tiangolo.com/tutorial/dependencies/sub-dependencies/
 # Dependency wiring
 
-REGISTRATION_FEATURE_SWITCH = "RegSwitch"
+REGISTRATION_FEATURE_SWITCH = HackathonService.REG_ALL_PARTICIPANTS_SWITCH
 
 
 def _p_repo(db_manager: DB_MANAGER) -> ParticipantsRepository:
