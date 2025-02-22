@@ -99,12 +99,29 @@ const nonAdminSchema = baseSchema.extend({
     team_name: z.string().optional(),
 });
 
-const adminNonAdminUnion = z.discriminatedUnion('is_admin', [adminSchema, nonAdminSchema]);
+const mainAdminSchema = baseSchema
+    .extend({
+        is_admin: z.boolean({ message: 'Please select an option.' }),
+        // Start by making team_name optional.
+        team_name: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+        // If is_admin is true, then team_name must be provided and at least 3 characters.
+        if (data.is_admin === true) {
+            if (!data.team_name || data.team_name.trim().length < 3) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.too_small,
+                    minimum: 3,
+                    inclusive: true,
+                    type: 'string',
+                    message: 'Team name must be at least 3 characters.',
+                    path: ['team_name'],
+                });
+            }
+        }
+    });
 
-const mainAdminSchema = baseSchema.extend({
-    is_admin: z.boolean({ message: 'Please select an option.' }),
-    team_name: z.string().optional(),
-});
+const adminNonAdminUnion = z.discriminatedUnion('is_admin', [adminSchema, nonAdminSchema]);
 
 export const registrationSchema = z.union([mainAdminSchema, adminNonAdminUnion]);
 
