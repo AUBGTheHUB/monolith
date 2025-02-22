@@ -78,19 +78,19 @@ const baseSchema = z.object({
     programming_language: z.string().min(1, { message: 'Please select an option.' }),
     programming_level: z.string().min(1, { message: 'Please select an option.' }),
 
-    has_participated_in_hackaubg: z.enum(['true', 'false'], {
+    has_participated_in_hackaubg: z.boolean({
         message: 'Please select an option.',
     }),
-    has_internship_interest: z.enum(['true', 'false'], {
+    has_internship_interest: z.boolean({
         message: 'Please select an option.',
     }),
-    has_participated_in_hackathons: z.enum(['true', 'false'], {
+    has_participated_in_hackathons: z.boolean({
         message: 'Please select an option.',
     }),
-    has_previous_coding_experience: z.enum(['true', 'false'], {
+    has_previous_coding_experience: z.boolean({
         message: 'Please select an option.',
     }),
-    share_info_with_sponsors: z.enum(['true', 'false'], {
+    share_info_with_sponsors: z.boolean({
         message: 'Please select an option.',
     }),
 });
@@ -106,6 +106,7 @@ const nonAdminSchema = baseSchema.extend({
     is_admin: z.literal(false),
     team_name: z.string().optional(),
 });
+
 // Combine them with a **plain union**.
 export const registrationSchema = z.union([nonAdminSchema, adminSchema]);
 
@@ -127,7 +128,7 @@ export default function RegistrationForm() {
             has_participated_in_hackathons: undefined,
             has_previous_coding_experience: undefined,
             share_info_with_sponsors: undefined,
-            is_admin: false,
+            is_admin: undefined,
             team_name: '',
         },
     });
@@ -194,12 +195,6 @@ export default function RegistrationForm() {
                     label="Programming Language"
                     placeholder="Select your preferred language"
                     items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
-                />
-                <RadioComponent
-                    control={form.control}
-                    name="programming_level"
-                    options={LEVEL_OPTIONS}
-                    groupLabel="Programming Level"
                 />
                 <RadioComponent
                     control={form.control}
