@@ -71,7 +71,7 @@ export default function GradingSection() {
 
                 <div className="flex flex-col justify-center">
                     <div className="flex flex-col sm:flex-row items-start relative justify-center">
-                        <div className="w-4/5 sm:text-lg text-base sm:w-full mx-auto">
+                        <div className=" sm:text-lg text-base w-full mx-auto">
                             <div className="sm:mt-10 border border-separate border-gray-600 rounded-lg backdrop-blur-md flex sm:mb-14 w-full flex-wrap sm:flex-nowrap mb-7">
                                 <table className={TABLE_CLASS_NAME} key={projectComplexity.category}>
                                     <tbody className="w-full">
