@@ -10,10 +10,18 @@ export const API_URLS = {
 
 export const API_URL = API_URLS[ENV_MODE] || API_URLS['LOCAL'];
 
-export const FEATURE_SWITCHES = [
-    { name: 'MentorsSwitch', state: false },
-    { name: 'JurySwitch', state: false },
-    { name: 'SponsorsSwitch', state: false },
-    { name: 'RegSwitch', state: false },
-    { name: 'isRegTeamsFull', state: false },
-];
+export interface FeatureSwitches {
+    MentorsSwitch: boolean;
+    JurySwitch: boolean;
+    SponsorsSwitch: boolean;
+    RegSwitch: boolean;
+    isRegTeamsFull: boolean;
+}
+
+export const FEATURE_SWITCHES: FeatureSwitches = {
+    MentorsSwitch: false,
+    JurySwitch: false,
+    SponsorsSwitch: false,
+    RegSwitch: false,
+    isRegTeamsFull: false,
+};
