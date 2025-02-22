@@ -1,6 +1,6 @@
 export default function LandingSection() {
     return (
-        <div className="relative w-full h-[90%] pb-[12rem] sm:pb-[30rem] md:pb-[22rem] lg:pb-[20rem] xl:pb-[25rem] lg:b-[10rem] xs:pb-[18rem]">
+        <div className="relative w-full h-[90%] pb-[40rem] sm:pb-[30rem] md:pb-[25rem] lg:pb-[20rem] xl:pb-[25rem] lg:b-[10rem] xs:pb-[35rem]">
             <img className="w-full z-0" src="/public/hackLanding/space.svg"></img>
             <img className="w-full z-0 block xl:hidden" src="/public/hackLanding/space.svg"></img>
             <img className="w-full z-0 block xs:hidden" src="/public/hackLanding/space.svg"></img>
