@@ -8,9 +8,9 @@ export default function DesktopNav() {
     return (
         <div className="w-full h-[10%]">
             <div className="w-full flex flex-row align-top bg-transparent">
-                <div className="w-[42%] items-center">
-                    <a href="/">
-                        <img src={logo} className="h-[70px] my-[15px] mx-auto" />
+                <div className="w-[42%] items-center z-10 flex justify-center">
+                    <a href="/" className="cursor-pointer ">
+                        <img src={logo} className="h-[70px] my-[15px]" />
                     </a>
                 </div>
                 <div className="w-[58%] flex flex-row items-center">
