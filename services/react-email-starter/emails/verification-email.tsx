@@ -15,13 +15,13 @@ export const VerificationEmail = () => (
                         alt="The Hub"
                     />
                     <Hr style={hr} />
-                    <Text style={teamHeader}>
+                    <Text style={title_team}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participantName}`}, from team {`{teamName}`}!<br />
+                        {`{participant_name}`}, from team {`{team_name}`}!<br />
                     </Text>
-                    <Text style={noTeamHeader}>
+                    <Text style={title_no_team}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participantName}`}!<br />
+                        {`{participant_name}`}!<br />
                     </Text>
                     <Text style={paragraph}>
                         Thank you for registering for our seventh <Link style={anchor}>annual hackathon!</Link>
@@ -32,7 +32,7 @@ export const VerificationEmail = () => (
                     </Text>
                     <Text style={paragraph}>Before your adventure at the hackathon starts, you&apos;ll have to:</Text>
                     <br />
-                    <Button href={`{verifyLink}`} style={button}>
+                    <Button href={`{verification_link}`} style={button}>
                         Verify
                     </Button>
                     <br />
@@ -102,7 +102,7 @@ const footer = {
     lineHeight: '16px',
 };
 
-const teamHeader = {
+const title_team = {
     display: '{title_team}',
     color: '#000000',
     fontSize: '27px',
@@ -111,7 +111,7 @@ const teamHeader = {
     marginBottom: '30px',
 };
 
-const noTeamHeader = {
+const title_no_team = {
     display: '{title_no_team}',
     color: '#000000',
     fontSize: '27px',

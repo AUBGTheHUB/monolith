@@ -15,22 +15,22 @@ export const WelcomeEmail = () => (
                         alt="The Hub"
                     />
                     <Hr style={hr} />
-                    <Text style={teamHeader}>
+                    <Text style={title_team}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participantName}`}, from team {`{teamName}`}!<br />
+                        {`{participant_name}`}, from team {`{team_name}`}!<br />
                     </Text>
-                    <Text style={noTeamHeader}>
+                    <Text style={title_no_team}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participantName}`}!<br />
+                        {`{participant_name}`}!<br />
                     </Text>
                     <Text style={paragraph}>
                         Before the hackathon starts, there are a few <Link style={anchor}>important things:</Link>
                     </Text>
-                    <Section style={inviteVisibility}>
+                    <Section style={invite_link_visibility}>
                         <Text style={paragraph}>
                             Here is the invite link, so you can invite your teammates to join:
                         </Text>
-                        <code style={invite}>{`{inviteLink}`}</code>
+                        <code style={invite}>{`{invite_link}`}</code>
                     </Section>
                     <Text style={paragraph}>
                         To ensure you stay in the loop, we will invite you to join the Official HackAUBG 6.0 Facebook
@@ -113,7 +113,7 @@ const footer = {
     lineHeight: '16px',
 };
 
-const teamHeader = {
+const title_team = {
     display: '{title_team}',
     color: '#000000',
     fontSize: '27px',
@@ -122,7 +122,7 @@ const teamHeader = {
     marginBottom: '30px',
 };
 
-const noTeamHeader = {
+const title_no_team = {
     display: '{title_no_team}',
     color: '#000000',
     fontSize: '27px',
@@ -142,6 +142,6 @@ const invite = {
     marginBottom: '15px',
 };
 
-const inviteVisibility = {
-    display: '{inviteLinkVisibility}',
+const invite_link_visibility = {
+    display: '{invite_link_visibility}',
 };
