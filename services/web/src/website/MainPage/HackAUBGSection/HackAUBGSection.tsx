@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { FEATURE_SWITCHES } from '@/constants';
 import { Fragment } from 'react/jsx-runtime';
-
-const HACKAUBG_SECTION_SWITCH = false;
 
 export default function HackAUBGSection() {
     return (
@@ -48,7 +47,7 @@ export default function HackAUBGSection() {
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="flex flex-row w-[70%] lg:space-x--12 space-x-[-25px]">
-                                {HACKAUBG_SECTION_SWITCH ? (
+                                {FEATURE_SWITCHES.hackAUBGSectionSwitch ? (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border border-black rounded-full">
                                             <img src="../real-mentor1.png" alt="Mentor 1" />
@@ -75,18 +74,26 @@ export default function HackAUBGSection() {
                                 )}
                             </div>
                             <div className="w-3/5 h-full flex items-end justify-center select-none">
-                                <Button
-                                    className={`text-blue-700 border-blue-700 bg-transparent ${
-                                        HACKAUBG_SECTION_SWITCH
-                                            ? 'hover:bg-blue-700 hover:text-white'
-                                            : 'cursor-not-allowed opacity-50'
-                                    } transition duration-200`}
-                                    variant="outline_mono"
-                                    size="round_sm"
-                                    disabled={!HACKAUBG_SECTION_SWITCH}
-                                >
-                                    See all mentors
-                                </Button>
+                                {FEATURE_SWITCHES.hackAUBGSectionSwitch ? (
+                                    <a href="/hackathon">
+                                        <Button
+                                            className="text-blue-700 border-blue-700 bg-transparent sm:hover:bg-blue-700 sm:hover:text-white hover:bg-white hover:text-blue-700 transition duration-200"
+                                            variant="outline_mono"
+                                            size="round_sm"
+                                        >
+                                            See HackAUBG
+                                        </Button>
+                                    </a>
+                                ) : (
+                                    <Button
+                                        className="text-blue-700 border-blue-700 bg-transparent cursor-not-allowed opacity-50 transition duration-200"
+                                        variant="outline_mono"
+                                        size="round_sm"
+                                        disabled
+                                    >
+                                        See HackAUBG
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
