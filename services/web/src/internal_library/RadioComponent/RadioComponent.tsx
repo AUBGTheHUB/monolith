@@ -41,7 +41,6 @@ export const RadioComponent = <T extends FieldValues>({
                             onValueChange={(val) => {
                                 const booleanValue = val === 'true';
                                 field.onChange(booleanValue);
-                                console.log('Updated field:', field);
                             }}
                             value={String(field.value)}
                             className={radioGroupClassName}

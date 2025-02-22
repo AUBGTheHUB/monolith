@@ -40,8 +40,8 @@ const PROGRAMMING_LANGUAGE_OPTIONS = [
 ];
 
 const REGISTRATION_TYPE_OPTIONS = [
-    { label: 'Individual', value: false },
     { label: 'Team', value: true },
+    { label: 'Individual', value: false },
 ];
 
 const UNIVERSITY_OPTIONS = [
@@ -51,6 +51,8 @@ const UNIVERSITY_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
+// 1) Define all fields that are common to both admin and non-admin
+//    (except for is_admin and team_name, which differ).
 const baseSchema = z.object({
     name: z
         .string()
@@ -64,12 +66,14 @@ const baseSchema = z.object({
 
     tshirt_size: z.string().min(1, { message: 'Size is required.' }),
     university: z.string().min(1, { message: 'University is required.' }),
+
     location: z
         .string()
         .min(3, { message: 'Location must be at least 3 characters long.' })
         .max(100, { message: 'Location cannot exceed 100 characters.' }),
+
     age: z
-        .number({ message: 'Age is required.' })
+        .number({ required_error: 'Age is required.' })
         .int({ message: 'Age must be a whole number.' })
         .min(16, { message: 'You must be at least 16 years old.' })
         .max(69, { message: 'Age cannot exceed 69.' }),
@@ -78,37 +82,43 @@ const baseSchema = z.object({
     programming_language: z.string().min(1, { message: 'Please select an option.' }),
     programming_level: z.string().min(1, { message: 'Please select an option.' }),
 
-    has_participated_in_hackaubg: z.boolean({
-        message: 'Please select an option.',
-    }),
-    has_internship_interest: z.boolean({
-        message: 'Please select an option.',
-    }),
-    has_participated_in_hackathons: z.boolean({
-        message: 'Please select an option.',
-    }),
-    has_previous_coding_experience: z.boolean({
-        message: 'Please select an option.',
-    }),
-    share_info_with_sponsors: z.boolean({
-        message: 'Please select an option.',
-    }),
+    has_participated_in_hackaubg: z.boolean({ message: 'Please select an option.' }),
+    has_internship_interest: z.boolean({ message: 'Please select an option.' }),
+    has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
+    has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
+    share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }),
 });
 
+// 2) Define the **admin** variant:
+//    - is_admin = true
+//    - team_name is required
 const adminSchema = baseSchema.extend({
-    // Expect the string "true"
     is_admin: z.literal(true),
-    team_name: z.string().min(3, { message: 'Team name must be at least 3 characters.' }),
+    team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
 });
 
+// Non-admin branch: is_admin = false
 const nonAdminSchema = baseSchema.extend({
-    // Accept the string "false" OR undefined
     is_admin: z.literal(false),
     team_name: z.string().optional(),
 });
 
-// Combine them with a **plain union**.
-export const registrationSchema = z.union([nonAdminSchema, adminSchema]);
+const adminNonAdminUnion = z.discriminatedUnion('is_admin', [adminSchema, nonAdminSchema]);
+
+const mainAdminSchema = baseSchema.extend({
+    // property is specifically undefined
+    is_admin: z.boolean({ message: 'Please select an option.' }),
+    team_name: z.string().optional(),
+});
+
+// Put them in a discriminated union by `is_admin`
+export const registrationSchema = z.union([
+    // the discriminated union for is_admin = true|false
+    mainAdminSchema,
+    adminNonAdminUnion,
+    // the undefined branch => custom error
+]);
+// 4) Combine them into a **discriminated union** on "is_admin"
 
 export default function RegistrationForm() {
     const form = useForm<z.infer<typeof registrationSchema>>({
