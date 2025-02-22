@@ -28,13 +28,15 @@ export default function HackAUBGSection() {
                                 </p>
                             </div>
                             <div className="flex items-end">
-                                <Button
-                                    className="bg-transparent text-white border-white hover:text-white sm:hover:bg-white sm:hover:text-blue-700 transition duration-200"
-                                    variant="outline_mono"
-                                    size="round_sm"
-                                >
-                                    Participate
-                                </Button>
+                                <a href="hackathon">
+                                    <Button
+                                        className="bg-transparent text-white border-white hover:text-white sm:hover:bg-white sm:hover:text-blue-700 transition duration-200"
+                                        variant="outline_mono"
+                                        size="round_sm"
+                                    >
+                                        Participate
+                                    </Button>
+                                </a>
                             </div>
                         </div>
                     </div>

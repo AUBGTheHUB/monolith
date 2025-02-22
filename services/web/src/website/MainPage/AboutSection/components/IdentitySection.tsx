@@ -12,9 +12,11 @@ export default function IdentitySection() {
                 of fellow enthusiasts. This is what truly motivates us to get together, organize events, and encourage
                 change.
             </p>
-            <Button variant="outline_mono" size="round_sm">
-                Meet the Team
-            </Button>
+            <a href="#meet-team">
+                <Button variant="outline_mono" size="round_sm">
+                    Meet the Team
+                </Button>
+            </a>
         </div>
     );
 }
