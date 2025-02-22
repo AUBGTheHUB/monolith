@@ -36,28 +36,26 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             LOG.exception("Failed to fetch participant due to error", participant_id=obj_id, error=e)
             return Err(e)
 
-    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Participant], Exception]:
-        raise NotImplementedError()
-        # try:
-        #     LOG.info("Fetching all participants...")
-        #
-        #     participants_data = await self._collection.find({})
-        #
-        #     participants = []
-        #     for doc in participants_data:
-        #         doc_copy = dict(doc)
-        #
-        #         doc_copy["id"] = str(doc_copy.pop("_id"))
-        #
-        #         participants.append(Participant(**doc_copy))
-        #
-        #     LOG.debug(f"Fetched {len(participants)} participants.")
-        #     return Ok(participants)
-        #
-        # except Exception as e:
-        #     LOG.exception(f"Failed to fetch all participants due to err {e}")
-        #     return Err(e)
+        try:
+            LOG.info("Fetching all participants...")
+
+            participants_data = await self._collection.find({}).to_list(length=None)
+
+            participants = []
+            for doc in participants_data:
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                participants.append(Participant(**doc_copy))
+
+            LOG.debug(f"Fetched {len(participants)} participants.")
+            return Ok(participants)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all participants due to err {e}")
+            return Err(e)
 
     async def update(
         self,

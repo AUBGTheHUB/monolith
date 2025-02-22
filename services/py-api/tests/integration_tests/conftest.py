@@ -5,6 +5,15 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
+
+from src.database.model.participant_model import (
+    TSHIRT_SIZE,
+    UNIVERSITIES_LIST,
+    ALLOWED_AGE,
+    REFERRAL_SOURCES_LIST,
+    PROGRAMMING_LANGUAGES_LIST,
+    PROGRAMMING_LEVELS_LIST,
+)
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -17,6 +26,13 @@ TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
 TEST_USER_EMAIL = "test@test.com"
+TEST_UNIVERSITY_NAME: UNIVERSITIES_LIST = "American University in Bulgaria"
+TEST_LOCATION = "Blagoevgrad"
+TEST_TSHIRT_SIZE: TSHIRT_SIZE = "Medium (M)"
+TEST_ALLOWED_AGE = 21
+TEST_REFERRAL_SOURCE: REFERRAL_SOURCES_LIST = "Friends"
+TEST_PROGRAMMING_LANGUAGE: PROGRAMMING_LANGUAGES_LIST = "Programming in Python"
+TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -164,6 +180,18 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
         name: Union[str, None] = TEST_USER_NAME,
         email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
+        tshirt_size: Union[TSHIRT_SIZE | None] = TEST_TSHIRT_SIZE,
+        university: Union[UNIVERSITIES_LIST | None] = TEST_UNIVERSITY_NAME,
+        location: Union[str | None] = TEST_LOCATION,
+        age: Union[ALLOWED_AGE | None] = 21,
+        source_of_referral: Union[REFERRAL_SOURCES_LIST | None] = TEST_REFERRAL_SOURCE,
+        programming_language: Union[PROGRAMMING_LANGUAGES_LIST | None] = TEST_PROGRAMMING_LANGUAGE,
+        programming_level: Union[PROGRAMMING_LEVELS_LIST | None] = TEST_PROGRAMMING_LEVEL,
+        has_participated_in_hackaubg: Union[bool | None] = True,
+        has_internship_interest: Union[bool | None] = True,
+        has_participated_in_hackathons: Union[bool | None] = True,
+        has_previous_coding_experience: Union[bool | None] = True,
+        share_info_with_sponsors: Union[bool | None] = True,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """This method is flexible with generating participant request bodies. To disable a property just call it with
@@ -174,6 +202,18 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
             "name": name,
             "email": email,
             "is_admin": is_admin,
+            "tshirt_size": tshirt_size,
+            "university": university,
+            "location": location,
+            "age": age,
+            "source_of_referral": source_of_referral,
+            "programming_language": programming_language,
+            "programming_level": programming_level,
+            "has_participated_in_hackaubg": has_participated_in_hackaubg,
+            "has_internship_interest": has_internship_interest,
+            "has_participated_in_hackathons": has_participated_in_hackathons,
+            "has_previous_coding_experience": has_previous_coding_experience,
+            "share_info_with_sponsors": share_info_with_sponsors,
             **kwargs,
         }
 

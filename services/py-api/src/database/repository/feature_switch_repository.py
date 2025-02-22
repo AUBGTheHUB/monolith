@@ -44,7 +44,30 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
         return Err(NotImplementedError())
 
     async def fetch_all(self) -> Result[List[FeatureSwitch], Exception]:
-        return Err(NotImplementedError())
+
+        try:
+            LOG.info("Fetching all feature switches...")
+            # Note that find does not require an await expression, because find merely creates a MotorCursor without
+            # performing any operations on the server. MotorCursor methods such as to_list() perform actual operations.
+            # Learn more: https://motor.readthedocs.io/en/stable/api-asyncio/asyncio_motor_collection.html#motor.motor_asyncio.AsyncIOMotorCollection.find
+            feature_switches_data = await self._collection.find({}).to_list(length=None)
+
+            feature_switches = []
+
+            for doc in feature_switches_data:
+
+                doc_copy = dict(doc)
+
+                doc_copy["id"] = str(doc_copy.pop("_id"))
+
+                feature_switches.append(FeatureSwitch(**doc_copy))
+
+            LOG.debug(f"Fetched {len(feature_switches)} feature switches.")
+            return Ok(feature_switches)
+
+        except Exception as e:
+            LOG.exception("Failed to fetch all feature switches due to error", error=e)
+            return Err(e)
 
     async def fetch_by_id(self, obj_id: str) -> Result[FeatureSwitch, Exception]:
         return Err(NotImplementedError())

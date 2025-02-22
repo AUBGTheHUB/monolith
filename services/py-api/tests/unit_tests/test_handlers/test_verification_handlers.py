@@ -1,5 +1,4 @@
 from unittest.mock import Mock, patch
-from bson import ObjectId
 from fastapi import BackgroundTasks
 import pytest
 from result import Err, Ok
@@ -22,7 +21,7 @@ from src.server.schemas.response_schemas.schemas import (
 )
 from src.utils import JwtUtility
 from starlette import status
-from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
+from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
 
 
 @pytest.fixture
@@ -36,21 +35,18 @@ async def test_verify_participant_admin_case_success(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
     background_tasks: BackgroundTasks,
+    mock_admin_participant: Participant,
+    mock_verified_team: Team,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
     mock_obj_id: str,
 ) -> None:
+    mock_admin_participant.email_verified = True
+    mock_verified_admin_participant = mock_admin_participant
     # Mock successful result from `verify_admin_participant`
     participant_verification_service_mock.verify_admin_participant.return_value = Ok(
         (
-            Participant(
-                id=ObjectId(mock_obj_id),
-                name=TEST_USER_NAME,
-                email=TEST_USER_EMAIL,
-                is_admin=True,
-                email_verified=True,
-                team_id=ObjectId(mock_obj_id),
-            ),
-            Team(id=mock_obj_id, name=TEST_TEAM_NAME, is_verified=True),
+            mock_verified_admin_participant,
+            mock_verified_team,
         )
     )
 
@@ -155,20 +151,16 @@ async def test_verify_random_participant_case_success(
     verification_handlers: VerificationHandlers,
     participant_verification_service_mock: Mock,
     background_tasks: BackgroundTasks,
+    mock_random_participant: Participant,
     mock_jwt_random_user_verification: JwtParticipantVerificationData,
     mock_obj_id: str,
 ) -> None:
+    mock_random_participant.email_verified = True
+    mock_verified_random_participant = mock_random_participant
     # Mock successful result from `verify_random_participant`
     participant_verification_service_mock.verify_random_participant.return_value = Ok(
         (
-            Participant(
-                id=mock_obj_id,
-                name=TEST_USER_NAME,
-                email=TEST_USER_EMAIL,
-                is_admin=False,
-                email_verified=True,
-                team_id=ObjectId(),
-            ),
+            mock_verified_random_participant,
             None,
         )
     )
@@ -271,12 +263,11 @@ async def test_verify_random_hackathon_capacity_reached(
 async def test_send_verification_email_success(
     verification_handlers: VerificationHandlers,
     background_tasks: BackgroundTasks,
+    mock_admin_participant: Participant,
     participant_verification_service_mock: Mock,
     mock_obj_id: str,
 ) -> None:
-    participant_verification_service_mock.resend_verification_email.return_value = Ok(
-        Participant(name=TEST_USER_NAME, email=TEST_USER_EMAIL, is_admin=True, email_verified=False, team_id=None)
-    )
+    participant_verification_service_mock.resend_verification_email.return_value = Ok(mock_admin_participant)
 
     result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks)
 

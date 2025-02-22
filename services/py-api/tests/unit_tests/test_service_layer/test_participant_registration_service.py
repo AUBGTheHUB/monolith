@@ -35,6 +35,8 @@ async def test_register_admin_participant_success(
     team_repo_mock: Mock,
     background_tasks: MagicMock,
     participant_repo_mock: Mock,
+    mock_admin_participant: Participant,
+    mock_unverified_team: Team,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -44,13 +46,8 @@ async def test_register_admin_participant_success(
 
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
-    team_repo_mock.create.return_value = Team(name=mock_admin_case_input_data.team_name)
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_admin_case_input_data.name,
-        email=mock_admin_case_input_data.email,
-        is_admin=True,
-        team_id=team_repo_mock.create.return_value.id,
-    )
+    team_repo_mock.create.return_value = mock_unverified_team
+    participant_repo_mock.create.return_value = mock_admin_participant
 
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
@@ -147,6 +144,8 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     background_tasks: MagicMock,
+    mock_unverified_team: Team,
+    mock_admin_participant: Participant,
     participant_repo_mock: Mock,
     mock_admin_case_input_data: AdminParticipantInputData,
 ) -> None:
@@ -154,13 +153,8 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Everything else is as expected
-    team_repo_mock.create.return_value = Team(name=mock_admin_case_input_data.team_name)
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_admin_case_input_data.name,
-        email=mock_admin_case_input_data.email,
-        is_admin=True,
-        team_id=team_repo_mock.create.return_value.id,
-    )
+    team_repo_mock.create.return_value = mock_unverified_team
+    participant_repo_mock.create.return_value = mock_admin_participant
 
     hackathon_service_mock.create_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
@@ -203,6 +197,7 @@ async def test_register_random_participant_success(
     hackathon_service_mock: Mock,
     background_tasks: MagicMock,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -211,12 +206,7 @@ async def test_register_random_participant_success(
     hackathon_service_mock.send_verification_email = AsyncMock(return_value=None)
 
     # Mock successful `create` responses for participant.
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_random_case_input_data.name,
-        email=mock_random_case_input_data.email,
-        is_admin=False,
-        team_id=None,
-    )
+    participant_repo_mock.create.return_value = mock_random_participant
 
     hackathon_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
@@ -273,6 +263,7 @@ async def test_register_random_participant_send_verification_email_failure_email
     team_repo_mock: Mock,
     background_tasks: MagicMock,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -281,12 +272,7 @@ async def test_register_random_participant_send_verification_email_failure_email
     hackathon_service_mock.send_verification_email.return_value = Err(ValueError("Test Error"))
 
     # Mock successful `create` responses for participant.
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_random_case_input_data.name,
-        email=mock_random_case_input_data.email,
-        is_admin=False,
-        team_id=None,
-    )
+    participant_repo_mock.create.return_value = mock_random_participant
 
     hackathon_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
@@ -307,6 +293,7 @@ async def test_register_random_participant_send_verification_email_failure_parti
     team_repo_mock: Mock,
     background_tasks: MagicMock,
     participant_repo_mock: Mock,
+    mock_random_participant: Participant,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock not full hackathon
@@ -315,12 +302,7 @@ async def test_register_random_participant_send_verification_email_failure_parti
     hackathon_service_mock.send_verification_email.return_value = Err(ParticipantNotFoundError("Test Error"))
 
     # Mock successful `create` responses for participant.
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_random_case_input_data.name,
-        email=mock_random_case_input_data.email,
-        is_admin=False,
-        team_id=None,
-    )
+    participant_repo_mock.create.return_value = mock_random_participant
 
     hackathon_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
@@ -361,18 +343,14 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: MagicMock,
+    mock_random_participant: Participant,
     mock_random_case_input_data: RandomParticipantInputData,
 ) -> None:
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
     # Everything else is as expected
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_random_case_input_data.name,
-        email=mock_random_case_input_data.email,
-        is_admin=False,
-        team_id=None,
-    )
+    participant_repo_mock.create.return_value = mock_random_participant
 
     hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
 
@@ -415,6 +393,8 @@ async def test_register_link_participant_success(
     team_repo_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: MagicMock,
+    mock_invite_participant: Participant,
+    mock_verified_team: Team,
     mock_invite_link_case_input_data: InviteLinkParticipantInputData,
     mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
 ) -> None:
@@ -428,15 +408,8 @@ async def test_register_link_participant_success(
 
     # Mock successful `create` responses for team and participant. These are the operations inside the passed callback
     # to with_transaction
-    team_repo_mock.create.return_value = Team(
-        id=mock_jwt_user_registration["team_id"], name=mock_invite_link_case_input_data.team_name
-    )
-    participant_repo_mock.create.return_value = Participant(
-        name=mock_invite_link_case_input_data.name,
-        email=mock_invite_link_case_input_data.email,
-        is_admin=False,
-        team_id=mock_jwt_user_registration["team_id"],
-    )
+    team_repo_mock.create.return_value = mock_verified_team
+    participant_repo_mock.create.return_value = mock_invite_participant
 
     hackathon_service_mock.create_invite_link_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
