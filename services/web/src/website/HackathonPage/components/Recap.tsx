@@ -15,9 +15,9 @@ export const Recap = () => {
                 }}
             />
             <div className="max-w-7xl mx-auto px-12 relative">
-                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
+                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center w-4/5">
                     <img src="./n.png" alt="" className="w-[1.6rem]" />
-                    <p className="text-white ml-5 tracking-[0.2em]">RECAP</p>
+                    <p className="text-white ml-5 tracking-[0.2em] ">RECAP</p>
                 </div>
                 <div className="relative rounded-lg overflow-hidden bg-black/20">
                     <video className="w-full rounded-lg aspect-[16/7] object-cover" controls autoPlay muted playsInline>

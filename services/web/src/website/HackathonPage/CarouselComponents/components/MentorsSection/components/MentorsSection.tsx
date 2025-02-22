@@ -39,12 +39,10 @@ export default function MentorsSection() {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    const mentorsSwitch = FEATURE_SWITCHES.filter((switchObj) => switchObj.name === 'JurySwitch');
-
-    if (mentorsSwitch) {
+    if (FEATURE_SWITCHES.MentorsSwitch) {
         return (
             <div className="bg-[#000912] py-10 relative">
-                <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
+                <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
                         <p className="text-white ml-5 tracking-[0.2em]">MENTORS</p>
@@ -73,10 +71,10 @@ export default function MentorsSection() {
     } else {
         return (
             <div className="bg-[#000912] py-10 relative">
-                <div className=" space-y-7 font-mont sm:w-11/12 w-11/12 z-10 relative m-auto">
+                <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
-                        <p className="text-white ml-5 tracking-[0.2em]">MENTORS COMMING SOON . . .</p>
+                        <p className="text-white ml-5 tracking-[0.2em]">MENTORS COMING SOON . . .</p>
                     </div>
                 </div>
             </div>
