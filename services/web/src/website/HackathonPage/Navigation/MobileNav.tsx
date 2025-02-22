@@ -18,14 +18,14 @@ export const MobileNavComponent = () => {
         <nav className="sticky h-[10vh] top-0 z-[100] bg-[rgba(0,0,0,0.5)]" aria-label="Mobile Navigation">
             <div className="flex justify-around items-center h-full">
                 <a href="/">
-                    <img src={logo} className="h-[70px]" />
+                    <img src={logo} className="h-[50px]" />
                 </a>
-                <h2 className="text-white font-medium text-2xl">The Hub</h2>
-                <div>
+                <h2 className="text-white font-medium text-2xl mr-[10px]">The Hub</h2>
+                <div className="h-[50px]">
                     <Sheet>
                         <SheetTitle />
                         <SheetDescription />
-                        <SheetTrigger>
+                        <SheetTrigger className="h-[50px]">
                             <img src={hamburgerMenuIcon} />
                         </SheetTrigger>
                         <SheetContent className="z-[100]">
