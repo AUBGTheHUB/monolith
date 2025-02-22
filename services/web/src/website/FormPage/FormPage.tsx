@@ -51,8 +51,6 @@ const UNIVERSITY_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
-// 1) Define all fields that are common to both admin and non-admin
-//    (except for is_admin and team_name, which differ).
 const baseSchema = z.object({
     name: z
         .string()
@@ -102,11 +100,9 @@ const nonAdminSchema = baseSchema.extend({
 const mainAdminSchema = baseSchema
     .extend({
         is_admin: z.boolean({ message: 'Please select an option.' }),
-        // Start by making team_name optional.
         team_name: z.string().optional(),
     })
     .superRefine((data, ctx) => {
-        // If is_admin is true, then team_name must be provided and at least 3 characters.
         if (data.is_admin === true) {
             if (!data.team_name || data.team_name.trim().length < 3) {
                 ctx.addIssue({
