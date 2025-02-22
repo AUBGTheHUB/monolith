@@ -39,8 +39,8 @@ export const RadioComponent = <T extends FieldValues>({
                     <FormControl>
                         <RadioGroup
                             onValueChange={(val) => {
-                                const booleanValue = val === 'true';
-                                field.onChange(booleanValue);
+                                const parsedValue = val === 'true' || val === 'false' ? val === 'true' : val;
+                                field.onChange(parsedValue);
                             }}
                             value={String(field.value)}
                             className={radioGroupClassName}

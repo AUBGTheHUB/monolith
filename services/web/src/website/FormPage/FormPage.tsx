@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
@@ -89,15 +89,11 @@ const baseSchema = z.object({
     share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }),
 });
 
-// 2) Define the **admin** variant:
-//    - is_admin = true
-//    - team_name is required
 const adminSchema = baseSchema.extend({
     is_admin: z.literal(true),
     team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
 });
 
-// Non-admin branch: is_admin = false
 const nonAdminSchema = baseSchema.extend({
     is_admin: z.literal(false),
     team_name: z.string().optional(),
@@ -106,19 +102,11 @@ const nonAdminSchema = baseSchema.extend({
 const adminNonAdminUnion = z.discriminatedUnion('is_admin', [adminSchema, nonAdminSchema]);
 
 const mainAdminSchema = baseSchema.extend({
-    // property is specifically undefined
     is_admin: z.boolean({ message: 'Please select an option.' }),
     team_name: z.string().optional(),
 });
 
-// Put them in a discriminated union by `is_admin`
-export const registrationSchema = z.union([
-    // the discriminated union for is_admin = true|false
-    mainAdminSchema,
-    adminNonAdminUnion,
-    // the undefined branch => custom error
-]);
-// 4) Combine them into a **discriminated union** on "is_admin"
+export const registrationSchema = z.union([mainAdminSchema, adminNonAdminUnion]);
 
 export default function RegistrationForm() {
     const form = useForm<z.infer<typeof registrationSchema>>({
@@ -146,6 +134,11 @@ export default function RegistrationForm() {
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
         console.log('Form submitted:', data);
     };
+
+    const isAdmin = useWatch({
+        control: form.control,
+        name: 'is_admin',
+    });
 
     return (
         <FormProvider {...form}>
@@ -249,8 +242,14 @@ export default function RegistrationForm() {
                     label="Team Name"
                     type="text"
                     placeholder="Enter your team name"
+                    disabled={isAdmin !== true}
                 />
-
+                <RadioComponent
+                    control={form.control}
+                    name="programming_level"
+                    options={LEVEL_OPTIONS}
+                    groupLabel="Programming Level"
+                />
                 <Button type="submit" className="text-black border border-black">
                     Register
                 </Button>
