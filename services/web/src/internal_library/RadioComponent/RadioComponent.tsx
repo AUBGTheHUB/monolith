@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 type Option = {
     label: string;
-    value: string;
+    value: string | boolean;
 };
 
 type RadioButtonProps<T extends FieldValues> = {
@@ -37,15 +37,23 @@ export const RadioComponent = <T extends FieldValues>({
                 <FormItem className={cn('space-y-3', groupClassName)}>
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
-                        <RadioGroup onValueChange={field.onChange} value={field.value} className={radioGroupClassName}>
+                        <RadioGroup
+                            onValueChange={(val) => {
+                                const booleanValue = val === 'true';
+                                field.onChange(booleanValue);
+                                console.log('Updated field:', field);
+                            }}
+                            value={String(field.value)}
+                            className={radioGroupClassName}
+                        >
                             {options.map((option) => (
                                 <FormItem
-                                    key={option.value}
+                                    key={option.label}
                                     className={cn('flex items-center space-x-3 space-y-0', formItemClassName)}
                                 >
                                     <FormControl>
                                         <RadioGroupItem
-                                            value={option.value}
+                                            value={String(option.value)}
                                             className={radioGroupClassName}
                                             data-testid={`radio-item-${option.value}`}
                                         />
