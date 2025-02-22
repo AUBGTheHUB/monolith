@@ -1,4 +1,4 @@
-import { API_URL, FEATURE_SWITCHES } from './constants';
+import { API_URL, FEATURE_SWITCHES, FeatureSwitches } from './constants';
 
 export async function useFetchFeatureSwitches() {
     console.log('From env', API_URL);
@@ -14,9 +14,9 @@ export async function useFetchFeatureSwitches() {
         const data = await response.json();
 
         data.features.forEach((serverSwitch: { name: string; state: boolean }) => {
-            const localSwitch = FEATURE_SWITCHES.find((fs) => fs.name === serverSwitch.name);
-            if (localSwitch) {
-                localSwitch.state = serverSwitch.state;
+            if (serverSwitch.name in FEATURE_SWITCHES) {
+                const key = serverSwitch.name as keyof FeatureSwitches;
+                FEATURE_SWITCHES[key] = serverSwitch.state;
             }
         });
 

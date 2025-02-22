@@ -10,7 +10,7 @@ export default function HubberModule({ imgSrc, name }: HubberModuleType) {
                 <img src={imgSrc} alt={name} className="object-cover w-full h-full rounded-xl" />
             </div>
             <div className="h-1/6 py-3 gap-2">
-                <h3 className="text-secondary">{name}</h3>
+                <h3 className="text-secondary line-clamp-1">{name}</h3>
             </div>
         </div>
     );

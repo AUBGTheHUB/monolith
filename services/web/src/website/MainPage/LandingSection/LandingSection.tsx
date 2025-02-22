@@ -66,20 +66,24 @@ export default function LandingSection() {
                                 </p>
                             </div>
                             <div className="flex space-x-4">
-                                <Button
-                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
+                                <a href="#about-us">
+                                    <Button
+                                        className="border-[1px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
-                                >
-                                    Find out more
-                                </Button>
-                                <Button
-                                    className="border-[1px] border-white text-white bg-transparent rounded-3xl
+                                    >
+                                        Find out more
+                                    </Button>
+                                </a>
+                                <a href="#footer">
+                                    <Button
+                                        className="border-[1px] border-white text-white bg-transparent rounded-3xl
                    sm:hover:bg-white sm:hover:text-[#26368E]
                    sm:transition sm:duration-300 sm:ease-in-out"
-                                >
-                                    Contact us
-                                </Button>
+                                    >
+                                        Contact us
+                                    </Button>
+                                </a>
                             </div>
                         </div>
                     </div>
