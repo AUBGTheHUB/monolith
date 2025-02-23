@@ -24,15 +24,15 @@ export const MainPage = () => {
                 <img
                     src="/landingSection/blob-blue.png"
                     alt="a blob"
-                    className="absolute opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
+                    className="absolute opacity-65 blur-[10rem] h-[93rem] right-[10rem] bottom-[30rem] z-0"
                 />
                 <img
                     src="/landingSection/blob-cyan.png"
                     alt="a blob"
-                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] bottom-[30rem] z-0"
+                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-12rem] bottom-[20rem] z-0"
                 />
             </div>
-            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden">
+            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden" id="meet-team">
                 <MeetTheTeam />
             </div>
             <div className="relative overflow-hidden">
