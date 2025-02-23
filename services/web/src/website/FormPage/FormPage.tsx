@@ -40,8 +40,8 @@ const PROGRAMMING_LANGUAGE_OPTIONS = [
 ];
 
 const REGISTRATION_TYPE_OPTIONS = [
-    { label: 'Team', value: true },
-    { label: 'Individual', value: false },
+    { label: 'Team', value: 'admin' },
+    { label: 'Individual', value: 'random' },
 ];
 
 const UNIVERSITY_OPTIONS = [
@@ -88,22 +88,22 @@ const baseSchema = z.object({
 });
 
 const adminSchema = baseSchema.extend({
-    is_admin: z.literal(true),
+    registration_type: z.literal('admin'),
     team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
 });
 
 const nonAdminSchema = baseSchema.extend({
-    is_admin: z.literal(false),
+    registration_type: z.literal('random'),
     team_name: z.string().optional(),
 });
 
 const mainAdminSchema = baseSchema
     .extend({
-        is_admin: z.boolean({ message: 'Please select an option.' }),
+        registration_type: z.string({ message: 'Please select an option.' }),
         team_name: z.string().optional(),
     })
     .superRefine((data, ctx) => {
-        if (data.is_admin === true) {
+        if (data.registration_type === 'admin') {
             if (!data.team_name || data.team_name.trim().length < 3) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.too_small,
@@ -117,7 +117,7 @@ const mainAdminSchema = baseSchema
         }
     });
 
-const adminNonAdminUnion = z.discriminatedUnion('is_admin', [adminSchema, nonAdminSchema]);
+const adminNonAdminUnion = z.discriminatedUnion('registration_type', [adminSchema, nonAdminSchema]);
 
 export const registrationSchema = z.union([mainAdminSchema, adminNonAdminUnion]);
 
@@ -139,18 +139,22 @@ export default function RegistrationForm() {
             has_participated_in_hackathons: undefined,
             has_previous_coding_experience: undefined,
             share_info_with_sponsors: undefined,
-            is_admin: undefined,
+            registration_type: undefined,
             team_name: '',
         },
     });
 
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
+        //for safety if registration_type is random we clear ot the team_name on submittion
+        //if we have a registration_type is admin we set key is_admin
+        //if we have a jwt token is_admin is false
+        //if we do not have a jwt token we set is_admin to true
         console.log('Form submitted:', data);
     };
 
     const isAdmin = useWatch({
         control: form.control,
-        name: 'is_admin',
+        name: 'registration_type',
     });
 
     return (
@@ -244,7 +248,7 @@ export default function RegistrationForm() {
                 />
                 <RadioComponent
                     control={form.control}
-                    name="is_admin"
+                    name="registration_type"
                     options={REGISTRATION_TYPE_OPTIONS}
                     groupLabel="Are you an admin?"
                 />
@@ -255,7 +259,7 @@ export default function RegistrationForm() {
                     label="Team Name"
                     type="text"
                     placeholder="Enter your team name"
-                    disabled={isAdmin !== true}
+                    disabled={isAdmin !== 'admin'}
                 />
                 <RadioComponent
                     control={form.control}
