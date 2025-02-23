@@ -5,8 +5,11 @@ import HackAUBGSection from './HackAUBGSection/HackAUBGSection.tsx';
 import { Footer } from './Footer/Footer.tsx';
 import MeetTheTeam from './MeetTheTeamSection/components/MeetTheTeam.tsx';
 import LandingSection from './LandingSection/LandingSection.tsx';
+import { useFeatureSwitches } from '@/config.ts';
 
 export const MainPage = () => {
+    const featureSwitches = useFeatureSwitches();
+
     return (
         <Fragment>
             <LandingSection />
@@ -24,19 +27,19 @@ export const MainPage = () => {
                 <img
                     src="/landingSection/blob-blue.png"
                     alt="a blob"
-                    className="absolute opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
+                    className="absolute opacity-65 blur-[10rem] h-[93rem] right-[10rem] bottom-[30rem] z-0"
                 />
                 <img
                     src="/landingSection/blob-cyan.png"
                     alt="a blob"
-                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] bottom-[30rem] z-0"
+                    className="absolute opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-12rem] bottom-[20rem] z-0"
                 />
             </div>
-            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden">
+            <div className="bg-transparent pt-[7.5rem] pb-[7rem] relative overflow-hidden" id="meet-team">
                 <MeetTheTeam />
             </div>
             <div className="relative overflow-hidden">
-                <HackAUBGSection />
+                <HackAUBGSection mentorsSwitch={featureSwitches.MentorsSwitch} />
                 <img
                     src="/meetTheTeam/meet_the_team_blob.svg"
                     className="absolute blur-[10rem] h-[1490.43px] w-[1505.76px] bottom-[0rem] right-[-8rem] opacity-65 rotate-210 z-0"

@@ -8,11 +8,11 @@ import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import ClassNames from 'embla-carousel-class-names';
 import { OPTIONS } from '../../../JudgesAndMentorsOptions';
-import { FEATURE_SWITCHES } from '@/constants';
 
-export default function MentorsSection() {
+export default function MentorsSection({ mentorsSwitch }: { mentorsSwitch: boolean }) {
     const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [ClassNames()]);
     const [progress, setProgress] = useState(0);
+
     const logEmblaEvent = useCallback((emblaApi: EmblaCarouselType) => {
         setProgress(emblaApi.scrollProgress());
         if (!emblaApi.canScrollNext()) {
@@ -39,9 +39,9 @@ export default function MentorsSection() {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    if (FEATURE_SWITCHES.MentorsSwitch) {
+    if (mentorsSwitch) {
         return (
-            <div className="bg-[#000912] py-10 relative">
+            <div className="bg-[#000912] py-10 relative" id="mentors">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
@@ -70,7 +70,7 @@ export default function MentorsSection() {
         );
     } else {
         return (
-            <div className="bg-[#000912] py-10 relative">
+            <div className="bg-[#000912] py-10 relative" id="mentors">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
