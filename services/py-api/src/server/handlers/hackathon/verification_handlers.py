@@ -1,33 +1,35 @@
 from fastapi import BackgroundTasks
 from result import is_err
-from src.server.handlers.base_handler import BaseHandler
-from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from starlette import status
+
+from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import (
     ParticipantVerifiedResponse,
     Response,
     VerificationEmailSentSuccessfullyResponse,
 )
+from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 
 
 class VerificationHandlers(BaseHandler):
 
-    def __init__(self, service: ParticipantVerificationService) -> None:
+    def __init__(self, service: ParticipantVerificationService, jwt_utility: JwtUtility) -> None:
         self._service = service
+        self._jwt_utility = jwt_utility
 
     async def verify_participant(self, jwt_token: str, background_tasks: BackgroundTasks) -> Response:
         # We decode the token here so that we can determine the case of verification that we
         # are dealing with: `admin verification` or `random participant verification`.
-        result = JwtUtility.decode_data(token=jwt_token, schema=JwtParticipantVerificationData)
+        result = self._jwt_utility.decode_data(token=jwt_token, schema=JwtParticipantVerificationData)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
         jwt_payload = result.ok_value
 
-        if jwt_payload["is_admin"]:
+        if jwt_payload.is_admin:
             result = await self._service.verify_admin_participant(
                 jwt_data=jwt_payload, background_tasks=background_tasks
             )
@@ -60,12 +62,15 @@ class VerificationHandlers(BaseHandler):
         )
 
 
-def verification_handlers_provider(service: ParticipantVerificationService) -> VerificationHandlers:
+def verification_handlers_provider(
+    service: ParticipantVerificationService, jwt_utility: JwtUtility
+) -> VerificationHandlers:
     """
     Args:
         service: A ParticipantVerificationService instance
+        jwt_utility: A JwtUtility instance
 
     Returns:
         A VerificationHandlers instance
     """
-    return VerificationHandlers(service=service)
+    return VerificationHandlers(service=service, jwt_utility=jwt_utility)

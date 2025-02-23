@@ -127,7 +127,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
-        team_result = await self._team_repo.fetch_by_id(decoded_jwt_token["team_id"])
+        team_result = await self._team_repo.fetch_by_id(decoded_jwt_token.team_id)
         if is_err(team_result):
             return team_result
 
@@ -139,7 +139,7 @@ class HackathonService:
         participant_result = await self._participant_repo.create(
             Participant(
                 **input_data.model_dump(),
-                team_id=SerializableObjectId(decoded_jwt_token["team_id"]),
+                team_id=SerializableObjectId(decoded_jwt_token.team_id),
                 email_verified=True,
             )
         )
@@ -200,7 +200,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
 
         # This step is taken to ensure that we are not verifying an already verified participant
-        result = await self._participant_repo.fetch_by_id(jwt_data["sub"])
+        result = await self._participant_repo.fetch_by_id(jwt_data.sub)
 
         if is_err(result):
             return result
@@ -210,7 +210,7 @@ class HackathonService:
 
         # Updates the random participant if it exists
         result = await self._participant_repo.update(
-            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True)
+            obj_id=jwt_data.sub, obj_fields=UpdateParticipantParams(email_verified=True)
         )
 
         if is_err(result):
@@ -236,7 +236,7 @@ class HackathonService:
         ParticipantNotFoundError | TeamNotFoundError | ParticipantAlreadyVerifiedError | Exception,
     ]:
         # This step is taken to ensure that we are not verifying an already verified participant
-        result = await self._participant_repo.fetch_by_id(jwt_data["sub"])
+        result = await self._participant_repo.fetch_by_id(jwt_data.sub)
 
         if is_err(result):
             return result
@@ -245,7 +245,7 @@ class HackathonService:
             return Err(ParticipantAlreadyVerifiedError())
 
         result_verified_admin = await self._participant_repo.update(
-            obj_id=jwt_data["sub"], obj_fields=UpdateParticipantParams(email_verified=True), session=session
+            obj_id=jwt_data.sub, obj_fields=UpdateParticipantParams(email_verified=True), session=session
         )
 
         if is_err(result_verified_admin):
@@ -360,7 +360,7 @@ class HackathonService:
             return None
 
         # Build the payload for the Jwt token
-        expiration = (datetime.now(timezone.utc) + timedelta(hours=24)).timestamp()
+        expiration = int((datetime.now(timezone.utc) + timedelta(hours=24)).timestamp())
         payload = JwtParticipantVerificationData(sub=str(participant.id), is_admin=participant.is_admin, exp=expiration)
 
         # Create the Jwt Token
@@ -440,7 +440,7 @@ class HackathonService:
             return None
 
         # Build the payload for the Jwt token
-        expiration = (datetime.now(timezone.utc) + timedelta(days=15)).timestamp()
+        expiration = int((datetime.now(timezone.utc) + timedelta(days=15)).timestamp())
         payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
 
         # Create the Jwt Token

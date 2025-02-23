@@ -20,23 +20,22 @@ from src.database.mongo.db_manager import (
     TEAMS_COLLECTION,
     mongo_db_manager_provider,
 )
+from src.database.mongo.transaction_manager import mongo_tx_manager_provider
 from src.database.repository.feature_switch_repository import feature_switch_repo_provider
 from src.database.repository.hackathon.participants_repository import participants_repo_provider
 from src.database.repository.hackathon.teams_repository import teams_repo_provider
-from src.database.mongo.transaction_manager import mongo_tx_manager_provider
-
 from src.server.handlers.feature_switch_handler import feature_switch_handlers_provider
 from src.server.handlers.hackathon.hackathon_handlers import hackathon_management_handlers_provider
 from src.server.handlers.hackathon.participants_handlers import participant_handlers_provider
-from src.server.handlers.utility_hanlders import utility_handlers_provider
 from src.server.handlers.hackathon.verification_handlers import verification_handlers_provider
+from src.server.handlers.utility_hanlders import utility_handlers_provider
 from src.service.feature_switch_service import feature_switch_service_provider
-from src.service.hackathon.hackathon_service import hackathon_service_provider
 from src.service.hackathon.hackathon_mail_service import hackathon_mail_service_provider
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
+from src.service.hackathon.hackathon_service import hackathon_service_provider
 from src.service.hackathon.participants_registration_service import participant_reg_service_provider
 from src.service.hackathon.participants_verification_service import participant_verification_service_provider
+from src.service.jwt_utils.codec import jwt_utility_provider
+from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
 # ===============================
 # Database layer wiring start
@@ -61,6 +60,8 @@ _feature_switch_repo_repo = feature_switch_repo_provider(
 # Service layer wiring start
 # ===============================
 
+_jwt_utility = jwt_utility_provider()
+
 # Could be changed with another client if needed
 _mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
 _hackathon_mail_service = hackathon_mail_service_provider(client=_mail_client)
@@ -71,10 +72,12 @@ _hackathon_service = hackathon_service_provider(
     fs_repo=_feature_switch_repo_repo,
     tx_manager=_mongo_tx_manager,
     mail_service=_hackathon_mail_service,
-    jwt_utility=JwtUtility(),
+    jwt_utility=_jwt_utility,
 )
 
-_participant_reg_service = participant_reg_service_provider(hackathon_service=_hackathon_service)
+_participant_reg_service = participant_reg_service_provider(
+    hackathon_service=_hackathon_service, jwt_utility=_jwt_utility
+)
 _participant_verification_service = participant_verification_service_provider(hackathon_service=_hackathon_service)
 
 _feature_switch_service = feature_switch_service_provider(repository=_feature_switch_repo_repo)
@@ -95,7 +98,9 @@ FEATURE_SWITCH_HANDLERS = feature_switch_handlers_provider(service=_feature_swit
 HACKATHON_MANAGEMENT_HANDLERS = hackathon_management_handlers_provider(service=_hackathon_service)
 PARTICIPANT_HANDLERS = participant_handlers_provider(service=_participant_reg_service)
 UTILITY_HANDLERS = utility_handlers_provider(db_manger=_mongo_db_manager)
-VERIFICATION_HANDLERS = verification_handlers_provider(service=_participant_verification_service)
+VERIFICATION_HANDLERS = verification_handlers_provider(
+    service=_participant_verification_service, jwt_utility=_jwt_utility
+)
 
 # ===============================
 # Handlers layer wiring end
