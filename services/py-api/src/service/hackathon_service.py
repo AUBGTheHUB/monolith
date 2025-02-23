@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
-from typing import Final, Optional, Tuple
+from typing import Final, Optional, Tuple, List
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
-
 from src.database.model.base_model import SerializableObjectId
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.participant_model import Participant, UpdateParticipantParams
 from src.database.model.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -24,6 +24,7 @@ from src.server.exception import (
     ParticipantNotFoundError,
     TeamNameMissmatchError,
     TeamNotFoundError,
+    FeatureSwitchNotFoundError,
 )
 from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
@@ -31,8 +32,10 @@ from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
+from src.server.schemas.schemas import RandomTeam
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.utils import JwtUtility
+from secrets import token_hex
 
 LOG = get_logger()
 
@@ -47,6 +50,18 @@ class HackathonService:
     """Constraint for max number of verified teams in the hackathon. A team is verified when the admin participant who
     created the team, verified their email. This const also includes the random teams, which are automatically created
     and marked as verified, once the hackathon registration closes"""
+
+    REG_ADMIN_AND_RANDOM_SWITCH: Final[str] = "isRegTeamsFull"
+    """This switch toggles the registration for the admin and random participants. It will disable the application
+    form in the frontend when it is set to `true` and it will enable it when it is set to `false`. If somebody tries to
+    register using the API endpoint they will get the `Max hackathon capacity has been reached` message.
+    """
+
+    REG_ALL_PARTICIPANTS_SWITCH: Final[str] = "RegSwitch"
+    """This switch toggles the registration for the all participants. It will disable the application for both
+    the front-end interface and the API endpoint. If somebody tries to register through the API endpoint they will get
+    the `Registration is closed` message.
+    """
 
     _RATE_LIMIT_SECONDS: Final[int] = 90
     """Number of seconds before a participant is allowed to resend their verification email, if they didn't get one."""
@@ -81,6 +96,7 @@ class HackathonService:
         """
 
         team = await self._team_repo.create(Team(name=input_data.team_name), session)
+
         if is_err(team):
             return team
 
@@ -268,6 +284,9 @@ class HackathonService:
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
 
+    async def fetch_all_teams(self) -> Result[List[Team], Exception]:
+        return await self._team_repo.fetch_all()
+
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
         Tuple[Participant, Team],
         ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,
@@ -421,7 +440,9 @@ class HackathonService:
 
         # Build the payload for the Jwt token
         expiration = (datetime.now(timezone.utc) + timedelta(days=15)).timestamp()
-        payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
+        payload = JwtParticipantInviteRegistrationData(
+            sub=str(participant.id), team_id=str(team.id), team_name=team.name, exp=expiration
+        )
 
         # Create the Jwt Token
         jwt_token = JwtUtility.encode_data(data=payload)
@@ -430,6 +451,7 @@ class HackathonService:
         if is_prod_env():
             invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
         elif is_dev_env():
+            # TODO: This resolves to dev.dev.thehub-aubg.com on the dev environment since the dev domain is dev.thehub-aubg.com
             invite_link = f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
         else:
             invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
@@ -441,3 +463,149 @@ class HackathonService:
             return err
 
         return None
+
+    async def create_random_participant_teams(self) -> bool:
+
+        result = await self.retrieve_and_categorize_random_participants()
+
+        if is_err(result):
+            return False
+
+        (prog_participants, non_prog_participants) = result.ok_value
+
+        random_teams = self.form_random_participant_teams(prog_participants, non_prog_participants)
+
+        result = await self.create_random_participant_teams_in_transaction(random_teams)
+
+        if is_err(result):
+            return False
+
+        return True
+
+    async def retrieve_and_categorize_random_participants(
+        self,
+    ) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
+        programming_oriented = []
+        non_programming_oriented = []
+        # Fetch all the verified random participants
+        result = await self._participant_repo.get_verified_random_participants()
+
+        # Return the result to the upper layer in case of an Exception
+        if is_err(result):
+            return result
+
+        # Group the into categories programming oriented, non-programming oriented
+        for participant in result.ok_value:
+            if participant.programming_level == "I am not participating as a programmer":
+                non_programming_oriented.append(participant)
+            else:
+                programming_oriented.append(participant)
+
+        return Ok((programming_oriented, non_programming_oriented))
+
+    def form_random_participant_teams(
+        self, prog_participants: list[Participant], non_prog_participants: list[Participant]
+    ) -> List[RandomTeam]:
+        # Calculate the number of hackathon participants
+        number_of_random_participants = len(prog_participants) + len(non_prog_participants)
+        # Calculate the number of teams that are going to be needed for the given number of participants
+        number_of_teams = ceil(number_of_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS)
+
+        # Create a list for storing the Random Teams
+        teams = []
+
+        # Populate the dictionary with the Random Teams named `RandomTeam{i}`
+        for i in range(number_of_teams):
+            teams.append(RandomTeam(team=Team(name=f"RT_{token_hex(8)}", is_verified=True), participants=[]))
+
+        # Spread all the programming experienced participants to the teams in a Round Robin (RR) manner
+        ctr = 0  # initialize a counter
+        while len(prog_participants) > 0:
+            teams[ctr % number_of_teams]["participants"].append(prog_participants.pop())
+            ctr += 1
+
+        # Spread all the non-programming experienced participants to the teams in a Round Robin (RR) manner
+        ctr = 0  # reset counter
+        while len(non_prog_participants) > 0:
+            teams[ctr % number_of_teams]["participants"].append(non_prog_participants.pop())
+            ctr += 1
+
+        return teams
+
+    async def _create_random_participant_teams_in_transaction_callback(
+        self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        # Loop through each RandomTeam in the list. Create the team. Update all the participants with the id of the team
+        # created
+        for random_team in random_teams:
+            # Create the team
+            team_result = await self._team_repo.create(team=random_team["team"], session=session)
+
+            if is_err(team_result):
+                return team_result
+
+            # Take out one of the participants and assign them as an admin in the newly created random team
+            admin_participant = random_team["participants"].pop()
+            admin_result = await self._participant_repo.update(
+                obj_id=str(admin_participant.id),
+                obj_fields=UpdateParticipantParams(team_id=random_team["team"].id, is_admin=True),
+                session=session,
+            )
+
+            if is_err(admin_result):
+                return admin_result
+
+            # Insert all the participants in the team that was created
+            update_result = await self._participant_repo.bulk_update(
+                obj_ids=[participant.id for participant in random_team["participants"]],
+                obj_fields=UpdateParticipantParams(team_id=random_team["team"].id),
+            )
+
+            if is_err(update_result):
+                return update_result
+
+        return Ok(random_teams)
+
+    async def create_random_participant_teams_in_transaction(
+        self, input_data: List[RandomTeam]
+    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        return await self._tx_manager.with_transaction(
+            self._create_random_participant_teams_in_transaction_callback, input_data
+        )
+
+    async def close_reg_for_random_and_admin_participants(
+        self,
+    ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        # Check if the feature switch exists
+        feature_switch = await self._fs_repo.get_feature_switch(feature=self.REG_ADMIN_AND_RANDOM_SWITCH)
+
+        if is_err(feature_switch):
+            return feature_switch
+
+        return await self._fs_repo.update(
+            obj_id=str(feature_switch.ok_value.id), obj_fields=UpdateFeatureSwitchParams(state=True)
+        )
+
+    async def close_reg_for_all_participants(self) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
+        """
+        Serves to close the hackathon registration for all kinds of participants: random, invite-link, and admin
+        participants. Includes possible creation of random teams, if such process has not taken place and flips
+        the RegSwitch to false.
+        Flipping the registration switch to false ultimately closes the registration. You can't use the registration
+        API anymore. Moreover, there is also no front-end interface for it.
+        """
+        feature_switch = await self._fs_repo.update_by_name(
+            name=self.REG_ALL_PARTICIPANTS_SWITCH, obj_fields=UpdateFeatureSwitchParams(state=False)
+        )
+
+        if is_err(feature_switch):
+            return feature_switch
+
+        # Now that we have disabled the switch we can run the random team creation proccess
+
+        random_participant_teams_created = await self.create_random_participant_teams()
+
+        if not random_participant_teams_created:
+            return Err(Exception("Failed to create random participant teams"))
+
+        return Ok(feature_switch.ok_value)
