@@ -1,11 +1,17 @@
+"""Here we store schemas modeling how the response of a given request should look like. These schemas are also used
+by FastAPI for swagger docs.
+
+We use the term "schema" as it is in accordance with the OpenAPI spec:
+https://swagger.io/docs/specification/v3_0/data-models/data-models/"""
+
 from typing import Dict, Any, Optional, Mapping, List
 
 from pydantic import BaseModel, field_serializer, ConfigDict
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
 from src.database.model.feature_switch_model import FeatureSwitch
 
 

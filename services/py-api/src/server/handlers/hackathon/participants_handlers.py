@@ -21,7 +21,7 @@ from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     Response,
 )
-from src.service.participants_registration_service import ParticipantRegistrationService
+from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 
 
 class ParticipantHandlers(BaseHandler):
@@ -70,3 +70,14 @@ class ParticipantHandlers(BaseHandler):
             ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1]),
             status_code=status.HTTP_201_CREATED,
         )
+
+
+def participant_handlers_provider(service: ParticipantRegistrationService) -> ParticipantHandlers:
+    """
+    Args:
+        service: A ParticipantRegistrationService instance
+
+    Returns:
+        A HackathonManagementHandlers instance
+    """
+    return ParticipantHandlers(service=service)

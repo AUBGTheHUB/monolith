@@ -36,6 +36,8 @@ class UpdateTeamParams(UpdateParams):
     only set values to the fields that you want to modify and pass to the
     MongoDB find_one_and_update() method.
     Build to be used for updating the Team document in the database.
+
+    The ``updated_at`` filed us set for you, so you should not set it explicitly
     """
 
     name: Union[str, None] = None

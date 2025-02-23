@@ -16,7 +16,7 @@ from src.server.schemas.response_schemas.schemas import (
     TeamDeletedResponse,
     Response,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon.hackathon_service import HackathonService
 
 
 class HackathonManagementHandlers(BaseHandler):
@@ -39,3 +39,14 @@ class HackathonManagementHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(ParticipantDeletedResponse(participant=result.ok_value), status_code=status.HTTP_200_OK)
+
+
+def hackathon_management_handlers_provider(service: HackathonService) -> HackathonManagementHandlers:
+    """
+    Args:
+        service: A HackathonService instance
+
+    Returns:
+        A HackathonManagementHandlers instance
+    """
+    return HackathonManagementHandlers(service=service)

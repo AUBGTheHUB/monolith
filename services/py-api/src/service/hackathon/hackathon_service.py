@@ -9,14 +9,14 @@ from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.model.base_model import SerializableObjectId
-from src.database.model.participant_model import Participant, UpdateParticipantParams
-from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
+from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.database.repository.participants_repository import ParticipantsRepository
-from src.database.repository.teams_repository import TeamsRepository
-from src.database.transaction_manager import TransactionManager
+from src.database.repository.hackathon.participants_repository import ParticipantsRepository
+from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
-from src.server.exception import (
+from src.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
     EmailRateLimitExceededError,
@@ -25,14 +25,14 @@ from src.server.exception import (
     TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.mail_service.hackathon_mail_service import HackathonMailService
-from src.utils import JwtUtility
+from src.service.hackathon.hackathon_mail_service import HackathonMailService
 
 LOG = get_logger()
 
@@ -63,14 +63,16 @@ class HackathonService:
         participant_repo: ParticipantsRepository,
         team_repo: TeamsRepository,
         feature_switch_repo: FeatureSwitchRepository,
-        tx_manager: TransactionManager,
+        tx_manager: MongoTransactionManager,
         mail_service: HackathonMailService,
+        jwt_utility: JwtUtility,
     ) -> None:
         self._participant_repo = participant_repo
         self._team_repo = team_repo
         self._fs_repo = feature_switch_repo
         self._tx_manager = tx_manager
         self._mail_service = mail_service
+        self._jwt_utility = jwt_utility
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
@@ -270,9 +272,22 @@ class HackathonService:
 
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
         Tuple[Participant, Team],
-        ParticipantNotFoundError | ParticipantAlreadyVerifiedError | EmailRateLimitExceededError | Exception,
+        ParticipantNotFoundError
+        | TeamNotFoundError
+        | ParticipantAlreadyVerifiedError
+        | EmailRateLimitExceededError
+        | Exception,
     ]:
-        """Check if the verification email rate limit has been reached"""
+        """Check if the verification email rate limit has been reached
+
+        Returns:
+            * A Tuple[Participant, Team] if the participant has not exceeded their email sending rate
+            * A ParticipantNotFoundError if the participant resending the email is not found in the Database
+            * A TeamNotFoundError if the team of the participant is not found in the Database
+            * A ParticipantAlreadyVerifiedError if the participant has already been verified
+            * An EmailRateLimitExceededError if the participant has exceeded their email sending rate
+            * An Exception if some unexpected error occurred
+        """
 
         participant = await self._participant_repo.fetch_by_id(obj_id=participant_id)
 
@@ -318,7 +333,7 @@ class HackathonService:
 
     async def send_verification_email(
         self, participant: Participant, background_tasks: BackgroundTasks, team: Team | None = None
-    ) -> Err[ParticipantNotFoundError | ValueError | Exception] | None:
+    ) -> Result[Participant, ParticipantNotFoundError | ValueError | Exception] | None:
         """
         Sends a verification email to admin and random participants and adds a timestamp when the last verification
         email has been sent, for rate-limiting purposes
@@ -332,8 +347,12 @@ class HackathonService:
                 have returned a response. In this way we are able to keep our response times sub-second as we don't
                 wait for the email to be sent, which could take more than 2 seconds.
         Returns:
-            An Err if adding of the updating the participant document last_sent_verification_email property fails, or
-            sending the verification emails fails. Otherwise, returns None.
+            * The updated Participant document (last_sent_verification_email and updated_at fields)
+
+            * An Err if adding of the updating the participant document last_sent_verification_email property fails, or
+            sending the verification emails fails.
+
+            * None if we are in Test env, and we should not send emails
         """
 
         # Don't send emails when we are running tests
@@ -345,7 +364,7 @@ class HackathonService:
         payload = JwtParticipantVerificationData(sub=str(participant.id), is_admin=participant.is_admin, exp=expiration)
 
         # Create the Jwt Token
-        jwt_token = JwtUtility.encode_data(data=payload)
+        jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
         if is_prod_env():
@@ -362,21 +381,22 @@ class HackathonService:
             obj_id=str(participant.id), obj_fields=UpdateParticipantParams(last_sent_verification_email=datetime.now())
         )
 
-        # If the update fails, do not send the email and return the error
+        # If the update fails, do not send the email and return the error (could happen if the participant is deleted
+        # from the DB before it is updated, highly unlikely in PROD env)
         if is_err(result):
             return result
 
         err = self._mail_service.send_participant_verification_email(
-            participant=participant,
+            participant=result.ok_value,
             verification_link=verification_link,
             background_tasks=background_tasks,
             team_name=team.name if team else None,
         )
-
         if err is not None:
             return err
 
-        return None
+        # Return the updated participant
+        return result
 
     def send_successful_registration_email(
         self, participant: Participant, background_tasks: BackgroundTasks, team: Team | None = None
@@ -424,7 +444,7 @@ class HackathonService:
         payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
 
         # Create the Jwt Token
-        jwt_token = JwtUtility.encode_data(data=payload)
+        jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
         if is_prod_env():
@@ -441,3 +461,33 @@ class HackathonService:
             return err
 
         return None
+
+
+def hackathon_service_provider(
+    p_repo: ParticipantsRepository,
+    t_repo: TeamsRepository,
+    fs_repo: FeatureSwitchRepository,
+    tx_manager: MongoTransactionManager,
+    mail_service: HackathonMailService,
+    jwt_utility: JwtUtility,
+) -> HackathonService:
+    """
+    Args:
+        p_repo: A ParticipantsRepository instance
+        t_repo: A TeamsRepository instance
+        fs_repo: A FeatureSwitchRepository instance
+        tx_manager: A MongoTransactionManager instance
+        mail_service: A HackathonMailService instance
+        jwt_utility: A JwtUtility instance
+
+    Returns:
+        A HackathonService instance.
+    """
+    return HackathonService(
+        participant_repo=p_repo,
+        team_repo=t_repo,
+        feature_switch_repo=fs_repo,
+        tx_manager=tx_manager,
+        mail_service=mail_service,
+        jwt_utility=jwt_utility,
+    )

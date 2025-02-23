@@ -1,11 +1,11 @@
 from typing import Tuple
 from fastapi import BackgroundTasks
 from result import Err, Ok, Result, is_err
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
-from src.service.hackathon_service import HackathonService
-from src.server.exception import (
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.hackathon.hackathon_service import HackathonService
+from src.exception import (
     HackathonCapacityExceededError,
     ParticipantNotFoundError,
     TeamNotFoundError,
@@ -67,6 +67,7 @@ class ParticipantVerificationService:
     async def resend_verification_email(self, participant_id: str, background_tasks: BackgroundTasks) -> Result[
         Participant,
         ParticipantNotFoundError
+        | TeamNotFoundError
         | ParticipantAlreadyVerifiedError
         | EmailRateLimitExceededError
         | ValueError
@@ -84,3 +85,14 @@ class ParticipantVerificationService:
             return err
 
         return Ok(result.ok_value[0])
+
+
+def participant_verification_service_provider(hackathon_service: HackathonService) -> ParticipantVerificationService:
+    """
+    Args:
+        hackathon_service: A HackathonService instance
+
+    Returns:
+        A ParticipantVerificationService instance
+    """
+    return ParticipantVerificationService(hackathon_service)
