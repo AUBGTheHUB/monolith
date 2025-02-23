@@ -21,8 +21,6 @@ export const HackathonPage = () => {
                 <LandingSection />
                 <MissionSection />
             </div>
-            <MentorsSection />
-            <JurySection />
             <MentorsSection mentorsSwitch={featureSwitches.MentorsSwitch} />
             <JurySection jurySwitch={featureSwitches.JurySwitch} />
             <ScheduleSection />
