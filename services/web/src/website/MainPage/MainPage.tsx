@@ -5,8 +5,11 @@ import HackAUBGSection from './HackAUBGSection/HackAUBGSection.tsx';
 import { Footer } from './Footer/Footer.tsx';
 import MeetTheTeam from './MeetTheTeamSection/components/MeetTheTeam.tsx';
 import LandingSection from './LandingSection/LandingSection.tsx';
+import { useFeatureSwitches } from '@/config.ts';
 
 export const MainPage = () => {
+    const featureSwitches = useFeatureSwitches();
+
     return (
         <Fragment>
             <LandingSection />
@@ -36,7 +39,7 @@ export const MainPage = () => {
                 <MeetTheTeam />
             </div>
             <div className="relative overflow-hidden">
-                <HackAUBGSection />
+                <HackAUBGSection mentorsSwitch={featureSwitches.MentorsSwitch} />
                 <img
                     src="/meetTheTeam/meet_the_team_blob.svg"
                     className="absolute blur-[10rem] h-[1490.43px] w-[1505.76px] bottom-[0rem] right-[-8rem] opacity-65 rotate-210 z-0"

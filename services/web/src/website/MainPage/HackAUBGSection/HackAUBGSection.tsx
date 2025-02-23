@@ -1,8 +1,7 @@
 import { Button } from '@/components/ui/button';
-import { FEATURE_SWITCHES } from '@/constants';
 import { Fragment } from 'react/jsx-runtime';
 
-export default function HackAUBGSection() {
+export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: boolean }) {
     return (
         <div className="flex flex-col bg-white rounded-2xl justify-center relative z-10" id="hackAUBG">
             <div className="sm:w-3/5 w-11/12 flex mx-auto mb-4">
@@ -47,7 +46,7 @@ export default function HackAUBGSection() {
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="flex flex-row w-[70%] lg:space-x--12 space-x-[-25px]">
-                                {FEATURE_SWITCHES.hackAUBGSectionSwitch ? (
+                                {mentorsSwitch ? (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border border-black rounded-full">
                                             <img src="../real-mentor1.png" alt="Mentor 1" />
@@ -74,7 +73,7 @@ export default function HackAUBGSection() {
                                 )}
                             </div>
                             <div className="w-3/5 h-full flex items-end justify-center select-none">
-                                {FEATURE_SWITCHES.hackAUBGSectionSwitch ? (
+                                {mentorsSwitch ? (
                                     <a href="/hackathon">
                                         <Button
                                             className="text-blue-700 border-blue-700 bg-transparent sm:hover:bg-blue-700 sm:hover:text-white hover:bg-white hover:text-blue-700 transition duration-200"
