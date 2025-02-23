@@ -5,6 +5,7 @@ from unittest.mock import Mock, AsyncMock
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
+from bson import ObjectId
 
 from src.database.db_manager import PARTICIPANTS_COLLECTION
 from src.database.model.participant_model import Participant, UpdateParticipantParams
@@ -88,7 +89,7 @@ async def test_delete_successful(
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
 
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.name == TEST_USER_NAME
     assert result.ok_value.email == TEST_USER_EMAIL
     assert result.ok_value.email_verified == False
@@ -132,7 +133,7 @@ async def test_update_participant_success(
     result = await repo.update(mock_obj_id, UpdateParticipantParams(email_verified=True))
 
     assert isinstance(result, Ok)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.email_verified is True
     assert result.ok_value.name == TEST_USER_NAME
     assert result.ok_value.email == TEST_USER_EMAIL
