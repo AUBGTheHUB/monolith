@@ -8,11 +8,12 @@ import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import ClassNames from 'embla-carousel-class-names';
 import { OPTIONS } from '../../../JudgesAndMentorsOptions';
-import { FEATURE_SWITCHES } from '@/constants';
 
-export default function JurySection() {
+export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
     const [emblaRef, emblaApi] = useEmblaCarousel(OPTIONS, [ClassNames()]);
+
     const [progress, setProgress] = useState(0);
+
     const logEmblaEvent = useCallback((emblaApi: EmblaCarouselType) => {
         setProgress(emblaApi.scrollProgress());
         if (!emblaApi.canScrollNext()) {
@@ -39,7 +40,7 @@ export default function JurySection() {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    if (FEATURE_SWITCHES.JurySwitch) {
+    if (jurySwitch) {
         return (
             <div className="bg-[#000912] py-10 relative">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
