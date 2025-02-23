@@ -17,7 +17,7 @@ async def get_feature_switch(feature: str, handler: FeatureSwitchHandler = Depen
     return await handler.handle_feature_switch(feature=feature)
 
 FastAPI won't be able to resolve the sub-dependencies which are needed in order to create a `FeatureSwitchHandler`
-instance and we will get an error, similar to this one:
+instance, and we will get an error, similar to this one:
 
 "fastapi.exceptions.FastAPIError: Invalid args for response field! Hint: check that
 <class 'src.service.feature_switch_service.FeatureSwitchService'> is a valid Pydantic field type"
