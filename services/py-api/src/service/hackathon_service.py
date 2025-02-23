@@ -440,7 +440,9 @@ class HackathonService:
 
         # Build the payload for the Jwt token
         expiration = (datetime.now(timezone.utc) + timedelta(days=15)).timestamp()
-        payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
+        payload = JwtParticipantInviteRegistrationData(
+            sub=str(participant.id), team_id=str(team.id), team_name=team.name, exp=expiration
+        )
 
         # Create the Jwt Token
         jwt_token = JwtUtility.encode_data(data=payload)
