@@ -3,15 +3,21 @@ import { Navigation } from '@/website/HackathonPage/Navigation/Navigation';
 import { useQuery } from '@tanstack/react-query';
 
 export async function verifyToken(token: string) {
-    console.log('From env', API_URL);
     const params = new URLSearchParams();
     params.set('jwt_token', token);
 
-    const response = await fetch(`${API_URL}/hackathon/participants/verify?${params.toString()}`, { method: 'PATCH' });
+    let response;
+    try {
+        response = await fetch(`${API_URL}/hackathon/participants/verify?${params.toString()}`, { method: 'PATCH' });
+    } catch {
+        throw new Error('Verification failed, try refreshing the page or contact us.');
+    }
+    console.log(response);
     const data = await response.json();
-    console.log('Parsed response:', data);
+    console.log(data);
     if (!response.ok) {
-        throw new Error((data && data.error) || 'Verification failed, try refreshing the page or contact us');
+        console.log(data.error);
+        throw new Error((data && data.error) || 'Verification failed, try refreshing the page or contact us.');
     }
     return data;
 }
@@ -19,21 +25,24 @@ export async function verifyToken(token: string) {
 export const VerificationComponent = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('jwt_token');
-
     const { isLoading, isError, error } = useQuery({
         queryKey: ['verifyToken', token],
         queryFn: () => verifyToken(token as string),
         enabled: !!token,
+        retry: 1,
+        refetchOnWindowFocus: false,
     });
 
     let content;
+
     if (isLoading) {
-        content = <p className="font-mont">Loading...</p>;
+        content = 'Loading...';
     } else if (isError) {
-        console.log(error);
-        content = <p>Error: {(error as Error).message}</p>;
+        content = `Error: ${(error as Error).message}`;
+    } else if (!token) {
+        content = 'Link is invalid';
     } else {
-        content = <p>Verification successful</p>;
+        content = 'Verification successful';
     }
 
     return (
@@ -41,8 +50,8 @@ export const VerificationComponent = () => {
             <Navigation />
             <div className="  bg-center flex items-center h-[75vh] sm:h-[85vh]">
                 <div className="text-white w-full flex h-[200px] justify-center">
-                    <div className="bg-[#000b13] w-4/5 h-full rounded-md border border-[#202d38] flex justify-center items-center font-mont">
-                        {content}
+                    <div className="bg-[#000b13] w-4/5 h-full rounded-md border border-[#202d38] flex justify-center items-center font-mont text-2xl">
+                        <p className="text-center p-5">{content}</p>
                     </div>
                 </div>
             </div>
