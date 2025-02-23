@@ -38,7 +38,7 @@ export default function MissionSection() {
                                 technology and creativity.
                             </p>
                         </div>
-                        <img className="w-full pb-80 lg:pb-[30rem]" src="/public/hackMission/underline.svg"></img>
+                        <img className="w-full pb-80 lg:pb-[30rem]" src="/hackMission/underline.svg"></img>
                     </div>
                 </div>
             ) : null}
