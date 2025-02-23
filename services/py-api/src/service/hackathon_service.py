@@ -355,7 +355,7 @@ class HackathonService:
                 f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
             )
         else:
-            verification_link = f"http://localhost:3000/hackathon/verification?jwt_token={jwt_token}"
+            verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
         # Update the last_sent_verification_email field for rate-limiting purposes
         result = await self._participant_repo.update(
