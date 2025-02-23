@@ -14,7 +14,7 @@ const OPTIONS: EmblaOptionsType = { align: 'start', slidesToScroll: 'auto' };
 
 export default function PastEventSection() {
     return (
-        <div className="space-y-7 font-mont">
+        <div className="space-y-7 font-mont" id="past-events">
             <h2 className="font-semibold text-3xl text-primary mb-10">Our Past Events</h2>
             <EmblaCarousel type="events" slides={SLIDES} options={OPTIONS} />
         </div>
