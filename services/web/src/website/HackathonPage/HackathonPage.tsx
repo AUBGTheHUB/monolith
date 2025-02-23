@@ -9,8 +9,11 @@ import LandingSection from './LandingSection/LandingSection';
 import MissionSection from './MissionSection/MissionSection';
 import AwardsSection from './AwardsSection/AwardsSection';
 import { Recap } from './components/Recap';
+import { useFeatureSwitches } from '@/config';
 
 export const HackathonPage = () => {
+    const featureSwitches = useFeatureSwitches();
+
     return (
         <Fragment>
             <Navigation />
@@ -20,6 +23,8 @@ export const HackathonPage = () => {
             </div>
             <MentorsSection />
             <JurySection />
+            <MentorsSection mentorsSwitch={featureSwitches.MentorsSwitch} />
+            <JurySection jurySwitch={featureSwitches.JurySwitch} />
             <ScheduleSection />
             <Recap />
             <GradingSection />
