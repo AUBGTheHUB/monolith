@@ -26,7 +26,7 @@ export default function LandingSection() {
                         className="lg:w-auto z-10 absolute z-0 lg:top-0 right-0 top-[20rem] w-1/2 "
                         src="/public/hackLanding/death_star.svg"
                     ></img>
-                    <div className="w-full z-10 absolute lg:top-[16rem] md:top-[15rem] top-[10rem] inset-x-0 flex justify-center items-center">
+                    <div className="w-full z-10 absolute lg:top-[12rem] md:top-[15rem] top-[10rem] inset-x-0 flex justify-center items-center">
                         <img className="lg:w-1/2 w-4/5 z-10" src="/public/hackLanding/title.svg"></img>
                     </div>
                 </div>
@@ -36,13 +36,13 @@ export default function LandingSection() {
                         <img className="w-full z-0" src="/public/hackLanding/space.svg"></img>
                         <img className="w-full z-0 block xl:hidden" src="/public/hackLanding/space.svg"></img>
                         <img
-                            className="lg:w-auto z-30 absolute z-0 lg:top-0 right-0 top-[20rem] w-1/2 "
+                            className="lg:w-auto z-30 absolute z-0 lg:top-0 right-0 top-[20rem] w-[70%] "
                             src="/public/hackLanding/death_star.svg"
                         ></img>
-                        <div className="w-full z-20 absolute lg:top-[11rem] md:top-[8rem] top-[10rem] inset-x-0 flex justify-center items-center">
-                            <img className="lg:w-1/2 w-4/5 z-10" src="/public/hackLanding/title.svg"></img>
+                        <div className="w-full z-20 absolute lg:top-[11rem] md:top-[8rem] top-[5rem] inset-x-0 flex justify-center items-center">
+                            <img className="lg:w-1/2 w-[90%] z-10" src="/public/hackLanding/title.svg"></img>
                         </div>
-                        <div className="relative w-full min-h-[5rem] pt-[3rem]   bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
+                        <div className="relative w-full min-h-[5rem] pt-[7rem] bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
                             <img className="absolute top-[0rem] w-full z-10" src="/public/hackLanding/space.svg"></img>
                             <div className="w-4/5 relative lg:top-[11rem] top-[10rem] inset-x-0 z-20 flex-column ">
                                 <div className="sm:text-4xl text-3xl sm:mb-5 mb-5 flex items-center ">
