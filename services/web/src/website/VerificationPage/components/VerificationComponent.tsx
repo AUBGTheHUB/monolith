@@ -12,11 +12,8 @@ export async function verifyToken(token: string) {
     } catch {
         throw new Error('Verification failed, try refreshing the page or contact us.');
     }
-    console.log(response);
     const data = await response.json();
-    console.log(data);
     if (!response.ok) {
-        console.log(data.error);
         throw new Error((data && data.error) || 'Verification failed, try refreshing the page or contact us.');
     }
     return data;
