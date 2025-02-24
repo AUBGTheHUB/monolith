@@ -31,3 +31,14 @@ class FeatureSwitchHandler(BaseHandler):
             response_model=AllFeatureSwitchesResponse(features=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
+
+    async def handle_feature_switch_update(self, name: str, state: bool) -> Response:
+        result = await self._service.update_feature_switch(name=name, state=state)
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(
+            response_model=FeatureSwitchResponse(feature=result.ok_value),
+            status_code=status.HTTP_200_OK,
+        )

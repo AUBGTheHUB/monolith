@@ -1,5 +1,4 @@
-from copy import deepcopy
-from typing import Optional, List
+from typing import Optional, List, cast, Dict, Any
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -53,7 +52,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **team))
+            return Ok(Team(id=ObjectId(obj_id), **team))
 
         except Exception as e:
             LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
@@ -67,11 +66,10 @@ class TeamsRepository(CRUDRepository[Team]):
 
             teams = []
             for doc in teams_data:
-                doc_copy = dict(doc)
 
-                doc_copy["id"] = str(doc_copy.pop("_id"))
+                doc["id"] = doc.pop("_id")
 
-                teams.append(Team(**doc_copy))
+                teams.append(Team(**doc))
 
             LOG.debug(f"Fetched {len(teams)} teams.")
             return Ok(teams)
@@ -88,7 +86,7 @@ class TeamsRepository(CRUDRepository[Team]):
     ) -> Result[Team, TeamNotFoundError | Exception]:
         try:
 
-            LOG.info(f"Updating team...", team_id=obj_id, updated_fields=obj_fields.model_dump_json())
+            LOG.info(f"Updating team...", team_id=obj_id, updated_fields=obj_fields.model_dump())
 
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
@@ -102,7 +100,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if result is None:
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **result))
+            return Ok(Team(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception(f"Failed to update team due to error", team_id=obj_id, error=e)
@@ -131,7 +129,7 @@ class TeamsRepository(CRUDRepository[Team]):
             if result is None:
                 return Err(TeamNotFoundError())
 
-            return Ok(Team(id=obj_id, **result))
+            return Ok(Team(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Team deletion failed due to error", team_id=obj_id, error=e)
@@ -151,7 +149,7 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.debug("Fetching team by name...", team_name=team_name)
 
             # Query the database for the team with the given name
-            team = await self._collection.find_one({"name": team_name})
+            team = cast(Dict[str, Any], await self._collection.find_one({"name": team_name}))
 
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())
@@ -159,13 +157,10 @@ class TeamsRepository(CRUDRepository[Team]):
             # Since the `Team` class has a parameter named `id` instead of `_id`,
             # we make the following operations in order to rename the key appropriately
 
-            # Make a deep copy of the team dictionary
-            team_copy = deepcopy(team)
-
             # Rename `_id` to `id`
-            team_copy["id"] = str(team_copy.pop("_id"))
+            team["id"] = team.pop("_id")
 
-            return Ok(Team(**team_copy))
+            return Ok(Team(**team))
 
         except Exception as e:
             LOG.exception(f"Failed to fetch team due to err", team_name=team_name, error=e)

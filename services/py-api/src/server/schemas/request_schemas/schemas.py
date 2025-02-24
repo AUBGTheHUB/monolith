@@ -51,6 +51,18 @@ class BaseParticipantData(BaseModel):
     has_previous_coding_experience: bool
     share_info_with_sponsors: bool
 
+    @field_validator("share_info_with_sponsors", mode="before")
+    @classmethod
+    def check_if_true(cls, value: bool) -> bool:
+        if not value:
+            raise ValueError("share_info_with_sponsors shall be true")
+        return value
+
+    @field_validator("tshirt_size", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, value: str) -> str | None:
+        return None if value == "" else value
+
     # We need to use the dump of the input data to pass it to the repository layer, however `registration_type` and `team_name` are not
     # part of the participant document, thus we shall exclude them from the dump.
     # `registration_type` only helps us to determine the registration manner in a more elegant way.
@@ -66,11 +78,21 @@ class AdminParticipantInputData(BaseParticipantData):
     is_admin: Literal[True]
     team_name: str
 
+    @field_validator("team_name", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, value: str) -> str | None:
+        return None if value == "" else value
+
 
 class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
     team_name: str
+
+    @field_validator("team_name", mode="before")
+    @classmethod
+    def convert_empty_string_to_none(cls, value: str) -> str | None:
+        return None if value == "" else value
 
 
 class RandomParticipantInputData(BaseParticipantData):
@@ -81,3 +103,8 @@ class ParticipantRequestBody(BaseModel):
     registration_info: Union[AdminParticipantInputData, InviteLinkParticipantInputData, RandomParticipantInputData] = (
         Field(discriminator="registration_type")
     )
+
+
+class FeatureSwitchUpdateBody(BaseModel):
+    name: str
+    state: bool
