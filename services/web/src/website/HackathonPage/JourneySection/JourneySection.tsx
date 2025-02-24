@@ -10,7 +10,9 @@ function JourneySection() {
 
     const itemsRef = useRef<HTMLDivElement[]>([]);
 
-    const startOffset = window.innerWidth <= 768 ? 180 : 220;
+    const startOffset = window.innerWidth <= 768 ? 50 : 220;
+
+    const finishOffset = window.innerWidth <= 768 ? 4 : 8;
 
     // Helper to add each element to the ref array
     const addToRefs = (el: HTMLDivElement) => {
@@ -30,7 +32,7 @@ function JourneySection() {
             },
             {
                 // Animate each element to x = 0 (the left edge of its container)
-                x: 0,
+                x: (i: number) => `${window.innerWidth <= 768 ? finishOffset : finishOffset + i * 5}rem`,
                 ease: 'none',
                 duration: 1,
                 // Animate one after the other so they appear to stack as they slide in
@@ -41,6 +43,7 @@ function JourneySection() {
                     end: '2000 top',
                     scrub: 0.6,
                     pin: true,
+                    toggleActions: 'play none none reverse',
                 },
             },
         );
@@ -51,13 +54,14 @@ function JourneySection() {
     }, []);
 
     return (
-        <div className="w-full">
-            <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 ml-[9%] sticky top-0 left-0 flex items-center space-x-4 p-4">
-                <img src="./n.png" alt="" className="w-[1.6rem]" />
-                <p className="text-white tracking-[0.2em]">JOURNEY</p>
+        <div className="w-full relative">
+            <div className="sticky h-[50rem] top-0 z-50 p-4 ml-[9%] bg-transparent">
+                <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
+                    <img src="./JourneySection/symbol.svg" alt="" className="w-[1.6rem]" />
+                    <p className="text-white tracking-[0.2em]">JOURNEY</p>
+                </div>
             </div>
-
-            <section className="scroll-section-outer mr-20 gap-[20rem]">
+            <section className="scroll-section-outer mr-20 gap-[20rem] min-h-[40rem]">
                 <div ref={triggerRef} className="mr-0 relative w-full h-screen ">
                     {journeyEntries.map((entry, index) => {
                         return (
