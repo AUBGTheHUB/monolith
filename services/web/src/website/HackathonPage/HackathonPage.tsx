@@ -18,11 +18,12 @@ export const HackathonPage = () => {
     return (
         <Fragment>
             <Navigation />
-            <JourneySection />
             <div className="relative">
                 <LandingSection />
                 <MissionSection />
             </div>
+
+            <JourneySection />
             <MentorsSection mentorsSwitch={featureSwitches.MentorsSwitch} />
             <JurySection jurySwitch={featureSwitches.JurySwitch} />
             <ScheduleSection />
