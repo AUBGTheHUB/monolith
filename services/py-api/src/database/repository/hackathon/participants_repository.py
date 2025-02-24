@@ -140,9 +140,11 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             LOG.info("Inserting participant...", participant=participant.dump_as_json())
             await self._collection.insert_one(document=participant.dump_as_mongo_db_document(), session=session)
             return Ok(participant)
+
         except DuplicateKeyError:
             LOG.warning("Participant insertion failed due to duplicate email", email=participant.email)
             return Err(DuplicateEmailError(participant.email))
+
         except Exception as e:
             LOG.exception("Participant insertion failed due to error", participant_id=str(participant.id), error=e)
             return Err(e)

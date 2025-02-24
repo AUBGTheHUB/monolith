@@ -7,6 +7,7 @@ from src.server.routes.routes_dependencies import (
     is_auth,
     validate_obj_id,
     get_hackathon_management_handlers,
+    registration_open,
 )
 from src.server.schemas.request_schemas.schemas import ParticipantRequestBody
 from src.server.schemas.response_schemas.schemas import (
@@ -26,6 +27,7 @@ participants_router = APIRouter(prefix="/hackathon/participants")
     "",
     status_code=201,
     responses={201: {"model": ParticipantRegisteredResponse}, 409: {"model": ErrResponse}, 404: {"model": ErrResponse}},
+    dependencies=[Depends(registration_open)],
 )
 async def create_participant(
     participant_request_body: ParticipantRequestBody,

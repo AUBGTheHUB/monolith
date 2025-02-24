@@ -40,9 +40,11 @@ class MongoDatabaseManager:
             LOG.debug("Pong")
 
             return None
+
         except ConnectionFailure as cf:
             LOG.exception("Pinging db failed due to err", error=cf)
             return Err(cf)
+
         except (OperationFailure, ConfigurationError) as err:
             LOG.exception("Pinging db failed due to err", error=err)
             return Err(err)
@@ -68,9 +70,11 @@ def ping_db() -> Err[ConnectionFailure | OperationFailure | ConfigurationError] 
     except ConnectionFailure as cf:
         LOG.exception("Pinging db failed due to err", error=cf)
         return Err(cf)
+
     except (OperationFailure, ConfigurationError) as err:
         LOG.exception("Pinging db failed due to err", error=err)
         return Err(err)
+
     finally:
         mongo_client.close()
 

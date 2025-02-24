@@ -33,6 +33,7 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used in the invite_link which is sent to every verified admin
     participant"""
 
+    team_name: str
     team_id: str
 
 
@@ -94,13 +95,22 @@ class JwtParticipantVerificationData(JwtBase[_DecodedJwtParticipantVerificationT
 
 @dataclass(kw_only=True)
 class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistrationToken]):
+    team_name: str
+    """The name of the Team entity in Mongo. Used by the front-end when displaying special registration form"""
     team_id: str
     """The ObjectID of the Team entity in Mongo. This is the team which team members registering via the``invite_link``
     should join"""
 
     def serialize(self) -> _DecodedJwtInviteRegistrationToken:
-        return _DecodedJwtInviteRegistrationToken(sub=self.sub, exp=self.exp, team_id=self.team_id)
+        return _DecodedJwtInviteRegistrationToken(
+            sub=self.sub, exp=self.exp, team_id=self.team_id, team_name=self.team_name
+        )
 
     @classmethod
     def deserialize(cls, decoded_token: _DecodedJwtInviteRegistrationToken) -> Self:
-        return cls(sub=decoded_token["sub"], team_id=decoded_token["team_id"], exp=decoded_token["exp"])
+        return cls(
+            sub=decoded_token["sub"],
+            team_id=decoded_token["team_id"],
+            exp=decoded_token["exp"],
+            team_name=decoded_token["team_name"],
+        )

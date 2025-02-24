@@ -42,7 +42,8 @@ class ParticipantVerificationService:
             return err
 
         # Check if the current registration of the participant reached the capacity of the hackathon
-        # and take the neccessary steps to finalize it
+        # and take the necessary steps to finalize it
+        # This will be executed only after we return a response from the route
         background_tasks.add_task(self.finalize_verification)
 
         return result
@@ -67,7 +68,8 @@ class ParticipantVerificationService:
             return err
 
         # Check if the current registration of the participant reached the capacity of the hackathon
-        # and take the neccessary steps to finalize it
+        # and take the necessary steps to finalize it
+        # This will be executed only after we return a response from the route
         background_tasks.add_task(self.finalize_verification)
 
         return result

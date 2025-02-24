@@ -69,12 +69,13 @@ class BaseParticipantData(BaseModel):
     def convert_empty_string_to_none(cls, value: str) -> str | None:
         return None if value == "" else value
 
-    # We need to use the dump of the input data to pass it to the repository layer, however `registration_type` and `team_name` are not
-    # part of the participant document, thus we shall exclude them from the dump.
+    # We need to use the dump of the input data to pass it to the repository layer, however `registration_type` and
+    # `team_name` are not part of the participant document, thus we shall exclude them from the dump.
+
     # `registration_type` only helps us to determine the registration manner in a more elegant way.
     # `team_name` helps us with determining the name of the team that the admin participant wants to create
     def model_dump(
-        self, *, exclude: IncEx = ["registration_type", "team_name"], **kwargs: dict[str, Any]
+        self, *, exclude: IncEx = ("registration_type", "team_name"), **kwargs: dict[str, Any]
     ) -> dict[str, Any]:
         return super().model_dump(exclude=exclude, **kwargs)  # type: ignore
 

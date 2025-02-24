@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
-from typing import Final, Optional, Tuple, List
+from typing import Final, Optional, Tuple, List, TypedDict
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -9,6 +9,7 @@ from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.model.base_model import SerializableObjectId
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
 from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -34,14 +35,18 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
 )
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.server.schemas.schemas import RandomTeam
-from src.service.mail_service.hackathon_mail_service import HackathonMailService
-from src.utils import JwtUtility
 from secrets import token_hex
 
 LOG = get_logger()
 
 
+# TODO: This should be moved when splitting HackathonService
+class RandomTeam(TypedDict):
+    team: Team
+    participants: list[Participant]
+
+
+# TODO: This class should be split into multimple smaller ones as it breaks the Single Responsibility Principle
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
 
@@ -218,7 +223,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
 
         # This step is taken to ensure that we are not verifying an already verified participant
-        result = await self._participant_repo.fetch_by_id(jwt_data["sub"])
+        result = await self._participant_repo.fetch_by_id(jwt_data.sub)
 
         if is_err(result):
             return result
@@ -284,6 +289,9 @@ class HackathonService:
         self, participant_id: str
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         return await self._participant_repo.delete(obj_id=participant_id)
+
+    async def fetch_all_teams(self) -> Result[List[Team], Exception]:
+        return await self._team_repo.fetch_all()
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._team_repo.delete(obj_id=team_id)
@@ -459,8 +467,6 @@ class HackathonService:
 
         # Build the payload for the Jwt token
         expiration = int((datetime.now(timezone.utc) + timedelta(days=15)).timestamp())
-        payload = JwtParticipantInviteRegistrationData(sub=str(participant.id), team_id=str(team.id), exp=expiration)
-        expiration = (datetime.now(timezone.utc) + timedelta(days=15)).timestamp()
         payload = JwtParticipantInviteRegistrationData(
             sub=str(participant.id), team_id=str(team.id), team_name=team.name, exp=expiration
         )
@@ -610,8 +616,9 @@ class HackathonService:
     async def close_reg_for_all_participants(self) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         """
         Serves to close the hackathon registration for all kinds of participants: random, invite-link, and admin
-        participants. Includes possible creation of random teams, if such process has not taken place and flips
-        the RegSwitch to false.
+        participants manually. Includes possible creation of random teams, if such process has not taken place
+        automatically and flips the RegSwitch to false.
+
         Flipping the registration switch to false ultimately closes the registration. You can't use the registration
         API anymore. Moreover, there is also no front-end interface for it.
         """
@@ -622,7 +629,7 @@ class HackathonService:
         if is_err(feature_switch):
             return feature_switch
 
-        # Now that we have disabled the switch we can run the random team creation proccess
+        # Now that we have disabled the switch we can run the random team creation process
 
         random_participant_teams_created = await self.create_random_participant_teams()
 

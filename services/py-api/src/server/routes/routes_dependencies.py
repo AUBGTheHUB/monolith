@@ -38,10 +38,12 @@ For more info: https://fastapi.tiangolo.com/tutorial/dependencies/
 """
 
 from os import environ
-from typing import Annotated
+from typing import Annotated, cast
 
 from bson import ObjectId
-from fastapi import Header, HTTPException, Path
+from fastapi import Header, HTTPException, Path, Depends
+from starlette import status
+from structlog.stdlib import get_logger
 
 from src.dependency_wiring import (
     FEATURE_SWITCH_HANDLERS,
@@ -53,8 +55,13 @@ from src.dependency_wiring import (
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
-from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
+from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse
+from src.service.hackathon.hackathon_service import HackathonService
+
+LOG = get_logger()
+
 
 # ===============================
 # Request Handlers start
@@ -112,16 +119,13 @@ def is_auth(authorization: Annotated[str, Header()]) -> None:
     # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
     # I have exported this function on a separate dependencies file likes suggested in:
     # https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
-    if environ["ENV"] != "PROD":
-        if not (
-            authorization
-            and authorization.startswith("Bearer ")
-            and authorization[len("Bearer ") :] == environ["SECRET_AUTH_TOKEN"]
-        ):
-            raise HTTPException(detail="Unauthorized", status_code=401)
-    else:
-        # TODO: Implement JWT Bearer token authorization logic if we decide on an admin panel.
-        #  For now every effort to access protected routes in a PROD env will not be authorized!
+    # TODO: When the admin panel is implemented, the secret auth toke env variable should be removed as tokens
+    #  will be automatically rotated
+    if not (
+        authorization
+        and authorization.startswith("Bearer ")
+        and authorization[len("Bearer ") :] == environ["SECRET_AUTH_TOKEN"]
+    ):
         raise HTTPException(detail="Unauthorized", status_code=401)
 
 
@@ -130,16 +134,20 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
 
-# TODO: Since Alex has created more specific feature switches this logic shall be changed
-# async def registration_open(service: FeatureSwitchService = Depends(_fs_service)) -> None:
-#
-#     result = await service.check_feature_switch(feature=REGISTRATION_FEATURE_SWITCH)
-#
-#     if is_err(result):
-#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
-#
-#     if result.ok_value.state is False:
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
+async def registration_open(fs_handler: FeatureSwitchHandler = Depends(get_feature_switch_handlers)) -> None:
+    resp = await fs_handler.get_feature_switch(feature=HackathonService.REG_ALL_PARTICIPANTS_SWITCH)
+
+    if resp.status_code != 200:
+        LOG.error(
+            "Error while fetching FS before registration request is accepted",
+            feature=HackathonService.REG_ALL_PARTICIPANTS_SWITCH,
+            status_code=resp.status_code,
+        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
+
+    resp_data = cast(FeatureSwitchResponse, resp.response_model)
+    if resp_data.feature.state is False:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
 
 
 # ===============================

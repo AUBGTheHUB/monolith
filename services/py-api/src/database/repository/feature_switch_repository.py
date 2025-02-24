@@ -1,11 +1,13 @@
-from copy import deepcopy
-from typing import Optional, List, cast, Any
-from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import Result, Err, Ok
+from typing import Optional, List, cast, Any, Dict
 
-from src.database.mongo.db_manager import MongoDatabaseManager
-from src.database.model.feature_switch_model import FeatureSwitch
+from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.collection import ReturnDocument
+from result import Result, Err, Ok
 from structlog.stdlib import get_logger
+
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import FeatureSwitchNotFoundError
 
