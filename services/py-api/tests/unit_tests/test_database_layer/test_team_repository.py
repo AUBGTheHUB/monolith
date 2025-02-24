@@ -1,11 +1,11 @@
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Dict, Any
 from unittest.mock import Mock, AsyncMock
 
-from bson import ObjectId
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
+from bson import ObjectId
 
 from src.database.db_manager import TEAMS_COLLECTION
 from src.database.repository.teams_repository import TeamsRepository
@@ -22,16 +22,16 @@ def repo(db_manager_mock: Mock) -> TeamsRepository:
 @pytest.mark.asyncio
 async def test_create_team_success(
     ten_sec_window: Tuple[datetime, datetime],
-    mock_normal_team: Team,
+    mock_unverified_team: Team,
     repo: TeamsRepository,
 ) -> None:
     start_time, end_time = ten_sec_window
 
-    result = await repo.create(mock_normal_team)
+    result = await repo.create(mock_unverified_team)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.name == mock_normal_team.name
+    assert result.ok_value.name == mock_unverified_team.name
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
     assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
@@ -39,14 +39,14 @@ async def test_create_team_success(
 
 @pytest.mark.asyncio
 async def test_create_team_duplicate_name_error(
-    db_manager_mock: Mock, mock_normal_team: Team, repo: TeamsRepository
+    db_manager_mock: Mock, mock_unverified_team: Team, repo: TeamsRepository
 ) -> None:
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate team name
     db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
         side_effect=DuplicateKeyError("Duplicate team name error")
     )
 
-    result = await repo.create(mock_normal_team)
+    result = await repo.create(mock_unverified_team)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
@@ -56,12 +56,12 @@ async def test_create_team_duplicate_name_error(
 
 @pytest.mark.asyncio
 async def test_create_team_general_exception(
-    db_manager_mock: Mock, mock_normal_team: Team, repo: TeamsRepository
+    db_manager_mock: Mock, mock_unverified_team: Team, repo: TeamsRepository
 ) -> None:
     # Simulate a general exception raised by insert_one
     db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
-    result = await repo.create(mock_normal_team)
+    result = await repo.create(mock_unverified_team)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
@@ -70,17 +70,19 @@ async def test_create_team_general_exception(
 
 
 @pytest.mark.asyncio
-async def test_delete_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_delete_team_success(
+    db_manager_mock: Mock, mock_unverified_team_dump_no_id: Dict[str, Any], mock_obj_id: str, repo: TeamsRepository
+) -> None:
 
     db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": False}
+        return_value=mock_unverified_team_dump_no_id
     )
 
     result = await repo.delete(mock_obj_id)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified is False
 
@@ -111,15 +113,17 @@ async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id:
 
 
 @pytest.mark.asyncio
-async def test_update_team_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_update_team_success(
+    db_manager_mock: Mock, mock_obj_id: str, mock_verified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
+) -> None:
     db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": True}
+        return_value=mock_verified_team_dump_no_id
     )
 
     result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
     assert isinstance(result, Ok)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.is_verified is True
     assert result.ok_value.name == TEST_TEAM_NAME
 
@@ -136,9 +140,11 @@ async def test_update_team_team_not_found(db_manager_mock: Mock, mock_obj_id: st
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_team_name_success(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_fetch_by_team_name_success(
+    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team: Team, repo: TeamsRepository
+) -> None:
     db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value={"_id": ObjectId(mock_obj_id), "name": TEST_TEAM_NAME, "is_verified": False}
+        return_value=mock_unverified_team.dump_as_mongo_db_document()
     )
 
     result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
@@ -172,17 +178,17 @@ async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: Tea
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_successful(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value={"name": TEST_TEAM_NAME, "is_verified": False}
-    )
+async def test_fetch_by_id_successful(
+    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
+) -> None:
+    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=mock_unverified_team_dump_no_id)
 
     result = await repo.fetch_by_id(mock_obj_id)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
 
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 

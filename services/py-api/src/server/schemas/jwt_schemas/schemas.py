@@ -22,4 +22,5 @@ class JwtParticipantVerificationData(JwtBase):
 
 
 class JwtParticipantInviteRegistrationData(JwtBase):
+    team_name: str
     team_id: str

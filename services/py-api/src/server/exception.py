@@ -120,3 +120,8 @@ class JwtDecodeError(CustomError):
 
     message = "There was a a general error while decoding the JWT token. Checks its format again."
     status_code = status.HTTP_400_BAD_REQUEST
+
+
+class FeatureSwitchNotFoundError(CustomError):
+    message = "The feature switch was not found."
+    status_code = status.HTTP_404_NOT_FOUND

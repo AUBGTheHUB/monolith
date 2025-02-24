@@ -1,192 +1,744 @@
 [
+
     {
-        "picture": "/sample.png",
-        "name": "John Doe",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-1-sami.webp",
+        "name": "Samuil Mladenov",
         "departments": [
-            "All",
-            "Development",
-            "PR",
-            "Logistics",
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-5-maria.webp",
+        "name": "Maria Kirilova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-2-viktor.webp",
+        "name": "Viktor Logodazhki",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-6-ivaylo.webp",
+        "name": "Ivaylo Kotsev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-3-liana.webp",
+        "name": "Liana Georgieva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-7-villi.webp",
+        "name": "Vili-An Doneva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-4-nikol.webp",
+        "name": "Nikol Tileva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-8-yani.webp",
+        "name": "Yanislav Iliev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-9-isak.webp",
+        "name": "Isak Bego",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-10-nikola.webp",
+        "name": "Nikola Genev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-4-ivaylo.webp",
+        "name": "Ivaylo Chernev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-8-Peter.webp",
+        "name": "Peter-Emil Georgiev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-14-klevi.webp",
+        "name": "Klevi Dervishi",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-5-asia.webp",
+        "name": "Asia Whoolery Haslam",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-7-kaloyan.webp",
+        "name": "Kaloyan Dimitrov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-8-elizabeth.webp",
+        "name": "Elizabeth Hristova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-3-hristo.webp",
+        "name": "Hristo Hubenov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-7-yara.webp",
+        "name": "Yaroslava Korboulewsky-Braustein",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-4-alex.webp",
+        "name": "Alexandr Ignatov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-8-georgi.webp",
+        "name": "Gorgi Kostadinovski",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-2-liyan.webp",
+        "name": "Iliyan Iliev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-10-tedo.webp",
+        "name": "Teodor Kovachev",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-2-aleks.webp",
+        "name": "Aleksandar Ivanov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-8-aynur.webp",
+        "name": "Aynur Meredova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-5-siyana.webp",
+        "name": "Siyana Mohamed",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-7-anna.webp",
+        "name": "Anna Petrova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-11-amelia.webp",
+        "name": "Amelia Nikova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-6-vasko.webp",
+        "name": "Vasko Pohlupkov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-6-ivan.webp",
+        "name": "Ivan Obreshkov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-3-teodor.webp",
+        "name": "Teodor Popov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-9-plamena.webp",
+        "name": "Plamena Pavlova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-13-luka.webp",
+        "name": "Luka Prifti",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-9-nikolay.webp",
+        "name": "Nikolay Pugyov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-12-lubomira.webp",
+        "name": "Lyubomira Staninska",
+        "departments": [
+            "All"
+        ]
+    },{
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-9-boris.webp",
+        "name": "Boris Savov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-6-desislava.webp",
+        "name": "Desislava Taseva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-5-iskra.webp",
+        "name": "Iskra V. Slavova",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-4-dani.webp",
+        "name": "Daniel Todorov",
+        "departments": [
+            "All"
+        ]
+    },{
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-10-slavi.webp",
+        "name": "Slavi Sotirov",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-3-vikiU.webp",
+        "name": "Viktoria Urucheva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-9-katerina.webp",
+        "name": "Ekaterina Valeva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-5-alex.webp",
+        "name": "Alexandra Yordanova",
+        "departments": [
+            "All"
+        ]
+    },{
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-5-vickyT.webp",
+        "name": "Victoria Vateva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-11-maggie.webp",
+        "name": "Magdalena Zheleva",
+        "departments": [
+            "All"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-1-sami.webp",
+        "name": "Samuil Mladenov",
+        "departments": [
             "Board"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Jane Smith",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-5-maria.webp",
+        "name": "Maria Kirilova",
         "departments": [
-            "All",
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-2-viktor.webp",
+        "name": "Viktor Logodazhki",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-6-ivaylo.webp",
+        "name": "Ivaylo Kotsev",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-3-liana.webp",
+        "name": "Liana Georgieva",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-7-villi.webp",
+        "name": "Vili-An Doneva",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-4-nikol.webp",
+        "name": "Nikol Tileva",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-8-yani.webp",
+        "name": "Yanislav Iliev",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/board-members/board-9-isak.webp",
+        "name": "Isak Bego",
+        "departments": [
+            "Board"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-1-maria.webp",
+        "name": "Maria Kirilova",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-5-siyana.webp",
+        "name": "Siyana Mohamed",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-4-vili.webp",
+        "name": "Vili-An Doneva",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-7-anna.webp",
+        "name": "Anna Petrova",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-2-liana.webp",
+        "name": "Liana Georgieva",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-9-boris.webp",
+        "name": "Boris Savov",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-8-elizabeth.webp",
+        "name": "Elizabeth Hristova",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-10-slavi.webp",
+        "name": "Slavi Sotirov",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-6-desislava.webp",
+        "name": "Desislava Taseva",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/pr-members/pr-3-nikol.webp",
+        "name": "Nikol Tileva",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-1-ivaylo.webp",
+        "name": "Ivaylo Kotsev",
+        "departments": [
             "Marketing"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Michael Brown",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-7-yara.webp",
+        "name": "Yaroslava Korboulewsky-Braustein",
         "departments": [
-            "All",
-            "PR",
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-10-nikola.webp",
+        "name": "Nikola Genev",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-8-aynur.webp",
+        "name": "Aynur Meredova",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-2-liana.webp",
+        "name": "Liana Georgieva",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-11-amelia.webp",
+        "name": "Amelia Nikova",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-3-hristo.webp",
+        "name": "Hristo Hubenov",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-5-iskra.webp",
+        "name": "Iskra V. Slavova",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-4-dani.webp",
+        "name": "Daniel Todorov",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-6-viki.webp",
+        "name": "Victoria Vateva",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-9-katerina.webp",
+        "name": "Ekaterina Valeva",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/market-members/market-12-maggie.webp",
+        "name": "Magdalena Zheleva",
+        "departments": [
+            "Marketing"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-1-vili.webp",
+        "name": "Vili-An Doneva",
+        "departments": [
             "Logistics"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Emily Johnson",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-3-teodor.webp",
+        "name": "Teodor Popov",
         "departments": [
-            "All",
-            "Board",
-            "Marketing",
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-7-kaloyan.webp",
+        "name": "Kaloyan Dimitrov",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-9-nikolay.webp",
+        "name": "Nikolay Pugyov",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-4-viktor.webp",
+        "name": "Viktor Logodazhki",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-2-desi.webp",
+        "name": "Desislava Taseva",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-6-vasko.webp",
+        "name": "Vasko Pohlupkov",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-5-alex.webp",
+        "name": "Alexandra Yordanova",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/logi-members/logi-8-maggie.webp",
+        "name": "Magdalena Zheleva",
+        "departments": [
+            "Logistics"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-1-yani.webp",
+        "name": "Yanislav Iliev",
+        "departments": [
             "Design"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Chris Wilson",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-6-boris.webp",
+        "name": "Boris Savov",
         "departments": [
-            "All",
-            "Logistics",
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-4-ivaylo.webp",
+        "name": "Ivaylo Chernev",
+        "departments": [
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-5-vickyT.webp",
+        "name": "Victoria Vateva",
+        "departments": [
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-2-liyan.webp",
+        "name": "Iliyan Iliev",
+        "departments": [
+            "Design"
+        ]
+    },
+
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-3-vikiU.webp",
+        "name": "Viktoria Urucheva",
+        "departments": [
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-8-georgi.webp",
+        "name": "Gorgi Kostadinovski",
+        "departments": [
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/design-members/design-7-magi.webp",
+        "name": "Magdalena Yordanova",
+        "departments": [
+            "Design"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-1-isak.webp",
+        "name": "Isak Bego",
+        "departments": [
             "Development"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Sarah Davis",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-5-asia.webp",
+        "name": "Asia Whoolery Haslam",
         "departments": [
-            "All",
-            "PR",
-            "Marketing",
-            "Design"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "David Lee",
-        "departments": [
-            "All",
-            "Development",
-            "Logistics",
-            "Board"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Emma Moore",
-        "departments": [
-            "All",
-            "Board",
-            "PR"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Daniel Taylor",
-        "departments": [
-            "All",
-            "Design",
-            "Marketing"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Sophia White",
-        "departments": [
-            "All",
-            "PR",
-            "Development",
-            "Logistics"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "James Anderson",
-        "departments": [
-            "All",
-            "Marketing",
-            "Design",
-            "Board"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Olivia Martin",
-        "departments": [
-            "All",
-            "Development",
-            "PR"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "William Garcia",
-        "departments": [
-            "All",
-            "Logistics",
-            "Marketing"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Mia Thompson",
-        "departments": [
-            "All",
-            "Board",
-            "Design",
-            "PR"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Alexander Lopez",
-        "departments": [
-            "All",
-            "Marketing",
-            "Board"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Charlotte Harris",
-        "departments": [
-            "All",
-            "Development",
-            "Logistics"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Benjamin Clark",
-        "departments": [
-            "All",
-            "Design",
-            "Marketing",
-            "PR"
-        ]
-    },
-    {
-        "picture": "/sample.png",
-        "name": "Amelia Lewis",
-        "departments": [
-            "All",
-            "Board",
-            "Logistics",
             "Development"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Lucas Walker",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-14-klevi.webp",
+        "name": "Klevi Dervishi",
         "departments": [
-            "All",
-            "PR",
-            "Design"
+            "Development"
         ]
     },
     {
-        "picture": "/sample.png",
-        "name": "Isabella Hall",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-4-alex.webp",
+        "name": "Alexandr Ignatov",
         "departments": [
-            "All",
-            "Development",
-            "Board",
-            "Marketing"
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-7-kaloyan.webp",
+        "name": "Kaloyan Dimitrov",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-2-aleks.webp",
+        "name": "Aleksandar Ivanov",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-8-Peter.webp",
+        "name": "Peter-Emil Georgiev",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-10-tedo.webp",
+        "name": "Teodor Kovachev",
+        "departments": [
+            "Development"
+        ]
+    },
+
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-3-viktor.webp",
+        "name": "Viktor Logodazhki",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-13-luka.webp",
+        "name": "Luka Prifti",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-6-ivan.webp",
+        "name": "Ivan Obreshkov",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-12-lubomira.webp",
+        "name": "Lyubomira Staninska",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-9-plamena.webp",
+        "name": "Plamena Pavlova",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/dev-members/dev-11-maggie.webp",
+        "name": "Magdalena Zheleva",
+        "departments": [
+            "Development"
         ]
     }
 ]

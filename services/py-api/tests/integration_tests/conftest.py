@@ -5,6 +5,16 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
+
+from src.database.model.participant_model import (
+    TSHIRT_SIZE,
+    UNIVERSITIES_LIST,
+    ALLOWED_AGE,
+    REFERRAL_SOURCES_LIST,
+    PROGRAMMING_LANGUAGES_LIST,
+    PROGRAMMING_LEVELS_LIST,
+)
+
 from src.server.app_entrypoint import app
 from os import environ
 
@@ -13,10 +23,18 @@ LOG = get_logger()
 PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
 PARTICIPANT_VERIFY_URL = "/api/v3/hackathon/participants/verify"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
+FEATURE_SWITCH_ENDPOINT_URL = "/api/v3/feature-switches"
 
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
 TEST_USER_EMAIL = "test@test.com"
+TEST_UNIVERSITY_NAME: UNIVERSITIES_LIST = "American University in Bulgaria"
+TEST_LOCATION = "Blagoevgrad"
+TEST_TSHIRT_SIZE: TSHIRT_SIZE = "Medium (M)"
+TEST_ALLOWED_AGE = 21
+TEST_REFERRAL_SOURCE: REFERRAL_SOURCES_LIST = "Friends"
+TEST_PROGRAMMING_LANGUAGE: PROGRAMMING_LANGUAGES_LIST = "Programming in Python"
+TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -77,6 +95,52 @@ async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict
             url=f"{TEAM_ENDPOINT_URL}/{team_id}",
             headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         )
+
+
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+async def revert_the_finalization_step(async_client: AsyncClient) -> None:
+    """
+    When the capacity for the registered teams is reached, there is a finalization step that runs creating possible
+    random participant teams and flipping the feature switch that allows for the possible creation of new teams
+    """
+    TEAM_REGISTRATION_FEATURE = "isRegTeamsFull"
+    # We shall use the Async Client to clean up after the finalization step
+
+    LOG.debug("Cleaning up the random teams that were created")
+
+    teams_result = await async_client.get(
+        url=f"{TEAM_ENDPOINT_URL}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        follow_redirects=True,
+    )
+
+    LOG.debug("Deleting random teams")
+
+    for team in teams_result.json()["teams"]:
+        await async_client.delete(
+            url=f"{TEAM_ENDPOINT_URL}/{team["id"]}",
+            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        )
+
+    LOG.debug(f"Recovering the state of the {TEAM_REGISTRATION_FEATURE} feature switch")
+    feature_response = await async_client.get(
+        url=f"{FEATURE_SWITCH_ENDPOINT_URL}/{TEAM_REGISTRATION_FEATURE}", follow_redirects=True
+    )
+
+    if feature_response.status_code != 200:
+        LOG.debug(
+            f"Failed to get {TEAM_REGISTRATION_FEATURE} feature switch. Check if the name of the feature switch is correct."
+        )
+
+    payload = {"name": TEAM_REGISTRATION_FEATURE, "state": False}
+
+    await async_client.patch(
+        f"{FEATURE_SWITCH_ENDPOINT_URL}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        json=payload,
+    )
+
+    LOG.debug("Cleanup finished successfully")
 
 
 # The following is an exapmle of factories as fixtures in pytest
@@ -145,6 +209,9 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
             LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
 
+    # Revert the finalization if any random teams were created while integration testing
+    await revert_the_finalization_step(async_client=async_client)
+
 
 class ParticipantRequestBodyCallable(Protocol):
     def __call__(
@@ -164,6 +231,18 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
         name: Union[str, None] = TEST_USER_NAME,
         email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
+        tshirt_size: Union[TSHIRT_SIZE | None] = TEST_TSHIRT_SIZE,
+        university: Union[UNIVERSITIES_LIST | None] = TEST_UNIVERSITY_NAME,
+        location: Union[str | None] = TEST_LOCATION,
+        age: Union[ALLOWED_AGE | None] = 21,
+        source_of_referral: Union[REFERRAL_SOURCES_LIST | None] = TEST_REFERRAL_SOURCE,
+        programming_language: Union[PROGRAMMING_LANGUAGES_LIST | None] = TEST_PROGRAMMING_LANGUAGE,
+        programming_level: Union[PROGRAMMING_LEVELS_LIST | None] = TEST_PROGRAMMING_LEVEL,
+        has_participated_in_hackaubg: Union[bool | None] = True,
+        has_internship_interest: Union[bool | None] = True,
+        has_participated_in_hackathons: Union[bool | None] = True,
+        has_previous_coding_experience: Union[bool | None] = True,
+        share_info_with_sponsors: Union[bool | None] = True,
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """This method is flexible with generating participant request bodies. To disable a property just call it with
@@ -174,6 +253,18 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
             "name": name,
             "email": email,
             "is_admin": is_admin,
+            "tshirt_size": tshirt_size,
+            "university": university,
+            "location": location,
+            "age": age,
+            "source_of_referral": source_of_referral,
+            "programming_language": programming_language,
+            "programming_level": programming_level,
+            "has_participated_in_hackaubg": has_participated_in_hackaubg,
+            "has_internship_interest": has_internship_interest,
+            "has_participated_in_hackathons": has_participated_in_hackathons,
+            "has_previous_coding_experience": has_previous_coding_experience,
+            "share_info_with_sponsors": share_info_with_sponsors,
             **kwargs,
         }
 

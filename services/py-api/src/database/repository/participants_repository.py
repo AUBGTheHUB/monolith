@@ -30,34 +30,31 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if participant is None:  # If no participant is found, return an Err
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **participant))
+            return Ok(Participant(id=ObjectId(obj_id), **participant))
 
         except Exception as e:
             LOG.exception("Failed to fetch participant due to error", participant_id=obj_id, error=e)
             return Err(e)
 
-    # TODO: FIX .find is NOT async, Read the docs!!!!!
     async def fetch_all(self) -> Result[List[Participant], Exception]:
-        raise NotImplementedError()
-        # try:
-        #     LOG.info("Fetching all participants...")
-        #
-        #     participants_data = await self._collection.find({})
-        #
-        #     participants = []
-        #     for doc in participants_data:
-        #         doc_copy = dict(doc)
-        #
-        #         doc_copy["id"] = str(doc_copy.pop("_id"))
-        #
-        #         participants.append(Participant(**doc_copy))
-        #
-        #     LOG.debug(f"Fetched {len(participants)} participants.")
-        #     return Ok(participants)
-        #
-        # except Exception as e:
-        #     LOG.exception(f"Failed to fetch all participants due to err {e}")
-        #     return Err(e)
+        try:
+            LOG.info("Fetching all participants...")
+
+            participants_data = await self._collection.find({}).to_list(length=None)
+
+            participants = []
+            for doc in participants_data:
+
+                doc["id"] = doc.pop("_id")
+
+                participants.append(Participant(**doc))
+
+            LOG.debug(f"Fetched {len(participants)} participants.")
+            return Ok(participants)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all participants due to err {e}")
+            return Err(e)
 
     async def update(
         self,
@@ -66,7 +63,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
-            LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump_json())
+            LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump())
 
             # ReturnDocument.AFTER returns the updated document instead of the orignal document which is the
             # default behaviour.
@@ -82,10 +79,31 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if result is None:
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **result))
+            return Ok(Participant(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Failed to update participant", participant_id=obj_id, error=e)
+            return Err(e)
+
+    async def bulk_update(
+        self,
+        obj_ids: List[ObjectId],
+        obj_fields: UpdateParticipantParams,
+        session: Optional[AsyncIOMotorClientSession] = None,
+    ) -> Result[List[ObjectId], Exception]:
+        try:
+            LOG.info(f"Updating participants...", participant_ids=obj_ids, updated_fields=obj_fields.model_dump())
+
+            result = await self._collection.update_many(
+                filter={"_id": {"$in": obj_ids}}, update={"$set": obj_fields.model_dump()}, session=session
+            )
+
+            LOG.info(f"Updated {result.modified_count} participants")
+
+            return Ok(obj_ids)
+
+        except Exception as e:
+            LOG.exception("Failed to update participants", participant_ids=obj_ids, error=e)
             return Err(e)
 
     async def delete(
@@ -108,7 +126,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             if result is None:
                 return Err(ParticipantNotFoundError())
 
-            return Ok(Participant(id=obj_id, **result))
+            return Ok(Participant(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Participant deletion failed due to error", participant_id=obj_id, error=e)
@@ -139,3 +157,28 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def get_number_registered_teammates(self, team_id: str) -> int:
         """Returns the count of registered participants already in the team."""
         return await self._collection.count_documents({"team_id": ObjectId(team_id)})  # type: ignore
+
+    async def get_verified_random_participants(self) -> Result[List[Participant], Exception]:
+        """Returns a list of verified random participants."""
+
+        try:
+            LOG.info("Fetching all random participants...")
+
+            participants_data = await self._collection.find(filter={"email_verified": True, "team_id": None}).to_list(
+                length=None
+            )
+
+            participants = []
+
+            for doc in participants_data:
+
+                doc["id"] = doc.pop("_id")
+
+                participants.append(Participant(**doc))
+
+            LOG.debug(f"Fetched {len(participants)} verified random participants.")
+            return Ok(participants)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch the verified random participants due to err {e}")
+            return Err(e)
