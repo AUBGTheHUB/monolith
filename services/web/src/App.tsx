@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { OldAppPage } from './website/OldAppPage/OldAppPage';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
-import { useFetchFeatureSwitches } from './config';
+import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 
 function App() {
@@ -16,11 +16,10 @@ function App() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
+                <Route path="/hackathon/verification" element={<VerificationPage />} />
             </Routes>
         </QueryClientProvider>
     );
 }
-
-useFetchFeatureSwitches();
 
 export default App;

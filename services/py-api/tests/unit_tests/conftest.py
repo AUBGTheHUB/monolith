@@ -487,6 +487,7 @@ def mock_jwt_user_registration(
     return JwtParticipantInviteRegistrationData(
         sub=mock_obj_id,
         team_id=mock_obj_id,
+        team_name=TEST_USER_NAME,
         exp=thirty_sec_jwt_exp_limit,
     )
 

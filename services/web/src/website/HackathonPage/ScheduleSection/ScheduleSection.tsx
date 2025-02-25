@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 export default function ScheduleSection() {
     return (
-        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912]">
+        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912] z-20">
             <div className="absolute inset-0">
                 <img src="./schedule_bg.png" alt="" className="absolute w-full h-full object-cover  opacity-20" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#000912] via-transparent to-[#000912]" />
@@ -15,7 +15,7 @@ export default function ScheduleSection() {
                 <div className="flex flex-col">
                     {scheduleData.map(({ day, events }) => (
                         <div key={day} className="flex flex-col sm:flex-row items-start mb-10 relative">
-                            <p className="w-full sm:w-2/5 text-white sm:text-3xl text-2xl sm:sticky sm:top-5 mb-6 sm:mb-0 ">
+                            <p className="w-full sm:w-2/5 text-white sm:text-3xl text-2xl sm:sticky sm:top-[6.25rem] mb-6 sm:mb-0 ">
                                 {day}
                             </p>
                             <div className="w-full sm:w-3/5 sm:text-lg text-base">

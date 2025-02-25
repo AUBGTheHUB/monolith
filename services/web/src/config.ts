@@ -1,27 +1,34 @@
-import { API_URL, FEATURE_SWITCHES } from './constants';
+import { useEffect, useState } from 'react';
+import { API_URL, FEATURE_SWITCHES as defaultSwitches, FeatureSwitchesType } from './constants';
 
-export async function useFetchFeatureSwitches() {
-    console.log('From env', API_URL);
+export function useFeatureSwitches() {
+    const [featureSwitches, setFeatureSwitches] = useState<FeatureSwitchesType>(defaultSwitches);
 
-    try {
-        const headers = new Headers();
+    useEffect(() => {
+        async function fetchSwitches() {
+            try {
+                const response = await fetch(`${API_URL}/feature-switches`);
+                const data = await response.json();
+                // Create a copy of the default switches
+                const updatedSwitches = { ...defaultSwitches };
 
-        const response = await fetch(`${API_URL}/feature-switches`, {
-            method: 'GET',
-            headers: headers,
-        });
+                // Update only if the feature exists in the defaults
+                data.features.forEach((serverSwitch: { name: string; state: boolean }) => {
+                    if (serverSwitch.name in updatedSwitches) {
+                        const key = serverSwitch.name as keyof FeatureSwitchesType;
+                        updatedSwitches[key] = serverSwitch.state;
+                    }
+                });
+                console.log(updatedSwitches);
 
-        const data = await response.json();
-
-        data.features.forEach((serverSwitch: { name: string; state: boolean }) => {
-            const localSwitch = FEATURE_SWITCHES.find((fs) => fs.name === serverSwitch.name);
-            if (localSwitch) {
-                localSwitch.state = serverSwitch.state;
+                setFeatureSwitches(updatedSwitches);
+            } catch (error) {
+                console.error('Error fetching feature switches:', error);
             }
-        });
+        }
 
-        return FEATURE_SWITCHES;
-    } catch (error) {
-        console.error('Error fetching feature switches:', error);
-    }
+        fetchSwitches();
+    }, []);
+
+    return featureSwitches;
 }
