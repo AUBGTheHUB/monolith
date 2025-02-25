@@ -275,13 +275,11 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Do you agree to share your info with sponsors?"
                                         />
-                                        <InputComponent
+                                        <RadioComponent
                                             control={form.control}
-                                            name="team_name"
-                                            label="Team Name"
-                                            type="text"
-                                            placeholder="Enter your team name"
-                                            disabled={isAdmin !== 'admin'}
+                                            name="registration_type"
+                                            options={REGISTRATION_TYPE_OPTIONS}
+                                            groupLabel="Enter registration type"
                                         />
                                         <InputComponent
                                             control={form.control}
@@ -289,6 +287,7 @@ export default function RegistrationForm() {
                                             label="Team Name"
                                             type="text"
                                             placeholder="Enter your team name"
+                                            disabled={isAdmin !== 'admin'}
                                         />
                                         <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
                                     </div>

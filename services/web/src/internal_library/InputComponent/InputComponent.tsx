@@ -14,6 +14,7 @@ type InputProps<T extends FieldValues> = {
     formItemClassName?: string;
     labelClassName?: string;
     inputClassName?: string;
+    disabled?: boolean;
 };
 
 function handleInputChange(value: string, type: InputTypes): string | number {
@@ -38,6 +39,7 @@ export const InputComponent = <T extends FieldValues>({
     formItemClassName,
     labelClassName,
     inputClassName,
+    disabled,
 }: InputProps<T>) => {
     return (
         <FormField
@@ -48,6 +50,7 @@ export const InputComponent = <T extends FieldValues>({
                     <FormLabel className={labelClassName}>{label}</FormLabel>
                     <FormControl>
                         <Input
+                            disabled={disabled}
                             {...field}
                             type={type}
                             placeholder={placeholder}
