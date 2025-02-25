@@ -276,13 +276,6 @@ export default function RegistrationForm() {
                                             options={REGISTRATION_TYPE_OPTIONS}
                                             groupLabel="Enter registration type"
                                         />
-                                        <RadioComponent
-                                            control={form.control}
-                                            name="is_admin"
-                                            options={RADIO_OPTIONS}
-                                            groupLabel="Are you an admin?"
-                                        />
-
                                         <InputComponent
                                             control={form.control}
                                             name="team_name"
