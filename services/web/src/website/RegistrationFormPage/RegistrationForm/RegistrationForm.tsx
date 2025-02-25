@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
@@ -148,6 +148,11 @@ export default function RegistrationForm() {
         console.log('Form submitted:', data);
     };
 
+    const isAdmin = useWatch({
+        control: form.control,
+        name: 'registration_type',
+    });
+
     return (
         <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">
             <div className="w-4/5 flex items-start mb-24 mt-16">
@@ -270,11 +275,13 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Do you agree to share your info with sponsors?"
                                         />
-                                        <RadioComponent
+                                        <InputComponent
                                             control={form.control}
-                                            name="registration_type"
-                                            options={REGISTRATION_TYPE_OPTIONS}
-                                            groupLabel="Enter registration type"
+                                            name="team_name"
+                                            label="Team Name"
+                                            type="text"
+                                            placeholder="Enter your team name"
+                                            disabled={isAdmin !== 'admin'}
                                         />
                                         <InputComponent
                                             control={form.control}
