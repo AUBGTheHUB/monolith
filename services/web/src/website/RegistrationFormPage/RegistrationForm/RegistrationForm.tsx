@@ -7,8 +7,8 @@ import { InputComponent } from '@/internal_library/InputComponent/InputComponent
 import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
 
 const RADIO_OPTIONS = [
-    { label: 'Yes', value: 'true' },
-    { label: 'No', value: 'false' },
+    { label: 'Yes', value: true },
+    { label: 'No', value: false },
 ];
 
 const TSHIRT_OPTIONS = [
@@ -40,8 +40,8 @@ const PROGRAMMING_LANGUAGE_OPTIONS = [
 ];
 
 const REGISTRATION_TYPE_OPTIONS = [
-    { label: 'Individual', value: 'Individual' },
-    { label: 'Team', value: 'Team' },
+    { label: 'Team', value: 'admin' },
+    { label: 'Individual', value: 'random' },
 ];
 
 const UNIVERSITY_OPTIONS = [
@@ -51,21 +51,18 @@ const UNIVERSITY_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
-const registrationSchema = z.object({
+const baseSchema = z.object({
     name: z
         .string()
         .min(3, { message: 'Name must be at least 3 characters long.' })
         .max(50, { message: 'Name cannot exceed 50 characters.' })
-        .regex(/^[a-zA-Z\s]+$/, { message: 'Name can only contain letters and spaces.' }),
+        .regex(/^[a-zA-Z\s]+$/, {
+            message: 'Name can only contain letters and spaces.',
+        }),
 
-    email: z
-        .string()
-        .min(1, { message: 'Email is required' })
-        .email({ message: 'Invalid email format.' })
-        .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Please enter a valid email address.' }),
+    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
 
     tshirt_size: z.string().min(1, { message: 'Size is required.' }),
-
     university: z.string().min(1, { message: 'University is required.' }),
 
     location: z
@@ -74,38 +71,55 @@ const registrationSchema = z.object({
         .max(100, { message: 'Location cannot exceed 100 characters.' }),
 
     age: z
-        .number({ message: 'Age is required.' })
+        .number({ required_error: 'Age is required.' })
         .int({ message: 'Age must be a whole number.' })
         .min(16, { message: 'You must be at least 16 years old.' })
-        .max(69, { message: 'Age cannot exceed 69.' })
-        .refine((val) => !isNaN(val), { message: 'Age is required.' }),
+        .max(69, { message: 'Age cannot exceed 69.' }),
 
     source_of_referral: z.string().min(1, { message: 'Please select an option.' }),
-
     programming_language: z.string().min(1, { message: 'Please select an option.' }),
-
     programming_level: z.string().min(1, { message: 'Please select an option.' }),
 
-    has_participated_in_hackaubg: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    has_internship_interest: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    has_participated_in_hackathons: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    has_previous_coding_experience: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    share_info_with_sponsors: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    registration_type: z.string().min(1, { message: 'Please select an option.' }),
-
-    is_admin: z.enum(['true', 'false'], { message: 'Please select an option.' }),
-
-    team_name: z
-        .string()
-        .min(3, { message: 'Team Name must be at least 3 characters long.' })
-        .max(50, { message: 'Team Name cannot exceed 50 characters.' })
-        .optional(),
+    has_participated_in_hackaubg: z.boolean({ message: 'Please select an option.' }),
+    has_internship_interest: z.boolean({ message: 'Please select an option.' }),
+    has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
+    has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
+    share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }),
 });
+
+const adminSchema = baseSchema.extend({
+    registration_type: z.literal('admin'),
+    team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
+});
+
+const nonAdminSchema = baseSchema.extend({
+    registration_type: z.literal('random'),
+    team_name: z.string().optional(),
+});
+
+const mainAdminSchema = baseSchema
+    .extend({
+        registration_type: z.string({ message: 'Please select an option.' }),
+        team_name: z.string().optional(),
+    })
+    .superRefine((data, ctx) => {
+        if (data.registration_type === 'admin') {
+            if (!data.team_name || data.team_name.trim().length < 3) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.too_small,
+                    minimum: 3,
+                    inclusive: true,
+                    type: 'string',
+                    message: 'Team name must be at least 3 characters.',
+                    path: ['team_name'],
+                });
+            }
+        }
+    });
+
+const adminNonAdminUnion = z.discriminatedUnion('registration_type', [adminSchema, nonAdminSchema]);
+
+export const registrationSchema = z.union([mainAdminSchema, adminNonAdminUnion]);
 
 export default function RegistrationForm() {
     const form = useForm<z.infer<typeof registrationSchema>>({
@@ -116,7 +130,7 @@ export default function RegistrationForm() {
             tshirt_size: '',
             university: '',
             location: '',
-            age: undefined,
+            age: 0,
             source_of_referral: '',
             programming_language: '',
             programming_level: undefined,
@@ -126,7 +140,6 @@ export default function RegistrationForm() {
             has_previous_coding_experience: undefined,
             share_info_with_sponsors: undefined,
             registration_type: undefined,
-            is_admin: undefined,
             team_name: '',
         },
     });
