@@ -21,21 +21,24 @@ const LEVEL_OPTIONS = [
     { label: 'Beginner', value: 'Beginner' },
     { label: 'Intermediate', value: 'Intermediate' },
     { label: 'Advanced', value: 'Advanced' },
+    { label: 'I am not participating as a programmer', value: 'I am not participating as a programmer' },
+    { label: 'Other', value: 'Other' },
 ];
 
 const REFERRAL_OPTIONS = [
-    { label: 'Friend', value: 'Friend' },
+    { label: 'University', value: 'University' },
     { label: 'Social Media', value: 'Social Media' },
     { label: 'University Announcement', value: 'University Announcement' },
     { label: 'Other', value: 'Other' },
 ];
 
 const PROGRAMMING_LANGUAGE_OPTIONS = [
-    { label: 'JavaScript', value: 'JavaScript' },
-    { label: 'Python', value: 'Python' },
-    { label: 'Java', value: 'Java' },
-    { label: 'C++', value: 'C++' },
-    { label: 'C#', value: 'C#' },
+    { label: 'Programming in JavaScript', value: 'Programming in JavaScript' },
+    { label: 'Programming in Python', value: 'Programming in Python' },
+    { label: 'Programming in Java', value: 'Programming in Java' },
+    { label: 'Programming in C++', value: 'Programming in C++' },
+    { label: 'Programming in C#', value: 'Programming in C#' },
+    { label: `I don't have experience with any languages`, value: `I don't have experience with any languages` },
     { label: 'Other', value: 'Other' },
 ];
 
