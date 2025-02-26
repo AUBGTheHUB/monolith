@@ -5,135 +5,16 @@ import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent
 import { Button } from '@/components/ui/button';
 import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
 import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
-
-const RADIO_OPTIONS = [
-    { label: 'Yes', value: true },
-    { label: 'No', value: false },
-];
-
-const TSHIRT_OPTIONS = [
-    { label: 'Small (S)', value: 'Small (S)' },
-    { label: 'Medium (M)', value: 'Medium (M)' },
-    { label: 'Large (L)', value: 'Large (L)' },
-];
-
-const LEVEL_OPTIONS = [
-    { label: 'Beginner', value: 'Beginner' },
-    { label: 'Intermediate', value: 'Intermediate' },
-    { label: 'Advanced', value: 'Advanced' },
-    { label: 'I am not participating as a programmer', value: 'I am not participating as a programmer' },
-    { label: 'Other', value: 'Other' },
-];
-
-const REFERRAL_OPTIONS = [
-    { label: 'University', value: 'University' },
-    { label: 'Social Media', value: 'Social Media' },
-    { label: 'University Announcement', value: 'University Announcement' },
-    { label: 'Other', value: 'Other' },
-];
-
-const PROGRAMMING_LANGUAGE_OPTIONS = [
-    { label: 'Programming in JavaScript', value: 'Programming in JavaScript' },
-    { label: 'Programming in Python', value: 'Programming in Python' },
-    { label: 'Programming in Java', value: 'Programming in Java' },
-    { label: 'Programming in C++', value: 'Programming in C++' },
-    { label: 'Programming in C#', value: 'Programming in C#' },
-    { label: `I don't have experience with any languages`, value: `I don't have experience with any languages` },
-    { label: 'Other', value: 'Other' },
-];
-
-const REGISTRATION_TYPE_OPTIONS = [
-    { label: 'Team', value: 'admin' },
-    { label: 'Individual', value: 'random' },
-];
-
-const UNIVERSITY_OPTIONS = [
-    { label: 'American University in Bulgaria', value: 'American University in Bulgaria' },
-    { label: 'Sofia University', value: 'Sofia University' },
-    { label: 'Technical University - Sofia', value: 'Technical University - Sofia' },
-    { label: 'Plovdiv University', value: 'Plovdiv University' },
-    { label: 'Other', value: 'Other' },
-];
-
-const baseSchema = z.object({
-    name: z
-        .string()
-        .min(3, { message: 'Name must be at least 3 characters long.' })
-        .max(50, { message: 'Name cannot exceed 50 characters.' })
-        .regex(/^[a-zA-Z\s]+$/, {
-            message: 'Name can only contain letters and spaces.',
-        }),
-
-    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
-
-    tshirt_size: z.string().min(1, { message: 'Size is required.' }),
-    university: z.string().min(1, { message: 'University is required.' }),
-
-    location: z
-        .string()
-        .min(3, { message: 'Location must be at least 3 characters long.' })
-        .max(100, { message: 'Location cannot exceed 100 characters.' }),
-
-    age: z
-        .number({ required_error: 'Age is required.' })
-        .int({ message: 'Age must be a whole number.' })
-        .min(16, { message: 'You must be at least 16 years old.' })
-        .max(69, { message: 'Age cannot exceed 69.' }),
-
-    source_of_referral: z.string().min(1, { message: 'Please select an option.' }),
-    programming_language: z.string().min(1, { message: 'Please select an option.' }),
-    programming_level: z.string().min(1, { message: 'Please select an option.' }),
-
-    has_participated_in_hackaubg: z.boolean({ message: 'Please select an option.' }),
-    has_internship_interest: z.boolean({ message: 'Please select an option.' }),
-    has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
-    has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
-    share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }),
-});
-
-const adminSchema = baseSchema.extend({
-    registration_type: z.literal('admin'),
-    team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
-});
-
-const nonAdminSchema = baseSchema.extend({
-    registration_type: z.literal('random'),
-    team_name: z.string().optional(),
-});
-
-const mainAdminSchema = baseSchema
-    .extend({
-        registration_type: z.string({ message: 'Please select an option.' }),
-        team_name: z.string().optional(),
-    })
-    .superRefine((data, ctx) => {
-        if (data.registration_type === 'admin') {
-            if (!data.team_name || data.team_name.trim().length < 3) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.too_small,
-                    minimum: 3,
-                    inclusive: true,
-                    type: 'string',
-                    message: 'Team name must be at least 3 characters.',
-                    path: ['team_name'],
-                });
-            }
-            if (!data.team_name || data.team_name.trim().length > 20) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.too_big,
-                    maximum: 20,
-                    inclusive: true,
-                    type: 'string',
-                    message: 'Team name must not exceed 20 characters.',
-                    path: ['team_name'],
-                });
-            }
-        }
-    });
-
-const adminNonAdminUnion = z.discriminatedUnion('registration_type', [adminSchema, nonAdminSchema]);
-
-export const registrationSchema = z.union([mainAdminSchema, adminNonAdminUnion]);
+import { registrationSchema } from './schema';
+import {
+    LEVEL_OPTIONS,
+    PROGRAMMING_LANGUAGE_OPTIONS,
+    RADIO_OPTIONS,
+    REFERRAL_OPTIONS,
+    REGISTRATION_TYPE_OPTIONS,
+    TSHIRT_OPTIONS,
+    UNIVERSITY_OPTIONS,
+} from './constants';
 
 export default function RegistrationForm() {
     const form = useForm<z.infer<typeof registrationSchema>>({
