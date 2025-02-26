@@ -46,8 +46,9 @@ const REGISTRATION_TYPE_OPTIONS = [
 
 const UNIVERSITY_OPTIONS = [
     { label: 'American University in Bulgaria', value: 'American University in Bulgaria' },
-    { label: 'Sofiiskiq', value: 'Sofiiskiq' },
-    { label: 'Tehnicheski', value: 'Tehnicheski' },
+    { label: 'Sofia University', value: 'Sofia University' },
+    { label: 'Technical University - Sofia', value: 'Technical University - Sofia' },
+    { label: 'Plovdiv University', value: 'Plovdiv University' },
     { label: 'Other', value: 'Other' },
 ];
 
@@ -111,6 +112,16 @@ const mainAdminSchema = baseSchema
                     inclusive: true,
                     type: 'string',
                     message: 'Team name must be at least 3 characters.',
+                    path: ['team_name'],
+                });
+            }
+            if (!data.team_name || data.team_name.trim().length > 20) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.too_big,
+                    maximum: 20,
+                    inclusive: true,
+                    type: 'string',
+                    message: 'Team name must not exceed 20 characters.',
                     path: ['team_name'],
                 });
             }
