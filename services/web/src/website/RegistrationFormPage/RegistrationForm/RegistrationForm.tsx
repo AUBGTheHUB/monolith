@@ -21,7 +21,7 @@ import {
     UNIVERSITY_OPTIONS,
 } from './constants';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { API_URL } from '@/constants';
 
 export async function registerParticipant(data: RegistrationInfo) {
@@ -80,18 +80,15 @@ export default function RegistrationForm() {
     });
 
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
-        console.log(data);
         if (data.registration_type === 'random') {
             delete data.team_name;
         }
 
-        const updatedData = {
-            ...data,
-            ...(data.registration_type === 'admin' && { is_admin: true }),
-        };
-
         const wrappedData: RegistrationInfo = {
-            registration_info: updatedData,
+            registration_info: {
+                ...data,
+                ...(data.registration_type === 'admin' && { is_admin: true }),
+            },
         };
 
         console.log(wrappedData);
@@ -102,6 +99,13 @@ export default function RegistrationForm() {
         control: form.control,
         name: 'registration_type',
     });
+
+    useEffect(() => {
+        if (isAdmin === 'random') {
+            form.clearErrors('team_name');
+            form.setValue('team_name', '');
+        }
+    }, [isAdmin, form]);
 
     return (
         <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">

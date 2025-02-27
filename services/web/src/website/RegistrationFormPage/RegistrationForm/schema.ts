@@ -38,7 +38,10 @@ const baseSchema = z.object({
 
 const adminSchema = baseSchema.extend({
     registration_type: z.literal('admin'),
-    team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
+    team_name: z
+        .string()
+        .min(3, 'Team name must be at least 3 characters.')
+        .max(20, 'Team name must not exceed 20 characters.'),
 });
 
 const nonAdminSchema = baseSchema.extend({
@@ -63,7 +66,7 @@ const mainAdminSchema = baseSchema
                     path: ['team_name'],
                 });
             }
-            if (!data.team_name || data.team_name.trim().length > 20) {
+            if (!data.team_name || data.team_name.trim().length >= 20) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.too_big,
                     maximum: 20,
