@@ -1,3 +1,7 @@
+//todo: share_info_with_sponsors should always be true if not error should appear
+//todo:
+//todo: JWT Stuff
+
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,9 +16,35 @@ import {
     RADIO_OPTIONS,
     REFERRAL_OPTIONS,
     REGISTRATION_TYPE_OPTIONS,
+    RegistrationInfo,
     TSHIRT_OPTIONS,
     UNIVERSITY_OPTIONS,
 } from './constants';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { API_URL } from '@/constants';
+
+export async function registerParticipant(data: RegistrationInfo) {
+    let response;
+    try {
+        response = await fetch(`${API_URL}/hackathon/participants`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    } catch {
+        throw new Error('Verification failed, try refreshing the page or contact us.');
+    }
+    const responseData = await response.json();
+    if (!response.ok) {
+        throw new Error(
+            (responseData && responseData.error) || 'Verification failed, try refreshing the page or contact us.',
+        );
+    }
+    return responseData;
+}
 
 export default function RegistrationForm() {
     const form = useForm<z.infer<typeof registrationSchema>>({
@@ -39,8 +69,33 @@ export default function RegistrationForm() {
         },
     });
 
+    const [formData, setFormData] = useState<RegistrationInfo | null>(null);
+
+    useQuery({
+        queryKey: ['registerParticipant', formData],
+        queryFn: () => registerParticipant(formData!),
+        enabled: !!formData,
+        retry: 1,
+        refetchOnWindowFocus: false,
+    });
+
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
-        console.log('Form submitted:', data);
+        console.log(data);
+        if (data.registration_type === 'random') {
+            delete data.team_name;
+        }
+
+        const updatedData = {
+            ...data,
+            ...(data.registration_type === 'admin' && { is_admin: true }),
+        };
+
+        const wrappedData: RegistrationInfo = {
+            registration_info: updatedData,
+        };
+
+        console.log(wrappedData);
+        setFormData(wrappedData);
     };
 
     const isAdmin = useWatch({
