@@ -71,7 +71,7 @@ export default function RegistrationForm() {
 
     const [formData, setFormData] = useState<RegistrationInfo | null>(null);
 
-    useQuery({
+    const { isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
         queryFn: () => registerParticipant(formData!),
         enabled: !!formData,
@@ -106,6 +106,12 @@ export default function RegistrationForm() {
             form.setValue('team_name', '');
         }
     }, [isAdmin, form]);
+
+    useEffect(() => {
+        console.log('isLoading', isLoading);
+        console.log('isError', isError);
+        console.log('error', error);
+    }, [isLoading, isError, error]);
 
     return (
         <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">
