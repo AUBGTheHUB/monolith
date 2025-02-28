@@ -1,18 +1,18 @@
 from dataclasses import dataclass
-from os import environ, cpu_count
+from os import cpu_count
 from typing import Tuple
 
 from structlog.stdlib import get_logger
 from uvicorn import run
 
 from src.database.db_manager import ping_db
-from src.environment import DOMAIN, PORT
+from src.environment import DOMAIN, PORT, ADDRESS, ENV
 from src.server.logger.logger_factory import get_uvicorn_logger, configure_app_logger
 from src.utils import SingletonMeta
 
 # This should be done before calling LOG = get_logger(), which we use in almost
 # every file, in order for the logger to function properly. Otherwise, it uses the default logging config.
-configure_app_logger(environ["ENV"])
+configure_app_logger(ENV)
 
 LOG = get_logger()
 
@@ -37,8 +37,8 @@ def _get_ssl_config() -> Tuple[str, str]:
 
 @dataclass
 class _ServerConfig(metaclass=SingletonMeta):
-    ENV = environ["ENV"]
-    ADDRESS = environ["ADDRESS"]
+    ENV = ENV
+    ADDRESS = ADDRESS
     SSL_CERT, SSL_KEY = _get_ssl_config()
 
 
