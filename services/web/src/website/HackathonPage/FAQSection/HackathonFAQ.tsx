@@ -54,7 +54,7 @@ function FAQItem({
     return (
         <div className="border-b border-[#233340] py-4 cursor-pointer" onClick={() => handleClick()}>
             <div className="flex justify-between">
-                <div className="text-[#A9B4C3]">
+                <div className="text-[#A9B4C3] flex items-center">
                     <p>{faq.question}</p>
                 </div>
                 <div className="cursor-pointer font-medium text-2xl text-[#009CF9]">
@@ -63,15 +63,13 @@ function FAQItem({
                 </div>
             </div>
             <div
-                className={`overflow-hidden ${
-                    isOpen
-                        ? 'transition-all duration-500 ease-out max-h-96 opacity-100 mt-3'
-                        : 'max-h-0 opacity-0 duration-0'
-                }`}
+                className={`${isOpen ? 'max-h-96' : 'max-h-0'} transition-[max-height] duration-700 ease-in-out overflow-hidden`}
             >
-                <div className="pb-4">
-                    <p>{faq.answer}</p>
-                </div>
+                {isOpen && (
+                    <div className="pb-4">
+                        <p>{faq.answer}</p>
+                    </div>
+                )}
             </div>
         </div>
     );
