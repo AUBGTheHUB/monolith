@@ -9,9 +9,9 @@ gsap.registerPlugin(ScrollTrigger);
 function JourneySection() {
     const triggerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<HTMLDivElement[]>([]);
-    const mm = gsap.matchMedia();
+    const mm = useRef(gsap.matchMedia()); // Store MatchMedia instance
 
-    // Helper to add each element to the ref array
+    // Helper function to add refs to items
     const addToRefs = (el: HTMLDivElement) => {
         if (el && !itemsRef.current.includes(el)) {
             itemsRef.current.push(el);
@@ -19,59 +19,68 @@ function JourneySection() {
     };
 
     useLayoutEffect(() => {
+        ScrollTrigger.saveStyles(itemsRef.current);
         const ctx = gsap.context(() => {
-            mm.add(
+            mm.current.add(
                 {
-                    isMobile: '(max-width: 768px)', // Mobile
-                    isDesktop: '(min-width: 769px)', // Desktop
+                    isMobile: '(max-width: 768px)',
+                    isDesktop: '(min-width: 769px)',
                 },
                 (context) => {
                     const { isMobile } = context.conditions as { isMobile: boolean };
 
-                    const startOffset = isMobile ? 50 : 220;
-                    const finishOffset = isMobile ? 4 : 8;
+                    const startOffset = isMobile ? 50 : 220; //adjust speed
+                    const finishOffset = isMobile ? 4 : 8; //adjust spacing between elements
 
-                    // Kill previous animations if any
+                    // Kill previous animations before creating new ones
                     gsap.killTweensOf(itemsRef.current);
+                    ScrollTrigger.getAll().forEach((st) => st.kill());
 
-                    gsap.fromTo(
-                        itemsRef.current,
-                        {
-                            x: (i: number) => `${startOffset + i * 60}vh`,
+                    const tl = gsap.timeline({
+                        scrollTrigger: {
+                            trigger: triggerRef.current,
+                            start: 'top top',
+                            end: '2000 top',
+                            scrub: 0.6,
+                            pin: true,
+                            toggleActions: 'play none none reverse',
                         },
-                        {
-                            x: (i: number) => `${isMobile ? finishOffset : finishOffset + i * 5}rem`,
-                            ease: 'none',
-                            duration: 1,
-                            stagger: 0.3,
-                            scrollTrigger: {
-                                trigger: triggerRef.current,
-                                start: 'top top',
-                                end: '2000 top',
-                                scrub: 0.6,
-                                pin: true,
-                                toggleActions: 'play none none reverse',
+                    });
+
+                    itemsRef.current.forEach((item, i) => {
+                        tl.fromTo(
+                            item,
+                            { x: `${startOffset + i * 60}vh`, opacity: 0 },
+                            {
+                                x: `${isMobile ? finishOffset : finishOffset + i * 5}rem`,
+                                opacity: 1,
+                                ease: 'none',
+                                duration: 1.2,
                             },
-                        },
-                    );
+                            '+=0.5', // Delay between animations
+                        );
+                    });
                 },
             );
         });
 
         return () => {
-            ctx.revert(); // Cleanup on unmount
-            mm.revert(); // Revert MatchMedia listeners
+            ctx.revert(); // Cleanup GSAP context
+            mm.current.revert(); // Cleanup MatchMedia listeners
         };
     }, []);
 
     return (
         <div className="w-full relative">
-            <div className="sticky h-[50rem] top-0 z-50 pt-[10rem] ml-[9%] bg-transparent">
+            {/* Sticky Title */}
+            <div className="sticky md:h-[50rem] h-[48rem]  top-0 z-50 pt-[5rem] md:pt-[10rem] ml-[9%] bg-transparent">
                 <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
                     <img src="./JourneySection/symbol.svg" alt="" className="w-[1.6rem]" />
                     <p className="text-white tracking-[0.2em]">JOURNEY</p>
                 </div>
             </div>
+
+            {/* Animated Section */}
             <section className="scroll-section-outer mr-20 gap-[20rem] min-h-[40rem]">
                 <div ref={triggerRef} className="mr-0 relative w-full h-screen">
                     {journeyEntries.map((entry, index) => (
