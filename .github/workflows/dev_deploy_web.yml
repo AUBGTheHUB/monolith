@@ -35,7 +35,7 @@ jobs:
 
     environment:
       name: DEV
-      url: https://dev.thehub-aubg.com
+      url: https://${{vars.DOMAIN}}
 
     steps:
       - name: Checkout repository
@@ -60,7 +60,7 @@ jobs:
           # We pass the build arguments for the frontend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
           build-args: |
-            VITE_ENV=${{ env.VITE_ENV }}
+            VITE_ENV=${{ vars.VITE_ENV }}
 
   deploy-to-dev:
     if: github.ref_name == 'fix-cd-ivan'
@@ -71,7 +71,7 @@ jobs:
 
     environment:
       name: DEV
-      url: https://dev.thehub-aubg.com
+      url: https://${{vars.DOMAIN}}
 
     steps:
       - name: Checkout code
@@ -102,7 +102,7 @@ jobs:
         with:
           name: monolith
           file: docker-swarm-stack.yml
-          host: ${{env.DOMAIN}}
+          host: ${{vars.DOMAIN}}
           user: deploy
           ssh_key: ${{secrets.DEV_DEPLOY_SSH_PRIVATE_KEY}}
           env_file: ./envfile
