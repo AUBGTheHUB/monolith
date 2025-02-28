@@ -31,7 +31,7 @@ jobs:
 
     environment:
       name: DEV
-      url: https://${{env.DOMAIN}}
+      url: https://dev.thehub-aubg.com
 
     steps:
       - name: Checkout repository
@@ -68,7 +68,7 @@ jobs:
 
     environment:
       name: DEV
-      url: https://${{env.DOMAIN}}
+      url: https://dev.thehub-aubg.com
 
     steps:
       - name: Checkout code
