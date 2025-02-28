@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   build-and-push-image:
-    if: github.ref_name == 'fix-cd-ivan'
+    if: github.ref_name == 'fix-cd-ivan' # TODO: remove
 
     runs-on: ubuntu-latest
 
