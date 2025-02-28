@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface FAQ {
     question: string;
@@ -43,6 +43,17 @@ function FAQItem({
     isOpen: boolean;
     setIsOpenFaqId: (id: number) => void;
 }) {
+    const answerRef = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState<number>(0);
+
+    useEffect(() => {
+        // Update height when isOpen changes
+        if (answerRef.current) {
+            const actualHeight = isOpen ? answerRef.current.scrollHeight : 0;
+            setHeight(actualHeight);
+        }
+    }, [isOpen, faq]); // Re-run when FAQ content changes too
+
     const handleClick = () => {
         if (isOpen) {
             setIsOpenFaqId(0);
@@ -58,18 +69,20 @@ function FAQItem({
                     <p>{faq.question}</p>
                 </div>
                 <div className="cursor-pointer font-medium text-2xl text-[#009CF9]">
-                    {isOpen && <span className="text-4xl select-none">-</span>}
+                    {isOpen && <span className="text-2xl select-none">-</span>}
                     {!isOpen && <span className="text-2xl select-none">+</span>}
                 </div>
             </div>
             <div
-                className={`${isOpen ? 'max-h-96' : 'max-h-0'} transition-[max-height] duration-700 ease-in-out overflow-hidden`}
+                style={{
+                    height: `${height}px`,
+                    overflow: 'hidden',
+                    transition: 'height 300ms ease-in-out',
+                }}
             >
-                {isOpen && (
-                    <div className="pb-4">
-                        <p>{faq.answer}</p>
-                    </div>
-                )}
+                <div className="pb-4" ref={answerRef}>
+                    <p>{faq.answer}</p>
+                </div>
             </div>
         </div>
     );
@@ -79,16 +92,12 @@ export default function HackathonFAQSection() {
     const [isOpenFaqId, setIsOpenFaqID] = useState(0);
 
     return (
-        <div className={`text-white sm:w-[80%] mx-6 sm:mx-auto pt-20`}>
+        <div className={`text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20`}>
             <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
                 <img src="./n.png" alt="" className="w-[1.6rem]" />
                 <h2>FAQ</h2>
             </div>
-            <div
-                style={{
-                    minHeight: `${faqs.length * 65 + 120}px`,
-                }}
-            >
+            <div>
                 {faqs.map((faq, index) => (
                     <FAQItem
                         key={index + 1}
