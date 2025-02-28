@@ -14,11 +14,19 @@ class JwtUtility:
     JWT token into a predefined schema format"""
 
     def __init__(self) -> None:
+        # TODO: Rotate key on DEV and PROD: https://github.com/AUBGTheHUB/monolith/issues/937
         self._key = environ["SECRET_KEY"]
         """Key used for encoding and decoding the JWT token"""
 
+        self._algorithm = "HS256"
+        """We use HS256, a single-key (symmetric) hashing algorithm, as it's simpler to use when compared to RS256.
+        Note in the future this might change, and probably should if we have other use-cases or a more complex system
+        (e.g. multiple instances hosted across multiple nodes)
+        To learn more: https://auth0.com/blog/rs256-vs-hs256-whats-the-difference/
+        """
+
     def encode_data[T: JwtBase[DecodedJwtTokenBase]](self, data: T) -> str:
-        return str(encode(payload=data.serialize(), key=self._key, algorithm="HS256"))
+        return str(encode(payload=data.serialize(), key=self._key, algorithm=self._algorithm))
 
     def decode_data[
         T: JwtBase[DecodedJwtTokenBase]
@@ -26,7 +34,7 @@ class JwtUtility:
         T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtInvalidSignatureError | JwtDecodeError
     ]:
         try:
-            decoded_token: Dict[str, Any] = decode(jwt=token, key=self._key, algorithms=["HS256"])
+            decoded_token: Dict[str, Any] = decode(jwt=token, key=self._key, algorithms=[self._algorithm])
 
             # https://www.cuemath.com/algebra/equal-sets/
             expected_keys_set = {key.name for key in fields(schema)}

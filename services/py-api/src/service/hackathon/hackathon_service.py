@@ -16,7 +16,7 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
+from src.environment import is_test_env, DOMAIN, PORT, is_local_env
 from src.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
@@ -393,14 +393,10 @@ class HackathonService:
         jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
-        if is_prod_env():
-            verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
-        elif is_dev_env():
-            verification_link = (
-                f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
-            )
-        else:
+        if is_local_env():
             verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+        else:
+            verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
         # Update the last_sent_verification_email field for rate-limiting purposes
         result = await self._participant_repo.update(
@@ -475,13 +471,10 @@ class HackathonService:
         jwt_token = self._jwt_utility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
-        if is_prod_env():
-            invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
-        elif is_dev_env():
-            # TODO: This resolves to dev.dev.thehub-aubg.com on the dev environment since the dev domain is dev.thehub-aubg.com
-            invite_link = f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
-        else:
+        if is_local_env():
             invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+        else:
+            invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
         err = self._mail_service.send_participant_successful_registration_email(
             participant=participant, background_tasks=background_tasks, invite_link=invite_link, team_name=team.name
