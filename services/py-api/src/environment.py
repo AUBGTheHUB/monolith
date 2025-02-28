@@ -4,12 +4,6 @@ from dotenv import load_dotenv
 # Something to keep in mind is that in deployed env, we don't use .env files, but for local development we use them.
 load_dotenv(override=True)
 
-# These are loaded when the container is built (when in deployed env) or are loaded via the .env when locally
-ENV = environ["ENV"]
-ADDRESS = environ["ADDRESS"]
-DOMAIN = environ["DOMAIN"]
-PORT = int(environ["PORT"])
-
 
 def _read_docker_secret(secret_path: str) -> str | None:
     """
@@ -41,6 +35,7 @@ def _read_docker_secret(secret_path: str) -> str | None:
 def _load_docker_secrets() -> None:
     # Secrets here are from the docker-stack.yml and are set on the PROD and DEV VMs (aka Nodes)
     secrets = {
+        "ENV": "/run/secrets/env",
         "DATABASE_URL": "/run/secrets/db-url",
         "SECRET_KEY": "/run/secrets/secret-key",
         "SECRET_AUTH_TOKEN": "/run/secrets/secret-auth-key",
@@ -58,23 +53,28 @@ def load_env() -> None:
     loaded into the process before we start using them across our codebase."""
     _load_docker_secrets()
 
-    if ENV not in ("PROD", "DEV", "LOCAL", "TEST"):
+    if environ["ENV"] not in ("PROD", "DEV", "LOCAL", "TEST"):
         raise ValueError(
             f"The ENV environment variable should be PROD, DEV, LOCAL OR TEST. Actual value: {environ["ENV"]}"
         )
 
 
 def is_prod_env() -> bool:
-    return ENV == "PROD"
+    return environ["ENV"] == "PROD"
 
 
 def is_dev_env() -> bool:
-    return ENV == "DEV"
+    return environ["ENV"] == "DEV"
 
 
 def is_test_env() -> bool:
-    return ENV == "TEST"
+    return environ["ENV"] == "TEST"
 
 
 def is_local_env() -> bool:
-    return ENV == "LOCAL"
+    return environ["ENV"] == "LOCAL"
+
+
+DOMAIN = environ["DOMAIN"]
+PORT = int(environ["PORT"])
+SUBDOMAIN = "dev"
