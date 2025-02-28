@@ -14,6 +14,7 @@ RUN npm ci
 ARG VITE_ENV
 
 # Set environment variable based on build argument
+# The environment variables set using ENV will persist when a container is run from the resulting image.
 ENV VITE_ENV=$VITE_ENV
 
 # Build the app
