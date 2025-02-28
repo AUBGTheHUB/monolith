@@ -13,7 +13,7 @@ RUN npm ci
 
 ARG VITE_ENV
 
-# Set environment variable based on build argument
+# Set environment variable based on build argument. These are passed by the CD pipeline.
 # The environment variables set using ENV will persist when a container is run from the resulting image.
 ENV VITE_ENV=$VITE_ENV
 
