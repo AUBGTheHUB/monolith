@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
-from secrets import token_hex
 from typing import Final, Optional, Tuple, List
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
-
 from src.database.model.base_model import SerializableObjectId
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.participant_model import Participant, UpdateParticipantParams
@@ -17,7 +15,7 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.environment import is_test_env, DOMAIN, PORT, is_local_env
+from src.environment import is_test_env, DOMAIN, SUBDOMAIN, is_prod_env, is_dev_env, PORT
 from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
@@ -37,6 +35,7 @@ from src.server.schemas.request_schemas.schemas import (
 from src.server.schemas.schemas import RandomTeam
 from src.service.mail_service.hackathon_mail_service import HackathonMailService
 from src.utils import JwtUtility
+from secrets import token_hex
 
 LOG = get_logger()
 
@@ -368,10 +367,14 @@ class HackathonService:
         jwt_token = JwtUtility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
-        if is_local_env():
-            verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
-        else:
+        if is_prod_env():
             verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+        elif is_dev_env():
+            verification_link = (
+                f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            )
+        else:
+            verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
         # Update the last_sent_verification_email field for rate-limiting purposes
         result = await self._participant_repo.update(
@@ -445,10 +448,13 @@ class HackathonService:
         jwt_token = JwtUtility.encode_data(data=payload)
 
         # Append the Jwt to the endpoint
-        if is_local_env():
-            invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
-        else:
+        if is_prod_env():
             invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+        elif is_dev_env():
+            # TODO: This resolves to dev.dev.thehub-aubg.com on the dev environment since the dev domain is dev.thehub-aubg.com
+            invite_link = f"https://{SUBDOMAIN}.{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+        else:
+            invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
         err = self._mail_service.send_participant_successful_registration_email(
             participant=participant, background_tasks=background_tasks, invite_link=invite_link, team_name=team.name
