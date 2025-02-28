@@ -77,4 +77,3 @@ def is_local_env() -> bool:
 
 DOMAIN = environ["DOMAIN"]
 PORT = int(environ["PORT"])
-SUBDOMAIN = "dev"
