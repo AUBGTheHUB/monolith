@@ -73,7 +73,7 @@ function JourneySection() {
     return (
         <div className="w-full relative">
             {/* Sticky Title */}
-            <div className="sticky md:h-[50rem] h-[48rem]  top-0 z-50 pt-[5rem] md:pt-[10rem] ml-[9%] bg-transparent">
+            <div className="sticky md:h-[50rem] h-[48rem]  top-0 z-50 pt-[6rem] md:pt-[6rem] ml-[9%] bg-transparent">
                 <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
                     <img src="./JourneySection/symbol.svg" alt="" className="w-[1.6rem]" />
                     <p className="text-white tracking-[0.2em]">JOURNEY</p>
