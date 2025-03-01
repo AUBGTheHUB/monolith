@@ -18,7 +18,7 @@ on:
 
       # Front-end paths that will trigger re-deployment
       - 'services/web/src/**'
-      - 'services/web/Dockerfile'
+      - '../../services/web/dev.Dockerfile'
       - 'services/web/package-lock.json'
       - 'services/web/package.json'
       - 'services/web/nginx.*.conf'
@@ -33,7 +33,7 @@ permissions:
 
 
 jobs:
-  build-and-push-image:
+  build-and-push-images:
     if: github.ref_name == 'main'
 
     runs-on: ubuntu-latest
@@ -58,6 +58,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./services/web/
+          file: ./services/web/dev.Dockerfile
           push: true
           tags: |
             ghcr.io/aubgthehub/monolith-web:latest
@@ -65,7 +66,7 @@ jobs:
           # We pass the build arguments for the frontend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
           build-args: |
-            VITE_ENV=${{ vars.VITE_ENV }}
+            DOMAIN=${{vars.DOMAIN}}
 
       - name: Build and push Docker image PY-API
         uses: docker/build-push-action@v6
