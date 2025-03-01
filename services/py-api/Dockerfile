@@ -50,7 +50,6 @@ ARG ENV
 ARG DOMAIN
 
 # Set environment variables based on build arguments.
-
 # The environment variables set using ENV will persist when a container is run from the resulting image.
 ENV ENV=$ENV
 ENV DOMAIN=$DOMAIN
@@ -65,4 +64,5 @@ HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
      fi
 
 # Run the uvicorn server
-ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
+#ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
+ENTRYPOINT ["dev:null"]

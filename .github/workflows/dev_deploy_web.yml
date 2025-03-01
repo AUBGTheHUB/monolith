@@ -28,7 +28,7 @@ permissions:
 
 
 jobs:
-  build-and-push-image-web:
+  build-and-push-image:
     if: github.ref_name == 'fix-cd-ivan' # TODO: remove
 
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           build-args: |
             VITE_ENV=${{ vars.VITE_ENV }}
 
-  deploy-to-dev-web:
+  deploy-to-dev:
     if: github.ref_name == 'fix-cd-ivan'
 
     runs-on: ubuntu-latest

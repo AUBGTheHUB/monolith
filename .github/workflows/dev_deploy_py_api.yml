@@ -24,7 +24,7 @@ permissions:
 
 
 jobs:
-  build-and-push-image-py-api:
+  build-and-push-image:
     if: github.ref_name == 'fix-cd-ivan' # TODO: remove
 
     runs-on: ubuntu-latest
@@ -59,7 +59,7 @@ jobs:
             ENV=${{vars.ENV}}}
             DOMAIN=${{vars.DOMAIN}}
 
-  deploy-to-dev-py-api:
+  deploy-to-dev:
     if: github.ref_name == 'fix-cd-ivan'
 
     runs-on: ubuntu-latest
