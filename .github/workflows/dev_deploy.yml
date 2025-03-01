@@ -9,7 +9,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'fix-cd-ivan' # TODO: remove
     paths:
       # Back-end Paths that will trigger re-deployment
       - 'services/py-api/src/**'
@@ -35,7 +34,7 @@ permissions:
 
 jobs:
   build-and-push-image:
-    if: github.ref_name == 'fix-cd-ivan' # TODO: remove
+    if: github.ref_name == 'main'
 
     runs-on: ubuntu-latest
 
@@ -83,7 +82,7 @@ jobs:
             DOMAIN=${{vars.DOMAIN}}
 
   deploy-to-dev:
-    if: github.ref_name == 'fix-cd-ivan'
+    if: github.ref_name == 'main'
 
     runs-on: ubuntu-latest
 
