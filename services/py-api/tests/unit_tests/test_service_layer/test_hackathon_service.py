@@ -573,9 +573,10 @@ async def test_send_verification_email_err_validation_err_body_generation(
     # And no err from repo
     participant_repo_mock.update.return_value = Ok(mock_admin_participant)
 
-    err = await hackathon_service.send_verification_email(
-        participant=mock_admin_participant, background_tasks=background_tasks
-    )
+    with patch("src.environment.ENV", return_value="DEV"):
+        err = await hackathon_service.send_verification_email(
+            participant=mock_admin_participant, background_tasks=background_tasks
+        )
 
     # Assert err value returned while sending the email from hackathon service
     assert isinstance(err, Err)
@@ -596,10 +597,10 @@ async def test_send_verification_email_err_participant_deleted_before_verifying_
     hackathon_mail_service_mock.send_participant_verification_email.return_value = None
     # But ParticipantNotFoundError from update operation in repo
     participant_repo_mock.update.return_value = Err(ParticipantNotFoundError())
-
-    err = await hackathon_service.send_verification_email(
-        participant=mock_admin_participant, background_tasks=background_tasks
-    )
+    with patch("src.environment.ENV", return_value="DEV"):
+        err = await hackathon_service.send_verification_email(
+            participant=mock_admin_participant, background_tasks=background_tasks
+        )
 
     # Assert err value returned while sending the email from hackathon service
     assert isinstance(err, Err)
