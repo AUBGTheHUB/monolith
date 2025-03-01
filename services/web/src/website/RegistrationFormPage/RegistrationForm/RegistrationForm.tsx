@@ -1,7 +1,3 @@
-//todo: share_info_with_sponsors should always be true if not error should appear
-//todo:
-//todo: JWT Stuff
-
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -10,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
 import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
 import { registrationSchema } from './schema';
+import { jwtDecode } from 'jwt-decode';
 import {
     LEVEL_OPTIONS,
     PROGRAMMING_LANGUAGE_OPTIONS,
@@ -24,8 +21,22 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { API_URL } from '@/constants';
 
-export async function registerParticipant(data: RegistrationInfo) {
+interface DecodedToken {
+    sub: string;
+    team_id: string;
+    team_name: string;
+    exp: number;
+}
+
+export async function registerParticipant(data: RegistrationInfo, token?: string) {
     let response;
+    if (token) {
+        const params = new URLSearchParams();
+        params.set('jwt_token', token);
+        // If you want to attach the token as a query param:
+        // const url = `${API_URL}/hackathon/participants?${params.toString()}`;
+    }
+
     try {
         response = await fetch(`${API_URL}/hackathon/participants`, {
             method: 'POST',
@@ -47,6 +58,12 @@ export async function registerParticipant(data: RegistrationInfo) {
 }
 
 export default function RegistrationForm() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('jwt_token') ?? undefined;
+
+    // Decode the token (if available) using our typed interface.
+    const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
+
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
         defaultValues: {
@@ -64,8 +81,8 @@ export default function RegistrationForm() {
             has_participated_in_hackathons: undefined,
             has_previous_coding_experience: undefined,
             share_info_with_sponsors: undefined,
-            registration_type: undefined,
-            team_name: '',
+            registration_type: decodedToken?.team_name ? 'admin' : undefined,
+            team_name: decodedToken?.team_name ?? '',
         },
     });
 
@@ -73,7 +90,7 @@ export default function RegistrationForm() {
 
     const { isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
-        queryFn: () => registerParticipant(formData!),
+        queryFn: () => registerParticipant(formData!, token),
         enabled: !!formData,
         retry: 1,
         refetchOnWindowFocus: false,
@@ -125,7 +142,7 @@ export default function RegistrationForm() {
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="bg-[#000912] w-full max-w-5xl p-6 border border-gray-700 rounded-lg shadow-md"
                     >
-                        <div className="">
+                        <div>
                             <div>
                                 <p className="text-lg font-semibold mb-2 mt-16">Personal Info</p>
                                 <hr className="mb-8" />
@@ -170,7 +187,7 @@ export default function RegistrationForm() {
                             <div>
                                 <p className="text-lg font-semibold mt-16 mb-2">Participation</p>
                                 <hr className="mb-8" />
-                                <div className="grid ">
+                                <div className="grid">
                                     <div className="grid grid-cols-2 gap-6">
                                         <DropdownComponent
                                             control={form.control}
@@ -240,6 +257,7 @@ export default function RegistrationForm() {
                                             name="registration_type"
                                             options={REGISTRATION_TYPE_OPTIONS}
                                             groupLabel="Enter registration type"
+                                            disabled={decodedToken?.team_name ? true : false}
                                         />
                                         <InputComponent
                                             control={form.control}
