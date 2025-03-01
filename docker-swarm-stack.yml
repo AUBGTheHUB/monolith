@@ -4,7 +4,7 @@
 version: "3.8"
 
 services:
-  client:
+  web:
     image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
     # For Nginx, we are going to relly on the docker ingress network and routing mesh to send traffic to our nginx
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
@@ -37,6 +37,8 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/nginx:/conf/basic-auth/nginx
 
+#    networks:
+#      - monolith_network
 
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
@@ -94,6 +96,8 @@ services:
       # TODO: Change paths when doing automatic certs renew
       - /etc/letsencrypt:/etc/letsencrypt
 
+#    networks:
+#      - monolith_network
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMontanaSecret" | docker secret create toni -`
@@ -105,3 +109,11 @@ secrets:
     external: true
   resend-api-key:
     external: true
+
+## Defining a custom overlay network would allow for service discovery as per:
+## https://docs.docker.com/engine/swarm/networking/#configure-service-discovery
+## This is because when not specifying a network
+## https://docs.docker.com/engine/swarm/networking/#overlay-networking
+#networks:
+#  monolith_network:
+#    driver: overlay
