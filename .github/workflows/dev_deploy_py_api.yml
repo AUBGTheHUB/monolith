@@ -56,7 +56,7 @@ jobs:
           # We pass the build arguments for the backend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
           build-args: |
-            ENV=${{vars.ENV}}}
+            ENV=${{vars.ENV}}
             DOMAIN=${{vars.DOMAIN}}
 
   deploy-to-dev:
