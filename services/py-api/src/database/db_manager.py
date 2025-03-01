@@ -9,6 +9,7 @@ from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationErr
 from result import Err
 from structlog.stdlib import get_logger
 
+from src.environment import ENV
 from src.utils import SingletonMeta
 
 LOG = get_logger()
@@ -19,7 +20,7 @@ class DatabaseManager(metaclass=SingletonMeta):
     pinging the database. The singleton behaviour allows us to have one instance of the AsyncIOMotorClient which we
     could safely use across our application through the interface of the DatabaseManager"""
 
-    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[environ["ENV"]]
+    _DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[ENV]
 
     def __init__(self) -> None:
         # The mongo client has a conn pool under the hood. We set a min number of idle connections that the pool has
