@@ -63,6 +63,6 @@ HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
          curl -f https://$DOMAIN/api/v3/ping; \
      fi
 
-## Run the uvicorn server
+# Run the uvicorn server
 #ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
 CMD ["tail", "-f", "/dev/null"]
