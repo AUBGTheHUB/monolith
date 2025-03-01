@@ -28,7 +28,7 @@ services:
 
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
-    # We let the py-api to be part of the overlay network created by docker swarm and we rely on Docker DNS
+    # We let the py-api to be part of the overlay network created by docker swarm, and we rely on Docker DNS
     # to forward the requests from nginx
     # Read more:
     # https://docs.docker.com/engine/swarm/ingress/
@@ -41,7 +41,7 @@ services:
     deploy:
       update_config:
         order: start-first
-
+      replicas: 2
     environment:
       # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
       # in-memory filesystem.
@@ -71,6 +71,7 @@ services:
 
     networks:
       - monolith
+
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMsecret" | docker secret create toni -`
