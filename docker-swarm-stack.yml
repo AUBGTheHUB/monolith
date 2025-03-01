@@ -64,11 +64,6 @@ services:
       # TODO: add restart and rollback policies
 
     environment:
-      # These env variables are passed as build arguments to the steps in our "build-and-push-image" job in the
-      # `*_deploy_py_api.yaml` GitHub workflows
-      ENV: ${ENV}
-      DOMAIN: ${DOMAIN}
-
       # These stay constant for deployed environments
       ADDRESS: 0.0.0.0
       PORT: 8080
