@@ -31,7 +31,7 @@ function SponsorSection({ rank, sponsors }: { rank: SponsorRank; sponsors: Hacka
                     <div className="bg-[#AEC1D0] h-[5px] w-[5px] absolute rounded-full right-4 top-[-2.5px]"></div>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                 {sponsors.map((sponsor) => (
                     <SponsorCard sponsor={sponsor} key={sponsor.name} />
                 ))}
