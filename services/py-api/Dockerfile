@@ -54,14 +54,14 @@ ARG DOMAIN
 ENV ENV=$ENV
 ENV DOMAIN=$DOMAIN
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
-     # This is needed as when we run the container locally we need to use the self-signed certs
-     # If not passes with --cacert curl will fail with exit code 60, meaning there is a problem with the SSL
-     if [ "$DOMAIN" = "localhost" ]; then \
-         curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
-     else \
-         curl -f https://$DOMAIN/api/v3/ping; \
-     fi
+#HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
+#     # This is needed as when we run the container locally we need to use the self-signed certs
+#     # If not passes with --cacert curl will fail with exit code 60, meaning there is a problem with the SSL
+#     if [ "$DOMAIN" = "localhost" ]; then \
+#         curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
+#     else \
+#         curl -f https://$DOMAIN/api/v3/ping; \
+#     fi
 
 # Run the uvicorn server
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
