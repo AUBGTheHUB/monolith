@@ -2,7 +2,7 @@
 # Be familiar with GitHub environments for deployment: https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment
 # Be familiar with Deploying with GitHub Actions: https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions
 
-name: Web Deployment Pipeline DEV
+name: Python API Deployment Pipeline DEV
 
 # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow
 on:
