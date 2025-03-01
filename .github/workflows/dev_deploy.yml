@@ -2,7 +2,7 @@
 # Be familiar with GitHub environments for deployment: https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment
 # Be familiar with Deploying with GitHub Actions: https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions
 
-name: Web Deployment Pipeline DEV
+name: Deployment Pipeline DEV
 
 # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow
 on:
@@ -11,6 +11,12 @@ on:
       - 'main'
       - 'fix-cd-ivan' # TODO: remove
     paths:
+      # Back-end Paths that will trigger re-deployment
+      - 'services/py-api/src/**'
+      - 'services/py-api/Dockerfile'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
+
       # Front-end paths that will trigger re-deployment
       - 'services/web/src/**'
       - 'services/web/Dockerfile'
@@ -49,7 +55,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image WEB
         uses: docker/build-push-action@v6
         with:
           context: ./services/web/
@@ -61,6 +67,20 @@ jobs:
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
           build-args: |
             VITE_ENV=${{ vars.VITE_ENV }}
+
+      - name: Build and push Docker image PY-API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/py-api/
+          push: true
+          tags: |
+            ghcr.io/aubgthehub/monolith-backend:latest
+            ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
+          # We pass the build arguments for the backend
+          # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+          build-args: |
+            ENV=${{vars.ENV}}
+            DOMAIN=${{vars.DOMAIN}}
 
   deploy-to-dev:
     if: github.ref_name == 'fix-cd-ivan'
