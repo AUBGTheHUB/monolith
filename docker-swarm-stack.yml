@@ -6,7 +6,7 @@ version: "3.8"
 services:
   web:
     image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
-    # For Nginx, we are going to relly on the docker ingress network and routing mesh to send traffic to our nginx
+    # For Nginx, we are going to rely on the docker ingress network and routing mesh to send traffic to our nginx
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
     # the routing mesh, when we redeploy nginx we would get "port already in use", as this update config will try to
     # spin up a new instance before removing the old one (rolling release)
