@@ -6,13 +6,19 @@ export interface HackathonSponsorProps {
     rank: SponsorRank;
     name: string;
     logoSrc: string;
+    websiteLink: string;
 }
 
 function SponsorCard({ sponsor }: { sponsor: HackathonSponsorProps }) {
     return (
-        <div className="border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4">
+        <a
+            className="block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer"
+            href={sponsor.websiteLink}
+            target="_blank"
+            rel="noreferrer"
+        >
             <img src={sponsor.logoSrc} alt={sponsor.name} className="w-full h-full object-contain" />
-        </div>
+        </a>
     );
 }
 
