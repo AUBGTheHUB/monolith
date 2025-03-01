@@ -30,15 +30,16 @@ interface DecodedToken {
 
 export async function registerParticipant(data: RegistrationInfo, token?: string) {
     let response;
+    let params;
     if (token) {
-        const params = new URLSearchParams();
+        params = new URLSearchParams();
         params.set('jwt_token', token);
         // If you want to attach the token as a query param:
         // const url = `${API_URL}/hackathon/participants?${params.toString()}`;
     }
 
     try {
-        response = await fetch(`${API_URL}/hackathon/participants`, {
+        response = await fetch(`${API_URL}/hackathon/participants?${params?.toString()}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,10 +102,12 @@ export default function RegistrationForm() {
             delete data.team_name;
         }
 
+        console.log(data.registration_type);
+
         const wrappedData: RegistrationInfo = {
             registration_info: {
                 ...data,
-                ...(data.registration_type === 'admin' && { is_admin: true }),
+                ...(data.registration_type === 'admin' && { is_admin: token ? false : true }),
             },
         };
 
