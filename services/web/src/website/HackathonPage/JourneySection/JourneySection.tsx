@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 function JourneySection() {
     const triggerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<HTMLDivElement[]>([]);
-    const mm = useRef(gsap.matchMedia()); // Store MatchMedia instance
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
     useEffect(() => {
@@ -33,52 +32,41 @@ function JourneySection() {
     useLayoutEffect(() => {
         ScrollTrigger.saveStyles(itemsRef.current);
         const ctx = gsap.context(() => {
-            mm.current.add(
-                {
-                    isMobile: '(max-width: 768px)',
-                    isDesktop: '(min-width: 769px)',
+            const startOffset = 220; //adjust speed
+            const finishOffset = 8; //adjust spacing between elements
+
+            // Kill previous animations before creating new ones
+            gsap.killTweensOf(itemsRef.current);
+            ScrollTrigger.getAll().forEach((st) => st.kill());
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: triggerRef.current,
+                    start: 'top top',
+                    end: '2000 top',
+                    scrub: 0.6,
+                    pin: true,
+                    toggleActions: 'play none none reverse',
                 },
-                (context) => {
-                    const { isMobile } = context.conditions as { isMobile: boolean };
+            });
 
-                    const startOffset = isMobile ? 50 : 220; //adjust speed
-                    const finishOffset = isMobile ? 4 : 8; //adjust spacing between elements
-
-                    // Kill previous animations before creating new ones
-                    gsap.killTweensOf(itemsRef.current);
-                    ScrollTrigger.getAll().forEach((st) => st.kill());
-
-                    const tl = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: triggerRef.current,
-                            start: 'top top',
-                            end: '2000 top',
-                            scrub: 0.6,
-                            pin: true,
-                            toggleActions: 'play none none reverse',
-                        },
-                    });
-
-                    itemsRef.current.forEach((item, i) => {
-                        tl.fromTo(
-                            item,
-                            { x: `${startOffset + i * 60}vh`, opacity: 0 },
-                            {
-                                x: `${isMobile ? finishOffset : finishOffset + i * 5}rem`,
-                                opacity: 1,
-                                ease: 'none',
-                                duration: 1.2,
-                            },
-                            '+=0.5', // Delay between animations
-                        );
-                    });
-                },
-            );
+            itemsRef.current.forEach((item, i) => {
+                tl.fromTo(
+                    item,
+                    { x: `${startOffset + i * 60}vh`, opacity: 0 },
+                    {
+                        x: `${finishOffset + i * 5}rem`,
+                        opacity: 1,
+                        ease: 'none',
+                        duration: 1.2,
+                    },
+                    '+=0.5', // Delay between animations
+                );
+            });
         });
 
         return () => {
             ctx.revert(); // Cleanup GSAP context
-            mm.current.revert(); // Cleanup MatchMedia listeners
         };
     }, []);
 
@@ -87,7 +75,7 @@ function JourneySection() {
             {isDesktop ? (
                 <div className="w-full relative">
                     {/* Sticky Title */}
-                    <div className="sticky xl:h-[55rem] md:h-[50rem] h-[48rem]  top-0 z-50 pt-[6rem] md:pt-[6rem] ml-[9%] bg-transparent">
+                    <div className="sticky xl:h-[rem] md:h-[50rem] h-[48rem]  top-0 z-50 pt-[6rem] md:pt-[6rem] ml-[9%] bg-transparent">
                         <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
                             <img src="./JourneySection/symbol.svg" alt="" className="w-[1.6rem]" />
                             <p className="text-white tracking-[0.2em]">JOURNEY</p>
@@ -95,7 +83,7 @@ function JourneySection() {
                     </div>
 
                     {/* Animated Section */}
-                    <section className="scroll-section-outer mr-20 gap-[20rem] min-h-[40rem]">
+                    <section className="scroll-section-outer mt-[10rem] mr-20 gap-[20rem] min-h-[40rem]">
                         <div ref={triggerRef} className="mr-0 relative w-full h-screen">
                             {journeyEntries.map((entry, index) => (
                                 <div
