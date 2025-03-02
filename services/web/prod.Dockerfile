@@ -42,6 +42,6 @@ HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://$DOMAIN
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't add them explicitly
 
 # NB!!!:
-# If you add a custom CMD in the dev.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to stay in
+# If you add a custom CMD in the prod.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to stay in
 # the foreground, so that Docker can track the process properly (otherwise your container will stop immediately after
 # starting)! Source: https://hub.docker.com/_/nginx
