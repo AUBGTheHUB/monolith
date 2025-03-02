@@ -1,18 +1,50 @@
 # The docker stack deploy command uses the legacy Compose file version 3
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md
 # https://docs.docker.com/engine/swarm/stack-deploy/
-# https://docs.docker.com/compose/intro/history/#docker-compose-cli-versioning
+#
+# You can check more which options in the old compose are not supported for docker stack deploy:
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#not-supported-for-docker-stack-deploy
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#depends_on
 version: "3.8"
+
+
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#deploy
+# https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
+x-deploy-default: &deploy-default
+  # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#restart_policy
+  # The options which are not set use the default values
+  restart_policy:
+    max_attempts: 3
+
+  # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#update_config
+  # The options which are not set use the default values
+  update_config:
+    order: start-first
+    # We set this to two minutes as the initial health-check takes one minute to start
+    # If the updated version's state is considered failure the service will be rollbacked automatically
+    monitor: 2m
+    failure_action: rollback
+
+  # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#rollback_config
+  # The options which are not set use the default values
+  rollback_config:
+    order: start-first
+    # We set this to two minutes as the initial health-check takes one minute to start
+    # If the rolled back version's state is considered failure the container will pause to allow manual intervention
+    monitor: 2m
+
 
 services:
   web:
     image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
+
     # For Nginx, we are going to rely on the docker ingress network and routing mesh to send traffic to our nginx
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
     # the routing mesh, when we redeploy nginx we would get "port already in use", as this update config will try to
     # spin up a new instance before removing the old one (rolling release)
     # https://docs.docker.com/engine/swarm/networking/
     # https://docs.docker.com/engine/swarm/ingress/
-    # https://docs.docker.com/reference/compose-file/services/#long-syntax-3
+    # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#long-syntax-1
     ports:
       - mode: ingress
         protocol: tcp
@@ -22,17 +54,13 @@ services:
         protocol: tcp
         published: 443
         target: 443
-
-    # https://docs.docker.com/reference/compose-file/deploy/#update_config
+    # Using deploy: *deploy-default would assign the entire anchored object to deploy without any possibility of adding
+    # or overriding specific keys later.
     deploy:
-      update_config:
-        order: start-first
-      # TODO: add restart and rollback policies
-
-    depends_on:
-      - py-api
+      <<: *deploy-default
 
     volumes:
+      # https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host
       # TODO: use named volumes when doing automatic certs renewal
       - /etc/letsencrypt:/etc/letsencrypt
       - /etc/nginx:/conf/basic-auth/nginx
@@ -40,9 +68,9 @@ services:
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
 
+    # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#deploy
     deploy:
-      update_config:
-        order: start-first
+      <<: *deploy-default
 
       # For the py-api we don't publish ports as we don't want to use the routing mesh
       # This is because we already use it when a request comes to our website. Using it again would be inefficient due
@@ -56,25 +84,23 @@ services:
       endpoint_mode: dnsrr
 
       # We are using two replicas of the API to increase reliability
-      # https://docs.docker.com/reference/compose-file/deploy/#replicas
+      # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#replicas
+      # The options which are not set use the default values
       replicas: 2
-      # TODO: add restart and rollback policies
 
     environment:
-      # These stay constant for deployed environments
-      ADDRESS: 0.0.0.0
-      PORT: 8080
-
       # The values of the env variables are the paths where the decrypted secret is mounted into the container in an
       # in-memory filesystem.
       # IMPORTANT: Services should implement an app-level logic to read the decrypted values from those mounted files,
       # otherwise the values of these env variable will stay the mounted paths!
       # https://docs.docker.com/engine/swarm/secrets/#how-docker-manages-secrets
+      # https://docs.docker.com/engine/swarm/secrets/#use-secrets-in-compose
       DATABASE_URL: /run/secrets/db-url
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
       RESEND_API_KEY: /run/secrets/resend-api-key
 
+    # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:
       - db-url
       - secret-key
@@ -88,6 +114,7 @@ services:
       # TODO: Change paths when doing automatic certs renew
       - /etc/letsencrypt:/etc/letsencrypt
 
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMontanaSecret" | docker secret create toni -`
