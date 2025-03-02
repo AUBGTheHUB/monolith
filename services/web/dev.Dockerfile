@@ -5,18 +5,17 @@ FROM node:23-alpine AS builder
 # be created. Reference: https://docs.docker.com/reference/dockerfile/#workdir
 WORKDIR /app
 
-# Copy app files
-COPY . .
+# Copy first only the package.json and package-lock.json files to leverage Docker cache
+COPY package*.json ./
 
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 RUN npm ci
 
-ARG DOMAIN
+# Copy the rest of the application files
+COPY . .
 
-# Set environment variable based on build argument. These are passed in the CD pipeline.
 # The environment variables set using ENV will persist when a container is run from the resulting image.
-ENV VITE_ENV="PROD"
-ENV DOMAIN=${DOMAIN}
+ENV VITE_ENV="DEV"
 
 # Build the app
 RUN npm run build
@@ -24,7 +23,7 @@ RUN npm run build
 # Bundle static assets with nginx
 FROM nginx:1.27.4-alpine AS dev
 
-# Copy built assets from `builder` image
+# Copy built assets from `builder` stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # We override the `default.conf` that comes with the base ngixn image.
@@ -37,7 +36,13 @@ COPY nginx.dev.conf /etc/nginx/conf.d/default.conf
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 80 443
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://$DOMAIN
+# The build args are passed in the CD pipeline.
+ARG DOMAIN
+
+# Perstig the build argument in order for the healthcheck to use it
+ENV DOMAIN=${DOMAIN}
+
+HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
 
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't add them explicitly
 
