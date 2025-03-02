@@ -100,7 +100,7 @@ services:
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
       RESEND_API_KEY: /run/secrets/resend-api-key
 
-    # https://docs.docker.com/reference/compose-file/services/#secrets
+    # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:
       - db-url
       - secret-key
@@ -114,6 +114,7 @@ services:
       # TODO: Change paths when doing automatic certs renew
       - /etc/letsencrypt:/etc/letsencrypt
 
+# https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMontanaSecret" | docker secret create toni -`
