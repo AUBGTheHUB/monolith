@@ -43,7 +43,7 @@ function JourneySection() {
                 scrollTrigger: {
                     trigger: triggerRef.current,
                     start: 'top top',
-                    end: '2000 top',
+                    end: '2000 top', //another way to adjust speed by making the user scroll more
                     scrub: 0.6,
                     pin: true,
                     toggleActions: 'play none none reverse',
@@ -58,7 +58,7 @@ function JourneySection() {
                         x: `${finishOffset + i * 5}rem`,
                         opacity: 1,
                         ease: 'none',
-                        duration: 1.2,
+                        duration: 100,
                     },
                     '+=0.5', // Delay between animations
                 );
@@ -95,6 +95,11 @@ function JourneySection() {
                                     <DesktopJourneyModule title={entry.title} text={entry.text} />
                                 </div>
                             ))}
+                            <div
+                                ref={addToRefs}
+                                className="absolute top-0 left-0 w-full"
+                                style={{ zIndex: 0, display: 'none' }}
+                            ></div>
                         </div>
                     </section>
                 </div>
