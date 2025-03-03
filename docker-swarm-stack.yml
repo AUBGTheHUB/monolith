@@ -13,8 +13,8 @@ version: "3.8"
 x-deploy-default: &deploy-default
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#restart_policy
   # The options which are not set use the default values
-  # restart_policy:
-  #   max_attempts: 3
+  restart_policy:
+    max_attempts: 3
 
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#update_config
   # The options which are not set use the default values
