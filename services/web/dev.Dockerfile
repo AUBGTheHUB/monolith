@@ -21,7 +21,7 @@ ENV VITE_ENV="DEV"
 RUN npm run build
 
 # Bundle static assets with nginx
-FROM nginx:1.27.4-alpine AS dev
+FROM nginx:latest AS dev
 
 # Copy built assets from `builder` stage
 COPY --from=builder /app/dist /usr/share/nginx/html
