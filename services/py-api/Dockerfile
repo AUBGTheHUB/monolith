@@ -41,19 +41,30 @@ COPY src ./src
 
 COPY shared ./shared
 
-# For documentation between the person who builds the image and the person who runs the container, about which ports
-# are intended to be published
+# Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
 
-#HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
-#     # This is needed as when we run the container locally we need to use the self-signed certs
-#     # If not passes with --cacert curl will fail with exit code 60, meaning there is a problem with the SSL
-#     if [ "$DOMAIN" = "localhost" ]; then \
-#         curl --cacert /app/src/server/certs/localhost.crt -f https://$DOMAIN:8080/api/v3/ping; \
-#     else \
-#         curl -f https://$DOMAIN/api/v3/ping; \
-#     fi
+ARG ENV
+ARG DOMAIN
+
+# Set environment variables based on build arguments. These are passed in the CD pipeline.
+# The environment variables set using ENV will persist when a container is run from the resulting image.
+ENV ENV=${ENV}
+ENV DOMAIN=${DOMAIN}
+
+# These stay constant for deployed environments
+ENV ADDRESS=0.0.0.0
+ENV PORT=8080
+
+HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD \
+     # This is needed as when we run the container locally we need to use the self-signed certs
+     # If not passes with --cacert curl will fail with exit code 60, meaning there is a problem with the SSL
+     if [ "${DOMAIN}" = "localhost" ]; then \
+         curl --cacert /app/src/server/certs/localhost.crt -f https://${DOMAIN}:8080/api/v3/ping; \
+     else \
+         curl -f https://${DOMAIN}/api/v3/ping; \
+     fi
 
 # Run the uvicorn server
 ENTRYPOINT ["python", "-m", "src.server.app_entrypoint"]
