@@ -42,7 +42,7 @@ ARG DOMAIN
 # Perstig the build argument in order for the healthcheck to use it
 ENV DOMAIN=${DOMAIN}
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
+# HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
 
 CMD ["nginx", "-g", "daemon off;"]
 
