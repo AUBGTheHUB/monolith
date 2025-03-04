@@ -9,10 +9,10 @@ export interface HackathonSponsorProps {
     websiteLink: string;
 }
 
-function SponsorCard({ sponsor }: { sponsor: HackathonSponsorProps }) {
+function SponsorCard({ sponsor, rank }: { sponsor: HackathonSponsorProps; rank: SponsorRank }) {
     return (
         <a
-            className="block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer"
+            className={`block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer hover:shadow-md ${rank === 'Platinum' ? 'hover:shadow-[#19A0F0]' : rank === 'Gold' ? 'hover:shadow-[#FFDE06]' : 'hover:shadow-[#92B1C9]'}`}
             href={sponsor.websiteLink}
             target="_blank"
             rel="noreferrer"
@@ -39,7 +39,7 @@ function SponsorSection({ rank, sponsors }: { rank: SponsorRank; sponsors: Hacka
             </div>
             <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                 {sponsors.map((sponsor) => (
-                    <SponsorCard sponsor={sponsor} key={sponsor.name} />
+                    <SponsorCard sponsor={sponsor} key={sponsor.name} rank={rank} />
                 ))}
             </div>
         </div>
