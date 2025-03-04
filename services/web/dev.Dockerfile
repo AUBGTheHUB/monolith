@@ -21,7 +21,7 @@ ENV VITE_ENV="DEV"
 RUN npm run build
 
 # Bundle static assets with nginx
-FROM nginx:1.27.4-alpine AS dev
+FROM nginx:latest AS dev
 
 # Copy built assets from `builder` stage
 COPY --from=builder /app/dist /usr/share/nginx/html
@@ -42,9 +42,9 @@ ARG DOMAIN
 # Perstig the build argument in order for the healthcheck to use it
 ENV DOMAIN=${DOMAIN}
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
+# HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
 
-# We are using the default nginx image ENTRYPOINT and CMD, that's why we don't add them explicitly
+CMD ["nginx", "-g", "daemon off;"]
 
 # NB!!!:
 # If you add a custom CMD in the dev.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to stay in
