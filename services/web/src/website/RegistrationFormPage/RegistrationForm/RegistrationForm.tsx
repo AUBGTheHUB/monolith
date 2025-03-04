@@ -1,3 +1,5 @@
+//todo share info with sponsors should be true error if not , handle is loading etc.., design, share with sponsors should be on the bottom, must agree, design for button for sending emails, function for another request
+
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,11 +21,26 @@ import {
 import { API_URL } from '@/constants';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { jwtDecode } from 'jwt-decode';
 
-async function registerParticipant(data: RegistrationInfo) {
+interface DecodedToken {
+    sub: string;
+    team_id: string;
+    team_name: string;
+    exp: number;
+}
+
+async function registerParticipant(data: RegistrationInfo, token?: string) {
     let response;
+    let params;
+
+    if (token) {
+        params = new URLSearchParams();
+        params.set('jwt_token', token);
+    }
+
     try {
-        response = await fetch(`${API_URL}/hackathon/participants`, {
+        response = await fetch(`${API_URL}/hackathon/participants?${params?.toString()}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,13 +67,21 @@ export default function RegistrationForm() {
 
     const token = params.get('jwt_token') ?? undefined;
 
+    const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
+
     const { isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
-        queryFn: () => registerParticipant(formData!),
+        queryFn: () => registerParticipant(formData!, token),
         enabled: !!formData,
         retry: 1,
         refetchOnWindowFocus: false,
     });
+
+    useEffect(() => {
+        console.log('isLoading', isLoading);
+        console.log('isError', isError);
+        console.log('error', error);
+    }, [isLoading, isError, error]);
 
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
@@ -75,8 +100,8 @@ export default function RegistrationForm() {
             has_participated_in_hackathons: undefined,
             has_previous_coding_experience: undefined,
             share_info_with_sponsors: undefined,
-            registration_type: undefined,
-            team_name: '',
+            registration_type: decodedToken?.team_name ? 'invite_link' : undefined,
+            team_name: decodedToken?.team_name ?? '',
         },
     });
 
@@ -90,7 +115,8 @@ export default function RegistrationForm() {
         const wrapData: RegistrationInfo = {
             registration_info: {
                 ...data,
-                ...(data.registration_type === 'admin' && { is_admin: token ? false : true }),
+                ...((data.registration_type === 'admin' && { is_admin: true }) ||
+                    (data.registration_type === 'invite_link' && { is_admin: false })),
             },
         };
 
@@ -236,6 +262,7 @@ export default function RegistrationForm() {
                                             name="registration_type"
                                             options={REGISTRATION_TYPE_OPTIONS}
                                             groupLabel="Enter registration type"
+                                            disabled={decodedToken?.team_name ? true : false}
                                         />
                                         <InputComponent
                                             control={form.control}

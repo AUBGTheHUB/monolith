@@ -17,6 +17,7 @@ type RadioButtonProps<T extends FieldValues> = {
     formItemClassName?: string;
     labelClassName?: string;
     radioGroupClassName?: string;
+    disabled?: boolean;
 };
 
 export const RadioComponent = <T extends FieldValues>({
@@ -28,6 +29,7 @@ export const RadioComponent = <T extends FieldValues>({
     radioGroupClassName,
     labelClassName,
     formItemClassName,
+    disabled,
 }: RadioButtonProps<T>) => {
     return (
         <FormField
@@ -38,6 +40,7 @@ export const RadioComponent = <T extends FieldValues>({
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
                         <RadioGroup
+                            disabled={disabled}
                             onValueChange={(val) => {
                                 const parsedValue = val === 'true' || val === 'false' ? val === 'true' : val;
                                 field.onChange(parsedValue);
