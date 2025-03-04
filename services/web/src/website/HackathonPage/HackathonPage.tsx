@@ -32,7 +32,7 @@ export const HackathonPage = () => {
             <Recap />
             <GradingSection />
             <AwardsSection />
-            <HackathonSponsors />
+            <HackathonSponsors sponsorsSwitch={featureSwitches.SponsorsSwitch} />
             <HackathonFAQSection />
             <Footer />
         </Fragment>

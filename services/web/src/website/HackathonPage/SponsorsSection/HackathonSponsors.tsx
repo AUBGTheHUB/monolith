@@ -46,7 +46,7 @@ function SponsorSection({ rank, sponsors }: { rank: SponsorRank; sponsors: Hacka
     );
 }
 
-export default function HackathonSponsors() {
+export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
     // Filter the sponsors
     const platinumSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Platinum');
     const goldSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Gold');
@@ -57,15 +57,26 @@ export default function HackathonSponsors() {
     goldSponsors.sort((a, b) => a.name.localeCompare(b.name));
     silverSponsors.sort((a, b) => a.name.localeCompare(b.name));
 
-    return (
-        <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
-            <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
-                <img src="./n.png" alt="" className="w-[1.6rem]" />
-                <h2>Sponsors</h2>
+    if (sponsorsSwitch === true) {
+        return (
+            <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
+                <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
+                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <h2>Sponsors</h2>
+                </div>
+                <SponsorSection rank="Platinum" sponsors={platinumSponsors} />
+                <SponsorSection rank="Gold" sponsors={goldSponsors} />
+                <SponsorSection rank="Silver" sponsors={silverSponsors} />
             </div>
-            <SponsorSection rank="Platinum" sponsors={platinumSponsors} />
-            <SponsorSection rank="Gold" sponsors={goldSponsors} />
-            <SponsorSection rank="Silver" sponsors={silverSponsors} />
-        </div>
-    );
+        );
+    } else {
+        return (
+            <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
+                <div className="text-3xl sm:text-4xl flex items-center gap-4">
+                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <h2>SPONSORS COMING SOON . . .</h2>
+                </div>
+            </div>
+        );
+    }
 }
