@@ -12,11 +12,52 @@ import {
     RADIO_OPTIONS,
     REFERRAL_OPTIONS,
     REGISTRATION_TYPE_OPTIONS,
+    RegistrationInfo,
     TSHIRT_OPTIONS,
     UNIVERSITY_OPTIONS,
 } from './constants';
+import { API_URL } from '@/constants';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+async function registerParticipant(data: RegistrationInfo) {
+    let response;
+    try {
+        response = await fetch(`${API_URL}/hackathon/participants`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    } catch {
+        throw new Error('Registaration failed, try refreshing the page or contact us.');
+    }
+    const responseData = await response.json();
+    if (!response.ok) {
+        throw new Error(
+            (responseData && responseData.error) || 'Registaration failed, try refreshing the page or contact us.',
+        );
+    }
+    console.log(responseData);
+    return responseData;
+}
 
 export default function RegistrationForm() {
+    const [formData, setFormData] = useState<RegistrationInfo | null>(null);
+
+    const params = new URLSearchParams(window.location.search);
+
+    const token = params.get('jwt_token') ?? undefined;
+
+    const { isLoading, isError, error } = useQuery({
+        queryKey: ['registerParticipant', formData],
+        queryFn: () => registerParticipant(formData!),
+        enabled: !!formData,
+        retry: 1,
+        refetchOnWindowFocus: false,
+    });
+
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
         defaultValues: {
@@ -41,12 +82,32 @@ export default function RegistrationForm() {
 
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
         console.log('Form submitted:', data);
+
+        if (data.registration_type === 'random') {
+            delete data.team_name;
+        }
+
+        const wrapData: RegistrationInfo = {
+            registration_info: {
+                ...data,
+                ...(data.registration_type === 'admin' && { is_admin: token ? false : true }),
+            },
+        };
+
+        setFormData(wrapData);
     };
 
     const isAdmin = useWatch({
         control: form.control,
         name: 'registration_type',
     });
+
+    useEffect(() => {
+        if (isAdmin === 'random') {
+            form.clearErrors('team_name');
+            form.setValue('team_name', '');
+        }
+    }, [isAdmin]);
 
     return (
         <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">
