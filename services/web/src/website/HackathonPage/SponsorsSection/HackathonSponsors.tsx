@@ -12,7 +12,7 @@ export interface HackathonSponsorProps {
 function SponsorCard({ sponsor, rank }: { sponsor: HackathonSponsorProps; rank: SponsorRank }) {
     return (
         <a
-            className={`block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer hover:shadow-md ${rank === 'Platinum' ? 'hover:shadow-[#19A0F0]' : rank === 'Gold' ? 'hover:shadow-[#FFDE06]' : 'hover:shadow-[#92B1C9]'}`}
+            className={`block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer transition-shadow duration-400 hover:shadow-md ${rank === 'Platinum' ? 'hover:shadow-[#19A0F0]' : rank === 'Gold' ? 'hover:shadow-[#FFDE06]' : 'hover:shadow-[#92B1C9]'}`}
             href={sponsor.websiteLink}
             target="_blank"
             rel="noreferrer"
