@@ -68,3 +68,7 @@ export type RegistrationInfo = {
         team_name?: string;
     };
 };
+
+export type ResendEmailType = {
+    participant_id: string;
+};

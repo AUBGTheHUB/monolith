@@ -1,4 +1,4 @@
-//todo share info with sponsors should be true error if not , handle is loading etc.., design, share with sponsors should be on the bottom, must agree, design for button for sending emails, function for another request
+//to do: share info with sponsors should be true error if not , handle is loading etc.., design, share with sponsors should be on the bottom, must agree, design for button for sending emails, function for another request
 
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +15,7 @@ import {
     REFERRAL_OPTIONS,
     REGISTRATION_TYPE_OPTIONS,
     RegistrationInfo,
+    ResendEmailType,
     TSHIRT_OPTIONS,
     UNIVERSITY_OPTIONS,
 } from './constants';
@@ -56,8 +57,17 @@ async function registerParticipant(data: RegistrationInfo, token?: string) {
             (responseData && responseData.error) || 'Registaration failed, try refreshing the page or contact us.',
         );
     }
-    console.log(responseData);
-    return responseData;
+    return responseData.participant?.id;
+}
+
+function resendEmail(data: ResendEmailType) {
+    fetch(`${API_URL}/hackathon/participants/verify/send-email`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
 }
 
 export default function RegistrationForm() {
@@ -69,7 +79,7 @@ export default function RegistrationForm() {
 
     const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
 
-    const { isLoading, isError, error } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
         queryFn: () => registerParticipant(formData!, token),
         enabled: !!formData,
@@ -81,7 +91,8 @@ export default function RegistrationForm() {
         console.log('isLoading', isLoading);
         console.log('isError', isError);
         console.log('error', error);
-    }, [isLoading, isError, error]);
+        console.log('data', data);
+    }, [isLoading, isError, error, data]);
 
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
@@ -122,6 +133,11 @@ export default function RegistrationForm() {
 
         setFormData(wrapData);
     };
+
+    function onResendEmail() {
+        const wrappedEmailData: ResendEmailType = { participant_id: data };
+        resendEmail(wrappedEmailData);
+    }
 
     const isAdmin = useWatch({
         control: form.control,
@@ -284,6 +300,7 @@ export default function RegistrationForm() {
                                     Participate now
                                 </Button>
                             </div>
+                            {data && <p onClick={() => onResendEmail()}>Did not receive an email? Click here.</p>}
                         </div>
                     </form>
                 </FormProvider>
