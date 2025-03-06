@@ -269,12 +269,6 @@ export default function RegistrationForm() {
                                         />
                                         <RadioComponent
                                             control={form.control}
-                                            name="share_info_with_sponsors"
-                                            options={RADIO_OPTIONS}
-                                            groupLabel="Do you agree to share your info with sponsors?"
-                                        />
-                                        <RadioComponent
-                                            control={form.control}
                                             name="registration_type"
                                             options={REGISTRATION_TYPE_OPTIONS}
                                             groupLabel="Enter registration type"
@@ -288,6 +282,16 @@ export default function RegistrationForm() {
                                             placeholder="Enter your team name"
                                             disabled={isAdmin !== 'admin'}
                                         />
+                                        <RadioComponent
+                                            control={form.control}
+                                            name="share_info_with_sponsors"
+                                            options={[
+                                                { label: 'Yes', value: true },
+                                                { label: 'No', value: false },
+                                            ]}
+                                            groupLabel="Do you agree to share your info with sponsors?"
+                                        />
+
                                         <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
                                     </div>
                                 </div>
