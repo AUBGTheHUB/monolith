@@ -1,4 +1,4 @@
-//to do: share info with sponsors should be true error if not , handle is loading etc.., design, share with sponsors should be on the bottom, must agree, design for button for sending emails, function for another request
+//to do:  handle is loading etc.., design, design for button for sending emails, timer thing
 
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,6 +23,8 @@ import { API_URL } from '@/constants';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface DecodedToken {
     sub: string;
@@ -79,6 +81,16 @@ export default function RegistrationForm() {
 
     const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
 
+    const [canResendEmail, setCanResendEmail] = useState(false);
+    const [resendTimerStart, setResendTimerStart] = useState<number | null>(null);
+
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setCanResendEmail(true);
+        }, 90000);
+        return () => clearTimeout(timerId);
+    }, []);
+
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
         queryFn: () => registerParticipant(formData!, token),
@@ -134,10 +146,44 @@ export default function RegistrationForm() {
         setFormData(wrapData);
     };
 
-    function onResendEmail() {
-        const wrappedEmailData: ResendEmailType = { participant_id: data };
-        resendEmail(wrappedEmailData);
-    }
+    useEffect(() => {
+        if (!canResendEmail && resendTimerStart !== null) {
+            const timerId = setInterval(() => {
+                const now = Date.now();
+                const secondsLeft = 90 - Math.floor((now - resendTimerStart) / 1000);
+                if (secondsLeft <= 0) {
+                    clearInterval(timerId);
+                    setCanResendEmail(true);
+                }
+            }, 1000);
+            return () => clearInterval(timerId);
+        }
+    }, [canResendEmail, resendTimerStart]);
+
+    const onResendEmail = () => {
+        if (canResendEmail) {
+            const wrappedEmailData: ResendEmailType = { participant_id: data };
+            resendEmail(wrappedEmailData);
+            setCanResendEmail(false);
+            setResendTimerStart(Date.now());
+            setTimeout(() => {
+                setCanResendEmail(true);
+            }, 90000);
+        } else {
+            if (resendTimerStart) {
+                const secondsLeft = 90 - Math.floor((Date.now() - resendTimerStart) / 1000);
+                toast.info(`Please wait ${secondsLeft} seconds before trying again.`, {
+                    position: 'top-right',
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }
+    };
 
     const isAdmin = useWatch({
         control: form.control,
@@ -304,11 +350,32 @@ export default function RegistrationForm() {
                                     Participate now
                                 </Button>
                             </div>
-                            {data && <p onClick={() => onResendEmail()}>Did not receive an email? Click here.</p>}
+                            {data && (
+                                <p
+                                    onClick={onResendEmail}
+                                    style={{
+                                        cursor: canResendEmail ? 'pointer' : 'not-allowed',
+                                    }}
+                                >
+                                    Did not receive an email? Click here.
+                                </p>
+                            )}
                         </div>
                     </form>
                 </FormProvider>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss={true}
+                draggable={true}
+                pauseOnHover={true}
+                aria-label="Notification"
+            />
         </div>
     );
 }
