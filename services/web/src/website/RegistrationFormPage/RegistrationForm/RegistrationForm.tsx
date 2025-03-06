@@ -1,4 +1,4 @@
-//to do:  handle is loading etc.., design, design for button for sending emails, timer thing
+//to do:  handle is loading etc.., design, design for button for sending emails
 
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -98,6 +98,15 @@ export default function RegistrationForm() {
         retry: 1,
         refetchOnWindowFocus: false,
     });
+
+    let formFeedback;
+    if (isLoading) {
+        formFeedback = <p>Loading...</p>;
+    } else if (isError && error instanceof Error) {
+        formFeedback = <p>Error: {error.message}</p>;
+    } else if (!token) {
+        formFeedback = <p>Invalid registration link</p>;
+    }
 
     useEffect(() => {
         console.log('isLoading', isLoading);
@@ -361,6 +370,7 @@ export default function RegistrationForm() {
                                 </p>
                             )}
                         </div>
+                        <div>{formFeedback}</div>
                     </form>
                 </FormProvider>
             </div>
