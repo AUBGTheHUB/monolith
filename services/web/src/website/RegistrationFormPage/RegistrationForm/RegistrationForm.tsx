@@ -1,4 +1,20 @@
-//to do:  handle is loading etc.., design, design for button for sending emails
+/*
+To Do:
+- Is loading and error // invalid reg link??
+- Timer
+- Error Messages ??
+Design:
+ - make form fields transparent/dark blue color: #000912
+ - borders:  #233340
+ - lines: #233340
+ - labels: #FFFFFF
+ - text: #A6AAB2
+ - stupid svg thing
+ - resend email bs
+ - order?
+ - margins
+ - mobile
+*/
 
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -83,13 +99,24 @@ export default function RegistrationForm() {
 
     const [canResendEmail, setCanResendEmail] = useState(false);
     const [resendTimerStart, setResendTimerStart] = useState<number | null>(null);
+    const [secondsLeft, setSecondsLeft] = useState(90);
 
     useEffect(() => {
-        const timerId = setTimeout(() => {
-            setCanResendEmail(true);
-        }, 90000);
-        return () => clearTimeout(timerId);
-    }, []);
+        if (resendTimerStart !== null) {
+            const interval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - resendTimerStart) / 1000);
+                const timeRemaining = 90 - elapsedTime;
+                setSecondsLeft(timeRemaining > 0 ? timeRemaining : 0);
+
+                if (timeRemaining <= 0) {
+                    setCanResendEmail(true);
+                    setResendTimerStart(null);
+                    clearInterval(interval);
+                }
+            }, 1000);
+            return () => clearInterval(interval);
+        }
+    }, [resendTimerStart]);
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['registerParticipant', formData],
@@ -153,45 +180,39 @@ export default function RegistrationForm() {
         };
 
         setFormData(wrapData);
+
+        setCanResendEmail(false);
+        setResendTimerStart(Date.now());
+        setSecondsLeft(90);
     };
-
-    useEffect(() => {
-        if (!canResendEmail && resendTimerStart !== null) {
-            const timerId = setInterval(() => {
-                const now = Date.now();
-                const secondsLeft = 90 - Math.floor((now - resendTimerStart) / 1000);
-                if (secondsLeft <= 0) {
-                    clearInterval(timerId);
-                    setCanResendEmail(true);
-                }
-            }, 1000);
-            return () => clearInterval(timerId);
-        }
-    }, [canResendEmail, resendTimerStart]);
-
     const onResendEmail = () => {
-        if (canResendEmail) {
-            const wrappedEmailData: ResendEmailType = { participant_id: data };
-            resendEmail(wrappedEmailData);
-            setCanResendEmail(false);
-            setResendTimerStart(Date.now());
-            setTimeout(() => {
-                setCanResendEmail(true);
-            }, 90000);
-        } else {
-            if (resendTimerStart) {
-                const secondsLeft = 90 - Math.floor((Date.now() - resendTimerStart) / 1000);
-                toast.info(`Please wait ${secondsLeft} seconds before trying again.`, {
-                    position: 'top-right',
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            }
+        if (!canResendEmail) {
+            toast.info(`Please wait ${secondsLeft} seconds before resending.`, {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            return;
         }
+
+        const wrappedEmailData: ResendEmailType = { participant_id: data };
+        resendEmail(wrappedEmailData);
+
+        setCanResendEmail(false);
+        setResendTimerStart(Date.now());
+        setSecondsLeft(90);
+
+        toast.success('Verification email has been resent. Please wait 90 seconds before resending again.', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
     };
 
     const isAdmin = useWatch({
@@ -208,75 +229,90 @@ export default function RegistrationForm() {
 
     return (
         <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">
-            <div className="w-4/5 flex items-start mb-24 mt-16">
+            <div className="w-11/12 sm:w-4/5 flex items-start mb-24 mt-16">
                 <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
             </div>
+
             <div className="flex justify-center w-full">
                 <FormProvider {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="bg-[#000912] w-full max-w-5xl p-6 border border-gray-700 rounded-lg shadow-md"
+                        className="bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-4 sm:px-6 py-6 border border-gray-700 rounded-lg shadow-md mb-16"
                     >
-                        <div className="">
-                            <div>
-                                <p className="text-lg font-semibold mb-2 mt-16">Personal Info</p>
-                                <hr className="mb-8" />
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <InputComponent
-                                        control={form.control}
-                                        name="name"
-                                        label="Name"
-                                        type="text"
-                                        placeholder="Enter your name"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="age"
-                                        label="Age"
-                                        type="number"
-                                        placeholder="Enter your age"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="email"
-                                        label="Email"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="location"
-                                        label="Location"
-                                        type="text"
-                                        placeholder="Enter your location"
-                                    />
-                                    <DropdownComponent
-                                        control={form.control}
-                                        name="university"
-                                        label="University"
-                                        placeholder="Select your university"
-                                        items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
-                                    />
-                                </div>
+                        <div>
+                            <p className="text-white text-lg font-semibold mb-2 mt-12">Personal Info</p>
+                            <hr className="mb-8 h-0.5 bg-[#233340] border-0" />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-6">
+                                <InputComponent
+                                    control={form.control}
+                                    name="name"
+                                    label="Name"
+                                    type="text"
+                                    placeholder="Enter your name"
+                                    labelClassName="text-white"
+                                    inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="age"
+                                    label="Age"
+                                    type="number"
+                                    placeholder="Enter your age"
+                                    labelClassName="text-white"
+                                    inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]
+                                appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="email"
+                                    label="Email"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    labelClassName="text-white"
+                                    inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="location"
+                                    label="Location"
+                                    type="text"
+                                    placeholder="Enter your location"
+                                    labelClassName="text-white"
+                                    inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
+                                />
+                                <DropdownComponent
+                                    control={form.control}
+                                    name="university"
+                                    label="University"
+                                    placeholder="Select your university"
+                                    dropdownLabelClassName="text-white"
+                                    items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
+                                />
                             </div>
+
                             <div>
-                                <p className="text-lg font-semibold mt-16 mb-2">Participation</p>
-                                <hr className="mb-8" />
+                                <p className="text-white text-lg font-semibold mt-12 mb-2">Participation</p>
+                                <hr className="mb-8 h-0.5 bg-[#233340] border-0" />
                                 <div className="grid ">
-                                    <div className="grid grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <DropdownComponent
                                             control={form.control}
                                             name="tshirt_size"
                                             label="T-Shirt Size"
                                             placeholder="Select your size"
+                                            dropdownLabelClassName="text-white"
+                                            selectValueClassName="" // Styles the dropdown trigger
+                                            selectItemClassName="" // Styles dropdown items
                                             items={TSHIRT_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                         />
+
                                         <DropdownComponent
                                             control={form.control}
                                             name="source_of_referral"
                                             label="Source of Referral"
                                             placeholder="How did you hear about us?"
+                                            dropdownLabelClassName="text-white"
                                             items={REFERRAL_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                         />
                                         <DropdownComponent
@@ -284,6 +320,7 @@ export default function RegistrationForm() {
                                             name="programming_language"
                                             label="Programming Language"
                                             placeholder="Select your preferred language"
+                                            dropdownLabelClassName="text-white"
                                             items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({
                                                 name: label,
                                                 value,
@@ -291,44 +328,59 @@ export default function RegistrationForm() {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2">
                                         <RadioComponent
                                             control={form.control}
                                             name="programming_level"
                                             options={LEVEL_OPTIONS}
                                             groupLabel="Programming Level"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
                                             name="has_participated_in_hackaubg"
                                             options={RADIO_OPTIONS}
                                             groupLabel="Have you participated in HackAUBG before?"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
                                             name="has_internship_interest"
                                             options={RADIO_OPTIONS}
                                             groupLabel="Are you interested in internships?"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
                                             name="has_participated_in_hackathons"
                                             options={RADIO_OPTIONS}
                                             groupLabel="Have you participated in hackathons before?"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
                                             name="has_previous_coding_experience"
                                             options={RADIO_OPTIONS}
                                             groupLabel="Do you have previous coding experience?"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <RadioComponent
                                             control={form.control}
                                             name="registration_type"
                                             options={REGISTRATION_TYPE_OPTIONS}
                                             groupLabel="Enter registration type"
                                             disabled={decodedToken?.team_name ? true : false}
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
+
                                         <InputComponent
                                             control={form.control}
                                             name="team_name"
@@ -336,6 +388,8 @@ export default function RegistrationForm() {
                                             type="text"
                                             placeholder="Enter your team name"
                                             disabled={isAdmin !== 'admin'}
+                                            labelClassName="text-white"
+                                            inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
@@ -345,10 +399,11 @@ export default function RegistrationForm() {
                                                 { label: 'No', value: false },
                                             ]}
                                             groupLabel="Do you agree to share your info with sponsors?"
+                                            groupClassName="text-white"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
-
-                                        <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
                                     </div>
+                                    <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
                                 </div>
                             </div>
                             <div className="flex justify-start mt-4">
@@ -360,17 +415,23 @@ export default function RegistrationForm() {
                                 </Button>
                             </div>
                             {data && (
-                                <p
-                                    onClick={onResendEmail}
-                                    style={{
-                                        cursor: canResendEmail ? 'pointer' : 'not-allowed',
-                                    }}
-                                >
-                                    Did not receive an email? Click here.
+                                <p className="text-[#A6AAB2] mt-4 text-sm">
+                                    Did not receive an email?{' '}
+                                    <span
+                                        onClick={onResendEmail}
+                                        className={`underline ${
+                                            canResendEmail
+                                                ? 'cursor-pointer text-white hover:text-[#A6AAB2] transition duration-200'
+                                                : 'cursor-not-allowed text-gray-500'
+                                        }`}
+                                    >
+                                        Click here
+                                    </span>{' '}
+                                    {canResendEmail ? '' : `(Wait ${secondsLeft}s)`}
                                 </p>
                             )}
                         </div>
-                        <div>{formFeedback}</div>
+                        <div className="text-sm">{formFeedback}</div>
                     </form>
                 </FormProvider>
             </div>
