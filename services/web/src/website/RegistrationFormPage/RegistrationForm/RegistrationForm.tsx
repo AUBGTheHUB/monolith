@@ -131,8 +131,6 @@ export default function RegistrationForm() {
         formFeedback = <p>Loading...</p>;
     } else if (isError && error instanceof Error) {
         formFeedback = <p>Error: {error.message}</p>;
-    } else if (!token) {
-        formFeedback = <p>Invalid registration link</p>;
     }
 
     useEffect(() => {
@@ -343,7 +341,7 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Have you participated in HackAUBG before?"
                                             groupClassName="text-white"
-                                            radioGroupClassName="text-[#A6AAB2]"
+                                            radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
@@ -351,7 +349,7 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Are you interested in internships?"
                                             groupClassName="text-white"
-                                            radioGroupClassName="text-[#A6AAB2]"
+                                            radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
@@ -359,7 +357,7 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Have you participated in hackathons before?"
                                             groupClassName="text-white"
-                                            radioGroupClassName="text-[#A6AAB2]"
+                                            radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                         <RadioComponent
                                             control={form.control}
@@ -367,7 +365,7 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Do you have previous coding experience?"
                                             groupClassName="text-white"
-                                            radioGroupClassName="text-[#A6AAB2]"
+                                            radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -400,7 +398,7 @@ export default function RegistrationForm() {
                                             ]}
                                             groupLabel="Do you agree to share your info with sponsors?"
                                             groupClassName="text-white"
-                                            radioGroupClassName="text-[#A6AAB2]"
+                                            radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                     </div>
                                     <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
