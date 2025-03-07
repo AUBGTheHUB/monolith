@@ -1,7 +1,6 @@
 /*
 To Do:
-- Is loading and error // invalid reg link??
-- Timer
+- Is loading
 - Error Messages ??
 Design:
  - make form fields transparent/dark blue color: #000912
@@ -9,7 +8,6 @@ Design:
  - lines: #233340
  - labels: #FFFFFF
  - text: #A6AAB2
- - stupid svg thing
  - resend email bs
  - order?
  - margins
@@ -226,7 +224,10 @@ export default function RegistrationForm() {
     }, [isAdmin]);
 
     return (
-        <div className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400">
+        <div
+            className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]"
+            style={{ backgroundImage: 'url("/verifyPage/background.png")' }}
+        >
             <div className="w-11/12 sm:w-4/5 flex items-start mb-24 mt-16">
                 <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
@@ -236,8 +237,13 @@ export default function RegistrationForm() {
                 <FormProvider {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-4 sm:px-6 py-6 border border-gray-700 rounded-lg shadow-md mb-16"
+                        className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-4 sm:px-6 py-6 border border-gray-700 rounded-lg shadow-md mb-16"
                     >
+                        <img
+                            src="/RegistrationForm/reg_line.svg"
+                            alt=""
+                            className="absolute top-[-1px] sm:top-[-2px] left-10 w-full h-auto z-10"
+                        />
                         <div>
                             <p className="text-white text-lg font-semibold mb-2 mt-12">Personal Info</p>
                             <hr className="mb-8 h-0.5 bg-[#233340] border-0" />
