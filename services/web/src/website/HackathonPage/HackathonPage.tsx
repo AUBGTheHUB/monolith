@@ -1,4 +1,3 @@
-import { Fragment } from 'react/jsx-runtime';
 import JurySection from './CarouselComponents/components/JurySection/components/JurySection';
 import MentorsSection from './CarouselComponents/components/MentorsSection/components/MentorsSection';
 import { Navigation } from './NavigationSection/Navigation';
@@ -17,10 +16,9 @@ export const HackathonPage = () => {
     const featureSwitches = useFeatureSwitches();
 
     return (
-        <Fragment>
+        <div className="bg-[#000a12]">
             <Navigation />
             <LandingSection />
-
             <JourneySection />
             <MentorsSection mentorsSwitch={featureSwitches.MentorsSwitch} />
             <JurySection jurySwitch={featureSwitches.JurySwitch} />
@@ -31,6 +29,6 @@ export const HackathonPage = () => {
             <HackathonSponsors sponsorsSwitch={featureSwitches.SponsorsSwitch} />
             <HackathonFAQSection />
             <Footer />
-        </Fragment>
+        </div>
     );
 };

@@ -19,7 +19,7 @@ export default function LandingSection() {
             style={{
                 backgroundImage: 'url("/verifyPage/background.png")',
                 backgroundSize: 'cover',
-                backgroundPosition: 'top',
+                backgroundPosition: 'right',
                 backgroundRepeat: 'repeat',
             }}
         >
