@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants';
-import { Navigation } from '@/website/HackathonPage/Navigation/Navigation';
+import { Navigation } from '@/website/HackathonPage/NavigationSection/Navigation';
 import { useQuery } from '@tanstack/react-query';
 
 export async function verifyToken(token: string) {
