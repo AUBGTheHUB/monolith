@@ -11,12 +11,17 @@ import { useFeatureSwitches } from '@/config';
 import JourneySection from './JourneySection/JourneySection';
 import HackathonFAQSection from './FAQSection/HackathonFAQ';
 import HackathonSponsors from './SponsorsSection/HackathonSponsors';
+import { Helmet } from 'react-helmet';
 
 export const HackathonPage = () => {
     const featureSwitches = useFeatureSwitches();
 
     return (
         <div className="bg-[#000a12]">
+            <Helmet>
+                <title>Hackathon Page</title>
+                <link rel="icon" href="faviconHack.ico" />
+            </Helmet>
             <Navigation />
             <LandingSection />
             <JourneySection />
