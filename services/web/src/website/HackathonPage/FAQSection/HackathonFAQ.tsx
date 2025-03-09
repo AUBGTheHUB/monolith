@@ -92,7 +92,7 @@ export default function HackathonFAQSection() {
     const [isOpenFaqId, setIsOpenFaqID] = useState(0);
 
     return (
-        <div className={`text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20`}>
+        <div className={`text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20`} id="faq">
             <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
                 <img src="./n.png" alt="" className="w-[1.6rem]" />
                 <h2>FAQ</h2>

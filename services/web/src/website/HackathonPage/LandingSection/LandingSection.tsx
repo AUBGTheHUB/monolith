@@ -42,7 +42,10 @@ export default function LandingSection() {
                         <div className="w-full z-20 absolute lg:top-[11rem] md:top-[8rem] top-[5rem] inset-x-0 flex justify-center items-center">
                             <img className="lg:w-1/2 w-[90%] z-10" src="/hackLanding/title.svg"></img>
                         </div>
-                        <div className="relative w-full min-h-[5rem] pt-[7rem] bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
+                        <div
+                            className="relative w-full min-h-[5rem] pt-[7rem] bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center"
+                            id="mission"
+                        >
                             <img className="absolute top-[0rem] w-full z-10" src="/hackLanding/space.svg"></img>
                             <div className="w-4/5 relative lg:top-[11rem] top-[10rem] inset-x-0 z-20 flex-column ">
                                 <div className="sm:text-4xl text-3xl sm:mb-5 mb-5 flex items-center ">
