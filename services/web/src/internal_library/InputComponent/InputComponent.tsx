@@ -59,7 +59,7 @@ export const InputComponent = <T extends FieldValues>({
                             value={type === 'number' ? field.value || '' : field.value}
                         />
                     </FormControl>
-                    <div className="min-h-[24px]">{error && <FormMessage>{error.message}</FormMessage>}</div>
+                    <div className="min-h-[24px] !mb-3">{error && <FormMessage>{error.message}</FormMessage>}</div>
                 </FormItem>
             )}
         />

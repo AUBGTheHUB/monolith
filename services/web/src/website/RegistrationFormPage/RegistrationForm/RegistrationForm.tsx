@@ -1,7 +1,3 @@
-/*
-To Do: mobile ver
-*/
-
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,7 +11,8 @@ import {
     PROGRAMMING_LANGUAGE_OPTIONS,
     RADIO_OPTIONS,
     REFERRAL_OPTIONS,
-    REGISTRATION_TYPE_OPTIONS,
+    REGISTRATION_TYPE_OPTIONS_INV,
+    REGISTRATION_TYPE_OPTIONS_NO_INV,
     RegistrationInfo,
     ResendEmailType,
     TSHIRT_OPTIONS,
@@ -116,7 +113,7 @@ export default function RegistrationForm() {
 
     let formFeedback;
     if (isError && error instanceof Error) {
-        formFeedback = <p>Error: {error.message}</p>;
+        formFeedback = <p>{error.message}</p>;
     }
 
     useEffect(() => {
@@ -333,7 +330,7 @@ export default function RegistrationForm() {
                                         />
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 ">
                                         <RadioComponent
                                             control={form.control}
                                             name="programming_level"
@@ -348,8 +345,9 @@ export default function RegistrationForm() {
                                             options={RADIO_OPTIONS}
                                             groupLabel="Have you participated in HackAUBG before?"
                                             groupClassName="text-white"
-                                            radioGroupClassName=" text-[#A6AAB2]"
+                                            radioGroupClassName="text-[#A6AAB2]"
                                         />
+
                                         <RadioComponent
                                             control={form.control}
                                             name="has_internship_interest"
@@ -375,11 +373,15 @@ export default function RegistrationForm() {
                                             radioGroupClassName=" text-[#A6AAB2]"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 ">
                                         <RadioComponent
                                             control={form.control}
                                             name="registration_type"
-                                            options={REGISTRATION_TYPE_OPTIONS}
+                                            options={
+                                                decodedToken
+                                                    ? REGISTRATION_TYPE_OPTIONS_INV
+                                                    : REGISTRATION_TYPE_OPTIONS_NO_INV
+                                            }
                                             groupLabel="Enter registration type"
                                             disabled={decodedToken?.team_name ? true : false}
                                             groupClassName="text-white"
@@ -448,7 +450,7 @@ export default function RegistrationForm() {
                                 </p>
                             )}
                         </div>
-                        <div className="text-sm text-red-600">{formFeedback}</div>
+                        <div className="text-sm text-red-600 mt-4">{formFeedback}</div>
                     </form>
                 </FormProvider>
             </div>

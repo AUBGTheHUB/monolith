@@ -62,7 +62,7 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <div className="min-h-6">
+                    <div className="min-h-6 !mb-3">
                         <FormMessage />
                     </div>
                 </FormItem>

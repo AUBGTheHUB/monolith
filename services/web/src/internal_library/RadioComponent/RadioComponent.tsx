@@ -60,12 +60,14 @@ export const RadioComponent = <T extends FieldValues>({
                                             data-testid={`radio-item-${option.value}`}
                                         />
                                     </FormControl>
-                                    <FormLabel className={labelClassName}>{option.label}</FormLabel>
+                                    <FormLabel className={cn(`cursor-pointer`, labelClassName)}>
+                                        {option.label}
+                                    </FormLabel>
                                 </FormItem>
                             ))}
                         </RadioGroup>
                     </FormControl>
-                    <div className="min-h-[24px]">{error && <FormMessage>{error.message}</FormMessage>}</div>
+                    <div className="min-h-[24px] !mb-3">{error && <FormMessage>{error.message}</FormMessage>}</div>
                 </FormItem>
             )}
         />

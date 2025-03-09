@@ -34,9 +34,15 @@ export const PROGRAMMING_LANGUAGE_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
-export const REGISTRATION_TYPE_OPTIONS = [
+export const REGISTRATION_TYPE_OPTIONS_NO_INV = [
     { label: 'Team', value: 'admin' },
     { label: 'Individual', value: 'random' },
+];
+
+export const REGISTRATION_TYPE_OPTIONS_INV = [
+    { label: 'Team', value: 'admin' },
+    { label: 'Individual', value: 'random' },
+    { label: 'Invitation', value: 'invite_link' },
 ];
 
 export const UNIVERSITY_OPTIONS = [

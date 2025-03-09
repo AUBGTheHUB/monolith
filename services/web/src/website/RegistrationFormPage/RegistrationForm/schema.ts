@@ -43,7 +43,7 @@ const baseSchema = z.object({
 });
 
 const adminSchema = baseSchema.extend({
-    registration_type: z.literal('admin'),
+    registration_type: z.enum(['admin', 'invite_link']),
     team_name: z
         .string()
         .min(3, 'Team name must be at least 3 characters.')
