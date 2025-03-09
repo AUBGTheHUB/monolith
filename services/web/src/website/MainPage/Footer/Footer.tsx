@@ -1,4 +1,4 @@
-const SECTIONS_CLASS_NAME = 'w-full md:w-1/2 lg:mx-8 lg:w-1/4 my-5 lg:my-0';
+const SECTIONS_CLASS_NAME = 'w-full md:w-1/2 lg:mr-8 lg:w-1/4 my-5 lg:my-0';
 const SECTIONS_TITLE_CLASS_NAME = 'text-base my-4 select-none font-bold text-white';
 const OPTIONS_CLASS_NAME = 'text-base my-4 text-[#E6E6E6]';
 const LINKS_CLASS_NAME = 'hover:underline hover:text-white';
@@ -11,7 +11,7 @@ export const Footer = () => {
                     src="/footer/footer_blob.svg"
                     className="absolute blur-[12.5rem] h-[852px] top-[-35rem] right-[15rem] opacity-40 rotate-45"
                 />
-                <div className="flex flex-wrap lg:flex-nowrap w-[60%] z-10">
+                <div className="flex flex-wrap lg:flex-nowrap w-full mx-8 sm:w-[60%] sm:mx-0 z-10">
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Links</h3>
                         <a href="/" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
@@ -70,8 +70,8 @@ export const Footer = () => {
                         </p>
                     </div>
                 </div>
-                <span className="mt-2 w-[60%] h-[1px] bg-[#4D4D4D]" />
-                <div className="w-[60%] ">
+                <span className="mt-2 w-full mx-8 sm:mx-0 sm:w-[60%] h-[1px] bg-[#4D4D4D]" />
+                <div className="w-full mx-8 sm:mx-0 sm:w-[60%]">
                     <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2025</p>
                 </div>
             </div>
