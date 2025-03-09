@@ -42,7 +42,7 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
 
     if (jurySwitch) {
         return (
-            <div className="bg-[#000912] py-10 relative">
+            <div className="bg-[#000912] py-10 relative" id="jury">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
@@ -71,7 +71,7 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
         );
     } else {
         return (
-            <div className="bg-[#000912] py-10 relative">
+            <div className="bg-[#000912] py-10 relative" id="jury">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
                         <img src="./n.png" alt="" className="w-[1.6rem]" />
