@@ -32,6 +32,8 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
     items,
     control,
 }: DropdownComponentProps<T>) {
+    const effectiveSelectItemClassName = `${selectItemClassName ? selectItemClassName + ' ' : ''}cursor-pointer`;
+
     return (
         <FormField
             control={control}
@@ -46,10 +48,10 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent className={selectContentClassName}>
-                            <SelectGroup className="">
+                            <SelectGroup>
                                 {items.map((item) => (
                                     <SelectItem
-                                        className={selectItemClassName}
+                                        className={effectiveSelectItemClassName}
                                         key={item.value}
                                         value={item.value}
                                         data-testid={`dropdown-item-${item.value}`}

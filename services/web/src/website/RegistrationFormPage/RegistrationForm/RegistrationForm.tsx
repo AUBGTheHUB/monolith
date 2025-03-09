@@ -1,18 +1,5 @@
 /*
-To Do:
-- Is loading
-- Error Messages ??
-Design:
- - make form fields transparent/dark blue color: #000912
- - borders:  #233340
- - lines: #233340
- - labels: #FFFFFF
- - text: #A6AAB2
- - bg blue? #000912
- - resend email bs
- - order?
- - margins
- - mobile
+To Do: mobile ver
 */
 
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
@@ -35,11 +22,12 @@ import {
     UNIVERSITY_OPTIONS,
 } from './constants';
 import { API_URL } from '@/constants';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Loader2 } from 'lucide-react';
 
 interface DecodedToken {
     sub: string;
@@ -99,6 +87,7 @@ export default function RegistrationForm() {
     const [canResendEmail, setCanResendEmail] = useState(false);
     const [resendTimerStart, setResendTimerStart] = useState<number | null>(null);
     const [secondsLeft, setSecondsLeft] = useState(90);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
         if (resendTimerStart !== null) {
@@ -126,18 +115,23 @@ export default function RegistrationForm() {
     });
 
     let formFeedback;
-    if (isLoading) {
-        formFeedback = <p>Loading...</p>;
-    } else if (isError && error instanceof Error) {
+    if (isError && error instanceof Error) {
         formFeedback = <p>Error: {error.message}</p>;
     }
 
     useEffect(() => {
-        console.log('isLoading', isLoading);
-        console.log('isError', isError);
-        console.log('error', error);
-        console.log('data', data);
-    }, [isLoading, isError, error, data]);
+        if (data) {
+            setIsSubmitted(true);
+            toast.success('Registration successful', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+        }
+    }, [data]);
 
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
@@ -229,7 +223,7 @@ export default function RegistrationForm() {
             className="w-full flex flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]"
             style={{ backgroundImage: 'url("/verifyPage/background.png")' }}
         >
-            <div className="w-11/12 sm:w-4/5 flex items-start mb-24 mt-16">
+            <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
                 <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
             </div>
@@ -238,12 +232,12 @@ export default function RegistrationForm() {
                 <FormProvider {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-4 sm:px-6 py-6 border border-gray-700 rounded-lg shadow-md mb-16"
+                        className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-5 sm:px-14 py-8 border border-gray-700 rounded-lg shadow-md mb-16"
                     >
                         <img
                             src="/RegistrationForm/reg_line.svg"
                             alt=""
-                            className="absolute top-[-1px] sm:top-[-2px] left-10 w-full h-auto z-10"
+                            className="absolute top-[-1px] sm:top-[-2px]  w-full h-auto z-10"
                         />
                         <div>
                             <p className="text-white text-lg font-semibold mb-2 mt-12">Personal Info</p>
@@ -419,10 +413,22 @@ export default function RegistrationForm() {
                             </div>
                             <div className="flex justify-start mt-4">
                                 <Button
+                                    disabled={isLoading || isSubmitted}
                                     type="submit"
-                                    className="mt-10 text-white border-2 border-sky-600 rounded-full bg-transparent hover:bg-sky-600 transition-colors duration-500 hover:text-white"
+                                    className={`mt-10 text-white border-2 border-sky-600 rounded-full bg-transparent hover:bg-sky-600 transition-colors duration-500 hover:text-white ${
+                                        isLoading || isSubmitted
+                                            ? 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed'
+                                            : ''
+                                    }`}
                                 >
-                                    Participate now
+                                    {isLoading ? (
+                                        <Fragment>
+                                            <Loader2 className="animate-spin" />
+                                            Please wait
+                                        </Fragment>
+                                    ) : (
+                                        'Participate now'
+                                    )}
                                 </Button>
                             </div>
                             {data && (
@@ -442,7 +448,7 @@ export default function RegistrationForm() {
                                 </p>
                             )}
                         </div>
-                        <div className="text-sm">{formFeedback}</div>
+                        <div className="text-sm text-red-600">{formFeedback}</div>
                     </form>
                 </FormProvider>
             </div>
