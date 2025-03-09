@@ -3,6 +3,7 @@ import { z } from 'zod';
 const baseSchema = z.object({
     name: z
         .string()
+        .min(1, { message: 'Name is required.' })
         .min(3, { message: 'Name must be at least 3 characters long.' })
         .max(50, { message: 'Name cannot exceed 50 characters.' })
         .regex(/^[a-zA-Z\s]+$/, {
@@ -11,11 +12,12 @@ const baseSchema = z.object({
 
     email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
 
-    tshirt_size: z.string().min(1, { message: 'Size is required.' }),
+    tshirt_size: z.string().min(1, { message: 'Please select an option.' }),
     university: z.string().min(1, { message: 'University is required.' }),
 
     location: z
         .string()
+        .min(1, { message: 'Location is required.' })
         .min(3, { message: 'Location must be at least 3 characters long.' })
         .max(100, { message: 'Location cannot exceed 100 characters.' }),
 
@@ -27,20 +29,25 @@ const baseSchema = z.object({
 
     source_of_referral: z.string().min(1, { message: 'Please select an option.' }),
     programming_language: z.string().min(1, { message: 'Please select an option.' }),
-    programming_level: z.string().min(1, { message: 'Please select an option.' }),
+    programming_level: z
+        .string({ required_error: 'Please select an option.' })
+        .nonempty({ message: 'Please select an option.' }),
 
     has_participated_in_hackaubg: z.boolean({ message: 'Please select an option.' }),
     has_internship_interest: z.boolean({ message: 'Please select an option.' }),
     has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
     has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
-    share_info_with_sponsors: z.boolean().refine((value) => value === true, {
+    share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }).refine((value) => value === true, {
         message: 'You must agree to share your information with sponsors.',
     }),
 });
 
 const adminSchema = baseSchema.extend({
     registration_type: z.literal('admin'),
-    team_name: z.string().min(3, 'Team name must be at least 3 characters.'),
+    team_name: z
+        .string()
+        .min(3, 'Team name must be at least 3 characters.')
+        .max(30, { message: 'Team name cannot exceed 30 characters.' }),
 });
 
 const nonAdminSchema = baseSchema.extend({

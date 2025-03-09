@@ -15,6 +15,8 @@ type DropdownComponentProps<T extends FieldValues = FieldValues> = {
     dropdownLabelClassName?: string;
     selectValueClassName?: string;
     selectItemClassName?: string;
+    formControlClassName?: string;
+    selectContentClassName?: string;
     items: DropdownItem[];
 };
 
@@ -25,6 +27,8 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
     dropdownLabelClassName,
     selectValueClassName,
     selectItemClassName,
+    formControlClassName,
+    selectContentClassName,
     items,
     control,
 }: DropdownComponentProps<T>) {
@@ -36,13 +40,13 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                 <FormItem>
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
+                        <FormControl className={formControlClassName}>
                             <SelectTrigger data-testid="trigger">
                                 <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                            <SelectGroup>
+                        <SelectContent className={selectContentClassName}>
+                            <SelectGroup className="">
                                 {items.map((item) => (
                                     <SelectItem
                                         className={selectItemClassName}

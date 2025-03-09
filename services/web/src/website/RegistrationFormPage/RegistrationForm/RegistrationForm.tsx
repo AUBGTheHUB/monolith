@@ -8,6 +8,7 @@ Design:
  - lines: #233340
  - labels: #FFFFFF
  - text: #A6AAB2
+ - bg blue? #000912
  - resend email bs
  - order?
  - margins
@@ -291,6 +292,8 @@ export default function RegistrationForm() {
                                     label="University"
                                     placeholder="Select your university"
                                     dropdownLabelClassName="text-white"
+                                    selectContentClassName="bg-[#000912] text-white border border-[#233340]"
+                                    formControlClassName="bg-[#000912] border border-[#233340]"
                                     items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                 />
                             </div>
@@ -306,8 +309,8 @@ export default function RegistrationForm() {
                                             label="T-Shirt Size"
                                             placeholder="Select your size"
                                             dropdownLabelClassName="text-white"
-                                            selectValueClassName="" // Styles the dropdown trigger
-                                            selectItemClassName="" // Styles dropdown items
+                                            selectContentClassName="bg-[#000912] text-white border border-[#233340]"
+                                            formControlClassName="bg-[#000912] border border-[#233340]"
                                             items={TSHIRT_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                         />
 
@@ -317,6 +320,8 @@ export default function RegistrationForm() {
                                             label="Source of Referral"
                                             placeholder="How did you hear about us?"
                                             dropdownLabelClassName="text-white"
+                                            selectContentClassName="bg-[#000912] text-white border border-[#233340]"
+                                            formControlClassName="bg-[#000912] border border-[#233340]"
                                             items={REFERRAL_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                         />
                                         <DropdownComponent
@@ -325,6 +330,8 @@ export default function RegistrationForm() {
                                             label="Programming Language"
                                             placeholder="Select your preferred language"
                                             dropdownLabelClassName="text-white"
+                                            selectContentClassName="bg-[#000912] text-white border border-[#233340]"
+                                            formControlClassName="bg-[#000912] border border-[#233340]"
                                             items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({
                                                 name: label,
                                                 value,
