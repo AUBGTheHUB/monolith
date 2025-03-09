@@ -8,19 +8,19 @@
         "cover_picture": "/fintech.webp"
     },
     {
-        "title": "HackAUBG 5.0",
-        "tags": [
-            "hackathon",
-            "coding"
-        ],
-        "cover_picture": "/HackAUBG5.webp"
-    },
-    {
         "title": "HackAUBG 6.0",
         "tags": [
             "hackathon",
             "coding"
         ],
         "cover_picture": "/HackAUBG6.webp"
+    },
+    {
+        "title": "HackAUBG 5.0",
+        "tags": [
+            "hackathon",
+            "coding"
+        ],
+        "cover_picture": "/HackAUBG5.webp"
     }
 ]
