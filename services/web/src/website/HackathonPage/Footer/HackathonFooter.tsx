@@ -55,6 +55,14 @@ export const Footer = () => {
                         >
                             Youtube
                         </a>
+                        <a
+                            href="https://www.linkedin.com/company/the-hub-aubg/"
+                            className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Linkedin
+                        </a>
                     </div>
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Address</h3>

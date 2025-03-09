@@ -30,7 +30,7 @@ export const MobileNavComponent = () => {
                         </SheetTrigger>
                         <SheetContent className="z-[100]">
                             <div className={NAV_ITEM}>
-                                <a href="#about" className={NAV_ITEM_A}>
+                                <a href="#mission" className={NAV_ITEM_A}>
                                     <img src={about} className={NAV_ITEM_IMG} />
                                     About
                                 </a>
@@ -55,7 +55,7 @@ export const MobileNavComponent = () => {
                             </div>
                             <div className={`${NAV_ITEM}`}>
                                 <img src={participate} className={`${NAV_ITEM_IMG}`} />
-                                <a className="text-sky-600 hover:text-sky-600" href="#participate-now">
+                                <a className="text-sky-600 hover:text-sky-600" href="/hackathon/registration">
                                     Participate now
                                 </a>
                             </div>
