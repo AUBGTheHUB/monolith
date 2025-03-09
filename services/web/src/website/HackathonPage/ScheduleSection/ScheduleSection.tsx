@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 
 export default function ScheduleSection() {
     return (
-        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912] z-20">
+        <div className="relative w-full flex justify-center items-center font-mont bg-[#000912] z-20" id="schedule">
             <div className="absolute inset-0">
                 <img src="./schedule_bg.png" alt="" className="absolute w-full h-full object-cover  opacity-20" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#000912] via-transparent to-[#000912]" />
