@@ -126,6 +126,7 @@ export default function RegistrationForm() {
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
+                className: 'bg-[#000912] text-white',
             });
         }
     }, [data]);
@@ -150,6 +151,11 @@ export default function RegistrationForm() {
             registration_type: decodedToken?.team_name ? 'invite_link' : undefined,
             team_name: decodedToken?.team_name ?? '',
         },
+    });
+
+    const registrationType = useWatch({
+        control: form.control,
+        name: 'registration_type',
     });
 
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
@@ -182,6 +188,7 @@ export default function RegistrationForm() {
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
+                className: 'bg-[#000912] text-white',
             });
             return;
         }
@@ -200,6 +207,7 @@ export default function RegistrationForm() {
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
+            className: 'bg-[#000912] text-white',
         });
     };
 
@@ -433,7 +441,7 @@ export default function RegistrationForm() {
                                     )}
                                 </Button>
                             </div>
-                            {data && (
+                            {data && registrationType !== 'invite_link' && (
                                 <p className="text-[#A6AAB2] mt-4 text-sm">
                                     Did not receive an email?{' '}
                                     <span
