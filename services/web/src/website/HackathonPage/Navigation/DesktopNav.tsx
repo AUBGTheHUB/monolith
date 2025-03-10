@@ -6,7 +6,7 @@ export const DesktopNavComponent = () => {
         <div className="w-full h-[10%] bg-[rgba(0,0,0,0.5)] border-gray-600 py-5 sticky top-0 z-[100]">
             <div className="w-full flex flex-row justify-center items-center">
                 <div className="flex flex-row w-[70%] gap-7">
-                    <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="#mission" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         About
                     </a>
                     <a href="#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
