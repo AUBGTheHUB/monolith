@@ -52,10 +52,9 @@ const scheduleData = [
         day: 'Friday',
         events: [
             { time: '16:00', event: 'Registration' },
-            { time: '18:00', event: 'Opening Ceremony' },
-            { time: '19:00', event: 'Dinner and Brainstorming' },
-            { time: '21:00', event: 'Idea Pitching' },
-            { time: '21:30', event: 'Start Coding' },
+            { time: '18:00', event: 'Dinner' },
+            { time: '19:30', event: 'Opening Ceremony' },
+            { time: '21:00', event: 'Start Coding' },
         ],
     },
     {

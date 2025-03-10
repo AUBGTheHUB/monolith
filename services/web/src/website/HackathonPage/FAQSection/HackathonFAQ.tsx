@@ -7,28 +7,40 @@ interface FAQ {
 
 const faqs: FAQ[] = [
     {
-        question: 'What is a hackathon?',
-        answer: 'A hackathon is a design sprint-like event in which computer programmers and others involved in software development, including graphic designers, interface designers, project managers, domain experts, and others collaborate intensively on software projects.',
+        question: 'I want to participate! When is the deadline for registering?',
+        answer: 'Registration is open until Friday, March 21st.',
     },
     {
-        question: 'Who can participate in the hackathon?',
-        answer: "Anyone who is interested in coding, designing, or creating something new can participate in the hackathon. You don't need to be a professional developer to participate.",
+        question: 'How many people can be in a team?',
+        answer: 'The minimum number of people in a team is 4, but you can have up to 6 people in a team. The ideal team would consist of one or two software developers, a designer, and one or two business planners. Keep in mind that if your team is with less than 4 people we will have to place more people in your team',
     },
     {
-        question: 'What are the prizes for the hackathon?',
-        answer: 'The prizes for the hackathon are as follows: 1st Prize: $1000, 2nd Prize: $500, 3rd',
+        question: 'Can I register without a team?',
+        answer: 'Of course! If you are alone or if you only have 1 other teammate, you can register and a facilitator from the Hub’s organizing team will help you in finding more teammates.',
     },
     {
-        question: 'What is a hackathon?',
-        answer: 'A hackathon is a design sprint-like event in which computer programmers and others involved in software development, including graphic designers, interface designers, project managers, domain experts, and others collaborate intensively on software projects.',
+        question: 'Where will the Hackathon be held?',
+        answer: 'The Hackathon will be in American University in Bulgaria’s ABF Sports Hall, located on ul. Svoboda Bachvarova 12 in Blagoevgrad.',
     },
     {
-        question: 'Who can participate in the hackathon?',
-        answer: "Anyone who is interested in coding, designing, or creating something new can participate in the hackathon. You don't need to be a professional developer to participate.",
+        question: 'How much time will we have to develop our projects?',
+        answer: 'The brainstorming process starts on Friday at 21:00 and you will have until Sunday at 12:00 to submit your project. Make sure you keep an eye on the clock!',
     },
     {
-        question: 'What are the prizes for the hackathon?',
-        answer: 'The prizes for the hackathon are as follows: 1st Prize: $1000, 2nd Prize: $500, 3rd',
+        question: 'Is there a topic for the Hackathon?',
+        answer: 'Yes! However, it will be kept a secret until the Opening Ceremony on Friday.',
+    },
+    {
+        question: 'Can I start developing something in advance?',
+        answer: 'We advise you to not start developing in advance, since the project you will eventually develop has to be related to the theme of the Hackathon, which is announced at the opening ceremony. However, if you would like to research winning projects from previous years, feel free! You can also start brainstorming with your team well before the start of the Hackathon.',
+    },
+    {
+        question: 'What if I have an urgent question during the Hackathon? Where can I ask?',
+        answer: 'We will be setting up a Facebook group for the registered participants. There, you can ask questions during the event. In addition, the Hub members will be around at all times to answer any questions that pop up.',
+    },
+    {
+        question: 'Is there a specific technology or tech stack I need to use for the Hackathon?',
+        answer: 'No, there is not. You may use whatever you would like. Keep in mind, however, that the judges tend to reward the projects with more modern tech stacks more than others.',
     },
 ];
 

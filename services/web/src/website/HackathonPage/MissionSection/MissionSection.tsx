@@ -29,7 +29,7 @@ export default function MissionSection() {
                         </div>
                         <div className=" text-mont text-[#A9B4C3] lg:py-20 py-10 sm:text-lg">
                             <p>
-                                Over the course of 52 hours, you will work in teams to brainstorm and prototype your
+                                Over the course of 48 hours, you will work in teams to brainstorm and prototype your
                                 project idea based on the topic we will reveal during the Opening Ceremony, as well as
                                 pitch your project to a panel of judges. But you won’t be on your own - we will have a
                                 team of experienced mentors on hand to offer guidance and support throughout the event.
