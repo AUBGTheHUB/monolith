@@ -15,6 +15,8 @@ type DropdownComponentProps<T extends FieldValues = FieldValues> = {
     dropdownLabelClassName?: string;
     selectValueClassName?: string;
     selectItemClassName?: string;
+    formControlClassName?: string;
+    selectContentClassName?: string;
     items: DropdownItem[];
 };
 
@@ -25,9 +27,13 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
     dropdownLabelClassName,
     selectValueClassName,
     selectItemClassName,
+    formControlClassName,
+    selectContentClassName,
     items,
     control,
 }: DropdownComponentProps<T>) {
+    const effectiveSelectItemClassName = `${selectItemClassName ? selectItemClassName + ' ' : ''}cursor-pointer`;
+
     return (
         <FormField
             control={control}
@@ -36,16 +42,16 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                 <FormItem>
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
+                        <FormControl className={formControlClassName}>
                             <SelectTrigger data-testid="trigger">
                                 <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectContent className={selectContentClassName}>
                             <SelectGroup>
                                 {items.map((item) => (
                                     <SelectItem
-                                        className={selectItemClassName}
+                                        className={effectiveSelectItemClassName}
                                         key={item.value}
                                         value={item.value}
                                         data-testid={`dropdown-item-${item.value}`}
@@ -56,7 +62,7 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <div className="min-h-6">
+                    <div className="min-h-6 !mb-3">
                         <FormMessage />
                     </div>
                 </FormItem>
