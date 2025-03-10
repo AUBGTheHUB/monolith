@@ -70,7 +70,7 @@ export default function AwardsSection() {
                     <div className="flex items-start w-full">
                         <span className="w-5 h-[2px] bg-[#009CF9] flex-shrink-0 mr-4 mt-[0.55rem]"></span>
                         <span className="w-full break-words">
-                            All participants will receive gift bags with swag from The Hub and all HackAUBG 6.0
+                            All participants will receive gift bags with swag from The Hub and all HackAUBG 7.0
                             partners!
                         </span>
                     </div>
