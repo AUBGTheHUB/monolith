@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button.tsx';
 
 export default function IdentitySection() {
     return (
-        <div className="mb-32" id="about-us">
+        <div className="mb-[48px]" id="about-us">
             <h2 className="font-mont font-semibold text-3xl text-primary mb-10">Who are we?</h2>
             <p className="font-hank md:text-[1.125rem] mb-10">
                 The Hub is a club at the American University in Bulgaria. We are a community of young and ambitious
