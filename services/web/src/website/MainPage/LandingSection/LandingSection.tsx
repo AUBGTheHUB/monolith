@@ -41,7 +41,7 @@ export default function LandingSection() {
             onMouseLeave={() => setIsHovered(false)}
         >
             <img
-                src="/landingSection/circuit.png"
+                src="/landingSection/circuit.webp"
                 alt="Circuit board"
                 className="absolute w-full h-full object-cover sm:opacity-30 opacity-5"
                 style={{
@@ -61,7 +61,7 @@ export default function LandingSection() {
             />
 
             <img
-                src="/landingSection/gradient-top.png"
+                src="/landingSection/gradient-top.webp"
                 alt="a gradient"
                 className="absolute hidden pointer-events-none sm:block h-[163rem] w-full right-[0-rem] z-0"
             />
