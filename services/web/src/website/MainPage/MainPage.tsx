@@ -41,7 +41,7 @@ export const MainPage = () => {
                 ></img>
                 <img
                     src="/footer/footer-gradient.png"
-                    className="absolute h-[70rem] bottom-[-15rem] right-[-23rem] pointer-events-none w-screen"
+                    className="absolute h-[70rem] bottom-[-19rem] sm:bottom-[-15rem] right-[-14rem] sm:right-[-23rem] pointer-events-none w-screen"
                 />
             </div>
             <Footer />
