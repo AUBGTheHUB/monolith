@@ -61,14 +61,9 @@ export default function LandingSection() {
             />
 
             <img
-                src="/landingSection/blob-blue.png"
-                alt="a blob"
-                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[93rem] right-[0rem] z-0"
-            />
-            <img
-                src="/landingSection/blob-cyan.png"
-                alt="a blob"
-                className="absolute hidden sm:block opacity-65 blur-[10rem] h-[53rem] w-[56rem] right-[-8rem] top-[30rem] z-0"
+                src="/landingSection/gradient-top.png"
+                alt="a gradient"
+                className="absolute hidden pointer-events-none sm:block h-[163rem] w-full right-[0-rem] z-0"
             />
             <div
                 className={`
