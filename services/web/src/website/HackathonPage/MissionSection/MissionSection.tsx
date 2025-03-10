@@ -1,6 +1,9 @@
 export default function MissionSection() {
     return (
-        <div className="absolute xxl:top-[50rem] xl:top-[50rem]  xs:top-[100vh] lg:top-[100vh] md:top-[54rem] sm:top-[100vh] top-[100vh] w-full lg:min-h-[50rem] min-h-[5rem] pt-[4rem]  bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center">
+        <div
+            id="about"
+            className="absolute xxl:top-[50rem] xl:top-[50rem]  xs:top-[100vh] lg:top-[100vh] md:top-[54rem] sm:top-[100vh] top-[100vh] w-full lg:min-h-[50rem] min-h-[5rem] pt-[4rem]  bg-gradient-to-b from-stone-950/0 from-10% via-hackBg/50 via-25%  to-hackBg to-50% z-20 flex justify-center"
+        >
             <div className="w-4/5 relative lg:top-[11rem] top-[5rem] inset-x-0  flex-column ">
                 <div className="sm:text-4xl text-3xl sm:mb-5 mb-5 flex items-center ">
                     <img src="./n.png" alt="" className="w-[1.6rem]" />
