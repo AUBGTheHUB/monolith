@@ -254,11 +254,13 @@ async def test_create_link_participant_succesful(
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
+    team_json = admin_resp.json()["team"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name=TEST_TEAM_NAME)
     jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
+        team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)
@@ -287,9 +289,12 @@ async def test_create_link_participant_team_capacity_exceeded(
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
+    team_json = admin_resp.json()["team"]
+
     jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
+        team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)
@@ -355,11 +360,13 @@ async def test_create_link_participant_team_name_mismatch(
     assert admin_resp.status_code == 201
 
     admin_resp_json = admin_resp.json()["participant"]
+    team_json = admin_resp.json()["team"]
 
     link_participant_body = generate_participant_request_body(registration_type="invite_link", team_name="testteam1")
     jwt_payload = JwtParticipantInviteRegistrationData(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
+        team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = JwtUtility.encode_data(data=jwt_payload)

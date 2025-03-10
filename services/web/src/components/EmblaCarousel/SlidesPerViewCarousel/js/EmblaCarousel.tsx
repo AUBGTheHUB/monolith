@@ -1,8 +1,9 @@
 import React from 'react';
-import { EmblaOptionsType } from 'embla-carousel';
+import { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel';
 import { DotButton, useDotButton } from './EmblaCarouselDotButton.tsx';
 import { PrevButton, NextButton, usePrevNextButtons } from './EmblaCarouselArrowButtons.tsx';
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel, { EmblaViewportRefType } from 'embla-carousel-react';
+import ClassNames from 'embla-carousel-class-names';
 
 /*
 Embla Carousel is a lightweight library for creating Carousels in react
@@ -16,13 +17,21 @@ check in their website.
 
 type PropType = {
     slides: React.ReactNode[] | React.ReactNode[][];
+    emblaApis?: EmblaCarouselType | undefined;
     options?: EmblaOptionsType;
     type: string;
+    emblaRefs?: EmblaViewportRefType;
 };
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-    const { slides, options, type } = props;
-    const [emblaRef, emblaApi] = useEmblaCarousel(options);
+    const { slides, options, type, emblaRefs, emblaApis } = props;
+    let emblaRef, emblaApi;
+    if (!emblaRefs && !emblaApis) {
+        [emblaRef, emblaApi] = useEmblaCarousel(options, [ClassNames()]);
+    } else {
+        emblaRef = emblaRefs;
+        emblaApi = emblaApis;
+    }
     const emblaClass = 'embla ' + type;
     const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(emblaApi);
 
@@ -39,9 +48,9 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                                 <div className="embla__slide__inner">{slide[1]}</div>
                             </div>
                         ))}
-                    {type == 'events' &&
+                    {type == 'jury' &&
                         slides.map((slide, index) => (
-                            <div className="embla__slide" key={index}>
+                            <div className="embla__slide " key={index}>
                                 {slide}
                             </div>
                         ))}

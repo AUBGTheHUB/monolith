@@ -180,6 +180,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
         # Verification is successful only up to capacity
         if i < HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON:
             assert verify_resp.status_code == status.HTTP_200_OK
+            # TODO: Here a feature switch is flipped on the background - we should revert it somehow
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"
@@ -323,6 +324,8 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
         # Verification is successful only up to capacity
         if i < HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS:
             assert verify_resp.status_code == status.HTTP_200_OK
+            # TODO: After this operation there is a random team being created together with a feature switch that is being
+            # switched
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"

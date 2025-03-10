@@ -5,6 +5,7 @@ from unittest.mock import Mock, AsyncMock
 import pytest
 from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
+from bson import ObjectId
 
 from src.database.db_manager import TEAMS_COLLECTION
 from src.database.repository.teams_repository import TeamsRepository
@@ -81,7 +82,7 @@ async def test_delete_team_success(
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified is False
 
@@ -122,7 +123,7 @@ async def test_update_team_success(
     result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
 
     assert isinstance(result, Ok)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.is_verified is True
     assert result.ok_value.name == TEST_TEAM_NAME
 
@@ -187,7 +188,7 @@ async def test_fetch_by_id_successful(
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
 
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == ObjectId(mock_obj_id)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 

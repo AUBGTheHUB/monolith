@@ -1,11 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Fragment } from 'react/jsx-runtime';
 
-const HACKAUBG_SECTION_SWITCH = false;
-
-export default function HackAUBGSection() {
+export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: boolean }) {
     return (
-        <div className="flex flex-col bg-white rounded-2xl justify-center relative z-10">
+        <div className="flex flex-col bg-white rounded-2xl justify-center relative z-10" id="hackAUBG">
             <div className="sm:w-3/5 w-11/12 flex mx-auto mb-4">
                 <p className="font-mont sm:text-2xl text-3xl font-semibold text-blue-950 mt-8">HackAUBG</p>
             </div>
@@ -21,20 +19,22 @@ export default function HackAUBGSection() {
                                 The biggest student-organized hackathon as of now.
                             </p>
                         </div>
-                        <div className="flex row w-full justify-between">
+                        <div className="flex row w-full justify-between gap-2">
                             <div>
                                 <p className="text-blue-200 font-mont text-xs mt-3.5">
                                     More than 120 people participated last year.
                                 </p>
                             </div>
                             <div className="flex items-end">
-                                <Button
-                                    className="bg-transparent text-white border-white hover:text-white sm:hover:bg-white sm:hover:text-blue-700 transition duration-200"
-                                    variant="outline_mono"
-                                    size="round_sm"
-                                >
-                                    Participate
-                                </Button>
+                                <a href="hackathon">
+                                    <Button
+                                        className="bg-transparent text-white border-white hover:text-white sm:hover:bg-white sm:hover:text-blue-700 transition duration-200"
+                                        variant="outline_mono"
+                                        size="round_sm"
+                                    >
+                                        Participate
+                                    </Button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -46,7 +46,7 @@ export default function HackAUBGSection() {
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="flex flex-row w-[70%] lg:space-x--12 space-x-[-25px]">
-                                {HACKAUBG_SECTION_SWITCH ? (
+                                {mentorsSwitch ? (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border border-black rounded-full">
                                             <img src="../real-mentor1.png" alt="Mentor 1" />
@@ -73,18 +73,26 @@ export default function HackAUBGSection() {
                                 )}
                             </div>
                             <div className="w-3/5 h-full flex items-end justify-center select-none">
-                                <Button
-                                    className={`text-blue-700 border-blue-700 bg-transparent ${
-                                        HACKAUBG_SECTION_SWITCH
-                                            ? 'hover:bg-blue-700 hover:text-white'
-                                            : 'cursor-not-allowed opacity-50'
-                                    } transition duration-200`}
-                                    variant="outline_mono"
-                                    size="round_sm"
-                                    disabled={!HACKAUBG_SECTION_SWITCH}
-                                >
-                                    See all mentors
-                                </Button>
+                                {mentorsSwitch ? (
+                                    <a href="/hackathon">
+                                        <Button
+                                            className="text-blue-700 border-blue-700 bg-transparent sm:hover:bg-blue-700 sm:hover:text-white hover:bg-white hover:text-blue-700 transition duration-200"
+                                            variant="outline_mono"
+                                            size="round_sm"
+                                        >
+                                            See HackAUBG
+                                        </Button>
+                                    </a>
+                                ) : (
+                                    <Button
+                                        className="text-blue-700 border-blue-700 bg-transparent cursor-not-allowed opacity-50 transition duration-200"
+                                        variant="outline_mono"
+                                        size="round_sm"
+                                        disabled
+                                    >
+                                        See HackAUBG
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>

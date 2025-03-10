@@ -8,7 +8,7 @@ type EventTicketType = {
 
 export default function EventTicket({ imgSrc, title, tags }: EventTicketType) {
     return (
-        <div className="flex flex-col min-w-50 max-w-80 max-[450px]:max-w-full h-60 p-2 border rounded-2xl font-semibold">
+        <div className="flex flex-1 flex-col min-w-60 w-full sm:w-auto h-60 p-2 border rounded-2xl font-semibold">
             <div className="h-4/6 w-full">
                 <img src={imgSrc} alt="" className="object-cover w-full h-full rounded-xl" />
             </div>
