@@ -45,7 +45,7 @@ export default function MeetTheTeamSection() {
     return (
         <div className="meet-team">
             <img
-                src="/meetTheTeam/gradient-meet-the-team.png"
+                src="/meetTheTeam/gradient-meet-the-team.webp"
                 alt="a gradient"
                 className="z-0 absolute h-[2190.43px] top-[4rem] pointer-events-none w-full"
             />

@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="relative flex flex-col" id="footer">
             <div className="overflow-hidden relative flex w-full h-full bg-gradient-to-t to-[#0B2340] from-[#0a1320] justify-center py-20 flex-wrap z-10">
                 <img
-                    src="/footer/footer-gradient.png"
+                    src="/footer/footer-gradient.webp"
                     className="absolute h-[70rem] top-[-50rem] right-[-15rem] pointer-events-none w-screen"
                 />
                 <div className="flex flex-wrap lg:flex-nowrap w-full mx-8 sm:w-[60%] sm:mx-0 z-10">
