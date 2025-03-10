@@ -17,7 +17,7 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.database.repository.participants_repository import ParticipantsRepository
 from src.database.repository.teams_repository import TeamsRepository
 from src.database.transaction_manager import TransactionManager
-from src.environment import is_test_env, DOMAIN, PORT, is_local_env
+from src.environment import is_test_env, DOMAIN, is_local_env
 from src.server.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
@@ -67,12 +67,14 @@ class HackathonService:
     _RATE_LIMIT_SECONDS: Final[int] = 90
     """Number of seconds before a participant is allowed to resend their verification email, if they didn't get one."""
 
-    # TODO: Change to front-end
-    _PARTICIPANTS_VERIFICATION_ROUTE = "/api/v3/hackathon/participants/verify"
+    _PARTICIPANTS_VERIFICATION_ROUTE = "/hackathon/verification"
     """The front-end route for email verification"""
 
-    _PARTICIPANTS_REGISTRATION_ROUTE = "/hackathon/register"
+    _PARTICIPANTS_REGISTRATION_ROUTE = "/hackathon/registration"
     """The front-end route for hackathon registration"""
+
+    _FRONTEND_PORT = 3000
+    """The port on which the frontend is running"""
 
     def __init__(
         self,
@@ -369,7 +371,9 @@ class HackathonService:
 
         # Append the Jwt to the endpoint
         if is_local_env():
-            verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            verification_link = (
+                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            )
         else:
             verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
@@ -446,7 +450,9 @@ class HackathonService:
 
         # Append the Jwt to the endpoint
         if is_local_env():
-            invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            invite_link = (
+                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            )
         else:
             invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
