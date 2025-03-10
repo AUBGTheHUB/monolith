@@ -13,14 +13,14 @@ export default function LandingSection() {
         words: ['THE HUB'],
         loop: 15,
         typeSpeed: 80,
-        deleteSpeed: 50,
-        delaySpeed: 2000,
+        deleteSpeed: 100,
+        delaySpeed: 7000,
     });
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setFadeIn(true);
-        }, 800);
+        }, 400);
 
         return () => clearTimeout(timer);
     }, []);
