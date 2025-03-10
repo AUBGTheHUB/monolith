@@ -19,7 +19,7 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                                 The biggest student-organized hackathon as of now.
                             </p>
                         </div>
-                        <div className="flex row w-full justify-between">
+                        <div className="flex row w-full justify-between gap-2">
                             <div>
                                 <p className="text-blue-200 font-mont text-xs mt-3.5">
                                     More than 120 people participated last year.
