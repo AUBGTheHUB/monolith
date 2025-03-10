@@ -55,7 +55,7 @@ export const MobileNavComponent = () => {
                             </div>
                             <div className={`${NAV_ITEM}`}>
                                 <img src={participate} className={`${NAV_ITEM_IMG}`} />
-                                <a className="text-sky-600 hover:text-sky-600" href="/registration">
+                                <a className="text-sky-600 hover:text-sky-600" href="/hackathon/registration">
                                     Participate now
                                 </a>
                             </div>
