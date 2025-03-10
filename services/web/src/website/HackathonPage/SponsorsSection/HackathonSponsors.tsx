@@ -1,6 +1,6 @@
 import { Sponsors } from './constants';
 
-type SponsorRank = 'Platinum' | 'Gold' | 'Silver';
+type SponsorRank = 'Platinum' | 'Gold' | 'Silver' | 'Bronze' | 'Custom';
 
 export interface HackathonSponsorProps {
     rank: SponsorRank;
@@ -23,7 +23,16 @@ function SponsorCard({ sponsor, rank }: { sponsor: HackathonSponsorProps; rank: 
 }
 
 function SponsorSection({ rank, sponsors }: { rank: SponsorRank; sponsors: HackathonSponsorProps[] }) {
-    const rankColor = rank === 'Platinum' ? '#19A0F0' : rank === 'Gold' ? '#FFDE06' : '#92B1C9';
+    const rankColor =
+        rank === 'Platinum'
+            ? '#19A0F0'
+            : rank === 'Gold'
+              ? '#FFDE06'
+              : rank === 'Silver'
+                ? '#92B1C9'
+                : rank === 'Bronze'
+                  ? '#CD7F32'
+                  : '#FFFFFF';
     return (
         <div className="pb-20">
             <div>
@@ -51,11 +60,15 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
     const platinumSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Platinum');
     const goldSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Gold');
     const silverSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Silver');
+    const bronzeSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Bronze');
+    const customSponsors = Sponsors.filter((sponsor) => sponsor.rank === 'Custom');
 
     //Sort each category alphabetically
     platinumSponsors.sort((a, b) => a.name.localeCompare(b.name));
     goldSponsors.sort((a, b) => a.name.localeCompare(b.name));
     silverSponsors.sort((a, b) => a.name.localeCompare(b.name));
+    bronzeSponsors.sort((a, b) => a.name.localeCompare(b.name));
+    customSponsors.sort((a, b) => a.name.localeCompare(b.name));
 
     if (sponsorsSwitch === true) {
         return (
@@ -67,6 +80,8 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
                 <SponsorSection rank="Platinum" sponsors={platinumSponsors} />
                 <SponsorSection rank="Gold" sponsors={goldSponsors} />
                 <SponsorSection rank="Silver" sponsors={silverSponsors} />
+                <SponsorSection rank="Bronze" sponsors={bronzeSponsors} />
+                <SponsorSection rank="Custom" sponsors={customSponsors} />
             </div>
         );
     } else {
