@@ -109,4 +109,40 @@ export const Sponsors: HackathonSponsorProps[] = [
         logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/resolute-logo.png',
         websiteLink: 'https://google.com',
     },
+    {
+        name: 'MentorMate',
+        rank: 'Custom',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/Tuk-Tam-logo.png',
+        websiteLink: 'https://google.com',
+    },
+    {
+        name: 'Musala Soft',
+        rank: 'Custom',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/yettel.svg',
+        websiteLink: 'https://google.com',
+    },
+    {
+        name: 'Resolute',
+        rank: 'Custom',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/resolute-logo.png',
+        websiteLink: 'https://google.com',
+    },
+    {
+        name: 'MentorMate',
+        rank: 'Bronze',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/Tuk-Tam-logo.png',
+        websiteLink: 'https://google.com',
+    },
+    {
+        name: 'Musala Soft',
+        rank: 'Bronze',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/yettel.svg',
+        websiteLink: 'https://google.com',
+    },
+    {
+        name: 'Resolute',
+        rank: 'Bronze',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/resolute-logo.png',
+        websiteLink: 'https://google.com',
+    },
 ];
