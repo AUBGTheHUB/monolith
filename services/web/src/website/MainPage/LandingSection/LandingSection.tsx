@@ -79,7 +79,7 @@ export default function LandingSection() {
                 <div className="flex flex-col bg-transparent h-[100vh]">
                     <Navigation />
                     <div className="flex items-center justify-center font-mont z-10 h-[80%]">
-                        <div className="sm:w-2/5 w-11/12">
+                        <div className="sm:w-11/12 xl:w-2/5 w-11/12">
                             <div className="flex flex-col items-center justify-center">
                                 <p className="text-2xl text-[#9CBEFF] mb-[10px]">WELCOME TO</p>
                                 <h1 className="relative text-7xl sm:text-8xl font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent md:min-h-[96px] min-h-[72px]">
