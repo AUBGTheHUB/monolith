@@ -13,7 +13,7 @@ export const DesktopNavComponent = () => {
                     </a>
                 </div>
                 <div className="flex flex-row w-[70%] gap-7">
-                    <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="#mission" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         About
                     </a>
                     <a href="#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
@@ -28,7 +28,7 @@ export const DesktopNavComponent = () => {
                 </div>
                 <div>
                     <a
-                        href="#participate-now"
+                        href="/hackathon/registration"
                         className={`${NAV_ITEM_A} border-2 border-sky-600 rounded-3xl px-4 py-1 hover:text-white hover:bg-sky-600 transition-colors duration-500`}
                     >
                         Participate now
