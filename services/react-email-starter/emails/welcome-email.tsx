@@ -12,7 +12,7 @@ export const WelcomeEmail = () => (
                         src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png"
                         width="136"
                         height="40"
-                        alt="The Hub"
+                        alt="The Hub Logo"
                     />
                     <Hr style={hr} />
                     <Text style={title_team}>
@@ -33,7 +33,7 @@ export const WelcomeEmail = () => (
                         <code style={invite}>{`{invite_link}`}</code>
                     </Section>
                     <Text style={paragraph}>
-                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 6.0 Facebook
+                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 7.0 Facebook
                         group. That is where we&apos;ll share all the latest updates and instructions about the event.
                     </Text>
                     <Text style={paragraph}>

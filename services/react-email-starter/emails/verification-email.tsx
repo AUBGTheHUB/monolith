@@ -4,7 +4,7 @@ import * as React from 'react';
 export const VerificationEmail = () => (
     <Html>
         <Head />
-        <Preview>You&apos;re now verified for HackAUBG 7.0</Preview>
+        <Preview>Secure your spot at HackAUBG 7.0</Preview>
         <Body style={main}>
             <Container style={container}>
                 <Section style={box}>
@@ -12,7 +12,7 @@ export const VerificationEmail = () => (
                         src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png"
                         width="136"
                         height="40"
-                        alt="The Hub"
+                        alt="The Hub Logo"
                     />
                     <Hr style={hr} />
                     <Text style={title_team}>
