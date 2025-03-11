@@ -239,10 +239,20 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
     }, [isAdmin]);
     if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
         return (
-            <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
-                <div className="text-3xl sm:text-4xl flex items-center gap-4">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
-                    <h2>SPONSORS COMING SOON . . .</h2>
+            <div
+                className={`w-full flex bg-[url('/spaceBg.png')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
+        transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            >
+                <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
+                    <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
+                    <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
+                </div>
+                <div className="h-[45vh] flex w-[80%] justify-center items-center">
+                    <div className="text-white  flex h-[200px] w-full justify-center">
+                        <div className="bg-[#000b13] h-full rounded-md w-full border border-[#202d38] flex justify-center items-center font-mont text-2xl">
+                            <p className="text-center p-5">Registration is closed</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

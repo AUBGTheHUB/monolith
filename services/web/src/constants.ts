@@ -20,10 +20,10 @@ export interface FeatureSwitchesType {
 }
 
 export const FEATURE_SWITCHES: FeatureSwitchesType = {
-    MentorsSwitch: true,
+    MentorsSwitch: false,
     JurySwitch: false,
     SponsorsSwitch: false,
     RegSwitch: true,
-    isRegTeamsFull: false,
+    isRegTeamsFull: true,
     hackAUBGSectionSwitch: false,
 };
