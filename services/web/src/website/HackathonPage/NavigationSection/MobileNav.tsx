@@ -1,12 +1,10 @@
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
 import logo from '../../MainPage/Navigation/images/hublogo.png';
-
 import about from './images/about.svg';
 import schedule from './images/schedule.svg';
 import grading from './images/grading.svg';
 import faq from './images/faq.svg';
 import participate from './images/participate.svg';
-
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
 
@@ -14,7 +12,6 @@ export const MobileNavComponent = () => {
     const NAV_ITEM_A = 'text-black hover:text-black';
     const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
     const NAV_ITEM_IMG = 'mt-[5px] float-left mr-[9px] h-[25px] w-[25px] align-middle';
-
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -25,15 +22,15 @@ export const MobileNavComponent = () => {
                 </a>
                 <h2 className="text-white font-medium text-2xl mr-[10px]">The Hub</h2>
                 <div className="h-[50px]">
-                    <Sheet open={isOpen}>
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTitle />
                         <SheetDescription />
                         <SheetTrigger className="h-[50px]">
                             <img src={hamburgerMenuIcon} onClick={() => setIsOpen(true)} />
                         </SheetTrigger>
-                        <SheetContent className="z-[100]">
+                        <SheetContent onCloseAutoFocus={(event) => event.preventDefault()}>
                             <div className={NAV_ITEM}>
-                                <a href="#mission" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                                <a href="#about" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                                     <img src={about} className={NAV_ITEM_IMG} />
                                     About
                                 </a>

@@ -22,7 +22,7 @@ export default function MobileNavComponent() {
                     </a>
                 </div>
             </div>
-            <Sheet open={isOpen}>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTitle />
                 <SheetDescription />
                 <SheetTrigger>

@@ -1,5 +1,4 @@
 import { API_URL } from '@/constants';
-import { Navigation } from '@/website/HackathonPage/Navigation/Navigation';
 import { useQuery } from '@tanstack/react-query';
 
 export async function verifyToken(token: string) {
@@ -39,13 +38,12 @@ export const VerificationComponent = () => {
     } else if (!token) {
         content = 'Link is invalid';
     } else {
-        content = 'Verification successful';
+        content = 'Verification successful! Please check your email!';
     }
 
     return (
-        <div style={{ backgroundImage: 'url("/verifyPage/background.png")' }} className="min-h-[100vh]">
-            <Navigation />
-            <div className="  bg-center flex items-center h-[75vh] sm:h-[85vh]">
+        <div className="min-h-[100vh] bg-[url('/spaceBg.png')]">
+            <div className="  bg-center flex items-center h-[100vh]">
                 <div className="text-white w-full flex h-[200px] justify-center">
                     <div className="bg-[#000b13] w-4/5 h-full rounded-md border border-[#202d38] flex justify-center items-center font-mont text-2xl">
                         <p className="text-center p-5">{content}</p>

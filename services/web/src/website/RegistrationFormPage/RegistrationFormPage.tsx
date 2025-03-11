@@ -1,6 +1,6 @@
 import { Fragment } from 'react/jsx-runtime';
 import RegistrationForm from './RegistrationForm/RegistrationForm';
-import { Navigation } from '../HackathonPage/Navigation/Navigation';
+import { Navigation } from './NavigationSection/Navigation';
 
 export const FormPage = () => {
     return (
