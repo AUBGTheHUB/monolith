@@ -1,14 +1,6 @@
 export default function AwardsSection() {
     return (
-        <div
-            className="w-full flex flex-col items-center font-mont bg-[#000912] sm:py-10 relative"
-            style={{
-                backgroundImage: "url('/AwardsSection/awards_bg.png')",
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-            }}
-        >
+        <div className="w-full flex flex-col items-center font-mont bg-[#000912] sm:py-10 relative bg-[url('/AwardsSection/awards_bg.png')] bg-cover bg-center bg-no-repeat">
             <div className="w-4/5 flex items-start mb-32">
                 <img src="./n.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">AWARDS</p>
