@@ -23,7 +23,7 @@ export const FEATURE_SWITCHES: FeatureSwitchesType = {
     MentorsSwitch: false,
     JurySwitch: false,
     SponsorsSwitch: false,
-    RegSwitch: true,
+    RegSwitch: false,
     isRegTeamsFull: true,
     hackAUBGSectionSwitch: false,
 };
