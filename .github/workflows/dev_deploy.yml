@@ -123,7 +123,7 @@ jobs:
         with:
           name: monolith
           file: docker-swarm-stack.yml
-          host: ${{vars.DOMAIN}}
+          host: ${{secrets.VPS_IP}}
           user: deploy
           ssh_key: ${{secrets.DEV_DEPLOY_SSH_PRIVATE_KEY}}
           env_file: ./envfile

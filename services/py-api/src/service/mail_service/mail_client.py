@@ -66,7 +66,7 @@ class ResendMailClient(MailClient):
     ) -> None:
         # Prepare the email parameters
         params = {
-            "from": f"THE HUB <{sender}>",
+            "from": f"THE HUB AUBG <{sender}>",
             "to": [receiver],
             "subject": subject,
             content_type: body_content,

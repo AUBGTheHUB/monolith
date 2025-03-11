@@ -10,7 +10,7 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
             <div className="flex flex-col items-center gap-5 sm:w-3/5 w-11/12 mx-auto">
                 <div className="flex flex-wrap lg:flex-nowrap justify-between items-center w-full max-w-[75rem] gap-5">
                     <div className="w-full lg:w-1/4 h-[15rem] flex flex-col items-center justify-center border border-slate-300 box-border p-5 text-center rounded-3xl">
-                        <p className="font-mont text-8xl font-semibold text-blue-700">52</p>
+                        <p className="font-mont text-8xl font-semibold text-blue-700">48</p>
                         <p className="font-mont text-1xl text-blue-950">Hours to create a solution</p>
                     </div>
                     <div className="w-full lg:w-3/4 h-[15rem] flex flex-col items-baseline justify-end border rounded-3xl p-5 bg-[url('/participate.png')] bg-cover bg-center">

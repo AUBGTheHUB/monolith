@@ -237,7 +237,7 @@ export default function RegistrationForm() {
                 <FormProvider {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-5xl px-5 sm:px-14 py-8 border border-gray-700 rounded-lg shadow-md mb-16"
+                        className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-[70%] px-5 sm:px-14 py-8 border border-gray-700 rounded-lg shadow-md mb-16"
                     >
                         <img
                             src="/RegistrationForm/reg_line.svg"
