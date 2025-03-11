@@ -10,7 +10,7 @@ on:
   push:
     branches:
       - 'main'
-      - 'fix-deploy-action' #TODO: Remove this when done testing
+      - 'fix-deploy-action' #TODO:Remove this when done testing
     paths:
       # Back-end Paths that will trigger re-deployment
       - 'services/py-api/src/**'
