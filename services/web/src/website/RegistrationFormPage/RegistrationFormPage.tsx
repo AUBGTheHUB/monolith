@@ -1,9 +1,12 @@
 import { Fragment } from 'react/jsx-runtime';
 import RegistrationForm from './RegistrationForm/RegistrationForm';
 import { Navigation } from './NavigationSection/Navigation';
+import { useFeatureSwitches } from '@/config';
 import { Helmet } from 'react-helmet';
 
 export const FormPage = () => {
+    const featureSwitches = useFeatureSwitches();
+
     return (
         <Fragment>
             <Helmet>
@@ -11,7 +14,7 @@ export const FormPage = () => {
                 <link rel="icon" href="/faviconHack.ico" />
             </Helmet>
             <Navigation />
-            <RegistrationForm />
+            <RegistrationForm RegSwitch={featureSwitches.RegSwitch} isRegTeamsFull={featureSwitches.isRegTeamsFull} />
         </Fragment>
     );
 };
