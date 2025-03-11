@@ -24,6 +24,6 @@ export const FEATURE_SWITCHES: FeatureSwitchesType = {
     JurySwitch: false,
     SponsorsSwitch: false,
     RegSwitch: false,
-    isRegTeamsFull: true,
+    isRegTeamsFull: false,
     hackAUBGSectionSwitch: false,
 };
