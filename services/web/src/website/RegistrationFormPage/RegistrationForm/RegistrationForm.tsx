@@ -86,6 +86,15 @@ export default function RegistrationForm() {
     const [secondsLeft, setSecondsLeft] = useState(90);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+    const [fadeIn, setFadeIn] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeIn(true);
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
+
     useEffect(() => {
         if (resendTimerStart !== null) {
             const interval = setInterval(() => {
@@ -224,7 +233,10 @@ export default function RegistrationForm() {
     }, [isAdmin]);
 
     return (
-        <div className="w-full flex bg-[url('/spaceBg.png')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]">
+        <div
+            className={`w-full flex bg-[url('/spaceBg.png')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
+        transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+        >
             <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
                 <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
