@@ -1,7 +1,7 @@
 FROM python:3.12.6-bullseye AS builder
 
 # https://medium.com/@albertazzir/blazing-fast-python-docker-builds-with-poetry-a78a66f5aed0
-
+#TODO: Remove this line
 RUN pip install poetry
 
 ENV POETRY_NO_INTERACTION=1 \
