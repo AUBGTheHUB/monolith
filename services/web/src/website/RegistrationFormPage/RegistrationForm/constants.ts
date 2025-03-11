@@ -20,6 +20,7 @@ export const LEVEL_OPTIONS = [
 export const REFERRAL_OPTIONS = [
     { label: 'University', value: 'University' },
     { label: 'Friends', value: 'Friends' },
+    { label: 'Social media', value: 'Social media' },
     { label: 'I was on a previous edition of Hack AUBG', value: 'I was on a previous edition of Hack AUBG' },
     { label: 'Other', value: 'Other' },
 ];
