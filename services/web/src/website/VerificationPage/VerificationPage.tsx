@@ -6,8 +6,8 @@ export const VerificationPage = () => {
     return (
         <Fragment>
             <Helmet>
-                <title>Hackathon Page</title>
-                <link rel="icon" href="faviconHack.ico" />
+                <title>Hackathon 7.0</title>
+                <link rel="icon" href="/faviconHack.ico" />
             </Helmet>
             <VerificationComponent />
         </Fragment>
