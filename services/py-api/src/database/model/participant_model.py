@@ -7,6 +7,7 @@ from bson import ObjectId
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
 TSHIRT_SIZE = Literal[
+    "Extra Small (XS)",
     "Small (S)",
     "Medium (M)",
     "Large (L)",
