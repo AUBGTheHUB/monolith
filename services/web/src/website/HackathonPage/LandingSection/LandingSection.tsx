@@ -22,7 +22,7 @@ export default function LandingSection() {
                 className=" w-full h-auto lg:pb-[55rem] max-[1024px]:min-h-[100vh] pb-[55rem] relative"
                 style={{
                     backgroundImage: 'url("/verifyPage/background.png")',
-                    backgroundSize: 'cover',
+                    backgroundSize: 'contain',
                     backgroundPosition: 'right',
                     backgroundRepeat: 'repeat',
                 }}
