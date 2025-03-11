@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from 
 import { useState } from 'react';
 
 export const MobileNavComponent = () => {
-    const NAV_ITEM_A = 'text-black hover:text-black';
+    const NAV_ITEM_A = 'text-black hover:text-black flex items-center';
     const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
     const [isOpen, setIsOpen] = useState(false);
 
@@ -25,8 +25,8 @@ export const MobileNavComponent = () => {
                         </SheetTrigger>
                         <SheetContent onCloseAutoFocus={(event) => event.preventDefault()}>
                             <div className={NAV_ITEM}>
-                                <a href="#about" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
-                                    <CornerUpLeft />
+                                <a href="/hackathon" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                                    <CornerUpLeft className="pb-[2px] mr-[5px]" />
                                     Go back
                                 </a>
                             </div>
