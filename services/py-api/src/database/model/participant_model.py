@@ -25,6 +25,7 @@ ALLOWED_AGE = Annotated[int, Field(ge=16, le=99)]
 REFERRAL_SOURCES_LIST = Literal[
     "University",
     "Friends",
+    "Social media",
     "I was on a previous edition of Hack AUBG",
     "Other",
 ]
