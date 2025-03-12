@@ -89,7 +89,7 @@ function JourneySection() {
                                 <div
                                     key={index}
                                     ref={addToRefs}
-                                    className="absolute top-0 left-0 w-full"
+                                    className="absolute md:top-16 top-0 lg:top-0 left-0 w-full"
                                     style={{ zIndex: index + 1 }}
                                 >
                                     <DesktopJourneyModule title={entry.title} text={entry.text} />
