@@ -20,7 +20,7 @@ on:
 
       # Front-end paths that will trigger re-deployment
       - 'services/web/src/**'
-      - 'services/web/dev.Dockerfile'
+      - 'services/web/prod.Dockerfile'
       - 'services/web/package-lock.json'
       - 'services/web/package.json'
       - 'services/web/nginx.*.conf'
