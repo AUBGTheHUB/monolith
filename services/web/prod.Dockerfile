@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Copy first only the package.json and package-lock.json files to leverage Docker cache
 COPY package*.json ./
-#TODO: Remove this line when done
+#TODO: Remove this line when donej
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 RUN npm ci
 
