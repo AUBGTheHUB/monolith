@@ -25,7 +25,7 @@ export const DesktopNavComponent = () => {
                     </a>
                 </div>
                 <div className="flex flex-row w-[70%] gap-7">
-                    <a href="#mission" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                    <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         About
                     </a>
                     <a href="#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
