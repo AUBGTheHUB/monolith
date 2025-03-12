@@ -32,8 +32,11 @@ const OPTIONS: EmblaOptionsType = {
 
 export default function MeetTheTeamSection() {
     const [selected, setSelected] = useState('All');
+    const [carouselKey, setCarouselKey] = useState(0);
+
     const handleSelect = (value: string) => {
         setSelected(value);
+        setCarouselKey((prevKey) => prevKey + 1);
     };
 
     const initialSlides: React.ReactElement[] = hubbers
@@ -49,9 +52,9 @@ export default function MeetTheTeamSection() {
                 alt="a gradient"
                 className="z-0 absolute h-[2190.43px] top-[4rem] pointer-events-none w-full"
             />
-            <div className=" space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative ">
-                <h2 className="font-semibold text-3xl text-[#9cbeff] mb-10 ">Meet the team</h2>
-                <div className="flex flex-wrap gap-3 ">
+            <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative">
+                <h2 className="font-semibold text-3xl text-[#9cbeff] mb-10">Meet the team</h2>
+                <div className="flex flex-wrap gap-3">
                     {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) =>
                         selected === label ? (
                             <Button
@@ -76,7 +79,7 @@ export default function MeetTheTeamSection() {
                         ),
                     )}
                 </div>
-                <EmblaCarousel type="team" slides={SLIDES} options={OPTIONS} />
+                <EmblaCarousel key={carouselKey} type="team" slides={SLIDES} options={OPTIONS} />
             </div>
         </div>
     );
