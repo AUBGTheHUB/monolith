@@ -4,7 +4,6 @@ export const RADIO_OPTIONS = [
 ];
 
 export const TSHIRT_OPTIONS = [
-    { label: 'Extra Small (XS)', value: 'Extra Small (XS)' },
     { label: 'Small (S)', value: 'Small (S)' },
     { label: 'Medium (M)', value: 'Medium (M)' },
     { label: 'Large (L)', value: 'Large (L)' },
