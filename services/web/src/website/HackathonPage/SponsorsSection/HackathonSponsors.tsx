@@ -89,7 +89,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
             <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="text-3xl sm:text-4xl flex items-center gap-4">
                     <img src="./n.webp" alt="" className="w-[1.6rem]" />
-                    <h2>SPONSORS COMING SOON . . .</h2>
+                    <h2 className="tracking-[0.2em]">SPONSORS COMING SOON . . .</h2>
                 </div>
             </div>
         );
