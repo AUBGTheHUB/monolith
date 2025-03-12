@@ -15,10 +15,6 @@ export const VerificationEmail = () => (
                         alt="The Hub Logo"
                     />
                     <Hr style={hr} />
-                    <Text style={title_team}>
-                        Welcome to HackAUBG 7.0, <br />
-                        {`{participant_name}`}, from team {`{team_name}`}!<br />
-                    </Text>
                     <Text style={title_no_team}>
                         Welcome to HackAUBG 7.0, <br />
                         {`{participant_name}`}!<br />
@@ -60,6 +56,7 @@ const container = {
     margin: '0 auto',
     padding: '20px 0 48px',
     marginBottom: '64px',
+    maxWidth: '600px',
 };
 
 const box = {
@@ -100,15 +97,6 @@ const footer = {
     color: '#8898aa',
     fontSize: '12px',
     lineHeight: '16px',
-};
-
-const title_team = {
-    display: '{title_team}',
-    color: '#000000',
-    fontSize: '27px',
-    lineHeight: '1.5em',
-    textAlign: 'center' as const,
-    marginBottom: '30px',
 };
 
 const title_no_team = {
