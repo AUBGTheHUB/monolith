@@ -237,6 +237,11 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
             form.setValue('team_name', '');
         }
     }, [isAdmin]);
+
+    const currentDate = new Date();
+    const cutoffDate = new Date('2025-03-14T00:00:00');
+    const registrationMessage = currentDate < cutoffDate ? 'Registration is coming soon...' : 'Registration is closed';
+
     if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
         return (
             <div
@@ -250,7 +255,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                 <div className="h-[45vh] flex w-[80%] justify-center items-center">
                     <div className="text-white  flex h-[200px] w-full justify-center">
                         <div className="bg-[#000b13] h-full rounded-md w-full border border-[#202d38] flex justify-center items-center font-mont text-2xl">
-                            <p className="text-center p-5">Registration is closed</p>
+                            <p className="text-center p-5">{registrationMessage}</p>
                         </div>
                     </div>
                 </div>
