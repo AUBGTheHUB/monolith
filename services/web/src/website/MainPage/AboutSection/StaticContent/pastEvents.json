@@ -5,7 +5,7 @@
             "conference",
             "fintech"
         ],
-        "cover_picture": "/fintech.webp"
+        "cover_picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/fintech.webp"
     },
     {
         "title": "HackAUBG 6.0",
@@ -13,7 +13,7 @@
             "hackathon",
             "coding"
         ],
-        "cover_picture": "/HackAUBG6.webp"
+        "cover_picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/HackAUBG6.webp"
     },
     {
         "title": "HackAUBG 5.0",
@@ -21,6 +21,6 @@
             "hackathon",
             "coding"
         ],
-        "cover_picture": "/HackAUBG5.webp"
+        "cover_picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/HackAUBG5.webp"
     }
 ]

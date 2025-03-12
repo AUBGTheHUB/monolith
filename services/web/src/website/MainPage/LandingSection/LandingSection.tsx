@@ -61,7 +61,7 @@ export default function LandingSection() {
             />
 
             <img
-                src="/landingSection/gradient-top.webp"
+                src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/gradient-top.webp"
                 alt="a gradient"
                 className="absolute hidden pointer-events-none sm:block h-[163rem] w-full right-[0-rem] z-0"
             />
@@ -77,7 +77,7 @@ export default function LandingSection() {
                         <div className="sm:w-11/12 xl:w-2/5 w-11/12">
                             <div className="flex flex-col items-center justify-center">
                                 <p className="text-2xl text-[#9CBEFF] mb-[10px]">WELCOME TO</p>
-                                <h1 className="relative text-7xl sm:text-8xl font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent md:min-h-[96px] min-h-[72px]">
+                                <h1 className="relative text-7xl sm:text-8xl font-bold bg-gradient-to-b from-[#FFFFFF] to-[#33C8FF] bg-clip-text text-transparent md:min-h-[96px] min-h-[72px] text-center">
                                     {heading}
                                     <Cursor
                                         cursorBlinking
