@@ -28,7 +28,7 @@ export const Sponsors: HackathonSponsorProps[] = [
     {
         name: 'Carbon',
         rank: 'Gold',
-        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/carbon.png',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/carbon.webp',
         websiteLink: 'https://google.com',
     },
     {
@@ -70,7 +70,7 @@ export const Sponsors: HackathonSponsorProps[] = [
     {
         name: 'Eviden',
         rank: 'Silver',
-        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/eviden.png',
+        logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/eviden.webp',
         websiteLink: 'https://google.com',
     },
     {

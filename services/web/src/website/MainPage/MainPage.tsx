@@ -21,12 +21,12 @@ export const MainPage = () => {
                     </div>
                 </div>
                 <img
-                    src="/landingSection/gradient-top.webp"
+                    src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/gradient-top.webp"
                     alt="a gradient"
                     className="absolute pointer-events-none hidden sm:block h-[80rem] w-full top-[-30rem] right-[0rem] z-0"
                 />
                 <img
-                    src="/meetTheTeam/gradient-meet-the-team.webp"
+                    src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/gradient-meet-the-team.webp"
                     className="absolute pointer-events-none hidden sm:block h-[80rem] w-full bottom-[40rem] right-[0rem] rotate-210 z-0"
                 ></img>
             </div>
@@ -36,11 +36,11 @@ export const MainPage = () => {
             <div className="relative overflow-hidden">
                 <HackAUBGSection mentorsSwitch={featureSwitches.MentorsSwitch} />
                 <img
-                    src="/meetTheTeam/gradient-meet-the-team.webp"
+                    src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/gradient-meet-the-team.webp"
                     className="absolute pointer-events-none h-[1490.43px] w-[1505.76px] bottom-[0rem] right-[-8rem] rotate-210 z-0"
                 ></img>
                 <img
-                    src="/footer/footer-gradient.webp"
+                    src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/footer-gradient.webp"
                     className="absolute h-[70rem] bottom-[-19rem] sm:bottom-[-15rem] right-[-14rem] sm:right-[-23rem] pointer-events-none w-screen"
                 />
             </div>

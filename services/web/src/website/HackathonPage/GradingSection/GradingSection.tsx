@@ -10,7 +10,7 @@ export default function GradingSection() {
         <div className="relative w-full flex font-mont bg-[#000912] justify-center" id="grading-criteria">
             <div className="relative flex flex-col z-10 my-24 mx-3 sm:mx-0 w-[80%]">
                 <div className="sm:text-4xl text-3xl flex text-left items-center mb-7  mx-auto sm:mx-0">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <img src="./n.webp" alt="" className="w-[1.6rem]" />
                     <p className="text-white ml-5 tracking-[0.2em]">GRADING CRITERIA</p>
                 </div>
 

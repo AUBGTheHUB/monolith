@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import logo from './images/hublogo.png';
+import logo from './images/hublogo.webp';
 
 export const DesktopNavComponent = () => {
     const NAV_ITEM_A = 'text-white font-light font-mont';

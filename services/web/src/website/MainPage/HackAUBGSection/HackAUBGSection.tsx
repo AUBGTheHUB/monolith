@@ -13,7 +13,7 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                         <p className="font-mont text-8xl font-semibold text-blue-700">48</p>
                         <p className="font-mont text-1xl text-blue-950">Hours to create a solution</p>
                     </div>
-                    <div className="w-full lg:w-3/4 h-[15rem] flex flex-col items-baseline justify-end border rounded-3xl p-5 bg-[url('/participate.png')] bg-cover bg-center">
+                    <div className="w-full lg:w-3/4 h-[15rem] flex flex-col items-baseline justify-end border rounded-3xl p-5 bg-[url('https://hubarskibucket.s3.eu-central-1.amazonaws.com/the-hub-2025/website-elements/participate.webp')] bg-cover bg-center">
                         <div className="flex flex-col lg:w-3/4 sm:w-full">
                             <p className="font-mont text-2xl font-semibold text-white">
                                 The biggest student-organized hackathon as of now.
@@ -61,13 +61,13 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                                 ) : (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                         <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                         <div className="h-[45%] w-[45%] border  rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                     </Fragment>
                                 )}

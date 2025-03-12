@@ -1,5 +1,5 @@
 import { CornerUpLeft } from 'lucide-react';
-import logo from './images/hublogo.png';
+import logo from './images/hublogo.webp';
 import { useEffect, useState } from 'react';
 
 export const DesktopNavComponent = () => {

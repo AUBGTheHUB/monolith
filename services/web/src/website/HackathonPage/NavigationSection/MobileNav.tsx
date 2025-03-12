@@ -1,5 +1,5 @@
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
-import logo from '../../MainPage/Navigation/images/hublogo.png';
+import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import about from './images/about.svg';
 import schedule from './images/schedule.svg';
 import grading from './images/grading.svg';
