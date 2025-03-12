@@ -12,8 +12,8 @@ export const Recap = () => {
                         <iframe
                             className="video"
                             width="100%"
-                            height="600px"
-                            src={'https://www.youtube.com/embed/avP5xho4Yk0'}
+                            height="750px"
+                            src={'https://www.youtube.com/embed/UAE_0mkBYi0?si=cK_Jg0drEen2K2Wt'}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
                             title="Embedded youtube"

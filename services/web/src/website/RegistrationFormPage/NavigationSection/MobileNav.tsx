@@ -19,7 +19,7 @@ export const MobileNavComponent = () => {
 
     return (
         <nav
-            className={`sticky h-[10vh] top-0 z-[100] bg-[rgba(0,0,0,0.5)]" aria-label="Mobile Navigation  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            className={`sticky h-[10vh] top-0 z-[50] bg-[rgba(0,0,0,0.5)] aria-label="Mobile Navigation  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
         >
             <div className="flex justify-around items-center h-full">
                 <a href="/">
