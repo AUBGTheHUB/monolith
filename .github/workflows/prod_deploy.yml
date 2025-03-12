@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./services/web/
-          file: ./services/web/dev.Dockerfile
+          file: ./services/web/prod.Dockerfile
           push: true
           tags: |
             ghcr.io/aubgthehub/monolith-web:latest
