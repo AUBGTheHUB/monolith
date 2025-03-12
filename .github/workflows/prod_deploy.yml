@@ -10,7 +10,6 @@ on:
   push:
     branches:
       - 'production'
-      - 'test-prod-deploy' #TODO: Change this to 'production' when ready to deploy to production
     paths:
       # Back-end Paths that will trigger re-deployment
       - 'services/py-api/src/**'
@@ -36,7 +35,7 @@ permissions:
 
 jobs:
   build-and-push-images:
-    if: github.ref_name == 'test-prod-deploy' #TODO: Change this to 'production' when ready to deploy to production
+    if: github.ref_name == 'production'
 
     runs-on: ubuntu-latest
 
@@ -85,7 +84,7 @@ jobs:
             DOMAIN=${{vars.DOMAIN}}
 
   deploy-to-dev:
-    if: github.ref_name == 'test-prod-deploy' #TODO: Change this to 'production' when ready to deploy to production
+    if: github.ref_name == 'production'
 
     runs-on: ubuntu-latest
 
