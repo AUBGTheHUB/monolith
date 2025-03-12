@@ -1,14 +1,14 @@
 export default function AwardsSection() {
     return (
-        <div className="w-full flex flex-col items-center font-mont bg-[#000912] sm:py-10 relative bg-[url('/AwardsSection/awards_bg.png')] bg-cover bg-center bg-no-repeat">
+        <div className="w-full flex flex-col items-center font-mont bg-[#000912] sm:py-10 relative bg-[url('/AwardsSection/awards_bg.webp')] bg-cover bg-center bg-no-repeat">
             <div className="w-4/5 flex items-start mb-32">
-                <img src="./n.png" alt="" className="w-[1.6rem] mt-3" />
+                <img src="./n.webp" alt="" className="w-[1.6rem] mt-3" />
                 <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">AWARDS</p>
             </div>
             <div className="flex flex-col sm:flex-row justify-center  items-center sm:items-end w-[100%] space-x-0 sm:space-x-16 space-y-20 sm:space-y-0 mb-32 relative">
                 <div className="flex flex-col items-center">
                     <img
-                        src="/AwardsSection/blue_stone.png"
+                        src="/AwardsSection/blue_stone.webp"
                         alt=""
                         className="w-[19vw] sm:w-[4vw] mr-0 sm:mr-[3.2rem] mb-4"
                     />
@@ -21,7 +21,7 @@ export default function AwardsSection() {
                 </div>
                 <div className="flex flex-col items-center z-10 sm:!mb-0 !mb-16">
                     <img
-                        src="/AwardsSection/red_stone.png"
+                        src="/AwardsSection/red_stone.webp"
                         alt=""
                         className="w-[21vw] sm:w-[6vw] mr-0 sm:mr-[3.5rem] mb-[1.2rem]"
                     />
@@ -34,7 +34,7 @@ export default function AwardsSection() {
                 </div>
                 <div className="flex flex-col items-center !mt-0 sm:!mt-2 ">
                     <img
-                        src="/AwardsSection/white_stone.png"
+                        src="/AwardsSection/white_stone.webp"
                         alt=""
                         className="w-[17vw] sm:w-[3.5vw] mr-0 sm:mr-[3.2rem] mb-4"
                     />

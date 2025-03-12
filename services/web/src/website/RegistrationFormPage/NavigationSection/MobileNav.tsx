@@ -1,16 +1,26 @@
 import { CornerUpLeft } from 'lucide-react';
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
-import logo from '../../MainPage/Navigation/images/hublogo.png';
+import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const MobileNavComponent = () => {
     const NAV_ITEM_A = 'text-black hover:text-black flex items-center';
     const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
     const [isOpen, setIsOpen] = useState(false);
+    const [fadeIn, setFadeIn] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeIn(true);
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
-        <nav className="sticky h-[10vh] top-0 z-[100] bg-[rgba(0,0,0,0.5)]" aria-label="Mobile Navigation">
+        <nav
+            className={`sticky h-[10vh] top-0 z-[100] bg-[rgba(0,0,0,0.5)]" aria-label="Mobile Navigation  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+        >
             <div className="flex justify-around items-center h-full">
                 <a href="/">
                     <img src={logo} className="h-[50px]" />

@@ -1,21 +1,32 @@
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
-import logo from '../../MainPage/Navigation/images/hublogo.png';
+import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import about from './images/about.svg';
 import schedule from './images/schedule.svg';
 import grading from './images/grading.svg';
 import faq from './images/faq.svg';
 import participate from './images/participate.svg';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const MobileNavComponent = () => {
     const NAV_ITEM_A = 'text-black hover:text-black';
     const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
     const NAV_ITEM_IMG = 'mt-[5px] float-left mr-[9px] h-[25px] w-[25px] align-middle';
     const [isOpen, setIsOpen] = useState(false);
+    const [fadeIn, setFadeIn] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeIn(true);
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     return (
-        <nav className="sticky h-[10vh] top-0 z-[100] bg-[rgba(0,0,0,0.5)]" aria-label="Mobile Navigation">
+        <nav
+            className={`sticky h-[10vh] top-0 z-[50] bg-[rgba(0,0,0,0.5)] transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            aria-label="Mobile Navigation"
+        >
             <div className="flex justify-around items-center h-full">
                 <a href="/">
                     <img src={logo} className="h-[50px]" />

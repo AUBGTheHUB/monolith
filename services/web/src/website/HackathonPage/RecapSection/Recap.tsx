@@ -2,10 +2,10 @@ export const Recap = () => {
     return (
         <div className="relative w-full flex justify-center items-center font-mont bg-[#000912]">
             <div className="relative w-full lg:py-20 pb-20">
-                <div className="absolute sm:top-16 md:top-20 right-0 opacity-70 bg-[url('/orbits-recap-background.png')] bg-cover bg-no-repeat bg-[position:right_-5vw_top] h-[50vw] max-h-[600px] w-[50vw] max-w-[600px]" />
+                <div className="absolute sm:top-16 md:top-20 right-0 opacity-70 bg-[url('/orbits-recap-background.webp')] bg-cover bg-no-repeat bg-[position:right_-5vw_top] h-[50vw] max-h-[600px] w-[50vw] max-w-[600px]" />
                 <div className="w-[80%] mx-auto  relative">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center w-4/5">
-                        <img src="./n.png" alt="" className="w-[1.6rem]" />
+                        <img src="./n.webp" alt="" className="w-[1.6rem]" />
                         <p className="text-white ml-5 tracking-[0.2em] ">RECAP</p>
                     </div>
                     <div className="relative rounded-lg overflow-hidden bg-black/20">

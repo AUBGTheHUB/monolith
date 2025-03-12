@@ -1,4 +1,4 @@
-import logo from './images/hublogo.png';
+import logo from './images/hublogo.webp';
 
 const NAV_ITEM = 'py-[22.5px] px-[20px] text-lg ';
 const NAV_ITEM_A =

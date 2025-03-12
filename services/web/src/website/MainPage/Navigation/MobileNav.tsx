@@ -1,4 +1,4 @@
-import logo from './images/hublogo.png';
+import logo from './images/hublogo.webp';
 import hamburgerMenuIcon from './images/hamburger_menu.svg';
 import photoIcon from './images/past_events.svg';
 import threeDots from './images/departments.svg';
