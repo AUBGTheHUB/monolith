@@ -240,7 +240,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
     if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
         return (
             <div
-                className={`w-full flex bg-[url('/spaceBg.png')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
+                className={`w-full flex bg-[url('/spaceBg.webp')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
         transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             >
                 <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
@@ -259,7 +259,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
     } else {
         return (
             <div
-                className={`w-full flex bg-[url('/spaceBg.png')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
+                className={`w-full flex bg-[url('/spaceBg.webp')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
         transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             >
                 <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">

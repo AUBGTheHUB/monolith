@@ -74,7 +74,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
         return (
             <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <img src="./n.webp" alt="" className="w-[1.6rem]" />
                     <h2>Sponsors</h2>
                 </div>
                 <SponsorSection rank="Platinum" sponsors={platinumSponsors} />
@@ -88,7 +88,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
         return (
             <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="text-3xl sm:text-4xl flex items-center gap-4">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <img src="./n.webp" alt="" className="w-[1.6rem]" />
                     <h2>SPONSORS COMING SOON . . .</h2>
                 </div>
             </div>

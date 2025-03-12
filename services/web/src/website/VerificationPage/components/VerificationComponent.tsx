@@ -42,7 +42,7 @@ export const VerificationComponent = () => {
     }
 
     return (
-        <div className="min-h-[100vh] bg-[url('/spaceBg.png')]">
+        <div className="min-h-[100vh] bg-[url('/spaceBg.webp')]">
             <div className="  bg-center flex items-center h-[100vh]">
                 <div className="text-white w-full flex h-[200px] justify-center">
                     <div className="bg-[#000b13] w-4/5 h-full rounded-md border border-[#202d38] flex justify-center items-center font-mont text-2xl">

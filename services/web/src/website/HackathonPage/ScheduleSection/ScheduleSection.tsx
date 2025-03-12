@@ -4,12 +4,12 @@ export default function ScheduleSection() {
     return (
         <div className="relative w-full flex justify-center items-center font-mont bg-[#000912] z-20" id="schedule">
             <div className="absolute inset-0">
-                <img src="./schedule_bg.png" alt="" className="absolute w-full h-full object-cover  opacity-20" />
+                <img src="./schedule_bg.webp" alt="" className="absolute w-full h-full object-cover  opacity-20" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#000912] via-transparent to-[#000912]" />
             </div>
             <div className="relative w-4/5 flex flex-col z-10 my-24">
                 <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <img src="./n.webp" alt="" className="w-[1.6rem]" />
                     <p className="text-white ml-5 tracking-[0.2em]">SCHEDULE</p>
                 </div>
                 <div className="flex flex-col">

@@ -1,6 +1,6 @@
 import { CornerUpLeft } from 'lucide-react';
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
-import logo from '../../MainPage/Navigation/images/hublogo.png';
+import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useEffect, useState } from 'react';
 

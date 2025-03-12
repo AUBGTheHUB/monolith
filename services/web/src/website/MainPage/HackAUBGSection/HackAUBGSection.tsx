@@ -61,13 +61,13 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                                 ) : (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                         <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                         <div className="h-[45%] w-[45%] border  rounded-full bg-white">
-                                            <img src="../question-mark.png" alt="Question mark" />
+                                            <img src="../question-mark.webp" alt="Question mark" />
                                         </div>
                                     </Fragment>
                                 )}

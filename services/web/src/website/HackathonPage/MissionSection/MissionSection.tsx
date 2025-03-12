@@ -6,7 +6,7 @@ export default function MissionSection() {
         >
             <div className="w-4/5 relative lg:top-[11rem] top-[5rem] inset-x-0  flex-column ">
                 <div className="sm:text-4xl text-3xl sm:mb-5 mb-5 flex items-center ">
-                    <img src="./n.png" alt="" className="w-[1.6rem]" />
+                    <img src="./n.webp" alt="" className="w-[1.6rem]" />
                     <p className="text-white ml-5 tracking-[0.2em] font-normal">MISSION</p>
                 </div>
                 <div className=" text-mont text-[#A9B4C3] lg:py-20 py-10 sm:text-lg">
