@@ -491,7 +491,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                         Did not receive an email?
                                         <span
                                             onClick={onResendEmail}
-                                            className={`underline ${
+                                            className={`underline mx-1 ${
                                                 canResendEmail
                                                     ? 'cursor-pointer text-white hover:text-[#A6AAB2] transition duration-200'
                                                     : 'cursor-not-allowed text-gray-500'

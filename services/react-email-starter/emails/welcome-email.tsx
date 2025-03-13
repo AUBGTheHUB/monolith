@@ -8,29 +8,24 @@ export const WelcomeEmail = () => (
         <Body style={main}>
             <Container style={container}>
                 <Section style={box}>
-                    <Img
-                        src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png"
-                        width="136"
-                        height="40"
-                        alt="The Hub Logo"
-                    />
+                    <Section style={{ backgroundColor: '#365ED4', padding: '20px 48px' }}>
+                        <Img
+                            src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo-white.png"
+                            width="136"
+                            height="40"
+                            alt="The Hub Logo"
+                        />
+                    </Section>
                     <Hr style={hr} />
-                    <Text style={title_team}>
+                    <Text style={title}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participant_name}`}, from team {`{team_name}`}!<br />
-                    </Text>
-                    <Text style={title_no_team}>
-                        Welcome to HackAUBG 7.0, <br />
-                        {`{participant_name}`}!<br />
+                        {`{participant_greeting}`}!<br />
                     </Text>
                     <Text style={paragraph}>
                         Before the hackathon starts, there are a few <Link style={anchor}>important things:</Link>
                     </Text>
-                    <Section style={invite_link_visibility}>
-                        <Text style={paragraph}>
-                            Here is the invite link, so you can invite your teammates to join:
-                        </Text>
-                        <code style={invite}>{`{invite_link}`}</code>
+                    <Section style={invite_link}>
+                        <Text style={invite_link}>{`{invite_link_statement}`}</Text>
                     </Section>
                     <Text style={paragraph}>
                         To ensure you stay in the loop, we will invite you to join the Official HackAUBG 7.0 Facebook
@@ -85,6 +80,7 @@ const container = {
     margin: '0 auto',
     padding: '20px 0 48px',
     marginBottom: '64px',
+    maxWidth: '600px',
 };
 
 const box = {
@@ -103,8 +99,19 @@ const paragraph = {
     textAlign: 'left' as const,
 };
 
+const invite_link = {
+    color: '#525f7f',
+    fontSize: '16px',
+    lineHeight: '24px',
+    maxWidth: '600px',
+    textAlign: 'left' as const,
+    wordBreak: 'break-all' as const,
+    overflowWrap: 'break-word' as const,
+    whiteSpace: 'normal' as const,
+};
+
 const anchor = {
-    color: '#556cd6',
+    color: '#365ED4',
 };
 
 const footer = {
@@ -113,35 +120,10 @@ const footer = {
     lineHeight: '16px',
 };
 
-const title_team = {
-    display: '{title_team}',
+const title = {
     color: '#000000',
     fontSize: '27px',
     lineHeight: '1.5em',
     textAlign: 'center' as const,
     marginBottom: '30px',
-};
-
-const title_no_team = {
-    display: '{title_no_team}',
-    color: '#000000',
-    fontSize: '27px',
-    lineHeight: '1.5em',
-    textAlign: 'center' as const,
-    marginBottom: '30px',
-};
-
-const invite = {
-    display: 'inline-block',
-    padding: '16px 4.5%',
-    width: '90.5%',
-    backgroundColor: '#f4f4f4',
-    borderRadius: '5px',
-    border: '1px solid #eee',
-    color: '#333',
-    marginBottom: '15px',
-};
-
-const invite_link_visibility = {
-    display: '{invite_link_visibility}',
 };
