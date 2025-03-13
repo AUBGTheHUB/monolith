@@ -6,7 +6,7 @@ export const Recap = () => {
                 <div className="w-[80%] mx-auto  relative">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center w-4/5">
                         <img src="./n.webp" alt="" className="w-[1.6rem]" />
-                        <p className="text-white ml-5 tracking-[0.2em] ">RECAP</p>
+                        <p className="text-white ml-5 tracking-[0.2em] ">TRAILER</p>
                     </div>
                     <div className="relative rounded-lg overflow-hidden bg-black/20">
                         <iframe
