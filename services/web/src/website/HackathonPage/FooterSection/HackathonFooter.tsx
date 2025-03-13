@@ -13,7 +13,7 @@ export const Footer = () => {
                         <a href="/hackathon" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             Home
                         </a>
-                        <a href="#mission" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
+                        <a href="#about" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
                             Mission
                         </a>
                         <a href="#journey" className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`}>
