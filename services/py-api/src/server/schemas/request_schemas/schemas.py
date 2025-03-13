@@ -1,8 +1,8 @@
-from typing import Literal, Union
+from typing import Annotated, Literal, Union
 
 from bson import ObjectId
 from fastapi import HTTPException
-from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
+from pydantic import EmailStr, BaseModel, Field, ConfigDict, StringConstraints, field_validator
 from typing import Any, Literal, Optional, Union
 from fastapi.types import IncEx
 from src.database.model.participant_model import (
@@ -36,11 +36,11 @@ class BaseParticipantData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")
 
-    name: str
-    email: EmailStr
+    name: Annotated[str, StringConstraints(max_length=50, min_length=3)]
+    email: Annotated[EmailStr, StringConstraints(max_length=320, min_length=3)]
     tshirt_size: Optional[TSHIRT_SIZE] = None
     university: UNIVERSITIES_LIST
-    location: str
+    location: Annotated[str, StringConstraints(max_length=100, min_length=3)]
     age: ALLOWED_AGE
     source_of_referral: Optional[REFERRAL_SOURCES_LIST] = None
     programming_language: Optional[PROGRAMMING_LANGUAGES_LIST] = None
@@ -76,7 +76,7 @@ class BaseParticipantData(BaseModel):
 class AdminParticipantInputData(BaseParticipantData):
     registration_type: Literal["admin"]
     is_admin: Literal[True]
-    team_name: str
+    team_name: Annotated[str, StringConstraints(max_length=30, min_length=3)]
 
     @field_validator("team_name", mode="before")
     @classmethod
@@ -87,7 +87,7 @@ class AdminParticipantInputData(BaseParticipantData):
 class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
-    team_name: str
+    team_name: Annotated[str, StringConstraints(max_length=30, min_length=3)]
 
     @field_validator("team_name", mode="before")
     @classmethod
