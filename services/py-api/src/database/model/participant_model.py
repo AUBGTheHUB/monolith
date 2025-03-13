@@ -20,7 +20,8 @@ UNIVERSITIES_LIST = Literal[
     "Plovdiv University",
     "Other",
 ]
-ALLOWED_AGE = Annotated[int, Field(ge=16, le=99)]
+
+ALLOWED_AGE = Annotated[int, Field(ge=16, le=69)]
 
 REFERRAL_SOURCES_LIST = Literal[
     "University",
