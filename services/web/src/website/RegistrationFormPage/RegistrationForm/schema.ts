@@ -7,7 +7,7 @@ const baseSchema = z.object({
         .min(3, { message: 'Name must be at least 3 characters long.' })
         .max(50, { message: 'Name cannot exceed 50 characters.' })
         .regex(/^[a-zA-Z\u0400-\u04FF\s-]+$/, {
-            message: 'Name can only contain letters and spaces.',
+            message: `Name can only contain letters, spaces and '-'.`,
         }),
 
     email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
