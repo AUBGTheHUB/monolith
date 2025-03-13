@@ -1,7 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
     <head>
-        <link rel="preload" as="image" href="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png" />
+        <link
+            rel="preload"
+            as="image"
+            href="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo-white.png"
+        />
         <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
         <meta name="x-apple-disable-message-reformatting" />
         <!--$-->
@@ -48,13 +52,34 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <img
-                                            alt="The Hub Logo"
-                                            height="40"
-                                            src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png"
-                                            style="display: block; outline: none; border: none; text-decoration: none"
-                                            width="136"
-                                        />
+                                        <table
+                                            align="center"
+                                            width="100%"
+                                            border="0"
+                                            cellpadding="0"
+                                            cellspacing="0"
+                                            role="presentation"
+                                            style="background-color: #365ed4; padding: 20px 48px"
+                                        >
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <img
+                                                            alt="The Hub Logo"
+                                                            height="40"
+                                                            src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo-white.png"
+                                                            style="
+                                                                display: block;
+                                                                outline: none;
+                                                                border: none;
+                                                                text-decoration: none;
+                                                            "
+                                                            width="136"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                         <hr
                                             style="
                                                 width: 100%;
@@ -65,10 +90,17 @@
                                             "
                                         />
                                         <p
-                                            style="font-size:27px;line-height:1.5em;margin:16px 0;display:{title_no_team};color:#000000;text-align:center;margin-bottom:30px"
+                                            style="
+                                                font-size: 27px;
+                                                line-height: 1.5em;
+                                                margin: 16px 0;
+                                                color: #000000;
+                                                text-align: center;
+                                                margin-bottom: 30px;
+                                            "
                                         >
                                             Welcome to HackAUBG 7.0,
-                                            <br />{participant_name}<!-- -->!<br />
+                                            <br />{participant_greeting}<!-- -->!<br />
                                         </p>
                                         <p
                                             style="
@@ -80,7 +112,7 @@
                                             "
                                         >
                                             Before the hackathon starts, there are a few
-                                            <a style="color: #556cd6; text-decoration-line: none" target="_blank"
+                                            <a style="color: #365ed4; text-decoration-line: none" target="_blank"
                                                 >important things:</a
                                             >
                                         </p>
@@ -91,7 +123,16 @@
                                             cellpadding="0"
                                             cellspacing="0"
                                             role="presentation"
-                                            style="display:{invite_link_visibility}"
+                                            style="
+                                                color: #525f7f;
+                                                font-size: 16px;
+                                                line-height: 24px;
+                                                max-width: 600px;
+                                                text-align: left;
+                                                word-break: break-all;
+                                                overflow-wrap: break-word;
+                                                white-space: normal;
+                                            "
                                         >
                                             <tbody>
                                                 <tr>
@@ -102,27 +143,15 @@
                                                                 line-height: 24px;
                                                                 margin: 16px 0;
                                                                 color: #525f7f;
+                                                                max-width: 600px;
                                                                 text-align: left;
-                                                            "
-                                                        >
-                                                            Here is the invite link, so you can invite your teammates to
-                                                            join:
-                                                        </p>
-                                                        <code
-                                                            style="
-                                                                display: inline-block;
-                                                                padding: 16px 4.5%;
                                                                 word-break: break-all;
                                                                 overflow-wrap: break-word;
                                                                 white-space: normal;
-                                                                background-color: #f4f4f4;
-                                                                border-radius: 5px;
-                                                                border: 1px solid #eee;
-                                                                color: #333;
-                                                                margin-bottom: 15px;
                                                             "
-                                                            >{invite_link}</code
                                                         >
+                                                            {invite_link_statement}
+                                                        </p>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -150,7 +179,7 @@
                                             "
                                         >
                                             What&#x27;s more, each team will have their very own
-                                            <a style="color: #556cd6; text-decoration-line: none" target="_blank"
+                                            <a style="color: #365ed4; text-decoration-line: none" target="_blank"
                                                 >facilitator</a
                                             >
                                             <!-- -->from The Hub to guide you through the hackathon. They&#x27;ll be
@@ -170,19 +199,19 @@
                                             and exciting upcoming surpises -<!-- -->
                                             <a
                                                 href="https://www.facebook.com/TheHubAUBG"
-                                                style="color: #556cd6; text-decoration-line: none"
+                                                style="color: #365ed4; text-decoration-line: none"
                                                 target="_blank"
                                                 >Facebook</a
                                             >,<!-- -->
                                             <a
                                                 href="https://www.instagram.com/thehubaubg/"
-                                                style="color: #556cd6; text-decoration-line: none"
+                                                style="color: #365ed4; text-decoration-line: none"
                                                 target="_blank"
                                                 >Instagram</a
                                             >, and
                                             <a
                                                 href="https://www.linkedin.com/company/the-hub-aubg/mycompany/"
-                                                style="color: #556cd6; text-decoration-line: none"
+                                                style="color: #365ed4; text-decoration-line: none"
                                                 target="_blank"
                                                 >Linkedin.</a
                                             >
@@ -232,7 +261,7 @@
                                         <p style="font-size: 12px; line-height: 16px; margin: 16px 0; color: #8898aa">
                                             <a
                                                 href="https://thehub-aubg.com/hackathon"
-                                                style="color: #556cd6; text-decoration-line: none"
+                                                style="color: #365ed4; text-decoration-line: none"
                                                 target="_blank"
                                                 >HackAUBG 7.0</a
                                             >

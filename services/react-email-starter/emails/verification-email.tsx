@@ -8,16 +8,18 @@ export const VerificationEmail = () => (
         <Body style={main}>
             <Container style={container}>
                 <Section style={box}>
-                    <Img
-                        src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo.png"
-                        width="136"
-                        height="40"
-                        alt="The Hub Logo"
-                    />
+                    <Section style={{ backgroundColor: '#365ED4', padding: '20px 48px' }}>
+                        <Img
+                            src="https://hubarskibucket.s3.eu-central-1.amazonaws.com/thehub-logo-white.png"
+                            width="136"
+                            height="40"
+                            alt="The Hub Logo"
+                        />
+                    </Section>
                     <Hr style={hr} />
-                    <Text style={title_no_team}>
+                    <Text style={title}>
                         Welcome to HackAUBG 7.0, <br />
-                        {`{participant_name}`}!<br />
+                        {`{participant_greeting}`}!<br />
                     </Text>
                     <Text style={paragraph}>
                         Thank you for registering for our seventh <Link style={anchor}>annual hackathon!</Link>
@@ -76,11 +78,11 @@ const paragraph = {
 };
 
 const anchor = {
-    color: '#556cd6',
+    color: '#365ED4',
 };
 
 const button = {
-    backgroundColor: '#656ee8',
+    backgroundColor: '#365ED4',
     borderRadius: '5px',
     color: '#fff',
     fontSize: '16px',
@@ -99,8 +101,7 @@ const footer = {
     lineHeight: '16px',
 };
 
-const title_no_team = {
-    display: '{title_no_team}',
+const title = {
     color: '#000000',
     fontSize: '27px',
     lineHeight: '1.5em',
