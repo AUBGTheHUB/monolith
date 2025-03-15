@@ -73,7 +73,7 @@ Here is the guide:
 ### 2. Clone the repository to your machine
 
 ```bash
-git clone git@github.com:AUBGTheHUB/monolith.git
+git clone git@images.com:AUBGTheHUB/monolith.git
 ```
 
 ### 3. Navigate to the project directory
@@ -118,7 +118,7 @@ code .
 If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
 Visual Studio Code client.
 
-![](/docs/github/connected_devContainer.png)
+![](/docs/images/connected_devContainer.png)
 
 ---
 
@@ -132,7 +132,7 @@ make gum
 
 Spin up local server instances:
 
-![](/docs/github/gum_interface.png)
+![](/docs/images/gum_interface.png)
 
 ## Directory structure
 
