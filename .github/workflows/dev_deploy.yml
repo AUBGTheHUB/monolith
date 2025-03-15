@@ -1,0 +1,129 @@
+# Prerequisites
+# Be familiar with GitHub environments for deployment: https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment
+# Be familiar with Deploying with GitHub Actions: https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions
+
+name: Deployment Pipeline DEV
+
+# https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      # Back-end Paths that will trigger re-deployment
+      - 'services/py-api/src/**'
+      - 'services/py-api/Dockerfile'
+      - 'services/py-api/**/*.lock'
+      - 'services/py-api/**/*.toml'
+
+      # Front-end paths that will trigger re-deployment
+      - 'services/web/src/**'
+      - 'services/web/dev.Dockerfile'
+      - 'services/web/package-lock.json'
+      - 'services/web/package.json'
+      - 'services/web/nginx.*.conf'
+      - 'services/web/*.config.*'
+      - 'services/web/tsconfig.*'
+      - 'services/web/*.html'
+
+# This is needed so we can push to Container registry
+# https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic
+permissions:
+  packages: write
+
+
+jobs:
+  build-and-push-images:
+    if: github.ref_name == 'main'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: DEV
+      url: https://${{vars.DOMAIN}}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          # https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image WEB
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/web/
+          file: ./services/web/dev.Dockerfile
+          push: true
+          tags: |
+            ghcr.io/aubgthehub/monolith-web:latest
+            ghcr.io/aubgthehub/monolith-web:${{ github.sha }}
+          # We pass the build arguments for the frontend
+          # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+          build-args: |
+            DOMAIN=${{vars.DOMAIN}}
+
+      - name: Build and push Docker image PY-API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/py-api/
+          push: true
+          tags: |
+            ghcr.io/aubgthehub/monolith-backend:latest
+            ghcr.io/aubgthehub/monolith-backend:${{ github.sha }}
+          # We pass the build arguments for the backend
+          # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
+          build-args: |
+            ENV=${{vars.ENV}}
+            DOMAIN=${{vars.DOMAIN}}
+
+  deploy-to-dev:
+    if: github.ref_name == 'main'
+
+    runs-on: ubuntu-latest
+
+    needs: build-and-push-images
+
+    environment:
+      name: DEV
+      url: https://${{vars.DOMAIN}}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Here we create the ./envfile that the GitHub Actions runner is going to use for the next step - Deployment! (see below)
+      # Since we don't have the repository cloned in the VPS, we have no information of the git commit that the image we want to
+      # pull and run is coming from. For this reason, we pass the commit hash to the next step, which is explained below.
+      - name: create env file
+        run: |
+          echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+
+      # Below we use a GitHub Actions template that is created for the purpose of deploying utilizing both Docker Stack and Docker Context.
+      # You can find the source repo here: https://github.com/cssnr/stack-deploy-action
+      # name - This will be used as a tag to the Docker Stack the we are going to deploy to Docker Swarm installed on the VPS
+      # file - The docker stack config file, it similar to a docker-compose file, but also quite different
+      # host - The domain of the target deployment VPS
+      # user - The user created on the VPS that has docker privilleges (Can only run docker command)
+      # ssh_key - The private ssh key that is used to authenticate into the VPS user that we are utilizing for deployment (Should be stored in the repository secrets)
+      # and finally we pass the ./envfile that was created by the step above in the working directory of the GitHub Actions runner.
+      # This ./envfile is sourced by the runner and then used by docker stack when doing docker stack deploy to the VPS to pull the latest project image.
+      # Links for further reading
+      # Read more about Docker Stack: https://docs.docker.com/reference/cli/docker/stack/deploy/
+      # Read more about Docker Swarm: https://forums.docker.com/t/docker-swarm-series-8th-publishing-modes/136972
+      # Read more about Docker Context:  https://docs.docker.com/engine/manage-resources/contexts/
+      - name: Docker Stack Deploy
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: monolith
+          file: docker-swarm-stack.yml
+          host: ${{secrets.VPS_IP}}
+          user: deploy
+          ssh_key: ${{secrets.DEV_DEPLOY_SSH_PRIVATE_KEY}}
+          env_file: ./envfile

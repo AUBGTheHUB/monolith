@@ -63,7 +63,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="verification email subject",  # TODO: Change before deploying to PROD
+            subject="Confirm Your Participation in HackAUBG 7.0",
             body_content=body_html,
             content_type="html",
         )
@@ -114,7 +114,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="successful registration subject",  # TODO: Change before deploying to PROD
+            subject="Welcome Aboard! See You at HackAUBG 7.0",
             body_content=body_html,
             content_type="html",
         )

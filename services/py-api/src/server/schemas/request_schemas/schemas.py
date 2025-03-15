@@ -42,11 +42,11 @@ class BaseParticipantData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")
 
-    name: str
-    email: EmailStr
+    name: str = Field(max_length=50, min_length=3)
+    email: EmailStr = Field(max_length=320, min_length=3)
     tshirt_size: Optional[TSHIRT_SIZE] = None
     university: UNIVERSITIES_LIST
-    location: str
+    location: str = Field(max_length=100, min_length=3)
     age: ALLOWED_AGE
     source_of_referral: Optional[REFERRAL_SOURCES_LIST] = None
     programming_language: Optional[PROGRAMMING_LANGUAGES_LIST] = None
@@ -83,7 +83,7 @@ class BaseParticipantData(BaseModel):
 class AdminParticipantInputData(BaseParticipantData):
     registration_type: Literal["admin"]
     is_admin: Literal[True]
-    team_name: str
+    team_name: str = Field(max_length=30, min_length=3)
 
     @field_validator("team_name", mode="before")
     @classmethod
@@ -94,7 +94,7 @@ class AdminParticipantInputData(BaseParticipantData):
 class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
-    team_name: str
+    team_name: str = Field(max_length=30, min_length=3)
 
     @field_validator("team_name", mode="before")
     @classmethod

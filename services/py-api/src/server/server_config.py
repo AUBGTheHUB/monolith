@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from os import environ, cpu_count
+from os import cpu_count
 from typing import Tuple
 
 from structlog.stdlib import get_logger
 from uvicorn import run
 
 from src.database.mongo.db_manager import ping_db
-from src.environment import DOMAIN, PORT
+from src.environment import DOMAIN, PORT, ADDRESS, ENV
 from src.logger.logger_factory import get_uvicorn_logger
 from src.utils import singleton
 
@@ -33,8 +33,8 @@ def _get_ssl_config() -> Tuple[str, str]:
 
 @dataclass
 class _ServerConfig:
-    ENV = environ["ENV"]
-    ADDRESS = environ["ADDRESS"]
+    ENV = ENV
+    ADDRESS = ADDRESS
     SSL_CERT, SSL_KEY = _get_ssl_config()
 
 

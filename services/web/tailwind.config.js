@@ -18,7 +18,7 @@ export default {
             xl: '1280px',
             // => @media (min-width: 1280px) { ... }
 
-            xxl:'1700px'
+            xxl: '1700px',
         },
         extend: {
             fontFamily: {
@@ -35,7 +35,7 @@ export default {
             colors: {
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
-                hackBg: 'rgb(0,4,7)',
+                hackBg: 'rgb(0,10,18)',
                 card: {
                     DEFAULT: 'var(--card)',
                     foreground: 'var(--card-foreground)',

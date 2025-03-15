@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 type Option = {
     label: string;
-    value: string;
+    value: string | boolean;
 };
 
 type RadioButtonProps<T extends FieldValues> = {
@@ -17,6 +17,7 @@ type RadioButtonProps<T extends FieldValues> = {
     formItemClassName?: string;
     labelClassName?: string;
     radioGroupClassName?: string;
+    disabled?: boolean;
 };
 
 export const RadioComponent = <T extends FieldValues>({
@@ -28,6 +29,7 @@ export const RadioComponent = <T extends FieldValues>({
     radioGroupClassName,
     labelClassName,
     formItemClassName,
+    disabled,
 }: RadioButtonProps<T>) => {
     return (
         <FormField
@@ -37,25 +39,35 @@ export const RadioComponent = <T extends FieldValues>({
                 <FormItem className={cn('space-y-3', groupClassName)}>
                     {groupLabel && <FormLabel>{groupLabel}</FormLabel>}
                     <FormControl>
-                        <RadioGroup onValueChange={field.onChange} value={field.value} className={radioGroupClassName}>
+                        <RadioGroup
+                            disabled={disabled}
+                            onValueChange={(val) => {
+                                const parsedValue = val === 'true' || val === 'false' ? val === 'true' : val;
+                                field.onChange(parsedValue);
+                            }}
+                            value={String(field.value)}
+                            className={radioGroupClassName}
+                        >
                             {options.map((option) => (
                                 <FormItem
-                                    key={option.value}
+                                    key={option.label}
                                     className={cn('flex items-center space-x-3 space-y-0', formItemClassName)}
                                 >
                                     <FormControl>
                                         <RadioGroupItem
-                                            value={option.value}
+                                            value={String(option.value)}
                                             className={radioGroupClassName}
                                             data-testid={`radio-item-${option.value}`}
                                         />
                                     </FormControl>
-                                    <FormLabel className={labelClassName}>{option.label}</FormLabel>
+                                    <FormLabel className={cn(`cursor-pointer`, labelClassName)}>
+                                        {option.label}
+                                    </FormLabel>
                                 </FormItem>
                             ))}
                         </RadioGroup>
                     </FormControl>
-                    <div className="min-h-[24px]">{error && <FormMessage>{error.message}</FormMessage>}</div>
+                    <div className="min-h-[24px] !mb-3">{error && <FormMessage>{error.message}</FormMessage>}</div>
                 </FormItem>
             )}
         />

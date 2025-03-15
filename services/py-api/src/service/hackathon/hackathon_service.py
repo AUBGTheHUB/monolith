@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
+from secrets import token_hex
 from typing import Final, Optional, Tuple, List, TypedDict
 
 from fastapi import BackgroundTasks
@@ -12,11 +13,11 @@ from src.database.model.base_model import SerializableObjectId
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
 from src.database.model.hackathon.team_model import Team, UpdateTeamParams
+from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
-from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.environment import is_test_env, DOMAIN, PORT, is_local_env
+from src.environment import is_test_env, DOMAIN, is_local_env
 from src.exception import (
     DuplicateTeamNameError,
     DuplicateEmailError,
@@ -27,15 +28,14 @@ from src.exception import (
     TeamNotFoundError,
     FeatureSwitchNotFoundError,
 )
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from secrets import token_hex
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
 LOG = get_logger()
 
@@ -53,7 +53,7 @@ class HackathonService:
     MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
     """Constraint for max number of participants in a given team"""
 
-    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 12
+    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 16
     """Constraint for max number of verified teams in the hackathon. A team is verified when the admin participant who
     created the team, verified their email. This const also includes the random teams, which are automatically created
     and marked as verified, once the hackathon registration closes"""
@@ -73,12 +73,14 @@ class HackathonService:
     _RATE_LIMIT_SECONDS: Final[int] = 90
     """Number of seconds before a participant is allowed to resend their verification email, if they didn't get one."""
 
-    # TODO: Change to front-end
-    _PARTICIPANTS_VERIFICATION_ROUTE = "/api/v3/hackathon/participants/verify"
+    _PARTICIPANTS_VERIFICATION_ROUTE = "/hackathon/verification"
     """The front-end route for email verification"""
 
-    _PARTICIPANTS_REGISTRATION_ROUTE = "/hackathon/register"
+    _PARTICIPANTS_REGISTRATION_ROUTE = "/hackathon/registration"
     """The front-end route for hackathon registration"""
+
+    _FRONTEND_PORT = 3000
+    """The port on which the frontend is running"""
 
     def __init__(
         self,
@@ -394,7 +396,9 @@ class HackathonService:
 
         # Append the Jwt to the endpoint
         if is_local_env():
-            verification_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            verification_link = (
+                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            )
         else:
             verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
@@ -414,6 +418,7 @@ class HackathonService:
             background_tasks=background_tasks,
             team_name=team.name if team else None,
         )
+
         if err is not None:
             return err
 
@@ -472,7 +477,9 @@ class HackathonService:
 
         # Append the Jwt to the endpoint
         if is_local_env():
-            invite_link = f"https://{DOMAIN}:{PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            invite_link = (
+                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            )
         else:
             invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 

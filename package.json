@@ -23,6 +23,9 @@
     },
     "dependencies": {
         "embla-carousel-class-names": "^8.5.2",
-        "eslint-plugin-jest": "^28.9.0"
+        "eslint-plugin-jest": "^28.9.0",
+        "react-helmet": "^6.1.0",
+        "react-simple-typewriter": "^5.0.1",
+        "react-toastify": "^11.0.5"
     }
 }
