@@ -33,6 +33,12 @@ RUN npm run build
 # implemented, as oer: https://docs.docker.com/build/building/best-practices/#user
 FROM nginx:1.27-alpine AS dev
 
+# The build args are passed in the CD pipeline.
+ARG DOMAIN
+
+# Perstig the build argument in order to be used in healthchecks
+ENV DOMAIN=${DOMAIN}
+
 # Copy built assets from the build-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
@@ -45,6 +51,7 @@ COPY nginx.dev.conf /etc/nginx/conf.d/default.conf
 # Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 80 443
+
 
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't set them explicitly
 

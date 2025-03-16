@@ -33,6 +33,12 @@ RUN npm run build
 # implemented, as oer: https://docs.docker.com/build/building/best-practices/#user
 FROM nginx:1.27-alpine AS dev
 
+# The build args are passed in the CD pipeline.
+ARG DOMAIN
+
+# Perstig the build argument in order to be used in healthchecks
+ENV DOMAIN=${DOMAIN}
+
 # Copy built assets from the build-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
@@ -40,7 +46,7 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 # In the main nginx.conf located at /etc/nignx/nginx.conf, the `include` directive is used to include all .conf files
 # in the /etc/nginx/conf.d directory. This is where we add our custom Feature-Specific Configuration.
 # https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#feature-specific-configuration-files
-COPY nginx.dev.conf /etc/nginx/conf.d/default.conf
+COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 # Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
