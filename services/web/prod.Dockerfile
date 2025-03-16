@@ -22,7 +22,6 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Copy the rest of the application files
 COPY . .
 
-# The environment variables set using ENV will persist when a container is run from the resulting image.
 ENV VITE_ENV="PROD"
 
 # Build the app
