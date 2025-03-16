@@ -13,6 +13,7 @@ WORKDIR /app
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
 # Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
 # into this layer.
+# See https://docs.docker.com/build/building/best-practices/#add-or-copy
 # We use npm ci to do a clean install of the dependencies. https://docs.npmjs.com/cli/v11/commands/npm-ci
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
@@ -48,6 +49,6 @@ EXPOSE 80 443
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't set them explicitly
 
 # NB!!!:
-# If you add a custom CMD in the dev.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to stay in
-# the foreground, so that Docker can track the process properly (otherwise your container will stop immediately after
-# starting)! Source: https://hub.docker.com/_/nginx
+# If you add a custom CMD in the dev.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to
+# stay in the foreground, so that Docker can track the process properly (otherwise your container will stop immediately
+# after starting)! Source: https://hub.docker.com/_/nginx
