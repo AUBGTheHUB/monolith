@@ -48,12 +48,6 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                                 <div className="embla__slide__inner">{slide[1]}</div>
                             </div>
                         ))}
-                    {type == 'events' &&
-                        slides.map((slide, index) => (
-                            <div className="embla__slide " key={index}>
-                                {slide}
-                            </div>
-                        ))}
                     {type == 'jury' &&
                         slides.map((slide, index) => (
                             <div className="embla__slide " key={index}>

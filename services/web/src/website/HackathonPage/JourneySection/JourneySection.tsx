@@ -73,7 +73,7 @@ function JourneySection() {
     return (
         <Fragment>
             {isDesktop ? (
-                <div className="w-full relative">
+                <div className="w-full relative" id="journey">
                     {/* Sticky Title */}
                     <div className="sticky xl:h-[60rem] md:h-[65rem] h-[48rem]  top-0 z-50 pt-[6rem] md:pt-[6rem] ml-[9%] bg-transparent">
                         <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
@@ -89,7 +89,7 @@ function JourneySection() {
                                 <div
                                     key={index}
                                     ref={addToRefs}
-                                    className="absolute top-0 left-0 w-full"
+                                    className="absolute md:top-16 top-0 lg:top-0 left-0 w-full"
                                     style={{ zIndex: index + 1 }}
                                 >
                                     <DesktopJourneyModule title={entry.title} text={entry.text} />
@@ -104,7 +104,7 @@ function JourneySection() {
                     </section>
                 </div>
             ) : (
-                <div className="w-full relative">
+                <div className="w-full relative" id="journey">
                     <div className="pt-[6rem] md:pt-[6rem] ml-[9%] bg-transparent">
                         <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center space-x-4 p-4">
                             <img src="./JourneySection/symbol.svg" alt="" className="w-[1.6rem]" />

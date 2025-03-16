@@ -19,7 +19,6 @@ export function useFeatureSwitches() {
                         updatedSwitches[key] = serverSwitch.state;
                     }
                 });
-                console.log(updatedSwitches);
 
                 setFeatureSwitches(updatedSwitches);
             } catch (error) {

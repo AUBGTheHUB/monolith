@@ -30,7 +30,7 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # In the main nginx.conf located at /etc/nignx/nginx.conf, the `include` directive is used to include all .conf files
 # in the /etc/nginx/conf.d directory. This is where we add our custom Feature-Specific Configuration.
 # https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#feature-specific-configuration-files
-COPY nginx.dev.conf /etc/nginx/conf.d/default.conf
+COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
 
 # Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
@@ -42,8 +42,9 @@ ARG DOMAIN
 # Perstig the build argument in order for the healthcheck to use it
 ENV DOMAIN=${DOMAIN}
 
-HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
+# HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD curl -f https://${DOMAIN}
 
+CMD ["nginx", "-g", "daemon off;"]
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't add them explicitly
 
 # NB!!!:

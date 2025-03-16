@@ -41,10 +41,10 @@ export default function MentorsSection({ mentorsSwitch }: { mentorsSwitch: boole
 
     if (mentorsSwitch) {
         return (
-            <div className="bg-[#000912] py-10 relative" id="mentors">
+            <div className=" py-10 relative" id="mentors">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
-                        <img src="./n.png" alt="" className="w-[1.6rem]" />
+                        <img src="./n.webp" alt="" className="w-[1.6rem]" />
                         <p className="text-white ml-5 tracking-[0.2em]">MENTORS</p>
                     </div>
                     <div className="w-full  h-1 rounded-full overflow-hidden relative">
@@ -70,10 +70,10 @@ export default function MentorsSection({ mentorsSwitch }: { mentorsSwitch: boole
         );
     } else {
         return (
-            <div className="bg-[#000912] py-10 relative" id="mentors">
+            <div className="py-10 relative" id="mentors">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
                     <div className="sm:text-4xl text-3xl sm:mb-20 mb-10 flex items-center ">
-                        <img src="./n.png" alt="" className="w-[1.6rem]" />
+                        <img src="./n.webp" alt="" className="w-[1.6rem]" />
                         <p className="text-white ml-5 tracking-[0.2em]">MENTORS COMING SOON . . .</p>
                     </div>
                 </div>
