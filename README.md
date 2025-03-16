@@ -73,7 +73,7 @@ Here is the guide:
 ### 2. Clone the repository to your machine
 
 ```bash
-git clone git@images.com:AUBGTheHUB/monolith.git
+git clone git@github.com:AUBGTheHUB/monolith.git
 ```
 
 ### 3. Navigate to the project directory
