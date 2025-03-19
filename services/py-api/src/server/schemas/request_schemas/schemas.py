@@ -1,11 +1,17 @@
-from typing import Annotated, Literal, Union
+"""Here we store schemas modeling how the request body of a given request should look like. These schemas are also used
+by FastAPI for swagger docs.
+
+We use the term "schema" as it is in accordance with the OpenAPI spec:
+https://swagger.io/docs/specification/v3_0/data-models/data-models/"""
+
+from typing import Any, Literal, Optional, Union
 
 from bson import ObjectId
 from fastapi import HTTPException
-from pydantic import EmailStr, BaseModel, Field, ConfigDict, StringConstraints, field_validator
-from typing import Any, Literal, Optional, Union
 from fastapi.types import IncEx
-from src.database.model.participant_model import (
+from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
+
+from src.database.model.hackathon.participant_model import (
     ALLOWED_AGE,
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
@@ -36,11 +42,11 @@ class BaseParticipantData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")
 
-    name: Annotated[str, StringConstraints(max_length=50, min_length=3)]
-    email: Annotated[EmailStr, StringConstraints(max_length=320, min_length=3)]
+    name: str = Field(max_length=50, min_length=3)
+    email: EmailStr = Field(max_length=320, min_length=3)
     tshirt_size: Optional[TSHIRT_SIZE] = None
     university: UNIVERSITIES_LIST
-    location: Annotated[str, StringConstraints(max_length=100, min_length=3)]
+    location: str = Field(max_length=100, min_length=3)
     age: ALLOWED_AGE
     source_of_referral: Optional[REFERRAL_SOURCES_LIST] = None
     programming_language: Optional[PROGRAMMING_LANGUAGES_LIST] = None
@@ -63,12 +69,13 @@ class BaseParticipantData(BaseModel):
     def convert_empty_string_to_none(cls, value: str) -> str | None:
         return None if value == "" else value
 
-    # We need to use the dump of the input data to pass it to the repository layer, however `registration_type` and `team_name` are not
-    # part of the participant document, thus we shall exclude them from the dump.
+    # We need to use the dump of the input data to pass it to the repository layer, however `registration_type` and
+    # `team_name` are not part of the participant document, thus we shall exclude them from the dump.
+
     # `registration_type` only helps us to determine the registration manner in a more elegant way.
     # `team_name` helps us with determining the name of the team that the admin participant wants to create
     def model_dump(
-        self, *, exclude: IncEx = ["registration_type", "team_name"], **kwargs: dict[str, Any]
+        self, *, exclude: IncEx = ("registration_type", "team_name"), **kwargs: dict[str, Any]
     ) -> dict[str, Any]:
         return super().model_dump(exclude=exclude, **kwargs)  # type: ignore
 
@@ -76,7 +83,7 @@ class BaseParticipantData(BaseModel):
 class AdminParticipantInputData(BaseParticipantData):
     registration_type: Literal["admin"]
     is_admin: Literal[True]
-    team_name: Annotated[str, StringConstraints(max_length=30, min_length=3)]
+    team_name: str = Field(max_length=30, min_length=3)
 
     @field_validator("team_name", mode="before")
     @classmethod
@@ -87,7 +94,7 @@ class AdminParticipantInputData(BaseParticipantData):
 class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
-    team_name: Annotated[str, StringConstraints(max_length=30, min_length=3)]
+    team_name: str = Field(max_length=30, min_length=3)
 
     @field_validator("team_name", mode="before")
     @classmethod
