@@ -65,7 +65,7 @@ export const Sponsors: HackathonSponsorProps[] = [
         name: 'Hewlett Packard',
         rank: 'Bronze',
         logoSrc: 'https://hubarskibucket.s3.eu-central-1.amazonaws.com/hp.webp',
-        websiteLink: 'https://www.updata.one/',
+        websiteLink: 'https://www.hpe.com/emea_europe/en/home.html',
     },
     {
         name: 'Updata One',
