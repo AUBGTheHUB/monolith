@@ -81,7 +81,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
                 <SponsorSection rank="Gold" sponsors={goldSponsors} />
                 <SponsorSection rank="Silver" sponsors={silverSponsors} />
                 <SponsorSection rank="Bronze" sponsors={bronzeSponsors} />
-                <SponsorSection rank="Custom" sponsors={customSponsors} />
+                {/* <SponsorSection rank="Custom" sponsors={customSponsors} /> */}
             </div>
         );
     } else {
