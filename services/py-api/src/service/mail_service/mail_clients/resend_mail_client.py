@@ -75,6 +75,8 @@ class ResendMailClient(MailClient):
 @singleton
 def resend_mail_client_provider() -> ResendMailClient:
     """
+    This method could be used as the global access point for the ResendMailClient.
+
     Returns:
          A preconfigured Singleton ResendMailClient instance.
     """

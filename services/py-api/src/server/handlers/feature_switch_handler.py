@@ -42,14 +42,3 @@ class FeatureSwitchHandler(BaseHandler):
             response_model=FeatureSwitchResponse(feature=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
-
-
-def feature_switch_handlers_provider(service: FeatureSwitchService) -> FeatureSwitchHandler:
-    """
-    Args:
-        service: A FeatureSwitchService instance
-
-    Returns:
-        A FeatureSwitchHandler instance
-    """
-    return FeatureSwitchHandler(service=service)

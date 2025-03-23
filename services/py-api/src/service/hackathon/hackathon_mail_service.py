@@ -120,14 +120,3 @@ class HackathonMailService:
         )
 
         return None
-
-
-def hackathon_mail_service_provider(client: MailClient) -> HackathonMailService:
-    """
-    Args:
-        client: A MailClient implementation instance
-
-    Returns:
-         A HackathonMailService instance.
-    """
-    return HackathonMailService(client=client)

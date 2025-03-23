@@ -4,7 +4,6 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.mongo.db_manager import mongo_db_manager_provider
 from src.server.routes.routes import Routes
 from src.server.middleware.middleware import Middleware
 
@@ -19,8 +18,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     https://docs.python.org/3/library/contextlib.html#contextlib.asynccontextmanager
     """
     yield
-    # We ignore the error as we know that the client is initialized
-    _ = mongo_db_manager_provider(mongo_db_client_provider()).close_all_connections()
+
+    # Close the opened connections towards MongoDB
+    mongo_db_client_provider().close()
 
 
 def create_app() -> FastAPI:

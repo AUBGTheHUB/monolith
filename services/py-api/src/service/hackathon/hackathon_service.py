@@ -637,33 +637,3 @@ class HackathonService:
             return Err(Exception("Failed to create random participant teams"))
 
         return Ok(feature_switch.ok_value)
-
-
-def hackathon_service_provider(
-    p_repo: ParticipantsRepository,
-    t_repo: TeamsRepository,
-    fs_repo: FeatureSwitchRepository,
-    tx_manager: MongoTransactionManager,
-    mail_service: HackathonMailService,
-    jwt_utility: JwtUtility,
-) -> HackathonService:
-    """
-    Args:
-        p_repo: A ParticipantsRepository instance
-        t_repo: A TeamsRepository instance
-        fs_repo: A FeatureSwitchRepository instance
-        tx_manager: A MongoTransactionManager instance
-        mail_service: A HackathonMailService instance
-        jwt_utility: A JwtUtility instance
-
-    Returns:
-        A HackathonService instance.
-    """
-    return HackathonService(
-        participant_repo=p_repo,
-        team_repo=t_repo,
-        feature_switch_repo=fs_repo,
-        tx_manager=tx_manager,
-        mail_service=mail_service,
-        jwt_utility=jwt_utility,
-    )

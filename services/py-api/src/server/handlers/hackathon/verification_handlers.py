@@ -60,17 +60,3 @@ class VerificationHandlers(BaseHandler):
             response_model=VerificationEmailSentSuccessfullyResponse(participant=result.ok_value),
             status_code=status.HTTP_202_ACCEPTED,
         )
-
-
-def verification_handlers_provider(
-    service: ParticipantVerificationService, jwt_utility: JwtUtility
-) -> VerificationHandlers:
-    """
-    Args:
-        service: A ParticipantVerificationService instance
-        jwt_utility: A JwtUtility instance
-
-    Returns:
-        A VerificationHandlers instance
-    """
-    return VerificationHandlers(service=service, jwt_utility=jwt_utility)

@@ -77,14 +77,3 @@ def ping_db() -> Err[ConnectionFailure | OperationFailure | ConfigurationError] 
 
     finally:
         mongo_client.close()
-
-
-def mongo_db_manager_provider(client: AsyncIOMotorClient) -> MongoDatabaseManager:
-    """
-    Args:
-        client: A singleton AsyncIOMotorClient instance
-
-    Returns:
-        A MongoDatabaseManager instance
-    """
-    return MongoDatabaseManager(client=client)

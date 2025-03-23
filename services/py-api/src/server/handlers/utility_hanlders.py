@@ -21,14 +21,3 @@ class UtilityHandlers(BaseHandler):
             return Response(ErrResponse(error="Database not available!"), status.HTTP_503_SERVICE_UNAVAILABLE)
 
         return Response(PongResponse(message="pong"), status_code=status.HTTP_200_OK)
-
-
-def utility_handlers_provider(db_manger: MongoDatabaseManager) -> UtilityHandlers:
-    """
-    Args:
-        db_manger: A MongoDatabaseManager instance
-
-    Returns:
-        A UtilityHandlers instance
-    """
-    return UtilityHandlers(db_manger=db_manger)

@@ -70,14 +70,3 @@ class ParticipantHandlers(BaseHandler):
             ParticipantRegisteredResponse(participant=result.ok_value[0], team=result.ok_value[1]),
             status_code=status.HTTP_201_CREATED,
         )
-
-
-def participant_handlers_provider(service: ParticipantRegistrationService) -> ParticipantHandlers:
-    """
-    Args:
-        service: A ParticipantRegistrationService instance
-
-    Returns:
-        A HackathonManagementHandlers instance
-    """
-    return ParticipantHandlers(service=service)

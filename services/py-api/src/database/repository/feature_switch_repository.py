@@ -56,7 +56,6 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             feature_switches = []
 
             for doc in feature_switches_data:
-
                 doc["id"] = doc.pop("_id")
 
                 feature_switches.append(FeatureSwitch(**doc))
@@ -138,15 +137,3 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
         except Exception as e:
             LOG.exception("Failed to update the feature switch", feature_switch_name=name, error=e)
             return Err(e)
-
-
-def feature_switch_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> FeatureSwitchRepository:
-    """
-    Args:
-        db_manager: A MongoDatabaseManager implementation instance
-        collection_name: The name of the collection in the Mongo database
-
-    Returns:
-         A FeatureSwitchRepository instance.
-    """
-    return FeatureSwitchRepository(db_manager=db_manager, collection_name=collection_name)
