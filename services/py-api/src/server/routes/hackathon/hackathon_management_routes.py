@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
-from src.server.routes.routes_dependencies import is_auth, validate_obj_id
+from src.server.routes.route_dependencies import is_auth, validate_obj_id
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     TeamDeletedResponse,

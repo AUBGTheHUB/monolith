@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
-from src.server.routes.routes_dependencies import is_registration_open
+from src.server.routes.route_dependencies import is_registration_open
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
 
 

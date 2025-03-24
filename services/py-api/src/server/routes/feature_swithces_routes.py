@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
-from src.server.routes.routes_dependencies import is_auth
+from src.server.routes.route_dependencies import is_auth
 from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, ErrResponse, AllFeatureSwitchesResponse
 
 
