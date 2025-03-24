@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, TypedDict
+from typing import AsyncIterator
 
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.database.db_clients import mongo_db_client_provider
 from src.database.mongo.db_manager import (
@@ -30,10 +29,6 @@ from src.service.hackathon.participants_registration_service import ParticipantR
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
-
-
-class State(TypedDict):
-    db_client: AsyncIOMotorClient
 
 
 @asynccontextmanager
