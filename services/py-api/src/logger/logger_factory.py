@@ -104,7 +104,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
         "handlers": {
             "logfile": {
-                "class": "src.server.logger.logger_factory._CustomRotatingFileHandler",
+                "class": "src.logger.logger_factory._CustomRotatingFileHandler",
                 "level": "INFO",
                 "filename": "shared/server.log",
                 "formatter": "logformatter",
