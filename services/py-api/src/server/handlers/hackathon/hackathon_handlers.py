@@ -26,8 +26,8 @@ class HackathonManagementHandlers(BaseHandler):
     def __init__(self, service: HackathonService) -> None:
         self._service = service
 
-    async def delete_team(self, team_id: str) -> Response:
-        result = await self._service.delete_team(team_id)
+    async def delete_team(self, object_id: str) -> Response:
+        result = await self._service.delete_team(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
