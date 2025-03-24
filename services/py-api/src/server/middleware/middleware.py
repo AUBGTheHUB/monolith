@@ -11,5 +11,6 @@ class Middleware:
 
     @classmethod
     def bind(cls, app: FastAPI) -> None:
+        """Bind all middlewares to the app"""
         for middleware in cls._middlewares:
             middleware(app)

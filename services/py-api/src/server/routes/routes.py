@@ -1,19 +1,14 @@
-from typing import List
+from fastapi import APIRouter
 
-from fastapi import APIRouter, FastAPI
-
-from src.server.routes.hackathon.participants_routes import participants_router
-from src.server.routes.hackathon.teams_routes import teams_router
-from src.server.routes.utility_routes import utility_router
-from src.server.routes.hackathon.verification_routes import verification_router
+from src.server.handlers.http_handlers import HttpHandlersContainer
+from src.server.routes.feature_swithces_routes import register_feature_switches_routes
+from src.server.routes.utility_routes import register_utility_routes
 
 
 class Routes:
-    _routers: List[APIRouter] = [utility_router, participants_router, teams_router, verification_router]
-    """For every part of our system we create a separate router. In order for a router to be visible we should add it
-    to the list"""
 
-    @classmethod
-    def register_routes(cls, app: FastAPI) -> None:
-        for router in cls._routers:
-            app.include_router(router)
+    @staticmethod
+    def register_routes(router: APIRouter, http_handlers: HttpHandlersContainer) -> None:
+        """Registers all URL patterns in the router (request multiplexer) and their respective HTTP handlers"""
+        register_utility_routes(router=router, http_handler=http_handlers.utility_handlers)
+        register_feature_switches_routes(router=router, http_handler=http_handlers.fs_handlers)

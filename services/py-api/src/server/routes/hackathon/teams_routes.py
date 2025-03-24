@@ -21,3 +21,12 @@ async def delete_team(object_id: str, req_handler: HackathonManagementHandlersDe
 @teams_router.get("/", status_code=200, responses={200: {"model": AllTeamsResponse}}, dependencies=[Depends(is_auth)])
 async def get_all_teams(req_handler: HackathonManagementHandlersDep) -> Response:
     return await req_handler.get_all_teams()
+
+
+@utility_router.post(
+    "/hackathon/close-registration",
+    responses={200: {"model": RegistrationClosedSuccessfullyResponse}, 404: {"model": ErrResponse}},
+    dependencies=[Depends(is_auth)],
+)
+async def close_hackathon_registration(req_handler: HackathonManagementHandlersDep) -> Response:
+    return await req_handler.close_registration()

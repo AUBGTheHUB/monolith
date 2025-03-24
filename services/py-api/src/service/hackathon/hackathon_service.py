@@ -84,15 +84,15 @@ class HackathonService:
 
     def __init__(
         self,
-        participant_repo: ParticipantsRepository,
-        team_repo: TeamsRepository,
+        participants_repo: ParticipantsRepository,
+        teams_repo: TeamsRepository,
         feature_switch_repo: FeatureSwitchRepository,
         tx_manager: MongoTransactionManager,
         mail_service: HackathonMailService,
         jwt_utility: JwtUtility,
     ) -> None:
-        self._participant_repo = participant_repo
-        self._team_repo = team_repo
+        self._participant_repo = participants_repo
+        self._teams_repo = teams_repo
         self._fs_repo = feature_switch_repo
         self._tx_manager = tx_manager
         self._mail_service = mail_service
@@ -106,7 +106,7 @@ class HackathonService:
         function.
         """
 
-        team = await self._team_repo.create(Team(name=input_data.team_name), session)
+        team = await self._teams_repo.create(Team(name=input_data.team_name), session)
 
         if is_err(team):
             return team
@@ -152,7 +152,7 @@ class HackathonService:
     ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
-        team_result = await self._team_repo.fetch_by_id(decoded_jwt_token.team_id)
+        team_result = await self._teams_repo.fetch_by_id(decoded_jwt_token.team_id)
         if is_err(team_result):
             return team_result
 
@@ -182,7 +182,7 @@ class HackathonService:
         verified_random_participants = await self._participant_repo.get_verified_random_participants_count()
 
         # Fetch number of verified registered teams
-        verified_registered_teams = await self._team_repo.get_verified_registered_teams_count()
+        verified_registered_teams = await self._teams_repo.get_verified_registered_teams_count()
 
         # Calculate the anticipated number of teams
         number_ant_teams = verified_registered_teams + ceil(
@@ -201,7 +201,7 @@ class HackathonService:
         verified_random_participants = await self._participant_repo.get_verified_random_participants_count()
 
         # Fetch number of verified registered teams
-        verified_registered_teams = await self._team_repo.get_verified_registered_teams_count()
+        verified_registered_teams = await self._teams_repo.get_verified_registered_teams_count()
 
         # Calculate the anticipated number of teams if a new random participant is added
         number_ant_teams = verified_registered_teams + ceil(
@@ -276,7 +276,7 @@ class HackathonService:
         if is_err(result_verified_admin):
             return result_verified_admin
 
-        result_verified_team = await self._team_repo.update(
+        result_verified_team = await self._teams_repo.update(
             obj_id=str(result_verified_admin.ok_value.team_id),
             obj_fields=UpdateTeamParams(is_verified=True),
             session=session,
@@ -293,10 +293,10 @@ class HackathonService:
         return await self._participant_repo.delete(obj_id=participant_id)
 
     async def fetch_all_teams(self) -> Result[List[Team], Exception]:
-        return await self._team_repo.fetch_all()
+        return await self._teams_repo.fetch_all()
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
-        return await self._team_repo.delete(obj_id=team_id)
+        return await self._teams_repo.delete(obj_id=team_id)
 
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
         Tuple[Participant, Team],
@@ -330,7 +330,7 @@ class HackathonService:
 
         # We fetch the team so that we take advantage of the team info we have to pass to the mailing service
         team = (
-            await self._team_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
+            await self._teams_repo.fetch_by_id(obj_id=str(participant.ok_value.team_id))
             if participant.ok_value.is_admin
             else Ok(None)
         )
@@ -566,7 +566,7 @@ class HackathonService:
         # created
         for random_team in random_teams:
             # Create the team
-            team_result = await self._team_repo.create(team=random_team["team"], session=session)
+            team_result = await self._teams_repo.create(team=random_team["team"], session=session)
 
             if is_err(team_result):
                 return team_result

@@ -17,10 +17,8 @@ from src.utils import singleton
 @singleton
 def mongo_db_client_provider() -> AsyncIOMotorClient:
     """
-    This method could be used as the global access point for the async MongoDB client.
-
-    Returns:
-         A preconfigured Singleton thread-safe AsyncIOMotorClient instance.
+    This method could be used as the global access point for the async MongoDB client. It provides a preconfigured
+    Singleton thread-safe AsyncIOMotorClient instance
     """
 
     # The mongo client is thread-safe and has a conn pool under the hood. We set a min number of idle connections that

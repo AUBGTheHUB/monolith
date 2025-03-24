@@ -12,7 +12,6 @@ from fastapi import Header, HTTPException, Path
 from starlette import status
 from structlog.stdlib import get_logger
 
-from src.dependency_wiring import FeatureSwitchHandlerDep
 from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse
 from src.service.hackathon.hackathon_service import HackathonService
 

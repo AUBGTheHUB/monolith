@@ -44,7 +44,7 @@ def _load_server_config() -> "_ServerConfig":
     return _ServerConfig()
 
 
-def start() -> None:
+def start_server() -> None:
     """Starts the Uvicorn server with different config based on the environment we are in"""
     server_config = _load_server_config()
 
