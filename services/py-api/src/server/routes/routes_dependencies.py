@@ -5,14 +5,15 @@ For more info: https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-i
 """
 
 from os import environ
-from typing import Annotated, cast
+from typing import Annotated
 
 from bson import ObjectId
 from fastapi import Header, HTTPException, Path
+from httpx import AsyncClient
 from starlette import status
 from structlog.stdlib import get_logger
 
-from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse
+from src.environment import DOMAIN
 from src.service.hackathon.hackathon_service import HackathonService
 
 LOG = get_logger()
@@ -44,8 +45,9 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
 
-async def registration_open(fs_handler: FeatureSwitchHandlerDep) -> None:
-    resp = await fs_handler.get_feature_switch(feature=HackathonService.REG_ALL_PARTICIPANTS_SWITCH)
+async def is_registration_open() -> None:
+    async with AsyncClient(base_url=f"https://{DOMAIN}/api/v3") as client:
+        resp = await client.get(f"/feature-switches/{HackathonService.REG_ALL_PARTICIPANTS_SWITCH}")
 
     if resp.status_code != 200:
         LOG.error(
@@ -53,10 +55,10 @@ async def registration_open(fs_handler: FeatureSwitchHandlerDep) -> None:
             feature=HackathonService.REG_ALL_PARTICIPANTS_SWITCH,
             status_code=resp.status_code,
         )
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occured")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
 
-    resp_data = cast(FeatureSwitchResponse, resp.response_model)
-    if resp_data.feature.state is False:
+    resp_data = resp.json()
+    if not resp_data.get("feature", {}).get("state", False):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
 
 

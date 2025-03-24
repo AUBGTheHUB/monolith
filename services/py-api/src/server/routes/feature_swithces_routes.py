@@ -18,7 +18,6 @@ def register_feature_switches_routes(router: APIRouter, http_handler: FeatureSwi
         methods=["PATCH"],
         endpoint=http_handler.handle_feature_switch_update,
         responses={200: {"model": FeatureSwitchResponse}, 404: {"model": ErrResponse}, 400: {"model": ErrResponse}},
-        status_code=200,
         dependencies=[Depends(is_auth)],
     )
 

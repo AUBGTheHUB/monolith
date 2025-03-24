@@ -42,8 +42,8 @@ class HackathonManagementHandlers(BaseHandler):
 
         return Response(AllTeamsResponse(teams=result.ok_value), status_code=status.HTTP_200_OK)
 
-    async def delete_participant(self, participant_id: str) -> Response:
-        result = await self._service.delete_participant(participant_id)
+    async def delete_participant(self, object_id: str) -> Response:
+        result = await self._service.delete_participant(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)

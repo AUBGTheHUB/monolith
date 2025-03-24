@@ -1,43 +1,34 @@
-from fastapi import APIRouter, BackgroundTasks
+from fastapi import APIRouter
 
-from src.dependency_wiring import VerificationHandlersDep
-from src.server.schemas.request_schemas.schemas import ResendEmailParticipantData
+from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     ParticipantVerifiedResponse,
-    Response,
     VerificationEmailSentSuccessfullyResponse,
 )
 
-verification_router = APIRouter(prefix="/hackathon/participants/verify")
 
+def register_verification_routes(router: APIRouter, http_handler: VerificationHandlers) -> None:
+    router.add_api_route(
+        path="/hackathon/participants/verify",
+        methods=["PATCH"],
+        endpoint=http_handler.verify_participant,
+        responses={
+            200: {"model": ParticipantVerifiedResponse},
+            404: {"model": ErrResponse},
+            400: {"model": ErrResponse},
+        },
+    )
 
-@verification_router.patch(
-    "",
-    status_code=200,
-    responses={200: {"model": ParticipantVerifiedResponse}, 404: {"model": ErrResponse}, 400: {"model": ErrResponse}},
-)
-async def verify_participant(
-    jwt_token: str, background_tasks: BackgroundTasks, req_handler: VerificationHandlersDep
-) -> Response:
-    return await req_handler.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks)
-
-
-@verification_router.post(
-    "/send-email",
-    status_code=202,
-    responses={
-        202: {"model": VerificationEmailSentSuccessfullyResponse},
-        400: {"model": ErrResponse},
-        404: {"model": ErrResponse},
-        429: {"model": ErrResponse},
-    },
-)
-async def send_verification_email(
-    email_verification_request_body: ResendEmailParticipantData,
-    background_tasks: BackgroundTasks,
-    req_handler: VerificationHandlersDep,
-) -> Response:
-    return await req_handler.resend_verification_email(
-        participant_id=email_verification_request_body.participant_id, background_tasks=background_tasks
+    router.add_api_route(
+        path="/hackathon/participants/verify/send-email",
+        methods=["POST"],
+        endpoint=http_handler.resend_verification_email,
+        status_code=202,
+        responses={
+            202: {"model": VerificationEmailSentSuccessfullyResponse},
+            400: {"model": ErrResponse},
+            404: {"model": ErrResponse},
+            429: {"model": ErrResponse},
+        },
     )
