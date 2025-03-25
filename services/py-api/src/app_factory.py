@@ -45,8 +45,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
 
-    # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator should be
-    # must be applied to an asynchronous generator function.
+    # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
+    # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator
     #
     # Under the hood the whole application is wrapped withing this context manager. On context manager entry
     # (__aenter__) `anext` is called, which runs the code until it hits the yield statement. When the yield statement
