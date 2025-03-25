@@ -5,10 +5,12 @@ from src.server.routes.route_dependencies import is_registration_open
 from src.server.schemas.response_schemas.schemas import ParticipantRegisteredResponse, ErrResponse
 
 
-def register_participants_reg_routes(main_router: APIRouter, http_handler: ParticipantHandlers) -> None:
+def register_participants_reg_routes(http_handler: ParticipantHandlers) -> APIRouter:
+    """Registers all participant registration routes under a separate router, along with their respective handler funcs,
+    and returns the router"""
     participants_reg_router = APIRouter(prefix="/hackathon/participants")
 
-    main_router.add_api_route(
+    participants_reg_router.add_api_route(
         path="",
         methods=["POST"],
         endpoint=http_handler.create_participant,
@@ -21,4 +23,4 @@ def register_participants_reg_routes(main_router: APIRouter, http_handler: Parti
         dependencies=[Depends(is_registration_open)],
     )
 
-    main_router.include_router(participants_reg_router)
+    return participants_reg_router

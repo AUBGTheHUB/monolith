@@ -8,7 +8,10 @@ from src.server.schemas.response_schemas.schemas import (
 )
 
 
-def register_verification_routes(main_router: APIRouter, http_handler: VerificationHandlers) -> None:
+def register_verification_routes(http_handler: VerificationHandlers) -> APIRouter:
+    """Registers all verification routes under a separate router, along with their respective handler funcs, and
+    returns the router"""
+
     verification_router = APIRouter(prefix="/hackathon/participants/verify")
 
     verification_router.add_api_route(
@@ -35,4 +38,4 @@ def register_verification_routes(main_router: APIRouter, http_handler: Verificat
         },
     )
 
-    main_router.include_router(verification_router)
+    return verification_router

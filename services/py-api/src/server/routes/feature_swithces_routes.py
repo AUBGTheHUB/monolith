@@ -5,7 +5,9 @@ from src.server.routes.route_dependencies import is_auth
 from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, ErrResponse, AllFeatureSwitchesResponse
 
 
-def register_feature_switches_routes(main_router: APIRouter, http_handler: FeatureSwitchHandler) -> None:
+def register_feature_switches_routes(http_handler: FeatureSwitchHandler) -> APIRouter:
+    """Registers all feature switches routes under a separate router, along with their respective handler funcs, and
+    returns the router"""
     fs_router = APIRouter(prefix="/feature-switches")
 
     fs_router.add_api_route(
@@ -30,5 +32,4 @@ def register_feature_switches_routes(main_router: APIRouter, http_handler: Featu
         responses={200: {"model": AllFeatureSwitchesResponse}},
     )
 
-    # Bind the fs_router (request multiplexer) to the main router
-    main_router.include_router(fs_router)
+    return fs_router

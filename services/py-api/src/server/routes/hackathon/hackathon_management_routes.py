@@ -11,7 +11,10 @@ from src.server.schemas.response_schemas.schemas import (
 )
 
 
-def register_hackathon_management_routes(main_router: APIRouter, http_handler: HackathonManagementHandlers) -> None:
+def register_hackathon_management_routes(http_handler: HackathonManagementHandlers) -> APIRouter:
+    """Registers all hackathon_management routes under a separate router, along with their respective handler funcs,
+    and returns the router"""
+
     hackathon_management_router = APIRouter(prefix="/hackathon")
 
     hackathon_management_router.add_api_route(
@@ -51,4 +54,4 @@ def register_hackathon_management_routes(main_router: APIRouter, http_handler: H
         dependencies=[Depends(is_auth)],
     )
 
-    main_router.include_router(hackathon_management_router)
+    return hackathon_management_router

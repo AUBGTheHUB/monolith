@@ -88,7 +88,6 @@ def create_app() -> FastAPI:
         verification_handlers=VerificationHandlers(service=participants_verification_service, jwt_utility=jwt_utility),
     )
 
-    # Register all routes to the default router that comes with the app
     Routes.register_routes(app.router, http_handlers)
     Middleware.bind(app)
 

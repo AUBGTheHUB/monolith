@@ -12,11 +12,18 @@ class Routes:
 
     @staticmethod
     def register_routes(main_router: APIRouter, http_handlers: HttpHandlersContainer) -> None:
-        """Registers all URL patterns in the router (request multiplexer) and their respective HTTP handlers"""
-        register_utility_routes(main_router=main_router, http_handler=http_handlers.utility_handlers)
-        register_feature_switches_routes(main_router=main_router, http_handler=http_handlers.fs_handlers)
-        register_participants_reg_routes(main_router=main_router, http_handler=http_handlers.participant_handlers)
-        register_hackathon_management_routes(
-            main_router=main_router, http_handler=http_handlers.hackathon_management_handlers
+        """Registers all URL patterns in the main_router (request multiplexer) and their respective HTTP handlers"""
+        utility_router = register_utility_routes(http_handler=http_handlers.utility_handlers)
+        fs_router = register_feature_switches_routes(http_handler=http_handlers.fs_handlers)
+        participant_reg_router = register_participants_reg_routes(http_handler=http_handlers.participant_handlers)
+        hackathon_reg_router = register_hackathon_management_routes(
+            http_handler=http_handlers.hackathon_management_handlers
         )
-        register_verification_routes(main_router=main_router, http_handler=http_handlers.verification_handlers)
+        verification_router = register_verification_routes(http_handler=http_handlers.verification_handlers)
+
+        # Bind all routers to the main one
+        main_router.include_router(utility_router)
+        main_router.include_router(fs_router)
+        main_router.include_router(participant_reg_router)
+        main_router.include_router(hackathon_reg_router)
+        main_router.include_router(verification_router)
