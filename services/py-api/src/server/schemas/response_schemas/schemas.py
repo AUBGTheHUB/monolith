@@ -81,7 +81,6 @@ class ParticipantResponse(BaseModel):
 
 
 class ParticipantAndTeamResponse(ParticipantResponse):
-
     team: Optional[Team]
 
     @field_serializer("team")
@@ -93,7 +92,6 @@ class ParticipantAndTeamResponse(ParticipantResponse):
 
 
 class TeamResponse(BaseModel):
-
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     team: Team

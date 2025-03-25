@@ -8,7 +8,7 @@ load_env()
 configure_app_logger(ENV)
 
 from src.app_factory import create_app
-from src.server.server_config import start
+from src.server.server_config import start_server
 
 # This app is not created in the main guard as uvicorn's run method expects the app passed as an import string to
 # enable 'reload' or 'workers'. Also, we need it to create the AsyncTestClient.
@@ -16,4 +16,4 @@ app = create_app()
 
 # https://realpython.com/if-name-main-python/
 if __name__ == "__main__":
-    start()
+    start_server()

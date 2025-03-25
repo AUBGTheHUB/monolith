@@ -43,7 +43,6 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
             participants = []
             for doc in participants_data:
-
                 doc["id"] = doc.pop("_id")
 
                 participants.append(Participant(**doc))
@@ -172,7 +171,6 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             participants = []
 
             for doc in participants_data:
-
                 doc["id"] = doc.pop("_id")
 
                 participants.append(Participant(**doc))
@@ -183,15 +181,3 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         except Exception as e:
             LOG.exception(f"Failed to fetch the verified random participants due to err {e}")
             return Err(e)
-
-
-def participants_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> ParticipantsRepository:
-    """
-    Args:
-        db_manager: A MongoDatabaseManager implementation instance
-        collection_name: The name of the collection in the Mongo database
-
-    Returns:
-         A ParticipantsRepository instance.
-    """
-    return ParticipantsRepository(db_manager=db_manager, collection_name=collection_name)

@@ -1,5 +1,6 @@
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
+from src.server.schemas.request_schemas.schemas import FeatureSwitchUpdateBody
 from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, Response, AllFeatureSwitchesResponse
 from src.service.feature_switch_service import FeatureSwitchService
 from starlette import status
@@ -32,8 +33,8 @@ class FeatureSwitchHandler(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-    async def handle_feature_switch_update(self, name: str, state: bool) -> Response:
-        result = await self._service.update_feature_switch(name=name, state=state)
+    async def handle_feature_switch_update(self, fs_req_body: FeatureSwitchUpdateBody) -> Response:
+        result = await self._service.update_feature_switch(name=fs_req_body.name, state=fs_req_body.state)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -42,14 +43,3 @@ class FeatureSwitchHandler(BaseHandler):
             response_model=FeatureSwitchResponse(feature=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
-
-
-def feature_switch_handlers_provider(service: FeatureSwitchService) -> FeatureSwitchHandler:
-    """
-    Args:
-        service: A FeatureSwitchService instance
-
-    Returns:
-        A FeatureSwitchHandler instance
-    """
-    return FeatureSwitchHandler(service=service)

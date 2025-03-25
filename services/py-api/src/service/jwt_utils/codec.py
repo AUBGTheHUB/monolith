@@ -58,11 +58,3 @@ class JwtUtility:
 
         except DecodeError:
             return Err(JwtDecodeError())
-
-
-def jwt_utility_provider() -> JwtUtility:
-    """
-    Returns:
-        A JwtUtility instance
-    """
-    return JwtUtility()

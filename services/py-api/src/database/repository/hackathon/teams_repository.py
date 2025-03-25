@@ -66,7 +66,6 @@ class TeamsRepository(CRUDRepository[Team]):
 
             teams = []
             for doc in teams_data:
-
                 doc["id"] = doc.pop("_id")
 
                 teams.append(Team(**doc))
@@ -165,15 +164,3 @@ class TeamsRepository(CRUDRepository[Team]):
         except Exception as e:
             LOG.exception(f"Failed to fetch team due to err", team_name=team_name, error=e)
             return Err(e)
-
-
-def teams_repo_provider(db_manager: MongoDatabaseManager, collection_name: str) -> TeamsRepository:
-    """
-    Args:
-        db_manager: A MongoDatabaseManager implementation instance
-        collection_name: The name of the collection in the Mongo database
-
-    Returns:
-         A TeamsRepository instance.
-    """
-    return TeamsRepository(db_manager=db_manager, collection_name=collection_name)

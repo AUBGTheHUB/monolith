@@ -11,15 +11,14 @@ from src.utils import singleton
 ## Note:
 # Usually it is a good idea to write a common interface which all Db clients should adhere to, so that you could swap
 # them easily for one another (Dependency Inversion). For ease of use and faster development we don't do that at the
-# moment. In the future when an Admin Panel is introduced, and we bring back the AWS S3 bucket for storing static files
-# for the website, it might be good idea to introduce this common interface (or not)
+# moment.
 
 
 @singleton
 def mongo_db_client_provider() -> AsyncIOMotorClient:
     """
-    Returns:
-         A preconfigured Singleton thread-safe AsyncIOMotorClient instance.
+    This method could be used as the global access point for the async MongoDB client. It provides a preconfigured
+    Singleton thread-safe AsyncIOMotorClient instance
     """
 
     # The mongo client is thread-safe and has a conn pool under the hood. We set a min number of idle connections that
