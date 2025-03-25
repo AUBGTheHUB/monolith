@@ -45,6 +45,18 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
 
+    # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator should be
+    # must be applied to an asynchronous generator function.
+    #
+    # Under the hood the whole application is wrapped withing this context manager. On context manager entry
+    # (__aenter__) `anext` is called, which runs the code until it hits the yield statement. When the yield statement
+    # is hit we yield (return) back control to the code inside the guard (our main application).
+    #
+    # On context manager exit (__aexit__) `anext` is called again, which executes the code after the yield statement.
+    # As the server runs continuously (in a while loop) we most commonly exit the context manager on:
+    # SIGINT signal  # Unix signal 2. Sent by Ctrl+C.
+    # SIGTERM signal,  # Unix signal 15. Sent by `kill <pid>`.
+
     yield
 
     # Close the opened connections towards MongoDB
