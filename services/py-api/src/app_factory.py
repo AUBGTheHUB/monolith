@@ -66,6 +66,15 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, root_path="/api/v3")
 
+    """
+    Note:
+    The dependencies below are essentially singletons, as they are created only once (on app creation) and then then
+    reused throughout the app's lifetime.
+    If you need to create a dependency that creates a new instance on demand (for example on every request) you should
+    use `FastAPI.Depends`.
+    See https://fastapi.tiangolo.com/tutorial/dependencies/
+    """
+
     # Database layer dependency wiring
     db_manager = MongoDatabaseManager(client=mongo_db_client_provider())
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
