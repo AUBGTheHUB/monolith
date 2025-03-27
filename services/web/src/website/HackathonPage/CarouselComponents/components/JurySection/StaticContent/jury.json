@@ -1,62 +1,26 @@
 [
     {
-        "name": "Alice Johnson",
-        "job": "Software Engineer",
-        "company": "TechCorp",
-        "picture": "/sample.png"
+        "name": "Christopher Straube",
+        "job": "",
+        "company": "Enloc",
+        "picture": ""
     },
     {
-        "name": "Bob Smith",
-        "job": "Data Analyst",
-        "company": "DataWorks",
-        "picture": "/sample.png"
+        "name": "Albena Zaharieva",
+        "job": "",
+        "company": "Digitoll Smart Infrastructure Ltd",
+        "picture": ""
     },
     {
-        "name": "Charlie Brown",
-        "job": "Product Manager",
-        "company": "Innovate Inc.",
-        "picture": "/sample.png"
+        "name": "Dr. Narasimha Rao Vajjhala",
+        "job": "",
+        "company": "Head of the COS department at AUBG",
+        "picture": ""
     },
     {
-        "name": "Diana Prince",
-        "job": "UX Designer",
-        "company": "DesignHub",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "Ethan Hunt",
-        "job": "Cybersecurity Specialist",
-        "company": "SecureTech",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "Fiona Davis",
-        "job": "Marketing Coordinator",
-        "company": "MarketMinds",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "George Lucas",
-        "job": "Film Director",
-        "company": "Star Studios",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "Luka Doncic",
-        "job": "HR Manager",
-        "company": "PeopleFirst",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "Ian Wright",
-        "job": "Financial Analyst",
-        "company": "WealthBank",
-        "picture": "/sample.png"
-    },
-    {
-        "name": "Jackie Chan",
-        "job": "Stunt Coordinator",
-        "company": "ActionFilms",
-        "picture": "/sample.png"
+        "name": "Deyan Genovski",
+        "job": "",
+        "company": "Appolica",
+        "picture": ""
     }
 ]
