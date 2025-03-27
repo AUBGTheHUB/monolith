@@ -1,62 +1,140 @@
 [
     {
-        "name": "Alice Johnson",
+        "name": "Stefan Atanasov",
+        "job": "Engineering Manager",
+        "company": "Appolica",
+        "picture": ""
+    },
+    {
+        "name": "Ilian Kodzhahristov",
+        "job": "Executive Director",
+        "company": "Appolica",
+        "picture": ""
+    },
+    {
+        "name": "Kristitan Tsankov",
         "job": "Software Engineer",
-        "company": "TechCorp",
-        "picture": "/sample.png"
+        "company": "Appolica",
+        "picture": ""
     },
     {
-        "name": "Bob Smith",
-        "job": "Data Analyst",
-        "company": "DataWorks",
-        "picture": "/sample.png"
+        "name": "Martin Savov",
+        "job": "Front-end Developer",
+        "company": "Appolica",
+        "picture": ""
     },
     {
-        "name": "Charlie Brown",
-        "job": "Product Manager",
-        "company": "Innovate Inc.",
-        "picture": "/sample.png"
+        "name": "Daniel Lydianov",
+        "job": "CEO of Weband",
+        "company": "Weband",
+        "picture": ""
     },
     {
-        "name": "Diana Prince",
-        "job": "UX Designer",
-        "company": "DesignHub",
-        "picture": "/sample.png"
+        "name": "Orlin Kozarev",
+        "job": "CTO of A Data pro",
+        "company": "Updata One",
+        "picture": ""
     },
     {
-        "name": "Ethan Hunt",
-        "job": "Cybersecurity Specialist",
-        "company": "SecureTech",
-        "picture": "/sample.png"
+        "name": "Toni Marinov",
+        "job": "Deputy Operations Director",
+        "company": "Tbi Bank",
+        "picture": ""
     },
     {
-        "name": "Fiona Davis",
-        "job": "Marketing Coordinator",
-        "company": "MarketMinds",
-        "picture": "/sample.png"
+        "name": "Viktor Yankulov",
+        "job": "Head of User Experience",
+        "company": "Tbi Bank",
+        "picture": ""
     },
     {
-        "name": "George Lucas",
-        "job": "Film Director",
-        "company": "Star Studios",
-        "picture": "/sample.png"
+        "name": "Yordan Nedelchev",
+        "job": "Automation QA",
+        "company": "Tbi Bank",
+        "picture": ""
     },
     {
-        "name": "Luka Doncic",
-        "job": "HR Manager",
-        "company": "PeopleFirst",
-        "picture": "/sample.png"
+        "name": "lliyan Ignatov",
+        "job": "Software Developer",
+        "company": "Tbi Bank",
+        "picture": ""
     },
     {
-        "name": "Ian Wright",
-        "job": "Financial Analyst",
-        "company": "WealthBank",
-        "picture": "/sample.png"
+        "name": "Kalina Damyanova",
+        "job": "Operations Director",
+        "company": "Tbi Bank",
+        "picture": ""
     },
     {
-        "name": "Jackie Chan",
-        "job": "Stunt Coordinator",
-        "company": "ActionFilms",
-        "picture": "/sample.png"
+        "name": "Desislava Borisova",
+        "job": "Engineering Manager",
+        "company": "HPE",
+        "picture": ""
+    },
+    {
+        "name": "Martin Manchev",
+        "job": "Software Engineer",
+        "company": "A1",
+        "picture": ""
+    },
+    {
+        "name": "Stefan Baychev",
+        "job": "Development Expert",
+        "company": "SAP",
+        "picture": ""
+    },
+    {
+        "name": "Milen Nikolov",
+        "job": "Software Engineer",
+        "company": "Milestone",
+        "picture": ""
+    },
+    {
+        "name": "Van Ha Vo",
+        "job": "Software Engineer",
+        "company": "Milestone",
+        "picture": ""
+    },
+    {
+        "name": "Anton Polimenov",
+        "job": "Engineering Manager",
+        "company": "Milestone",
+        "picture": ""
+    },
+    {
+        "name": "Pavel Tarasevich",
+        "job": "Backend Developer",
+        "company": "Enloc",
+        "picture": ""
+    },
+    {
+        "name": "Carmen Struck",
+        "job": "Country Manager Bulgaria",
+        "company": "Enloc",
+        "picture": ""
+    },
+    {
+        "name": "Todor Katsarov",
+        "job": "Senior System Engineer",
+        "company": "eFellows",
+        "picture": ""
+    },
+    {
+        "name": "Stanislav Velkov",
+        "job": "Technical Team Lead",
+        "company": "Proxiad SEE",
+        "picture": ""
+    },
+    {
+        "name": "Plamen Beshkov",
+        "job": "Marketing Specialist",
+        "company": "ICT Strypes",
+        "picture": ""
+    },
+    {
+        "name": "Elena Doncheva",
+        "job": "Marketing Content Specialist",
+        "company": "ICT Strypes",
+        "picture": ""
     }
 ]
