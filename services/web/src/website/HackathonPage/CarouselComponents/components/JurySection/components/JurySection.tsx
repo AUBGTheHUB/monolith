@@ -40,7 +40,7 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    if (jurySwitch) {
+    if (!jurySwitch) {
         return (
             <div className="py-10 relative">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
