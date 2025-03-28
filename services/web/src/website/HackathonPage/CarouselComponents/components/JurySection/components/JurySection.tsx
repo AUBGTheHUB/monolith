@@ -40,7 +40,7 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    if (jurySwitch) {
+    if (!jurySwitch) {
         return (
             <div className="py-10 relative">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
@@ -58,7 +58,7 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
                         <hr></hr>
                     </div>
                 </div>
-                <div id="jury" className="ml-auto space-y-7 py-10 w-[90%] z-10">
+                <div id="jury" className="ml-auto space-y-7 py-10 w-[100%] z-10">
                     <EmblaCarousel
                         type="jury"
                         slides={SLIDES}
