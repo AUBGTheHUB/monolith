@@ -46,7 +46,7 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="flex flex-row w-[70%] lg:space-x--12 space-x-[-25px]">
-                                {mentorsSwitch ? (
+                                {!mentorsSwitch ? (
                                     <Fragment>
                                         <div className="h-[45%] w-[45%] border rounded-full">
                                             <img src="/anton_polimenov_round.webp" alt="Anton Polimenov" />
@@ -73,7 +73,7 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                                 )}
                             </div>
                             <div className="w-3/5 h-full flex items-end justify-center select-none">
-                                {mentorsSwitch ? (
+                                {!mentorsSwitch ? (
                                     <a href="/hackathon">
                                         <Button
                                             className="text-blue-700 border-blue-700 bg-transparent sm:hover:bg-blue-700 sm:hover:text-white hover:bg-white hover:text-blue-700 transition duration-200"
