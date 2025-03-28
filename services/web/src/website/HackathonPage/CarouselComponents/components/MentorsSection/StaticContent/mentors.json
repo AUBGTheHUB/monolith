@@ -3,138 +3,138 @@
         "name": "Ilian Kodzhahristov",
         "job": "Executive Director",
         "company": "Appolica",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/IlianKodzhahristov_apploca-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/IlianKodzhahristov_apploca-min.webp"
     },
     {
         "name": "Martin Savov",
         "job": "Front-end Developer",
         "company": "Appolica",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MartinSavov_Appolica-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MartinSavov_Appolica-min.webp"
     },
     {
         "name": "Stefan Atanasov",
         "job": "Engineering Manager",
         "company": "Appolica",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StefanAtanasov_Appolica-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StefanAtanasov_Appolica-min.webp"
     },
     {
         "name": "Kristiyan Tsankov",
         "job": "Software Engineer",
         "company": "Appolica",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/KristiyanTsankov_Appolica-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/KristiyanTsankov_Appolica-min.webp"
     },
     {
         "name": "Daniel Lydianov",
         "job": "CEO of Weband",
         "company": "Weband",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/DanielLydianov_weband-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/daniel.webp"
     },
     {
         "name": "Orlin Kozarev",
         "job": "CTO of A Data pro",
         "company": "Updata One",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/OrlinKozarev_UpdataOne-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/OrlinKozarev_UpdataOne-min.webp"
     },
     {
         "name": "Toni Marinov",
         "job": "Deputy Operations Director",
-        "company": "Tbi Bank",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/ToniMarinov_TbiBank-min.png"
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ToniMarinov_TbiBank-min.webp"
     },
     {
         "name": "Viktor Yankulov",
         "job": "Head of User Experience",
-        "company": "Tbi Bank",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/ViktorYankulov_TbiBank-min.png"
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ViktorYankulov_TbiBank-min.webp"
     },
     {
         "name": "Yordan Nedelchev",
         "job": "Automation QA",
-        "company": "Tbi Bank",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/YordanNedelchev_TbiBank-min.png"
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/YordanNedelchev_TbiBank-min.webp"
     },
     {
         "name": "Iliyan Ignatov",
         "job": "Software Developer",
-        "company": "Tbi Bank",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/IliyanIgnatov_TbiBank-min.png"
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/IliyanIgnatov_TbiBank-min.webp"
     },
     {
         "name": "Kalina Damyanova",
         "job": "Operations Director",
-        "company": "Tbi Bank",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/KalinaDamyanova_TbiBank-min.png"
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/KalinaDamyanova_TbiBank-min.webp"
     },
     {
         "name": "Desislava Borisova",
         "job": "Engineering Manager",
         "company": "HPE",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/DesislavaBorisova_HPE-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/DesislavaBorisova_HPE-min.webp"
     },
     {
         "name": "Martin Manchev",
         "job": "Software Engineer",
         "company": "A1",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MartinManchev_%D0%901-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MartinManchev_%D0%901-min.webp"
     },
     {
         "name": "Stefan Baychev",
         "job": "Development Expert",
         "company": "SAP",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StefanBaychev_SAP-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StefanBaychev_SAP-min.webp"
     },
     {
         "name": "Milen Nikolov",
         "job": "Software Engineer",
         "company": "Milestone",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MilenNikolov_Milestone-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MilenNikolov_Milestone-min.webp"
     },
     {
         "name": "Van Ha Vo",
         "job": "Software Engineer",
         "company": "Milestone",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/Van+Ha+Vo+-+milestone-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/Van+Ha+Vo+-+milestone-min.webp"
     },
     {
         "name": "Anton Polimenov",
         "job": "Engineering Manager",
         "company": "Milestone",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/AntonPolimenov_Milestone-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/anton.webp"
     },
     {
         "name": "Pavel Tarasevich",
         "job": "Backend Developer",
         "company": "Enloc",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/Pavel_Enloc-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/Pavel_Enloc-min.webp"
     },
     {
         "name": "Carmen Struck",
         "job": "Country Manager Bulgaria",
         "company": "Enloc",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/CarmenStruck_Enloc-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/carmen.webp"
     },
     {
         "name": "Todor Katsarov",
         "job": "Senior System Engineer",
         "company": "eFellows",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/TodorKatsarov_eFollows-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/TodorKatsarov_eFollows-min.webp"
     },
     {
         "name": "Stanislav Velkov",
         "job": "Technical Team Lead",
         "company": "Proxiad SEE",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StanislavVelkov_Proxiad-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StanislavVelkov_Proxiad-min.webp"
     },
     {
         "name": "Plamen Beshkov",
         "job": "Marketing Specialist",
         "company": "ICT Strypes",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/PlamenBeshkov_ICT-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/PlamenBeshkov_ICT-min.webp"
     },
     {
         "name": "Elena Doncheva",
         "job": "Marketing Content Specialist",
         "company": "ICT Strypes",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/ElenaDoncheva_ICT-min.png"
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ElenaDoncheva_ICT-min.webp"
     }
 ]
