@@ -1,26 +1,26 @@
 [
     {
-        "name": "Christopher Straube",
-        "job": "",
-        "company": "Enloc",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/ChristopherStraube_Enloc-min.png"
-    },
-    {
         "name": "Albena Zaharieva",
         "job": "",
         "company": "Digitoll Smart Infrastructure Ltd",
         "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/AlbenaZaharieva_Digitoll+Smart+Infrastructure+Ltd-min.png"
     },
     {
-        "name": "Dr. Narasimha Rao Vajjhala",
-        "job": "",
-        "company": "Head of the COS department at AUBG",
-        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/Dr.NarasimhaRaoVajjhala_Head+of+the+COS+department+at+AUBG-min.png"
-    },
-    {
         "name": "Deyan Genovski",
         "job": "",
         "company": "Appolica",
         "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/DeyanGenovski_Apolica-min.png"
+    },
+    {
+        "name": "Christopher Straube",
+        "job": "",
+        "company": "Enloc",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/ChristopherStraube_Enloc-min.png"
+    },
+    {
+        "name": "Dr. Narasimha Rao Vajjhala",
+        "job": "",
+        "company": "Head of the COS department at AUBG",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compresspng/Dr.NarasimhaRaoVajjhala_Head+of+the+COS+department+at+AUBG-min.png"
     }
 ]

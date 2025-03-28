@@ -1,140 +1,140 @@
 [
     {
-        "name": "Stefan Atanasov",
-        "job": "Engineering Manager",
-        "company": "Appolica",
-        "picture": ""
-    },
-    {
         "name": "Ilian Kodzhahristov",
         "job": "Executive Director",
         "company": "Appolica",
-        "picture": ""
-    },
-    {
-        "name": "Kristitan Tsankov",
-        "job": "Software Engineer",
-        "company": "Appolica",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/IlianKodzhahristov_apploca-min.png"
     },
     {
         "name": "Martin Savov",
         "job": "Front-end Developer",
         "company": "Appolica",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MartinSavov_Appolica-min.png"
+    },
+    {
+        "name": "Stefan Atanasov",
+        "job": "Engineering Manager",
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StefanAtanasov_Appolica-min.png"
+    },
+    {
+        "name": "Kristiyan Tsankov",
+        "job": "Software Engineer",
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/KristiyanTsankov_Appolica-min.png"
     },
     {
         "name": "Daniel Lydianov",
         "job": "CEO of Weband",
         "company": "Weband",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/DanielLydianov_weband-min.png"
     },
     {
         "name": "Orlin Kozarev",
         "job": "CTO of A Data pro",
         "company": "Updata One",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/OrlinKozarev_UpdataOne-min.png"
     },
     {
         "name": "Toni Marinov",
         "job": "Deputy Operations Director",
         "company": "Tbi Bank",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/ToniMarinov_TbiBank-min.png"
     },
     {
         "name": "Viktor Yankulov",
         "job": "Head of User Experience",
         "company": "Tbi Bank",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/ViktorYankulov_TbiBank-min.png"
     },
     {
         "name": "Yordan Nedelchev",
         "job": "Automation QA",
         "company": "Tbi Bank",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/YordanNedelchev_TbiBank-min.png"
     },
     {
-        "name": "lliyan Ignatov",
+        "name": "Iliyan Ignatov",
         "job": "Software Developer",
         "company": "Tbi Bank",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/IliyanIgnatov_TbiBank-min.png"
     },
     {
         "name": "Kalina Damyanova",
         "job": "Operations Director",
         "company": "Tbi Bank",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/KalinaDamyanova_TbiBank-min.png"
     },
     {
         "name": "Desislava Borisova",
         "job": "Engineering Manager",
         "company": "HPE",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/DesislavaBorisova_HPE-min.png"
     },
     {
         "name": "Martin Manchev",
         "job": "Software Engineer",
         "company": "A1",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MartinManchev_%D0%901-min.png"
     },
     {
         "name": "Stefan Baychev",
         "job": "Development Expert",
         "company": "SAP",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StefanBaychev_SAP-min.png"
     },
     {
         "name": "Milen Nikolov",
         "job": "Software Engineer",
         "company": "Milestone",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/MilenNikolov_Milestone-min.png"
     },
     {
         "name": "Van Ha Vo",
         "job": "Software Engineer",
         "company": "Milestone",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor+(1)/Van+Ha+Vo+-+milestone-min.png"
     },
     {
         "name": "Anton Polimenov",
         "job": "Engineering Manager",
         "company": "Milestone",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/AntonPolimenov_Milestone-min.png"
     },
     {
         "name": "Pavel Tarasevich",
         "job": "Backend Developer",
         "company": "Enloc",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/Pavel_Enloc-min.png"
     },
     {
         "name": "Carmen Struck",
         "job": "Country Manager Bulgaria",
         "company": "Enloc",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/CarmenStruck_Enloc-min.png"
     },
     {
         "name": "Todor Katsarov",
         "job": "Senior System Engineer",
         "company": "eFellows",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/TodorKatsarov_eFollows-min.png"
     },
     {
         "name": "Stanislav Velkov",
         "job": "Technical Team Lead",
         "company": "Proxiad SEE",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/StanislavVelkov_Proxiad-min.png"
     },
     {
         "name": "Plamen Beshkov",
         "job": "Marketing Specialist",
         "company": "ICT Strypes",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/PlamenBeshkov_ICT-min.png"
     },
     {
         "name": "Elena Doncheva",
         "job": "Marketing Content Specialist",
         "company": "ICT Strypes",
-        "picture": ""
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/imagecompressor/ElenaDoncheva_ICT-min.png"
     }
 ]
