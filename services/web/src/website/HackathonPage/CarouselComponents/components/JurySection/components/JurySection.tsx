@@ -36,6 +36,9 @@ export default function JurySection({ jurySwitch }: { jurySwitch: boolean }) {
         if (emblaApi) emblaApi.on('slidesInView', logEmblaEvent);
     }, [emblaApi, logEmblaEvent]);
 
+    //sort the jury alphabetically based on their name
+    jury.sort((a, b) => a.name.localeCompare(b.name));
+
     const SLIDES = jury.map((mentor, index) => (
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
