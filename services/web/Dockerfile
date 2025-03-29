@@ -39,9 +39,9 @@ FROM nginx:1.27-alpine AS dev
 
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
-# Redeclase the arg to make it visiable in this stage
-ARG VITE_ENV
 
+# Redeclare the build arg to make it visiable in this stage
+ARG VITE_ENV
 
 # Perstig the build argument in order to be used in healthchecks
 ENV DOMAIN=${DOMAIN}
