@@ -42,7 +42,7 @@ export default function MentorsSection({ mentorsSwitch }: { mentorsSwitch: boole
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));
 
-    if (!mentorsSwitch) {
+    if (mentorsSwitch) {
         return (
             <div className=" py-10 relative" id="mentors">
                 <div className=" space-y-7 font-mont w-4/5 z-10 relative m-auto">
