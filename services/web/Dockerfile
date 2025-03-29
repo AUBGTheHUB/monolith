@@ -23,7 +23,11 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Copy the rest of the application files
 COPY . .
 
-ENV VITE_ENV="PROD"
+ARG VITE_ENV
+
+# Set environment variables based on build arguments. These are passed in the CD pipeline.
+# The environment variables set using ENV will persist when a container is run from the resulting image.
+ENV VITE_ENV=${VITE_ENV}
 
 # Build the app
 RUN npm run build
@@ -35,6 +39,9 @@ FROM nginx:1.27-alpine AS dev
 
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
+# Redeclase the arg to make it visiable in this stage
+ARG VITE_ENV
+
 
 # Perstig the build argument in order to be used in healthchecks
 ENV DOMAIN=${DOMAIN}
@@ -46,11 +53,12 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 # In the main nginx.conf located at /etc/nignx/nginx.conf, the `include` directive is used to include all .conf files
 # in the /etc/nginx/conf.d directory. This is where we add our custom Feature-Specific Configuration.
 # https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#feature-specific-configuration-files
-COPY nginx.prod.conf /etc/nginx/conf.d/default.conf
+COPY nginx.${VITE_ENV}.conf /etc/nginx/conf.d/default.conf
 
 # Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 80 443
+
 
 # We are using the default nginx image ENTRYPOINT and CMD, that's why we don't set them explicitly
 
