@@ -1,10 +1,6 @@
 # Create a new build stage from a base image
 FROM node:23-alpine AS build-stage
 
-# https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production
-# Use production node environment by default.
-ENV NODE_ENV=production
-
 # Change the working directory to /app inside of the container. If that directory does not already exist, it will
 # be created. Reference: https://docs.docker.com/reference/dockerfile/#workdir
 WORKDIR /app
