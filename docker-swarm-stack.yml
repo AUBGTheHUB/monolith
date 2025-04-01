@@ -41,7 +41,7 @@ x-deploy-default: &deploy-default
 
 services:
   web:
-    image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/aubgthehub/monolith-web:${WEB_GIT_COMMIT_HASH:-latest}
 
     # For Nginx, we are going to rely on the docker ingress network and routing mesh to send traffic to our nginx
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
@@ -87,7 +87,7 @@ services:
       - /etc/nginx:/conf/basic-auth/nginx
 
   py-api:
-    image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/aubgthehub/monolith-backend:${PY_API_GIT_COMMIT_HASH:-latest}
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#deploy
     deploy:
