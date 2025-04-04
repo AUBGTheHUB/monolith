@@ -255,19 +255,19 @@ jobs:
         run: |
           echo "Preparing envfile for deployment..."
           # If web was successfully built OR deploy is forced, set the WEB hash
-          if [[ "${{ needs.build-and-push-images.outputs.web_built }}" == "true" || "${{ needs.detect-changes.outputs.manual_deploy }}" == "true" ]]; then
+          if [[ "${{ needs.build-and-push-images.outputs.web_built }}" == "true" ]]; then
             echo "WEB_GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
             echo "-> Setting WEB_GIT_COMMIT_HASH" # Debug message
           else
-            echo "-> Skipping WEB_GIT_COMMIT_HASH (web not built and deploy was not manually triggered" # Debug message
+            echo "-> Skipping WEB_GIT_COMMIT_HASH (web was not built)" # Debug message
           fi
 
           # If py-api was successfully built OR deploy is forced, set the PY_API hash
-          if [[ "${{ needs.build-and-push-images.outputs.py_api_built }}" == "true" || "${{ needs.detect-changes.outputs.manual_deploy }}" == "true" ]]; then
+          if [[ "${{ needs.build-and-push-images.outputs.py_api_built }}" == "true" ]]; then
             echo "PY_API_GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
             echo "-> Setting PY_API_GIT_COMMIT_HASH" # Debug message
           else
-            echo "-> Skipping PY_API_GIT_COMMIT_HASH (py-api not built and deploy was not manually triggered)" # Debug message
+            echo "-> Skipping PY_API_GIT_COMMIT_HASH (py-api was not built)" # Debug message
           fi
 
           echo "Contents of ./envfile:"
