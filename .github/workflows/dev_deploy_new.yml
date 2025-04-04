@@ -278,7 +278,7 @@ jobs:
       # name - This will be used as a tag to the Docker Stack that we are going to deploy to Docker Swarm installed on the VPS
       # file - The docker stack config file, it similar to a docker-compose file, but also quite different
       # host - The domain of the target deployment VPS
-      # user - The user created on the VPS that has docker privilleges (Can only run docker command)
+      # user - The user created on the VPS that has docker privileges (Can only run docker command)
       # ssh_key - The private ssh key that is used to authenticate into the VPS user that we are utilizing for deployment (Should be stored in the repository secrets)
       # and finally we pass the ./envfile that was created by the step above in the working directory of the GitHub Actions runner.
       # This ./envfile is sourced by the runner and then used by docker stack when doing docker stack deploy to the VPS to pull the latest project image.
