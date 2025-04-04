@@ -1,6 +1,7 @@
 # Prerequisites
 # Be familiar with GitHub environments for deployment: https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment
 # Be familiar with Deploying with GitHub Actions: https://docs.github.com/en/actions/use-cases-and-examples/deploying/deploying-with-github-actions
+# Be familiar with Passing information between jobs: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/passing-information-between-jobs
 
 name: Deployment Pipeline DEV
 
@@ -44,8 +45,8 @@ jobs:
     outputs:
       web_changed: ${{ steps.changed-files-web.outputs.any_changed }}
       py_api_changed: ${{ steps.changed-files-py-api.outputs.any_changed }}
-      # Flag to force build/deploy (e.g., on manual trigger or stack change)
-      force_deploy: ${{ github.event_name == 'workflow_dispatch' || steps.changed-files-stack.outputs.any_changed }}
+      stack_changed: ${{steps.changed-files-stack.outputs.any_changed }}
+      manual_deploy: ${{ github.event_name == 'workflow_dispatch'}}
 
     steps:
       - name: Checkout repository
@@ -89,7 +90,7 @@ jobs:
           echo "Web changed: ${{ steps.changed-files-web.outputs.any_changed }}"
           echo "Py-Api changed: ${{ steps.changed-files-py-api.outputs.any_changed }}"
           echo "Stack changed: ${{ steps.changed-files-stack.outputs.any_changed }}"
-          echo "Force deploy: ${{ github.event_name == 'workflow_dispatch' || steps.changed-files-stack.outputs.any_changed }}"
+          echo "Manual deploy: ${{ github.event_name == 'workflow_dispatch'}}"
 
   build-and-push-images:
     # This job builds images conditionally using optimized BuildKit caching.
@@ -99,7 +100,7 @@ jobs:
       github.ref_name == 'main' &&
       (needs.detect-changes.outputs.web_changed == 'true' ||
       needs.detect-changes.outputs.py_api_changed == 'true' ||
-      needs.detect-changes.outputs.force_deploy == 'true')
+      needs.detect-changes.outputs.manual_deploy == 'true')
 
     runs-on: ubuntu-latest
 
@@ -126,25 +127,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- Caching for WEB (npm) ---
+      # --- Build WEB ---
       - name: Restore npm cache from GHA
         id: cache-npm
         uses: actions/cache@v4
         with:
-          # Path on the runner where the npm cache will be stored (if it does not exist) or restored
+          # Path on the runner where the npm cache will be stored (if it does not exist) or restored from
           path: /tmp/npm-cache
-          # Key based on OS, lock file hash. Changes to lock file invalidate cache.
+          # Key based on OS, lock file hash. Changes to lock file would invalidate cache, resulting in a cache miss.
           key: ${{ runner.os }}-npm-${{ hashFiles('**/services/web/package-lock.json') }}
-          # Fallback keys if exact match not found. This will result in a partial cache hit (e.g. get cache from an
-          # older run, and the package manager will download only the updated dependencies
-          # If we restore cache using restore keys, the cache-hit output will be 'false'
+          # Fallback keys if exact match not found. This will result in a stale (partial) cache hit (e.g. get cache
+          # from an older run). This is helpful if only certain dependencies have changed. In this way the package
+          # manager is not going to download all dependencies again, but only those that have changed. (it compares the
+          # versions stored in the lock_file to the ones stored in the cache folder).
+          # NOTE: If we restore cache using restore keys, the cache-hit output will be 'false'.
           # https://github.com/actions/cache?tab=readme-ov-file#example-cache-workflow
           restore-keys: |
             ${{ runner.os }}-npm-
 
       - name: Inject npm cache for BuildKit (WEB)
-        # Run only if cache was restored OR web build is happening
-        if: steps.cache-npm.outputs.cache-hit == 'true' || needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
+        # Run only if cache was restored or web has changed, or we are manually deploying
+        if: steps.cache-npm.outputs.cache-hit == 'true' || needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.manual_deploy == 'true'
         uses: reproducible-containers/buildkit-cache-dance@v3
         with:
           cache-map: |
@@ -153,37 +156,9 @@ jobs:
               "/tmp/npm-cache": "/root/.npm"
             }
 
-      # --- Caching for PY-API (Poetry) ---
-      - name: Restore Poetry cache from GHA
-        id: cache-poetry
-        uses: actions/cache@v4
-        with:
-          # Path on the runner where the poetry cache will be stored/restored
-          path: /tmp/poetry-cache
-          # Key based on OS, lock file hash. Changes to lock file invalidate cache.
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/services/py-api/poetry.lock') }}
-          # Fallback keys if exact match not found. This will result in a partial cache hit (e.g. get cache from an
-          # older run, and the package manager will download only the updated dependencies
-          # If we restore cache using restore keys, the cache-hit output will be 'false'
-          # https://github.com/actions/cache?tab=readme-ov-file#example-cache-workflow
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Inject Poetry cache for BuildKit (PY-API)
-        # Run only if cache was restored OR py-api build is happening
-        if: steps.cache-poetry.outputs.cache-hit == 'true' || needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
-        uses: reproducible-containers/buildkit-cache-dance@v3
-        with:
-          cache-map: |
-            # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
-            {
-              "/tmp/poetry-cache": "/tmp/poetry_cache"
-            }
-
-      # --- Build Steps ---
       - name: Build and push Docker image WEB
         id: build-web
-        if: needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
+        if: needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.manual_deploy == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./services/web/
@@ -199,9 +174,38 @@ jobs:
           # Ensure BuildKit is used (referencing the setup buildx step)
           builder: ${{ steps.buildx.outputs.name }}
 
+      # --- Build PY-API (Poetry) ---
+      - name: Restore Poetry cache from GHA
+        id: cache-poetry
+        uses: actions/cache@v4
+        with:
+          # Path on the runner where the npm cache will be stored (if it does not exist) or restored from
+          path: /tmp/poetry-cache
+          # Key based on OS, lock file hash. Changes to lock file would invalidate cache, resulting in a cache miss.
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/services/py-api/poetry.lock') }}
+          # Fallback keys if exact match not found. This will result in a stale (partial) cache hit (e.g. get cache
+          # from an older run). This is helpful if only certain dependencies have changed. In this way the package
+          # manager is not going to download all dependencies again, but only those that have changed. (it compares the
+          # versions stored in the lock_file to the ones stored in the cache folder).
+          # NOTE: If we restore cache using restore keys, the cache-hit output will be 'false'.
+          # https://github.com/actions/cache?tab=readme-ov-file#example-cache-workflow
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Inject Poetry cache for BuildKit (PY-API)
+        # Run only if cache was restored or py-api has changed, or we have manually triggered the pipeline
+        if: steps.cache-poetry.outputs.cache-hit == 'true' || needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.manual_deploy == 'true'
+        uses: reproducible-containers/buildkit-cache-dance@v3
+        with:
+          cache-map: |
+            # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
+            {
+              "/tmp/poetry-cache": "/tmp/poetry_cache"
+            }
+
       - name: Build and push Docker image PY-API
         id: build-py-api
-        if: needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
+        if: needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.manual_deploy == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./services/py-api/
@@ -228,12 +232,13 @@ jobs:
     # This job deploys using specific commit hashes for changed services.
     needs: [ detect-changes, build-and-push-images ]
     # Run this job IF the branch is main AND
-    # (EITHER web was built OR py-api was built in the build job)
+    # (EITHER web was built OR py-api was built in the build job OR deploy is forced)
     if: |
       github.ref_name == 'main' &&
       (needs.build-and-push-images.outputs.web_built == 'true' ||
        needs.build-and-push-images.outputs.py_api_built == 'true' ||
-       needs.detect-changes.outputs.force_deploy == 'true')
+       needs.detect-changes.outputs.stack_changed == 'true'||
+       needs.detect-changes.outputs.manual_deploy == 'true')
 
     runs-on: ubuntu-latest
 
@@ -250,19 +255,19 @@ jobs:
         run: |
           echo "Preparing envfile for deployment..."
           # If web was successfully built OR deploy is forced, set the WEB hash
-          if [[ "${{ needs.build-and-push-images.outputs.web_built }}" == "true" || "${{ needs.detect-changes.outputs.force_deploy }}" == "true" ]]; then
+          if [[ "${{ needs.build-and-push-images.outputs.web_built }}" == "true" || "${{ needs.detect-changes.outputs.manual_deploy }}" == "true" ]]; then
             echo "WEB_GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
             echo "-> Setting WEB_GIT_COMMIT_HASH" # Debug message
           else
-            echo "-> Skipping WEB_GIT_COMMIT_HASH (web not built and deploy not forced)" # Debug message
+            echo "-> Skipping WEB_GIT_COMMIT_HASH (web not built and deploy was not manually triggered" # Debug message
           fi
 
           # If py-api was successfully built OR deploy is forced, set the PY_API hash
-          if [[ "${{ needs.build-and-push-images.outputs.py_api_built }}" == "true" || "${{ needs.detect-changes.outputs.force_deploy }}" == "true" ]]; then
+          if [[ "${{ needs.build-and-push-images.outputs.py_api_built }}" == "true" || "${{ needs.detect-changes.outputs.manual_deploy }}" == "true" ]]; then
             echo "PY_API_GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
             echo "-> Setting PY_API_GIT_COMMIT_HASH" # Debug message
           else
-            echo "-> Skipping PY_API_GIT_COMMIT_HASH (py-api not built and deploy not forced)" # Debug message
+            echo "-> Skipping PY_API_GIT_COMMIT_HASH (py-api not built and deploy was not manually triggered)" # Debug message
           fi
 
           echo "Contents of ./envfile:"
