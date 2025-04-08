@@ -4,16 +4,16 @@ import pytest
 from result import Err, Ok
 from unittest.mock import Mock, AsyncMock
 
-from src.database.model.team_model import Team
-from src.database.model.participant_model import Participant
-from src.server.exception import (
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import (
     EmailRateLimitExceededError,
     HackathonCapacityExceededError,
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
-from src.service.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 
 

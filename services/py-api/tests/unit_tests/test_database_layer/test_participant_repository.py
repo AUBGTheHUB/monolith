@@ -7,10 +7,10 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 from bson import ObjectId
 
-from src.database.db_manager import PARTICIPANTS_COLLECTION
-from src.database.model.participant_model import Participant, UpdateParticipantParams
-from src.database.repository.participants_repository import ParticipantsRepository
-from src.server.exception import DuplicateEmailError, ParticipantNotFoundError
+from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
+from src.database.mongo.db_manager import PARTICIPANTS_COLLECTION
+from src.database.repository.hackathon.participants_repository import ParticipantsRepository
+from src.exception import DuplicateEmailError, ParticipantNotFoundError
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
 
 

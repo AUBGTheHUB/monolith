@@ -3,18 +3,17 @@ from unittest.mock import Mock, patch
 from fastapi import BackgroundTasks
 import pytest
 from result import Ok, Err
-from starlette import status
-
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.exception import (
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import (
     DuplicateEmailError,
     DuplicateTeamNameError,
     HackathonCapacityExceededError,
     TeamCapacityExceededError,
-    TeamNotFoundError,
 )
-from src.server.handlers.participants_handlers import ParticipantHandlers
+from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
+from starlette import status
+
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     ParticipantRequestBody,

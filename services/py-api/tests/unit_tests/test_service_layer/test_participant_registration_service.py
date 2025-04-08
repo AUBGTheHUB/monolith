@@ -3,24 +3,23 @@ from unittest.mock import Mock
 
 import pytest
 from result import Ok, Err
-
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.exception import (
-    DuplicateTeamNameError,
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import (
     DuplicateEmailError,
+    DuplicateTeamNameError,
     HackathonCapacityExceededError,
-    TeamCapacityExceededError,
     ParticipantNotFoundError,
+    TeamCapacityExceededError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
-from src.service.participants_registration_service import ParticipantRegistrationService
-from src.utils import JwtUtility
+from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
+from src.service.jwt_utils.codec import JwtUtility
 
 
 @pytest.fixture

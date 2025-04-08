@@ -1,10 +1,10 @@
 from unittest.mock import Mock
 import pytest
 from result import Err, Ok
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.exception import ParticipantNotFoundError, TeamNotFoundError
-from src.server.handlers.hackathon_handlers import HackathonManagementHandlers
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import ParticipantNotFoundError, TeamNotFoundError
+from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     ParticipantDeletedResponse,

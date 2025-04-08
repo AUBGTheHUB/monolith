@@ -7,10 +7,10 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 from bson import ObjectId
 
-from src.database.db_manager import TEAMS_COLLECTION
-from src.database.repository.teams_repository import TeamsRepository
-from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
-from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.model.hackathon.team_model import Team, UpdateTeamParams
+from src.database.mongo.db_manager import TEAMS_COLLECTION
+from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.exception import TeamNotFoundError
 from tests.integration_tests.conftest import TEST_TEAM_NAME
 
 

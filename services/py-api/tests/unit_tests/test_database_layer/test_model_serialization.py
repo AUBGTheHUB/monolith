@@ -1,5 +1,5 @@
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 
 

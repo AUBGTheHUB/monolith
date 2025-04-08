@@ -2,24 +2,24 @@ from unittest.mock import Mock, patch
 from fastapi import BackgroundTasks
 import pytest
 from result import Err, Ok
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.exception import (
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import (
     EmailRateLimitExceededError,
     HackathonCapacityExceededError,
     ParticipantAlreadyVerifiedError,
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
-from src.server.handlers.verification_handlers import VerificationHandlers
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     ParticipantVerifiedResponse,
     Response,
     VerificationEmailSentSuccessfullyResponse,
 )
-from src.utils import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.jwt_utils.codec import JwtUtility
 from starlette import status
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
 

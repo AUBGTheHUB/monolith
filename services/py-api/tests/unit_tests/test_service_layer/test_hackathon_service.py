@@ -6,24 +6,24 @@ from bson import ObjectId
 import pytest
 from result import Ok, Err
 
-from src.database.model.participant_model import Participant
-from src.database.model.team_model import Team
-from src.server.exception import (
-    DuplicateTeamNameError,
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
+from src.exception import (
     DuplicateEmailError,
+    DuplicateTeamNameError,
     EmailRateLimitExceededError,
     ParticipantAlreadyVerifiedError,
     ParticipantNotFoundError,
     TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.server.schemas.request_schemas.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
-from src.service.hackathon_service import HackathonService
+from src.service.hackathon.hackathon_service import HackathonService
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog import get_logger
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
 

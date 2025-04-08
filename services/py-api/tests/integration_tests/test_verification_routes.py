@@ -3,9 +3,9 @@ from os import environ
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
-from src.server.schemas.jwt_schemas.schemas import JwtParticipantVerificationData
-from src.service.hackathon_service import HackathonService
-from src.utils import JwtUtility
+from src.service.hackathon.hackathon_service import HackathonService
+from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.jwt_utils.codec import JwtUtility
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
     CreateTestParticipantCallable,
