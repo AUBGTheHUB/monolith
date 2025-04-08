@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.server.exception import ERROR_MAPPING
+from src.exception import ERROR_MAPPING
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from starlette import status
 
