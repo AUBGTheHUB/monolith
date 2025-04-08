@@ -12,7 +12,7 @@ export interface HackathonSponsorProps {
 function SponsorCard({ sponsor, rank }: { sponsor: HackathonSponsorProps; rank: SponsorRank }) {
     return (
         <a
-            className={`block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer transition-shadow duration-400 hover:shadow-md ${rank === 'Platinum' ? 'hover:shadow-[#19A0F0]' : rank === 'Gold' ? 'hover:shadow-[#FFDE06]' : 'hover:shadow-[#92B1C9]'}`}
+            className={`block border border-[#233340] bg-white rounded-lg min-w-40 max-w-60 min-h-10 aspect-square w-full sm:w-1/5 p-4 cursor-pointer transition-shadow duration-400 hover:shadow-md ${rank === 'Platinum' ? 'hover:shadow-[#19A0F0]' : rank === 'Gold' ? 'hover:shadow-[#FFDE06]' : rank === 'Silver' ? 'hover:shadow-[#92B1C9]' : 'hover:shadow-[#CD7F32]'}`}
             href={sponsor.websiteLink}
             target="_blank"
             rel="noreferrer"
@@ -70,7 +70,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
     bronzeSponsors.sort((a, b) => a.name.localeCompare(b.name));
     customSponsors.sort((a, b) => a.name.localeCompare(b.name));
 
-    if (sponsorsSwitch === true) {
+    if (sponsorsSwitch) {
         return (
             <div className="text-white sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="text-3xl sm:text-4xl flex items-center gap-4 mb-20">
@@ -81,7 +81,7 @@ export default function HackathonSponsors({ sponsorsSwitch }: { sponsorsSwitch: 
                 <SponsorSection rank="Gold" sponsors={goldSponsors} />
                 <SponsorSection rank="Silver" sponsors={silverSponsors} />
                 <SponsorSection rank="Bronze" sponsors={bronzeSponsors} />
-                <SponsorSection rank="Custom" sponsors={customSponsors} />
+                {/* <SponsorSection rank="Custom" sponsors={customSponsors} /> */}
             </div>
         );
     } else {

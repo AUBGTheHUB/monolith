@@ -139,29 +139,29 @@ const projectIdea = {
 const projectRealization = {
     category: 'PROJECT REALIZATION',
     criteria: [
-        { criteria: 'UX/UI design', points: '8' },
-        { criteria: 'Scalability', points: '5' },
-        { criteria: 'Structured git repository with documentation', points: '2' },
-        { criteria: 'Project deployment', points: '2' },
+        { criteria: 'UX/UI design', points: '10' },
+        { criteria: 'Scalability', points: '10' },
+        { criteria: 'Structured git repository with documentation', points: '5' },
+        { criteria: 'Project deployment', points: '5' },
     ],
 };
 
 const projectComplexity = {
     category: 'COMPLEXITY OF THE PROJECT',
     criteria: [
-        { criteria: 'Code originality', points: '8' },
-        { criteria: 'Suitable technology stack', points: '5' },
-        { criteria: 'Clear coding style', points: '2' },
-        { criteria: 'Security', points: '2' },
+        { criteria: 'Code originality', points: '15' },
+        { criteria: 'Suitable technology stack', points: '10' },
+        { criteria: 'Clear coding style', points: '10' },
+        { criteria: 'Security', points: '5' },
     ],
 };
 
 const presentation = {
     category: 'PRESENTATION',
     criteria: [
-        { criteria: 'Coherency', points: '8' },
-        { criteria: 'Clear explanation and defense of project ideas', points: '2' },
-        { criteria: 'Demo', points: '2' },
-        { criteria: 'Demonstration and explanation of the most complex feature of the project', points: '2' },
+        { criteria: 'Coherency', points: '15' },
+        { criteria: 'Clear explanation and defense of project ideas', points: '10' },
+        { criteria: 'Demo', points: '10' },
+        { criteria: 'Demonstration and explanation of the most complex feature of the project', points: '5' },
     ],
 };

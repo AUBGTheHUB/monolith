@@ -35,6 +35,9 @@ export default function MentorsSection({ mentorsSwitch }: { mentorsSwitch: boole
         if (emblaApi) emblaApi.on('slidesInView', logEmblaEvent);
     }, [emblaApi, logEmblaEvent]);
 
+    //sort the mentors alphabetically based on their name
+    mentors.sort((a, b) => a.name.localeCompare(b.name));
+
     const SLIDES = mentors.map((mentor, index) => (
         <JuryModule imgSrc={mentor.picture} name={mentor.name} company={mentor.company} job={mentor.job} key={index} />
     ));

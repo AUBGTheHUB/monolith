@@ -1,62 +1,140 @@
 [
     {
-        "name": "Alice Johnson",
+        "name": "Ilian Kodzhahristov",
+        "job": "Executive Director",
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/IlianKodzhahristov_apploca-min.webp"
+    },
+    {
+        "name": "Martin Savov",
+        "job": "Front-end Developer",
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MartinSavov_Appolica-min.webp"
+    },
+    {
+        "name": "Stefan Atanasov",
+        "job": "Engineering Manager",
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StefanAtanasov_Appolica-min.webp"
+    },
+    {
+        "name": "Kristiyan Tsankov",
         "job": "Software Engineer",
-        "company": "TechCorp",
-        "picture": "/sample.png"
+        "company": "Appolica",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/KristiyanTsankov_Appolica-min.webp"
     },
     {
-        "name": "Bob Smith",
-        "job": "Data Analyst",
-        "company": "DataWorks",
-        "picture": "/sample.png"
+        "name": "Daniel Lydianov",
+        "job": "CEO of Weband",
+        "company": "Weband",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/daniel.webp"
     },
     {
-        "name": "Charlie Brown",
-        "job": "Product Manager",
-        "company": "Innovate Inc.",
-        "picture": "/sample.png"
+        "name": "Orlin Kozarev",
+        "job": "CTO of A Data pro",
+        "company": "Updata One",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/OrlinKozarev_UpdataOne-min.webp"
     },
     {
-        "name": "Diana Prince",
-        "job": "UX Designer",
-        "company": "DesignHub",
-        "picture": "/sample.png"
+        "name": "Toni Marinov",
+        "job": "Deputy Operations Director",
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ToniMarinov_TbiBank-min.webp"
     },
     {
-        "name": "Ethan Hunt",
-        "job": "Cybersecurity Specialist",
-        "company": "SecureTech",
-        "picture": "/sample.png"
+        "name": "Viktor Yankulov",
+        "job": "Head of User Experience",
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ViktorYankulov_TbiBank-min.webp"
     },
     {
-        "name": "Fiona Davis",
-        "job": "Marketing Coordinator",
-        "company": "MarketMinds",
-        "picture": "/sample.png"
+        "name": "Yordan Nedelchev",
+        "job": "Automation QA",
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/YordanNedelchev_TbiBank-min.webp"
     },
     {
-        "name": "George Lucas",
-        "job": "Film Director",
-        "company": "Star Studios",
-        "picture": "/sample.png"
+        "name": "Iliyan Ignatov",
+        "job": "Software Developer",
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/IliyanIgnatov_TbiBank-min.webp"
     },
     {
-        "name": "Luka Doncic",
-        "job": "HR Manager",
-        "company": "PeopleFirst",
-        "picture": "/sample.png"
+        "name": "Kalina Damyanova",
+        "job": "Operations Director",
+        "company": "tbi bank",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/KalinaDamyanova_TbiBank-min.webp"
     },
     {
-        "name": "Ian Wright",
-        "job": "Financial Analyst",
-        "company": "WealthBank",
-        "picture": "/sample.png"
+        "name": "Desislava Borisova",
+        "job": "Engineering Manager",
+        "company": "HPE",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/DesislavaBorisova_HPE-min.webp"
     },
     {
-        "name": "Jackie Chan",
-        "job": "Stunt Coordinator",
-        "company": "ActionFilms",
-        "picture": "/sample.png"
+        "name": "Martin Manchev",
+        "job": "Software Engineer",
+        "company": "A1",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MartinManchev_%D0%901-min.webp"
+    },
+    {
+        "name": "Stefan Baychev",
+        "job": "Development Expert",
+        "company": "SAP",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StefanBaychev_SAP-min.webp"
+    },
+    {
+        "name": "Milen Nikolov",
+        "job": "Software Engineer",
+        "company": "Milestone",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/MilenNikolov_Milestone-min.webp"
+    },
+    {
+        "name": "Van Ha Vo",
+        "job": "Software Engineer",
+        "company": "Milestone",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/Van+Ha+Vo+-+milestone-min.webp"
+    },
+    {
+        "name": "Anton Polimenov",
+        "job": "Engineering Manager",
+        "company": "Milestone",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/anton.webp"
+    },
+    {
+        "name": "Pavel Tarasevich",
+        "job": "Backend Developer",
+        "company": "Enloc",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/Pavel_Enloc-min.webp"
+    },
+    {
+        "name": "Carmen Struck",
+        "job": "Country Manager Bulgaria",
+        "company": "Enloc",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/carmen.webp"
+    },
+    {
+        "name": "Todor Katsarov",
+        "job": "Senior System Engineer",
+        "company": "eFellows",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/TodorKatsarov_eFollows-min.webp"
+    },
+    {
+        "name": "Stanislav Velkov",
+        "job": "Technical Team Lead",
+        "company": "Proxiad SEE",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/StanislavVelkov_Proxiad-min.webp"
+    },
+    {
+        "name": "Plamen Beshkov",
+        "job": "Marketing Specialist",
+        "company": "ICT Strypes",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/PlamenBeshkov_ICT-min.webp"
+    },
+    {
+        "name": "Elena Doncheva",
+        "job": "Marketing Content Specialist",
+        "company": "ICT Strypes",
+        "picture": "https://hubarskibucket.s3.eu-central-1.amazonaws.com/compressed/ElenaDoncheva_ICT-min.webp"
     }
 ]
