@@ -13,7 +13,7 @@ from httpx import AsyncClient
 from starlette import status
 from structlog.stdlib import get_logger
 
-from src.environment import DOMAIN
+from src.environment import DOMAIN, is_local_env, PORT, is_test_env
 from src.service.hackathon.hackathon_service import HackathonService
 
 LOG = get_logger()
@@ -46,7 +46,14 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
 
 
 async def is_registration_open() -> None:
-    async with AsyncClient(base_url=f"https://{DOMAIN}/api/v3") as client:
+    if is_local_env() or is_test_env():
+        base_url = f"https://{DOMAIN}:{PORT}/api/v3"
+        verify_ssl = False
+    else:
+        base_url = f"https://{DOMAIN}/api/v3"
+        verify_ssl = True
+
+    async with AsyncClient(base_url=base_url, verify=verify_ssl) as client:
         resp = await client.get(f"/feature-switches/{HackathonService.REG_ALL_PARTICIPANTS_SWITCH}")
 
     if resp.status_code != 200:
