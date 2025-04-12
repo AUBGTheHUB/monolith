@@ -150,8 +150,8 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit == 'true' || needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
         uses: reproducible-containers/buildkit-cache-dance@v3
         with:
+          # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
           cache-map: |
-            # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
             {
               "/tmp/npm-cache": "/root/.npm"
             }
@@ -197,8 +197,8 @@ jobs:
         if: steps.cache-poetry.outputs.cache-hit == 'true' || needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
         uses: reproducible-containers/buildkit-cache-dance@v3
         with:
+          # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
           cache-map: |
-            # The path restored by actions/cache : the 'target' in the web Dockerfile's RUN --mount=type=cache
             {
               "/tmp/poetry-cache": "/tmp/poetry_cache"
             }
