@@ -229,9 +229,12 @@ jobs:
           echo "Build Py-Api Step Outcome: ${{ steps.build-py-api.outcome }}"
 
   deploy-to-dev:
+    # This job deploys using specific commit hashes for changed services.
+    needs: [ detect-changes, build-and-push-images ]
     # Run this job IF the branch is main AND
     # (EITHER web was built OR py-api was built in the build job OR deploy is forced)
     if: |
+      always() &&
       github.ref_name == 'new-cd-pipeline-inter' &&
       (needs.build-and-push-images.outputs.web_built == 'true' ||
        needs.build-and-push-images.outputs.py_api_built == 'true' ||
