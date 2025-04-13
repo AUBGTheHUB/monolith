@@ -229,8 +229,6 @@ jobs:
           echo "Build Py-Api Step Outcome: ${{ steps.build-py-api.outcome }}"
 
   deploy-to-dev:
-    # This job deploys using specific commit hashes for changed services.
-    needs: [ detect-changes, build-and-push-images ]
     # Run this job IF the branch is main AND
     # (EITHER web was built OR py-api was built in the build job OR deploy is forced)
     if: |
