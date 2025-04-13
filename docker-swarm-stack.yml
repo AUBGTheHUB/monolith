@@ -76,9 +76,6 @@ services:
       retries: 3
       # The container should start under 10 seconds, but this is the maximum time it should realistically take.
       start_period: 10s
-      # As `start_period` is set, the first healthcheck will run after 5s. If start_period is not set the first
-      # healthcheck will run after `interval` time.
-      start_interval: 5s
 
     volumes:
       # https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host
@@ -132,9 +129,6 @@ services:
       retries: 3
       # The container should start within 10 seconds, but this is the maximum time it should realistically take.
       start_period: 10s
-      # As `start_period` is set, the first healthcheck will run after 5s. If start_period is not set the first
-      # healthcheck will run after `interval` time
-      start_interval: 5s
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:
