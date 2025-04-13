@@ -90,7 +90,7 @@ jobs:
           echo "Web changed: ${{ steps.changed-files-web.outputs.any_changed }}"
           echo "Py-Api changed: ${{ steps.changed-files-py-api.outputs.any_changed }}"
           echo "Stack changed: ${{ steps.changed-files-stack.outputs.any_changed }}"
-          echo "Manual deploy: ${{ github.event_name == 'workflow_dispatch'}}"
+          echo "Force deploy: ${{ github.event_name == 'workflow_dispatch'}}"
 
   build-and-push-images:
     # This job builds images conditionally using optimized BuildKit caching.
