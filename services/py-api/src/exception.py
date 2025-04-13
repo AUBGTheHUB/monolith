@@ -35,9 +35,6 @@ class DuplicateTeamNameError(CustomError, DuplicateKeyError):
     status_code = status.HTTP_409_CONFLICT
 
 
-# test
-
-
 class HackathonCapacityExceededError(CustomError):
     """Exception raised when hackathon capacity has been reached."""
 

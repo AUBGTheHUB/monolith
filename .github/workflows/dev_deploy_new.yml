@@ -129,6 +129,7 @@ jobs:
 
       # --- Build WEB ---
       - name: Restore npm cache from GHA
+        if: needs.detect-changes.outputs.web_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
         id: cache-npm
         uses: actions/cache@v4
         with:
@@ -176,6 +177,7 @@ jobs:
 
       # --- Build PY-API (Poetry) ---
       - name: Restore Poetry cache from GHA
+        if: needs.detect-changes.outputs.py_api_changed == 'true' || needs.detect-changes.outputs.force_deploy == 'true'
         id: cache-poetry
         uses: actions/cache@v4
         with:
