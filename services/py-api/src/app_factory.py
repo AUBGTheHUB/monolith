@@ -82,6 +82,10 @@ def create_app() -> FastAPI:
     teams_repo = TeamsRepository(db_manager=db_manager, collection_name=TEAMS_COLLECTION)
     fs_repo = FeatureSwitchRepository(db_manager=db_manager, collection_name=FEATURE_SWITCH_COLLECTION)
 
+    # Store FeatureSwitchRepository in app.state for access in route dependencies
+    # https://www.starlette.io/applications/#storing-state-on-the-app-instance
+    app.state.fs_repo = fs_repo
+
     # Service layer wiring
     jwt_utility = JwtUtility()
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)

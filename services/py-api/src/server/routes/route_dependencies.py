@@ -9,11 +9,12 @@ from typing import Annotated
 
 from bson import ObjectId
 from fastapi import Header, HTTPException, Path
-from httpx import AsyncClient
+from result import is_err
 from starlette import status
+from starlette.requests import Request
 from structlog.stdlib import get_logger
 
-from src.environment import DOMAIN
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.service.hackathon.hackathon_service import HackathonService
 
 LOG = get_logger()
@@ -45,20 +46,14 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
 
 
-async def is_registration_open() -> None:
-    async with AsyncClient(base_url=f"https://{DOMAIN}/api/v3") as client:
-        resp = await client.get(f"/feature-switches/{HackathonService.REG_ALL_PARTICIPANTS_SWITCH}")
+async def is_registration_open(request: Request) -> None:
+    fs_repo: FeatureSwitchRepository = request.app.state.fs_repo
 
-    if resp.status_code != 200:
-        LOG.error(
-            "Error while fetching FS before registration request is accepted",
-            feature=HackathonService.REG_ALL_PARTICIPANTS_SWITCH,
-            status_code=resp.status_code,
-        )
+    result = await fs_repo.get_feature_switch(HackathonService.REG_ALL_PARTICIPANTS_SWITCH)
+    if is_err(result):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
 
-    resp_data = resp.json()
-    if not resp_data.get("feature", {}).get("state", False):
+    if result.ok_value.state is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
 
 
