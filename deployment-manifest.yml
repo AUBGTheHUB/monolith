@@ -1,0 +1,16 @@
+# deployment-manifest.yml
+# This file is used to manually deploy a specific service version. It works only if a service image has been built and
+# pushed to the container registry. Deployment of new code changes happens automatically.
+# Specify the versions (commit SHA or 'latest') to deploy for each service.
+# Changes to this file on the 'main' and 'production' branches will trigger the manifest-based deployment workflow.
+
+services:
+  web:
+    version: latest
+    # Example of how to deploy a specific commit
+    # version: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+
+  py-api:
+    version: latest
+    # Example of how to deploy a specific commit
+    # version: f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0

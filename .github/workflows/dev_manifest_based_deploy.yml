@@ -1,0 +1,67 @@
+name: Deployment Pipeline DEV (Manifest Based)
+
+on:
+  # Trigger when the manifest file is changed on the main branch
+  push:
+    branches:
+      - main
+    paths:
+      - 'deployment-manifest.yml'
+
+jobs:
+  read-manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      web_version: ${{ steps.get_versions.outputs.web_version }}
+      py_api_version: ${{ steps.get_versions.outputs.py_api_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install yq (YAML processor)
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Read versions from manifest or manual input
+        id: get_versions
+        run: |
+          MANIFEST_WEB_VERSION=$(yq '.services.web.version' deployment-manifest.yml)
+          MANIFEST_PY_API_VERSION=$(yq '.services.py-api.version' deployment-manifest.yml)
+
+          # Write the actual values to the GITHUB_OUTPUT file
+          # This makes them available as outputs of this step (steps.get_versions.outputs.*)
+          echo "web_version=$MANIFEST_WEB_VERSION" >> $GITHUB_OUTPUT
+          echo "py_api_version=$MANIFEST_PY_API_VERSION" >> $GITHUB_OUTPUT
+
+
+  deploy-from-manifest:
+    needs: read-manifest
+    runs-on: ubuntu-latest
+
+    environment:
+      name: DEV
+      url: https://${{vars.DOMAIN}}
+
+    steps:
+      - name: Checkout code # Needed for docker-swarm-stack.yml
+        uses: actions/checkout@v4
+
+      - name: Create env file for deploy
+        run: |
+          echo "Preparing envfile for deployment..."
+          echo "WEB_GIT_COMMIT_HASH=${{ needs.read-manifest.outputs.web_version }}" >> ./envfile
+          echo "PY_API_GIT_COMMIT_HASH=${{ needs.read-manifest.outputs.py_api_version }}" >> ./envfile
+
+          echo "Contents of ./envfile used for deployment:"
+          cat ./envfile
+
+      # Deploy using the versions specified in the envfile
+      - name: Docker Stack Deploy to STAGING
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: monolith
+          file: docker-swarm-stack.yml
+          host: ${{secrets.VPS_IP}}
+          user: deploy
+          ssh_key: ${{secrets.DEV_DEPLOY_SSH_PRIVATE_KEY}}
+          env_file: ./envfile
