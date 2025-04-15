@@ -1,8 +1,7 @@
-# deployment-manifest.yml
-# This file is used to manually deploy a specific service version. It works only if a service image has been built and
-# pushed to the container registry. Deployment of new code changes happens automatically.
+# This file is used to manually deploy a specific service version. It works only if a service image has already been
+# built, tagged, and pushed to the container registry. Ths happens automatically on new code changes.
 # Specify the versions (commit SHA or 'latest') to deploy for each service.
-# Changes to this file on the 'main' and 'production' branches will trigger the manifest-based deployment workflow.
+# Changes to this file on the 'main' oe 'production' branches will trigger the manifest-based deployment workflow.
 
 services:
   web:
