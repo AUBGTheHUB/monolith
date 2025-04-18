@@ -23,6 +23,7 @@ LOG = get_logger()
 PARTICIPANT_ENDPOINT_URL = "/api/v3/hackathon/participants"
 PARTICIPANT_VERIFY_URL = "/api/v3/hackathon/participants/verify"
 TEAM_ENDPOINT_URL = "/api/v3/hackathon/teams"
+FEATURE_SWITCH_ENDPOINT_URL = "/api/v3/feature-switches"
 
 TEST_USER_NAME = "Test User"
 TEST_TEAM_NAME = "Test Team"
@@ -96,6 +97,52 @@ async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict
         )
 
 
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+async def revert_the_finalization_step(async_client: AsyncClient) -> None:
+    """
+    When the capacity for the registered teams is reached, there is a finalization step that runs creating possible
+    random participant teams and flipping the feature switch that allows for the possible creation of new teams
+    """
+    TEAM_REGISTRATION_FEATURE = "isRegTeamsFull"
+    # We shall use the Async Client to clean up after the finalization step
+
+    LOG.debug("Cleaning up the random teams that were created")
+
+    teams_result = await async_client.get(
+        url=f"{TEAM_ENDPOINT_URL}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        follow_redirects=True,
+    )
+
+    LOG.debug("Deleting random teams")
+
+    for team in teams_result.json()["teams"]:
+        await async_client.delete(
+            url=f"{TEAM_ENDPOINT_URL}/{team["id"]}",
+            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        )
+
+    LOG.debug(f"Recovering the state of the {TEAM_REGISTRATION_FEATURE} feature switch")
+    feature_response = await async_client.get(
+        url=f"{FEATURE_SWITCH_ENDPOINT_URL}/{TEAM_REGISTRATION_FEATURE}", follow_redirects=True
+    )
+
+    if feature_response.status_code != 200:
+        LOG.debug(
+            f"Failed to get {TEAM_REGISTRATION_FEATURE} feature switch. Check if the name of the feature switch is correct."
+        )
+
+    payload = {"name": TEAM_REGISTRATION_FEATURE, "state": False}
+
+    await async_client.patch(
+        f"{FEATURE_SWITCH_ENDPOINT_URL}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        json=payload,
+    )
+
+    LOG.debug("Cleanup finished successfully")
+
+
 # The following is an exapmle of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
@@ -161,6 +208,9 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
+
+    # Revert the finalization if any random teams were created while integration testing
+    await revert_the_finalization_step(async_client=async_client)
 
 
 class ParticipantRequestBodyCallable(Protocol):

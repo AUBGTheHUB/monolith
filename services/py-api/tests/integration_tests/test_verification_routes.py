@@ -22,8 +22,11 @@ async def test_verify_participant_admin_case_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+
+    # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
@@ -37,13 +40,15 @@ async def test_verify_participant_admin_case_success(
         sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
     )
 
-    jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+    jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
 
+    # When
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+
+    # Then
     assert verify_resp.status_code == status.HTTP_200_OK
 
     verify_resp_json = verify_resp.json()
-
     assert create_resp_json["team"]["id"] == verify_resp_json["team"]["id"]
     assert create_resp_json["participant"]["id"] == verify_resp_json["participant"]["id"]
     assert create_resp_json["participant"]["team_id"] == create_resp_json["team"]["id"]
@@ -58,16 +63,21 @@ async def test_verify_participant_admin_case_success(
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_participant_is_not_found(
     mock_obj_id: str,
-    thirty_sec_jwt_exp_limit: float,
+    thirty_sec_jwt_exp_limit: int,
+    mock_jwt_utility: JwtUtility,
     async_client: AsyncClient,
 ) -> None:
-    jwt_token = JwtUtility.encode_data(
+
+    # Given
+    jwt_token = mock_jwt_utility.encode_data(
         data=JwtParticipantVerificationData(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
     )
 
+    # When
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
-    verify_resp_json = verify_resp.json()
 
+    # Then
+    verify_resp_json = verify_resp.json()
     assert verify_resp.status_code == status.HTTP_404_NOT_FOUND
     assert verify_resp_json["error"] == "The specified participant was not found"
 
@@ -81,8 +91,11 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+
+    # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
@@ -91,7 +104,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
 
     create_resp_json = create_resp.json()
 
-    jwt_token = JwtUtility.encode_data(
+    jwt_token = mock_jwt_utility.encode_data(
         data=JwtParticipantVerificationData(
             sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
         )
@@ -103,9 +116,11 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     )
     assert delete_team_resp.status_code == status.HTTP_200_OK
 
+    # When
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
-    verify_resp_json = verify_resp.json()
 
+    # Then
+    verify_resp_json = verify_resp.json()
     assert verify_resp.status_code == status.HTTP_404_NOT_FOUND
     assert verify_resp_json["error"] == "The specified team was not found"
 
@@ -115,8 +130,11 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
 async def test_verify_participant_admin_case_expired_token(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
+    mock_jwt_utility: JwtUtility,
     async_client: AsyncClient,
 ) -> None:
+
+    # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
@@ -126,15 +144,19 @@ async def test_verify_participant_admin_case_expired_token(
     create_resp_json = create_resp.json()
 
     # Generate an expired jwt token based on the Object Id of the admin participant that we just created
-    jwt_token = JwtUtility.encode_data(
+    jwt_token = mock_jwt_utility.encode_data(
         data=JwtParticipantVerificationData(
-            sub=create_resp_json["participant"]["id"], is_admin=True, exp=(datetime.now(tz=timezone.utc)).timestamp()
+            sub=create_resp_json["participant"]["id"],
+            is_admin=True,
+            exp=int((datetime.now(tz=timezone.utc)).timestamp()),
         )
     )
 
+    # When
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
-    verfiy_resp_json = verify_resp.json()
 
+    # Then
+    verfiy_resp_json = verify_resp.json()
     assert verify_resp.status_code == status.HTTP_400_BAD_REQUEST
     assert verfiy_resp_json["error"] == "The JWT token has expired."
 
@@ -147,8 +169,10 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+    # Given
     # Buffer for the created unverified participants
     created_participant_ids = []
 
@@ -165,17 +189,19 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
         create_resp_json = create_resp.json()
         created_participant_ids.append(create_resp_json["participant"]["id"])
 
+    # When
     # We try to verify each of them, but we should only be able to verify up to the capacity
     for i in range(HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=True, exp=thirty_sec_jwt_exp_limit
         )
-        verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+        verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
         # Make call to the endpoint to verify participant
         verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
         verify_resp_json = verify_resp.json()
 
+        # Then
         # Make assertions conditionally
         # Verification is successful only up to capacity
         if i < HackathonService.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON:
@@ -192,8 +218,11 @@ async def test_verify_admin_participant_case_already_verified(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+
+    # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
     )
@@ -207,16 +236,17 @@ async def test_verify_admin_participant_case_already_verified(
         sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
     )
 
-    jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+    jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
 
+    # When
     # Try to verify the participant twice
     await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
     assert verify_resp.status_code == status.HTTP_400_BAD_REQUEST
 
-    verify_resp_json = verify_resp.json()
-
+    # Then
     # Check the error message
+    verify_resp_json = verify_resp.json()
     assert verify_resp_json["error"] == "You have already been verified"
 
 
@@ -226,13 +256,13 @@ async def test_verify_random_participant_success(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
-    # Generate random participant body
+
+    # Given
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
-    # Create random participant
     create_resp = await create_test_participant(participant_body=random_participant_body)
-    # Assert that the participant was created successfully
     assert create_resp.status_code == status.HTTP_201_CREATED
 
     create_resp_json = create_resp.json()
@@ -241,11 +271,13 @@ async def test_verify_random_participant_success(
     verify_jwt_token_payload = JwtParticipantVerificationData(
         sub=create_resp_json["participant"]["id"], is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
-    verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
 
+    # When
     # Make call to the endpoint to verify participant
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
 
+    # Then
     # Assert that the verification was successful
     assert verify_resp.status_code == status.HTTP_200_OK
 
@@ -264,22 +296,25 @@ async def test_verify_random_participant_success(
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_not_found(
-    async_client: AsyncClient, mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+    async_client: AsyncClient, mock_obj_id: str, mock_jwt_utility: JwtUtility, thirty_sec_jwt_exp_limit: int
 ) -> None:
+
+    # Given
     # Generate jwt token based on a mock object id that does not exist on the database
     verify_jwt_token_payload = JwtParticipantVerificationData(
         sub=mock_obj_id, is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
-    verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
 
+    # When
     # Make call to the endpoint to verify participant
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
 
+    # Then
     # Assert that the verification was not successful. The participant that we are trying to verify is missing
     assert verify_resp.status_code == status.HTTP_404_NOT_FOUND
 
     verify_resp_json = verify_resp.json()
-    # Check the error message
     assert verify_resp_json["error"] == "The specified participant was not found"
 
 
@@ -291,8 +326,11 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+
+    # Given
     # Buffer for the created unverified participants
     created_participant_ids = []
 
@@ -309,23 +347,23 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
         create_resp_json = create_resp.json()
         created_participant_ids.append(create_resp_json["participant"]["id"])
 
+    # When
     # We try to verify each of them, but we should only be able to verify up to the capacity
     for i in range(HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS + 1):
         # Generate jwt token based on a mock object id that does not exist on the database
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=False, exp=thirty_sec_jwt_exp_limit
         )
-        verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+        verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
         # Make call to the endpoint to verify participant
         verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
         verify_resp_json = verify_resp.json()
 
+        # Then
         # Make assertions conditionally
         # Verification is successful only up to capacity
         if i < HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS:
             assert verify_resp.status_code == status.HTTP_200_OK
-            # TODO: After this operation there is a random team being created together with a feature switch that is being
-            # switched
         else:
             assert verify_resp.status_code == status.HTTP_409_CONFLICT
             assert verify_resp_json["error"] == "Max hackathon capacity has been reached"
@@ -337,8 +375,11 @@ async def test_verify_random_participant_case_already_verified(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    thirty_sec_jwt_exp_limit: float,
+    mock_jwt_utility: JwtUtility,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
+
+    # Given
     # Generate random participant body
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
     # Create random participant
@@ -352,7 +393,9 @@ async def test_verify_random_participant_case_already_verified(
     verify_jwt_token_payload = JwtParticipantVerificationData(
         sub=create_resp_json["participant"]["id"], is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
-    verify_jwt_token = JwtUtility.encode_data(data=verify_jwt_token_payload)
+
+    # When
+    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
 
     await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
