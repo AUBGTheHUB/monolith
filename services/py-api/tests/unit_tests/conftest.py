@@ -16,6 +16,7 @@ from motor.motor_asyncio import (
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
@@ -303,58 +304,97 @@ def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDb
     return cast(MongoDbManagerMock, mock_db_manager)
 
 
-# class MongoDbManagerMock(Protocol):
-#     """A Static Duck Type, modeling a Mocked MongoDatabaseManager"""
-#
-#     async_ping_db: AsyncMock
-#     get_collection: Mock
-#
-#
-# @pytest.fixture
-# def mongo_db_manager_mock() -> MongoDbManagerMock:
-#     db_manager = _create_typed_mock(MongoDatabaseManager)
-#     db_manager.async_ping_db = AsyncMock()
-#     db_manager.get_collection = Mock()
-#
-#     return cast(MongoDbManagerMock, db_manager)
-#
-#
-# @pytest.fixture
-# def participant_repo_mock() -> Mock:
-#     """This is a mock obj of ParticipantsRepository. To change the return values of its methods use:
-#     `participant_repo_mock.method_name.return_value=some_return_value`"""
-#
-#     participant_repo = Mock(spec=ParticipantsRepository)
-#
-#     participant_repo.fetch_by_id = AsyncMock()
-#     participant_repo.fetch_all = AsyncMock()
-#     participant_repo.update = AsyncMock()
-#     participant_repo.create = AsyncMock()
-#     participant_repo.delete = AsyncMock()
-#     participant_repo.get_number_registered_teammates = AsyncMock()
-#     participant_repo.get_verified_random_participants_count = AsyncMock()
-#
-#     return participant_repo
-#
-#
-# @pytest.fixture
-# def team_repo_mock() -> Mock:
-#     """This is a mock obj of TeamsRepository. To change the return values of its methods use:
-#     `team_repo_mock.method_name.return_value=some_return_value`"""
-#
-#     team_repo = Mock(spec=TeamsRepository)
-#
-#     team_repo.fetch_by_id = AsyncMock()
-#     team_repo.fetch_by_team_name = AsyncMock()
-#     team_repo.fetch_all = AsyncMock()
-#     team_repo.update = AsyncMock()
-#     team_repo.create = AsyncMock()
-#     team_repo.delete = AsyncMock()
-#     team_repo.get_verified_registered_teams_count = AsyncMock()
-#
-#     return team_repo
-#
-#
+class ParticipantRepoMock(Protocol):
+    """A Static Duck Type, modeling a Mocked ParticipantsRepository
+
+    Should not be initialized directly by application developers to create a ParticipantRepoMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    bulk_update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+    get_number_registered_teammates: AsyncMock
+    get_verified_random_participants: AsyncMock
+    get_verified_random_participants_count: AsyncMock
+
+
+@pytest.fixture
+def participant_repo_mock() -> ParticipantRepoMock:
+    """Mock object for ParticipantsRepository.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        participant_repo_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        participant_repo_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked ParticipantsRepository
+    """
+
+    participant_repo = _create_typed_mock(ParticipantsRepository)
+
+    participant_repo.fetch_by_id = AsyncMock()
+    participant_repo.fetch_all = AsyncMock()
+    participant_repo.update = AsyncMock()
+    participant_repo.bulk_update = AsyncMock()
+    participant_repo.create = AsyncMock()
+    participant_repo.delete = AsyncMock()
+    participant_repo.get_number_registered_teammates = AsyncMock()
+    participant_repo.get_verified_random_participants_count = AsyncMock()
+    participant_repo.get_verified_random_participants = AsyncMock()
+    return cast(ParticipantRepoMock, participant_repo)
+
+
+class TeamRepoMock(Protocol):
+    """A Static Duck Type, modeling a Mocked TeamsRepository
+
+    Should not be initialized directly by application developers to create a TeamRepoMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    fetch_by_id: AsyncMock
+    fetch_by_team_name: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+    get_verified_registered_teams_count: AsyncMock
+
+
+@pytest.fixture
+def team_repo_mock() -> TeamRepoMock:
+    """Mock object for TeamsRepository.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        team_repo_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        team_repo_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked TeamsRepository
+    """
+
+    team_repo = _create_typed_mock(TeamsRepository)
+
+    team_repo.fetch_by_id = AsyncMock()
+    team_repo.fetch_by_team_name = AsyncMock()
+    team_repo.fetch_all = AsyncMock()
+    team_repo.update = AsyncMock()
+    team_repo.create = AsyncMock()
+    team_repo.delete = AsyncMock()
+    team_repo.get_verified_registered_teams_count = AsyncMock()
+
+    return cast(TeamRepoMock, team_repo)
 
 
 # ======================================
@@ -589,8 +629,8 @@ def five_sec_window() -> Tuple[datetime, datetime]:
 
 
 @pytest.fixture
-def thirty_sec_jwt_exp_limit() -> float:
-    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()
+def thirty_sec_jwt_exp_limit() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
 
 
 @pytest.fixture
@@ -632,7 +672,7 @@ def mock_participant_request_body_random_case(mock_normal_team: Team) -> Partici
 
 @pytest.fixture
 def mock_jwt_random_user_verification_data(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: int
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
         sub=mock_obj_id,
@@ -643,7 +683,7 @@ def mock_jwt_random_user_verification_data(
 
 @pytest.fixture
 def mock_jwt_admin_user_verification_data(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: float
+    mock_obj_id: str, thirty_sec_jwt_exp_limit: int
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
         sub=mock_obj_id,
