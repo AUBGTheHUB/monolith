@@ -3,10 +3,13 @@ from unittest.mock import patch
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
+from src.service.jwt_utils.codec import JwtUtility
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
-
-from src.database.model.participant_model import (
+from src.app_entrypoint import app
+from os import environ
+from src.database.model.hackathon.participant_model import (
     TSHIRT_SIZE,
     UNIVERSITIES_LIST,
     ALLOWED_AGE,
@@ -14,9 +17,6 @@ from src.database.model.participant_model import (
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
 )
-
-from src.server.app_entrypoint import app
-from os import environ
 
 LOG = get_logger()
 
@@ -39,7 +39,7 @@ TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
 # running in the same event loop, otherwise we get `Event loop is closed`. This is because by default, each test runs
-# in a separate event loop (scope=function). Also, it’s highly recommended for neighboring tests to use the same event
+# in a separate event loop (scope=function). Also, it's highly recommended for neighboring tests to use the same event
 # loop scope, and as we use "session" for our async_client we need all integration tests to use "session" as well.
 # https://pytest-asyncio.readthedocs.io/en/latest/concepts.html
 # https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
@@ -276,10 +276,36 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 
 
 @pytest.fixture
-def mock_obj_id() -> str:
+def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
 
 
 @pytest.fixture
-def thirty_sec_jwt_exp_limit() -> float:
-    return (datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp()
+def thirty_sec_jwt_exp_limit() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+
+
+@pytest.fixture
+def invite_link_jwt_payload_mock(
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+) -> JwtParticipantInviteRegistrationData:
+    return JwtParticipantInviteRegistrationData(
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
+    )
+
+
+@pytest.fixture
+def participant_verification_jwt_payload_mock(
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+) -> JwtParticipantVerificationData:
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+
+
+@pytest.fixture
+def expired_jwt_payload_mock(obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
+    return JwtParticipantInviteRegistrationData(sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=0)
+
+
+@pytest.fixture
+def jwt_utility_mock() -> JwtUtility:
+    return JwtUtility()
