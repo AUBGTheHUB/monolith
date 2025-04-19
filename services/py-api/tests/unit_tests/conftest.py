@@ -22,6 +22,7 @@ from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from typing_extensions import Protocol
 
@@ -578,6 +579,11 @@ def participant_verification_service_mock() -> ParticipantVerificationServiceMoc
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
+
+
+@pytest.fixture
+def mock_jwt_utility() -> JwtUtility:
+    return JwtUtility()
 
 
 @pytest.fixture
