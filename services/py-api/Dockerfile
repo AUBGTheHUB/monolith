@@ -56,14 +56,12 @@ RUN adduser \
     --uid "10001" \
     appuser
 
-# Change ownership of the shared directory so that we have permissions to write to the logfiles
-RUN chown -R appuser:appuser /app/shared
-
 # Switch to the non-privileged user to run the application.
 USER appuser
 
 COPY src ./src
-COPY shared ./shared
+# Give ownership to the log files, so that appuser can wirte to them
+COPY --chown=appuser:appuser shared ./shared
 
 # Inform Docker that the container listens on the specified network ports at runtime.
 # https://docs.docker.com/reference/dockerfile/#expose
