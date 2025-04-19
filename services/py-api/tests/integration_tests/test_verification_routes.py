@@ -22,7 +22,7 @@ async def test_verify_participant_admin_case_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -40,7 +40,7 @@ async def test_verify_participant_admin_case_success(
         sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
     )
 
-    jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+    jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
 
     # When
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
@@ -62,15 +62,15 @@ async def test_verify_participant_admin_case_success(
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_participant_is_not_found(
-    mock_obj_id: str,
+    obj_id_mock: str,
     thirty_sec_jwt_exp_limit: int,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     async_client: AsyncClient,
 ) -> None:
 
     # Given
-    jwt_token = mock_jwt_utility.encode_data(
-        data=JwtParticipantVerificationData(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+    jwt_token = jwt_utility_mock.encode_data(
+        data=JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
     )
 
     # When
@@ -91,7 +91,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -104,7 +104,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
 
     create_resp_json = create_resp.json()
 
-    jwt_token = mock_jwt_utility.encode_data(
+    jwt_token = jwt_utility_mock.encode_data(
         data=JwtParticipantVerificationData(
             sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
         )
@@ -130,7 +130,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
 async def test_verify_participant_admin_case_expired_token(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     async_client: AsyncClient,
 ) -> None:
 
@@ -144,7 +144,7 @@ async def test_verify_participant_admin_case_expired_token(
     create_resp_json = create_resp.json()
 
     # Generate an expired jwt token based on the Object Id of the admin participant that we just created
-    jwt_token = mock_jwt_utility.encode_data(
+    jwt_token = jwt_utility_mock.encode_data(
         data=JwtParticipantVerificationData(
             sub=create_resp_json["participant"]["id"],
             is_admin=True,
@@ -169,7 +169,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
     # Given
@@ -196,7 +196,7 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded(
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=True, exp=thirty_sec_jwt_exp_limit
         )
-        verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+        verify_jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
         # Make call to the endpoint to verify participant
         verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
         verify_resp_json = verify_resp.json()
@@ -218,7 +218,7 @@ async def test_verify_admin_participant_case_already_verified(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -236,7 +236,7 @@ async def test_verify_admin_participant_case_already_verified(
         sub=create_resp_json["participant"]["id"], is_admin=True, exp=thirty_sec_jwt_exp_limit
     )
 
-    jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+    jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
 
     # When
     # Try to verify the participant twice
@@ -256,7 +256,7 @@ async def test_verify_random_participant_success(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -271,7 +271,7 @@ async def test_verify_random_participant_success(
     verify_jwt_token_payload = JwtParticipantVerificationData(
         sub=create_resp_json["participant"]["id"], is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
-    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+    verify_jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
 
     # When
     # Make call to the endpoint to verify participant
@@ -296,15 +296,15 @@ async def test_verify_random_participant_success(
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_not_found(
-    async_client: AsyncClient, mock_obj_id: str, mock_jwt_utility: JwtUtility, thirty_sec_jwt_exp_limit: int
+    async_client: AsyncClient, obj_id_mock: str, jwt_utility_mock: JwtUtility, thirty_sec_jwt_exp_limit: int
 ) -> None:
 
     # Given
     # Generate jwt token based on a mock object id that does not exist on the database
     verify_jwt_token_payload = JwtParticipantVerificationData(
-        sub=mock_obj_id, is_admin=False, exp=thirty_sec_jwt_exp_limit
+        sub=obj_id_mock, is_admin=False, exp=thirty_sec_jwt_exp_limit
     )
-    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+    verify_jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
 
     # When
     # Make call to the endpoint to verify participant
@@ -326,7 +326,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -354,7 +354,7 @@ async def test_verify_random_participant_hackathon_capacity_exceeded(
         verify_jwt_token_payload = JwtParticipantVerificationData(
             sub=created_participant_ids.pop(), is_admin=False, exp=thirty_sec_jwt_exp_limit
         )
-        verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+        verify_jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
         # Make call to the endpoint to verify participant
         verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
         verify_resp_json = verify_resp.json()
@@ -375,7 +375,7 @@ async def test_verify_random_participant_case_already_verified(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -395,7 +395,7 @@ async def test_verify_random_participant_case_already_verified(
     )
 
     # When
-    verify_jwt_token = mock_jwt_utility.encode_data(data=verify_jwt_token_payload)
+    verify_jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
 
     await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")
     verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={verify_jwt_token}")

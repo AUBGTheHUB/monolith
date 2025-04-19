@@ -44,11 +44,11 @@ async def test_delete_team_success(
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_team_unauthorized(async_client: AsyncClient, mock_obj_id: str) -> None:
+async def test_delete_team_unauthorized(async_client: AsyncClient, obj_id_mock: str) -> None:
 
     # When
     result = await async_client.delete(
-        url=f"{TEAM_ENDPOINT_URL}/{mock_obj_id}", headers={"Authorization": "Bearer FakeToken"}
+        url=f"{TEAM_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": "Bearer FakeToken"}
     )
 
     # Then
@@ -72,11 +72,11 @@ async def test_delete_team_wrong_obj_id_format(async_client: AsyncClient) -> Non
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_team_obj_id_doesnt_exist(async_client: AsyncClient, mock_obj_id: str) -> None:
+async def test_delete_team_obj_id_doesnt_exist(async_client: AsyncClient, obj_id_mock: str) -> None:
 
     # When
     result = await async_client.delete(
-        url=f"{TEAM_ENDPOINT_URL}/{mock_obj_id}", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
+        url=f"{TEAM_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
     )
 
     # Then

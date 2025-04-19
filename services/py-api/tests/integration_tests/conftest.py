@@ -276,7 +276,7 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 
 
 @pytest.fixture
-def mock_obj_id() -> str:
+def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
 
 
@@ -286,26 +286,26 @@ def thirty_sec_jwt_exp_limit() -> int:
 
 
 @pytest.fixture
-def mock_invite_link_jwt_payload(
-    thirty_sec_jwt_exp_limit: int, mock_obj_id: str
+def invite_link_jwt_payload_mock(
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
 ) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=mock_obj_id, team_name=TEST_TEAM_NAME, team_id=mock_obj_id, exp=thirty_sec_jwt_exp_limit
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
     )
 
 
 @pytest.fixture
-def mock_participant_verification_jwt_payload(
-    thirty_sec_jwt_exp_limit: int, mock_obj_id: str
+def participant_verification_jwt_payload_mock(
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
 ) -> JwtParticipantVerificationData:
-    return JwtParticipantVerificationData(sub=mock_obj_id, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
 
 
 @pytest.fixture
-def mock_expired_jwt_payload(mock_obj_id: str) -> JwtParticipantInviteRegistrationData:
-    return JwtParticipantInviteRegistrationData(sub=mock_obj_id, team_name=TEST_TEAM_NAME, team_id=mock_obj_id, exp=0)
+def expired_jwt_payload_mock(obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
+    return JwtParticipantInviteRegistrationData(sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=0)
 
 
 @pytest.fixture
-def mock_jwt_utility() -> JwtUtility:
+def jwt_utility_mock() -> JwtUtility:
     return JwtUtility()

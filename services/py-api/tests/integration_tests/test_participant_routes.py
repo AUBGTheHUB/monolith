@@ -239,11 +239,11 @@ async def test_delete_participant_success(
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_participant_unauthorized(async_client: AsyncClient, mock_obj_id: str) -> None:
+async def test_delete_participant_unauthorized(async_client: AsyncClient, obj_id_mock: str) -> None:
 
     # When
     result = await async_client.delete(
-        url=f"{PARTICIPANT_ENDPOINT_URL}/{mock_obj_id}", headers={"Authorization": "Bearer FakeToken"}
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": "Bearer FakeToken"}
     )
 
     # Then
@@ -267,11 +267,11 @@ async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient)
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, mock_obj_id: str) -> None:
+async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, obj_id_mock: str) -> None:
 
     # When
     result = await async_client.delete(
-        url=f"{PARTICIPANT_ENDPOINT_URL}/{mock_obj_id}",
+        url=f"{PARTICIPANT_ENDPOINT_URL}/{obj_id_mock}",
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
     )
 
@@ -285,7 +285,7 @@ async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient,
 async def test_create_link_participant_succesful(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -306,7 +306,7 @@ async def test_create_link_participant_succesful(
         team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
-    encoded_token = mock_jwt_utility.encode_data(data=jwt_payload)
+    encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
     # When
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token=encoded_token)
@@ -326,7 +326,7 @@ async def test_create_link_participant_succesful(
 async def test_create_link_participant_team_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -346,7 +346,7 @@ async def test_create_link_participant_team_capacity_exceeded(
         team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
-    encoded_token = mock_jwt_utility.encode_data(data=jwt_payload)
+    encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
     # When
     for num in range(1, HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS):
@@ -413,7 +413,7 @@ async def test_create_link_participant_jwt_wrong_format(
 async def test_create_link_participant_team_name_mismatch(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
-    mock_jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     thirty_sec_jwt_exp_limit: int,
 ) -> None:
 
@@ -434,7 +434,7 @@ async def test_create_link_participant_team_name_mismatch(
         team_name=team_json["name"],
         exp=thirty_sec_jwt_exp_limit,
     )
-    encoded_token = mock_jwt_utility.encode_data(data=jwt_payload)
+    encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
     # When
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token=encoded_token)
