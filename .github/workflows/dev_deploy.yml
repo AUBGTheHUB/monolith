@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 'new-cd-pipeline-inter'
+      - 'main'
     paths:
       # Back-end Paths that will trigger the pipeline
       - 'services/py-api/src/**'
@@ -97,7 +97,7 @@ jobs:
     # https://docs.docker.com/build/ci/github-actions/cache/#cache-mounts
     needs: detect-changes
     if: |
-      github.ref_name == 'new-cd-pipeline-inter' &&
+      github.ref_name == 'main' &&
       (needs.detect-changes.outputs.web_changed == 'true' ||
       needs.detect-changes.outputs.py_api_changed == 'true' ||
       needs.detect-changes.outputs.force_deploy == 'true')
@@ -237,7 +237,7 @@ jobs:
     # (EITHER web was built OR py-api was built in the build job OR deploy is forced)
     if: |
       always() &&
-      github.ref_name == 'new-cd-pipeline-inter' &&
+      github.ref_name == 'main' &&
       (needs.build-and-push-images.outputs.web_built == 'true' ||
        needs.build-and-push-images.outputs.py_api_built == 'true' ||
        needs.detect-changes.outputs.stack_changed == 'true'||
