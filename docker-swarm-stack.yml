@@ -1,4 +1,5 @@
-# The docker stack deploy command uses the legacy Compose file version 3
+# The docker stack deploy command uses the legacy Compose file version 3, which is located in the
+# [V1 branch of the Compose repository](https://docs.docker.com/reference/compose-file/legacy-versions/).
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md
 # https://docs.docker.com/engine/swarm/stack-deploy/
 #
@@ -7,36 +8,40 @@
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#depends_on
 version: "3.8"
 
-
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#deploy
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
 x-deploy-default: &deploy-default
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#restart_policy
   # The options which are not set use the default values
-  # restart_policy:
-  #   max_attempts: 3
+  restart_policy:
+    condition: any
+    max_attempts: 3
+    window: 1m30s
 
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#update_config
   # The options which are not set use the default values
   update_config:
     order: start-first
-    # We set this to two minutes as the initial health-check takes one minute to start
+    # We set this to 1m30s as it ensures that at least one full health check cycle completes during the monitoring
+    # period, which should be sufficient to detect most issues. The 30s gives us some buffer time.
+    monitor: 1m30s
     # If the updated version's state is considered failure the service will be rollbacked automatically
-    monitor: 2m
     failure_action: rollback
 
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#rollback_config
   # The options which are not set use the default values
   rollback_config:
     order: start-first
-    # We set this to two minutes as the initial health-check takes one minute to start
-    # If the rolled back version's state is considered failure the container will pause to allow manual intervention
-    monitor: 2m
-
+    # We set this to 1m30s as it ensures that at least one full health check cycle completes during the monitoring
+    # period, which should be sufficient to detect most issues. The 30s gives us some buffer time.
+    monitor: 1m30s
+    # If the rollbacked version's state is considered failure, all tasks in the service will be paused to allow for
+    # investigation
+    failure_action: pause
 
 services:
   web:
-    image: ghcr.io/aubgthehub/monolith-web:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/aubgthehub/monolith-web:${WEB_GIT_COMMIT_HASH:-latest}
 
     # For Nginx, we are going to rely on the docker ingress network and routing mesh to send traffic to our nginx
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
@@ -54,10 +59,23 @@ services:
         protocol: tcp
         published: 443
         target: 443
-    # Using deploy: *deploy-default would assign the entire anchored object to deploy without any possibility of adding
-    # or overriding specific keys later.
+
+    # Using `deploy: *deploy-default` instead, would assign the entire anchored object to deploy without any possibility
+    # of adding or overriding specific keys later.
     deploy:
       <<: *deploy-default
+
+    # When running in Swarm mode, healthchecks are used to for maintaining the desired state of the service. If a
+    # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
+    # replica task that spawns a new container in replacement of the unhealthy one.
+    # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "https://${DOMAIN}" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      # The container should start under 10 seconds, but this is the maximum time it should realistically take.
+      start_period: 10s
 
     volumes:
       # https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-docker/#maintaining-content-and-configuration-files-on-the-docker-host
@@ -66,7 +84,7 @@ services:
       - /etc/nginx:/conf/basic-auth/nginx
 
   py-api:
-    image: ghcr.io/aubgthehub/monolith-backend:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/aubgthehub/monolith-backend:${PY_API_GIT_COMMIT_HASH:-latest}
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#deploy
     deploy:
@@ -99,6 +117,18 @@ services:
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
       RESEND_API_KEY: /run/secrets/resend-api-key
+
+    # When running in Swarm mode, healthchecks are used to for maintaining the desired state of the service. If a
+    # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
+    # replica task that spawns a new container in replacement of the unhealthy one.
+    # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "https://localhost:${PORT}/api/v3/ping" ]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      # The container should start within 10 seconds, but this is the maximum time it should realistically take.
+      start_period: 10s
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:

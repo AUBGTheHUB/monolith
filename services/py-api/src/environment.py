@@ -41,6 +41,7 @@ def _read_docker_secret(secret_path: str) -> str | None:
 def _load_docker_secrets() -> None:
     # Secrets here are from the docker-stack.yml and are set on the PROD and DEV VMs (aka Nodes)
     secrets = {
+        "ENV": "/run/secrets/env",
         "DATABASE_URL": "/run/secrets/db-url",
         "SECRET_KEY": "/run/secrets/secret-key",
         "SECRET_AUTH_TOKEN": "/run/secrets/secret-auth-key",

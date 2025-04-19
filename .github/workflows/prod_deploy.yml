@@ -67,6 +67,7 @@ jobs:
           # We pass the build arguments for the frontend
           # https://docs.docker.com/reference/cli/docker/buildx/build/#build-arg
           build-args: |
+            VITE_ENV=${{vars.VITE_ENV}}
             DOMAIN=${{vars.DOMAIN}}
 
       - name: Build and push Docker image PY-API

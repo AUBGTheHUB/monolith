@@ -1,19 +1,21 @@
 from typing import Optional, List, cast, Any, Dict
-from motor.motor_asyncio import AsyncIOMotorClientSession
-from result import Result, Err, Ok
-from src.database.db_manager import DatabaseManager
-from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
-from structlog.stdlib import get_logger
-from src.database.repository.base_repository import CRUDRepository
-from src.server.exception import FeatureSwitchNotFoundError
-from pymongo import ReturnDocument
+
 from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.collection import ReturnDocument
+from result import Result, Err, Ok
+from structlog.stdlib import get_logger
+
+from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
+from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.repository.base_repository import CRUDRepository
+from src.exception import FeatureSwitchNotFoundError
 
 LOG = get_logger()
 
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, db_manager: DatabaseManager, collection_name: str):
+    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str):
         self._collection = db_manager.get_collection(collection_name)
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
@@ -54,7 +56,6 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             feature_switches = []
 
             for doc in feature_switches_data:
-
                 doc["id"] = doc.pop("_id")
 
                 feature_switches.append(FeatureSwitch(**doc))

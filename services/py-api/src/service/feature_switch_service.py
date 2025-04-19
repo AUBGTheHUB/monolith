@@ -3,7 +3,7 @@ from typing import List
 from result import Result, is_err
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.server.exception import FeatureSwitchNotFoundError
+from src.exception import FeatureSwitchNotFoundError
 
 
 class FeatureSwitchService:
@@ -19,7 +19,6 @@ class FeatureSwitchService:
     async def update_feature_switch(
         self, name: str, state: bool
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
-
         return await self._repository.update_by_name(name=name, obj_fields=UpdateFeatureSwitchParams(state=state))
 
     async def toggle_feature_switch(

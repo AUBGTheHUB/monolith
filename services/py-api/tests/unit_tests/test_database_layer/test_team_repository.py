@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Dict, Any
+from typing import Tuple, cast, Dict, Any
 from unittest.mock import Mock, AsyncMock
 
 import pytest
@@ -7,31 +7,36 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 from bson import ObjectId
 
-from src.database.db_manager import TEAMS_COLLECTION
-from src.database.repository.teams_repository import TeamsRepository
-from src.server.exception import DuplicateTeamNameError, TeamNotFoundError
-from src.database.model.team_model import Team, UpdateTeamParams
+from src.database.model.hackathon.team_model import Team, UpdateTeamParams
+from src.database.mongo.db_manager import TEAMS_COLLECTION, MongoDatabaseManager
+from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.exception import TeamNotFoundError, DuplicateTeamNameError
 from tests.integration_tests.conftest import TEST_TEAM_NAME
+from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
 
 
 @pytest.fixture
-def repo(db_manager_mock: Mock) -> TeamsRepository:
-    return TeamsRepository(db_manager_mock, TEAMS_COLLECTION)
+def repo(mongo_db_manager_mock: MongoDbManagerMock) -> TeamsRepository:
+    return TeamsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock), TEAMS_COLLECTION)
 
 
 @pytest.mark.asyncio
 async def test_create_team_success(
     ten_sec_window: Tuple[datetime, datetime],
-    mock_unverified_team: Team,
+    unverified_team_mock: Team,
     repo: TeamsRepository,
 ) -> None:
+
+    # Given
     start_time, end_time = ten_sec_window
 
-    result = await repo.create(mock_unverified_team)
+    # When
+    result = await repo.create(unverified_team_mock)
 
+    # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.name == mock_unverified_team.name
+    assert result.ok_value.name == unverified_team_mock.name
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
     assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
@@ -39,15 +44,19 @@ async def test_create_team_success(
 
 @pytest.mark.asyncio
 async def test_create_team_duplicate_name_error(
-    db_manager_mock: Mock, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
+
+    # Given
     # Simulate a DuplicateKeyError raised by insert_one to represent a duplicate team name
-    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
+    mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
         side_effect=DuplicateKeyError("Duplicate team name error")
     )
 
-    result = await repo.create(mock_unverified_team)
+    # When
+    result = await repo.create(unverified_team_mock)
 
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, DuplicateTeamNameError)
     # Check that the error message contains the team name
@@ -56,13 +65,17 @@ async def test_create_team_duplicate_name_error(
 
 @pytest.mark.asyncio
 async def test_create_team_general_exception(
-    db_manager_mock: Mock, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
+
+    # Given
     # Simulate a general exception raised by insert_one
-    db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
+    mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
-    result = await repo.create(mock_unverified_team)
+    # When
+    result = await repo.create(unverified_team_mock)
 
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     # Check that the error message is the one in the Exception
@@ -71,41 +84,60 @@ async def test_create_team_general_exception(
 
 @pytest.mark.asyncio
 async def test_delete_team_success(
-    db_manager_mock: Mock, mock_unverified_team_dump_no_id: Dict[str, Any], mock_obj_id: str, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock,
+    unverified_team_dump_no_id_mock: Dict[str, Any],
+    obj_id_mock: str,
+    repo: TeamsRepository,
 ) -> None:
 
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=mock_unverified_team_dump_no_id
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        return_value=unverified_team_dump_no_id_mock
     )
 
-    result = await repo.delete(mock_obj_id)
+    # When
+    result = await repo.delete(obj_id_mock)
 
+    # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified is False
 
 
 @pytest.mark.asyncio
-async def test_delete_team_not_found(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_delete_team_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
+) -> None:
 
+    # Given
     # When the team with the sepcified object id is not found find_one_and_delete returns None
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
 
-    result = await repo.delete(mock_obj_id)
+    # When
+    result = await repo.delete(obj_id_mock)
 
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
-async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_delete_team_general_exception(
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
+) -> None:
+
+    # Given
     # Simulate a general exception raised by insert_one
-    db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(side_effect=Exception("Test error"))
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        side_effect=Exception("Test error")
+    )
 
-    result = await repo.delete(mock_obj_id)
+    # When
+    result = await repo.delete(obj_id_mock)
 
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     # Check that the error message is the one in the Exception
@@ -114,52 +146,70 @@ async def test_delete_team_general_exception(db_manager_mock: Mock, mock_obj_id:
 
 @pytest.mark.asyncio
 async def test_update_team_success(
-    db_manager_mock: Mock, mock_obj_id: str, mock_verified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    verified_team_dump_no_id_mock: Dict[str, Any],
+    repo: TeamsRepository,
 ) -> None:
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=mock_verified_team_dump_no_id
+
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
+        return_value=verified_team_dump_no_id_mock
     )
 
-    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
+    # When
+    result = await repo.update(obj_id_mock, UpdateTeamParams(is_verified=True))
 
+    # Then
     assert isinstance(result, Ok)
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.is_verified is True
     assert result.ok_value.name == TEST_TEAM_NAME
 
 
 @pytest.mark.asyncio
-async def test_update_team_team_not_found(db_manager_mock: Mock, mock_obj_id: str, repo: TeamsRepository) -> None:
+async def test_update_team_team_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
+) -> None:
+
+    # Given
     # When a team with the specified id is not found find_one_and_update returns none
-    db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
-    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
+    # When
+    result = await repo.update(obj_id_mock, UpdateTeamParams(is_verified=True))
 
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
 async def test_fetch_by_team_name_success(
-    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value=mock_unverified_team.dump_as_mongo_db_document()
+
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(
+        return_value=unverified_team_mock.dump_as_mongo_db_document()
     )
 
+    # When
     result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
 
+    # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == obj_id_mock
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_team_name_team_not_found(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+async def test_fetch_by_team_name_team_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository
+) -> None:
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
 
     result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
 
@@ -168,8 +218,10 @@ async def test_fetch_by_team_name_team_not_found(db_manager_mock: Mock, repo: Te
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: TeamsRepository) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
+async def test_fetch_by_team_name_general_error(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository
+) -> None:
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
 
     result = await repo.fetch_by_team_name(TEST_TEAM_NAME)
 
@@ -179,92 +231,127 @@ async def test_fetch_by_team_name_general_error(db_manager_mock: Mock, repo: Tea
 
 @pytest.mark.asyncio
 async def test_fetch_by_id_successful(
-    db_manager_mock: Mock, mock_obj_id: str, mock_unverified_team_dump_no_id: Dict[str, Any], repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    unverified_team_dump_no_id_mock: Dict[str, Any],
+    repo: TeamsRepository,
 ) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=mock_unverified_team_dump_no_id)
 
-    result = await repo.fetch_by_id(mock_obj_id)
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=unverified_team_dump_no_id_mock)
 
+    # When
+    result = await repo.fetch_by_id(obj_id_mock)
+
+    # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_team_not_found(db_manager_mock: Mock, repo: TeamsRepository, mock_obj_id: str) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+async def test_fetch_by_id_team_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, obj_id_mock: str
+) -> None:
 
-    result = await repo.fetch_by_id(mock_obj_id)
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
 
+    # When
+    result = await repo.fetch_by_id(obj_id_mock)
+
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
 
 
 @pytest.mark.asyncio
-async def test_fetch_by_id_general_error(db_manager_mock: Mock, repo: TeamsRepository, mock_obj_id: str) -> None:
-    db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
+async def test_fetch_by_id_general_error(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, obj_id_mock: str
+) -> None:
 
-    result = await repo.fetch_by_id(mock_obj_id)
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
 
+    # When
+    result = await repo.fetch_by_id(obj_id_mock)
+
+    # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
 
 
-# TODO: FIX
-# @pytest.mark.asyncio
-# async def test_fetch_all_success(
-#     db_manager_mock: Mock,
-#     repo: TeamsRepository,
-#     mock_normal_team: Team,
-# ) -> None:
-#     mock_teams_data = [
-#         {
-#             "_id": mock_normal_team.id,
-#             "name": mock_normal_team.name,
-#             "is_verified": mock_normal_team.is_verified,
-#             "created_at": mock_normal_team.created_at,
-#             "updated_at": mock_normal_team.updated_at,
-#         }
-#         for _ in range(5)
-#     ]
-#
-#     db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=mock_teams_data)
-#
-#     result = await repo.fetch_all()
-#
-#     assert isinstance(result, Ok)
-#     assert len(result.ok_value) == 5
-#
-#     for i, team in enumerate(result.ok_value):
-#         assert team.name == mock_teams_data[i]["name"]
-#         assert team.is_verified == mock_teams_data[i]["is_verified"]
-#         assert team.created_at == mock_teams_data[i]["created_at"]
-#         assert team.updated_at == mock_teams_data[i]["updated_at"]
-#         assert team.id == str(mock_teams_data[i]["_id"])
-#
-# @pytest.mark.asyncio
-# async def test_fetch_all_empty(
-#     db_manager_mock: Mock,
-#     repo: TeamsRepository,
-# ) -> None:
-#     db_manager_mock.get_collection.return_value.find = AsyncMock(return_value=[])
-#
-#     result = await repo.fetch_all()
-#
-#     assert isinstance(result, Ok)
-#     assert len(result.ok_value) == 0
-#
-# @pytest.mark.asyncio
-# async def test_fetch_all_error(
-#     db_manager_mock: Mock,
-#     repo: TeamsRepository,
-# ) -> None:
-#     db_manager_mock.get_collection.return_value.find = AsyncMock(side_effect=Exception("Database error"))
-#
-#     result = await repo.fetch_all()
-#
-#     assert isinstance(result, Err)
-#     assert str(result.err_value) == "Database error"
+@pytest.mark.asyncio
+async def test_fetch_all_success(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    db_cursor_mock: MotorDbCursorMock,
+    repo: TeamsRepository,
+    verified_team_mock: Team,
+) -> None:
+
+    # Given
+    mock_teams_data = [
+        {
+            "_id": verified_team_mock.id,
+            "name": verified_team_mock.name,
+            "is_verified": verified_team_mock.is_verified,
+            "created_at": verified_team_mock.created_at,
+            "updated_at": verified_team_mock.updated_at,
+        }
+        for _ in range(5)
+    ]
+    db_cursor_mock.to_list.return_value = mock_teams_data
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
+
+    # When
+    result = await repo.fetch_all()
+
+    # Then
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 5
+
+    for i, team in enumerate(result.ok_value):
+        assert team.name == mock_teams_data[i]["name"]
+        assert team.is_verified == mock_teams_data[i]["is_verified"]
+        assert team.created_at == mock_teams_data[i]["created_at"]
+        assert team.updated_at == mock_teams_data[i]["updated_at"]
+        assert team.id == str(mock_teams_data[i]["id"])
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_empty(
+    mongo_db_manager_mock: Mock,
+    db_cursor_mock: MotorDbCursorMock,
+    repo: TeamsRepository,
+) -> None:
+
+    # Given
+    db_cursor_mock.to_list.return_value = []
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
+
+    # When
+    result = await repo.fetch_all()
+
+    # Then
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 0
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_error(
+    mongo_db_manager_mock: Mock,
+    db_cursor_mock: MotorDbCursorMock,
+    repo: TeamsRepository,
+) -> None:
+
+    # Given
+    db_cursor_mock.to_list.return_value = Exception()
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
+
+    # When
+    result = await repo.fetch_all()
+
+    # Then
+    assert isinstance(result, Err)
