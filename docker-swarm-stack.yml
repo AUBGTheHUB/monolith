@@ -140,9 +140,12 @@ services:
     volumes:
       # Storing the logs like this is temporary solution until more sophisticated monitoring and observability system
       # is implemented.
-      - /services/py-api/shared:/app/shared
+      - py-api-logs:/app/shared
       # TODO: Change paths when doing automatic certs renew
       - /etc/letsencrypt:/etc/letsencrypt
+
+volumes:
+  py-api-logs:
 
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
 secrets:
