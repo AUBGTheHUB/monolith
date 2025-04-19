@@ -90,16 +90,16 @@ services:
     deploy:
       <<: *deploy-default
 
-      # For the py-api we don't publish ports as we don't want to use the routing mesh
-      # This is because we already use it when a request comes to our website. Using it again would be inefficient due
-      # to the overhead it creates, and the latency incurred. This is due to the IPVS standing in the middle. When using
-      # dnsrr we essentially bypass is and directly referencing the container by its IP address.
-      # https://forums.docker.com/t/routing-mesh-vip-slow-compared-to-dnsrr/69230
-      # https://forums.docker.com/t/how-do-you-guys-deal-with-mesh-performance/139598
-      # https://github.com/BretFisher/ama/discussions/160
-      # https://forums.docker.com/t/docker-swarm-series-8th-publishing-modes/136972
-      # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
-      endpoint_mode: dnsrr
+#      # For the py-api we don't publish ports as we don't want to use the routing mesh
+#      # This is because we already use it when a request comes to our website. Using it again would be inefficient due
+#      # to the overhead it creates, and the latency incurred. This is due to the IPVS standing in the middle. When using
+#      # dnsrr we essentially bypass is and directly referencing the container by its IP address.
+#      # https://forums.docker.com/t/routing-mesh-vip-slow-compared-to-dnsrr/69230
+#      # https://forums.docker.com/t/how-do-you-guys-deal-with-mesh-performance/139598
+#      # https://github.com/BretFisher/ama/discussions/160
+#      # https://forums.docker.com/t/docker-swarm-series-8th-publishing-modes/136972
+#      # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
+#      endpoint_mode: dnsrr
 
       # We are using two replicas of the API to increase reliability
       # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#replicas
