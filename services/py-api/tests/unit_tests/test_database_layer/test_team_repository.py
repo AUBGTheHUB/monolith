@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Dict, Any, cast
+from typing import Tuple, cast, Dict, Any
 from unittest.mock import Mock, AsyncMock
 
 import pytest
@@ -23,7 +23,7 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> TeamsRepository:
 @pytest.mark.asyncio
 async def test_create_team_success(
     ten_sec_window: Tuple[datetime, datetime],
-    mock_unverified_team: Team,
+    unverified_team_mock: Team,
     repo: TeamsRepository,
 ) -> None:
 
@@ -31,12 +31,12 @@ async def test_create_team_success(
     start_time, end_time = ten_sec_window
 
     # When
-    result = await repo.create(mock_unverified_team)
+    result = await repo.create(unverified_team_mock)
 
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.name == mock_unverified_team.name
+    assert result.ok_value.name == unverified_team_mock.name
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
     assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
@@ -44,7 +44,7 @@ async def test_create_team_success(
 
 @pytest.mark.asyncio
 async def test_create_team_duplicate_name_error(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
 
     # Given
@@ -54,7 +54,7 @@ async def test_create_team_duplicate_name_error(
     )
 
     # When
-    result = await repo.create(mock_unverified_team)
+    result = await repo.create(unverified_team_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -65,7 +65,7 @@ async def test_create_team_duplicate_name_error(
 
 @pytest.mark.asyncio
 async def test_create_team_general_exception(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
 
     # Given
@@ -73,7 +73,7 @@ async def test_create_team_general_exception(
     mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
 
     # When
-    result = await repo.create(mock_unverified_team)
+    result = await repo.create(unverified_team_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -85,30 +85,30 @@ async def test_create_team_general_exception(
 @pytest.mark.asyncio
 async def test_delete_team_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_unverified_team_dump_no_id: Dict[str, Any],
-    mock_obj_id: str,
+    unverified_team_dump_no_id_mock: Dict[str, Any],
+    obj_id_mock: str,
     repo: TeamsRepository,
 ) -> None:
 
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=mock_unverified_team_dump_no_id
+        return_value=unverified_team_dump_no_id_mock
     )
 
     # When
-    result = await repo.delete(mock_obj_id)
+    result = await repo.delete(obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified is False
 
 
 @pytest.mark.asyncio
 async def test_delete_team_not_found(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_obj_id: str, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
 ) -> None:
 
     # Given
@@ -116,7 +116,7 @@ async def test_delete_team_not_found(
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
 
     # When
-    result = await repo.delete(mock_obj_id)
+    result = await repo.delete(obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -125,7 +125,7 @@ async def test_delete_team_not_found(
 
 @pytest.mark.asyncio
 async def test_delete_team_general_exception(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_obj_id: str, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
 ) -> None:
 
     # Given
@@ -135,7 +135,7 @@ async def test_delete_team_general_exception(
     )
 
     # When
-    result = await repo.delete(mock_obj_id)
+    result = await repo.delete(obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -147,29 +147,29 @@ async def test_delete_team_general_exception(
 @pytest.mark.asyncio
 async def test_update_team_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_obj_id: str,
-    mock_verified_team_dump_no_id: Dict[str, Any],
+    obj_id_mock: str,
+    verified_team_dump_no_id_mock: Dict[str, Any],
     repo: TeamsRepository,
 ) -> None:
 
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=mock_verified_team_dump_no_id
+        return_value=verified_team_dump_no_id_mock
     )
 
     # When
-    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
+    result = await repo.update(obj_id_mock, UpdateTeamParams(is_verified=True))
 
     # Then
     assert isinstance(result, Ok)
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.is_verified is True
     assert result.ok_value.name == TEST_TEAM_NAME
 
 
 @pytest.mark.asyncio
 async def test_update_team_team_not_found(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_obj_id: str, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: TeamsRepository
 ) -> None:
 
     # Given
@@ -177,7 +177,7 @@ async def test_update_team_team_not_found(
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
     # When
-    result = await repo.update(mock_obj_id, UpdateTeamParams(is_verified=True))
+    result = await repo.update(obj_id_mock, UpdateTeamParams(is_verified=True))
 
     # Then
     assert isinstance(result, Err)
@@ -186,12 +186,12 @@ async def test_update_team_team_not_found(
 
 @pytest.mark.asyncio
 async def test_fetch_by_team_name_success(
-    mongo_db_manager_mock: MongoDbManagerMock, mock_obj_id: str, mock_unverified_team: Team, repo: TeamsRepository
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, unverified_team_mock: Team, repo: TeamsRepository
 ) -> None:
 
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(
-        return_value=mock_unverified_team.dump_as_mongo_db_document()
+        return_value=unverified_team_mock.dump_as_mongo_db_document()
     )
 
     # When
@@ -200,7 +200,7 @@ async def test_fetch_by_team_name_success(
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == mock_obj_id
+    assert result.ok_value.id == obj_id_mock
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 
@@ -232,35 +232,35 @@ async def test_fetch_by_team_name_general_error(
 @pytest.mark.asyncio
 async def test_fetch_by_id_successful(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_obj_id: str,
-    mock_unverified_team_dump_no_id: Dict[str, Any],
+    obj_id_mock: str,
+    unverified_team_dump_no_id_mock: Dict[str, Any],
     repo: TeamsRepository,
 ) -> None:
 
     # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=mock_unverified_team_dump_no_id)
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=unverified_team_dump_no_id_mock)
 
     # When
-    result = await repo.fetch_by_id(mock_obj_id)
+    result = await repo.fetch_by_id(obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Team)
-    assert result.ok_value.id == ObjectId(mock_obj_id)
+    assert result.ok_value.id == ObjectId(obj_id_mock)
     assert result.ok_value.name == TEST_TEAM_NAME
     assert result.ok_value.is_verified == False
 
 
 @pytest.mark.asyncio
 async def test_fetch_by_id_team_not_found(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, mock_obj_id: str
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, obj_id_mock: str
 ) -> None:
 
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
 
     # When
-    result = await repo.fetch_by_id(mock_obj_id)
+    result = await repo.fetch_by_id(obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -269,14 +269,14 @@ async def test_fetch_by_id_team_not_found(
 
 @pytest.mark.asyncio
 async def test_fetch_by_id_general_error(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, mock_obj_id: str
+    mongo_db_manager_mock: MongoDbManagerMock, repo: TeamsRepository, obj_id_mock: str
 ) -> None:
 
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=Exception("Test Error"))
 
     # When
-    result = await repo.fetch_by_id(mock_obj_id)
+    result = await repo.fetch_by_id(obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -288,17 +288,17 @@ async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     db_cursor_mock: MotorDbCursorMock,
     repo: TeamsRepository,
-    mock_verified_team: Team,
+    verified_team_mock: Team,
 ) -> None:
 
     # Given
     mock_teams_data = [
         {
-            "_id": mock_verified_team.id,
-            "name": mock_verified_team.name,
-            "is_verified": mock_verified_team.is_verified,
-            "created_at": mock_verified_team.created_at,
-            "updated_at": mock_verified_team.updated_at,
+            "_id": verified_team_mock.id,
+            "name": verified_team_mock.name,
+            "is_verified": verified_team_mock.is_verified,
+            "created_at": verified_team_mock.created_at,
+            "updated_at": verified_team_mock.updated_at,
         }
         for _ in range(5)
     ]

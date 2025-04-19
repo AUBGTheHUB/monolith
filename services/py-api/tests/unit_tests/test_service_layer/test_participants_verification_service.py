@@ -28,23 +28,23 @@ async def test_verify_admin_participant_success(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_verified_team: Team,
-    mock_verified_admin_participant: Participant,
+    verified_team_mock: Team,
+    verified_admin_participant_mock: Participant,
     participant_repo_mock: Mock,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
     # Mock update methods for team and participants repos
-    team_repo_mock.update.return_value = mock_verified_team
-    participant_repo_mock.update.return_value = mock_verified_admin_participant
+    team_repo_mock.update.return_value = verified_team_mock
+    participant_repo_mock.update.return_value = verified_admin_participant_mock
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(jwt_admin_user_verification_mock, background_tasks)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
@@ -61,7 +61,7 @@ async def test_verify_admin_participant_participant_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
@@ -69,7 +69,7 @@ async def test_verify_admin_participant_participant_not_found_error(
         ParticipantNotFoundError()
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(jwt_admin_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
@@ -80,13 +80,13 @@ async def test_verify_admin_participant_team_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(TeamNotFoundError())
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(jwt_admin_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, TeamNotFoundError)
@@ -97,7 +97,7 @@ async def test_verify_admin_participant_general_exeption(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
 
@@ -105,7 +105,7 @@ async def test_verify_admin_participant_general_exeption(
         Exception("Test exception")
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(jwt_admin_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
@@ -118,22 +118,22 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
     hackathon_service_mock: Mock,
     team_repo_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_verified_team: Team,
-    mock_verified_admin_participant: Participant,
+    verified_team_mock: Team,
+    verified_admin_participant_mock: Participant,
     participant_repo_mock: Mock,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
 
     # Mock update methods for team and participants repos
-    team_repo_mock.update.return_value = mock_verified_team
-    participant_repo_mock.update.return_value = mock_verified_admin_participant
+    team_repo_mock.update.return_value = verified_team_mock
+    participant_repo_mock.update.return_value = verified_admin_participant_mock
 
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Ok(
         (participant_repo_mock.update.return_value, team_repo_mock.update.return_value)
     )
 
-    result = await p_ver_service.verify_admin_participant(mock_jwt_admin_user_verification, background_tasks)
+    result = await p_ver_service.verify_admin_participant(jwt_admin_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
@@ -144,20 +144,20 @@ async def test_verify_random_participant_success(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
-    mock_verified_random_participant: Participant,
+    verified_random_participant_mock: Participant,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
 
-    participant_repo_mock.update.return_value = mock_verified_random_participant
+    participant_repo_mock.update.return_value = verified_random_participant_mock
 
     hackathon_service_mock.verify_random_participant.return_value = Ok(
         (participant_repo_mock.update.return_value, None)
     )
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(jwt_random_user_verification_mock, background_tasks)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
@@ -172,13 +172,13 @@ async def test_verify_random_participant_participant_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     hackathon_service_mock.verify_random_participant.return_value = Err(ParticipantNotFoundError())
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(jwt_random_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
@@ -189,13 +189,13 @@ async def test_verify_random_participant_general_exception(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
 
     hackathon_service_mock.verify_random_participant.return_value = Err(Exception())
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(jwt_random_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
@@ -207,18 +207,18 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
     hackathon_service_mock: Mock,
     participant_repo_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_verified_random_participant: Participant,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    verified_random_participant_mock: Participant,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
 
-    participant_repo_mock.update.return_value = mock_verified_random_participant
+    participant_repo_mock.update.return_value = verified_random_participant_mock
 
     hackathon_service_mock.verify_random_participant.return_value = Ok(
         (participant_repo_mock.update.return_value, None)
     )
 
-    result = await p_ver_service.verify_random_participant(mock_jwt_random_user_verification, background_tasks)
+    result = await p_ver_service.verify_random_participant(jwt_random_user_verification_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HackathonCapacityExceededError)
@@ -228,14 +228,14 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
 async def test_send_verification_email_success(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
-    mock_admin_participant: Participant,
-    mock_unverified_team: Team,
+    admin_participant_mock: Participant,
+    unverified_team_mock: Team,
     background_tasks: BackgroundTasks,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
-    participant_mock_value = mock_admin_participant
+    participant_mock_value = admin_participant_mock
 
-    team_mock_value = mock_unverified_team
+    team_mock_value = unverified_team_mock
 
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Ok(
         (participant_mock_value, team_mock_value)
@@ -243,7 +243,7 @@ async def test_send_verification_email_success(
     # Mock no err when sending verification email
     hackathon_service_mock.send_verification_email = AsyncMock(return_value=None)
 
-    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+    result = await p_ver_service.resend_verification_email(obj_id_mock, background_tasks)
 
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, Participant)
@@ -256,13 +256,13 @@ async def test_send_verification_email_rate_limit_exceeded_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(
         EmailRateLimitExceededError(seconds_to_retry_after=30)
     )
 
-    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+    result = await p_ver_service.resend_verification_email(obj_id_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, EmailRateLimitExceededError)
@@ -273,11 +273,11 @@ async def test_send_verification_email_participant_not_found_error(
     p_ver_service: ParticipantVerificationService,
     hackathon_service_mock: Mock,
     background_tasks: BackgroundTasks,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(ParticipantNotFoundError())
 
-    result = await p_ver_service.resend_verification_email(mock_obj_id, background_tasks)
+    result = await p_ver_service.resend_verification_email(obj_id_mock, background_tasks)
 
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)

@@ -41,26 +41,26 @@ async def test_verify_participant_admin_case_success(
     participant_verification_service_mock: Mock,
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
-    mock_admin_participant: Participant,
+    admin_participant_mock: Participant,
     jwt_utility_mock: JwtUtility,
-    mock_verified_team: Team,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
-    mock_obj_id: str,
+    verified_team_mock: Team,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
-    mock_admin_participant.email_verified = True
-    mock_verified_admin_participant = mock_admin_participant
+    admin_participant_mock.email_verified = True
+    mock_verified_admin_participant = admin_participant_mock
     # Mock successful result from `verify_admin_participant`
     participant_verification_service_mock.verify_admin_participant.return_value = Ok(
         (
             mock_verified_admin_participant,
-            mock_verified_team,
+            verified_team_mock,
         )
     )
 
     # When
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_admin_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_admin_user_verification_mock)
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
 
     # Then
@@ -78,12 +78,12 @@ async def test_verify_participant_admin_case_participant_not_found_error(
     background_tasks_mock: BackgroundTasksMock,
     verification_handlers: VerificationHandlers,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
     participant_verification_service_mock.verify_admin_participant.return_value = Err(ParticipantNotFoundError())
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_admin_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_admin_user_verification_mock)
 
     # When
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
@@ -103,12 +103,12 @@ async def test_verify_participant_admin_case_team_not_found_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
     participant_verification_service_mock.verify_admin_participant.return_value = Err(TeamNotFoundError())
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_admin_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_admin_user_verification_mock)
 
     # When
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
@@ -128,12 +128,12 @@ async def test_verify_participant_admin_case_hackation_capacity_reached_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
     participant_verification_service_mock.verify_admin_participant.return_value = Err(HackathonCapacityExceededError())
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_admin_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_admin_user_verification_mock)
 
     # When
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
@@ -153,12 +153,12 @@ async def test_verify_participant_admin_case_general_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_admin_user_verification: JwtParticipantVerificationData,
+    jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
     participant_verification_service_mock.verify_admin_participant.return_value = Err(Exception())
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_admin_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_admin_user_verification_mock)
 
     # When
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
@@ -177,15 +177,15 @@ async def test_verify_random_participant_case_success(
     verification_handlers: VerificationHandlers,
     participant_verification_service_mock: Mock,
     background_tasks_mock: BackgroundTasksMock,
-    mock_random_participant: Participant,
+    random_participant_mock: Participant,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
-    mock_obj_id: str,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
-    mock_random_participant.email_verified = True
-    mock_verified_random_participant = mock_random_participant
+    random_participant_mock.email_verified = True
+    mock_verified_random_participant = random_participant_mock
     # Mock successful result from `verify_random_participant`
     participant_verification_service_mock.verify_random_participant.return_value = Ok(
         (
@@ -195,14 +195,14 @@ async def test_verify_random_participant_case_success(
     )
 
     # When
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_random_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_random_user_verification_mock)
     # Call the verification handler
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
 
     # Then
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks_mock
+        jwt_data=jwt_random_user_verification_mock, background_tasks=background_tasks_mock
     )
 
     # Assert that the response is successful
@@ -222,12 +222,12 @@ async def test_verify_random_participant_decode_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_user_registration: JwtParticipantInviteRegistrationData,
+    jwt_user_registration_mock: JwtParticipantInviteRegistrationData,
 ) -> None:
 
     # Given
     # Create the token with the wrong schema
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_user_registration)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_user_registration_mock)
 
     # When
     # Call the verification handler
@@ -247,7 +247,7 @@ async def test_verify_random_participant_not_found(
     participant_verification_service_mock: Mock,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
@@ -255,14 +255,14 @@ async def test_verify_random_participant_not_found(
     participant_verification_service_mock.verify_random_participant.return_value = Err(ParticipantNotFoundError())
 
     # When
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_random_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_random_user_verification_mock)
     # Call the verification handler
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
 
     # Then
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks_mock
+        jwt_data=jwt_random_user_verification_mock, background_tasks=background_tasks_mock
     )
 
     # Assert that the response is unsuccessful
@@ -278,21 +278,21 @@ async def test_verify_random_hackathon_capacity_reached(
     participant_verification_service_mock: Mock,
     background_tasks_mock: BackgroundTasksMock,
     jwt_utility_mock: JwtUtility,
-    mock_jwt_random_user_verification: JwtParticipantVerificationData,
+    jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
 
     # Given
     # Mock unsuccessful result from `verify_random_participant`
     participant_verification_service_mock.verify_random_participant.return_value = Err(HackathonCapacityExceededError())
 
-    jwt_token = jwt_utility_mock.encode_data(data=mock_jwt_random_user_verification)
+    jwt_token = jwt_utility_mock.encode_data(data=jwt_random_user_verification_mock)
 
     # When
     # Call the verification handler
     resp = await verification_handlers.verify_participant(jwt_token=jwt_token, background_tasks=background_tasks_mock)
     # Check that `verify_random_participant` was awaited once with the expected input_data
     participant_verification_service_mock.verify_random_participant.assert_awaited_once_with(
-        jwt_data=mock_jwt_random_user_verification, background_tasks=background_tasks_mock
+        jwt_data=jwt_random_user_verification_mock, background_tasks=background_tasks_mock
     )
 
     # Then
@@ -306,17 +306,17 @@ async def test_verify_random_hackathon_capacity_reached(
 async def test_send_verification_email_success(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
-    mock_admin_participant: Participant,
+    admin_participant_mock: Participant,
     jwt_utility_mock: JwtUtility,
     participant_verification_service_mock: Mock,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
-    participant_verification_service_mock.resend_verification_email.return_value = Ok(mock_admin_participant)
+    participant_verification_service_mock.resend_verification_email.return_value = Ok(admin_participant_mock)
 
     # When
-    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks_mock)
+    result = await verification_handlers.resend_verification_email(obj_id_mock, background_tasks_mock)
 
     # Then
     participant_verification_service_mock.resend_verification_email.assert_awaited_once()
@@ -332,9 +332,9 @@ async def test_send_verification_email_success(
 async def test_send_verification_email_rate_limit_exceeded_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
-    mock_admin_participant: Participant,
+    admin_participant_mock: Participant,
     participant_verification_service_mock: Mock,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
@@ -344,7 +344,7 @@ async def test_send_verification_email_rate_limit_exceeded_error(
     )
 
     # When
-    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks_mock)
+    result = await verification_handlers.resend_verification_email(obj_id_mock, background_tasks_mock)
 
     # Then
     participant_verification_service_mock.resend_verification_email.assert_awaited_once()
@@ -360,9 +360,9 @@ async def test_send_verification_email_rate_limit_exceeded_error(
 async def test_send_verification_participant_alredy_verified_error(
     verification_handlers: VerificationHandlers,
     background_tasks_mock: BackgroundTasksMock,
-    mock_admin_participant: Participant,
+    admin_participant_mock: Participant,
     participant_verification_service_mock: Mock,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
@@ -371,7 +371,7 @@ async def test_send_verification_participant_alredy_verified_error(
     )
 
     # When
-    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks_mock)
+    result = await verification_handlers.resend_verification_email(obj_id_mock, background_tasks_mock)
 
     # Then
     participant_verification_service_mock.resend_verification_email.assert_awaited_once()
@@ -387,14 +387,14 @@ async def test_send_verification_participant_not_found_error(
     participant_verification_service_mock: Mock,
     jwt_utility_mock: JwtUtility,
     background_tasks_mock: BackgroundTasksMock,
-    mock_obj_id: str,
+    obj_id_mock: str,
 ) -> None:
 
     # Given
     participant_verification_service_mock.resend_verification_email.return_value = Err(ParticipantNotFoundError())
 
     # When
-    result = await verification_handlers.resend_verification_email(mock_obj_id, background_tasks_mock)
+    result = await verification_handlers.resend_verification_email(obj_id_mock, background_tasks_mock)
 
     # Then
     participant_verification_service_mock.resend_verification_email.assert_awaited_once()

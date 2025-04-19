@@ -635,14 +635,14 @@ def jwt_utility_mock() -> JwtUtility:
 
 
 @pytest.fixture
-def mock_participant_request_body_admin_case(mock_unverified_team: Team) -> ParticipantRequestBody:
+def participant_request_body_admin_case_mock(unverified_team_mock: Team) -> ParticipantRequestBody:
     return ParticipantRequestBody(
         registration_info=AdminParticipantInputData(
             registration_type="admin",
             name=TEST_USER_NAME,
             email=TEST_USER_EMAIL,
             is_admin=True,
-            team_name=mock_unverified_team.name,
+            team_name=unverified_team_mock.name,
             university=TEST_UNIVERSITY_NAME,
             location=TEST_LOCATION,
             age=TEST_ALLOWED_AGE,
@@ -656,14 +656,14 @@ def mock_participant_request_body_admin_case(mock_unverified_team: Team) -> Part
 
 
 @pytest.fixture
-def mock_participant_request_body_invite_link_case(mock_unverified_team: Team) -> ParticipantRequestBody:
+def participant_request_body_invite_link_case_mock(unverified_team_mock: Team) -> ParticipantRequestBody:
     return ParticipantRequestBody(
         registration_info=InviteLinkParticipantInputData(
             registration_type="invite_link",
             name=TEST_USER_NAME,
             email=TEST_USER_EMAIL,
             is_admin=False,
-            team_name=mock_unverified_team.name,
+            team_name=unverified_team_mock.name,
             university=TEST_UNIVERSITY_NAME,
             location=TEST_LOCATION,
             age=TEST_ALLOWED_AGE,
@@ -677,7 +677,7 @@ def mock_participant_request_body_invite_link_case(mock_unverified_team: Team) -
 
 
 @pytest.fixture
-def mock_participant_request_body_random_case(mock_unverified_team: Team) -> ParticipantRequestBody:
+def participant_request_body_random_case_mock(unverified_team_mock: Team) -> ParticipantRequestBody:
     return ParticipantRequestBody(
         registration_info=RandomParticipantInputData(
             registration_type="random",
@@ -696,13 +696,13 @@ def mock_participant_request_body_random_case(mock_unverified_team: Team) -> Par
 
 
 @pytest.fixture
-def mock_admin_case_input_data(mock_unverified_team: Team) -> AdminParticipantInputData:
+def admin_case_input_data_mock(unverified_team_mock: Team) -> AdminParticipantInputData:
     return AdminParticipantInputData(
         registration_type="admin",
         name=TEST_USER_NAME,
         email=TEST_USER_EMAIL,
         is_admin=True,
-        team_name=mock_unverified_team.name,
+        team_name=unverified_team_mock.name,
         university=TEST_UNIVERSITY_NAME,
         location=TEST_LOCATION,
         age=TEST_ALLOWED_AGE,
@@ -715,13 +715,13 @@ def mock_admin_case_input_data(mock_unverified_team: Team) -> AdminParticipantIn
 
 
 @pytest.fixture
-def mock_invite_link_case_input_data(mock_unverified_team: Team) -> InviteLinkParticipantInputData:
+def invite_link_case_input_data_mock(unverified_team_mock: Team) -> InviteLinkParticipantInputData:
     return InviteLinkParticipantInputData(
         registration_type="invite_link",
         name=TEST_USER_NAME,
         email=TEST_USER_EMAIL,
         is_admin=False,
-        team_name=mock_unverified_team.name,
+        team_name=unverified_team_mock.name,
         university=TEST_UNIVERSITY_NAME,
         location=TEST_LOCATION,
         age=TEST_ALLOWED_AGE,
@@ -734,7 +734,7 @@ def mock_invite_link_case_input_data(mock_unverified_team: Team) -> InviteLinkPa
 
 
 @pytest.fixture
-def mock_random_case_input_data() -> RandomParticipantInputData:
+def random_case_input_data_mock() -> RandomParticipantInputData:
     return RandomParticipantInputData(
         registration_type="random",
         name=TEST_USER_NAME,
@@ -751,43 +751,43 @@ def mock_random_case_input_data() -> RandomParticipantInputData:
 
 
 @pytest.fixture
-def mock_unverified_team(mock_obj_id: str) -> Team:
-    return Team(id=mock_obj_id, name=TEST_TEAM_NAME)
+def unverified_team_mock(obj_id_mock: str) -> Team:
+    return Team(id=obj_id_mock, name=TEST_TEAM_NAME)
 
 
 @pytest.fixture
-def mock_verified_team(mock_obj_id: str) -> Team:
-    return Team(id=mock_obj_id, name=TEST_TEAM_NAME, is_verified=True)
+def verified_team_mock(obj_id_mock: str) -> Team:
+    return Team(id=obj_id_mock, name=TEST_TEAM_NAME, is_verified=True)
 
 
 @pytest.fixture
-def mock_unverified_team_dump_no_id(mock_unverified_team: Team) -> Dict[str, Any]:
+def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> Dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
-    mock_unverified_team_db_document = mock_unverified_team.dump_as_mongo_db_document()
+    mock_unverified_team_db_document = unverified_team_mock.dump_as_mongo_db_document()
     mock_unverified_team_db_document.pop("_id")
     return mock_unverified_team_db_document
 
 
 @pytest.fixture
-def mock_verified_team_dump_no_id(mock_verified_team: Team) -> Dict[str, Any]:
+def verified_team_dump_no_id_mock(verified_team_mock: Team) -> Dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
-    mock_verified_team_db_document = mock_verified_team.dump_as_mongo_db_document()
+    mock_verified_team_db_document = verified_team_mock.dump_as_mongo_db_document()
     mock_verified_team_db_document.pop("_id")
     return mock_verified_team_db_document
 
 
 @pytest.fixture
-def mock_admin_participant(mock_unverified_team: Team, mock_obj_id: str) -> Participant:
+def admin_participant_mock(unverified_team_mock: Team, obj_id_mock: str) -> Participant:
     return Participant(
-        id=mock_obj_id,
+        id=obj_id_mock,
         name=TEST_USER_NAME,
         email=TEST_USER_EMAIL,
         is_admin=True,
-        team_id=mock_unverified_team.id,
+        team_id=unverified_team_mock.id,
         university=TEST_UNIVERSITY_NAME,
         location=TEST_LOCATION,
         age=TEST_ALLOWED_AGE,
@@ -800,37 +800,37 @@ def mock_admin_participant(mock_unverified_team: Team, mock_obj_id: str) -> Part
 
 
 @pytest.fixture
-def mock_verified_admin_participant(mock_admin_participant: Participant) -> Participant:
-    mock_admin_participant.email_verified = True
-    return mock_admin_participant
+def verified_admin_participant_mock(admin_participant_mock: Participant) -> Participant:
+    admin_participant_mock.email_verified = True
+    return admin_participant_mock
 
 
 @pytest.fixture
-def mock_admin_participant_dump_no_id(mock_admin_participant: Participant) -> Dict[str, Any]:
-    mock_admin_participant_mongo_db_document = mock_admin_participant.dump_as_mongo_db_document()
+def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+    mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_admin_participant_mongo_db_document.pop("_id")
     return mock_admin_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_admin_participant_dump_verified(mock_admin_participant: Participant) -> Dict[str, Any]:
-    mock_admin_participant.email_verified = True
-    mock_admin_participant_mongo_db_document = mock_admin_participant.dump_as_mongo_db_document()
+def admin_participant_dump_verified_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+    admin_participant_mock.email_verified = True
+    mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_admin_participant_mongo_db_document.pop("_id")
     return mock_admin_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_invite_participant(mock_unverified_team: Team, mock_obj_id: str) -> Participant:
+def invite_participant_mock(unverified_team_mock: Team, obj_id_mock: str) -> Participant:
     return Participant(
-        id=mock_obj_id,
+        id=obj_id_mock,
         name=TEST_USER_NAME,
         email=TEST_USER_EMAIL,
         is_admin=False,
         email_verified=True,
-        team_id=mock_unverified_team.id,
+        team_id=unverified_team_mock.id,
         university=TEST_UNIVERSITY_NAME,
         location=TEST_LOCATION,
         age=TEST_ALLOWED_AGE,
@@ -843,32 +843,32 @@ def mock_invite_participant(mock_unverified_team: Team, mock_obj_id: str) -> Par
 
 
 @pytest.fixture
-def mock_verified_invite_participant(mock_invite_participant: Participant) -> Participant:
-    mock_invite_participant.email_verified = True
-    return mock_invite_participant
+def verified_invite_participant_mock(invite_participant_mock: Participant) -> Participant:
+    invite_participant_mock.email_verified = True
+    return invite_participant_mock
 
 
 @pytest.fixture
-def mock_invite_participant_dump_no_id(mock_invite_participant: Participant) -> Dict[str, Any]:
-    mock_invite_participant_mongo_db_document = mock_invite_participant.dump_as_mongo_db_document()
+def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+    mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_invite_participant_mongo_db_document.pop("_id")
     return mock_invite_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_invite_participant_dump_verified(mock_invite_participant: Participant) -> Dict[str, Any]:
-    mock_invite_participant.email_verified = True
-    mock_invite_participant_mongo_db_document = mock_invite_participant.dump_as_mongo_db_document()
+def invite_participant_dump_verified_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+    invite_participant_mock.email_verified = True
+    mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_invite_participant_mongo_db_document.pop("_id")
     return mock_invite_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_random_participant(mock_obj_id: str) -> Participant:
+def random_participant_mock(obj_id_mock: str) -> Participant:
     return Participant(
-        id=mock_obj_id,
+        id=obj_id_mock,
         name=TEST_USER_NAME,
         email=TEST_USER_EMAIL,
         is_admin=False,
@@ -885,58 +885,58 @@ def mock_random_participant(mock_obj_id: str) -> Participant:
 
 
 @pytest.fixture
-def mock_verified_random_participant(mock_random_participant: Participant) -> Participant:
-    mock_random_participant.email_verified = True
-    return mock_random_participant
+def verified_random_participant_mock(random_participant_mock: Participant) -> Participant:
+    random_participant_mock.email_verified = True
+    return random_participant_mock
 
 
 @pytest.fixture
-def mock_random_participant_dump_no_id(mock_random_participant: Participant) -> Dict[str, Any]:
-    mock_random_participant_mongo_db_document = mock_random_participant.dump_as_mongo_db_document()
+def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+    mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
     return mock_random_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_random_participant_dump_verified(mock_random_participant: Participant) -> Dict[str, Any]:
-    mock_random_participant.email_verified = True
-    mock_random_participant_mongo_db_document = mock_random_participant.dump_as_mongo_db_document()
+def random_participant_dump_verified_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+    random_participant_mock.email_verified = True
+    mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
     return mock_random_participant_mongo_db_document
 
 
 @pytest.fixture
-def mock_obj_id() -> str:
+def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
 
 
 @pytest.fixture
-def mock_jwt_user_registration(mock_obj_id: str, thirty_sec_jwt_exp_limit: int) -> JwtParticipantInviteRegistrationData:
+def jwt_user_registration_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit: int) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=mock_obj_id,
-        team_id=mock_obj_id,
+        sub=obj_id_mock,
+        team_id=obj_id_mock,
         team_name=TEST_USER_NAME,
         exp=thirty_sec_jwt_exp_limit,
     )
 
 
 @pytest.fixture
-def mock_jwt_random_user_verification(
-    mock_obj_id: str, thirty_sec_jwt_exp_limit: int
+def jwt_random_user_verification_mock(
+    obj_id_mock: str, thirty_sec_jwt_exp_limit: int
 ) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
-        sub=mock_obj_id,
+        sub=obj_id_mock,
         is_admin=False,
         exp=thirty_sec_jwt_exp_limit,
     )
 
 
 @pytest.fixture
-def mock_jwt_admin_user_verification(mock_obj_id: str, thirty_sec_jwt_exp_limit: int) -> JwtParticipantVerificationData:
+def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit: int) -> JwtParticipantVerificationData:
     return JwtParticipantVerificationData(
-        sub=mock_obj_id,
+        sub=obj_id_mock,
         is_admin=True,
         exp=thirty_sec_jwt_exp_limit,
     )
