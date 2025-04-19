@@ -56,6 +56,9 @@ RUN adduser \
     --uid "10001" \
     appuser
 
+# Change ownership of the shared directory so that we have permissions to write to the logfiles
+RUN chown -R appuser:appuser /app/shared
+
 # Switch to the non-privileged user to run the application.
 USER appuser
 
