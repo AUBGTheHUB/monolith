@@ -193,7 +193,7 @@ from unittest.mock import AsyncMock
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: ParticipantsRepository,
     mock_admin_participant: Participant,
 ) -> None:
@@ -201,9 +201,9 @@ async def test_fetch_all_success(
     # Given
     # Prepare mock MongoDB documents
     mock_participants_data = [mock_admin_participant.dump_as_mongo_db_document() for _ in range(5)]
-    mock_db_cursor.to_list.return_value = mock_participants_data
+    db_cursor_mock.to_list.return_value = mock_participants_data
     # Patch find() to return the mock cursor
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     # Run the method
@@ -226,13 +226,13 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: ParticipantsRepository,
 ) -> None:
 
     # Given
-    mock_db_cursor.to_list.return_value = []
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    db_cursor_mock.to_list.return_value = []
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     result = await repo.fetch_all()
@@ -245,13 +245,13 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: ParticipantsRepository,
 ) -> None:
 
     # Given
-    mock_db_cursor.to_list.return_value = Exception()
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    db_cursor_mock.to_list.return_value = Exception()
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     result = await repo.fetch_all()

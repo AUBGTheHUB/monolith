@@ -17,8 +17,11 @@ from motor.motor_asyncio import (
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
@@ -270,12 +273,27 @@ class MotorDbCursorMock(Protocol):
 
 
 @pytest.fixture
-def mock_db_cursor() -> MotorDbCursorMock:
+def db_cursor_mock() -> MotorDbCursorMock:
 
-    mock_db_cursor = _create_typed_mock(AsyncIOMotorCursor)
-    mock_db_cursor.to_list = AsyncMock()
+    db_cursor_mock = _create_typed_mock(AsyncIOMotorCursor)
+    db_cursor_mock.to_list = AsyncMock()
 
-    return cast(MotorDbCursorMock, mock_db_cursor)
+    return cast(MotorDbCursorMock, db_cursor_mock)
+
+
+class MongoTransactionManagerMock(Protocol):
+    with_transaction: AsyncMock
+
+
+@pytest.fixture
+def tx_manager_mock() -> MongoTransactionManagerMock:
+    """This is a mock obj of TransactionManager. To change the return values of its methods use:
+    `tx_manager_mock.method_name.return_value=some_return_value`"""
+
+    tx_manager_mock = _create_typed_mock(MongoTransactionManager)
+    tx_manager_mock.with_transaction = AsyncMock()
+
+    return cast(MongoTransactionManagerMock, tx_manager_mock)
 
 
 # ======================================
@@ -421,6 +439,35 @@ def team_repo_mock() -> TeamRepoMock:
     return cast(TeamRepoMock, team_repo)
 
 
+class FeatureSwitchRepoMock(Protocol):
+
+    get_feature_switch: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+    fetch_all: AsyncMock
+    fetch_by_id: AsyncMock
+    update: AsyncMock
+    update_by_name: AsyncMock
+
+
+@pytest.fixture
+def feature_switch_repo_mock() -> FeatureSwitchRepoMock:
+    """This is a mock obj of FeatureSwitchRepository. To change the return values of its methods use:
+    `feature_switch_repo_mock.method_name.return_value=some_return_value`"""
+
+    feature_switch_repo = _create_typed_mock(FeatureSwitchRepository)
+
+    feature_switch_repo.get_feature_switch = AsyncMock()
+    feature_switch_repo.create = AsyncMock()
+    feature_switch_repo.delete = AsyncMock()
+    feature_switch_repo.fetch_all = AsyncMock()
+    feature_switch_repo.fetch_by_id = AsyncMock()
+    feature_switch_repo.update = AsyncMock()
+    feature_switch_repo.update_by_name = AsyncMock()
+
+    return cast(FeatureSwitchRepoMock, feature_switch_repo)
+
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -559,21 +606,22 @@ def participant_verification_service_mock() -> ParticipantVerificationServiceMoc
     return cast(ParticipantVerificationServiceMock, service)
 
 
-#
-#
-# @pytest.fixture
-# def hackathon_mail_service_mock() -> Mock:
-#     """This is a mock obj of HackathonMailService. To change the return values of its methods use:
-#     `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
-#
-#     mailing_service_mock = Mock(spec=HackathonMailService)
-#     mailing_service_mock.send_participant_verification_email = Mock()
-#     mailing_service_mock.send_participant_successful_registration_email = Mock()
-#
-#     return mailing_service_mock
-#
-#
-#
+class HackathonMailServiceMock(Protocol):
+    send_participant_verification_email = AsyncMock
+    send_participant_successful_registration_email = AsyncMock
+
+
+@pytest.fixture
+def hackathon_mail_service_mock() -> HackathonMailServiceMock:
+    """This is a mock obj of HackathonMailService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
+
+    hakcathon_mail_service_mock = _create_typed_mock(HackathonMailService)
+
+    hakcathon_mail_service_mock.send_participant_verification_email = Mock()
+    hakcathon_mail_service_mock.send_participant_successful_registration_email = Mock()
+
+    return cast(HackathonMailServiceMock, hakcathon_mail_service_mock)
 
 
 # =================================================
@@ -582,7 +630,7 @@ def participant_verification_service_mock() -> ParticipantVerificationServiceMoc
 
 
 @pytest.fixture
-def mock_jwt_utility() -> JwtUtility:
+def jwt_utility_mock() -> JwtUtility:
     return JwtUtility()
 
 

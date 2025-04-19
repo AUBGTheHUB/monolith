@@ -286,7 +286,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: TeamsRepository,
     mock_verified_team: Team,
 ) -> None:
@@ -302,8 +302,8 @@ async def test_fetch_all_success(
         }
         for _ in range(5)
     ]
-    mock_db_cursor.to_list.return_value = mock_teams_data
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    db_cursor_mock.to_list.return_value = mock_teams_data
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     result = await repo.fetch_all()
@@ -323,13 +323,13 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: TeamsRepository,
 ) -> None:
 
     # Given
-    mock_db_cursor.to_list.return_value = []
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    db_cursor_mock.to_list.return_value = []
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     result = await repo.fetch_all()
@@ -342,13 +342,13 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    mock_db_cursor: MotorDbCursorMock,
+    db_cursor_mock: MotorDbCursorMock,
     repo: TeamsRepository,
 ) -> None:
 
     # Given
-    mock_db_cursor.to_list.return_value = Exception()
-    mongo_db_manager_mock.get_collection.return_value.find.return_value = mock_db_cursor
+    db_cursor_mock.to_list.return_value = Exception()
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
     result = await repo.fetch_all()
