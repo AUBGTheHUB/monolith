@@ -145,6 +145,7 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
 
 volumes:
+  # Create a named volume to store logs
   py-api-logs:
 
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets

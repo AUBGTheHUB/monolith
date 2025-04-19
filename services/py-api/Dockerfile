@@ -60,7 +60,7 @@ RUN adduser \
 USER appuser
 
 COPY src ./src
-# Give ownership to the log files, so that appuser can wirte to them
+# Give appuser ownership to the log files, so that we can write to them
 COPY --chown=appuser:appuser shared ./shared
 
 # Inform Docker that the container listens on the specified network ports at runtime.
