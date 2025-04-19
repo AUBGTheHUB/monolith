@@ -5,8 +5,10 @@ from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TE
 
 def test_participant_dump_as_json(mock_admin_participant: Participant, mock_unverified_team: Team) -> None:
 
+    # When
     json_data = mock_admin_participant.dump_as_json()
 
+    # Then
     assert json_data["id"] == str(mock_admin_participant.id)
     assert json_data["name"] == TEST_USER_NAME
     assert json_data["email"] == TEST_USER_EMAIL
@@ -19,8 +21,10 @@ def test_participant_dump_as_json(mock_admin_participant: Participant, mock_unve
 
 def test_participant_dump_as_mongo_db_document(mock_admin_participant: Participant, mock_unverified_team: Team) -> None:
 
+    # When
     mongo_document = mock_admin_participant.dump_as_mongo_db_document()
 
+    # Then
     assert mongo_document["_id"] == mock_admin_participant.id
     assert mongo_document["name"] == TEST_USER_NAME
     assert mongo_document["email"] == TEST_USER_EMAIL
@@ -33,8 +37,10 @@ def test_participant_dump_as_mongo_db_document(mock_admin_participant: Participa
 
 def test_team_dump_as_json(mock_unverified_team: Team) -> None:
 
+    # When
     json_data = mock_unverified_team.dump_as_json()
 
+    # Then
     assert json_data["id"] == str(mock_unverified_team.id)
     assert json_data["name"] == TEST_TEAM_NAME
     assert json_data["is_verified"] is False
@@ -44,8 +50,10 @@ def test_team_dump_as_json(mock_unverified_team: Team) -> None:
 
 def test_team_dump_as_mongo_db_document(mock_unverified_team: Team) -> None:
 
+    # When
     mongo_document = mock_unverified_team.dump_as_mongo_db_document()
 
+    # Then
     assert mongo_document["_id"] == mock_unverified_team.id
     assert mongo_document["name"] == TEST_TEAM_NAME
     assert mongo_document["is_verified"] is False
