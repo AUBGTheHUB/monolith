@@ -84,7 +84,7 @@ services:
       - /etc/nginx:/conf/basic-auth/nginx
 
     networks:
-      - monolith
+      - monolith_stack
 
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${PY_API_GIT_COMMIT_HASH:-latest}
@@ -147,13 +147,13 @@ services:
       # TODO: Change paths when doing automatic certs renew
       - /etc/letsencrypt:/etc/letsencrypt
     networks:
-      - monolith
+      - monolith_stack
 volumes:
   # Create a named volume to store logs
   py-api-logs:
 
 networks:
-  monolith:
+  monolith_stack:
     - driver: overlay
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
 secrets:
