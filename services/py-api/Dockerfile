@@ -59,7 +59,7 @@ RUN adduser \
 # Switch to the non-privileged user to run the application.
 USER appuser
 
-COPY src ./src
+COPY --chown=appuser:appuser src ./src
 # Give appuser ownership to the log files, so that we can write to them
 COPY --chown=appuser:appuser shared ./shared
 
