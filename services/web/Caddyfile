@@ -7,9 +7,14 @@ dev.thehub-aubg.com {
     encode
 
     handle /api/* {
-        # py-api is the name of the [swarm service](https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks),
-        # we specify the port 8080, as otherwise the default https port 443 will be used.
+        # py-api is the name of the swarm service, we specify the port 8080, as otherwise the default https port 443
+        # will be used.
+        # This DNS hostname gets resolved to a virtual IP (VIP) and docker-swarm takes care to distribute traffic
+        # among the replicas via the IPVS
         # https://caddyserver.com/docs/quick-starts/reverse-proxy#https-from-proxy-to-backend
+        # https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks
+        # https://docs.docker.com/engine/swarm/key-concepts/#load-balancing
+        # https://docs.docker.com/engine/swarm/networking/#configure-service-discovery
         reverse_proxy https://py-api:8080
     }
 

@@ -1,3 +1,8 @@
+# Prerequisites:
+# https://docs.docker.com/engine/swarm/key-concepts/
+# https://docs.docker.com/engine/swarm/ingress/
+# https://docs.docker.com/engine/swarm/networking/
+
 # The docker stack deploy command uses the legacy Compose file version 3, which is located in the
 # [V1 branch of the Compose repository](https://docs.docker.com/reference/compose-file/legacy-versions/).
 # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md
@@ -47,7 +52,7 @@ services:
     # instances. We are doing so in order to use a "start-first" update config. If we used `mode: host, and bypassed
     # the routing mesh, when we redeploy caddy we would get "port already in use", as this update config will try to
     # spin up a new instance before removing the old one (rolling release)
-    # https://docs.docker.com/engine/swarm/networking/
+    # https://docs.docker.com/engine/swarm/networking/#publish-ports-on-an-overlay-network
     # https://docs.docker.com/engine/swarm/ingress/
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#long-syntax-1
     ports:
@@ -75,7 +80,9 @@ services:
       # $$DOMAIN: The double dollar sign ensures that Docker Compose doesn't
       # try to substitute $DOMAIN itself. Instead, it sends the literal '$DOMAIN'
       # to the container, where the shell correctly expands it at runtime.
+      # See https://docs.docker.com/reference/compose-file/interpolation/
       #
+      # We use wget as it is included in the image
       # wget options:
       # --spider: Don't download, just check if the resource exists (HTTP 2xx).
       # -q: Quiet mode, suppress wget's normal output.
@@ -100,6 +107,12 @@ services:
     deploy:
       <<: *deploy-default
 
+      # We are not publishing ports, as we don't want the py-api service directly exposed to the open internet
+      # We are going to relly on the IPVS to distribute traffic between the replicas. When `py-api:8080` gets resolved
+      # it points to virtual IP (VIP). The load balancing between the replicas happens via the IPVS at Layer 4.
+      # See https://docs.docker.com/engine/swarm/networking/#configure-service-discovery
+      endpoint_mode: vip
+
       # We are using two replicas of the API to increase reliability
       # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#replicas
       # The options which are not set use the default values
@@ -122,7 +135,7 @@ services:
     # replica task that spawns a new container in replacement of the unhealthy one.
     # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
     healthcheck:
-      test: [ "CMD", "curl", "-f", "https://localhost:${PORT}/api/v3/ping" ]
+      test: ["CMD-SHELL", "curl -f https://localhost:$${PORT}/api/v3/ping"]
       interval: 1m
       timeout: 10s
       retries: 3
