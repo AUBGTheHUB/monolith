@@ -4,6 +4,14 @@
 
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
+    handle /ping {
+        respond "PONG" 200
+    }
+
+	basicauth {
+        hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
+    }
+
 	encode
 
 	handle /api/* {
@@ -16,7 +24,7 @@ dev.thehub-aubg.com {
 		# https://docs.docker.com/engine/swarm/key-concepts/#load-balancing
 		# https://docs.docker.com/engine/swarm/networking/#configure-service-discovery
 		reverse_proxy https://py-api:8080 {
-            transport http {
+			transport http {
                 # When Caddy connects to 'py-api:8080', the backend ('py-api') serves a TLS certificate for
                 # 'dev.thehub-aubg.com'. 'tls_server_name' tells Caddy to validate the certificate against
 				# 'dev.thehub-aubg.com' instead of 'py-api', resolving the hostname mismatch while still ensuring
