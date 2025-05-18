@@ -135,7 +135,7 @@ services:
     # replica task that spawns a new container in replacement of the unhealthy one.
     # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
     healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:$${PORT}/api/v3/ping"]
+      test: ["CMD-SHELL", "curl -f -s https://localhost:$${PORT}/api/v3/ping"]
       interval: 1m
       timeout: 10s
       retries: 3
