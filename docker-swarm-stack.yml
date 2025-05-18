@@ -157,14 +157,14 @@ services:
     volumes:
       # Storing the logs like this is temporary solution until more sophisticated monitoring and observability system
       # is implemented.
-      - py-api-logs:/app/shared
+      - py_api_logs:/app/shared
       # Mount the named volume as read-only
       # https://docs.docker.com/reference/compose-file/services/#short-syntax-5
       - caddy_data:/mnt/caddy_certs:ro
 
 volumes:
   # Create a named volume to store py-api logs
-  py-api-logs:
+  py_api_logs:
   # As docker containers are ephemeral, if we do not persist the /data direcotry of Caddy, every time we do a deploy
   # or the container gets replaced with a new one, we would request new TLS certificates. and we could hit LetsEncrypt
   # rate limits for Certificate Issuance.
