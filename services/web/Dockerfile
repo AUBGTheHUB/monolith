@@ -29,7 +29,6 @@ ENV VITE_ENV=${VITE_ENV}
 RUN npm run build
 
 # Bundle static assets with caddy
-# TODO: Figure out how to use non-root user in container as per: https://docs.docker.com/build/building/best-practices/#user
 FROM caddy:2.10-alpine AS runtime
 
 # The build args are passed in the CD pipeline.
