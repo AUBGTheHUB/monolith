@@ -64,6 +64,7 @@ COPY src ./src
 COPY --chown=appuser:appuser shared ./shared
 
 # Inform Docker that the container listens on the specified network ports at runtime.
+# This acts as documentation for the consumer of the image which ports are intended to be published.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
 
