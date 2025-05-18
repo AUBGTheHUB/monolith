@@ -32,7 +32,7 @@ def _get_ssl_config() -> Tuple[str, str]:
     # On the DEV machine we expect those env vars to be ENV=DEV && DOMAIN=dev.thehub-aubg.com
     # On the PROD machine we expect those env vars to be ENV=PROD && DOMAIN=thehub-aubg.com
     if DOMAIN != "localhost":
-        return f"{caddy_specific_cert_path}/{DOMAIN}/{DOMAIN}.crt", f"{caddy_specific_cert_path}/{DOMAIN}/{DOMAIN}.key"
+        return f"{caddy_specific_cert_path}/{DOMAIN}.crt", f"{caddy_specific_cert_path}/{DOMAIN}.key"
 
     return "src/server/certs/localhost.crt", "src/server/certs/localhost.key"
 
