@@ -69,24 +69,24 @@ services:
     # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
     # replica task that spawns a new container in replacement of the unhealthy one.
     # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
-    healthcheck:
-      # CMD-SHELL: Uses the container's shell to run the command, allowing
-      # use of shell features like expanding the $DOMAIN environment variable.
-      # $$DOMAIN: The double dollar sign ensures that Docker Compose doesn't
-      # try to substitute $DOMAIN itself. Instead, it sends the literal '$DOMAIN'
-      # to the container, where the shell correctly expands it at runtime.
-      #
-      # wget options:
-      # --spider: Don't download, just check if the resource exists (HTTP 2xx).
-      # -q: Quiet mode, suppress wget's normal output.
-      # --tries=1: Perform only one attempt; Docker's 'retries' handles overall retries.
-      # wget exits with non-zero status on server errors (e.g., 4xx, 5xx).
-      test: ["CMD-SHELL", "wget -q --spider --tries=1 https://$${DOMAIN}"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      # The container should start under 10 seconds, but this is the maximum time it should realistically take.
-      start_period: 10s
+#    healthcheck:
+#      # CMD-SHELL: Uses the container's shell to run the command, allowing
+#      # use of shell features like expanding the $DOMAIN environment variable.
+#      # $$DOMAIN: The double dollar sign ensures that Docker Compose doesn't
+#      # try to substitute $DOMAIN itself. Instead, it sends the literal '$DOMAIN'
+#      # to the container, where the shell correctly expands it at runtime.
+#      #
+#      # wget options:
+#      # --spider: Don't download, just check if the resource exists (HTTP 2xx).
+#      # -q: Quiet mode, suppress wget's normal output.
+#      # --tries=1: Perform only one attempt; Docker's 'retries' handles overall retries.
+#      # wget exits with non-zero status on server errors (e.g., 4xx, 5xx).
+#      test: ["CMD-SHELL", "wget -q --spider --tries=1 https://$${DOMAIN}"]
+#      interval: 1m
+#      timeout: 10s
+#      retries: 3
+#      # The container should start under 20 seconds, but this is the maximum time it should realistically take.
+#      start_period: 20s
 
     volumes:
       # https://caddyserver.com/docs/running#docker-compose
