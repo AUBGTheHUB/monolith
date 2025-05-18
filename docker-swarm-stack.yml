@@ -92,8 +92,8 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-      # The container should start under 10 seconds, but this is the maximum time it should realistically take.
-      start_period: 10s
+      # If we get rate limited by LetEncrypt caddy would retry
+      start_period: 2m
 
     volumes:
       # https://caddyserver.com/docs/running#docker-compose
