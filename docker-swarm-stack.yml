@@ -88,7 +88,7 @@ services:
       # -q: Quiet mode, suppress wget's normal output.
       # --tries=1: Perform only one attempt; Docker's 'retries' handles overall retries.
       # wget exits with non-zero status on server errors (e.g., 4xx, 5xx).
-      test: ["CMD-SHELL", "wget -q --spider --tries=1 https://$${DOMAIN}/ping"]
+      test: ["CMD-SHELL", "wget -q --spider --tries=1 https://$${DOMAIN}"]
       interval: 1m
       timeout: 10s
       retries: 3
