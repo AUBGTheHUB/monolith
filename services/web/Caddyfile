@@ -4,13 +4,13 @@
 
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
-    # Enable compression of responses
     encode
 
     handle /api/* {
         # py-api is the name of the [swarm service](https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks),
         # we specify the port 8080, as otherwise the default https port 443 will be used.
-        reverse_proxy py-api:8080
+        # https://caddyserver.com/docs/quick-starts/reverse-proxy#https-from-proxy-to-backend
+        reverse_proxy https://py-api:8080
     }
 
     handle {
