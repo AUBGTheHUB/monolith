@@ -28,10 +28,9 @@ ENV VITE_ENV=${VITE_ENV}
 # Build the app
 RUN npm run build
 
-# Bundle static assets with nginx
-# TODO: Change image with https://hub.docker.com/r/nginxinc/nginx-unprivileged when the auto renew of ssl certs is
-# implemented, as oer: https://docs.docker.com/build/building/best-practices/#user
-FROM nginx:1.27-alpine AS dev
+# Bundle static assets with caddy
+# TODO: Figure out how to use non-root user in container as per: https://docs.docker.com/build/building/best-practices/#user
+FROM caddy:2.10-alpine AS runtime
 
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
@@ -43,22 +42,16 @@ ARG VITE_ENV
 ENV DOMAIN=${DOMAIN}
 
 # Copy built assets from the build-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+# /srv is the WORKDIR set by the caddy Dockerfile
+# https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L59
+COPY --from=build-stage /app/dist /srv
 
-# We override the `default.conf` that comes with the base ngixn image.
-# In the main nginx.conf located at /etc/nignx/nginx.conf, the `include` directive is used to include all .conf files
-# in the /etc/nginx/conf.d directory. This is where we add our custom Feature-Specific Configuration.
-# https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/#feature-specific-configuration-files
-COPY nginx.${VITE_ENV}.conf /etc/nginx/conf.d/default.conf
+# https://caddyserver.com/docs/conventions#your-config-files
+# This is the default location that the caddy Dockerfile uses to run server from the resulting image
+# https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
+COPY Caddyfile /etc/caddy/Caddyfile
 
 # Inform Docker that the container listens on the specified network ports at runtime.
+# This acts as documentation for the consumer of the image which ports are intended to be published.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 80 443
-
-
-# We are using the default nginx image ENTRYPOINT and CMD, that's why we don't set them explicitly
-
-# NB!!!:
-# If you add a custom CMD in the dev.Dockerfile, be sure to include -g daemon off; in the CMD in order for nginx to
-# stay in the foreground, so that Docker can track the process properly (otherwise your container will stop immediately
-# after starting)! Source: https://hub.docker.com/_/nginx
