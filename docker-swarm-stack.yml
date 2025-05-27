@@ -140,7 +140,7 @@ services:
     # health of the py-api we do not verify the certs. Verification of certs happens at the reverse_proxy directive in
     # Caddy. See Caddyfile for more info.
     healthcheck:
-      test: ["CMD-SHELL", "curl -f -k https://localhost:$${PORT}/api/v3/ping"]
+      test: ["CMD-SHELL", "curl -f http://localhost:$${PORT}/api/v3/ping"]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -158,9 +158,6 @@ services:
       # Storing the logs like this is temporary solution until more sophisticated monitoring and observability system
       # is implemented.
       - py_api_logs:/app/shared
-      # Mount the named volume as read-only
-      # https://docs.docker.com/reference/compose-file/services/#short-syntax-5
-      - caddy_data:/mnt/caddy_certs:ro
 
 volumes:
   # Create a named volume to store py-api logs
