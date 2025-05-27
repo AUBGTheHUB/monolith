@@ -4,13 +4,9 @@
 
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
-#    handle /ping {
-#        respond "PONG" 200
-#    }
-#
 #	basicauth {
-#        hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
-#    }
+#    	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
+#	}
 
 	encode
 
