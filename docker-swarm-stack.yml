@@ -21,15 +21,16 @@ x-deploy-default: &deploy-default
   restart_policy:
     condition: any
     max_attempts: 3
-    window: 1m30s
+    window: 2m
 
   # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#update_config
   # The options which are not set use the default values
   update_config:
     order: start-first
-    # We set this to 1m30s as it ensures that at least one full health check cycle completes during the monitoring
-    # period, which should be sufficient to detect most issues. The 30s gives us some buffer time.
-    monitor: 1m30s
+    # We set this to 2m as it ensures that at least one full health check cycle completes during the monitoring
+    # period, which should be sufficient to detect most issues. The extra 1m is because some containers take a bit
+    # longer to start
+    monitor: 2m
     # If the updated version's state is considered failure the service will be rollbacked automatically
     failure_action: rollback
 
@@ -37,9 +38,10 @@ x-deploy-default: &deploy-default
   # The options which are not set use the default values
   rollback_config:
     order: start-first
-    # We set this to 1m30s as it ensures that at least one full health check cycle completes during the monitoring
-    # period, which should be sufficient to detect most issues. The 30s gives us some buffer time.
-    monitor: 1m30s
+    # We set this to 2m as it ensures that at least one full health check cycle completes during the monitoring
+    # period, which should be sufficient to detect most issues. The extra 1m is because some containers take a bit
+    # longer to start
+    monitor: 2m
     # If the rollbacked version's state is considered failure, all tasks in the service will be paused to allow for
     # investigation
     failure_action: pause
@@ -89,11 +91,11 @@ services:
       # --tries=1: Perform only one attempt; Docker's 'retries' handles overall retries.
       # wget exits with non-zero status on server errors (e.g., 4xx, 5xx).
       test: ["CMD-SHELL", "wget -q --spider --tries=1 https://$${DOMAIN}"]
-      interval: 1m
-      timeout: 10s
+      interval: 2m
+      timeout: 30s
       retries: 3
-      # The container should start within 20 seconds, but this is the maximum time it should realistically take.
-      start_period: 20s
+      # It takes time for Caddy to get a certificate at first
+      start_period: 60s
 
     volumes:
       # https://caddyserver.com/docs/running#docker-compose
