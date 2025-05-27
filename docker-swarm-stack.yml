@@ -103,7 +103,6 @@ services:
     secrets:
       # Check caddy-entrypoint.sh for how this is used
       - cloudflare-api-token
-      -
     entrypoint: [ "/usr/local/bin/caddy-entrypoint.sh" ] # Overrides Dockerfile's ENTRYPOINT
     command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile" ] # Becomes "$@"
   py-api:
