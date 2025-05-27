@@ -64,6 +64,6 @@ COPY caddy/caddy-entrypoint.sh /usr/local/bin/caddy-entrypoint.sh
 RUN chmod +x /usr/local/bin/caddy-entrypoint.sh
 
 # https://docs.docker.com/reference/dockerfile/#entrypoint
-#ENTRYPOINT ["/usr/local/bin/caddy-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/caddy-entrypoint.sh"]
 
 # CMD is inherited from the base caddy image.

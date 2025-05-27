@@ -103,8 +103,7 @@ services:
     secrets:
       # Check caddy-entrypoint.sh for how this is used
       - cloudflare-api-token
-    entrypoint: [ "/usr/local/bin/caddy-entrypoint.sh" ] # Overrides Dockerfile's ENTRYPOINT
-    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile" ] # Becomes "$@"
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile" ]
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${PY_API_GIT_COMMIT_HASH:-latest}
 

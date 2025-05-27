@@ -18,4 +18,4 @@ fi
 
 # https://stackoverflow.com/questions/32255814/what-purpose-does-using-exec-in-docker-entrypoint-scripts-serve/32261019#32261019
 # https://man7.org/linux/man-pages/man3/exec.3.html
-exec "$@"
+exec tail -f /dev/null
