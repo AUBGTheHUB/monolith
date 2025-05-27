@@ -67,4 +67,6 @@ RUN chmod +x /usr/local/bin/caddy-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/caddy-entrypoint.sh"]
 
 # https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
+# We need to override the CMD, as if CMD is defined from the base image, setting ENTRYPOINT will reset CMD to an empty value
+# https://docs.docker.com/reference/dockerfile/#understand-how-cmd-and-entrypoint-interact
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
