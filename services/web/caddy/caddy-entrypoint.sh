@@ -8,7 +8,7 @@ set -e
 # https://caddyserver.com/docs/caddyfile/concepts#environment-variables
 SECRET_FILE_PATH="/run/secrets/cloudflare-api-token"
 
-if [ -f SECRET_FILE_PATH ]; then
+if [ -f "$SECRET_FILE_PATH" ]; then
   CLOUDFLARE_API_TOKEN=$(cat "$SECRET_FILE_PATH")
   export CLOUDFLARE_API_TOKEN
 else
@@ -18,4 +18,4 @@ fi
 
 # https://stackoverflow.com/questions/32255814/what-purpose-does-using-exec-in-docker-entrypoint-scripts-serve/32261019#32261019
 # https://man7.org/linux/man-pages/man3/exec.3.html
-exec tail -f /dev/null
+exec "$@"
