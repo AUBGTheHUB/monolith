@@ -1,3 +1,8 @@
+# https://roelofjanelsinga.com/articles/using-caddy-ssl-with-cloudflare/
+FROM caddy:2.10-builder-alpine AS caddy-builder
+RUN xcaddy build \
+    --with github.com/caddy-dns/cloudflare
+
 # Create a new build stage from a base image
 FROM node:23-alpine AS build-stage
 
@@ -31,6 +36,9 @@ RUN npm run build
 # Bundle static assets with caddy
 FROM caddy:2.10-alpine AS runtime
 
+# Copy the custom-built Caddy binary from the caddy-builder stage
+COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
+
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
 
@@ -48,4 +56,14 @@ COPY --from=build-stage /app/dist /srv
 # https://caddyserver.com/docs/conventions#your-config-files
 # This is the default location that the caddy Dockerfile uses to run server from the resulting image
 # https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY caddy/Caddyfile /etc/caddy/Caddyfile
+
+# Copy and set the new entrypoint script
+COPY caddy/caddy-entrypoint.sh /usr/local/bin/caddy-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/caddy-entrypoint.sh
+
+# https://docs.docker.com/reference/dockerfile/#entrypoint
+ENTRYPOINT ["/usr/local/bin/caddy-entrypoint.sh"]
+
+# CMD is inherited from the base caddy image.

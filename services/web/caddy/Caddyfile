@@ -2,6 +2,12 @@
 # https://caddyserver.com/docs/caddyfile/concepts
 # https://caddyserver.com/docs/caddyfile/directives
 
+# https://caddyserver.com/docs/caddyfile/concepts#global-options
+# https://caddyserver.com/docs/caddyfile/concepts#environment-variables
+{
+	acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
 #	basicauth {
