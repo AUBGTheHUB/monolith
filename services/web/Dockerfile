@@ -66,4 +66,5 @@ RUN chmod +x /usr/local/bin/caddy-entrypoint.sh
 # https://docs.docker.com/reference/dockerfile/#entrypoint
 ENTRYPOINT ["/usr/local/bin/caddy-entrypoint.sh"]
 
-# CMD is inherited from the base caddy image.
+# https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
