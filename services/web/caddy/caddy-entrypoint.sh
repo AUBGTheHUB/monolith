@@ -7,10 +7,10 @@ set -e
 # https://docs.docker.com/engine/swarm/secrets/
 # https://caddyserver.com/docs/caddyfile/concepts#environment-variables
 if [ -f /run/secrets/cloudflare_api_token ]; then
-  CLOUDFLARE_API_TOKEN=$(cat "/run/secrets/cloudflare_api_token")
+  CLOUDFLARE_API_TOKEN=$(cat "/run/secrets/cloudflare-api-token")
   export CLOUDFLARE_API_TOKEN
 else
-  echo "WARNING: Cloudflare API token secret file /run/secrets/cloudflare_api_token not found."
+  echo "WARNING: Cloudflare API token secret file /run/secrets/cloudflare-api-token not found."
   export CLOUDFLARE_API_TOKEN=""
 fi
 

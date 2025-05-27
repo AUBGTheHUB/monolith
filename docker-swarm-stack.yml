@@ -101,7 +101,7 @@ services:
       - caddy_config:/config
     secrets:
       # Check caddy-entrypoint.sh for how this is used
-      - cloudflare_api_token
+      - cloudflare-api-token
 
   py-api:
     image: ghcr.io/aubgthehub/monolith-backend:${PY_API_GIT_COMMIT_HASH:-latest}
@@ -188,5 +188,5 @@ secrets:
     external: true
   resend-api-key:
     external: true
-  cloudflare_api_token:
+  cloudflare-api-token:
       external: true
