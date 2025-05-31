@@ -33,7 +33,7 @@
     "react-dom": "^18.3.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.2",
-    "react-router": "^7.0.1",
+    "react-router": "^7.5.2",
     "react-toastify": "^11.0.5",
     "reactscape-testing-tools": "^1.421.69",
     "tailwind-merge": "^2.5.2",
