@@ -1,6 +1,6 @@
 # Inspiration: https://medium.com/@albertazzir/blazing-fast-python-docker-builds-with-poetry-a78a66f5aed0
 
-FROM python:3.12-bookworm AS build-stage
+FROM python:3.12.9-bookworm AS build-stage
 
 RUN pip install poetry==2.1.1
 
@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
     poetry install --without dev --no-root
 
 # The image, used to just run the code provided its virtual environment. We use the slim version, to keep the image
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.12.9-slim-bookworm AS runtime
 
 # Insatll curl to perform healtchecks. We use --no-install-recommends and removing the list of packages to make the
 # final image size smaller
