@@ -31,6 +31,9 @@ RUN npm run build
 # Bundle static assets with caddy
 FROM caddy:2.10-alpine AS runtime
 
+# Install curl
+RUN apk add --no-cache curl
+
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
 

@@ -2,6 +2,10 @@
 # https://caddyserver.com/docs/caddyfile/concepts
 # https://caddyserver.com/docs/caddyfile/directives
 
+:443 {
+	respond /health "HEALTHY" 200
+}
+
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
 #	basicauth {
