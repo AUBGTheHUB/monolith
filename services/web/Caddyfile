@@ -2,25 +2,39 @@
 # https://caddyserver.com/docs/caddyfile/concepts
 # https://caddyserver.com/docs/caddyfile/directives
 
+# https://github.com/caddyserver/caddy/issues/3441#issuecomment-633158798
+:80 {
+	respond /health "HEALTHY" 200
+}
+
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
-    # Enable compression of responses
-    encode
+	basicauth {
+    	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
+	}
 
-    handle /api/* {
-        # py-api is the name of the [swarm service](https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks),
-        # we specify the port 8080, as otherwise the default https port 443 will be used.
-        reverse_proxy py-api:8080
-    }
+	encode
 
-    handle {
-        # Sets the root path of the site, where static file serving will start from
-        # /srv is the directory in the container where the static files are stored
-        # See the Dockerfile
-        root /srv
-        # As our website is a SPA, if the requested resource (e.g. thehub-aubg.com/users/123) is not found we fallback
-        # to serving the index.html. This is needed as we expect the React router to handle this for us.
-        try_files {path} /index.html
-        file_server
-    }
+	handle /api/* {
+		# py-api is the name of the swarm service, we specify the port 8080, as otherwise the default http port 80
+		# will be used.
+		# This DNS hostname gets resolved to a virtual IP (VIP) and docker-swarm takes care to distribute traffic
+		# among the replicas via the IPVS
+		# https://caddyserver.com/docs/quick-starts/reverse-proxy
+		# https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks
+		# https://docs.docker.com/engine/swarm/key-concepts/#load-balancing
+		# https://docs.docker.com/engine/swarm/networking/#configure-service-discovery
+		reverse_proxy py-api:8080
+	}
+
+	handle {
+		# Sets the root path of the site, where static file serving will start from
+		# /srv is the directory in the container where the static files are stored
+		# See the Dockerfile
+		root /srv
+		# As our website is a SPA, if the requested resource (e.g. thehub-aubg.com/users/123) is not found we fallback
+		# to serving the index.html. This is needed as we expect the React router to handle this for us.
+		try_files {path} /index.html
+		file_server
+	}
 }
