@@ -8,10 +8,16 @@
 }
 
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
-dev.thehub-aubg.com {
-	basicauth {
+dev.thehub-aubg.com, thehub-aubg.com {
+	# https://caddyserver.com/docs/caddyfile/matchers#named-matchers
+    # https://caddyserver.com/docs/caddyfile/matchers#named-matchers
+	@dev host dev.thehub-aubg.com
+
+	basicauth @dev {
     	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
 	}
+
+	# --- Common configuration for both domains ---
 
 	encode
 
