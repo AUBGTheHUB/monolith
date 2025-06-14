@@ -2,7 +2,7 @@
 # https://caddyserver.com/docs/caddyfile/concepts
 # https://caddyserver.com/docs/caddyfile/directives
 
-:443 {
+:80 {
 	respond /health "HEALTHY" 200
 }
 

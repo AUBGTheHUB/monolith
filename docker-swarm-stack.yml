@@ -85,7 +85,7 @@ services:
     # to the container, where the shell correctly expands it at runtime.
     # See https://docs.docker.com/reference/compose-file/interpolation/
     healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost/health"]
       interval: 1m
       timeout: 10s
       retries: 3
