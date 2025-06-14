@@ -69,10 +69,6 @@ services:
     # of adding or overriding specific keys later.
     deploy:
       <<: *deploy-default
-      update_config:
-        monitor: 2m
-      rollback_config:
-        monitor: 2m
 
     # When running in Swarm mode, healthchecks are used to for maintaining the desired state of the service. If a
     # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
@@ -84,15 +80,16 @@ services:
     # try to substitute $DOMAIN itself. Instead, it sends the literal '$DOMAIN'
     # to the container, where the shell correctly expands it at runtime.
     # See https://docs.docker.com/reference/compose-file/interpolation/
+    # We use HTTP localhost as we only want to check if the caddy service is up and running. If we make a request
+    # towards https://thehub-aubg.com for example, we will go through Cloudflare, which could lead to misleading results
+    # as we are not directly checking the liveness of Caddy itself.
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost/health"]
       interval: 1m
       timeout: 10s
       retries: 3
-      # Caddy should start and obtain a cert in under 10 seconds, but in case we get rate limited by LetsEncrypt or
-      # there is a transient error Caddy will start retrying. If this happens we want to have some grace period,
-      # in case the retry succeeds, before we consider the container unhealthy.
-      start_period: 2m
+      # Caddy should be up and running under 10 seconds, but this is the maximum time it should realistically take.
+      start_period: 30s
 
     volumes:
       # https://caddyserver.com/docs/running#docker-compose

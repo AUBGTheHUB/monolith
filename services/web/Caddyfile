@@ -2,15 +2,16 @@
 # https://caddyserver.com/docs/caddyfile/concepts
 # https://caddyserver.com/docs/caddyfile/directives
 
+# https://github.com/caddyserver/caddy/issues/3441#issuecomment-633158798
 :80 {
 	respond /health "HEALTHY" 200
 }
 
 # https://caddyserver.com/docs/caddyfile/patterns#single-page-apps-spas
 dev.thehub-aubg.com {
-#	basicauth {
-#    	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
-#	}
+	basicauth {
+    	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
+	}
 
 	encode
 
