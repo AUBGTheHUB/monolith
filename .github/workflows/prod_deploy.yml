@@ -293,5 +293,5 @@ jobs:
           file: docker-swarm-stack.yml
           host: ${{secrets.VPS_IP}}
           user: deploy
-          ssh_key: ${{secrets.DEV_DEPLOY_SSH_PRIVATE_KEY}}
+          ssh_key: ${{secrets.PROD_DEPLOY_SSH_PRIVATE_KEY}}
           env_file: ./envfile
