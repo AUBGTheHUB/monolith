@@ -21,7 +21,7 @@ Renewing certs is not a trivial task, especially in containerized environments n
 
 ## Python API
 For our Python API we chose [FastAPI](https://fastapi.tiangolo.com/) as currently this is the de facto standard for developing web APIs using the new [ASGI specification](https://asgi.readthedocs.io/en/latest/specs/main.html). We chose an [async model](https://fastapi.tiangolo.com/async/#asynchronous-code) as
-our application is heavy on I/O bound operations, where this model works great especially on a single thread. Yes Python is not single threaded, but creating one thread per request is an expensive operation, as the threads created by Python are not [green threads](https://en.wikipedia.org/wiki/Green_thread), and if the
+our application is heavy on I/O bound operations, where this model works great especially on a single thread. Yes Python is not single threaded, but creating one thread per I/O bound operation is an expensive procedure, as the threads created by Python are not [green threads](https://en.wikipedia.org/wiki/Green_thread), and if the
 language provides a special paradigm for I/O bound operations we might as well use it. @Isak-Bego wrote a fantastic discussion about the async model in Python, you can check it out [here](https://github.com/AUBGTheHUB/monolith/discussions/774) for more details.
 
 ## Mongo DB
