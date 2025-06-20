@@ -34,12 +34,41 @@ Once you push the changes will be automatically deployed by our [CD pipeline](ht
 
 ## Rollback
 Docker swarm manages rollbacks for us in case a deployed service fails its health check. It will rollback the service one version behind (to the previously deployed version).
+The automatic rollback due to a failing healthcheck has been tested, and the total rollback time for the two Python API replicas with the current settings in docker swarm is around 5 minutes.
+As we have a `start-first` update policy, no downtime will occur during a successful rollback. The new version of a service is available/visible once the old container has been terminated and the
+"current state" of the service is "Running".
 
-In case you find a bug that does not cause the healthcheck to fail, and you want to rollback you can execute on the given VM:
+You could also check the `UpdateStatus` of service using:
+
+```bash
+docker service inspect <service_name>
+```
+Example of successfully update:
+```json
+"UpdateStatus": {
+    "State": "completed",
+    "StartedAt": "2025-06-20T22:52:15.497673121Z",
+    "CompletedAt": "2025-06-20T22:54:10.445441567Z",
+    "Message": "update completed"
+}
+```
+Example of successful rollback:
+```json
+"UpdateStatus": {
+    "State": "rollback_completed",
+    "StartedAt": "2025-06-20T22:39:38.845008959Z",
+    "CompletedAt": "2025-06-20T22:45:38.766719642Z",
+    "Message": "rollback completed"
+}
+```
+`StartedAt` indicates when the deployment has started.
+
+In case you find a bug that does not cause the healthcheck to fail, and you want to rollback you can execute this on the given VM:
 ```bash
 docker service rollback <service_name>
 ```
-Note: This could be made as a separate workflow where you just pass the commits of the services as inputs and the the job will rollback this for you. In this way you minimize SSH-ing into the machine.
+
+Note: This could be made as a separate workflow where you just pass the commits of the services as inputs and the job will rollback this for you. In this way you minimize SSH-ing into the machine.
 
 ## Manifest based deployment
 **IMPORTANT!!!** This procedure is experimental and has not been thoroughly tested. **DO NOT USE** this on PROD. It needs further testing and improvements!
