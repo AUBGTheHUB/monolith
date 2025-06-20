@@ -52,25 +52,11 @@ As this class is written with Dependency Injection in mind we could use a Mock o
 
 
 1. First we crete the mock. It could be a `pytest fixture` placed inside the `conftest.py` in order for it to be reused
-across tests. Here we create a Mock specified to the `HackathonService`, and we use `AsyncMock` to replace the actual versions of its `async` methods with fake ones.
+across tests. Here we create a Mock specified to the `ParticipantsRepository`, and we use `AsyncMock` to replace the actual versions of its `async` methods with fake ones.
 This is done firstly to isolate behaviour of a method when testing it, secondly in this case the methods of this class make real DB connections which we don't want to happen during unit testing. (Real connections are made in integration tests).
 And lastly we could control the behaviour of these methods during testing, to adhere to our particular needs.
 
-```python
-@pytest.fixture
-def hackathon_service_mock() -> Mock:
-    hackathon_service = Mock(spec=HackathonService)
-
-    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
-    hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
-
-    return hackathon_service
-```
-
-2. Now we write a test case for a given behaviour:
-
-Here we assume the creation of `ParticipantRegistrationService` would happen often, that's why we create a fixture.
-`mock_input_data` is a fixture located in `conftest.py`
+Note: You could use the already existing mocks in the `conftest.py` or create your own in case you need to, following the pattern below:
 
 ```python
 class ParticipantRepoMock(Protocol):
@@ -119,6 +105,31 @@ def participant_repo_mock() -> ParticipantRepoMock:
     participant_repo.get_verified_random_participants_count = AsyncMock()
     participant_repo.get_verified_random_participants = AsyncMock()
     return cast(ParticipantRepoMock, participant_repo)
+```
+
+2. Now we write a test case for a given behaviour:
+
+Here we assume the creation of `HackathonService` would happen often, that's why we create a fixture.
+`participant_repo_mock`, `team_repo_mock`, `feature_switch_repo_mock`, `tx_manager_mock`, `hackathon_mail_service_mock`, and `jwt_utility_mock` are fixtures located in the `conftest.py`
+
+```python
+@pytest.fixture
+def hackathon_service(
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
+    feature_switch_repo_mock: FeatureSwitchRepoMock,
+    tx_manager_mock: MongoTransactionManagerMock,
+    hackathon_mail_service_mock: HackathonMailServiceMock,
+    jwt_utility_mock: JwtUtility,
+) -> HackathonService:
+    return HackathonService(
+        cast(ParticipantsRepository, participant_repo_mock),
+        cast(TeamsRepository, team_repo_mock),
+        cast(FeatureSwitchRepository, feature_switch_repo_mock),
+        cast(MongoTransactionManager, tx_manager_mock),
+        cast(HackathonMailService, hackathon_mail_service_mock),
+        jwt_utility_mock,
+    )
 
 @pytest.mark.asyncio
 async def test_create_random_participant(
