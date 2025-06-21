@@ -29,8 +29,10 @@ ENV VITE_ENV=${VITE_ENV}
 RUN npm run build
 
 # Bundle static assets with caddy
-# TODO: Figure out how to use non-root user in container as per: https://docs.docker.com/build/building/best-practices/#user
 FROM caddy:2.10-alpine AS runtime
+
+# Install curl
+RUN apk add --no-cache curl
 
 # The build args are passed in the CD pipeline.
 ARG DOMAIN
@@ -50,8 +52,3 @@ COPY --from=build-stage /app/dist /srv
 # This is the default location that the caddy Dockerfile uses to run server from the resulting image
 # https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
 COPY Caddyfile /etc/caddy/Caddyfile
-
-# Inform Docker that the container listens on the specified network ports at runtime.
-# This acts as documentation for the consumer of the image which ports are intended to be published.
-# https://docs.docker.com/reference/dockerfile/#expose
-EXPOSE 80 443
