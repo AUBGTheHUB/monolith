@@ -1,6 +1,6 @@
 # Inspiration: https://medium.com/@albertazzir/blazing-fast-python-docker-builds-with-poetry-a78a66f5aed0
 
-FROM python:3.12-bookworm AS build-stage
+FROM python:3.12.9-bookworm AS build-stage
 
 RUN pip install poetry==2.1.1
 
@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=$POETRY_CACHE_DIR \
     poetry install --without dev --no-root
 
 # The image, used to just run the code provided its virtual environment. We use the slim version, to keep the image
-FROM python:3.12-slim-bookworm AS runtime
+FROM python:3.12.9-slim-bookworm AS runtime
 
 # Insatll curl to perform healtchecks. We use --no-install-recommends and removing the list of packages to make the
 # final image size smaller
@@ -45,25 +45,11 @@ COPY --from=build-stage ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 # Any subsecuent commmands like COPY and RUN that use relative path will use /app as the base directory
 WORKDIR /app
 
-# Create a non-privileged user that the app will run under.
-# See https://docs.docker.com/go/dockerfile-user-best-practices/
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "10001" \
-    appuser
-
-# Switch to the non-privileged user to run the application.
-USER appuser
-
 COPY src ./src
-# Give appuser ownership to the log files, so that we can write to them
-COPY --chown=appuser:appuser shared ./shared
+COPY shared ./shared
 
 # Inform Docker that the container listens on the specified network ports at runtime.
+# This acts as documentation for the consumer of the image which ports are intended to be published.
 # https://docs.docker.com/reference/dockerfile/#expose
 EXPOSE 8080
 
@@ -76,7 +62,7 @@ ENV ENV=${ENV}
 ENV DOMAIN=${DOMAIN}
 
 # These stay constant for deployed environments
-ENV ADDRESS=0.0.0.0
+ENV HOST=0.0.0.0
 ENV PORT=8080
 
 # Keeps Python from buffering stdout and stderr to avoid situations where the application crashes without emitting any

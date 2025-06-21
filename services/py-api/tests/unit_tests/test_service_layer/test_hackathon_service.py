@@ -617,7 +617,7 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
     assert isinstance(result.ok_value[0], Participant)
-    assert result.ok_value[1] == None
+    assert result.ok_value[1] is None
     assert result.ok_value[0].name == TEST_USER_NAME
 
 
@@ -659,8 +659,6 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
     assert isinstance(result.err_value, ParticipantNotFoundError)
 
 
-# As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_success(
     hackathon_service: HackathonService,
@@ -675,18 +673,18 @@ async def test_send_verification_email_success(
     # And no err from repo
     participant_repo_mock.update.return_value = Ok(admin_participant_mock)
 
-    # When
-    err = await hackathon_service.send_verification_email(
-        participant=admin_participant_mock, background_tasks=background_tasks_mock
-    )
+    # As we don't send emails for testing env due to integration tests we have to patch this
+    with patch("src.environment.ENV", return_value="DEV"):
+        # When
+        result = await hackathon_service.send_verification_email(
+            participant=admin_participant_mock, background_tasks=background_tasks_mock
+        )
 
-    # Then
-    # Assert no err while sending the email from hackathon service
-    assert err is None
+        # Then
+        assert isinstance(result, Ok)
+        assert isinstance(result.ok_value, Participant)
 
 
-# As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_err_validation_err_body_generation(
     hackathon_service: HackathonService,
@@ -701,20 +699,19 @@ async def test_send_verification_email_err_validation_err_body_generation(
     # And no err from repo
     participant_repo_mock.update.return_value = Ok(admin_participant_mock)
 
-    # When
+    # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
+        # When
         err = await hackathon_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
-    # Then
-    # Assert err value returned while sending the email from hackathon service
-    assert isinstance(err, Err)
-    assert isinstance(err.err_value, ValueError)
+        # Then
+        # Assert err value returned while sending the email from hackathon service
+        assert isinstance(err, Err)
+        assert isinstance(err.err_value, ValueError)
 
 
-# As we don't send emails for testing env due to integration tests we have to patch this
-@patch.dict("os.environ", {"ENV": "DEV", "SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_send_verification_email_err_participant_deleted_before_verifying_email(
     hackathon_service: HackathonService,
@@ -728,13 +725,14 @@ async def test_send_verification_email_err_participant_deleted_before_verifying_
     hackathon_mail_service_mock.send_participant_verification_email.return_value = None
     participant_repo_mock.update.return_value = Err(ParticipantNotFoundError())
 
+    # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
         err = await hackathon_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
-    # Then
-    # Assert err value returned while sending the email from hackathon service
-    assert isinstance(err, Err)
-    assert isinstance(err.err_value, ParticipantNotFoundError)
+        # Then
+        # Assert err value returned while sending the email from hackathon service
+        assert isinstance(err, Err)
+        assert isinstance(err.err_value, ParticipantNotFoundError)

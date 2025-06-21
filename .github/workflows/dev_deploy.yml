@@ -109,7 +109,6 @@ jobs:
 
     environment:
       name: DEV
-      url: https://${{vars.DOMAIN}}
 
     steps:
       - name: Checkout repository
