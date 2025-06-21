@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.12.6" ]
+        python-version: [ "3.12.9" ]
 
     env:
-      ENV: ${{secrets.ENV}}
-      PORT: ${{secrets.PORT}}
-      ADDRESS: ${{secrets.ADDRESS}}
-      DOMAIN: ${{secrets.DOMAIN}}
+      ENV: "TEST"
+      HOST: "localhost"
+      PORT: "8080"
+      DOMAIN: "test-domain"
       DATABASE_URL: ${{secrets.DATABASE_URL}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
 

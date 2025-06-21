@@ -35,7 +35,6 @@ def verification_handlers(
     )
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_success(
     participant_verification_service_mock: Mock,
@@ -121,7 +120,6 @@ async def test_verify_participant_admin_case_team_not_found_error(
     assert resp.response_model.error == "The specified team was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_hackation_capacity_reached_error(
     participant_verification_service_mock: Mock,
@@ -146,7 +144,6 @@ async def test_verify_participant_admin_case_hackation_capacity_reached_error(
     assert resp.response_model.error == "Max hackathon capacity has been reached"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_general_error(
     participant_verification_service_mock: Mock,
@@ -171,7 +168,6 @@ async def test_verify_participant_admin_case_general_error(
     assert resp.response_model.error == "An unexpected error occurred"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_case_success(
     verification_handlers: VerificationHandlers,
@@ -216,7 +212,6 @@ async def test_verify_random_participant_case_success(
     assert resp.status_code == status.HTTP_200_OK
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_random_participant_decode_error(
     verification_handlers: VerificationHandlers,
@@ -271,7 +266,6 @@ async def test_verify_random_participant_not_found(
     assert resp.response_model.error == "The specified participant was not found"
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_verify_random_hackathon_capacity_reached(
     verification_handlers: VerificationHandlers,
