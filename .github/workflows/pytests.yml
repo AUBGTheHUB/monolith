@@ -20,9 +20,10 @@ jobs:
         python-version: [ "3.12.9" ]
 
     env:
-      ENV: ${{vars.ENV}}
-      HOST: ${{vars.HOST}}
-      PORT: ${{vars.PORT}}
+      ENV: "TEST"
+      HOST: "localhost"
+      PORT: "8080"
+      DOMAIN: "test-domain"
       DATABASE_URL: ${{secrets.DATABASE_URL}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
 
