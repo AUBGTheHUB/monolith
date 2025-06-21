@@ -9,6 +9,7 @@ ENV = environ["ENV"]
 ADDRESS = environ["ADDRESS"]
 DOMAIN = environ["DOMAIN"]
 PORT = int(environ["PORT"])
+DATABASE_URL = environ["DATABASE_URL"]
 
 
 def _read_docker_secret(secret_path: str) -> str | None:

@@ -617,7 +617,7 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
     assert isinstance(result.ok_value[0], Participant)
-    assert result.ok_value[1] == None
+    assert result.ok_value[1] is None
     assert result.ok_value[0].name == TEST_USER_NAME
 
 
@@ -676,13 +676,13 @@ async def test_send_verification_email_success(
     participant_repo_mock.update.return_value = Ok(admin_participant_mock)
 
     # When
-    err = await hackathon_service.send_verification_email(
+    result = await hackathon_service.send_verification_email(
         participant=admin_participant_mock, background_tasks=background_tasks_mock
     )
 
     # Then
-    # Assert no err while sending the email from hackathon service
-    assert err is None
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, Participant)
 
 
 # As we don't send emails for testing env due to integration tests we have to patch this
@@ -702,10 +702,10 @@ async def test_send_verification_email_err_validation_err_body_generation(
     participant_repo_mock.update.return_value = Ok(admin_participant_mock)
 
     # When
-    with patch("src.environment.ENV", return_value="DEV"):
-        err = await hackathon_service.send_verification_email(
-            participant=admin_participant_mock, background_tasks=background_tasks_mock
-        )
+    # with patch("src.environment.ENV", return_value="DEV"):
+    err = await hackathon_service.send_verification_email(
+        participant=admin_participant_mock, background_tasks=background_tasks_mock
+    )
 
     # Then
     # Assert err value returned while sending the email from hackathon service

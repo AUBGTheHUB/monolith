@@ -4,7 +4,6 @@ from os import cpu_count
 from structlog.stdlib import get_logger
 from uvicorn import run
 
-from src.database.mongo.db_manager import ping_db
 from src.environment import DOMAIN, PORT, ADDRESS, ENV
 from src.logger.logger_factory import get_uvicorn_logger
 from src.utils import singleton
@@ -44,10 +43,6 @@ def _load_server_config() -> "_ServerConfig":
 def start_server() -> None:
     """Starts the Uvicorn server with different config based on the environment we are in"""
     server_config = _load_server_config()
-
-    err = ping_db()
-    if err:
-        raise RuntimeError(err.err_value)
 
     if server_config.ENV == "LOCAL":
         LOG.debug("To open swagger/docs of the API visit: https://localhost:8080/api/v3/docs")
