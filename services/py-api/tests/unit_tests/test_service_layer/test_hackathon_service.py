@@ -702,7 +702,6 @@ async def test_send_verification_email_err_validation_err_body_generation(
     participant_repo_mock.update.return_value = Ok(admin_participant_mock)
 
     # When
-    # with patch("src.environment.ENV", return_value="DEV"):
     err = await hackathon_service.send_verification_email(
         participant=admin_participant_mock, background_tasks=background_tasks_mock
     )
