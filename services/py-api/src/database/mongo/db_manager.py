@@ -1,14 +1,13 @@
-from os import environ
-
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
-from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from result import Err
 from structlog.stdlib import get_logger
 
+from src.environment import ENV
+
 LOG = get_logger()
 
-_DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[environ["ENV"]]
+DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[ENV]
 
 PARTICIPANTS_COLLECTION = "participants"
 TEAMS_COLLECTION = "teams"
@@ -36,7 +35,7 @@ class MongoDatabaseManager:
     async def async_ping_db(self) -> Err[ConnectionFailure | OperationFailure | ConfigurationError] | None:
         try:
             LOG.debug("Pinging MongoDB...")
-            await self._client.get_database(name=_DB_NAME).command("ping")
+            await self._client.get_database(name=DB_NAME).command("ping")
             LOG.debug("Pong")
 
             return None
@@ -52,28 +51,4 @@ class MongoDatabaseManager:
     def get_collection(self, collection_name: str) -> AsyncIOMotorCollection:
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-database
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
-        return self._client.get_database(name=_DB_NAME).get_collection(name=collection_name)
-
-
-def ping_db() -> Err[ConnectionFailure | OperationFailure | ConfigurationError] | None:
-    """This method is used only on application startup. It is different from the async_ping_db defined in the
-    DatabaseManager as it uses the synchronous MongoClient. We need this method because if we used the async_ping_db we
-    had to await it. The await keyword is used only is async ctx and the start() method should not and cannot be async,
-    as we are using it as a poetry script."""
-    mongo_client = MongoClient(host=environ["DATABASE_URL"])
-    try:
-        LOG.debug("Pinging MongoDB...")
-        mongo_client.get_database(name=_DB_NAME).command("ping")
-        LOG.debug("Pong")
-
-        return None
-    except ConnectionFailure as cf:
-        LOG.exception("Pinging db failed due to err", error=cf)
-        return Err(cf)
-
-    except (OperationFailure, ConfigurationError) as err:
-        LOG.exception("Pinging db failed due to err", error=err)
-        return Err(err)
-
-    finally:
-        mongo_client.close()
+        return self._client.get_database(name=DB_NAME).get_collection(name=collection_name)

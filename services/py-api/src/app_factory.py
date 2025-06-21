@@ -2,6 +2,9 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 from fastapi import FastAPI
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
 from src.database.mongo.db_manager import (
@@ -9,6 +12,7 @@ from src.database.mongo.db_manager import (
     PARTICIPANTS_COLLECTION,
     TEAMS_COLLECTION,
     FEATURE_SWITCH_COLLECTION,
+    DB_NAME,
 )
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -30,6 +34,34 @@ from src.service.hackathon.participants_verification_service import ParticipantV
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
+LOG = get_logger()
+
+
+def _ping_db(mongo_client: AsyncIOMotorClient) -> None:
+    """
+    This method is used only on application startup.
+    Raises:
+        ConnectionFailure
+        OperationFailure
+        ConfigurationError
+    """
+
+    try:
+        LOG.debug("Pinging MongoDB...")
+        mongo_client.get_database(name=DB_NAME).command("ping")
+
+    except ConnectionFailure as cf:
+        LOG.exception("Pinging db failed due to err", error=cf)
+        raise cf
+
+    except (OperationFailure, ConfigurationError) as err:
+        LOG.exception("Pinging db failed due to err", error=err)
+        raise err
+    else:
+        LOG.debug("Pong")
+
+    return None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -44,6 +76,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
+    _ping_db(db_client)
 
     # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
     # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator

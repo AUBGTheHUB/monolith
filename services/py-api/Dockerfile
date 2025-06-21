@@ -62,7 +62,7 @@ ENV ENV=${ENV}
 ENV DOMAIN=${DOMAIN}
 
 # These stay constant for deployed environments
-ENV ADDRESS=0.0.0.0
+ENV HOST=0.0.0.0
 ENV PORT=8080
 
 # Keeps Python from buffering stdout and stderr to avoid situations where the application crashes without emitting any

@@ -1,5 +1,5 @@
 from typing import cast
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock
 from unittest.mock import Mock
 
 import pytest
@@ -449,7 +449,6 @@ async def test_register_random_participant_order_of_operations(
     assert isinstance(result.err_value, HackathonCapacityExceededError)
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_register_link_participant_success(
     p_reg_service: ParticipantRegistrationService,
@@ -498,7 +497,6 @@ async def test_register_link_participant_success(
     assert result.ok_value[0].team_id == result.ok_value[1].id
 
 
-@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})
 @pytest.mark.asyncio
 async def test_register_link_participant_capacity_exceeded(
     p_reg_service: ParticipantRegistrationService,
