@@ -6,7 +6,7 @@ load_dotenv(override=True)
 
 # These are loaded when the container is built (when in deployed env) or are loaded via the .env when locally
 ENV = environ["ENV"]
-ADDRESS = environ["ADDRESS"]
+HOST = environ["HOST"]
 DOMAIN = environ["DOMAIN"]
 PORT = int(environ["PORT"])
 DATABASE_URL = environ["DATABASE_URL"]

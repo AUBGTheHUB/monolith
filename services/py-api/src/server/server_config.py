@@ -4,7 +4,7 @@ from os import cpu_count
 from structlog.stdlib import get_logger
 from uvicorn import run
 
-from src.environment import DOMAIN, PORT, ADDRESS, ENV
+from src.environment import DOMAIN, PORT, HOST, ENV
 from src.logger.logger_factory import get_uvicorn_logger
 from src.utils import singleton
 
@@ -30,7 +30,7 @@ def _get_ssl_config() -> tuple[None, None] | tuple[str, str]:
 @dataclass
 class _ServerConfig:
     ENV = ENV
-    ADDRESS = ADDRESS
+    HOST = HOST
     SSL_CERT, SSL_KEY = _get_ssl_config()
 
 
@@ -49,7 +49,7 @@ def start_server() -> None:
 
     run(
         app="src.app_entrypoint:app",
-        host=server_config.ADDRESS,
+        host=server_config.HOST,
         port=PORT,
         reload=server_config.ENV == "LOCAL",
         log_config=get_uvicorn_logger(server_config.ENV),

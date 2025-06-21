@@ -20,10 +20,9 @@ jobs:
         python-version: [ "3.12.9" ]
 
     env:
-      ENV: ${{secrets.ENV}}
-      PORT: ${{secrets.PORT}}
-      ADDRESS: ${{secrets.ADDRESS}}
-      DOMAIN: ${{secrets.DOMAIN}}
+      ENV: ${{vars.ENV}}
+      HOST: ${{vars.HOST}}
+      PORT: ${{vars.PORT}}
       DATABASE_URL: ${{secrets.DATABASE_URL}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
 
