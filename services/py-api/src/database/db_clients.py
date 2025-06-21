@@ -1,10 +1,10 @@
 """Here we store clients for different databases. It's recommended that these clients are Singletons."""
 
 from math import ceil
+from os import environ
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from src.environment import DATABASE_URL
 from src.utils import singleton
 
 
@@ -32,5 +32,9 @@ def mongo_db_client_provider() -> AsyncIOMotorClient:
     # https://medium.com/@dhanushkasampath.mtr/what-are-the-default-values-for-hikari-connection-pool-if-we-do-not-override-in-application-properti-11932cdbe321
     # https://www.mongodb.com/docs/languages/python/pymongo-driver/current/faq/#how-does-connection-pooling-work-in-pymongo-
     return AsyncIOMotorClient(
-        host=DATABASE_URL, connect=True, minPoolSize=ceil(0.1 * 25), maxConnecting=25, maxIdleTimeMS=5 * 60 * 1000
+        host=environ["DATABASE_URL"],
+        connect=True,
+        minPoolSize=ceil(0.1 * 25),
+        maxConnecting=25,
+        maxIdleTimeMS=5 * 60 * 1000,
     )
