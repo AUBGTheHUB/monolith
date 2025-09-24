@@ -6,7 +6,7 @@
 * Get familiar with [GitHub Actions](https://docs.github.com/en/actions).
 
 ## Deploying to DEV
-Every PR merged to `main` is automatically deployed by our [CD pipeline](https://github.com/AUBGTheHUB/monolith/blob/main/.github/workflows/dev_deploy.yml)
+Every PR merged to `main` is automatically deployed by our [CD pipeline](https://github.com/AUBGTheHUB/monolith/blob/main/.github/workflows/dev_deploy.yml). You could also manually deploy branches using the [GH Action](https://github.com/AUBGTheHUB/monolith/actions/workflows/dev_deploy.yml). While it is possible to do so, we only recommend doing so, when testing changes to the [Docker Swarm config file](https://github.com/AUBGTheHUB/monolith/blob/main/docker-swarm-stack.yml) or the CD pipeline itself.
 
 ## Deployment to PROD
 1. Make the `production` branch track the latest `main`. Do **NOT** add commits/merge PRs into `production`, in order to keep the branch clean.
@@ -31,6 +31,9 @@ Once you push the changes will be automatically deployed by our [CD pipeline](ht
 6. Publish the Release when you are ready:
 
 ![img.png](../images/publish_release.png)
+
+### Note:
+Manual deployment of the latest commit on `production` is possible via the [GH Action](https://github.com/AUBGTheHUB/monolith/actions/workflows/prod_deploy.yml), though it requires approval from at least one Tech Lead. Deploying branches other than `production` is restricted.
 
 ## Rollback
 Docker swarm manages rollbacks for us in case a deployed service fails its health check. It will rollback the service one version behind (to the previously deployed version).
@@ -78,4 +81,4 @@ In case you want to deploy a specific version of a given service you should:
 3. Check if the correct version has been deployed on DEV
 4. When you finish set the versions back to `latest`
 
-**IMPORTANT!!!** `latest` means the latest published version in the artifactory registry, so please check which in the last commit deployed commit on `main`.
+**IMPORTANT!!!** `latest` means the latest published version in the artifactory registry, so please check which is the last commit deployed on `main`.
