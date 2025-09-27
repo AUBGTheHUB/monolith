@@ -56,7 +56,7 @@ jobs:
           cat ./envfile
 
       # Deploy using the versions specified in the envfile
-      - name: Docker Stack Deploy to STAGING
+      - name: Docker Stack Deploy to DEV
         uses: cssnr/stack-deploy-action@v1
         with:
           name: monolith
