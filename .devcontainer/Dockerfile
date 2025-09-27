@@ -39,8 +39,8 @@ RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc
 RUN source ~/.bashrc
 
 # Install python and set the version globally
-RUN pyenv install 3.12.6
-RUN pyenv global 3.12.6
+RUN pyenv install 3.12.9
+RUN pyenv global 3.12.9
 
 # Install pipx and poetry
 RUN apt install -y pipx
