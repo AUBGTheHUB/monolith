@@ -37,6 +37,89 @@ def test_json_formatter_basic():
     assert log_data["message"] == "Test message"
 
 
+def test_json_formatter_uvicorn_access_log():
+    """Test that uvicorn.access logs are parsed into detailed reqPayload structure"""
+    formatter = _JSONFormatter()
+
+    # Create a mock uvicorn access log record
+    record = LogRecord(
+        name="uvicorn.access",
+        level=20,  # INFO level
+        pathname="/path/to/uvicorn.py",
+        lineno=100,
+        msg='127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200',
+        args=(),
+        exc_info=None,
+    )
+
+    # Format the record
+    result = formatter.format(record)
+
+    # Parse the JSON to verify it's valid
+    log_data = json.loads(result)
+
+    # Verify base fields
+    assert "timestamp" in log_data
+    assert "level" in log_data
+    assert log_data["level"] == "INFO"
+    assert "logger" in log_data
+    assert log_data["logger"] == "uvicorn.access"
+
+    # Verify reqPayload structure
+    assert "reqPayload" in log_data
+    req_payload = log_data["reqPayload"]
+
+    assert req_payload["ip"] == "127.0.0.1"
+    assert req_payload["method"] == "GET"
+    assert req_payload["resource"] == "/api/v3/ping"
+    assert req_payload["httpVersion"] == "HTTP/1.1"
+    assert req_payload["status"] == 200
+
+
+def test_json_formatter_uvicorn_access_log_with_custom_fields():
+    """Test that uvicorn.access logs include custom fields when available"""
+    formatter = _JSONFormatter()
+
+    # Create a mock uvicorn access log record with custom attributes
+    record = LogRecord(
+        name="uvicorn.access",
+        level=20,  # INFO level
+        pathname="/path/to/uvicorn.py",
+        lineno=100,
+        msg='104.23.160.2:52176 - "GET /api/v3/ping HTTP/1.1" 200',
+        args=(),
+        exc_info=None,
+    )
+
+    # Add custom attributes that might be added by middleware
+    record.startTime = "2025-10-02T10:36:08.769100Z"
+    record.endTime = "2025-10-02T10:36:08.850535Z"
+    record.latency = "0.081435s"
+    record.host = "thehub-aubg.com"
+    record.traceId = "7daae9306acb60d81ae73c79864932df"
+
+    # Format the record
+    result = formatter.format(record)
+
+    # Parse the JSON
+    log_data = json.loads(result)
+
+    # Verify reqPayload includes custom fields
+    assert "reqPayload" in log_data
+    req_payload = log_data["reqPayload"]
+
+    assert req_payload["ip"] == "104.23.160.2"
+    assert req_payload["method"] == "GET"
+    assert req_payload["resource"] == "/api/v3/ping"
+    assert req_payload["httpVersion"] == "HTTP/1.1"
+    assert req_payload["status"] == 200
+    assert req_payload["startTime"] == "2025-10-02T10:36:08.769100Z"
+    assert req_payload["endTime"] == "2025-10-02T10:36:08.850535Z"
+    assert req_payload["latency"] == "0.081435s"
+    assert req_payload["host"] == "thehub-aubg.com"
+    assert req_payload["traceId"] == "7daae9306acb60d81ae73c79864932df"
+
+
 def test_json_formatter_with_exception():
     """Test that the JSON formatter includes exception info when present"""
     formatter = _JSONFormatter()

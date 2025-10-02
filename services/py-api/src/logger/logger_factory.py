@@ -1,9 +1,11 @@
 import json
+import re
+from datetime import datetime
 from logging import INFO, Formatter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from structlog import configure, make_filtering_bound_logger, PrintLoggerFactory, WriteLoggerFactory
 from structlog.contextvars import merge_contextvars
@@ -25,15 +27,113 @@ from uvicorn.config import LOGGING_CONFIG
 class _JSONFormatter(Formatter):
     """Custom JSON formatter for Python's standard logging module.
     This is used for Uvicorn logs to output in JSON format for DEV and PROD environments.
+
+    For uvicorn.access logs, the formatter parses the log message and creates a structured reqPayload.
+
+    Basic fields extracted from the log message:
+    - ip: Client IP address
+    - method: HTTP method (GET, POST, etc.)
+    - resource: Request path
+    - httpVersion: HTTP version (HTTP/1.1, etc.)
+    - status: HTTP status code
+    - responseSize: Response size in bytes (if available)
+
+    Additional fields can be added to the log record by middleware:
+    - startTime: Request start time (ISO format)
+    - endTime: Request end time (ISO format)
+    - latency: Request processing time
+    - host: Host header value
+    - traceId: Trace ID for request tracking
+
+    Example output:
+    {
+      "timestamp": "2025-10-02T10:36:08.769100Z",
+      "level": "INFO",
+      "logger": "uvicorn.access",
+      "reqPayload": {
+        "ip": "104.23.160.2",
+        "method": "GET",
+        "resource": "/api/v3/ping",
+        "httpVersion": "HTTP/1.1",
+        "status": 200,
+        "responseSize": "559",
+        "startTime": "2025-10-02T10:36:08.769100Z",
+        "endTime": "2025-10-02T10:36:08.850535Z",
+        "latency": "0.081435s",
+        "host": "thehub-aubg.com",
+        "traceId": "7daae9306acb60d81ae73c79864932df"
+      }
+    }
     """
 
+    # Regex pattern to parse Uvicorn access logs
+    # Example: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    ACCESS_LOG_PATTERN = re.compile(
+        r'^(?P<ip>[\d\.:a-fA-F]+):(?P<port>\d+) - "(?P<method>\w+) (?P<path>[^\s]+) (?P<http_version>HTTP/[\d\.]+)" (?P<status>\d+)(?:\s+(?P<response_size>\d+))?'
+    )
+
+    def _parse_access_log(self, message: str) -> Optional[Dict[str, Any]]:
+        """Parse Uvicorn access log message and extract structured fields."""
+        match = self.ACCESS_LOG_PATTERN.match(message)
+        if match:
+            data = match.groupdict()
+            return {
+                "ip": data["ip"],
+                "method": data["method"],
+                "resource": data["path"],
+                "httpVersion": data["http_version"],
+                "status": int(data["status"]),
+                "responseSize": data.get("response_size"),
+            }
+        return None
+
     def format(self, record: LogRecord) -> str:
-        log_data = {
-            "timestamp": self.formatTime(record, "%Y-%m-%d %H:%M:%S"),
+        message = record.getMessage()
+        timestamp = datetime.fromtimestamp(record.created).isoformat() + "Z"
+
+        # Base log structure
+        log_data: Dict[str, Any] = {
+            "timestamp": timestamp,
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
         }
+
+        # For uvicorn.access logs, parse and structure the request payload
+        if record.name == "uvicorn.access":
+            parsed = self._parse_access_log(message)
+            if parsed:
+                # Build detailed request payload
+                req_payload = {
+                    "ip": parsed["ip"],
+                    "method": parsed["method"],
+                    "resource": parsed["resource"],
+                    "httpVersion": parsed["httpVersion"],
+                    "status": parsed["status"],
+                }
+
+                # Add optional fields if available
+                if parsed.get("responseSize"):
+                    req_payload["responseSize"] = parsed["responseSize"]
+
+                # Try to extract additional fields from the log record attributes
+                if hasattr(record, "startTime"):
+                    req_payload["startTime"] = record.startTime
+                if hasattr(record, "endTime"):
+                    req_payload["endTime"] = record.endTime
+                if hasattr(record, "latency"):
+                    req_payload["latency"] = record.latency
+                if hasattr(record, "host"):
+                    req_payload["host"] = record.host
+                if hasattr(record, "traceId"):
+                    req_payload["traceId"] = record.traceId
+
+                log_data["reqPayload"] = req_payload
+            else:
+                # Fallback to original message if parsing fails
+                log_data["message"] = message
+        else:
+            # For non-access logs, just include the message
+            log_data["message"] = message
 
         # Add exception info if present
         if record.exc_info:
