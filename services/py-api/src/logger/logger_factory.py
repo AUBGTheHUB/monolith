@@ -1,8 +1,9 @@
-from logging import INFO
+from logging import INFO, Formatter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
 from typing import Dict, Any
+import json
 
 from structlog import configure, make_filtering_bound_logger, PrintLoggerFactory, WriteLoggerFactory
 from structlog.contextvars import merge_contextvars
@@ -19,6 +20,26 @@ from structlog.processors import (
 from structlog.stdlib import PositionalArgumentsFormatter
 from structlog.typing import EventDict, WrappedLogger
 from uvicorn.config import LOGGING_CONFIG
+
+
+class _JSONFormatter(Formatter):
+    """Custom JSON formatter for Python's standard logging module.
+    This is used for Uvicorn logs to output in JSON format for DEV and PROD environments.
+    """
+
+    def format(self, record: LogRecord) -> str:
+        log_data = {
+            "timestamp": self.formatTime(record, "%Y-%m-%d %H:%M:%S"),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+
+        # Add exception info if present
+        if record.exc_info:
+            log_data["exc_info"] = self.formatException(record.exc_info)
+
+        return json.dumps(log_data)
 
 
 class _CustomConsoleRenderer(ConsoleRenderer):
@@ -97,9 +118,8 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     prod_logging_config: Dict[str, Any] = {
         "version": 1,
         "formatters": {
-            "logformatter": {
-                "format": "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s",
-                "datefmt": "%Y-%m-%d %H:%M:%S",
+            "json_formatter": {
+                "()": "src.logger.logger_factory._JSONFormatter",
             },
         },
         "handlers": {
@@ -107,7 +127,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
                 "class": "src.logger.logger_factory._CustomRotatingFileHandler",
                 "level": "INFO",
                 "filename": "shared/server.log",
-                "formatter": "logformatter",
+                "formatter": "json_formatter",
                 "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
                 "backupCount": 2,  # 2 backup files
             },
@@ -121,8 +141,8 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    # We save the incoming requests logs to a file like this:
-    # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    # We save the incoming requests logs to a file in JSON format for DEV and PROD environments
+    # Example: {"timestamp": "2024-10-16 14:07:11", "level": "INFO", "logger": "uvicorn.access", "message": "127.0.0.1:52176 - \"GET /api/v3/ping HTTP/1.1\" 200"}
     if env in ("DEV", "PROD"):
         return prod_logging_config
 
