@@ -1,9 +1,9 @@
+import json
 from logging import INFO, Formatter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
 from typing import Dict, Any
-import json
 
 from structlog import configure, make_filtering_bound_logger, PrintLoggerFactory, WriteLoggerFactory
 from structlog.contextvars import merge_contextvars
