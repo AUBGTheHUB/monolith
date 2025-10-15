@@ -15,4 +15,4 @@ cd ./services/py-api/
 poetry install
 
 #git configuration:
-git config --global --add safe.directory /IdeaProjects/monolith
+git config --global --add safe.directory /workspaces
