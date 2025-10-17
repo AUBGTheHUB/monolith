@@ -13,3 +13,5 @@ make install-web
 # Installs the backend dependencies
 cd ./services/py-api/
 poetry install
+
+git config --global --add safe.directory /workspaces/monolith/
