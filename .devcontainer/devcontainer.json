@@ -34,4 +34,6 @@
       ]
     }
   },
-  "remoteUser": "vscode"}
+  "remoteUser": "root",
+  workspaceFolder: "/workspaces/monolith"
+}
