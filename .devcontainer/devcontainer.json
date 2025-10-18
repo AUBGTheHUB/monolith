@@ -19,8 +19,12 @@
   "customizations": {
     "jetbrains": {
       "settings": {
-        "com.intellij:app:HttpConfigurable.use_proxy_pac": true
-      }
+        "com.intellij:app:HttpConfigurable.use_proxy_pac": true,
+      },
+      "plugins": [
+        "React",
+        "Visual Studio Keymap"
+      ]
     },
     "vscode": {
       "extensions": [

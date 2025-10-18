@@ -62,7 +62,7 @@ After running the above commands. Close PowerShell.
 
 ---
 
-### 1. Add your SSH key to the ssh-agent and GitHub
+## 1. Add your SSH key to the ssh-agent and GitHub
 
 Here is the guide:
 
@@ -70,13 +70,13 @@ Here is the guide:
 
 - [Add key to Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
-### 2. Clone the repository to your machine
+## 2. Clone the repository to your machine
 
 ```bash
 git clone git@github.com:AUBGTheHUB/monolith.git
 ```
 
-### 3. Navigate to the project directory
+## 3. Navigate to the project directory
 
 ```bash
 cd monolith
@@ -96,13 +96,14 @@ bash wsl_ssh_forwarding.sh
 
 ---
 
-### 4. Open your project in Visual Studio code. Run:
+## 4. Openning  your project and building devcontainer :
+ ### 4.1. Visual Studio Code (For pycharm setup skip to 4.2.)
 
 ```bash
 code .
 ```
 
-### 5. Navigate to Visual Studio Code and perform:
+### Navigate to Visual Studio Code and perform:
 
 - <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Windows) to open the command palette
 - In the command palette write and select:
@@ -113,16 +114,39 @@ code .
 
 > After this step you should wait until the container is built. It will install all the dependencies needed for development on its own.
 
-### 6. Check if Dev Container is running successfully
+### Check if Dev Container is running successfully
 
 If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
 Visual Studio Code client.
 
-![](/docs/images/connected_devContainer.png)
+
+### 4.2. Pycharm
+
+- Open the project in pycharm.
+
+!!! DO NOT INTERACT WITH THE DEVCONTAINER POPUP IN THE LOWER RIGHT CORNER !!!
+
+#### Initial Setup:
+>Navigate to the /monolith/.devcontainer/devcontainer.json. Find the blue docker icon and select
+>
+>Create Dev Container and Mount Sources/ PyCharm:
+>
+> ![Screenshot](docs/images/devcontainer.png)
+
+Once the container is built select the python interpreter in the right corner of the bottom bar
+- In the menu: **Add new intepreter / Add local interpreter / Select existing** pycharm should recognize the interpreter that is downloaded on the container
+    ![Screenshot](docs/images/interpreter.png)
+
+#### Note: On first commit git will most probably ask for ssh key:
+#### Reopenning project in container:
+ - once setup is finished you can just start the container from the Services / Docker / Dev Containers / {container name}
+ - Look for the Open Project button:
+
+    ![Screenshot](docs/images/docker_containers.png)
 
 ---
 
-### **HOW TO RUN THE PROJECT**:
+## 5. **HOW TO RUN THE PROJECT**:
 
 > Run the following command after navigating to the project root directory
 
