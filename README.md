@@ -137,7 +137,7 @@ Once the container is built select the python interpreter in the right corner of
 - In the menu: **Add new intepreter / Add local interpreter / Select existing** pycharm should recognize the interpreter that is downloaded on the container
     ![Screenshot](docs/images/interpreter.png)
 
-#### Note: On first commit git will most probably ask for ssh key:
+#### Note: On first push git will most probably ask for ssh key. Just follow the prompts on the console
 #### Reopenning project in container:
  - once setup is finished you can just start the container from the Services / Docker / Dev Containers / {container name}
  - Look for the Open Project button:
