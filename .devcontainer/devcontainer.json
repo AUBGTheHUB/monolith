@@ -22,8 +22,8 @@
         "com.intellij:app:HttpConfigurable.use_proxy_pac": true,
       },
       "plugins": [
-        "React",
-        "Visual Studio Keymap"
+        "com.intellij.plugins.visualstudiokeymap",
+
       ]
     },
     "vscode": {
