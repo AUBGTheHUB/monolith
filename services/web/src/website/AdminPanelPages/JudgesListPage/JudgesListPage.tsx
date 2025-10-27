@@ -23,6 +23,13 @@ export function JudgesListPage() {
             </Helmet>
             <div className="min-h-screen bg-gray-50 p-8">
                 <div className="max-w-7xl mx-auto">
+                    {/* Back to Dashboard Button */}
+                    <Link to="/dashboard">
+                        <Button variant="ghost" className="mb-4">
+                            ← Back to Dashboard
+                        </Button>
+                    </Link>
+
                     <div className="flex justify-between items-center mb-8">
                         <div>
                             <h1 className="text-4xl font-bold">Judges</h1>
