@@ -4,10 +4,10 @@ import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
-import { DashboardPage } from './website/AdminPanelPages/DashboardPage/DashboardPage.tsx';
-import { JudgesListPage } from './website/AdminPanelPages/JudgesListPage/JudgesListPage.tsx';
-import { JudgesAddPage } from './website/AdminPanelPages/JudgesAddPage/JudgesAddPage.tsx';
-import { JudgesEditPage } from './website/AdminPanelPages/JudgesEditPage/JudgesEditPage.tsx';
+import { DashboardPage } from './website/AdminPanelPage/DashboardPage/DashboardPage.tsx';
+import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/Pages/JudgesPage/JudgesListPage.tsx';
+import { JudgesAddPage } from './website/AdminPanelPage/DashboardPage/Pages/JudgesPage/JudgesAddPage.tsx';
+import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/Pages/JudgesPage/JudgesEditPage.tsx';
 
 function App() {
     const queryClient = new QueryClient();
