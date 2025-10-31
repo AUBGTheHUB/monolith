@@ -46,9 +46,9 @@ export function LoginForm() {
             <FormProvider {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="w-full max-w-[22rem] px-4 py-6 border border-[#233340] rounded-lg bg-[#000912]"
+                    className="w-full max-w-[22rem] px-4 py-6 rounded-lg bg-[#000912]"
                 >
-                    <div className="grid gap-4">
+                    <div className="grid gap-1">
                         <InputComponent
                             control={form.control}
                             name="email"
@@ -70,7 +70,7 @@ export function LoginForm() {
                         />
                     </div>
 
-                    <div className="flex justify-center mt-6">
+                    <div className="flex justify-center mt-3">
                         <Button
                             type="submit"
                             disabled={form.formState.isSubmitting}
@@ -82,7 +82,7 @@ export function LoginForm() {
                         </Button>
                     </div>
 
-                    {formError && <div className="text-sm text-red-600 mt-4 text-center">{formError}</div>}
+                    {formError && <div className="text-sm text-red-600 mt-3 text-center">{formError}</div>}
                 </form>
             </FormProvider>
         </div>
