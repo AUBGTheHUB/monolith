@@ -74,7 +74,7 @@ export function LoginForm() {
                         <Button
                             type="submit"
                             disabled={form.formState.isSubmitting}
-                            className={`text-white border-2 border-sky-600 rounded-full bg-transparent hover:bg-sky-600 transition-colors duration-500 hover:text-white ${
+                            className={`text-white border-2 px-14 border-sky-600 rounded-full bg-transparent hover:bg-sky-600 transition-colors duration-500 hover:text-white ${
                                 form.formState.isSubmitting ? 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed' : ''
                             }`}
                         >
@@ -82,7 +82,9 @@ export function LoginForm() {
                         </Button>
                     </div>
 
-                    {formError && <div className="text-sm text-red-600 mt-3 text-center">{formError}</div>}
+                    <div className="min-h-[1.5rem] mt-3 text-center">
+                        {formError && <p className="text-sm text-red-600">{formError}</p>}
+                    </div>
                 </form>
             </FormProvider>
         </div>
