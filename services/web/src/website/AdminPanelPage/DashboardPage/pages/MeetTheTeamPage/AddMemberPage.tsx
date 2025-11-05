@@ -20,14 +20,12 @@ const AVAILABLE_DEPARTMENTS = [
     'Board (Treasurer)',
 ];
 
-// default placeholder image if one isnt uploaded
 const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
 
 export function AddMemberPage() {
     const navigate = useNavigate();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // form state
     const [formData, setFormData] = useState({
         name: '',
         image: DEFAULT_PLACEHOLDER,
@@ -36,29 +34,24 @@ export function AddMemberPage() {
     const [departments, setDepartments] = useState<string[]>(['']);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    // get departments that arent already selected
     const getAvailableDepartments = (currentIndex: number) => {
         const selectedDepts = departments.filter((dept, idx) => idx !== currentIndex && dept !== '');
         return AVAILABLE_DEPARTMENTS.filter((dept) => !selectedDepts.includes(dept));
     };
 
-    // update department selection
     const handleDepartmentChange = (index: number, value: string) => {
         const newDepartments = [...departments];
         newDepartments[index] = value;
         setDepartments(newDepartments);
     };
 
-    // add a new department dropdown
     const addDepartment = () => {
-        // Allow adding departments until all are selected. Who tf is in all departments
         const validDepartments = departments.filter((dept) => dept !== '');
         if (validDepartments.length < AVAILABLE_DEPARTMENTS.length) {
             setDepartments([...departments, '']);
         }
     };
 
-    // remove a department dropdown
     const removeDepartment = (index: number) => {
         if (departments.length > 1) {
             const newDepartments = departments.filter((_, idx) => idx !== index);
@@ -73,29 +66,20 @@ export function AddMemberPage() {
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Validate file type
             if (!file.type.startsWith('image/')) {
                 toast.error('Please upload an image file');
                 return;
             }
 
-            // File size < 5MB because local storage limits i guess, change if needed
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('Image size should be less than 5MB');
                 return;
             }
 
-            // Image preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
                 setImagePreview(imageUrl);
-
-                // in production, upload to server and get the URL
-                // For now, we'll save the path reference
-
-                // const imagePath = `/resources/${file.name}`;
-                // setFormData({ ...formData, image: imagePath });
 
                 toast.success('Image uploaded successfully!');
             };
@@ -106,7 +90,6 @@ export function AddMemberPage() {
     const validate = () => {
         const newErrors: Record<string, string> = {};
 
-        // Name validation
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         } else if (formData.name.length < 2) {
@@ -115,7 +98,6 @@ export function AddMemberPage() {
             newErrors.name = 'Name must be less than 50 characters';
         }
 
-        // Departments validation
         const validDepartments = departments.filter((dept) => dept !== '');
         if (validDepartments.length === 0) {
             newErrors.departments = 'At least one department is required';
@@ -134,15 +116,12 @@ export function AddMemberPage() {
 
         const validDepartments = departments.filter((dept) => dept !== '');
 
-        // replace with actual API call when backend is ready
-        // The image should be uploaded to the server and the path saved
         console.log('Creating team member:', { ...formData, departments: validDepartments });
 
         toast.success('Team member created successfully!');
         navigate('/dashboard/meet-the-team');
     };
 
-    // Check if we can add more departments
     const validDepartments = departments.filter((dept) => dept !== '');
     const canAddMore = validDepartments.length < AVAILABLE_DEPARTMENTS.length;
 
@@ -167,10 +146,8 @@ export function AddMemberPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {/* Add member form */}
                                 <div className="md:col-span-2">
                                     <form onSubmit={handleSubmit} className="space-y-6">
-                                        {/* Name Field */}
                                         <div>
                                             <Label htmlFor="name">Name *</Label>
                                             <Input
@@ -188,7 +165,6 @@ export function AddMemberPage() {
                                             <div className="space-y-3 mt-2">
                                                 {departments.map((dept, index) => (
                                                     <div key={index} className="flex gap-2 items-center">
-                                                        {/* Dropdown for departments */}
                                                         <Select
                                                             value={dept}
                                                             onValueChange={(value) =>
@@ -211,7 +187,6 @@ export function AddMemberPage() {
                                                             </SelectContent>
                                                         </Select>
 
-                                                        {/* Add Department Dropdown Button */}
                                                         {index === departments.length - 1 &&
                                                             dept !== '' &&
                                                             canAddMore && (
@@ -227,7 +202,6 @@ export function AddMemberPage() {
                                                                 </Button>
                                                             )}
 
-                                                        {/* Remove Department Dropdown Button */}
                                                         {departments.length > 1 && (
                                                             <Button
                                                                 type="button"
@@ -246,10 +220,6 @@ export function AddMemberPage() {
                                             {errors.departments && (
                                                 <p className="text-red-500 text-sm mt-1">{errors.departments}</p>
                                             )}
-                                            {/* <p className="text-sm text-gray-500 mt-2">
-                                                Selected {validDepartments.length} of {AVAILABLE_DEPARTMENTS.length}{' '}
-                                                departments
-                                            </p> */}
                                         </div>
 
                                         <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
@@ -258,10 +228,8 @@ export function AddMemberPage() {
                                     </form>
                                 </div>
 
-                                {/* Image Preview */}
                                 <div className="md:col-span-1">
                                     <Label className="mb-2 block">Profile Picture</Label>
-                                    {/* Change Profile Picture - click to upload */}
                                     <div
                                         className="relative w-full aspect-square rounded-lg overflow-hidden cursor-pointer group border-2 border-gray-200"
                                         onClick={handleImageClick}

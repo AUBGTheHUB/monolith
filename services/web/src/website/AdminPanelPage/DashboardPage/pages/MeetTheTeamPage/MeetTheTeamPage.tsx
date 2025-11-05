@@ -8,11 +8,9 @@ import teamMembers from './resources/teamMembers.json';
 
 export function MeetTheTeamPage() {
     const handleDelete = (id: string, name: string) => {
-        // Replace with actual API call when backend is ready
         if (window.confirm(`Are you sure you want to delete ${name}?`)) {
             console.log('Deleting team member:', id);
             toast.success(`${name} has been deleted successfully!`);
-            // After API integration you would refresh the data or remove from state
         }
     };
 

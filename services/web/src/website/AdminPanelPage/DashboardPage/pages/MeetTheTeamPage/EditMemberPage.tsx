@@ -20,17 +20,14 @@ const AVAILABLE_DEPARTMENTS = [
     'Board (Vice President)',
     'Board (Treasurer)',
 ];
-// default placeholder image if one isnt uploaded
 const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
 
 export function EditMemberPage() {
-    // get id from url params
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const member = teamMembers.find((m) => m.id === id);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // form state
     const [formData, setFormData] = useState({
         name: '',
         image: DEFAULT_PLACEHOLDER,
@@ -39,7 +36,6 @@ export function EditMemberPage() {
     const [departments, setDepartments] = useState<string[]>(['']);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    // populate form when member data is available
     useEffect(() => {
         if (member) {
             setFormData({
@@ -51,29 +47,24 @@ export function EditMemberPage() {
         }
     }, [member]);
 
-    // get departments that arent already selected
     const getAvailableDepartments = (currentIndex: number) => {
         const selectedDepts = departments.filter((dept, idx) => idx !== currentIndex && dept !== '');
         return AVAILABLE_DEPARTMENTS.filter((dept) => !selectedDepts.includes(dept));
     };
 
-    // update department selection
     const handleDepartmentChange = (index: number, value: string) => {
         const newDepartments = [...departments];
         newDepartments[index] = value;
         setDepartments(newDepartments);
     };
 
-    // add a new department dropdown
     const addDepartment = () => {
-        // Allow adding departments until all are selected
         const validDepartments = departments.filter((dept) => dept !== '');
         if (validDepartments.length < AVAILABLE_DEPARTMENTS.length) {
             setDepartments([...departments, '']);
         }
     };
 
-    // remove a department dropdown
     const removeDepartment = (index: number) => {
         if (departments.length > 1) {
             const newDepartments = departments.filter((_, idx) => idx !== index);
@@ -88,28 +79,20 @@ export function EditMemberPage() {
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Validate file type
             if (!file.type.startsWith('image/')) {
                 toast.error('Please upload an image file');
                 return;
             }
 
-            // File size < 5MB because local storage limits i guess, change if needed
             if (file.size > 5 * 1024 * 1024) {
                 toast.error('Image size should be less than 5MB');
                 return;
             }
 
-            // Image preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageUrl = reader.result as string;
                 setImagePreview(imageUrl);
-
-                // in production, upload to server and get the URL
-
-                // const imagePath = `/resources/${file.name}`;
-                // setFormData({ ...formData, image: imagePath });
 
                 toast.success('Image uploaded successfully!');
             };
@@ -120,7 +103,6 @@ export function EditMemberPage() {
     const validate = () => {
         const newErrors: Record<string, string> = {};
 
-        // Name validation
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         } else if (formData.name.length < 2) {
@@ -129,7 +111,6 @@ export function EditMemberPage() {
             newErrors.name = 'Name must be less than 50 characters';
         }
 
-        // Departments validation
         const validDepartments = departments.filter((dept) => dept !== '');
         if (validDepartments.length === 0) {
             newErrors.departments = 'At least one department is required';
@@ -148,14 +129,12 @@ export function EditMemberPage() {
 
         const validDepartments = departments.filter((dept) => dept !== '');
 
-        // replace with actual API call when backend is ready
         console.log('Updating team member:', { id, ...formData, departments: validDepartments });
 
         toast.success('Team member updated successfully!');
         navigate('/dashboard/meet-the-team');
     };
 
-    // if member not found, show error page
     if (!member) {
         return (
             <div className="min-h-screen bg-gray-50 p-8">
@@ -173,7 +152,6 @@ export function EditMemberPage() {
         );
     }
 
-    // Check if we can add more departments
     const validDepartments = departments.filter((dept) => dept !== '');
     const canAddMore = validDepartments.length < AVAILABLE_DEPARTMENTS.length;
 
@@ -198,10 +176,8 @@ export function EditMemberPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {/* Edit Form */}
                                 <div className="md:col-span-2">
                                     <form onSubmit={handleSubmit} className="space-y-6">
-                                        {/* Name Field */}
                                         <div>
                                             <Label htmlFor="name">Name *</Label>
                                             <Input
@@ -219,7 +195,6 @@ export function EditMemberPage() {
                                             <div className="space-y-3 mt-2">
                                                 {departments.map((dept, index) => (
                                                     <div key={index} className="flex gap-2 items-center">
-                                                        {/* Dropdown for departments */}
                                                         <Select
                                                             value={dept}
                                                             onValueChange={(value) =>
@@ -235,7 +210,6 @@ export function EditMemberPage() {
                                                                         key={department}
                                                                         value={department}
                                                                         className="cursor-pointer hover:bg-blue-50 focus:bg-blue-100 py-2.5 px-3 transition-colors"
-                                                                        // className="cursor-pointer hover:bg-blue-50 focus:bg-blue-100 py-2.5 px-3 transition-colors [&>span:first-child]:order-2 [&>span:first-child]:ml-auto [&>span:last-child]:order-1"
                                                                     >
                                                                         {department}
                                                                     </SelectItem>
@@ -243,7 +217,6 @@ export function EditMemberPage() {
                                                             </SelectContent>
                                                         </Select>
 
-                                                        {/* Add Department Dropdown Button */}
                                                         {index === departments.length - 1 &&
                                                             dept !== '' &&
                                                             canAddMore && (
@@ -259,7 +232,6 @@ export function EditMemberPage() {
                                                                 </Button>
                                                             )}
 
-                                                        {/* Remove Department Dropdown Button */}
                                                         {departments.length > 1 && (
                                                             <Button
                                                                 type="button"
@@ -278,11 +250,6 @@ export function EditMemberPage() {
                                             {errors.departments && (
                                                 <p className="text-red-500 text-sm mt-1">{errors.departments}</p>
                                             )}
-                                            {/* Show how many departments are selected from the list */}
-                                            {/* <p className="text-sm text-gray-500 mt-2">
-                                                Selected {validDepartments.length} of {AVAILABLE_DEPARTMENTS.length}{' '}
-                                                departments
-                                            </p> */}
                                         </div>
 
                                         <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
@@ -291,10 +258,8 @@ export function EditMemberPage() {
                                     </form>
                                 </div>
 
-                                {/* Image Preview */}
                                 <div className="md:col-span-1">
                                     <Label className="mb-2 block">Profile Picture</Label>
-                                    {/* Change Profile Picture - click to upload */}
                                     <div
                                         className="relative w-full aspect-square rounded-lg overflow-hidden cursor-pointer group border-2 border-gray-200"
                                         onClick={handleImageClick}
@@ -308,7 +273,6 @@ export function EditMemberPage() {
                                             <span className="text-white font-semibold text-lg">Change Picture</span>
                                         </div>
                                     </div>
-                                    {/* File input for the picture */}
                                     <input
                                         ref={fileInputRef}
                                         type="file"
