@@ -5,6 +5,7 @@ from src.server.handlers.hackathon.hackathon_handlers import HackathonManagement
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.handlers.admin.admin_handlers import AdminHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -16,3 +17,4 @@ class HttpHandlersContainer:
     hackathon_management_handlers: HackathonManagementHandlers
     participant_handlers: ParticipantHandlers
     verification_handlers: VerificationHandlers
+    admin_handlers: AdminHandlers
