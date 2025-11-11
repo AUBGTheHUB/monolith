@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
 import { PastEventFormValues, pastEventSchema } from './schema';
 import { Controller } from 'react-hook-form';
 

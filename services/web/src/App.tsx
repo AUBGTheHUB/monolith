@@ -35,6 +35,10 @@ function App() {
                 <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
                 <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
                 <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
+
+                <Route path="/dashboard/past-events" element={<PastEventsPage />} />
+                <Route path="/dashboard/past-events/add" element={<AddPastEventPage />} />
+                <Route path="/dashboard/past-events/:id" element={<EditPastEventPage />} />
             </Routes>
         </QueryClientProvider>
     );
