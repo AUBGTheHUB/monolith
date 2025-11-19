@@ -142,8 +142,8 @@ Visual Studio Code client.
 > ![Screenshot](docs/images/devcontainer.png)
 
 Once the container is built select the python interpreter in the right corner of the bottom bar
-- In the menu: **Add new intepreter / Add local interpreter / Select existing**:
-    
+- In the menu: **Add new intepreter / Add local interpreter / Select existing**: monolith/services/py-api/.venv/bin/python
+
     ![Screenshot](docs/images/interpreter.png)
 
 #### Note: On first push git will most probably ask for ssh key forwarding. Just follow the prompts on the popup
