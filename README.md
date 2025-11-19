@@ -60,7 +60,11 @@ After running the above commands. Close PowerShell.
 
 > You should be all set 🎉
 
+
+### Note: There is no native windows support. Use WSL2
+
 ---
+
 
 ## 1. Add your SSH key to the ssh-agent and GitHub
 
@@ -121,14 +125,12 @@ Visual Studio Code client.
 
 
 ### 4.2. Pycharm
-- NOTE: Pycharm's devcontainer support is BETA. It requires more resources and runs less smoothly than on VS Code.
-Nevertheless, you may use pycharm if you desire, but performance on windows and mac is quite mediocre
+#### 4.2.1 PyCharm WSL config:
 
-- **IMPORTANT:** Windows users are to keep line endings in the repo as LF instead of the native CRLF:
+    Under Build, Execution, Deployment > Docker, select:
+    "connect to docker deamon with WSL"
 
-- For more info on line endings refer to: https://dev.to/kevinshu/git-and-normalization-of-line-endings-228j
-
-Open the project in pycharm.
+#### 4.2.2 Open the project in pycharm:
 
 !!! DO NOT INTERACT WITH THE DEVCONTAINER POPUP IN THE LOWER RIGHT CORNER !!!
 
@@ -140,12 +142,13 @@ Open the project in pycharm.
 > ![Screenshot](docs/images/devcontainer.png)
 
 Once the container is built select the python interpreter in the right corner of the bottom bar
-- In the menu: **Add new intepreter / Add local interpreter / Select existing** pycharm should recognize the interpreter that is downloaded on the container
+- In the menu: **Add new intepreter / Add local interpreter / Select existing**:
+    
     ![Screenshot](docs/images/interpreter.png)
 
 #### Note: On first push git will most probably ask for ssh key forwarding. Just follow the prompts on the popup
 
-#### Reopenning project in container:
+#### Reopening project in container:
  - after first setup there is no need to rebuild the container. You can just start it from the Services / Docker / Dev Containers / {container name}
  - Look for the Open Project button:
 
