@@ -122,7 +122,11 @@ Visual Studio Code client.
 
 ### 4.2. Pycharm
 - NOTE: Pycharm's devcontainer support is BETA. It requires more resources and runs less smoothly than on VS Code.
-Nevertheless, you may use pycharm if you desire
+Nevertheless, you may use pycharm if you desire, but performance on windows and mac is quite mediocre
+
+- **IMPORTANT:** Windows users are to keep line endings in the repo as LF instead of the native CRLF:
+
+- For more info on line endings refer to: https://dev.to/kevinshu/git-and-normalization-of-line-endings-228j
 
 Open the project in pycharm.
 
@@ -139,9 +143,10 @@ Once the container is built select the python interpreter in the right corner of
 - In the menu: **Add new intepreter / Add local interpreter / Select existing** pycharm should recognize the interpreter that is downloaded on the container
     ![Screenshot](docs/images/interpreter.png)
 
-#### Note: On first push git will most probably ask for ssh key. Just follow the prompts on the console
+#### Note: On first push git will most probably ask for ssh key forwarding. Just follow the prompts on the popup
+
 #### Reopenning project in container:
- - once setup is finished you can just start the container from the Services / Docker / Dev Containers / {container name}
+ - after first setup there is no need to rebuild the container. You can just start it from the Services / Docker / Dev Containers / {container name}
  - Look for the Open Project button:
 
     ![Screenshot](docs/images/docker_containers.png)
