@@ -23,7 +23,6 @@
       },
       "plugins": [
         "com.intellij.plugins.visualstudiokeymap",
-
       ]
     },
     "vscode": {
