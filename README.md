@@ -121,13 +121,15 @@ Visual Studio Code client.
 
 
 ### 4.2. Pycharm
+- NOTE: Pycharm's devcontainer support is BETA. It requires more resources and runs less smoothly than on VS Code.
+Nevertheless, you may use pycharm if you desire
 
-- Open the project in pycharm.
+Open the project in pycharm.
 
 !!! DO NOT INTERACT WITH THE DEVCONTAINER POPUP IN THE LOWER RIGHT CORNER !!!
 
 #### Initial Setup:
->Navigate to the /monolith/.devcontainer/devcontainer.json. Find the blue docker icon and select
+> Navigate to the /monolith/.devcontainer/devcontainer.json. Find the blue docker icon and select
 >
 >Create Dev Container and Mount Sources/ PyCharm:
 >
