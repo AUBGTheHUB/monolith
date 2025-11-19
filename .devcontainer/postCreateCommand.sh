@@ -1,3 +1,7 @@
+
+#linux devcontainer ownership workaround:
+git config --global --add safe.directory /workspaces/monolith
+
 # Installs the node_modules in the project root
 npm install
 
@@ -18,6 +22,3 @@ make install-web
 # Installs the backend dependencies
 cd ./services/py-api/
 poetry install
-
-#linux devcontainer ownership workaround:
-git config --global --add safe.directory /workspaces/monolith/
