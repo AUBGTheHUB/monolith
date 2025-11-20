@@ -14,7 +14,7 @@ make install-gum
 # Enables the .venv folder to appear inside the project - currently ./services/py_api - poetry installs all the deps on this
 # This makes sure we are using the current python version configured by pyenv. https://python-poetry.org/docs/managing-environments/
 poetry config virtualenvs.create true
-poetry config virtualenvs.in-project true   # optional
+poetry config virtualenvs.in-project true
 
 # Installs the node_modules inside ./services/web
 make install-web

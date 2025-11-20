@@ -1,7 +1,7 @@
 ## How to set up the API and run it as a standalone:
 
 ### Prerequisites:
-1. Have [Python3.13](https://www.python.org/downloads/release/python-3130/) installed. You could use [pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv)
+1. Have [Python3.12.9](https://www.python.org/downloads/release/python-3130/) installed. You could use [pyenv](https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv)
 2. Have [poetry](https://python-poetry.org/docs/#installing-with-the-official-installer) installed
 
 ### How to run the project
