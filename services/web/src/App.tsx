@@ -1,9 +1,12 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
+import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
+import FeatureSwitchEditPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchEditPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -15,6 +18,12 @@ function App() {
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
+
+                <Route path="/" element={<Navigate to="/dashboard/feature-switches" replace />} />
+                <Route path="/dashboard/feature-switches" element={<FeatureSwitchesPage />} />
+                <Route path="/dashboard/feature-switches/add" element={<FeatureSwitchAddPage />} />
+                <Route path="/dashboard/feature-switches/:id" element={<FeatureSwitchEditPage />} />
+                <Route path="*" element={<div style={{ padding: 24 }}>Not Found</div>} />
             </Routes>
         </QueryClientProvider>
     );
