@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
+from src.database.model.base_model import BaseDbModel, UpdateParams
 
 
 @dataclass(kw_only=True)
-class PastEvent(AdminBaseModel):
+class PastEvent(BaseDbModel):
     title: str
     cover_picture: str
     tags: list[str] = field(default_factory=list)
@@ -31,7 +31,7 @@ class PastEvent(AdminBaseModel):
         }
 
 
-class UpdatePastEventParams(AdminUpdateParams):
+class UpdatePastEventParams(UpdateParams):
     title: str | None = None
     cover_picture: str | None = None
     tags: list[str] | None = None

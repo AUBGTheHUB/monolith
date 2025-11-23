@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, Any
 
-from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
+from src.database.model.base_model import BaseDbModel, UpdateParams
 
 
 @dataclass(kw_only=True)
-class Sponsor(AdminBaseModel):
+class Sponsor(BaseDbModel):
     name: str
     tier: str  # PLATINUM | GOLD | SILVER | BRONZE | CUSTOM (free text for now)
     logo_url: str
@@ -34,7 +34,7 @@ class Sponsor(AdminBaseModel):
         }
 
 
-class UpdateSponsorParams(AdminUpdateParams):
+class UpdateSponsorParams(UpdateParams):
     name: str | None = None
     tier: str | None = None
     logo_url: str | None = None

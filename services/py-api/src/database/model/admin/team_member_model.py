@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
+from src.database.model.base_model import BaseDbModel, UpdateParams
 
 
 @dataclass(kw_only=True)
-class TeamMember(AdminBaseModel):
+class TeamMember(BaseDbModel):
     name: str
     role_title: str
     avatar_url: str
@@ -34,7 +34,7 @@ class TeamMember(AdminBaseModel):
         }
 
 
-class UpdateTeamMemberParams(AdminUpdateParams):
+class UpdateTeamMemberParams(UpdateParams):
     name: str | None = None
     role_title: str | None = None
     avatar_url: str | None = None

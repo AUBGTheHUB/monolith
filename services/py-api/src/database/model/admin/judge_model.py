@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, Any
 
-from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
+from src.database.model.base_model import BaseDbModel, UpdateParams
 
 
 @dataclass(kw_only=True)
-class Judge(AdminBaseModel):
+class Judge(BaseDbModel):
     name: str
     company: str
     job_title: str
@@ -37,7 +37,7 @@ class Judge(AdminBaseModel):
         }
 
 
-class UpdateJudgeParams(AdminUpdateParams):
+class UpdateJudgeParams(UpdateParams):
     name: str | None = None
     company: str | None = None
     job_title: str | None = None
