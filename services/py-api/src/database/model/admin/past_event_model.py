@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Any
+from typing import Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -8,7 +8,7 @@ from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdat
 class PastEvent(AdminBaseModel):
     title: str
     cover_picture: str
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
@@ -34,4 +34,4 @@ class PastEvent(AdminBaseModel):
 class UpdatePastEventParams(AdminUpdateParams):
     title: str | None = None
     cover_picture: str | None = None
-    tags: List[str] | None = None
+    tags: list[str] | None = None

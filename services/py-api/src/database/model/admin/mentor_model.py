@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Any
+from typing import Optional, Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -10,7 +10,7 @@ class Mentor(AdminBaseModel):
     company: str
     job_title: str
     avatar_url: str
-    expertise_areas: List[str] = field(default_factory=list)
+    expertise_areas: list[str] = field(default_factory=list)
     linkedin_url: Optional[str] = None
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
@@ -45,5 +45,5 @@ class UpdateMentorParams(AdminUpdateParams):
     company: str | None = None
     job_title: str | None = None
     avatar_url: str | None = None
-    expertise_areas: List[str] | None = None
+    expertise_areas: list[str] | None = None
     linkedin_url: str | None = None

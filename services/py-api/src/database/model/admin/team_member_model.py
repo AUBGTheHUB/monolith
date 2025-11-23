@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, Any
+from typing import Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -9,7 +9,7 @@ class TeamMember(AdminBaseModel):
     name: str
     role_title: str
     avatar_url: str
-    social_links: Dict[str, str] = field(default_factory=dict)
+    social_links: dict[str, str] = field(default_factory=dict)
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
@@ -38,4 +38,4 @@ class UpdateTeamMemberParams(AdminUpdateParams):
     name: str | None = None
     role_title: str | None = None
     avatar_url: str | None = None
-    social_links: Dict[str, str] | None = None
+    social_links: dict[str, str] | None = None
