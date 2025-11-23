@@ -33,6 +33,7 @@ from src.service.hackathon.participants_registration_service import ParticipantR
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
+from src.server.middleware.request_id_middleware import register_request_id_middleware
 
 LOG = get_logger()
 
@@ -99,6 +100,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, root_path="/api/v3")
 
+    register_request_id_middleware(app)
     """
     Note:
     The dependencies below are essentially singletons, as they are created only once (on app creation) and then then
