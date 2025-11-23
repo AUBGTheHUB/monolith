@@ -9,18 +9,19 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import { Plus, X } from 'lucide-react';
 import teamMembers from './resources/teamMembers.json';
+import { AVAILABLE_DEPARTMENTS, DEFAULT_PLACEHOLDER } from './constants';
 
-const AVAILABLE_DEPARTMENTS = [
-    'Development',
-    'Design',
-    'Marketing',
-    'PR',
-    'Logistics',
-    'Board (President)',
-    'Board (Vice President)',
-    'Board (Treasurer)',
-];
-const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
+// const AVAILABLE_DEPARTMENTS = [
+//     'Development',
+//     'Design',
+//     'Marketing',
+//     'PR',
+//     'Logistics',
+//     'Board (President)',
+//     'Board (Vice President)',
+//     'Board (Treasurer)',
+// ];
+// const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
 
 export function EditMemberPage() {
     const { id } = useParams<{ id: string }>();

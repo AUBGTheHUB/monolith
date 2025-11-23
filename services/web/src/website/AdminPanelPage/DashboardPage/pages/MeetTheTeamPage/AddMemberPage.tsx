@@ -8,19 +8,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import { Plus, X } from 'lucide-react';
+import { AVAILABLE_DEPARTMENTS, DEFAULT_PLACEHOLDER } from './constants';
 
-const AVAILABLE_DEPARTMENTS = [
-    'Development',
-    'Design',
-    'Marketing',
-    'PR',
-    'Logistics',
-    'Board (President)',
-    'Board (Vice President)',
-    'Board (Treasurer)',
-];
+// const AVAILABLE_DEPARTMENTS = [
+//     'Development',
+//     'Design',
+//     'Marketing',
+//     'PR',
+//     'Logistics',
+//     'Board (President)',
+//     'Board (Vice President)',
+//     'Board (Treasurer)',
+// ];
 
-const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
+// const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
 
 export function AddMemberPage() {
     const navigate = useNavigate();
