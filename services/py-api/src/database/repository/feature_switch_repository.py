@@ -7,6 +7,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
+from src.database.mongo.collections.admin_collections import FEATURE_SWITCH_COLLECTION
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import FeatureSwitchNotFoundError
@@ -15,8 +16,8 @@ LOG = get_logger()
 
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str):
-        self._collection = db_manager.get_collection(collection_name)
+    def __init__(self, db_manager: MongoDatabaseManager):
+        self._collection = db_manager.get_collection(FEATURE_SWITCH_COLLECTION)
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:

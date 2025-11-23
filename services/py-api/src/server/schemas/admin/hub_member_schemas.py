@@ -4,7 +4,7 @@ from typing import Dict, Optional
 from pydantic import BaseModel, HttpUrl, field_validator
 
 
-class TeamMemberBase(BaseModel):
+class HubMemberBase(BaseModel):
     name: str
     role_title: str
     avatar_url: HttpUrl
@@ -18,11 +18,11 @@ class TeamMemberBase(BaseModel):
         return nv
 
 
-class TeamMemberCreate(TeamMemberBase):
+class HubMemberCreate(HubMemberBase):
     pass
 
 
-class TeamMemberUpdate(BaseModel):
+class HubMemberUpdate(BaseModel):
     name: Optional[str] = None
     role_title: Optional[str] = None
     avatar_url: Optional[HttpUrl] = None
@@ -41,7 +41,7 @@ class TeamMemberUpdate(BaseModel):
         return all(getattr(self, f) is None for f in ("name", "role_title", "avatar_url", "social_links"))
 
 
-class TeamMemberRead(TeamMemberBase):
+class HubMemberRead(HubMemberBase):
     id: str
     created_at: datetime
     updated_at: datetime

@@ -1,13 +1,18 @@
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Literal
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
+DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Design"]
+
 
 @dataclass(kw_only=True)
-class TeamMember(BaseDbModel):
+class HubMember(BaseDbModel):
+    """Represents a Hub club member"""
+
     name: str
     role_title: str
+    department: DEPARTMENTS_LIST
     avatar_url: str
     social_links: dict[str, str] = field(default_factory=dict)
 
@@ -34,7 +39,7 @@ class TeamMember(BaseDbModel):
         }
 
 
-class UpdateTeamMemberParams(UpdateParams):
+class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
     role_title: str | None = None
     avatar_url: str | None = None

@@ -7,13 +7,7 @@ from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationErr
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.mongo.db_manager import (
-    MongoDatabaseManager,
-    PARTICIPANTS_COLLECTION,
-    TEAMS_COLLECTION,
-    FEATURE_SWITCH_COLLECTION,
-    DB_NAME,
-)
+from src.database.mongo.db_manager import MongoDatabaseManager, DB_NAME
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
@@ -28,12 +22,12 @@ from src.server.handlers.admin.admin_handlers import AdminHandlers
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.database.repository.admin.judges_repository import JudgesRepository
-from src.database.repository.admin.team_members_repository import TeamMembersRepository
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.service.admin.sponsors_service import SponsorsService
 from src.service.admin.mentors_service import MentorsService
 from src.service.admin.judges_service import JudgesService
-from src.service.admin.team_members_service import TeamMembersService
+from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middleware
 from src.server.routes.routes import Routes
@@ -122,13 +116,13 @@ def create_app() -> FastAPI:
     # Database layer dependency wiring
     db_manager = MongoDatabaseManager(client=mongo_db_client_provider())
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
-    participants_repo = ParticipantsRepository(db_manager=db_manager, collection_name=PARTICIPANTS_COLLECTION)
-    teams_repo = TeamsRepository(db_manager=db_manager, collection_name=TEAMS_COLLECTION)
-    fs_repo = FeatureSwitchRepository(db_manager=db_manager, collection_name=FEATURE_SWITCH_COLLECTION)
+    participants_repo = ParticipantsRepository(db_manager=db_manager)
+    teams_repo = TeamsRepository(db_manager=db_manager)
+    fs_repo = FeatureSwitchRepository(db_manager=db_manager)
     sponsors_repo = SponsorsRepository(db_manager=db_manager)
     mentors_repo = MentorsRepository(db_manager=db_manager)
     judges_repo = JudgesRepository(db_manager=db_manager)
-    team_members_repo = TeamMembersRepository(db_manager=db_manager)
+    hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
@@ -155,7 +149,7 @@ def create_app() -> FastAPI:
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)
     judges_service = JudgesService(repo=judges_repo)
-    team_members_service = TeamMembersService(repo=team_members_repo)
+    hub_members_service = HubMembersService(repo=hub_members_repo)
     past_events_service = PastEventsService(repo=past_events_repo)
 
     # Handlers layer wiring
@@ -169,7 +163,7 @@ def create_app() -> FastAPI:
             sponsors_service=sponsors_service,
             mentors_service=mentors_service,
             judges_service=judges_service,
-            team_members_service=team_members_service,
+            hub_members_service=hub_members_service,
             past_events_service=past_events_service,
         ),
     )

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Optional, Literal, Any
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
@@ -7,7 +7,8 @@ from src.database.model.base_model import BaseDbModel, UpdateParams
 @dataclass(kw_only=True)
 class Sponsor(BaseDbModel):
     name: str
-    tier: str  # PLATINUM | GOLD | SILVER | BRONZE | CUSTOM (free text for now)
+    # TODO(#admin-sponsors-tier-enum): Replace Literal with Enum once tier list is finalized / needs ordering logic.
+    tier: Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"]
     logo_url: str
     website_url: Optional[str] = None
 
@@ -36,6 +37,6 @@ class Sponsor(BaseDbModel):
 
 class UpdateSponsorParams(UpdateParams):
     name: str | None = None
-    tier: str | None = None
+    tier: Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"] | None = None
     logo_url: str | None = None
     website_url: str | None = None

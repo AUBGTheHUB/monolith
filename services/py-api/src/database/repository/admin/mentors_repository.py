@@ -5,7 +5,7 @@ from result import Result, Err
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
-from src.database.mongo.admin_collections import MENTORS_COLLECTION
+from src.database.mongo.collections.admin_collections import MENTORS_COLLECTION
 from src.database.model.admin.mentor_model import Mentor, UpdateMentorParams
 from src.database.repository.base_repository import CRUDRepository
 

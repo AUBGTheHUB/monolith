@@ -5,7 +5,7 @@ from result import Result, Err
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
-from src.database.mongo.admin_collections import PAST_EVENTS_COLLECTION
+from src.database.mongo.collections.admin_collections import PAST_EVENTS_COLLECTION
 from src.database.model.admin.past_event_model import PastEvent, UpdatePastEventParams
 from src.database.repository.base_repository import CRUDRepository
 
