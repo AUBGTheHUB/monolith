@@ -1,10 +1,9 @@
-import { seedFeatureSwitches } from "../data/feature-switches"; // ../data is correct
+import { seedFeatureSwitches } from "../data/feature-switches";
 
 export type FeatureSwitch = {
   id: string;
   name: string;
   currentState: boolean;
-  dbKey?: string; // <-- add dbKey (optional for now)
 };
 
 const STORAGE_KEY = "thehub_feature_switches";
@@ -23,11 +22,10 @@ function loadInitial(): FeatureSwitch[] {
     if (raw) {
       try { return JSON.parse(raw) as FeatureSwitch[]; } catch (_err) { void _err; }
     }
-    // seed (no dbKey in seed, fine)
     ls.setItem(STORAGE_KEY, JSON.stringify(seedFeatureSwitches));
-    return seedFeatureSwitches as unknown as FeatureSwitch[];
+    return seedFeatureSwitches as FeatureSwitch[];
   }
-  return seedFeatureSwitches as unknown as FeatureSwitch[];
+  return seedFeatureSwitches as FeatureSwitch[];
 }
 
 function persist(list: FeatureSwitch[]) {

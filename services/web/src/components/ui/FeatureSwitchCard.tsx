@@ -67,7 +67,7 @@ export default function FeatureSwitchCard({ id, name, currentState, onRename, on
                             maxLength={60}
                             placeholder="Feature switch name"
                         />
-                        <div className="text-xs text-slate-500 mt-1">Min 2, max 40 characters.</div>
+                        <div className="text-xs text-slate-500 mt-1">Min 2, max 12 characters.</div>
                     </div>
 
                     <div className="mt-4 flex gap-3 justify-center">
