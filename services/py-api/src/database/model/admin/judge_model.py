@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -12,7 +12,7 @@ class Judge(AdminBaseModel):
     avatar_url: str
     linkedin_url: Optional[str] = None
 
-    def dump_as_mongo_db_document(self) -> dict[str, object]:
+    def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
             "_id": self.id,
             "name": self.name,
@@ -24,7 +24,7 @@ class Judge(AdminBaseModel):
             "updated_at": self.updated_at,
         }
 
-    def dump_as_json(self) -> dict[str, object]:
+    def dump_as_json(self) -> dict[str, Any]:
         return {
             "id": str(self.id),
             "name": self.name,

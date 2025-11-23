@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -13,7 +13,7 @@ class Mentor(AdminBaseModel):
     expertise_areas: List[str] = field(default_factory=list)
     linkedin_url: Optional[str] = None
 
-    def dump_as_mongo_db_document(self) -> dict[str, object]:
+    def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
             "_id": self.id,
             "name": self.name,
@@ -26,7 +26,7 @@ class Mentor(AdminBaseModel):
             "updated_at": self.updated_at,
         }
 
-    def dump_as_json(self) -> dict[str, object]:
+    def dump_as_json(self) -> dict[str, Any]:
         return {
             "id": str(self.id),
             "name": self.name,

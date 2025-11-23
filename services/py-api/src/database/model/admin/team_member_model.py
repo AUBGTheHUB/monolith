@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, Any
 
 from src.database.model.admin.base_admin_model import AdminBaseModel, AdminUpdateParams
 
@@ -11,7 +11,7 @@ class TeamMember(AdminBaseModel):
     avatar_url: str
     social_links: Dict[str, str] = field(default_factory=dict)
 
-    def dump_as_mongo_db_document(self) -> dict[str, object]:
+    def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
             "_id": self.id,
             "name": self.name,
@@ -22,7 +22,7 @@ class TeamMember(AdminBaseModel):
             "updated_at": self.updated_at,
         }
 
-    def dump_as_json(self) -> dict[str, object]:
+    def dump_as_json(self) -> dict[str, Any]:
         return {
             "id": str(self.id),
             "name": self.name,
