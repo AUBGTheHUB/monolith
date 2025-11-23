@@ -37,5 +37,5 @@
     },
     "remoteUser": "root",
     "workspaceFolder": "/workspaces/monolith",
-    "mounts": ["source=${localEnv:HOME}/.ssh,target=/home/.ssh,type=bind,consistency=cached"]
+    "mounts": ["source=${localEnv:HOME}/.ssh,target=/.ssh,type=bind,consistency=cached"]
 }
