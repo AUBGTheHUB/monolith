@@ -4,24 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-import { Plus, X } from 'lucide-react';
 import { AVAILABLE_DEPARTMENTS, DEFAULT_PLACEHOLDER } from './constants';
-
-// const AVAILABLE_DEPARTMENTS = [
-//     'Development',
-//     'Design',
-//     'Marketing',
-//     'PR',
-//     'Logistics',
-//     'Board (President)',
-//     'Board (Vice President)',
-//     'Board (Treasurer)',
-// ];
-
-// const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
 
 export function AddMemberPage() {
     const navigate = useNavigate();
@@ -32,33 +18,8 @@ export function AddMemberPage() {
         image: DEFAULT_PLACEHOLDER,
     });
     const [imagePreview, setImagePreview] = useState<string>(DEFAULT_PLACEHOLDER);
-    const [departments, setDepartments] = useState<string[]>(['']);
+    const [departments, setDepartments] = useState<string[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
-
-    const getAvailableDepartments = (currentIndex: number) => {
-        const selectedDepts = departments.filter((dept, idx) => idx !== currentIndex && dept !== '');
-        return AVAILABLE_DEPARTMENTS.filter((dept) => !selectedDepts.includes(dept));
-    };
-
-    const handleDepartmentChange = (index: number, value: string) => {
-        const newDepartments = [...departments];
-        newDepartments[index] = value;
-        setDepartments(newDepartments);
-    };
-
-    const addDepartment = () => {
-        const validDepartments = departments.filter((dept) => dept !== '');
-        if (validDepartments.length < AVAILABLE_DEPARTMENTS.length) {
-            setDepartments([...departments, '']);
-        }
-    };
-
-    const removeDepartment = (index: number) => {
-        if (departments.length > 1) {
-            const newDepartments = departments.filter((_, idx) => idx !== index);
-            setDepartments(newDepartments);
-        }
-    };
 
     const handleImageClick = () => {
         fileInputRef.current?.click();
@@ -99,8 +60,7 @@ export function AddMemberPage() {
             newErrors.name = 'Name must be less than 50 characters';
         }
 
-        const validDepartments = departments.filter((dept) => dept !== '');
-        if (validDepartments.length === 0) {
+        if (departments.length === 0) {
             newErrors.departments = 'At least one department is required';
         }
 
@@ -115,16 +75,11 @@ export function AddMemberPage() {
             return;
         }
 
-        const validDepartments = departments.filter((dept) => dept !== '');
-
-        console.log('Creating team member:', { ...formData, departments: validDepartments });
+        console.log('Creating team member:', { ...formData, departments });
 
         toast.success('Team member created successfully!');
         navigate('/dashboard/meet-the-team');
     };
-
-    const validDepartments = departments.filter((dept) => dept !== '');
-    const canAddMore = validDepartments.length < AVAILABLE_DEPARTMENTS.length;
 
     return (
         <Fragment>
@@ -163,60 +118,13 @@ export function AddMemberPage() {
 
                                         <div>
                                             <Label>Departments *</Label>
-                                            <div className="space-y-3 mt-2">
-                                                {departments.map((dept, index) => (
-                                                    <div key={index} className="flex gap-2 items-center">
-                                                        <Select
-                                                            value={dept}
-                                                            onValueChange={(value) =>
-                                                                handleDepartmentChange(index, value)
-                                                            }
-                                                        >
-                                                            <SelectTrigger className="flex-1 h-11 border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
-                                                                <SelectValue placeholder="Select a department" />
-                                                            </SelectTrigger>
-                                                            <SelectContent className="bg-white border-gray-200 shadow-lg">
-                                                                {getAvailableDepartments(index).map((department) => (
-                                                                    <SelectItem
-                                                                        key={department}
-                                                                        value={department}
-                                                                        className="cursor-pointer hover:bg-blue-50 focus:bg-blue-100 py-2.5 px-3 transition-colors"
-                                                                    >
-                                                                        {department}
-                                                                    </SelectItem>
-                                                                ))}
-                                                            </SelectContent>
-                                                        </Select>
-
-                                                        {index === departments.length - 1 &&
-                                                            dept !== '' &&
-                                                            canAddMore && (
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="outline"
-                                                                    size="icon"
-                                                                    onClick={addDepartment}
-                                                                    className="shrink-0 h-11 w-11 border-gray-300 hover:bg-blue-50 hover:border-blue-400 transition-all"
-                                                                    title="Add another department"
-                                                                >
-                                                                    <Plus className="h-4 w-4" />
-                                                                </Button>
-                                                            )}
-
-                                                        {departments.length > 1 && (
-                                                            <Button
-                                                                type="button"
-                                                                variant="outline"
-                                                                size="icon"
-                                                                onClick={() => removeDepartment(index)}
-                                                                className="shrink-0 h-11 w-11 border-gray-300 hover:bg-red-50 hover:border-red-400 transition-all"
-                                                                title="Remove this department"
-                                                            >
-                                                                <X className="h-4 w-4 text-red-600" />
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                ))}
+                                            <div className="mt-2">
+                                                <MultiSelect
+                                                    options={AVAILABLE_DEPARTMENTS}
+                                                    selected={departments}
+                                                    onChange={setDepartments}
+                                                    placeholder="Select departments..."
+                                                />
                                             </div>
                                             {errors.departments && (
                                                 <p className="text-red-500 text-sm mt-1">{errors.departments}</p>

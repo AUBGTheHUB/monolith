@@ -7,6 +7,6 @@ export const AVAILABLE_DEPARTMENTS = [
     'Board (President)',
     'Board (Vice President)',
     'Board (Treasurer)',
-] as const;
+];
 
 export const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
