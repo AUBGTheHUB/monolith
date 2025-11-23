@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err
@@ -24,7 +24,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
     async def fetch_by_id(self, obj_id: str) -> Result[PastEvent, Exception]:
         return Err(NotImplementedError())
 
-    async def fetch_all(self) -> Result[List[PastEvent], Exception]:
+    async def fetch_all(self) -> Result[list[PastEvent], Exception]:
         return Err(NotImplementedError())
 
     async def update(

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Result, Err
@@ -24,7 +24,7 @@ class MentorsRepository(CRUDRepository[Mentor]):
     async def fetch_by_id(self, obj_id: str) -> Result[Mentor, Exception]:
         return Err(NotImplementedError())
 
-    async def fetch_all(self) -> Result[List[Mentor], Exception]:
+    async def fetch_all(self) -> Result[list[Mentor], Exception]:
         return Err(NotImplementedError())
 
     async def update(
