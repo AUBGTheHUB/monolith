@@ -9,4 +9,4 @@ export const AVAILABLE_DEPARTMENTS = [
     'Board (Treasurer)',
 ];
 
-export const DEFAULT_PLACEHOLDER = 'placeholderPic.jpg';
+export const DEFAULT_PLACEHOLDER = 'resources/placeholderPic.jpg';
