@@ -21,7 +21,9 @@
             "settings": {
                 "com.intellij:app:HttpConfigurable.use_proxy_pac": true
             },
-            "plugins": ["com.intellij.plugins.visualstudiokeymap"]
+            "plugins": [
+                "com.intellij.plugins.visualstudiokeymap"
+            ]
         },
         "vscode": {
             "extensions": [
@@ -37,5 +39,5 @@
     },
     "remoteUser": "root",
     "workspaceFolder": "/workspaces/monolith",
-    "mounts": ["source=${localEnv:HOME}/.ssh,target=/.ssh,type=bind,consistency=cached"]
+    // "mounts": ["source=${localEnv:HOME}/.ssh,target=/.ssh,type=bind,consistency=cached"]
 }
