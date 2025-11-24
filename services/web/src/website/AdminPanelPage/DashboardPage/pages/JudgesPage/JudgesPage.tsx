@@ -6,23 +6,10 @@ import { AdminCard } from '@/components/ui/admin-card';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-
-const MESSAGES = {
-    PAGE_TITLE: 'Judges - Admin Dashboard',
-    HEADING: 'Judges',
-    SUBTITLE: 'Manage hackathon judges',
-    BACK_BUTTON: '← Back to Dashboard',
-    ADD_BUTTON: '+ Add New Judge',
-    EMPTY_STATE: 'No judges added yet. Click "Add New Judge" to get started.',
-    DELETE_CONFIRM: (name: string) => `Are you sure you want to delete ${name}?`,
-    EDIT_BUTTON: 'Edit',
-    DELETE_BUTTON: 'Delete',
-};
+import { JudgesPageMessages as MESSAGES } from './messagesConsts.tsx';
 
 export function JudgesListPage() {
-
     const [judges, setJudges] = useState<Judge[]>(MOCK_JUDGES);
-
 
     const handleDelete = (id: string) => {
         const judge = judges.find((j) => j.id === id);
@@ -37,7 +24,6 @@ export function JudgesListPage() {
             setJudges((prevJudges) => prevJudges.filter((j) => j.id !== id));
         }
     };
-
 
     const renderJudgeActions = (judgeId: string) => (
         <>
