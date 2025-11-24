@@ -1,25 +1,34 @@
 import { Fragment } from 'react/jsx-runtime';
 import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-import { useJudgeForm } from './hooks/useJudgeForm';
 import { JudgeFormFields } from './components/JudgeFormFields';
+import { Form } from '@/components/ui/form';
+import { judgeSchema, JudgeFormData } from './lib/judges.validation';
 
 export function JudgesAddPage() {
     const navigate = useNavigate();
-    const { formData, errors, handleChange, validate } = useJudgeForm();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const form = useForm<JudgeFormData>({
+        resolver: zodResolver(judgeSchema),
+        defaultValues: {
+            name: '',
+            companyName: '',
+            imageUrl: '',
+        },
+        mode: 'onTouched',
+    });
 
-        if (!validate()) return;
+    const { control, handleSubmit } = form;
 
-        console.log('Creating judge:', formData);
+    const onSubmit = (data: JudgeFormData) => {
+        console.log('Creating judge:', data);
         alert('Judge added successfully!');
-
         // TODO: Replace with API call
-        // await createJudge(formData);
+        // await createJudge(data);
         // navigate('/dashboard/judges');
     };
 
@@ -41,25 +50,28 @@ export function JudgesAddPage() {
                             <p className="text-gray-600 mt-2">Fill in the details to add a new judge</p>
                         </CardHeader>
 
-                        <form onSubmit={handleSubmit}>
-                            <CardContent className="space-y-6">
-                                <JudgeFormFields formData={formData} errors={errors} onChange={handleChange} />
-                            </CardContent>
+                        <Form {...form}>
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <CardContent className="space-y-6">
+                                    <JudgeFormFields control={control} />
+                                </CardContent>
 
-                            <CardFooter className="flex gap-3">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() => navigate('/dashboard/judges')}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                                    Add Judge
-                                </Button>
-                            </CardFooter>
-                        </form>
+                                <CardFooter className="flex gap-3">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="flex-1"
+                                        onClick={() => navigate('/dashboard/judges')}
+                                    >
+                                        Cancel
+                                    </Button>
+
+                                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                                        Add Judge
+                                    </Button>
+                                </CardFooter>
+                            </form>
+                        </Form>
                     </Card>
                 </div>
             </div>
