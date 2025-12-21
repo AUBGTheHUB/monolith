@@ -1,53 +1,54 @@
 FROM mcr.microsoft.com/devcontainers/base:jammy
 
-SHELL ["/bin/bash", "-c"]
-USER root
-WORKDIR /home/vscode/workspaces
-RUN chown -R vscode:vscode /home/vscode/workspaces
+# Set global environments immediately
+# We add Pyenv and local bin (for pipx/poetry) to the path
+ENV PYENV_ROOT="/home/vscode/.pyenv" \
+    NVM_DIR="/home/vscode/.nvm" \
+    PATH="/home/vscode/.pyenv/shims:/home/vscode/.pyenv/bin:/home/vscode/.local/bin:$PATH"
 
-# Install System Dependencies
-RUN apt-get update && apt-get install -y \
-    make wget build-essential zlib1g-dev libssl-dev libbz2-dev \
+# --- ROOT OPERATIONS ---
+# Run all system installs as root to avoid 'sudo' overhead
+USER root
+
+# 1. Add Charm (Gum) Keyring & Sources
+# We do this before the main apt-get install so gum can be installed in the same transaction
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
+
+# 2. Install System Dependencies & Gum
+# OPTIMIZATION: Use cache mounts to speed up apt-get on rebuilds
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    make build-essential zlib1g-dev libssl-dev libbz2-dev \
     libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils \
     tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-    pipx git
+    pipx git gum \
+    && chown -R vscode:vscode /home/vscode
 
-# --- GO CONFIGURATION ---
-# We set the PATH variable in the Image Metadata.
-# Docker loads this automatically for every command. No sourcing needed.
+# --- USER OPERATIONS ---
 USER vscode
-ENV PATH="$PATH:/home/vscode/go/bin"
-
-RUN wget -O go.tar.gz https://go.dev/dl/go1.23.1.linux-amd64.tar.gz \
-    && tar -C /home/vscode/workspaces -xzf go.tar.gz \
-    && rm -fr ./go.tar.gz
+WORKDIR /home/vscode/workspaces
 
 # --- PYENV CONFIGURATION ---
-# Set these variables globally so pyenv works immediately
-ENV PYENV_ROOT="/home/vscode/.pyenv"
-ENV PATH="$PYENV_ROOT/bin:$PATH"
-
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-
-# Initialize and install Python in one go
-# We use eval here just for this specific RUN command
-RUN eval "$(pyenv init -)" \
+# Clone and Install Python 3.12.9
+RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
+    && eval "$(pyenv init -)" \
     && pyenv install 3.12.9 \
     && pyenv global 3.12.9
 
-# --- NVM CONFIGURATION (The Hybrid Way) ---
-ENV NVM_DIR="/home/vscode/.nvm"
-ENV PATH="$NVM_DIR/bin:$PATH"
+# --- NVM CONFIGURATION ---
 # Install NVM and Node
-# Since NVM is a shell function, we source it manually JUST for this command using "&& ."
 RUN mkdir -p $NVM_DIR \
-    && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
     && . $NVM_DIR/nvm.sh \
-    && nvm install --lts
+    && nvm install --lts \
+    # Add NVM load to bashrc for interactive shells
+    && echo 'export NVM_DIR="/home/vscode/.nvm"' >> ~/.bashrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> ~/.bashrc
 
-## We still add it to bashrc so it's there when YOU log in manually later
-#RUN echo 'export NVM_DIR="/home/vscode/.nvm"' >> /home/vscode/.bashrc \
-#    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/vscode/.bashrc
-
-# --- POETRY ---
+# --- POETRY CONFIGURATION ---
+# pipx is already installed in the root step.
+# PATH is already set in the ENV block at the top.
 RUN pipx install poetry
