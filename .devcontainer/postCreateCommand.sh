@@ -1,5 +1,5 @@
 
-#linux devcontainer ownership workaround:
+#linux devcontainer ownership workaround (when ran as root ownership of files is not $USER):
 git config --global --add safe.directory /workspaces/monolith
 
 # Installs the node_modules in the project root

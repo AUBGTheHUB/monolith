@@ -19,6 +19,7 @@
     "customizations": {
         "jetbrains": {
             "settings": {
+                "com.intellij.database:app:DatabaseSettings.enable-local-filter-by-default": false,
                 "com.intellij:app:HttpConfigurable.use_proxy_pac": true
             },
             "plugins": [
@@ -37,6 +38,6 @@
             ]
         }
     },
-    "remoteUser": "root",
-    "workspaceFolder": "/workspaces/monolith"
+    "remoteUser": "vscode",
+    "workspaceFolder": "/home/vscode/workspaces/monolith"
 }
