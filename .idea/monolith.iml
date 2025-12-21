@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/services/py-api" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/services/py-api/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.12 virtualenv at /workspaces/monolith/services/py-api/.venv" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.12 (monolith)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
