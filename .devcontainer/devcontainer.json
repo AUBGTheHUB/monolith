@@ -31,6 +31,7 @@
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
                 "ms-python.python",
+                "ms-python.vscode-pylance",
                 "ms-python.debugpy",
                 "golang.go",
                 "yoavbls.pretty-ts-errors",
