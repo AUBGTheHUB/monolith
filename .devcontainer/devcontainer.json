@@ -5,6 +5,7 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
+    "runArgs": ["--name", "monolith-dev-container"],
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -22,9 +23,7 @@
                 "com.intellij.database:app:DatabaseSettings.enable-local-filter-by-default": false,
                 "com.intellij:app:HttpConfigurable.use_proxy_pac": true
             },
-            "plugins": [
-                "com.intellij.plugins.visualstudiokeymap"
-            ]
+            "plugins": ["com.intellij.plugins.visualstudiokeymap"]
         },
         "vscode": {
             "extensions": [
