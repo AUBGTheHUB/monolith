@@ -100,8 +100,13 @@ bash wsl_ssh_forwarding.sh
 
 ---
 
-## 4. Openning  your project and building devcontainer :
- ### 4.1. Visual Studio Code (For pycharm setup skip to 4.2.)
+### IDEs
+
+* For TypeScript/JavaScript we recommend using VS Code
+* For Python, we recommend using PyCharm, as it has better type inference when compared to VS Code
+
+## 4. Opening  your project and building devcontainer:
+ ### 4.1. Visual Studio Code (For PyCharm setup skip to 4.2.)
 
 ```bash
 code .
@@ -123,6 +128,8 @@ code .
 If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
 Visual Studio Code client.
 
+![](/docs/images/connected_devContainer.png)
+
 
 ### 4.2. Pycharm
 #### 4.2.1 PyCharm WSL config:
@@ -132,7 +139,7 @@ Visual Studio Code client.
 
 #### 4.2.2 Open the project in pycharm:
 
-!!! DO NOT INTERACT WITH THE DEVCONTAINER POPUP IN THE LOWER RIGHT CORNER !!!
+**!!! DO NOT INTERACT WITH THE DEVCONTAINER POPUP IN THE LOWER RIGHT CORNER !!!**
 
 #### Initial Setup:
 > Navigate to the /monolith/.devcontainer/devcontainer.json. Find the blue docker icon and select
@@ -142,9 +149,9 @@ Visual Studio Code client.
 > ![Screenshot](docs/images/devcontainer.png)
 
 Once the container is built select the python interpreter in the right corner of the bottom bar
-- In the menu: **Add new intepreter / Add local interpreter / Select existing**: monolith/services/py-api/.venv/bin/python
+- In the menu: **Add new interpreter / Add local interpreter / Select existing**: ~/workspaces/monolith/services/py-api/.venv/bin/python
 
-    ![Screenshot](docs/images/interpreter.png)
+    ![Screenshot](docs/images/devcontainer_python_interpreter.png)
 
 #### Note: On first push git will most probably ask for ssh key forwarding. Just follow the prompts on the popup
 
@@ -153,7 +160,8 @@ Once the container is built select the python interpreter in the right corner of
  - Look for the Open Project button:
 
     ![Screenshot](docs/images/docker_containers.png)
-
+ - Alternatively you can select the Dev Container from the **Remote Development** panel in your Pycharm Welcome screen:
+    ![Screenshot](docs/images)
 ---
 
 ## 5. **HOW TO RUN THE PROJECT**:
