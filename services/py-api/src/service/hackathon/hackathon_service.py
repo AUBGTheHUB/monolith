@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from datetime import timezone
 from math import ceil
 from secrets import token_hex
-from typing import Final, Optional, Tuple, List, TypedDict
+from typing import Optional, Tuple, List, TypedDict
 
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -36,7 +36,7 @@ from src.server.schemas.request_schemas.schemas import (
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
-
+from src.service.constants import *
 LOG = get_logger()
 
 
@@ -49,38 +49,6 @@ class RandomTeam(TypedDict):
 # TODO: This class should be split into multimple smaller ones as it breaks the Single Responsibility Principle
 class HackathonService:
     """Service layer designed to hold all business logic related to hackathon management"""
-
-    MAX_NUMBER_OF_TEAM_MEMBERS: Final[int] = 6
-    """Constraint for max number of participants in a given team"""
-
-    MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON: Final[int] = 16
-    """Constraint for max number of verified teams in the hackathon. A team is verified when the admin participant who
-    created the team, verified their email. This const also includes the random teams, which are automatically created
-    and marked as verified, once the hackathon registration closes"""
-
-    REG_ADMIN_AND_RANDOM_SWITCH: Final[str] = "isRegTeamsFull"
-    """This switch toggles the registration for the admin and random participants. It will disable the application
-    form in the frontend when it is set to `true` and it will enable it when it is set to `false`. If somebody tries to
-    register using the API endpoint they will get the `Max hackathon capacity has been reached` message.
-    """
-
-    REG_ALL_PARTICIPANTS_SWITCH: Final[str] = "RegSwitch"
-    """This switch toggles the registration for the all participants. It will disable the application for both
-    the front-end interface and the API endpoint. If somebody tries to register through the API endpoint they will get
-    the `Registration is closed` message.
-    """
-
-    _RATE_LIMIT_SECONDS: Final[int] = 90
-    """Number of seconds before a participant is allowed to resend their verification email, if they didn't get one."""
-
-    _PARTICIPANTS_VERIFICATION_ROUTE = "/hackathon/verification"
-    """The front-end route for email verification"""
-
-    _PARTICIPANTS_REGISTRATION_ROUTE = "/hackathon/registration"
-    """The front-end route for hackathon registration"""
-
-    _FRONTEND_PORT = 3000
-    """The port on which the frontend is running"""
 
     def __init__(
         self,
@@ -186,11 +154,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams
         number_ant_teams = verified_registered_teams + ceil(
-            verified_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS
+            verified_random_participants / MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams < self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams < MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_capacity_register_random_participant_case(self) -> bool:
         """Calculate if there is enough capacity to register a new random participant. Capacity is measured in max
@@ -205,11 +173,11 @@ class HackathonService:
 
         # Calculate the anticipated number of teams if a new random participant is added
         number_ant_teams = verified_registered_teams + ceil(
-            (verified_random_participants + 1) / self.MAX_NUMBER_OF_TEAM_MEMBERS
+            (verified_random_participants + 1) / MAX_NUMBER_OF_TEAM_MEMBERS
         )
 
         # Check against the hackathon capacity
-        return number_ant_teams <= self.MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+        return number_ant_teams <= MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
 
     async def check_team_capacity(self, team_id: str) -> bool:
         """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
@@ -218,7 +186,7 @@ class HackathonService:
         registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
 
         # Check against team capacity
-        return registered_teammates + 1 <= self.MAX_NUMBER_OF_TEAM_MEMBERS
+        return registered_teammates + 1 <= MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData
@@ -346,13 +314,13 @@ class HackathonService:
 
         # Calculate the rate limit
         is_within_rate_limit = datetime.now() - participant.ok_value.last_sent_verification_email >= timedelta(
-            seconds=self._RATE_LIMIT_SECONDS
+            seconds=RATE_LIMIT_SECONDS
         )
 
         # If it is not within the rate limit raise an error
         if not is_within_rate_limit:
             remaining_time = (
-                self._RATE_LIMIT_SECONDS - (datetime.now() - participant.ok_value.last_sent_verification_email).seconds
+                RATE_LIMIT_SECONDS - (datetime.now() - participant.ok_value.last_sent_verification_email).seconds
             )
 
             return Err(EmailRateLimitExceededError(seconds_to_retry_after=remaining_time))
@@ -397,10 +365,10 @@ class HackathonService:
         # Append the Jwt to the endpoint
         if is_local_env():
             verification_link = (
-                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+                f"http://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
             )
         else:
-            verification_link = f"https://{DOMAIN}{self._PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+            verification_link = f"https://{DOMAIN}{PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
 
         # Update the last_sent_verification_email field for rate-limiting purposes
         result = await self._participant_repo.update(
@@ -478,10 +446,10 @@ class HackathonService:
         # Append the Jwt to the endpoint
         if is_local_env():
             invite_link = (
-                f"http://{DOMAIN}:{self._FRONTEND_PORT}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+                f"http://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
             )
         else:
-            invite_link = f"https://{DOMAIN}{self._PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            invite_link = f"https://{DOMAIN}{PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
         err = self._mail_service.send_participant_successful_registration_email(
             participant=participant, background_tasks=background_tasks, invite_link=invite_link, team_name=team.name
@@ -536,7 +504,7 @@ class HackathonService:
         # Calculate the number of hackathon participants
         number_of_random_participants = len(prog_participants) + len(non_prog_participants)
         # Calculate the number of teams that are going to be needed for the given number of participants
-        number_of_teams = ceil(number_of_random_participants / self.MAX_NUMBER_OF_TEAM_MEMBERS)
+        number_of_teams = ceil(number_of_random_participants / MAX_NUMBER_OF_TEAM_MEMBERS)
 
         # Create a list for storing the Random Teams
         teams = []
@@ -604,7 +572,7 @@ class HackathonService:
         self,
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         # Check if the feature switch exists
-        feature_switch = await self._fs_repo.get_feature_switch(feature=self.REG_ADMIN_AND_RANDOM_SWITCH)
+        feature_switch = await self._fs_repo.get_feature_switch(feature=REG_ADMIN_AND_RANDOM_SWITCH)
 
         if is_err(feature_switch):
             return feature_switch
@@ -623,7 +591,7 @@ class HackathonService:
         API anymore. Moreover, there is also no front-end interface for it.
         """
         feature_switch = await self._fs_repo.update_by_name(
-            name=self.REG_ALL_PARTICIPANTS_SWITCH, obj_fields=UpdateFeatureSwitchParams(state=False)
+            name=REG_ALL_PARTICIPANTS_SWITCH, obj_fields=UpdateFeatureSwitchParams(state=False)
         )
 
         if is_err(feature_switch):
