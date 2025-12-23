@@ -8,6 +8,7 @@ from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.mongo.collections.hackathon_collections import PARTICIPANTS_COLLECTION
 from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import DuplicateEmailError, ParticipantNotFoundError
@@ -16,8 +17,8 @@ LOG = get_logger()
 
 
 class ParticipantsRepository(CRUDRepository[Participant]):
-    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
-        self._collection = db_manager.get_collection(collection_name)
+    def __init__(self, db_manager: MongoDatabaseManager) -> None:
+        self._collection = db_manager.get_collection(PARTICIPANTS_COLLECTION)
 
     async def fetch_by_id(self, obj_id: str) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:

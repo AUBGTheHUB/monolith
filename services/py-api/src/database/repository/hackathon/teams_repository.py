@@ -8,6 +8,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.mongo.collections.hackathon_collections import TEAMS_COLLECTION
 from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import DuplicateTeamNameError, TeamNotFoundError
@@ -17,8 +18,8 @@ LOG = get_logger()
 
 class TeamsRepository(CRUDRepository[Team]):
 
-    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
-        self._collection = db_manager.get_collection(collection_name)
+    def __init__(self, db_manager: MongoDatabaseManager) -> None:
+        self._collection = db_manager.get_collection(TEAMS_COLLECTION)
 
     async def create(
         self,

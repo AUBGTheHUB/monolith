@@ -6,6 +6,7 @@ from src.server.routes.hackathon.hackathon_management_routes import register_hac
 from src.server.routes.hackathon.participant_reg_routes import register_participants_reg_routes
 from src.server.routes.hackathon.verification_routes import register_verification_routes
 from src.server.routes.utility_routes import register_utility_routes
+from src.server.routes.admin.admin_routes import register_admin_routes
 
 
 class Routes:
@@ -20,6 +21,7 @@ class Routes:
             http_handler=http_handlers.hackathon_management_handlers
         )
         verification_router = register_verification_routes(http_handler=http_handlers.verification_handlers)
+        admin_router = register_admin_routes(http_handler=http_handlers.admin_handlers)
 
         # Bind all routers to the main one
         main_router.include_router(utility_router)
@@ -27,3 +29,4 @@ class Routes:
         main_router.include_router(participant_reg_router)
         main_router.include_router(hackathon_reg_router)
         main_router.include_router(verification_router)
+        main_router.include_router(admin_router)

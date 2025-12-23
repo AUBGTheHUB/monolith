@@ -9,10 +9,6 @@ LOG = get_logger()
 
 DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOCAL": "TheHubDEV"}[ENV]
 
-PARTICIPANTS_COLLECTION = "participants"
-TEAMS_COLLECTION = "teams"
-FEATURE_SWITCH_COLLECTION = "feature-switches"
-
 
 class MongoDatabaseManager:
     """Provides utils for pinging the database, closing connections, and getting access to a particular collection in
