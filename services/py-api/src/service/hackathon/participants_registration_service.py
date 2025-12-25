@@ -21,17 +21,20 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
 )
 from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.participants.participant_service import ParticipantService
 
 
 class ParticipantRegistrationService:
     """Service layer responsible for handling the business logic when registering a participant"""
 
-    def __init__(self, hackathon_service: HackathonService, jwt_utility: JwtUtility) -> None:
+    def __init__(self, participant_service: ParticipantService, hackathon_service: HackathonService,
+                 jwt_utility: JwtUtility) -> None:
         self._hackathon_service = hackathon_service
+        self._participant_service = participant_service
         self._jwt_utility = jwt_utility
 
     async def register_admin_participant(
-        self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
+            self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError
@@ -62,7 +65,7 @@ class ParticipantRegistrationService:
         return Ok((update_result.ok_value if update_result else create_result.ok_value[0], create_result.ok_value[1]))
 
     async def register_random_participant(
-        self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
+            self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, None],
         DuplicateEmailError | HackathonCapacityExceededError | ParticipantNotFoundError | Exception,
@@ -73,7 +76,7 @@ class ParticipantRegistrationService:
             return Err(HackathonCapacityExceededError())
 
         # Proceed with registration if there is capacity
-        create_result = await self._hackathon_service.create_random_participant(input_data)
+        create_result = await self._participant_service.create_random_participant(input_data)
         if is_err(create_result):
             return create_result
 
@@ -89,7 +92,7 @@ class ParticipantRegistrationService:
         return Ok((update_result.ok_value if update_result else create_result.ok_value[0], None))
 
     async def register_invite_link_participant(
-        self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
+            self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
     ) -> Result[
         Tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
@@ -106,7 +109,7 @@ class ParticipantRegistrationService:
         if not has_capacity:
             return Err(TeamCapacityExceededError())
 
-        result = await self._hackathon_service.create_invite_link_participant(
+        result = await self._participant_service.create_invite_link_participant(
             input_data=input_data, decoded_jwt_token=decoded_data
         )
         if is_err(result):
