@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List
 
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
@@ -26,6 +26,27 @@ class ParticipantService:
     ) -> None:
         self._participant_repo = participants_repo
         self._teams_repo = teams_repo
+
+    async def retrieve_and_categorize_random_participants(
+        self,
+    ) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
+        programming_oriented = []
+        non_programming_oriented = []
+        # Fetch all the verified random participants
+        result = await self._participant_repo.get_verified_random_participants()
+
+        # Return the result to the upper layer in case of an Exception
+        if is_err(result):
+            return result
+
+        # Group the into categories programming oriented, non-programming oriented
+        for participant in result.ok_value:
+            if participant.programming_level == "I am not participating as a programmer":
+                non_programming_oriented.append(participant)
+            else:
+                programming_oriented.append(participant)
+
+        return Ok((programming_oriented, non_programming_oriented))
 
     async def create_random_participant(
         self, input_data: RandomParticipantInputData

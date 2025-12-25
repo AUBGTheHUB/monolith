@@ -24,6 +24,7 @@ from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants.participant_service import ParticipantService
+from src.service.hackathon.teams.team_service import TeamService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
@@ -490,7 +491,6 @@ class HackathonServiceMock(Protocol):
     check_team_capacity: AsyncMock
     verify_random_participant: AsyncMock
     verify_admin_participant_and_team_in_transaction: AsyncMock
-    delete_team: AsyncMock
     verify_admin_participant: AsyncMock
     send_verification_email: AsyncMock
     send_successful_registration_email: Mock
@@ -517,13 +517,9 @@ def hackathon_service_mock() -> HackathonServiceMock:
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
     hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-    # hackathon_service.create_random_participant = AsyncMock()
-    # hackathon_service.create_invite_link_participant = AsyncMock()
     hackathon_service.check_team_capacity = AsyncMock()
     hackathon_service.verify_random_participant = AsyncMock()
     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-    # hackathon_service.delete_participant = AsyncMock()
-    hackathon_service.delete_team = AsyncMock()
     hackathon_service.send_verification_email = AsyncMock()
     hackathon_service.send_successful_registration_email = Mock()
 
@@ -556,6 +552,29 @@ def participant_service_mock() -> ParticipantServiceMock:
     participant_service.delete_participant = AsyncMock()
 
     return cast(ParticipantServiceMock, participant_service)
+
+
+class TeamServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked TeamService
+
+    Should not be initialized directly by application developers to create a ParticipantServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    delete_team: AsyncMock
+
+
+@pytest.fixture
+def team_service_mock() -> TeamServiceMock:
+    """Mock object for TeamService.
+
+    Returns:
+        A mocked TeamService
+    """
+    team_service = _create_typed_mock(TeamService)
+    team_service.delete_team = AsyncMock()
+
+    return cast(TeamServiceMock, team_service)
 
 
 class ParticipantRegistrationServiceMock(Protocol):

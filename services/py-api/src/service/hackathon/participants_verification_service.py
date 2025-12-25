@@ -3,6 +3,7 @@ from fastapi import BackgroundTasks
 from result import Err, Ok, Result, is_err
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
+from src.service.hackathon.teams.team_service import TeamService
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 from src.service.hackathon.hackathon_service import HackathonService
 from src.exception import (
@@ -17,8 +18,9 @@ from src.exception import (
 class ParticipantVerificationService:
     """Service layer responsible for handling the business logic when verifying a participant"""
 
-    def __init__(self, hackathon_service: HackathonService) -> None:
+    def __init__(self, hackathon_service: HackathonService, team_service: TeamService) -> None:
         self._hackathon_service = hackathon_service
+        self._team_service = team_service
 
     async def verify_admin_participant(
         self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
@@ -106,4 +108,4 @@ class ParticipantVerificationService:
 
             # If the registration switch was flipped successfully create the random participant teams
             if not is_err(result):
-                await self._hackathon_service.create_random_participant_teams()
+                await self._team_service.create_random_participant_teams()

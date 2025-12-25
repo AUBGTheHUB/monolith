@@ -20,16 +20,20 @@ from src.server.schemas.response_schemas.schemas import (
 )
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants.participant_service import ParticipantService
+from src.service.hackathon.teams.team_service import TeamService
 
 
 class HackathonManagementHandlers(BaseHandler):
 
-    def __init__(self, hackathon_service: HackathonService, participant_service: ParticipantService) -> None:
+    def __init__(
+        self, hackathon_service: HackathonService, participant_service: ParticipantService, team_service: TeamService
+    ) -> None:
         self._hackathon_service = hackathon_service
         self._participant_service = participant_service
+        self._team_service = team_service
 
     async def delete_team(self, object_id: str) -> Response:
-        result = await self._hackathon_service.delete_team(object_id)
+        result = await self._team_service.delete_team(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -37,7 +41,7 @@ class HackathonManagementHandlers(BaseHandler):
         return Response(TeamDeletedResponse(team=result.ok_value), status_code=status.HTTP_200_OK)
 
     async def get_all_teams(self) -> Response:
-        result = await self._hackathon_service.fetch_all_teams()
+        result = await self._team_service.fetch_all_teams()
 
         if is_err(result):
             return self.handle_error(result.err_value)
