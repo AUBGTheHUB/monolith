@@ -23,6 +23,7 @@ from src.database.repository.hackathon.participants_repository import Participan
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.participants.participant_service import ParticipantService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
@@ -274,7 +275,6 @@ class MotorDbCursorMock(Protocol):
 
 @pytest.fixture
 def db_cursor_mock() -> MotorDbCursorMock:
-
     db_cursor_mock = _create_typed_mock(AsyncIOMotorCursor)
     db_cursor_mock.to_list = AsyncMock()
 
@@ -381,7 +381,6 @@ def participant_repo_mock() -> ParticipantRepoMock:
     """
 
     participant_repo = _create_typed_mock(ParticipantsRepository)
-
     participant_repo.fetch_by_id = AsyncMock()
     participant_repo.fetch_all = AsyncMock()
     participant_repo.update = AsyncMock()
@@ -440,7 +439,6 @@ def team_repo_mock() -> TeamRepoMock:
 
 
 class FeatureSwitchRepoMock(Protocol):
-
     get_feature_switch: AsyncMock
     create: AsyncMock
     delete: AsyncMock
@@ -489,12 +487,9 @@ class HackathonServiceMock(Protocol):
     check_capacity_register_admin_participant_case: AsyncMock
     check_capacity_register_random_participant_case: AsyncMock
     check_send_verification_email_rate_limit: AsyncMock
-    create_random_participant: AsyncMock
-    create_invite_link_participant: AsyncMock
     check_team_capacity: AsyncMock
     verify_random_participant: AsyncMock
     verify_admin_participant_and_team_in_transaction: AsyncMock
-    delete_participant: AsyncMock
     delete_team: AsyncMock
     verify_admin_participant: AsyncMock
     send_verification_email: AsyncMock
@@ -522,17 +517,45 @@ def hackathon_service_mock() -> HackathonServiceMock:
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
     hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-    hackathon_service.create_random_participant = AsyncMock()
-    hackathon_service.create_invite_link_participant = AsyncMock()
+    # hackathon_service.create_random_participant = AsyncMock()
+    # hackathon_service.create_invite_link_participant = AsyncMock()
     hackathon_service.check_team_capacity = AsyncMock()
     hackathon_service.verify_random_participant = AsyncMock()
     hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-    hackathon_service.delete_participant = AsyncMock()
+    # hackathon_service.delete_participant = AsyncMock()
     hackathon_service.delete_team = AsyncMock()
     hackathon_service.send_verification_email = AsyncMock()
     hackathon_service.send_successful_registration_email = Mock()
 
     return cast(HackathonServiceMock, hackathon_service)
+
+
+class ParticipantServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked ParticipantService
+
+    Should not be initialized directly by application developers to create a ParticipantServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    create_random_participant: AsyncMock
+    create_invite_link_participant: AsyncMock
+    delete_participant: AsyncMock
+
+
+@pytest.fixture
+def participant_service_mock() -> ParticipantServiceMock:
+    """Mock object for ParticipantService.
+
+    Returns:
+        A mocked ParticipantService
+    """
+    participant_service = _create_typed_mock(ParticipantService)
+
+    participant_service.create_random_participant = AsyncMock()
+    participant_service.create_invite_link_participant = AsyncMock()
+    participant_service.delete_participant = AsyncMock()
+
+    return cast(ParticipantServiceMock, participant_service)
 
 
 class ParticipantRegistrationServiceMock(Protocol):
