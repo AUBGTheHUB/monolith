@@ -19,15 +19,17 @@ from src.server.schemas.response_schemas.schemas import (
     FeatureSwitchResponse,
 )
 from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.participants.participant_service import ParticipantService
 
 
 class HackathonManagementHandlers(BaseHandler):
 
-    def __init__(self, service: HackathonService) -> None:
-        self._service = service
+    def __init__(self, hackathon_service: HackathonService, participant_service: ParticipantService) -> None:
+        self._hackathon_service = hackathon_service
+        self._participant_service = participant_service
 
     async def delete_team(self, object_id: str) -> Response:
-        result = await self._service.delete_team(object_id)
+        result = await self._hackathon_service.delete_team(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -35,7 +37,7 @@ class HackathonManagementHandlers(BaseHandler):
         return Response(TeamDeletedResponse(team=result.ok_value), status_code=status.HTTP_200_OK)
 
     async def get_all_teams(self) -> Response:
-        result = await self._service.fetch_all_teams()
+        result = await self._hackathon_service.fetch_all_teams()
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -43,7 +45,7 @@ class HackathonManagementHandlers(BaseHandler):
         return Response(AllTeamsResponse(teams=result.ok_value), status_code=status.HTTP_200_OK)
 
     async def delete_participant(self, object_id: str) -> Response:
-        result = await self._service.delete_participant(object_id)
+        result = await self._participant_service.delete_participant(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -52,7 +54,7 @@ class HackathonManagementHandlers(BaseHandler):
 
     async def close_registration(self) -> Response:
 
-        result = await self._service.close_reg_for_all_participants()
+        result = await self._hackathon_service.close_reg_for_all_participants()
 
         if is_err(result):
             return self.handle_error(result.err_value)

@@ -29,6 +29,7 @@ from src.server.routes.routes import Routes
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.participants.participant_service import ParticipantService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
@@ -131,8 +132,9 @@ def create_app() -> FastAPI:
         mail_service=hackathon_mail_service,
         jwt_utility=jwt_utility,
     )
+    participant_service = ParticipantService(participants_repo=participants_repo, teams_repo=teams_repo)
     participants_reg_service = ParticipantRegistrationService(
-        hackathon_service=hackathon_service, jwt_utility=jwt_utility
+        participant_service=participant_service, hackathon_service=hackathon_service, jwt_utility=jwt_utility
     )
     participants_verification_service = ParticipantVerificationService(hackathon_service=hackathon_service)
     fs_service = FeatureSwitchService(repository=fs_repo)
@@ -141,7 +143,9 @@ def create_app() -> FastAPI:
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandler(service=fs_service),
-        hackathon_management_handlers=HackathonManagementHandlers(service=hackathon_service),
+        hackathon_management_handlers=HackathonManagementHandlers(
+            hackathon_service=hackathon_service, participant_service=participant_service
+        ),
         participant_handlers=ParticipantHandlers(service=participants_reg_service),
         verification_handlers=VerificationHandlers(service=participants_verification_service, jwt_utility=jwt_utility),
     )
