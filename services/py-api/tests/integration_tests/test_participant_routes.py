@@ -2,7 +2,9 @@ from os import environ
 from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
-from src.service.hackathon.hackathon_service import HackathonService
+
+from src.service.constants import MAX_NUMBER_OF_TEAM_MEMBERS
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from tests.integration_tests.conftest import (
@@ -320,7 +322,7 @@ async def test_create_link_participant_succesful(
     assert resp_json["team_id"] == admin_resp_json["team_id"]
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
+@patch.object(HackathonUtilityService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(
@@ -349,7 +351,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
     # When
-    for num in range(1, HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS):
+    for num in range(1, MAX_NUMBER_OF_TEAM_MEMBERS):
         link_participant_body = generate_participant_request_body(
             registration_type="invite_link", email=f"testtest{num}@gmail.com", team_name=TEST_TEAM_NAME
         )
@@ -358,7 +360,7 @@ async def test_create_link_participant_team_capacity_exceeded(
 
     link_participant_body = generate_participant_request_body(
         registration_type="invite_link",
-        email=f"testtest{HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS}@gmail.com",
+        email=f"testtest{MAX_NUMBER_OF_TEAM_MEMBERS}@gmail.com",
         team_name=TEST_TEAM_NAME,
     )
     resp = await create_test_participant(participant_body=link_participant_body, jwt_token=encoded_token)

@@ -18,7 +18,7 @@ from src.server.schemas.response_schemas.schemas import (
     Response,
     VerificationEmailSentSuccessfullyResponse,
 )
-from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.verification_service import VerificationService
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.service.jwt_utils.codec import JwtUtility
 from starlette import status
@@ -30,9 +30,7 @@ from tests.unit_tests.conftest import ParticipantVerificationServiceMock, Backgr
 def verification_handlers(
     participant_verification_service_mock: ParticipantVerificationServiceMock, jwt_utility_mock: JwtUtility
 ) -> VerificationHandlers:
-    return VerificationHandlers(
-        cast(ParticipantVerificationService, participant_verification_service_mock), jwt_utility_mock
-    )
+    return VerificationHandlers(cast(VerificationService, participant_verification_service_mock), jwt_utility_mock)
 
 
 @pytest.mark.asyncio

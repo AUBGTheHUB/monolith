@@ -17,7 +17,7 @@ from src.exception import (
     TeamNotFoundError,
 )
 
-from src.service.hackathon.participants.participant_service import ParticipantService
+from src.service.hackathon.participant_service import ParticipantService
 from src.service.constants import *
 
 LOG = get_logger()
@@ -29,6 +29,8 @@ class RandomTeam(TypedDict):
 
 
 class TeamService:
+    """Service layer designed to perform crud on teams"""
+
     def __init__(
         self,
         teams_repo: TeamsRepository,
@@ -46,6 +48,15 @@ class TeamService:
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
         return await self._teams_repo.delete(obj_id=team_id)
+
+    async def check_team_capacity(self, team_id: str) -> bool:
+        """Calculate if there is enough capacity to register a new participant from the invite link for his team."""
+
+        # Fetch number of registered participants in the team
+        registered_teammates = await self._participant_repo.get_number_registered_teammates(team_id)
+
+        # Check against team capacity
+        return registered_teammates + 1 <= MAX_NUMBER_OF_TEAM_MEMBERS
 
     async def create_random_participant_teams(self) -> bool:
 

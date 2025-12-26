@@ -4,21 +4,29 @@ from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.model.base_model import SerializableObjectId
-from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.participant_model import Participant, UpdateParticipantParams
 from src.database.model.hackathon.team_model import Team
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
-from src.exception import DuplicateEmailError, TeamNameMissmatchError, TeamNotFoundError, ParticipantNotFoundError
+from src.exception import (
+    DuplicateEmailError,
+    TeamNameMissmatchError,
+    TeamNotFoundError,
+    ParticipantNotFoundError,
+    ParticipantAlreadyVerifiedError,
+)
 from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
+from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
 LOG = get_logger()
 
 
 class ParticipantService:
+    """Service layer designed to perform crud on participants"""
+
     def __init__(
         self,
         participants_repo: ParticipantsRepository,
@@ -92,3 +100,27 @@ class ParticipantService:
         self, participant_id: str
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         return await self._participant_repo.delete(obj_id=participant_id)
+
+    async def verify_random_participant(
+        self, jwt_data: JwtParticipantVerificationData
+    ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
+
+        # This step is taken to ensure that we are not verifying an already verified participant
+        result = await self._participant_repo.fetch_by_id(jwt_data.sub)
+
+        if is_err(result):
+            return result
+
+        if result.ok_value.email_verified:
+            return Err(ParticipantAlreadyVerifiedError())
+
+        # Updates the random participant if it exists
+        result = await self._participant_repo.update(
+            obj_id=jwt_data.sub, obj_fields=UpdateParticipantParams(email_verified=True)
+        )
+
+        if is_err(result):
+            return result
+
+        # As when first created, the random participant is not assigned to a team we return the team as None
+        return Ok((result.ok_value, None))

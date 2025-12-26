@@ -21,12 +21,13 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.service.hackathon.hackathon_service import HackathonService
-from src.service.hackathon.participants.participant_service import ParticipantService
-from src.service.hackathon.teams.team_service import TeamService
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
-from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
+from src.service.hackathon.participant_service import ParticipantService
+from src.service.hackathon.team_service import TeamService
+from src.service.hackathon.registration_service import RegistrationService
+from src.service.hackathon.verification_service import VerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from typing_extensions import Protocol
@@ -497,7 +498,7 @@ class HackathonServiceMock(Protocol):
 
 
 @pytest.fixture
-def hackathon_service_mock() -> HackathonServiceMock:
+def hackathon_utility_service_mock() -> HackathonServiceMock:
     """Mock object for HackathonService.
 
     For mocking purposes, you can modify the return values of its methods::
@@ -512,16 +513,16 @@ def hackathon_service_mock() -> HackathonServiceMock:
         A mocked HackathonService
     """
 
-    hackathon_service = _create_typed_mock(HackathonService)
-    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service = _create_typed_mock(HackathonUtilityService)
+    # hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
-    hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-    hackathon_service.check_team_capacity = AsyncMock()
-    hackathon_service.verify_random_participant = AsyncMock()
-    hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-    hackathon_service.send_verification_email = AsyncMock()
-    hackathon_service.send_successful_registration_email = Mock()
+    # hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
+    # hackathon_service.check_team_capacity = AsyncMock()
+    # hackathon_service.verify_random_participant = AsyncMock()
+    # hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
+    # hackathon_service.send_verification_email = AsyncMock()
+    # hackathon_service.send_successful_registration_email = Mock()
 
     return cast(HackathonServiceMock, hackathon_service)
 
@@ -538,6 +539,9 @@ class ParticipantServiceMock(Protocol):
     delete_participant: AsyncMock
 
 
+verify_random_participant: AsyncMock
+
+
 @pytest.fixture
 def participant_service_mock() -> ParticipantServiceMock:
     """Mock object for ParticipantService.
@@ -550,7 +554,7 @@ def participant_service_mock() -> ParticipantServiceMock:
     participant_service.create_random_participant = AsyncMock()
     participant_service.create_invite_link_participant = AsyncMock()
     participant_service.delete_participant = AsyncMock()
-
+    participant_service.verify_random_participant = AsyncMock()
     return cast(ParticipantServiceMock, participant_service)
 
 
@@ -561,6 +565,7 @@ class TeamServiceMock(Protocol):
     used just for type hinting purposes.
     """
 
+    check_team_capacity: AsyncMock
     delete_team: AsyncMock
 
 
@@ -573,8 +578,33 @@ def team_service_mock() -> TeamServiceMock:
     """
     team_service = _create_typed_mock(TeamService)
     team_service.delete_team = AsyncMock()
-
+    team_service.check_team_capacity = _create_typed_mock(TeamService.check_team_capacity)
     return cast(TeamServiceMock, team_service)
+
+
+class AdminTeamServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked HackathonService
+
+    Should not be initialized directly by application developers to create a HackathonServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    create_participant_and_team_in_transaction: AsyncMock
+    verify_admin_participant_and_team_in_transaction: AsyncMock
+
+
+@pytest.fixture
+def admin_team_service_mock() -> AdminTeamServiceMock:
+    """Mock object for AdminTeamService.
+
+    Returns:
+        A mocked AdminTeamService
+    """
+
+    admin_team_service = _create_typed_mock(AdminTeamService)
+    admin_team_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
+    admin_team_service.create_participant_and_team_in_transaction = AsyncMock()
+    return cast(AdminTeamServiceMock, admin_team_service)
 
 
 class ParticipantRegistrationServiceMock(Protocol):
@@ -604,7 +634,7 @@ def participant_registration_service_mock() -> ParticipantRegistrationServiceMoc
     Returns:
         A mocked ParticipantRegistrationService
     """
-    service = _create_typed_mock(ParticipantRegistrationService)
+    service = _create_typed_mock(RegistrationService)
     service.register_admin_participant = AsyncMock()
     service.register_random_participant = AsyncMock()
     service.register_invite_link_participant = AsyncMock()
@@ -640,7 +670,7 @@ def participant_verification_service_mock() -> ParticipantVerificationServiceMoc
         A mocked ParticipantVerificationService
     """
 
-    service = _create_typed_mock(ParticipantVerificationService)
+    service = _create_typed_mock(VerificationService)
     service.verify_random_participant = AsyncMock()
     service.verify_admin_participant = AsyncMock()
     service.resend_verification_email = AsyncMock()

@@ -18,17 +18,20 @@ from src.server.schemas.response_schemas.schemas import (
     AllTeamsResponse,
     FeatureSwitchResponse,
 )
-from src.service.hackathon.hackathon_service import HackathonService
-from src.service.hackathon.participants.participant_service import ParticipantService
-from src.service.hackathon.teams.team_service import TeamService
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
+from src.service.hackathon.participant_service import ParticipantService
+from src.service.hackathon.team_service import TeamService
 
 
 class HackathonManagementHandlers(BaseHandler):
 
     def __init__(
-        self, hackathon_service: HackathonService, participant_service: ParticipantService, team_service: TeamService
+        self,
+        hackathon_utility_service: HackathonUtilityService,
+        participant_service: ParticipantService,
+        team_service: TeamService,
     ) -> None:
-        self._hackathon_service = hackathon_service
+        self._hackathon_utility_service = hackathon_utility_service
         self._participant_service = participant_service
         self._team_service = team_service
 
@@ -58,7 +61,7 @@ class HackathonManagementHandlers(BaseHandler):
 
     async def close_registration(self) -> Response:
 
-        result = await self._hackathon_service.close_reg_for_all_participants()
+        result = await self._hackathon_utility_service.close_reg_for_all_participants()
 
         if is_err(result):
             return self.handle_error(result.err_value)
