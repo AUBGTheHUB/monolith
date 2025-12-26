@@ -20,17 +20,30 @@ from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
 )
 from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.participants.participant_service import ParticipantService
 from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from src.service.jwt_utils.codec import JwtUtility
-from tests.unit_tests.conftest import HackathonServiceMock, TeamRepoMock, ParticipantRepoMock, BackgroundTasksMock
+from tests.unit_tests.conftest import (
+    HackathonServiceMock,
+    TeamRepoMock,
+    ParticipantRepoMock,
+    BackgroundTasksMock,
+    ParticipantServiceMock,
+)
 
 
 @pytest.fixture
 def p_reg_service(
-    hackathon_service_mock: HackathonServiceMock, jwt_utility_mock: JwtUtility
+    hackathon_service_mock: HackathonServiceMock,
+    jwt_utility_mock: JwtUtility,
+    participant_service_mock: ParticipantServiceMock,
 ) -> ParticipantRegistrationService:
-    return ParticipantRegistrationService(cast(HackathonService, hackathon_service_mock), jwt_utility_mock)
+    return ParticipantRegistrationService(
+        cast(ParticipantService, participant_service_mock),
+        cast(HackathonService, hackathon_service_mock),
+        jwt_utility_mock,
+    )
 
 
 @pytest.mark.asyncio
@@ -44,7 +57,6 @@ async def test_register_admin_participant_success(
     unverified_team_mock: Team,
     admin_case_input_data_mock: AdminParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
@@ -85,7 +97,6 @@ async def test_register_admin_participant_duplicate_team_name_error(
     background_tasks_mock: BackgroundTasksMock,
     admin_case_input_data_mock: AdminParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
@@ -142,7 +153,6 @@ async def test_register_admin_participant_general_error(
     background_tasks_mock: BackgroundTasksMock,
     admin_case_input_data_mock: AdminParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
@@ -173,7 +183,6 @@ async def test_register_admin_participant_with_hackathon_cap_exceeded(
     participant_repo_mock: ParticipantRepoMock,
     admin_case_input_data_mock: AdminParticipantInputData,
 ) -> None:
-
     # Given
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
@@ -203,7 +212,6 @@ async def test_register_admin_participant_order_of_operations(
     background_tasks_mock: BackgroundTasksMock,
     admin_case_input_data_mock: AdminParticipantInputData,
 ) -> None:
-
     # Given
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
@@ -228,12 +236,12 @@ async def test_register_admin_participant_order_of_operations(
 async def test_register_random_participant_success(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     background_tasks_mock: BackgroundTasksMock,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
@@ -241,7 +249,7 @@ async def test_register_random_participant_success(
     hackathon_service_mock.send_verification_email = AsyncMock(return_value=None)
     # Mock successful `create` responses for participant.
     participant_repo_mock.create.return_value = random_participant_mock
-    hackathon_service_mock.create_random_participant.return_value = Ok(
+    participant_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
     )
 
@@ -270,15 +278,15 @@ async def test_register_random_participant_success(
 async def test_register_random_participant_duplicate_email_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     background_tasks_mock: BackgroundTasksMock,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     # Mock `create_random_participant` to return an `Err` for duplicate email err
-    hackathon_service_mock.create_random_participant.return_value = Err(
+    participant_service_mock.create_random_participant.return_value = Err(
         DuplicateEmailError(str(random_case_input_data_mock.email))
     )
 
@@ -300,13 +308,13 @@ async def test_register_random_participant_duplicate_email_error(
 async def test_register_random_participant_send_verification_email_failure_email_body_generation_failed(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     team_repo_mock: TeamRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
@@ -314,7 +322,7 @@ async def test_register_random_participant_send_verification_email_failure_email
     hackathon_service_mock.send_verification_email.return_value = Err(ValueError("Test Error"))
     # Mock successful `create` responses for participant.
     participant_repo_mock.create.return_value = random_participant_mock
-    hackathon_service_mock.create_random_participant.return_value = Ok(
+    participant_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
     )
 
@@ -335,13 +343,13 @@ async def test_register_random_participant_send_verification_email_failure_email
 async def test_register_random_participant_send_verification_email_failure_participant_deleted_before_sending_email(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     team_repo_mock: TeamRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
@@ -349,7 +357,7 @@ async def test_register_random_participant_send_verification_email_failure_parti
     hackathon_service_mock.send_verification_email.return_value = Err(ParticipantNotFoundError("Test Error"))
     # Mock successful `create` responses for participant.
     participant_repo_mock.create.return_value = random_participant_mock
-    hackathon_service_mock.create_random_participant.return_value = Ok(
+    participant_service_mock.create_random_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, None)
     )
 
@@ -369,15 +377,15 @@ async def test_register_random_participant_send_verification_email_failure_parti
 async def test_register_random_participant_general_error(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     background_tasks_mock: BackgroundTasksMock,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock not full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     # Mock `create_random_participant` to raise a general exception
-    hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
+    participant_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # When
     # Call the function under test
@@ -396,18 +404,18 @@ async def test_register_random_participant_general_error(
 async def test_register_random_participant_with_hackathon_cap_exceeded(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     random_participant_mock: Participant,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
     # Everything else is as expected
     participant_repo_mock.create.return_value = random_participant_mock
-    hackathon_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
+    participant_service_mock.create_random_participant.return_value = Ok(participant_repo_mock.create.return_value)
 
     # When
     # Call the function under test
@@ -425,17 +433,17 @@ async def test_register_random_participant_with_hackathon_cap_exceeded(
 async def test_register_random_participant_order_of_operations(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     background_tasks_mock: BackgroundTasksMock,
     random_case_input_data_mock: RandomParticipantInputData,
 ) -> None:
-
     # Given
     # Mock full hackathon
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
     # Mock `create_random_participant` to raise a general exception
     # This is in order to show that we should return the first faced err and that we check first the hackathon capacity
     # It should have no effect to the expected result of the test
-    hackathon_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
+    participant_service_mock.create_random_participant.return_value = Err(Exception("Test error"))
 
     # When
     # Call the function under test
@@ -453,6 +461,7 @@ async def test_register_random_participant_order_of_operations(
 async def test_register_link_participant_success(
     p_reg_service: ParticipantRegistrationService,
     hackathon_service_mock: HackathonServiceMock,
+    participant_service_mock: ParticipantServiceMock,
     team_repo_mock: TeamRepoMock,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
@@ -462,7 +471,6 @@ async def test_register_link_participant_success(
     jwt_user_registration_mock: JwtParticipantInviteRegistrationData,
     jwt_utility_mock: JwtUtility,
 ) -> None:
-
     # Given
     # Mock team has available space
     hackathon_service_mock.check_team_capacity.return_value = True
@@ -474,7 +482,7 @@ async def test_register_link_participant_success(
     # to with_transaction
     team_repo_mock.create.return_value = verified_team_mock
     participant_repo_mock.create.return_value = invite_participant_mock
-    hackathon_service_mock.create_invite_link_participant.return_value = Ok(
+    participant_service_mock.create_invite_link_participant.return_value = Ok(
         (participant_repo_mock.create.return_value, team_repo_mock.create.return_value)
     )
 
@@ -506,7 +514,6 @@ async def test_register_link_participant_capacity_exceeded(
     jwt_user_registration_mock: JwtParticipantInviteRegistrationData,
     jwt_utility_mock: JwtUtility,
 ) -> None:
-
     # Given
     # Mock the check to return Team Capacity Exceeded Error
     hackathon_service_mock.check_team_capacity.return_value = False

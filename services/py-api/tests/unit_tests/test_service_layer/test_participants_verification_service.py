@@ -16,14 +16,25 @@ from src.exception import (
 )
 from src.service.hackathon.hackathon_service import HackathonService
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.teams.team_service import TeamService
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
-from tests.unit_tests.conftest import HackathonServiceMock, TeamRepoMock, BackgroundTasksMock, ParticipantRepoMock
+from tests.unit_tests.conftest import (
+    HackathonServiceMock,
+    TeamRepoMock,
+    BackgroundTasksMock,
+    ParticipantRepoMock,
+    TeamServiceMock,
+)
 
 
 @pytest.fixture
-def p_ver_service(hackathon_service_mock: HackathonServiceMock) -> ParticipantVerificationService:
-    return ParticipantVerificationService(cast(HackathonService, hackathon_service_mock))
+def p_ver_service(
+    hackathon_service_mock: HackathonServiceMock, team_service_mock: TeamServiceMock
+) -> ParticipantVerificationService:
+    return ParticipantVerificationService(
+        cast(HackathonService, hackathon_service_mock), cast(TeamService, team_service_mock)
+    )
 
 
 @pytest.mark.asyncio
@@ -37,7 +48,6 @@ async def test_verify_admin_participant_success(
     participant_repo_mock: ParticipantRepoMock,
     jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
@@ -71,7 +81,6 @@ async def test_verify_admin_participant_participant_not_found_error(
     background_tasks_mock: BackgroundTasksMock,
     jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(
@@ -95,7 +104,6 @@ async def test_verify_admin_participant_team_not_found_error(
     background_tasks_mock: BackgroundTasksMock,
     jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(TeamNotFoundError())
@@ -117,7 +125,6 @@ async def test_verify_admin_participant_general_exeption(
     background_tasks_mock: BackgroundTasksMock,
     jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = True
     hackathon_service_mock.verify_admin_participant_and_team_in_transaction.return_value = Err(Exception())
@@ -143,7 +150,6 @@ async def test_verify_admin_participant_hackathon_capacity_exceeded_error(
     participant_repo_mock: ParticipantRepoMock,
     jwt_admin_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_admin_participant_case.return_value = False
     # Mock update methods for team and participants repos
@@ -172,7 +178,6 @@ async def test_verify_random_participant_success(
     background_tasks_mock: BackgroundTasksMock,
     jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.send_successful_registration_email = Mock(return_value=None)
@@ -202,7 +207,6 @@ async def test_verify_random_participant_participant_not_found_error(
     background_tasks_mock: BackgroundTasksMock,
     jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.verify_random_participant.return_value = Err(ParticipantNotFoundError())
@@ -224,7 +228,6 @@ async def test_verify_random_participant_general_exception(
     background_tasks_mock: BackgroundTasksMock,
     jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = True
     hackathon_service_mock.verify_random_participant.return_value = Err(Exception())
@@ -248,7 +251,6 @@ async def test_verify_random_participant_hackathon_capacity_exceeded_error(
     verified_random_participant_mock: Participant,
     jwt_random_user_verification_mock: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_capacity_register_random_participant_case.return_value = False
     participant_repo_mock.update.return_value = verified_random_participant_mock
@@ -275,7 +277,6 @@ async def test_send_verification_email_success(
     background_tasks_mock: BackgroundTasksMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     participant_mock_value = admin_participant_mock
     team_mock_value = unverified_team_mock
@@ -302,7 +303,6 @@ async def test_send_verification_email_rate_limit_exceeded_error(
     background_tasks_mock: BackgroundTasksMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(
         EmailRateLimitExceededError(seconds_to_retry_after=30)
@@ -323,7 +323,6 @@ async def test_send_verification_email_participant_not_found_error(
     background_tasks_mock: BackgroundTasksMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     hackathon_service_mock.check_send_verification_email_rate_limit.return_value = Err(ParticipantNotFoundError())
 
