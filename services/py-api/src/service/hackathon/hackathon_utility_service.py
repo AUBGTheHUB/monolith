@@ -16,9 +16,8 @@ from src.service.constants import *
 LOG = get_logger()
 
 
-# TODO: This class should be split into multimple smaller ones as it breaks the Single Responsibility Principle
 class HackathonUtilityService:
-    """Service layer designed to hold all business logic related to hackathon management"""
+    """Service layer designed to hold utility logic related to hackathon management"""
 
     def __init__(
         self,

@@ -39,7 +39,7 @@ LOG = get_logger()
 
 
 class ParticipantService:
-    """Mid-level service layer designed to perform crud on participants"""
+    """Mid-level service layer designed to hold logic related to participants"""
 
     def __init__(
         self,

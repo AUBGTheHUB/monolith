@@ -25,7 +25,7 @@ LOG = get_logger()
 
 
 class AdminTeamService:
-    """Mid-Level service layer designed to register new admins and their teams"""
+    """Mid-Level service layer designed for registering new admins and new teams"""
 
     def __init__(
         self,
