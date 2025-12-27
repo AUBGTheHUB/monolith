@@ -7,7 +7,6 @@ from src.server.middleware.exception_handler import ExceptionHandler
 
 
 class Middleware:
-
     _middlewares: List[Any] = [EnableCorsMiddleware, ExceptionHandler]
 
     @classmethod

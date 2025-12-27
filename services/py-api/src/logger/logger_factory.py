@@ -1,11 +1,16 @@
-from logging import INFO
+from logging import INFO, Filter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
 from typing import Dict, Any
 
-from structlog import configure, make_filtering_bound_logger, PrintLoggerFactory, WriteLoggerFactory
-from structlog.contextvars import merge_contextvars
+from structlog import (
+    configure,
+    make_filtering_bound_logger,
+    PrintLoggerFactory,
+    WriteLoggerFactory,
+)
+from structlog.contextvars import merge_contextvars, get_contextvars
 from structlog.dev import ConsoleRenderer
 from structlog.processors import (
     TimeStamper,
@@ -71,7 +76,7 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
         # is the .{backupCount}.
         for i in range(1, self.backupCount + 1):
             if i == 1:
-                rename(f"{self.baseFilename}.{1}", f"{self.baseFilename}.{self.backupCount}")
+                rename(f"{self.baseFilename}.1", f"{self.baseFilename}.{self.backupCount}")
             else:
                 rename(f"{self.baseFilename}.{i}", f"{self.baseFilename}.{i-1}")
 
@@ -93,13 +98,42 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
             original_file.truncate()
 
 
+class RequestIdFilter(Filter):
+    """
+    Logging filter that injects `request_id` into log records
+    based on structlog's contextvars.
+    """
+
+    def filter(self, record: LogRecord) -> bool:
+        try:
+            ctx = get_contextvars()
+        except Exception:
+            ctx = {}
+
+        request_id = ctx.get("request_id")
+        # Empty string so formatter with %(request_id)s never explodes
+        record.request_id = request_id or ""
+        return True
+
+
 def get_uvicorn_logger(env: str) -> Dict[str, Any]:
     prod_logging_config: Dict[str, Any] = {
         "version": 1,
         "formatters": {
             "logformatter": {
-                "format": "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s",
-                "datefmt": "%Y-%m-%d %H:%M:%S",
+                "format": (
+                    '{"timestamp":"%(asctime)s",'
+                    '"level":"%(levelname)s",'
+                    '"logger":"%(name)s",'
+                    '"request_id":"%(request_id)s",'
+                    '"message":"%(message)s"}'
+                ),
+                "datefmt": "%Y-%m-%dT%H:%M:%S",
+            },
+        },
+        "filters": {
+            "request_id_filter": {
+                "()": "src.logger.logger_factory.RequestIdFilter",
             },
         },
         "handlers": {
@@ -110,6 +144,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
                 "formatter": "logformatter",
                 "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
                 "backupCount": 2,  # 2 backup files
+                "filters": ["request_id_filter"],
             },
         },
         "root": {
@@ -121,13 +156,12 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    # We save the incoming requests logs to a file like this:
-    # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    # In DEV/PROD we log uvicorn output to shared/server.log as JSON-like lines
     if env in ("DEV", "PROD"):
         return prod_logging_config
 
+    # For LOCAL/TEST fall back to uvicorn's default logging config
     default_logging_config: Dict[str, Any] = LOGGING_CONFIG
-
     return default_logging_config
 
 
