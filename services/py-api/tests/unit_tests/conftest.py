@@ -478,7 +478,7 @@ def feature_switch_repo_mock() -> FeatureSwitchRepoMock:
 # ======================================
 
 
-class HackathonServiceMock(Protocol):
+class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
 
     Should not be initialized directly by application developers to create a HackathonServiceMock instance. It is
@@ -487,12 +487,10 @@ class HackathonServiceMock(Protocol):
 
     check_capacity_register_admin_participant_case: AsyncMock
     check_capacity_register_random_participant_case: AsyncMock
-    verify_admin_participant_and_team_in_transaction: AsyncMock
-    verify_admin_participant: AsyncMock
 
 
 @pytest.fixture
-def hackathon_utility_service_mock() -> HackathonServiceMock:
+def hackathon_utility_service_mock() -> HackathonUtilityServiceMock:
     """Mock object for HackathonService.
 
     For mocking purposes, you can modify the return values of its methods::
@@ -508,12 +506,10 @@ def hackathon_utility_service_mock() -> HackathonServiceMock:
     """
 
     hackathon_service = _create_typed_mock(HackathonUtilityService)
-    # hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
-    # hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
 
-    return cast(HackathonServiceMock, hackathon_service)
+    return cast(HackathonUtilityServiceMock, hackathon_service)
 
 
 class ParticipantServiceMock(Protocol):

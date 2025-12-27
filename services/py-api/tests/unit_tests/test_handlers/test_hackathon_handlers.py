@@ -17,12 +17,12 @@ from src.service.hackathon.hackathon_utility_service import HackathonUtilityServ
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.team_service import TeamService
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
-from tests.unit_tests.conftest import HackathonServiceMock, ParticipantServiceMock, TeamServiceMock
+from tests.unit_tests.conftest import HackathonUtilityServiceMock, ParticipantServiceMock, TeamServiceMock
 
 
 @pytest.fixture
 def hackathon_handlers(
-    hackathon_utility_service_mock: HackathonServiceMock,
+    hackathon_utility_service_mock: HackathonUtilityServiceMock,
     participant_service_mock: ParticipantServiceMock,
     team_service_mock: TeamServiceMock,
 ) -> HackathonManagementHandlers:

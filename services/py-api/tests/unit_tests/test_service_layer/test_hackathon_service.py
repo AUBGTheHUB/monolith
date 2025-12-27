@@ -86,14 +86,14 @@ def team_service(
 def participant_service(
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
-    jwt_utility: JwtUtility,
+    jwt_utility_mock: JwtUtility,
     hackathon_mail_service_mock: HackathonMailServiceMock,
 ) -> ParticipantService:
     return ParticipantService(
         participants_repo=cast(ParticipantsRepository, participant_repo_mock),
         teams_repo=cast(TeamsRepository, team_repo_mock),
         hackathon_mail_service=cast(HackathonMailService, hackathon_mail_service_mock),
-        jwt_utility=jwt_utility,
+        jwt_utility=jwt_utility_mock,
     )
 
 
