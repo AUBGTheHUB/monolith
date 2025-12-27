@@ -21,12 +21,12 @@ from src.server.schemas.response_schemas.schemas import (
     ErrResponse,
     Response,
 )
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
+from src.service.hackathon.registration_service import RegistrationService
 
 
 class ParticipantHandlers(BaseHandler):
 
-    def __init__(self, service: ParticipantRegistrationService) -> None:
+    def __init__(self, service: RegistrationService) -> None:
         self._service = service
 
     async def create_participant(

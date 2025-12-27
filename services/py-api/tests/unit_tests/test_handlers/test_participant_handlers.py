@@ -22,7 +22,7 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
 )
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response, ParticipantRegisteredResponse
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
+from src.service.hackathon.registration_service import RegistrationService
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 from tests.unit_tests.conftest import ParticipantRegistrationServiceMock, BackgroundTasksMock
 
@@ -31,7 +31,7 @@ from tests.unit_tests.conftest import ParticipantRegistrationServiceMock, Backgr
 def participant_handlers(
     participant_registration_service_mock: ParticipantRegistrationServiceMock,
 ) -> ParticipantHandlers:
-    return ParticipantHandlers(cast(ParticipantRegistrationService, participant_registration_service_mock))
+    return ParticipantHandlers(cast(RegistrationService, participant_registration_service_mock))
 
 
 @patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
