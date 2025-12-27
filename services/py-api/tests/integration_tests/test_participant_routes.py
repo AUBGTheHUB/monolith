@@ -4,7 +4,6 @@ import pytest
 from httpx import AsyncClient
 
 from src.service.constants import MAX_NUMBER_OF_TEAM_MEMBERS
-from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from tests.integration_tests.conftest import (
@@ -23,7 +22,6 @@ async def test_create_random_participant(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
 
@@ -48,7 +46,6 @@ async def test_create_random_participant_email_already_exists(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
 
@@ -69,7 +66,6 @@ async def test_create_admin_participant_no_team_name(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     is_admin_true_body = generate_participant_request_body(registration_type="admin", is_admin=True)
 
@@ -89,7 +85,6 @@ async def test_create_random_participant_missing_required_fields(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     missing_req_fields_body = generate_participant_request_body(registration_type="admin", name=None)
 
@@ -110,7 +105,6 @@ async def test_create_admin_participant(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
@@ -142,7 +136,6 @@ async def test_create_admin_participant_email_and_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
@@ -165,7 +158,6 @@ async def test_create_admin_participant_team_already_exists(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
@@ -191,7 +183,6 @@ async def test_create_admin_participant_email_already_exists(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
 ) -> None:
-
     # Given
     admin_participant_body = generate_participant_request_body(
         registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
@@ -216,7 +207,6 @@ async def test_create_admin_participant_email_already_exists(
 async def test_delete_participant_success(
     generate_participant_request_body: ParticipantRequestBodyCallable, async_client: AsyncClient
 ) -> None:
-
     # Given
     result_1 = await async_client.post(
         PARTICIPANT_ENDPOINT_URL, json=generate_participant_request_body(registration_type="random", is_admin=None)
@@ -242,7 +232,6 @@ async def test_delete_participant_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_unauthorized(async_client: AsyncClient, obj_id_mock: str) -> None:
-
     # When
     result = await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": "Bearer FakeToken"}
@@ -256,7 +245,6 @@ async def test_delete_participant_unauthorized(async_client: AsyncClient, obj_id
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient) -> None:
-
     # When
     result = await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
@@ -270,7 +258,6 @@ async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient)
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, obj_id_mock: str) -> None:
-
     # When
     result = await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{obj_id_mock}",
@@ -288,9 +275,8 @@ async def test_create_link_participant_succesful(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    thirty_sec_jwt_exp_limit: int,
+    one_minute_jwt_exp: int,
 ) -> None:
-
     # Given
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -306,7 +292,7 @@ async def test_create_link_participant_succesful(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=thirty_sec_jwt_exp_limit,
+        exp=one_minute_jwt_exp,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
@@ -322,16 +308,14 @@ async def test_create_link_participant_succesful(
     assert resp_json["team_id"] == admin_resp_json["team_id"]
 
 
-@patch.object(HackathonUtilityService, "MAX_NUMBER_OF_TEAM_MEMBERS", 2)
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_create_link_participant_team_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    thirty_sec_jwt_exp_limit: int,
+    one_minute_jwt_exp: int,
 ) -> None:
-
     # Given
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -346,7 +330,7 @@ async def test_create_link_participant_team_capacity_exceeded(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=thirty_sec_jwt_exp_limit,
+        exp=one_minute_jwt_exp,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
@@ -416,9 +400,8 @@ async def test_create_link_participant_team_name_mismatch(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    thirty_sec_jwt_exp_limit: int,
+    one_minute_jwt_exp: int,
 ) -> None:
-
     # Given
     admin_partcipant_body = generate_participant_request_body(
         registration_type="admin", email="testadmin@test.com", is_admin=True, team_name=TEST_TEAM_NAME
@@ -434,7 +417,7 @@ async def test_create_link_participant_team_name_mismatch(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=thirty_sec_jwt_exp_limit,
+        exp=one_minute_jwt_exp,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 

@@ -1,5 +1,4 @@
 from typing import cast
-from unittest.mock import Mock
 import pytest
 from result import Err, Ok
 from src.database.model.hackathon.participant_model import Participant
@@ -36,20 +35,20 @@ def hackathon_handlers(
 @pytest.mark.asyncio
 async def test_delete_participant_success(
     hackathon_handlers: HackathonManagementHandlers,
-    hackathon_utility_service_mock: Mock,
+    participant_service_mock: ParticipantServiceMock,
     obj_id_mock: str,
     admin_participant_mock: Participant,
 ) -> None:
     # Given
     # Deleting an admin participant has no difference from deleting a random participant
-    hackathon_utility_service_mock.delete_participant.return_value = Ok(admin_participant_mock)
+    participant_service_mock.delete_participant.return_value = Ok(admin_participant_mock)
 
     # When
     resp = await hackathon_handlers.delete_participant(obj_id_mock)
 
     # Then
     # Check that `delete_participant` was awaited once with the expected object_id
-    hackathon_utility_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
+    participant_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ParticipantDeletedResponse)
     assert resp.response_model.participant.name == TEST_USER_NAME
@@ -59,17 +58,17 @@ async def test_delete_participant_success(
 
 @pytest.mark.asyncio
 async def test_delete_participant_does_not_exist(
-    hackathon_handlers: HackathonManagementHandlers, hackathon_utility_service_mock: Mock, obj_id_mock: str
+    hackathon_handlers: HackathonManagementHandlers, participant_service_mock: ParticipantServiceMock, obj_id_mock: str
 ) -> None:
     # Given
     # Mock delete_participant to return a ParticipantNotFoundError
-    hackathon_utility_service_mock.delete_participant.return_value = Err(ParticipantNotFoundError())
+    participant_service_mock.delete_participant.return_value = Err(ParticipantNotFoundError())
 
     # When
     resp = await hackathon_handlers.delete_participant(obj_id_mock)
 
     # Then
-    hackathon_utility_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
+    participant_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.response_model.error == "The specified participant was not found"
@@ -78,17 +77,17 @@ async def test_delete_participant_does_not_exist(
 
 @pytest.mark.asyncio
 async def test_delete_participant_general_exception(
-    hackathon_handlers: HackathonManagementHandlers, hackathon_utility_service_mock: Mock, obj_id_mock: str
+    hackathon_handlers: HackathonManagementHandlers, participant_service_mock: ParticipantServiceMock, obj_id_mock: str
 ) -> None:
     # Given
     # Mock delete_participant to return a General Exception
-    hackathon_utility_service_mock.delete_participant.return_value = Err(Exception())
+    participant_service_mock.delete_participant.return_value = Err(Exception())
 
     # When
     resp = await hackathon_handlers.delete_participant(obj_id_mock)
 
     # Then
-    hackathon_utility_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
+    participant_service_mock.delete_participant.assert_awaited_once_with(obj_id_mock)
     # Assert that the response is unsuccessful
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
@@ -99,13 +98,13 @@ async def test_delete_participant_general_exception(
 @pytest.mark.asyncio
 async def test_delete_team_success(
     hackathon_handlers: HackathonManagementHandlers,
-    hackathon_utility_service_mock: Mock,
+    team_service_mock: TeamServiceMock,
     verified_team_mock: Team,
     obj_id_mock: str,
 ) -> None:
     # Given
     # Deleting a verified team has no difference from deleting an unverified team
-    hackathon_utility_service_mock.delete_team.return_value = Ok(verified_team_mock)
+    team_service_mock.delete_team.return_value = Ok(verified_team_mock)
 
     # When
     # Call the handler
@@ -113,7 +112,7 @@ async def test_delete_team_success(
 
     # Then
     # Check that `delete_team` was awaited once with the expected object_id
-    hackathon_utility_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
+    team_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
 
     # Assert that the response is successful
     assert isinstance(resp, Response)
@@ -126,18 +125,18 @@ async def test_delete_team_success(
 @pytest.mark.asyncio
 async def test_delete_team_does_not_exist(
     hackathon_handlers: HackathonManagementHandlers,
-    hackathon_utility_service_mock: Mock,
+    team_service_mock: TeamServiceMock,
     obj_id_mock: str,
 ) -> None:
     # Given
     # Mock delete_team to return a TeamNotFoundError
-    hackathon_utility_service_mock.delete_team.return_value = Err(TeamNotFoundError())
+    team_service_mock.delete_team.return_value = Err(TeamNotFoundError())
 
     # When
     resp = await hackathon_handlers.delete_team(obj_id_mock)
 
     # Then
-    hackathon_utility_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
+    team_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
     # Assert that the response is unsuccessful
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
@@ -148,18 +147,18 @@ async def test_delete_team_does_not_exist(
 @pytest.mark.asyncio
 async def test_delete_team_general_exception(
     hackathon_handlers: HackathonManagementHandlers,
-    hackathon_utility_service_mock: Mock,
+    team_service_mock: TeamServiceMock,
     obj_id_mock: str,
 ) -> None:
     # Given
     # Mock delete_team to return a General Exception
-    hackathon_utility_service_mock.delete_team.return_value = Err(Exception())
+    team_service_mock.delete_team.return_value = Err(Exception())
 
     # When
     resp = await hackathon_handlers.delete_team(obj_id_mock)
 
     # Then
-    hackathon_utility_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
+    team_service_mock.delete_team.assert_awaited_once_with(obj_id_mock)
     # Assert that the response is unsuccessful
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
