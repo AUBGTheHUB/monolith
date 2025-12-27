@@ -9,6 +9,7 @@ from result import Ok, Err
 
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
+from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
@@ -42,6 +43,7 @@ from tests.unit_tests.conftest import (
     BackgroundTasksMock,
     MongoTransactionManagerMock,
     TeamServiceMock,
+    ParticipantServiceMock,
 )
 from src.service.constants import MAX_NUMBER_OF_TEAM_MEMBERS
 
@@ -50,14 +52,11 @@ PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=3
 
 
 @pytest.fixture
-def hackathon_service(
+def hackathon_utility_service(
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
     team_service_mock: TeamServiceMock,
     feature_switch_repo_mock: FeatureSwitchRepoMock,
-    tx_manager_mock: MongoTransactionManagerMock,
-    hackathon_mail_service_mock: HackathonMailServiceMock,
-    jwt_utility_mock: JwtUtility,
 ) -> HackathonUtilityService:
     return HackathonUtilityService(
         cast(ParticipantsRepository, participant_repo_mock),
@@ -68,10 +67,46 @@ def hackathon_service(
 
 
 @pytest.fixture
-def participant_service(participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock) -> ParticipantService:
-    return ParticipantService(
-        cast(ParticipantsRepository, participant_repo_mock),
+def team_service(
+    participant_repo_mock: ParticipantRepoMock,
+    participant_service_mock: ParticipantServiceMock,
+    team_repo_mock: TeamRepoMock,
+    team_service_mock: TeamServiceMock,
+    tx_manager_mock: MongoTransactionManagerMock,
+) -> TeamService:
+    return TeamService(
         cast(TeamsRepository, team_repo_mock),
+        cast(ParticipantService, participant_service_mock),
+        cast(ParticipantsRepository, participant_repo_mock),
+        cast(MongoTransactionManager, tx_manager_mock),
+    )
+
+
+@pytest.fixture
+def participant_service(
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
+    jwt_utility: JwtUtility,
+    hackathon_mail_service_mock: HackathonMailServiceMock,
+) -> ParticipantService:
+    return ParticipantService(
+        participants_repo=cast(ParticipantsRepository, participant_repo_mock),
+        teams_repo=cast(TeamsRepository, team_repo_mock),
+        hackathon_mail_service=cast(HackathonMailService, hackathon_mail_service_mock),
+        jwt_utility=jwt_utility,
+    )
+
+
+@pytest.fixture
+def admin_team_service(
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
+    tx_manager_mock: MongoTransactionManagerMock,
+) -> AdminTeamService:
+    return AdminTeamService(
+        cast(TeamsRepository, team_repo_mock),
+        cast(ParticipantsRepository, participant_repo_mock),
+        cast(MongoTransactionManager, tx_manager_mock),
     )
 
 
@@ -167,7 +202,9 @@ async def test_register_admin_participant_general_exception(
 
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_sufficient_capacity(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -176,7 +213,7 @@ async def test_check_capacity_admin_case_with_sufficient_capacity(
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is True (enough capacity)
@@ -185,7 +222,9 @@ async def test_check_capacity_admin_case_with_sufficient_capacity(
 
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exact_limit(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -194,7 +233,7 @@ async def test_check_capacity_admin_case_with_exact_limit(
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is False (capacity exactly reached)
@@ -203,7 +242,9 @@ async def test_check_capacity_admin_case_with_exact_limit(
 
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exceeded_capacity(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -212,7 +253,7 @@ async def test_check_capacity_admin_case_with_exceeded_capacity(
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is False (capacity exceeded)
@@ -286,7 +327,9 @@ async def test_create_random_participant_general_exception(
 
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_sufficient_capacity(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -295,7 +338,7 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
 
     # When
     # Call the random case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is True (enough capacity)
@@ -304,7 +347,9 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
 
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exact_limit(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -313,7 +358,7 @@ async def test_check_capacity_random_case_with_exact_limit(
 
     # When
     # Call the random case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is True (capacity exactly reached)
@@ -322,7 +367,9 @@ async def test_check_capacity_random_case_with_exact_limit(
 
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exceeded_capacity(
-    hackathon_service: HackathonUtilityService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
     # Given
     # Mock repository methods to return controlled values
@@ -331,7 +378,7 @@ async def test_check_capacity_random_case_with_exceeded_capacity(
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is False (capacity exceeded)
@@ -507,7 +554,7 @@ async def test_check_team_capacity_case_capacity_exceeded(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_success_random(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     team_repo_mock: TeamRepoMock,
@@ -517,7 +564,7 @@ async def test_check_send_verification_email_rate_limit_success_random(
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -528,7 +575,7 @@ async def test_check_send_verification_email_rate_limit_success_random(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_not_reached_admin(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     admin_participant_mock: Participant,
     team_repo_mock: TeamRepoMock,
@@ -540,7 +587,7 @@ async def test_check_send_verification_email_rate_limit_not_reached_admin(
     team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=False))
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -551,7 +598,7 @@ async def test_check_send_verification_email_rate_limit_not_reached_admin(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_limit_reached(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
@@ -562,7 +609,7 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -571,7 +618,7 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_without_last_sent_email(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
@@ -582,7 +629,7 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -594,7 +641,7 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_already_verified(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
@@ -604,7 +651,7 @@ async def test_check_send_verification_email_rate_limit_participant_already_veri
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -613,7 +660,7 @@ async def test_check_send_verification_email_rate_limit_participant_already_veri
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_not_found(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     obj_id_mock: str,
 ) -> None:
@@ -621,7 +668,7 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
     participant_repo_mock.fetch_by_id.return_value = Err(ParticipantNotFoundError())
 
     # When
-    result = await hackathon_mail_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -630,7 +677,7 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_success(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
@@ -644,7 +691,7 @@ async def test_send_verification_email_success(
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        result = await hackathon_mail_service.send_verification_email(
+        result = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
@@ -655,7 +702,7 @@ async def test_send_verification_email_success(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_err_validation_err_body_generation(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
@@ -669,7 +716,7 @@ async def test_send_verification_email_err_validation_err_body_generation(
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        err = await hackathon_mail_service.send_verification_email(
+        err = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
@@ -681,7 +728,7 @@ async def test_send_verification_email_err_validation_err_body_generation(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_err_participant_deleted_before_verifying_email(
-    hackathon_mail_service: HackathonMailService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
@@ -694,7 +741,7 @@ async def test_send_verification_email_err_participant_deleted_before_verifying_
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        err = await hackathon_mail_service.send_verification_email(
+        err = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 

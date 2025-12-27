@@ -125,10 +125,13 @@ def create_app() -> FastAPI:
     # Service layer wiring
     jwt_utility = JwtUtility()
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
-    hackathon_mail_service = HackathonMailService(
-        client=mail_client, jwt_utility=jwt_utility, participant_repo=participants_repo, teams_repo=teams_repo
+    hackathon_mail_service = HackathonMailService(client=mail_client)
+    participant_service = ParticipantService(
+        participants_repo=participants_repo,
+        teams_repo=teams_repo,
+        jwt_utility=jwt_utility,
+        hackathon_mail_service=hackathon_mail_service,
     )
-    participant_service = ParticipantService(participants_repo=participants_repo, teams_repo=teams_repo)
     team_service = TeamService(
         teams_repo=teams_repo,
         participant_service=participant_service,
@@ -150,13 +153,11 @@ def create_app() -> FastAPI:
         hackathon_utility_service=hackathon_utility_service,
         jwt_utility=jwt_utility,
         team_service=team_service,
-        hackathon_mail_service=hackathon_mail_service,
         admin_team_service=admin_team_service,
     )
     verification_service = VerificationService(
         hackathon_utility_service=hackathon_utility_service,
         team_service=team_service,
-        hackathon_mail_service=hackathon_mail_service,
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )

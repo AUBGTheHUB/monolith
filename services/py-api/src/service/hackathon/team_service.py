@@ -29,7 +29,7 @@ class RandomTeam(TypedDict):
 
 
 class TeamService:
-    """Service layer designed to perform crud on teams"""
+    """Mid-Level service layer designed to perform crud on teams"""
 
     def __init__(
         self,

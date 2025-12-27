@@ -14,7 +14,6 @@ from src.exception import (
     ParticipantNotFoundError,
 )
 from src.service.hackathon.admin_team_service import AdminTeamService
-from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
@@ -36,13 +35,11 @@ class RegistrationService:
         participant_service: ParticipantService,
         team_service: TeamService,
         hackathon_utility_service: HackathonUtilityService,
-        hackathon_mail_service: HackathonMailService,
         jwt_utility: JwtUtility,
     ) -> None:
         self._admin_team_service = admin_team_service
         self._team_service = team_service
         self._hackathon_utility_service = hackathon_utility_service
-        self._hackathon_mail_service = hackathon_mail_service
         self._participant_service = participant_service
         self._jwt_utility = jwt_utility
 
@@ -67,7 +64,7 @@ class RegistrationService:
             return create_result
 
         # Send verification email
-        update_result = await self._hackathon_mail_service.send_verification_email(
+        update_result = await self._participant_service.send_verification_email(
             participant=create_result.ok_value[0], team=create_result.ok_value[1], background_tasks=background_tasks
         )
         # Update result could be None if we are in Test ENV, and we should not send emails
@@ -94,7 +91,7 @@ class RegistrationService:
             return create_result
 
         # Send verification email
-        update_result = await self._hackathon_mail_service.send_verification_email(
+        update_result = await self._participant_service.send_verification_email(
             participant=create_result.ok_value[0], background_tasks=background_tasks
         )
         # Update result could be None if we are in Test ENV, and we should not send emails
@@ -129,7 +126,7 @@ class RegistrationService:
             return result
 
         # Invite link participants are automatically verified, that's why we don't send a verification email
-        err = self._hackathon_mail_service.send_successful_registration_email(
+        err = self._participant_service.send_successful_registration_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
         if err is not None:

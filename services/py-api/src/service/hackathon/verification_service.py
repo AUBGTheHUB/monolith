@@ -4,7 +4,6 @@ from result import Err, Ok, Result, is_err
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.service.hackathon.admin_team_service import AdminTeamService
-from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
@@ -27,13 +26,11 @@ class VerificationService:
         team_service: TeamService,
         participant_service: ParticipantService,
         admin_team_service: AdminTeamService,
-        hackathon_mail_service: HackathonMailService,
     ) -> None:
         self._hackathon_utility_service = hackathon_utility_service
         self._team_service = team_service
         self._participant_service = participant_service
         self._admin_team_service = admin_team_service
-        self._hackathon_mail_service = hackathon_mail_service
 
     async def verify_admin_participant(
         self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
@@ -49,7 +46,7 @@ class VerificationService:
         if is_err(result):
             return result
 
-        err = self._hackathon_mail_service.send_successful_registration_email(
+        err = self._participant_service.send_successful_registration_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
 
@@ -76,7 +73,7 @@ class VerificationService:
         if is_err(result):
             return result
 
-        err = self._hackathon_mail_service.send_successful_registration_email(
+        err = self._participant_service.send_successful_registration_email(
             participant=result.ok_value[0], background_tasks=background_tasks
         )
         if err is not None:
@@ -99,13 +96,11 @@ class VerificationService:
         | Exception,
     ]:
 
-        result = await self._hackathon_mail_service.check_send_verification_email_rate_limit(
-            participant_id=participant_id
-        )
+        result = await self._participant_service.check_send_verification_email_rate_limit(participant_id=participant_id)
         if is_err(result):
             return result
 
-        err = await self._hackathon_mail_service.send_verification_email(
+        err = await self._participant_service.send_verification_email(
             participant=result.ok_value[0], team=result.ok_value[1], background_tasks=background_tasks
         )
         if err is not None:

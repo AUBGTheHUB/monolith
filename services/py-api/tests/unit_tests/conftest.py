@@ -485,16 +485,10 @@ class HackathonServiceMock(Protocol):
     used just for type hinting purposes.
     """
 
-    create_participant_and_team_in_transaction: AsyncMock
     check_capacity_register_admin_participant_case: AsyncMock
     check_capacity_register_random_participant_case: AsyncMock
-    check_send_verification_email_rate_limit: AsyncMock
-    check_team_capacity: AsyncMock
-    verify_random_participant: AsyncMock
     verify_admin_participant_and_team_in_transaction: AsyncMock
     verify_admin_participant: AsyncMock
-    send_verification_email: AsyncMock
-    send_successful_registration_email: Mock
 
 
 @pytest.fixture
@@ -517,12 +511,7 @@ def hackathon_utility_service_mock() -> HackathonServiceMock:
     # hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
-    # hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-    # hackathon_service.check_team_capacity = AsyncMock()
-    # hackathon_service.verify_random_participant = AsyncMock()
     # hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-    # hackathon_service.send_verification_email = AsyncMock()
-    # hackathon_service.send_successful_registration_email = Mock()
 
     return cast(HackathonServiceMock, hackathon_service)
 
@@ -537,9 +526,10 @@ class ParticipantServiceMock(Protocol):
     create_random_participant: AsyncMock
     create_invite_link_participant: AsyncMock
     delete_participant: AsyncMock
-
-
-verify_random_participant: AsyncMock
+    send_verification_email: AsyncMock
+    send_successful_registration_email: AsyncMock
+    check_send_verification_email_rate_limit: AsyncMock
+    verify_random_participant: AsyncMock
 
 
 @pytest.fixture
@@ -550,11 +540,13 @@ def participant_service_mock() -> ParticipantServiceMock:
         A mocked ParticipantService
     """
     participant_service = _create_typed_mock(ParticipantService)
-
     participant_service.create_random_participant = AsyncMock()
     participant_service.create_invite_link_participant = AsyncMock()
     participant_service.delete_participant = AsyncMock()
     participant_service.verify_random_participant = AsyncMock()
+    participant_service.send_verification_email = AsyncMock()
+    participant_service.send_successful_registration_email = Mock()
+    participant_service.check_send_verification_email_rate_limit = AsyncMock()
     return cast(ParticipantServiceMock, participant_service)
 
 
