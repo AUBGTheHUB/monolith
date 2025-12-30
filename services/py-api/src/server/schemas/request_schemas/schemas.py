@@ -10,6 +10,7 @@ from bson import ObjectId
 from fastapi import HTTPException
 from fastapi.types import IncEx
 from pydantic import EmailStr, BaseModel, Field, ConfigDict, field_validator
+from src.server.schemas.common.inputs import NonEmptyStr
 
 from src.database.model.hackathon.participant_model import (
     ALLOWED_AGE,
@@ -83,23 +84,13 @@ class BaseParticipantData(BaseModel):
 class AdminParticipantInputData(BaseParticipantData):
     registration_type: Literal["admin"]
     is_admin: Literal[True]
-    team_name: str = Field(max_length=30, min_length=3)
-
-    @field_validator("team_name", mode="before")
-    @classmethod
-    def convert_empty_string_to_none(cls, value: str) -> str | None:
-        return None if value == "" else value
+    team_name: NonEmptyStr = Field(max_length=30, min_length=1)
 
 
 class InviteLinkParticipantInputData(BaseParticipantData):
     registration_type: Literal["invite_link"]
     is_admin: Literal[False]
-    team_name: str = Field(max_length=30, min_length=3)
-
-    @field_validator("team_name", mode="before")
-    @classmethod
-    def convert_empty_string_to_none(cls, value: str) -> str | None:
-        return None if value == "" else value
+    team_name: NonEmptyStr = Field(max_length=30, min_length=1)
 
 
 class RandomParticipantInputData(BaseParticipantData):

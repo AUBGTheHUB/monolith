@@ -161,8 +161,34 @@ class UpdateParticipantParams(UpdateParams):
     share_info_with_sponsors: Union[bool, None] = None
     last_sent_verification_email: Union[datetime, None] = None
 
-    def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        dump = super().model_dump(exclude_none=exclude_none, exclude=["team_id"], **kwargs)  # type: ignore
+    def model_dump(
+        self,
+        *,
+        mode: str | Any = "python",
+        include: Any | None = None,
+        exclude: Any | None = ("team_id",),
+        context: Any | None = None,
+        by_alias: bool = False,
+        exclude_unset: bool = True,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False,
+        round_trip: bool = False,
+        warnings: bool | Any = True,
+        serialize_as_any: bool = False,
+    ) -> dict[str, Any]:
+        dump = super().model_dump(
+            mode=mode,
+            include=include,
+            exclude=exclude,
+            context=context,
+            by_alias=by_alias,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+            round_trip=round_trip,
+            warnings=warnings,
+            serialize_as_any=serialize_as_any,
+        )
         # As team_id is ObjectID, which is not serializable by default, we casually exclude it and add it back to the
         # dump, to avoid Pydantic throwing errors. As model_dump is used primarily in Mongo database operations, it's
         # ok to have the team_id as an ObjectID, because the Motor library expects it like that.

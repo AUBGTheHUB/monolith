@@ -1,7 +1,7 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -30,10 +30,44 @@ class BaseDbModel(SerializableDbModel, ABC):
 class UpdateParams(BaseModel, ABC):
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    # Override the base class methods to exclude none by default, since we don't want the None values
-    # to be present in the model dumps.
-
-    # The base super().model_dump_json() returns a dict[str, Any], however mypy marks it as if it returns `Any`,
-    # for this reason we are ignoring it.
-    def model_dump(self, *, exclude_none: bool = True, **kwargs: dict[str, Any]) -> dict[str, Any]:
-        return super().model_dump(exclude_none=exclude_none, **kwargs)  # type: ignore
+    # We override BaseModel.model_dump to enforce safe PATCH semantics by default.
+    # - exclude_unset=True: prevents accidentally overwriting existing DB fields with None
+    #   when a key is omitted in the request body.
+    # - exclude_none=False: still allows explicitly provided None values to be persisted
+    #   when the API needs to null a field on purpose.
+    # For details, see Pydantic v2 serialization docs:
+    # https://docs.pydantic.dev/latest/concepts/serialization/#excluding-and-including-fields-based-on-their-value
+    #
+    # Note: Pydantic type stubs may mark some signatures/returns as Any. We keep an
+    # explicit return type of dict[str, Any] here to preserve downstream type clarity.
+    def model_dump(
+        self,
+        *,
+        mode: str | Any = "python",
+        include: Any | None = None,
+        exclude: Any | None = None,
+        context: Any | None = None,
+        by_alias: bool = False,
+        exclude_unset: bool = True,
+        exclude_defaults: bool = False,
+        exclude_none: bool = False,
+        round_trip: bool = False,
+        warnings: bool | Any = True,
+        serialize_as_any: bool = False,
+    ) -> dict[str, Any]:
+        return cast(
+            dict[str, Any],
+            super().model_dump(
+                mode=mode,
+                include=include,
+                exclude=exclude,
+                context=context,
+                by_alias=by_alias,
+                exclude_unset=exclude_unset,
+                exclude_defaults=exclude_defaults,
+                exclude_none=exclude_none,
+                round_trip=round_trip,
+                warnings=warnings,
+                serialize_as_any=serialize_as_any,
+            ),
+        )

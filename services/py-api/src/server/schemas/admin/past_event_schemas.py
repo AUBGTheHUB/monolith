@@ -2,19 +2,13 @@ from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, HttpUrl, field_validator
+from src.server.schemas.common.inputs import NonEmptyStr
 
 
 class PastEventBase(BaseModel):
-    title: str
+    title: NonEmptyStr
     cover_picture: HttpUrl
     tags: List[str] = []
-
-    @field_validator("title")
-    def title_not_empty(cls, v: str) -> str:
-        nv = v.strip()
-        if not nv:
-            raise ValueError("title cannot be empty")
-        return nv
 
     @field_validator("tags")
     def tags_trim(cls, v: List[str]) -> List[str]:
@@ -26,18 +20,9 @@ class PastEventCreate(PastEventBase):
 
 
 class PastEventUpdate(BaseModel):
-    title: Optional[str] = None
+    title: Optional[NonEmptyStr] = None
     cover_picture: Optional[HttpUrl] = None
     tags: Optional[List[str]] = None
-
-    @field_validator("title")
-    def title_not_empty_when_present(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return v
-        nv = v.strip()
-        if not nv:
-            raise ValueError("title cannot be empty when provided")
-        return nv
 
     @field_validator("tags")
     def tags_trim(cls, v: Optional[List[str]]) -> Optional[List[str]]:
