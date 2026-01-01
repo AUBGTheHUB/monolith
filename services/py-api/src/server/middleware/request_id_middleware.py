@@ -3,7 +3,7 @@ from uuid import uuid4
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
-from structlog.contextvars import bound_contextvars, clear_contextvars
+from structlog.contextvars import bind_contextvars, clear_contextvars
 
 _REQUEST_ID_HEADER = "TheHubAUBG-Request-ID"
 
@@ -17,16 +17,17 @@ class RequestIdMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        # Make sure we start from a clean context for this request
+        # Clear contextvars from the previous request
         clear_contextvars()
         # Generate a fresh UUID for this request
         request_id = uuid4().hex
 
-        # Bind request_id to structlog contextvars for the duration of the request.
-        # Type ignore: bound_contextvars is a sync context manager that works in async code.
-        # noinspection PyTypeChecker
-        with bound_contextvars(request_id=request_id):
-            response = await call_next(request)
-            # Attach the RequestID to the headers so that frontend can report it back to the client in case of an error
-            response.headers[_REQUEST_ID_HEADER] = request_id
-            return response
+        # Bind request_id to structlog contextvars.
+        # We don't unbind here because uvicorn logs its access log after the response is returned.
+        # The next request's clear_contextvars() will clean this up.
+        # See: https://uvicorn.dev/settings/#logging
+        bind_contextvars(request_id=request_id)
+
+        response = await call_next(request)
+        response.headers[_REQUEST_ID_HEADER] = request_id
+        return response
