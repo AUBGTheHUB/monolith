@@ -2,7 +2,7 @@ from logging import INFO, Filter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, TypedDict
 
 from structlog import (
     configure,
@@ -98,6 +98,10 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
             original_file.truncate()
 
 
+class _StructlogContextVars(TypedDict):
+    request_id: str
+
+
 class RequestIdFilter(Filter):
     """
     Logging filter that injects `request_id` from structlog's contextvars into standard logging records.
@@ -116,21 +120,19 @@ class RequestIdFilter(Filter):
     """
 
     def filter(self, record: LogRecord) -> bool:
-        try:
-            ctx = get_contextvars()
-        except Exception:
-            ctx = {}
+        # noinspection PyTypeChecker
+        ctx: _StructlogContextVars = get_contextvars()
 
-        request_id = ctx.get("request_id")
+        request_id = ctx["request_id"]
         # Empty string so formatter with %(request_id)s never explodes
-        record.request_id = request_id or ""
+        record.request_id = request_id
         # Return True to allow the log record to be emitted
         return True
 
 
-def get_uvicorn_logger(env: str) -> Dict[str, Any]:
+def get_uvicorn_logger(env: str) -> dict[str, Any]:
     """Returns uvicorn logging configuration based on the environment."""
-    prod_logging_config: Dict[str, Any] = {
+    prod_logging_config: dict[str, Any] = {
         "version": 1,
         "formatters": {
             "logformatter": {
@@ -179,7 +181,7 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         return prod_logging_config
 
     # For LOCAL/TEST fall back to uvicorn's default logging config
-    default_logging_config: Dict[str, Any] = LOGGING_CONFIG
+    default_logging_config: dict[str, Any] = LOGGING_CONFIG
     return default_logging_config
 
 
