@@ -4,48 +4,41 @@ from fastapi import FastAPI
 from starlette.types import ASGIApp
 
 from src.server.middleware.enable_cors_middleware import cors_middleware_factory
-from src.server.middleware.exception_handler import register_exception_handlers
 from src.server.middleware.request_id_middleware import RequestIdMiddleware
 
-# Type alias for middleware: a callable that takes an ASGIApp and returns an ASGIApp
-type MiddlewareFactory = Callable[[ASGIApp], ASGIApp]
-
-# Middleware stack defined in REQUEST execution order (first to last).
-# Starlette's add_middleware prepends to the list, and then reverses when building
-# the stack, so the LAST middleware added via add_middleware becomes OUTERMOST.
-# Therefore, we list middlewares in REVERSE execution order here.
-MIDDLEWARE_STACK: list[MiddlewareFactory] = [
-    cors_middleware_factory,  # Added first → innermost → executes SECOND on request
-    RequestIdMiddleware,  # Added last → outermost → executes FIRST on request
+# Middleware stack - ORDER MATTERS!
+# The LAST middleware in this list will execute FIRST on the request path.
+# Each middleware takes the next app in the chain and returns a wrapped app.
+_MIDDLEWARE_STACK: list[Callable[[ASGIApp], ASGIApp]] = [
+    cors_middleware_factory,  # 2nd: handles CORS headers
+    RequestIdMiddleware,  # 1st: attaches request ID to logs and response
 ]
 
 
-def register_all_exception_handlers(app: FastAPI) -> None:
-    """
-    Register all custom exception handlers for the application.
+class Middlewares:
 
-    Exception handlers are registered with FastAPI's internal ExceptionMiddleware
-    and are invoked when matching exceptions are raised during request processing.
-    """
-    register_exception_handlers(app)
+    @staticmethod
+    def register_middlewares(app: FastAPI) -> None:
+        """
+        Register all middlewares for the application.
 
+        MIDDLEWARE EXECUTION ORDER:
+        ==========================
+        Starlette's add_middleware(M) prepends M to an internal list, then reverses
+        that list when building the middleware stack. This means:
+        - The LAST middleware added becomes the OUTERMOST (runs first on request)
+        - The FIRST middleware added becomes the INNERMOST (runs last on request)
 
-def register_all_middlewares(app: FastAPI) -> None:
-    """
-    Register all middlewares for the application.
+        MIDDLEWARE_STACK is defined in REQUEST execution order. We iterate in order,
+        so the last item added (last in list) becomes outermost (runs first).
 
-    MIDDLEWARE EXECUTION ORDER:
-    ==========================
-    Starlette's add_middleware(M) prepends M to an internal list, then reverses
-    that list when building the middleware stack. This means:
-    - The LAST middleware added becomes the OUTERMOST (runs first on request)
-    - The FIRST middleware added becomes the INNERMOST (runs last on request)
+        Request flow:  Client → RequestIdMiddleware → CORSMiddleware → Route Handler
+        Response flow: Route Handler → CORSMiddleware → RequestIdMiddleware → Client
 
-    MIDDLEWARE_STACK is defined in REQUEST execution order. We iterate in order,
-    so the last item added (last in list) becomes outermost (runs first).
+        See Also:
+        https://fastapi.tiangolo.com/tutorial/middleware/?h=midd#multiple-middleware-execution-order
 
-    Request flow:  Client → RequestIdMiddleware → CORSMiddleware → Route Handler
-    Response flow: Route Handler → CORSMiddleware → RequestIdMiddleware → Client
-    """
-    for middleware in MIDDLEWARE_STACK:
-        app.add_middleware(middleware)
+        https://starlette.dev/middleware/
+        """
+        for middleware in _MIDDLEWARE_STACK:
+            app.add_middleware(middleware)
