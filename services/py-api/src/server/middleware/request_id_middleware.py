@@ -1,55 +1,44 @@
 import uuid
-from typing import Awaitable, Callable
 
-from fastapi import FastAPI, Request
-from starlette.responses import Response
+from starlette.requests import Request
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from structlog.contextvars import (
-    bind_contextvars,
-    clear_contextvars,
-    unbind_contextvars,
-)
+from structlog.contextvars import bind_contextvars, clear_contextvars, unbind_contextvars
 
-REQUEST_ID_HEADER = "X-Request-ID"
+REQUEST_ID_HEADER = "TheHubAUBG-Request-ID"
 REQUEST_ID_CTX_KEY = "request_id"
 
 
-def register_request_id_middleware(app: FastAPI) -> None:
-    """
-    Attach a per-request UUID to structlog's contextvars and response headers.
+class RequestIdMiddleware:
+    """Attach a per-request UUID to structlog's contextvars and response headers."""
 
-    - Clears structlog contextvars at the start of each request;
-    - Reuses X-Request-ID if present, otherwise generates a new UUID (hex, no dashes);
-    - Binds `request_id` into structlog's contextvars so all logs during this request include it;
-    - Adds X-Request-ID to the response headers.
-    """
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
 
-    @app.middleware("http")
-    async def request_id_middleware(
-        request: Request,
-        call_next: Callable[[Request], Awaitable[Response]],
-    ) -> Response:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         # Make sure we start from a clean context for this request
         clear_contextvars()
 
-        # Reuse incoming header if present, otherwise generate a fresh UUID
-        request_id = request.headers.get(REQUEST_ID_HEADER) or uuid.uuid4().hex
+        request = Request(scope)
+
+        # Generate a fresh UUID for this request
+        request_id = uuid.uuid4().hex
 
         # Expose request_id to downstream code if needed
         request.state.request_id = request_id
 
-        # Bind into structlog's contextvars so all logs during this request
-        # include "request_id": "<uuid>"
+        async def _send(message: Message) -> None:
+            # Only inject header in http.response.start (not http.response.body)
+            if message["type"] == "http.response.start":
+                response_headers = list(message.get("headers", []))
+                response_headers.append((REQUEST_ID_HEADER.encode(), request_id.encode()))
+                message["headers"] = response_headers
+            await send(message)
+
+        # Bind request_id into structlog's contextvars so all logs during this request
+        # include "request_id": "<uuid>".
         bind_contextvars(**{REQUEST_ID_CTX_KEY: request_id})
-
         try:
-            response = await call_next(request)
+            await self.app(scope, receive, _send)
         finally:
-            # Avoid leaking the request_id into unrelated contexts
             unbind_contextvars(REQUEST_ID_CTX_KEY)
-
-        # Make sure clients can see / report this ID back if needed
-        if REQUEST_ID_HEADER not in response.headers:
-            response.headers[REQUEST_ID_HEADER] = request_id
-
-        return response

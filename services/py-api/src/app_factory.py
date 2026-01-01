@@ -24,7 +24,7 @@ from src.server.handlers.hackathon.participants_handlers import ParticipantHandl
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.middleware.middleware import Middleware
+from src.server.middleware.middleware import register_all_exception_handlers, register_all_middlewares
 from src.server.routes.routes import Routes
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -33,7 +33,6 @@ from src.service.hackathon.participants_registration_service import ParticipantR
 from src.service.hackathon.participants_verification_service import ParticipantVerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
-from src.server.middleware.request_id_middleware import register_request_id_middleware
 
 LOG = get_logger()
 
@@ -100,7 +99,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan, root_path="/api/v3")
 
-    register_request_id_middleware(app)
     """
     Note:
     The dependencies below are essentially singletons, as they are created only once (on app creation) and then then
@@ -149,6 +147,9 @@ def create_app() -> FastAPI:
     )
 
     Routes.register_routes(app.router, http_handlers)
-    Middleware.bind(app)
+
+    # Register exception handlers and middlewares explicitly
+    register_all_exception_handlers(app)
+    register_all_middlewares(app)
 
     return app

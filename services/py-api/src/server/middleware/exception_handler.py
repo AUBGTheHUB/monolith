@@ -4,12 +4,14 @@ from starlette.requests import Request
 from src.server.schemas.response_schemas.schemas import Response, ErrResponse
 
 
-class ExceptionHandler:
-    def __init__(self, app: FastAPI) -> None:
-        @app.exception_handler(HTTPException)
-        async def custom_exception_handler(request: Request, exc: HTTPException) -> Response:
-            """
-            This is needed to keep consistency in Error format in Swagger. Instead of "error", the default key is
-            the JSON response is "detail" when we raise an HTTPException. This middleware changes this key to "error".
-            """
-            return Response(status_code=exc.status_code, response_model=ErrResponse(error=exc.detail))
+async def http_exception_handler(request: Request, exc: HTTPException) -> Response:
+    """
+    This is needed to keep consistency in Error format in Swagger. Instead of "error", the default key in
+    the JSON response is "detail" when we raise an HTTPException. This handler changes this key to "error".
+    """
+    return Response(status_code=exc.status_code, response_model=ErrResponse(error=exc.detail))
+
+
+def register_exception_handlers(app: FastAPI) -> None:
+    """Register all custom exception handlers for the application."""
+    app.add_exception_handler(HTTPException, http_exception_handler)
