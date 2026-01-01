@@ -15,7 +15,7 @@ from starlette.requests import Request
 from structlog.stdlib import get_logger
 
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.service.constants import REG_ALL_PARTICIPANTS_SWITCH
+from src.service.feature_switches.feature_switches import REG_ALL_PARTICIPANTS_SWITCH
 
 LOG = get_logger()
 

@@ -26,7 +26,7 @@ from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.middleware.middleware import Middleware
 from src.server.routes.routes import Routes
-from src.service.feature_switch_service import FeatureSwitchService
+from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService

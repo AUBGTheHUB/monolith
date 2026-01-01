@@ -25,7 +25,7 @@ from src.server.schemas.request_schemas.schemas import (
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.service.constants import (
+from src.service.hackathon.constants import (
     FRONTEND_PORT,
     PARTICIPANTS_VERIFICATION_ROUTE,
     PARTICIPANTS_REGISTRATION_ROUTE,

@@ -11,7 +11,8 @@ from src.exception import (
 )
 
 from src.service.hackathon.team_service import TeamService
-from src.service.constants import *
+from src.service.hackathon.constants import MAX_NUMBER_OF_TEAM_MEMBERS, MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON
+from src.service.feature_switches.feature_switches import REG_ADMIN_AND_RANDOM_SWITCH, REG_ALL_PARTICIPANTS_SWITCH
 
 LOG = get_logger()
 

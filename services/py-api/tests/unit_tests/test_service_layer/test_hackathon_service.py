@@ -45,7 +45,7 @@ from tests.unit_tests.conftest import (
     TeamServiceMock,
     ParticipantServiceMock,
 )
-from src.service.constants import MAX_NUMBER_OF_TEAM_MEMBERS
+from src.service.hackathon.constants import MAX_NUMBER_OF_TEAM_MEMBERS
 
 PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE = datetime.now() - timedelta(seconds=180)
 PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=30)

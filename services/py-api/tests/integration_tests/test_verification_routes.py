@@ -4,7 +4,7 @@ from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
 
-from src.service.constants import MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON, MAX_NUMBER_OF_TEAM_MEMBERS
+from src.service.hackathon.constants import MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON, MAX_NUMBER_OF_TEAM_MEMBERS
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
 from src.service.jwt_utils.codec import JwtUtility
 from tests.integration_tests.conftest import (

@@ -18,12 +18,12 @@ from src.exception import (
 )
 
 from src.service.hackathon.participant_service import ParticipantService
-from src.service.constants import *
+from src.service.hackathon.constants import MAX_NUMBER_OF_TEAM_MEMBERS
 
 LOG = get_logger()
 
 
-class RandomTeam(TypedDict):
+class _RandomTeam(TypedDict):
     team: Team
     participants: list[Participant]
 
@@ -78,7 +78,7 @@ class TeamService:
 
     def form_random_participant_teams(
         self, prog_participants: list[Participant], non_prog_participants: list[Participant]
-    ) -> List[RandomTeam]:
+    ) -> List[_RandomTeam]:
         # Calculate the number of hackathon participants
         number_of_random_participants = len(prog_participants) + len(non_prog_participants)
         # Calculate the number of teams that are going to be needed for the given number of participants
@@ -89,7 +89,7 @@ class TeamService:
 
         # Populate the dictionary with the Random Teams named `RandomTeam{i}`
         for i in range(number_of_teams):
-            teams.append(RandomTeam(team=Team(name=f"RT_{token_hex(8)}", is_verified=True), participants=[]))
+            teams.append(_RandomTeam(team=Team(name=f"RT_{token_hex(8)}", is_verified=True), participants=[]))
 
         # Spread all the programming experienced participants to the teams in a Round Robin (RR) manner
         ctr = 0  # initialize a counter
@@ -106,8 +106,8 @@ class TeamService:
         return teams
 
     async def _create_random_participant_teams_in_transaction_callback(
-        self, random_teams: List[RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        self, random_teams: List[_RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[List[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         # Loop through each RandomTeam in the list. Create the team. Update all the participants with the id of the team
         # created
         for random_team in random_teams:
@@ -140,8 +140,8 @@ class TeamService:
         return Ok(random_teams)
 
     async def create_random_participant_teams_in_transaction(
-        self, input_data: List[RandomTeam]
-    ) -> Result[List[RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        self, input_data: List[_RandomTeam]
+    ) -> Result[List[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         return await self._tx_manager.with_transaction(
             self._create_random_participant_teams_in_transaction_callback, input_data
         )
