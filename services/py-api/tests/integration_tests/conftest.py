@@ -82,7 +82,6 @@ class CreateTestParticipantCallable(Protocol):
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
 async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
-
     participant_id = result_json["participant"]["id"]
     await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
@@ -281,24 +280,22 @@ def obj_id_mock() -> str:
 
 
 @pytest.fixture
-def thirty_sec_jwt_exp_limit() -> int:
-    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+def one_minute_jwt_exp() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(minutes=1)).timestamp())
 
 
 @pytest.fixture
-def invite_link_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
-) -> JwtParticipantInviteRegistrationData:
+def invite_link_jwt_payload_mock(one_minute_jwt_exp: int, obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=one_minute_jwt_exp
     )
 
 
 @pytest.fixture
 def participant_verification_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+    one_minute_jwt_exp: int, obj_id_mock: str
 ) -> JwtParticipantVerificationData:
-    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=one_minute_jwt_exp)
 
 
 @pytest.fixture
