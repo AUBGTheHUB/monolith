@@ -280,22 +280,24 @@ def obj_id_mock() -> str:
 
 
 @pytest.fixture
-def one_minute_jwt_exp() -> int:
-    return int((datetime.now(tz=timezone.utc) + timedelta(minutes=1)).timestamp())
+def thirty_sec_jwt_exp_limit() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
 
 
 @pytest.fixture
-def invite_link_jwt_payload_mock(one_minute_jwt_exp: int, obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
+def invite_link_jwt_payload_mock(
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=one_minute_jwt_exp
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
     )
 
 
 @pytest.fixture
 def participant_verification_jwt_payload_mock(
-    one_minute_jwt_exp: int, obj_id_mock: str
+    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
 ) -> JwtParticipantVerificationData:
-    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=one_minute_jwt_exp)
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
 
 
 @pytest.fixture

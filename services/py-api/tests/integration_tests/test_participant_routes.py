@@ -275,7 +275,7 @@ async def test_create_link_participant_succesful(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    one_minute_jwt_exp: int,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
     # Given
     admin_partcipant_body = generate_participant_request_body(
@@ -292,7 +292,7 @@ async def test_create_link_participant_succesful(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=one_minute_jwt_exp,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
@@ -314,7 +314,7 @@ async def test_create_link_participant_team_capacity_exceeded(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    one_minute_jwt_exp: int,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
     # Given
     admin_partcipant_body = generate_participant_request_body(
@@ -330,7 +330,7 @@ async def test_create_link_participant_team_capacity_exceeded(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=one_minute_jwt_exp,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
@@ -400,7 +400,7 @@ async def test_create_link_participant_team_name_mismatch(
     create_test_participant: CreateTestParticipantCallable,
     generate_participant_request_body: ParticipantRequestBodyCallable,
     jwt_utility_mock: JwtUtility,
-    one_minute_jwt_exp: int,
+    thirty_sec_jwt_exp_limit: int,
 ) -> None:
     # Given
     admin_partcipant_body = generate_participant_request_body(
@@ -417,7 +417,7 @@ async def test_create_link_participant_team_name_mismatch(
         sub=admin_resp_json["id"],
         team_id=admin_resp_json["team_id"],
         team_name=team_json["name"],
-        exp=one_minute_jwt_exp,
+        exp=thirty_sec_jwt_exp_limit,
     )
     encoded_token = jwt_utility_mock.encode_data(data=jwt_payload)
 
