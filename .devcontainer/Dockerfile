@@ -14,10 +14,6 @@ ENV PYENV_ROOT="/home/vscode/.pyenv" \
     NVM_DIR="/home/vscode/.nvm" \
     PATH="/home/vscode/.pyenv/shims:/home/vscode/.pyenv/bin:/home/vscode/.local/bin:$PATH"
 
-# We switch to root to install global packages via 'apt'.
-# The default user 'vscode' that comes with the devcontainers image cannot write to /usr/bin or /etc/apt without 'sudo',
-# and using 'sudo' in Dockerfiles is generally messier than just switching users.
-USER root
 
 # 1. SETUP THIRD-PARTY REPOSITORIES (CHARM/GUM)
 # As [gum](https://github.com/charmbracelet/gum) is not in the standard Ubuntu repositories. We must manually trust
@@ -26,8 +22,8 @@ USER root
 #    - mkdir: Creates the keyring directory if it's missing.
 #    - curl | gpg: Downloads the security key and converts it to a binary format apt understands.
 #    - tee: Writes the repository URL to a new file in sources.list.d.
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg \
+RUN  mkdir -p /etc/apt/keyrings \
+    &&  curl -fsSL https://repo.charm.sh/apt/gpg.key | gpg --dearmor -o /etc/apt/keyrings/charm.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | tee /etc/apt/sources.list.d/charm.list
 
 # 2. INSTALL SYSTEM COMPILERS & UTILITIES
@@ -38,20 +34,16 @@ RUN mkdir -p /etc/apt/keyrings \
 # downloaded lists on our host machine. If we rebuild tomorrow, it reuses the cache instead of downloading again.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    apt-get update && apt-get install -y --no-install-recommends \
+    sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     make build-essential zlib1g-dev libssl-dev libbz2-dev \
     libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils \
     tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     pipx git gum
 
-
-# We switch back to the 'vscode' code user. If we stayed as root, tools like Pyenv and NVM would be installed in /root/.
-# We want them installed in /home/vscode/ so you have full permissions to use/update them.
-USER vscode
 WORKDIR /home/vscode/workspaces
 
 # --- PYENV SETUP ---
-RUN git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
+RUN git clone https://github.com/pyenv/pyenv.git /home/vscode/.pyenv \
     && eval "$(pyenv init -)" \
     && pyenv install 3.12.9 \
     && pyenv global 3.12.9
@@ -68,8 +60,8 @@ RUN mkdir -p $NVM_DIR \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
     && . $NVM_DIR/nvm.sh \
     && nvm install --lts \
-    && echo 'export NVM_DIR="/home/vscode/.nvm"' >> ~/.bashrc \
-    && echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> ~/.bashrc
+    && echo 'export NVM_DIR="/home/vscode/.nvm"' >> /home/vscode/.bashrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> /home/vscode/.bashrc
 
 # --- POETRY SETUP ---
 # We use 'pipx' to install Poetry. 'pipx' creates a dedicated virtual environment just for Poetry.
