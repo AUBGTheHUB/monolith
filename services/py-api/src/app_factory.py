@@ -27,11 +27,14 @@ from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
-from src.service.feature_switch_service import FeatureSwitchService
+from src.service.feature_switches.feature_switch_service import FeatureSwitchService
+from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.service.hackathon.hackathon_service import HackathonService
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
-from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
+from src.service.hackathon.participant_service import ParticipantService
+from src.service.hackathon.registration_service import RegistrationService
+from src.service.hackathon.verification_service import VerificationService
+from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
@@ -124,27 +127,54 @@ def create_app() -> FastAPI:
     jwt_utility = JwtUtility()
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
     hackathon_mail_service = HackathonMailService(client=mail_client)
-    hackathon_service = HackathonService(
+    participant_service = ParticipantService(
         participants_repo=participants_repo,
         teams_repo=teams_repo,
-        feature_switch_repo=fs_repo,
-        tx_manager=tx_manager,
-        mail_service=hackathon_mail_service,
         jwt_utility=jwt_utility,
+        hackathon_mail_service=hackathon_mail_service,
     )
-    participants_reg_service = ParticipantRegistrationService(
-        hackathon_service=hackathon_service, jwt_utility=jwt_utility
+    team_service = TeamService(
+        teams_repo=teams_repo,
+        participant_service=participant_service,
+        participant_repo=participants_repo,
+        tx_manager=tx_manager,
     )
-    participants_verification_service = ParticipantVerificationService(hackathon_service=hackathon_service)
+    admin_team_service = AdminTeamService(
+        teams_repo=teams_repo, participant_repo=participants_repo, tx_manager=tx_manager
+    )
+    hackathon_utility_service = HackathonUtilityService(
+        participants_repo=participants_repo,
+        teams_repo=teams_repo,
+        team_service=team_service,
+        feature_switch_repo=fs_repo,
+    )
+
+    registration_service = RegistrationService(
+        participant_service=participant_service,
+        hackathon_utility_service=hackathon_utility_service,
+        jwt_utility=jwt_utility,
+        team_service=team_service,
+        admin_team_service=admin_team_service,
+    )
+    verification_service = VerificationService(
+        hackathon_utility_service=hackathon_utility_service,
+        team_service=team_service,
+        admin_team_service=admin_team_service,
+        participant_service=participant_service,
+    )
     fs_service = FeatureSwitchService(repository=fs_repo)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandler(service=fs_service),
-        hackathon_management_handlers=HackathonManagementHandlers(service=hackathon_service),
-        participant_handlers=ParticipantHandlers(service=participants_reg_service),
-        verification_handlers=VerificationHandlers(service=participants_verification_service, jwt_utility=jwt_utility),
+        hackathon_management_handlers=HackathonManagementHandlers(
+            hackathon_utility_service=hackathon_utility_service,
+            participant_service=participant_service,
+            team_service=team_service,
+        ),
+        participant_handlers=ParticipantHandlers(service=registration_service),
+        verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
     )
 
     Routes.register_routes(app.router, http_handlers)

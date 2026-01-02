@@ -2,7 +2,7 @@ from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.schemas import FeatureSwitchUpdateBody
 from src.server.schemas.response_schemas.schemas import FeatureSwitchResponse, Response, AllFeatureSwitchesResponse
-from src.service.feature_switch_service import FeatureSwitchService
+from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from starlette import status
 
 

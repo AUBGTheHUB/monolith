@@ -27,8 +27,11 @@ from src.server.schemas.request_schemas.schemas import (
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
 )
+from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.service.hackathon.hackathon_service import HackathonService
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
+from src.service.hackathon.participant_service import ParticipantService
+from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
@@ -39,34 +42,77 @@ from tests.unit_tests.conftest import (
     HackathonMailServiceMock,
     BackgroundTasksMock,
     MongoTransactionManagerMock,
+    TeamServiceMock,
+    ParticipantServiceMock,
 )
+from src.service.hackathon.constants import MAX_NUMBER_OF_TEAM_MEMBERS
 
 PARTICIPANT_LAST_SENT_EMAIL_VALID_RANGE = datetime.now() - timedelta(seconds=180)
 PARTICIPANT_LAST_SENT_EMAIL_INVALID_RANGE = datetime.now() - timedelta(seconds=30)
 
 
 @pytest.fixture
-def hackathon_service(
+def hackathon_utility_service(
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
+    team_service_mock: TeamServiceMock,
     feature_switch_repo_mock: FeatureSwitchRepoMock,
-    tx_manager_mock: MongoTransactionManagerMock,
-    hackathon_mail_service_mock: HackathonMailServiceMock,
-    jwt_utility_mock: JwtUtility,
-) -> HackathonService:
-    return HackathonService(
+) -> HackathonUtilityService:
+    return HackathonUtilityService(
         cast(ParticipantsRepository, participant_repo_mock),
         cast(TeamsRepository, team_repo_mock),
+        cast(TeamService, team_service_mock),
         cast(FeatureSwitchRepository, feature_switch_repo_mock),
+    )
+
+
+@pytest.fixture
+def team_service(
+    participant_repo_mock: ParticipantRepoMock,
+    participant_service_mock: ParticipantServiceMock,
+    team_repo_mock: TeamRepoMock,
+    team_service_mock: TeamServiceMock,
+    tx_manager_mock: MongoTransactionManagerMock,
+) -> TeamService:
+    return TeamService(
+        cast(TeamsRepository, team_repo_mock),
+        cast(ParticipantService, participant_service_mock),
+        cast(ParticipantsRepository, participant_repo_mock),
         cast(MongoTransactionManager, tx_manager_mock),
-        cast(HackathonMailService, hackathon_mail_service_mock),
-        jwt_utility_mock,
+    )
+
+
+@pytest.fixture
+def participant_service(
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
+    jwt_utility_mock: JwtUtility,
+    hackathon_mail_service_mock: HackathonMailServiceMock,
+) -> ParticipantService:
+    return ParticipantService(
+        participants_repo=cast(ParticipantsRepository, participant_repo_mock),
+        teams_repo=cast(TeamsRepository, team_repo_mock),
+        hackathon_mail_service=cast(HackathonMailService, hackathon_mail_service_mock),
+        jwt_utility=jwt_utility_mock,
+    )
+
+
+@pytest.fixture
+def admin_team_service(
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
+    tx_manager_mock: MongoTransactionManagerMock,
+) -> AdminTeamService:
+    return AdminTeamService(
+        cast(TeamsRepository, team_repo_mock),
+        cast(ParticipantsRepository, participant_repo_mock),
+        cast(MongoTransactionManager, tx_manager_mock),
     )
 
 
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     admin_case_input_data_mock: AdminParticipantInputData,
     participant_repo_mock: ParticipantRepoMock,
     admin_participant_mock: Participant,
@@ -74,7 +120,6 @@ async def test_create_participant_and_team_in_transaction(
     team_repo_mock: TeamRepoMock,
     tx_manager_mock: MongoTransactionManagerMock,
 ) -> None:
-
     # Given
     # Mock successful `create` responses for team and participant
     team_repo_mock.create.return_value = unverified_team_mock
@@ -85,7 +130,7 @@ async def test_create_participant_and_team_in_transaction(
     )
 
     # When
-    result = await hackathon_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
+    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
 
     # Then
     # Check that the result is an `Ok` containing both the participant and team objects
@@ -97,17 +142,16 @@ async def test_create_participant_and_team_in_transaction(
 
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction_duplicate_team_name_err(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     admin_case_input_data_mock: AdminParticipantInputData,
     tx_manager_mock: MongoTransactionManagerMock,
 ) -> None:
-
     # Given
     # Mock an `Err` for duplicate team name returned from transaction
     tx_manager_mock.with_transaction.return_value = Err(DuplicateTeamNameError(admin_case_input_data_mock.team_name))
 
     # When
-    result = await hackathon_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
+    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
 
     # Then
     # Check that the result is an `Err` with `DuplicateTeamNameError`
@@ -118,17 +162,16 @@ async def test_create_participant_and_team_in_transaction_duplicate_team_name_er
 
 @pytest.mark.asyncio
 async def test_create_participant_and_team_in_transaction_duplicate_email_err(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     admin_case_input_data_mock: AdminParticipantInputData,
     tx_manager_mock: MongoTransactionManagerMock,
 ) -> None:
-
     # Given
     # Mock an `Err` for duplicate email returned from transaction
     tx_manager_mock.with_transaction.return_value = Err(DuplicateEmailError(admin_case_input_data_mock.email))
 
     # When
-    result = await hackathon_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
+    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
 
     # Then
     # Check that the result is an `Err` with `DuplicateEmailError`
@@ -139,17 +182,16 @@ async def test_create_participant_and_team_in_transaction_duplicate_email_err(
 
 @pytest.mark.asyncio
 async def test_register_admin_participant_general_exception(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     admin_case_input_data_mock: AdminParticipantInputData,
     tx_manager_mock: MongoTransactionManagerMock,
 ) -> None:
-
     # Given
     # Mock `with_transaction` to raise a general exception
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
 
     # When
-    result = await hackathon_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
+    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
 
     # Then
     # Verify the result is an `Err` containing a general Exception
@@ -158,13 +200,12 @@ async def test_register_admin_participant_general_exception(
     assert str(result.err_value) == "Test error"
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_sufficient_capacity(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 18
@@ -172,49 +213,47 @@ async def test_check_capacity_admin_case_with_sufficient_capacity(
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is True (enough capacity)
     assert result is True
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exact_limit(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 10
-    team_repo_mock.get_verified_registered_teams_count.return_value = 10
+    team_repo_mock.get_verified_registered_teams_count.return_value = 14
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is False (capacity exactly reached)
     assert result is False
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_admin_case_with_exceeded_capacity(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
-    participant_repo_mock.get_verified_random_participants_count.return_value = 15
-    team_repo_mock.get_verified_registered_teams_count.return_value = 11
+    participant_repo_mock.get_verified_random_participants_count.return_value = 20
+    team_repo_mock.get_verified_registered_teams_count.return_value = 14
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_admin_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_admin_participant_case()
 
     # Then
     # Assert the result is False (capacity exceeded)
@@ -223,18 +262,17 @@ async def test_check_capacity_admin_case_with_exceeded_capacity(
 
 @pytest.mark.asyncio
 async def test_create_random_participant(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     random_case_input_data_mock: RandomParticipantInputData,
     random_participant_mock: Participant,
     participant_repo_mock: ParticipantRepoMock,
 ) -> None:
-
     # Given
     # Mock successful `create` response for random participant
     participant_repo_mock.create.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_service.create_random_participant(random_case_input_data_mock)
+    result = await participant_service.create_random_participant(random_case_input_data_mock)
 
     # Then
     # Validate that the result is an `Ok` instance containing the participant object
@@ -248,18 +286,17 @@ async def test_create_random_participant(
 
 @pytest.mark.asyncio
 async def test_create_random_participant_duplicate_email_err(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     random_case_input_data_mock: RandomParticipantInputData,
     participant_repo_mock: ParticipantRepoMock,
 ) -> None:
-
     # Given
     # Mock the `create` method to simulate a duplicate email error
     duplicate_email_error = DuplicateEmailError(random_case_input_data_mock.email)
     participant_repo_mock.create.return_value = Err(duplicate_email_error)
 
     # When
-    result = await hackathon_service.create_random_participant(random_case_input_data_mock)
+    result = await participant_service.create_random_participant(random_case_input_data_mock)
 
     # Then
     # Check that the result is an `Err` with `DuplicateEmailError`
@@ -270,17 +307,16 @@ async def test_create_random_participant_duplicate_email_err(
 
 @pytest.mark.asyncio
 async def test_create_random_participant_general_exception(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     random_case_input_data_mock: RandomParticipantInputData,
     participant_repo_mock: ParticipantRepoMock,
 ) -> None:
-
     # Given
     # Mock the `create` method to raise a general exception
     participant_repo_mock.create.return_value = Err(Exception("Test error"))
 
     # When
-    result = await hackathon_service.create_random_participant(random_case_input_data_mock)
+    result = await participant_service.create_random_participant(random_case_input_data_mock)
 
     # Then
     # Verify the result is an `Err` containing a general Exception
@@ -289,13 +325,12 @@ async def test_create_random_participant_general_exception(
     assert str(result.err_value) == "Test error"
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_sufficient_capacity(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 18
@@ -303,20 +338,19 @@ async def test_check_capacity_random_case_with_sufficient_capacity(
 
     # When
     # Call the random case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is True (enough capacity)
     assert result is True
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exact_limit(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
     participant_repo_mock.get_verified_random_participants_count.return_value = 10
@@ -324,28 +358,27 @@ async def test_check_capacity_random_case_with_exact_limit(
 
     # When
     # Call the random case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is True (capacity exactly reached)
     assert result is True
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_capacity_random_case_with_exceeded_capacity(
-    hackathon_service: HackathonService, participant_repo_mock: ParticipantRepoMock, team_repo_mock: TeamRepoMock
+    hackathon_utility_service: HackathonUtilityService,
+    participant_repo_mock: ParticipantRepoMock,
+    team_repo_mock: TeamRepoMock,
 ) -> None:
-
     # Given
     # Mock repository methods to return controlled values
-    participant_repo_mock.get_verified_random_participants_count.return_value = 15
-    team_repo_mock.get_verified_registered_teams_count.return_value = 11
+    participant_repo_mock.get_verified_random_participants_count.return_value = 20
+    team_repo_mock.get_verified_registered_teams_count.return_value = 14
 
     # When
     # Call the admin case capacity check function
-    result = await hackathon_service.check_capacity_register_random_participant_case()
+    result = await hackathon_utility_service.check_capacity_register_random_participant_case()
 
     # Then
     # Assert the result is False (capacity exceeded)
@@ -354,7 +387,7 @@ async def test_check_capacity_random_case_with_exceeded_capacity(
 
 @pytest.mark.asyncio
 async def verify_admin_participant_and_team_in_transaction_success(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
     mock_verified_team: Team,
@@ -362,7 +395,6 @@ async def verify_admin_participant_and_team_in_transaction_success(
     tx_manager_mock: MongoTransactionManagerMock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     mock_admin_participant.email_verified = True
     mock_verified_admin_participant = mock_admin_participant
@@ -376,7 +408,7 @@ async def verify_admin_participant_and_team_in_transaction_success(
     )
 
     # When
-    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+    result = await admin_team_service.verify_admin_participant_and_team_in_transaction(
         jwt_data=mock_jwt_admin_user_verification
     )
 
@@ -391,16 +423,15 @@ async def verify_admin_participant_and_team_in_transaction_success(
 
 @pytest.mark.asyncio
 async def verify_admin_participant_and_team_in_transaction_team_not_found_error(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     tx_manager_mock: MongoTransactionManagerMock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     tx_manager_mock.with_transaction.return_value = Err(TeamNotFoundError())
 
     # When
-    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+    result = await admin_team_service.verify_admin_participant_and_team_in_transaction(
         jwt_data=mock_jwt_admin_user_verification
     )
 
@@ -411,16 +442,15 @@ async def verify_admin_participant_and_team_in_transaction_team_not_found_error(
 
 @pytest.mark.asyncio
 async def verify_admin_participant_and_team_in_transaction_general_error(
-    hackathon_service: HackathonService,
+    admin_team_service: AdminTeamService,
     tx_manager_mock: MongoTransactionManagerMock,
     mock_jwt_admin_user_verification: JwtParticipantVerificationData,
 ) -> None:
-
     # Given
     tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
 
     # When
-    result = await hackathon_service.verify_admin_participant_and_team_in_transaction(
+    result = await admin_team_service.verify_admin_participant_and_team_in_transaction(
         jwt_data=mock_jwt_admin_user_verification
     )
 
@@ -432,13 +462,12 @@ async def verify_admin_participant_and_team_in_transaction_general_error(
 
 @pytest.mark.asyncio
 async def test_create_link_participant_duplicate_email_error(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     invite_link_case_input_data_mock: InviteLinkParticipantInputData,
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
     jwt_user_registration_mock: JwtParticipantInviteRegistrationData,
 ) -> None:
-
     # Given
     # Mock successful `fetch_by_id` response for link participant's team
     team_repo_mock.fetch_by_id.return_value = Ok(
@@ -449,7 +478,7 @@ async def test_create_link_participant_duplicate_email_error(
     participant_repo_mock.create.return_value = Err(DuplicateEmailError(invite_link_case_input_data_mock.email))
 
     # When
-    result = await hackathon_service.create_invite_link_participant(
+    result = await participant_service.create_invite_link_participant(
         invite_link_case_input_data_mock, jwt_user_registration_mock
     )
 
@@ -462,12 +491,11 @@ async def test_create_link_participant_duplicate_email_error(
 
 @pytest.mark.asyncio
 async def test_register_link_participant_team_name_mismatch(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     team_repo_mock: TeamRepoMock,
     invite_link_case_input_data_mock: InviteLinkParticipantInputData,
     jwt_user_registration_mock: JwtParticipantInviteRegistrationData,
 ) -> None:
-
     # Given
     # Modify the input_data to create a mismatch between the team names in the jwt and input data
     invite_link_case_input_data_mock.team_name = "modifiedteam"
@@ -479,7 +507,7 @@ async def test_register_link_participant_team_name_mismatch(
 
     # When
     # Call the function under test
-    result = await hackathon_service.create_invite_link_participant(
+    result = await participant_service.create_invite_link_participant(
         invite_link_case_input_data_mock, jwt_user_registration_mock
     )
 
@@ -489,42 +517,36 @@ async def test_register_link_participant_team_name_mismatch(
     assert isinstance(result.err_value, TeamNameMissmatchError)
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_team_capacity_case_available_space(
-    hackathon_service: HackathonService,
+    team_service: TeamService,
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     # Mock the get_number_registered_teammates() to return a number that is less that the MAX_NUMBER_OF_TEAM_MEMEBERS
-    participant_repo_mock.get_number_registered_teammates.return_value = HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS - 1
+    participant_repo_mock.get_number_registered_teammates.return_value = MAX_NUMBER_OF_TEAM_MEMBERS - 1
 
     # When
-    result = await hackathon_service.check_team_capacity(obj_id_mock)
+    result = await team_service.check_team_capacity(obj_id_mock)
 
     # Then
     assert result is True
 
 
-@patch.object(HackathonService, "MAX_NUMBER_OF_TEAM_MEMBERS", 6)
-@patch.object(HackathonService, "MAX_NUMBER_OF_VERIFIED_TEAMS_IN_HACKATHON", 12)
 @pytest.mark.asyncio
 async def test_check_team_capacity_case_capacity_exceeded(
-    hackathon_service: HackathonService,
+    team_service: TeamService,
     participant_repo_mock: ParticipantRepoMock,
     team_repo_mock: TeamRepoMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
-    participant_repo_mock.get_number_registered_teammates.return_value = HackathonService.MAX_NUMBER_OF_TEAM_MEMBERS
+    participant_repo_mock.get_number_registered_teammates.return_value = MAX_NUMBER_OF_TEAM_MEMBERS
 
     # When
-    result = await hackathon_service.check_team_capacity(obj_id_mock)
+    result = await team_service.check_team_capacity(obj_id_mock)
 
     # Then
     assert result is False
@@ -532,18 +554,17 @@ async def test_check_team_capacity_case_capacity_exceeded(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_success_random(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     team_repo_mock: TeamRepoMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -554,20 +575,19 @@ async def test_check_send_verification_email_rate_limit_success_random(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_not_reached_admin(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     admin_participant_mock: Participant,
     team_repo_mock: TeamRepoMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     admin_participant_mock.last_sent_verification_email = datetime.now() - timedelta(seconds=180)
     participant_repo_mock.fetch_by_id.return_value = Ok(admin_participant_mock)
     team_repo_mock.fetch_by_id.return_value = Ok(Team(name=TEST_TEAM_NAME, is_verified=False))
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -578,19 +598,18 @@ async def test_check_send_verification_email_rate_limit_not_reached_admin(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_limit_reached(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     # Mock insufficient time delta for sending the emails
     random_participant_mock.last_sent_verification_email = datetime.now() - timedelta(seconds=30)
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -599,19 +618,18 @@ async def test_check_send_verification_email_rate_limit_limit_reached(
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_without_last_sent_email(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     # Mock participant who has not received a verification email yet
     random_participant_mock.last_sent_verification_email = None
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Ok)
@@ -623,18 +641,17 @@ async def test_check_send_verification_email_rate_limit_participant_without_last
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_already_verified(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     random_participant_mock: Participant,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     random_participant_mock.email_verified = True
     participant_repo_mock.fetch_by_id.return_value = Ok(random_participant_mock)
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -643,16 +660,15 @@ async def test_check_send_verification_email_rate_limit_participant_already_veri
 
 @pytest.mark.asyncio
 async def test_check_send_verification_email_rate_limit_participant_not_found(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     obj_id_mock: str,
 ) -> None:
-
     # Given
     participant_repo_mock.fetch_by_id.return_value = Err(ParticipantNotFoundError())
 
     # When
-    result = await hackathon_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
+    result = await participant_service.check_send_verification_email_rate_limit(participant_id=obj_id_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -661,13 +677,12 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_success(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
     admin_participant_mock: Participant,
 ) -> None:
-
     # Given
     hackathon_mail_service_mock.send_participant_verification_email.return_value = None
     # And no err from repo
@@ -676,7 +691,7 @@ async def test_send_verification_email_success(
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        result = await hackathon_service.send_verification_email(
+        result = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
@@ -687,13 +702,12 @@ async def test_send_verification_email_success(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_err_validation_err_body_generation(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
     admin_participant_mock: Participant,
 ) -> None:
-
     # Given
     hackathon_mail_service_mock.send_participant_verification_email.return_value = Err(ValueError("Test Error"))
     # And no err from repo
@@ -702,7 +716,7 @@ async def test_send_verification_email_err_validation_err_body_generation(
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        err = await hackathon_service.send_verification_email(
+        err = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
@@ -714,13 +728,12 @@ async def test_send_verification_email_err_validation_err_body_generation(
 
 @pytest.mark.asyncio
 async def test_send_verification_email_err_participant_deleted_before_verifying_email(
-    hackathon_service: HackathonService,
+    participant_service: ParticipantService,
     participant_repo_mock: ParticipantRepoMock,
     background_tasks_mock: BackgroundTasksMock,
     hackathon_mail_service_mock: Mock,
     admin_participant_mock: Participant,
 ) -> None:
-
     # Given
     hackathon_mail_service_mock.send_participant_verification_email.return_value = None
     participant_repo_mock.update.return_value = Err(ParticipantNotFoundError())
@@ -728,7 +741,7 @@ async def test_send_verification_email_err_participant_deleted_before_verifying_
     # As we don't send emails for testing env due to integration tests we have to patch this
     with patch("src.environment.ENV", return_value="DEV"):
         # When
-        err = await hackathon_service.send_verification_email(
+        err = await participant_service.send_verification_email(
             participant=admin_participant_mock, background_tasks=background_tasks_mock
         )
 
