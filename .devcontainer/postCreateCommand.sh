@@ -7,11 +7,11 @@
 # We must manually "source" (load) the NVM and Pyenv scripts here so the commands below work.
 
 # Load NVM (Node Version Manager)
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="/usr/local/share/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # Load Pyenv (Python Version Manager)
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT="/usr/local/share/pyenv"
 export PATH="$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
 eval "$(pyenv init -)"
 
