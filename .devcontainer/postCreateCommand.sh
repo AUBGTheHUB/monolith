@@ -12,7 +12,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # Load Pyenv (Python Version Manager)
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
+export PATH="$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"
 eval "$(pyenv init -)"
 
 

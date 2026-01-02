@@ -34,12 +34,13 @@ RUN  mkdir -p /etc/apt/keyrings \
 # downloaded lists on our host machine. If we rebuild tomorrow, it reuses the cache instead of downloading again.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    sudo apt-get update && sudo apt-get install -y --no-install-recommends \
+    apt-get update && apt-get install -y --no-install-recommends \
     make build-essential zlib1g-dev libssl-dev libbz2-dev \
     libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils \
     tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
     pipx git gum
 
+USER vscode
 WORKDIR /home/vscode/workspaces
 
 # --- PYENV SETUP ---
