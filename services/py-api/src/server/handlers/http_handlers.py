@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
@@ -16,3 +17,4 @@ class HttpHandlersContainer:
     hackathon_management_handlers: HackathonManagementHandlers
     participant_handlers: ParticipantHandlers
     verification_handlers: VerificationHandlers
+    authentication_handlers: AuthenticationHandlers
