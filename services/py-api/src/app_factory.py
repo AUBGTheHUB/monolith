@@ -12,6 +12,7 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.server.exception_handler import ExceptionHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
@@ -29,7 +30,7 @@ from src.service.admin.mentors_service import MentorsService
 from src.service.admin.judges_service import JudgesService
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
-from src.server.middleware.middleware import Middleware
+from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
@@ -199,6 +200,7 @@ def create_app() -> FastAPI:
     )
 
     Routes.register_routes(app.router, http_handlers)
-    Middleware.bind(app)
+    ExceptionHandlers.register_exception_handlers(app)
+    Middlewares.register_middlewares(app)
 
     return app
