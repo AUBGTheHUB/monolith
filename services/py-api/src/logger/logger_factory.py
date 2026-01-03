@@ -1,11 +1,16 @@
-from logging import INFO
+from logging import INFO, Filter, LogRecord
 from logging.handlers import RotatingFileHandler
 from os import path, rename
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, TypedDict
 
-from structlog import configure, make_filtering_bound_logger, PrintLoggerFactory, WriteLoggerFactory
-from structlog.contextvars import merge_contextvars
+from structlog import (
+    configure,
+    make_filtering_bound_logger,
+    PrintLoggerFactory,
+    WriteLoggerFactory,
+)
+from structlog.contextvars import merge_contextvars, get_contextvars
 from structlog.dev import ConsoleRenderer
 from structlog.processors import (
     TimeStamper,
@@ -71,7 +76,7 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
         # is the .{backupCount}.
         for i in range(1, self.backupCount + 1):
             if i == 1:
-                rename(f"{self.baseFilename}.{1}", f"{self.baseFilename}.{self.backupCount}")
+                rename(f"{self.baseFilename}.1", f"{self.baseFilename}.{self.backupCount}")
             else:
                 rename(f"{self.baseFilename}.{i}", f"{self.baseFilename}.{i-1}")
 
@@ -93,13 +98,61 @@ class _CustomRotatingFileHandler(RotatingFileHandler):
             original_file.truncate()
 
 
-def get_uvicorn_logger(env: str) -> Dict[str, Any]:
-    prod_logging_config: Dict[str, Any] = {
+class _StructlogContextVars(TypedDict):
+    request_id: str
+
+
+class RequestIdFilter(Filter):
+    """
+    Logging filter that injects `request_id` from structlog's contextvars into standard logging records.
+
+    Why is this needed?
+    - Uvicorn uses Python's standard logging module for access logs.
+    - Our application uses structlog with contextvars to track request_id.
+    - This filter bridges the two: it reads request_id from structlog's contextvars
+      and adds it to each log record, so uvicorn's access logs can include it.
+
+    How it works:
+    1. Filter is attached to uvicorn's log handler (see get_uvicorn_logger).
+    2. For each log record, filter() is called before the log is emitted.
+    3. We read request_id from structlog's contextvars and attach it to the record.
+    4. The formatter can then use %(request_id)s to include it in the output.
+    """
+
+    def filter(self, record: LogRecord) -> bool:
+        # noinspection PyTypeChecker
+        ctx: _StructlogContextVars = get_contextvars()
+
+        request_id = ctx["request_id"]
+        # Empty string so formatter with %(request_id)s never explodes
+        record.request_id = request_id
+        # Return True to allow the log record to be emitted
+        return True
+
+
+def get_uvicorn_logger(env: str) -> dict[str, Any]:
+    """Returns uvicorn logging configuration based on the environment."""
+    prod_logging_config: dict[str, Any] = {
         "version": 1,
         "formatters": {
             "logformatter": {
-                "format": "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s",
-                "datefmt": "%Y-%m-%d %H:%M:%S",
+                # JSON format with request_id field - %(request_id)s is populated by RequestIdFilter
+                "format": (
+                    '{"timestamp":"%(asctime)s",'
+                    '"level":"%(levelname)s",'
+                    '"logger":"%(name)s",'
+                    '"request_id":"%(request_id)s",'
+                    '"message":"%(message)s"}'
+                ),
+                "datefmt": "%Y-%m-%dT%H:%M:%S",
+            },
+        },
+        "filters": {
+            # Register RequestIdFilter - the "()" syntax tells dictConfig to instantiate the class.
+            # This filter will be called for each log record to inject request_id.
+            # See: https://docs.python.org/3/library/logging.config.html#user-defined-objects
+            "request_id_filter": {
+                "()": "src.logger.logger_factory.RequestIdFilter",
             },
         },
         "handlers": {
@@ -110,6 +163,8 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
                 "formatter": "logformatter",
                 "maxBytes": 10 * 1024 * 1024,  # 10 MB limit
                 "backupCount": 2,  # 2 backup files
+                # Attach the filter to this handler - it runs before each log is written
+                "filters": ["request_id_filter"],
             },
         },
         "root": {
@@ -121,13 +176,12 @@ def get_uvicorn_logger(env: str) -> Dict[str, Any]:
         },
     }
 
-    # We save the incoming requests logs to a file like this:
-    # [2024-10-16 14:07:11][INFO][uvicorn.access]: 127.0.0.1:52176 - "GET /api/v3/ping HTTP/1.1" 200
+    # In DEV/PROD we log uvicorn output to shared/server.log as JSON-like lines
     if env in ("DEV", "PROD"):
         return prod_logging_config
 
-    default_logging_config: Dict[str, Any] = LOGGING_CONFIG
-
+    # For LOCAL/TEST fall back to uvicorn's default logging config
+    default_logging_config: dict[str, Any] = LOGGING_CONFIG
     return default_logging_config
 
 
