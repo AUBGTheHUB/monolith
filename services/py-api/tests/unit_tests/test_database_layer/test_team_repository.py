@@ -8,7 +8,7 @@ from result import Ok, Err
 from bson import ObjectId
 
 from src.database.model.hackathon.team_model import Team, UpdateTeamParams
-from src.database.mongo.db_manager import TEAMS_COLLECTION, MongoDatabaseManager
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.exception import TeamNotFoundError, DuplicateTeamNameError
 from tests.integration_tests.conftest import TEST_TEAM_NAME
@@ -17,7 +17,7 @@ from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
 
 @pytest.fixture
 def repo(mongo_db_manager_mock: MongoDbManagerMock) -> TeamsRepository:
-    return TeamsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock), TEAMS_COLLECTION)
+    return TeamsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock))
 
 
 @pytest.mark.asyncio
