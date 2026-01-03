@@ -1,15 +1,14 @@
+from src.server.handlers.admin.admin_handlers import AdminHandlers
+from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
+from src.server.handlers.admin.judges_handlers import JudgesHandlers
+from src.server.handlers.admin.mentor_handlers import MentorsHandlers
+from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
+from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.handlers.admin.admin_handlers import (
-    SponsorsHandlers,
-    MentorsHandlers,
-    JudgesHandlers,
-    HubMembersHandlers,
-    PastEventsHandlers,
-)
 from src.server.handlers.base_handler import BaseHandler
 
 
@@ -40,3 +39,10 @@ class HttpHandlersContainer(BaseHandler):
         self.judges_handlers = judges_handlers
         self.hub_members_handlers = hub_members_handlers
         self.past_events_handlers = past_events_handlers
+        self.admin_handlers = AdminHandlers(
+            mentors_handlers=mentors_handlers,
+            sponsors_handlers=sponsors_handlers,
+            judges_handlers=judges_handlers,
+            hub_members_handlers=hub_members_handlers,
+            past_events_handlers=past_events_handlers,
+        )

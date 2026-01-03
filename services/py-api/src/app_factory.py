@@ -13,13 +13,17 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.server.exception_handler import ExceptionHandlers
+from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
+from src.server.handlers.admin.judges_handlers import JudgesHandlers
+from src.server.handlers.admin.mentor_handlers import MentorsHandlers
+from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
+from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.handlers.admin.admin_handlers import AdminHandlers
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.database.repository.admin.judges_repository import JudgesRepository
@@ -190,13 +194,11 @@ def create_app() -> FastAPI:
         ),
         participant_handlers=ParticipantHandlers(service=registration_service),
         verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
-        admin_handlers=AdminHandlers(
-            sponsors_service=sponsors_service,
-            mentors_service=mentors_service,
-            judges_service=judges_service,
-            hub_members_service=hub_members_service,
-            past_events_service=past_events_service,
-        ),
+        sponsors_handlers=SponsorsHandlers(service=sponsors_service),
+        mentors_handlers=MentorsHandlers(service=mentors_service),
+        judges_handlers=JudgesHandlers(service=judges_service),
+        past_events_handlers=PastEventsHandlers(service=past_events_service),
+        hub_members_handlers=HubMembersHandlers(service=hub_members_service),
     )
 
     Routes.register_routes(app.router, http_handlers)
