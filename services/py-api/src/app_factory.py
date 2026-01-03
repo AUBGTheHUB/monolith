@@ -12,6 +12,7 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.exception_handler import ExceptionHandlers
 from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
@@ -205,6 +206,7 @@ def create_app() -> FastAPI:
             past_events_handlers=PastEventsHandlers(service=past_events_service),
             hub_members_handlers=HubMembersHandlers(service=hub_members_service),
         ),
+        authentication_handlers=AuthenticationHandlers(),
     )
 
     Routes.register_routes(app.router, http_handlers)

@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9319ecdc-c899-4a9c-8cec-8df370f37dab" name="Changes" comment="">
+<<<<<<< HEAD
       <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/services/py-api/src/database/model/admin/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/services/py-api/src/database/model/admin/hub_member_model.py" afterDir="false" />
@@ -104,6 +105,15 @@
       <change beforePath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_handlers/test_verification_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_handlers/test_verification_handlers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_service_layer/test_hackathon_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_service_layer/test_hackathon_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_service_layer/test_participant_registration_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/tests/unit_tests/test_service_layer/test_participant_registration_service.py" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/services/py-api/src/server/handlers/admin_panel/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/py-api/src/server/handlers/admin_panel/authentication_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/py-api/src/app_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/src/app_factory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/py-api/src/server/handlers/http_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/src/server/handlers/http_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/py-api/src/server/routes/admin_panel/authentication_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/src/server/routes/admin_panel/authentication_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/py-api/src/server/routes/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/py-api/src/server/routes/routes.py" afterDir="false" />
+>>>>>>> 99fca0e (Create auth handler and endpoint)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

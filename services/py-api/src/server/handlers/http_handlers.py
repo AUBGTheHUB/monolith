@@ -14,6 +14,12 @@ from src.server.handlers.utility_hanlders import UtilityHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
+class AuthenticationHandlers:
+    """Container for holding HTTP handlers for the authentication domain"""
+    authentication_handlers: AuthenticationHandlers
+
+
+@dataclass(kw_only=True, frozen=True)
 class HackathonHandlers:
     """Container for holding HTTP handlers for the Hackathon domain"""
 
@@ -42,3 +48,4 @@ class HttpHandlersContainer:
     fs_handlers: FeatureSwitchHandlers
     hackathon_handlers: HackathonHandlers
     admin_handlers: AdminHandlers
+    authentication_handlers: AuthenticationHandlers
