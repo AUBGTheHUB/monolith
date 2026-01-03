@@ -18,6 +18,7 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.server.exception_handler import ExceptionHandlers
 from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
@@ -25,7 +26,7 @@ from src.server.handlers.hackathon.participants_handlers import ParticipantHandl
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.middleware.middleware import Middleware
+from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
@@ -179,6 +180,7 @@ def create_app() -> FastAPI:
     )
 
     Routes.register_routes(app.router, http_handlers)
-    Middleware.bind(app)
+    ExceptionHandlers.register_exception_handlers(app)
+    Middlewares.register_middlewares(app)
 
     return app
