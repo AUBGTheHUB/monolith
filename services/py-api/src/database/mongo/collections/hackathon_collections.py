@@ -1,4 +1,4 @@
-"""Hackathon domain collection name constants."""
+"""Hackathon domain MongoDB collections."""
 
 PARTICIPANTS_COLLECTION = "participants"
 TEAMS_COLLECTION = "teams"

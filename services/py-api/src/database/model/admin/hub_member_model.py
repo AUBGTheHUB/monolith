@@ -1,15 +1,17 @@
 from dataclasses import dataclass, field
 from typing import Any, Literal, NotRequired, TypedDict, cast
 
+from pydantic import HttpUrl
+
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
 DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Design"]
 
 
 class SocialLinks(TypedDict):
-    linkedin: NotRequired[str]
-    github: NotRequired[str]
-    website: NotRequired[str]
+    linkedin: NotRequired[HttpUrl]
+    github: NotRequired[HttpUrl]
+    website: NotRequired[HttpUrl]
 
 
 @dataclass(kw_only=True)
@@ -20,7 +22,7 @@ class HubMember(BaseDbModel):
     role_title: str
     department: DEPARTMENTS_LIST
     avatar_url: str
-    social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, {}))
+    social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {

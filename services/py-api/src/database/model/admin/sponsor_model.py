@@ -3,12 +3,14 @@ from typing import Optional, Literal, Any
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
+ALLOWED_SPONSOR_TIERS = Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"]
+
 
 @dataclass(kw_only=True)
 class Sponsor(BaseDbModel):
     name: str
     # TODO(#admin-sponsors-tier-enum): Replace Literal with Enum once tier list is finalized / needs ordering logic.
-    tier: Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"]
+    tier: ALLOWED_SPONSOR_TIERS
     logo_url: str
     website_url: Optional[str] = None
 
@@ -37,6 +39,6 @@ class Sponsor(BaseDbModel):
 
 class UpdateSponsorParams(UpdateParams):
     name: str | None = None
-    tier: Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"] | None = None
+    tier: ALLOWED_SPONSOR_TIERS | None = None
     logo_url: str | None = None
     website_url: str | None = None

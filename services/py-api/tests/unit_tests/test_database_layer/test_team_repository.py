@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, cast, Dict, Any
+from typing import cast, Any
 from unittest.mock import Mock, AsyncMock
 
 import pytest
@@ -22,7 +22,7 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> TeamsRepository:
 
 @pytest.mark.asyncio
 async def test_create_team_success(
-    ten_sec_window: Tuple[datetime, datetime],
+    ten_sec_window: tuple[datetime, datetime],
     unverified_team_mock: Team,
     repo: TeamsRepository,
 ) -> None:
@@ -85,7 +85,7 @@ async def test_create_team_general_exception(
 @pytest.mark.asyncio
 async def test_delete_team_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    unverified_team_dump_no_id_mock: Dict[str, Any],
+    unverified_team_dump_no_id_mock: dict[str, Any],
     obj_id_mock: str,
     repo: TeamsRepository,
 ) -> None:
@@ -148,7 +148,7 @@ async def test_delete_team_general_exception(
 async def test_update_team_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
-    verified_team_dump_no_id_mock: Dict[str, Any],
+    verified_team_dump_no_id_mock: dict[str, Any],
     repo: TeamsRepository,
 ) -> None:
 
@@ -233,7 +233,7 @@ async def test_fetch_by_team_name_general_error(
 async def test_fetch_by_id_successful(
     mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
-    unverified_team_dump_no_id_mock: Dict[str, Any],
+    unverified_team_dump_no_id_mock: dict[str, Any],
     repo: TeamsRepository,
 ) -> None:
 

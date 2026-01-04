@@ -1,4 +1,3 @@
-from typing import Tuple
 from fastapi import BackgroundTasks
 from result import Err, Ok, Result, is_err
 from src.database.model.hackathon.participant_model import Participant
@@ -35,7 +34,7 @@ class VerificationService:
     async def verify_admin_participant(
         self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         HackathonCapacityExceededError | ParticipantNotFoundError | TeamNotFoundError | ValueError | Exception,
     ]:
         has_capacity = await self._hackathon_utility_service.check_capacity_register_admin_participant_case()
@@ -63,7 +62,7 @@ class VerificationService:
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, None], HackathonCapacityExceededError | ParticipantNotFoundError | ValueError | Exception
+        tuple[Participant, None], HackathonCapacityExceededError | ParticipantNotFoundError | ValueError | Exception
     ]:
         has_capacity = await self._hackathon_utility_service.check_capacity_register_random_participant_case()
         if not has_capacity:

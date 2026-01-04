@@ -1,7 +1,4 @@
-"""Admin domain collection name constants.
-
-Separated into collections package for clearer domain boundaries.
-"""
+"""Admin domain MongoDB collections."""
 
 SPONSORS_COLLECTION = "sponsors"
 MENTORS_COLLECTION = "mentors"

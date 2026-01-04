@@ -2,8 +2,7 @@ from result import Result, Err
 
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
-from src.server.schemas.admin.request_schemas.schemas import HubMemberPostReqData
-from src.server.schemas.admin.request_schemas.schemas import HubMemberPatchReqData
+from src.server.schemas.request_schemas.admin.hub_member_schemas import HubMemberPostReqData, HubMemberPatchReqData
 
 
 class HubMembersService:

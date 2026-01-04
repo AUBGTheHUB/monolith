@@ -8,7 +8,7 @@ def register_mentors_routes(http_handler: MentorsHandlers) -> APIRouter:
     mentors_router = APIRouter(prefix="/mentors", tags=["admin"])
 
     mentors_router.add_api_route(
-        "", endpoint=http_handler.list_mentors, methods=["GET"], dependencies=[Depends(is_auth)]
+        "", endpoint=http_handler.get_all_mentors, methods=["GET"], dependencies=[Depends(is_auth)]
     )
     mentors_router.add_api_route(
         "/{mentor_id}", endpoint=http_handler.get_mentor, methods=["GET"], dependencies=[Depends(is_auth)]

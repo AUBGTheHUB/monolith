@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.server.handlers.admin.admin_handlers import AdminHandlers
+from src.server.handlers.http_handlers import AdminHandlers
 from src.server.routes.admin.hub_member_routes import register_hub_members_routes
 from src.server.routes.admin.judges_routes import register_judges_routes
 from src.server.routes.admin.mentors_routes import register_mentors_routes

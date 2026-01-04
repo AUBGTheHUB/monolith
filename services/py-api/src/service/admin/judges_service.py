@@ -1,8 +1,8 @@
 from result import Result, Err
 
 from src.database.model.admin.judge_model import Judge
-from src.server.schemas.admin.request_schemas.schemas import JudgePostReqData, JudgePatchReqData
 from src.database.repository.admin.judges_repository import JudgesRepository
+from src.server.schemas.request_schemas.admin.judge_schemas import JudgePostReqData, JudgePatchReqData
 
 
 class JudgesService:

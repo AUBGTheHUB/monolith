@@ -12,12 +12,11 @@ from src.exception import (
     TeamNotFoundError,
 )
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
-from src.server.schemas.response_schemas.schemas import (
-    ErrResponse,
+from src.server.schemas.response_schemas.hackathon.schemas import (
     ParticipantVerifiedResponse,
-    Response,
     VerificationEmailSentSuccessfullyResponse,
 )
+from src.server.schemas.response_schemas.schemas import Response, ErrResponse
 from src.service.hackathon.verification_service import VerificationService
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.service.jwt_utils.codec import JwtUtility

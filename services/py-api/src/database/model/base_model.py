@@ -1,11 +1,12 @@
 from abc import ABC
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Annotated, Any, cast
+from typing import Annotated, Any, Literal, cast
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
 from pydantic.json_schema import WithJsonSchema
+from pydantic.main import IncEx
 
 from src.database.model.json_serializer import SerializableDbModel
 
@@ -43,16 +44,16 @@ class UpdateParams(BaseModel, ABC):
     def model_dump(
         self,
         *,
-        mode: str | Any = "python",
-        include: Any | None = None,
-        exclude: Any | None = None,
+        mode: Literal["json", "python"] | str = "python",
+        include: IncEx | None = None,
+        exclude: IncEx | None = None,
         context: Any | None = None,
         by_alias: bool = False,
         exclude_unset: bool = True,
         exclude_defaults: bool = False,
         exclude_none: bool = False,
         round_trip: bool = False,
-        warnings: bool | Any = True,
+        warnings: bool | Literal["none", "warn", "error"] = True,
         serialize_as_any: bool = False,
     ) -> dict[str, Any]:
         return cast(

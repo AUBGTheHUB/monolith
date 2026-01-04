@@ -2,8 +2,7 @@ from result import Result, Err
 
 from src.database.model.admin.mentor_model import Mentor
 from src.database.repository.admin.mentors_repository import MentorsRepository
-from src.server.schemas.admin.request_schemas.schemas import MentorPostReqData
-from src.server.schemas.admin.request_schemas.schemas import MentorPatchReqData
+from src.server.schemas.request_schemas.admin.mentor_schemas import MentorPostReqData, MentorPatchReqData
 
 
 class MentorsService:

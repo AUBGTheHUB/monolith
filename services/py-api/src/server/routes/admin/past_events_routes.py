@@ -8,7 +8,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
     past_events_router = APIRouter(prefix="/past-events", tags=["admin"])
 
     past_events_router.add_api_route(
-        "", endpoint=http_handler.list_past_events, methods=["GET"], dependencies=[Depends(is_auth)]
+        "", endpoint=http_handler.get_all_past_events, methods=["GET"], dependencies=[Depends(is_auth)]
     )
     past_events_router.add_api_route(
         "/{event_id}", endpoint=http_handler.get_past_event, methods=["GET"], dependencies=[Depends(is_auth)]

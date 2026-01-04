@@ -2,8 +2,7 @@ from result import Result, Err
 
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.repository.admin.past_events_repository import PastEventsRepository
-from src.server.schemas.admin.request_schemas.schemas import PastEventPostReqData
-from src.server.schemas.admin.request_schemas.schemas import PastEventPatchReqData
+from src.server.schemas.request_schemas.admin.past_event_schemas import PastEventPostReqData, PastEventPatchReqData
 
 
 class PastEventsService:

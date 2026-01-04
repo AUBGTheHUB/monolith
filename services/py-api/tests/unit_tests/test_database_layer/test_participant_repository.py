@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, cast, Dict, Any
+from typing import cast, Any
 
 import pytest
 from pymongo.errors import DuplicateKeyError
@@ -21,7 +21,7 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> ParticipantsRepository:
 
 @pytest.mark.asyncio
 async def test_create_participant_success(
-    ten_sec_window: Tuple[datetime, datetime],
+    ten_sec_window: tuple[datetime, datetime],
     random_participant_mock: Participant,
     repo: ParticipantsRepository,
 ) -> None:
@@ -85,7 +85,7 @@ async def test_create_participant_general_exception(
 async def test_delete_successful(
     mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
-    admin_participant_dump_no_id_mock: Dict[str, Any],
+    admin_participant_dump_no_id_mock: dict[str, Any],
     repo: ParticipantsRepository,
 ) -> None:
     # Given
@@ -142,7 +142,7 @@ async def test_update_participant_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
     repo: ParticipantsRepository,
-    admin_participant_dump_verified_mock: Dict[str, Any],
+    admin_participant_dump_verified_mock: dict[str, Any],
 ) -> None:
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(

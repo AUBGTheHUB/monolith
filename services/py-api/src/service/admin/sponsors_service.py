@@ -2,8 +2,7 @@ from result import Result, Err
 
 from src.database.model.admin.sponsor_model import Sponsor
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
-from src.server.schemas.admin.request_schemas.schemas import SponsorPostReqData
-from src.server.schemas.admin.request_schemas.schemas import SponsorPatchReqData
+from src.server.schemas.request_schemas.admin.sponsor_schemas import SponsorPostReqData, SponsorPatchReqData
 
 
 class SponsorsService:

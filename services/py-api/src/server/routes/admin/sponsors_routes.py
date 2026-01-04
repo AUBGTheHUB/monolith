@@ -8,7 +8,7 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
     sponsors_router = APIRouter(prefix="/sponsors", tags=["admin"])
 
     sponsors_router.add_api_route(
-        "", endpoint=http_handler.list_sponsors, methods=["GET"], dependencies=[Depends(is_auth)]
+        "", endpoint=http_handler.get_all_sponsors, methods=["GET"], dependencies=[Depends(is_auth)]
     )
     sponsors_router.add_api_route(
         "/{sponsor_id}", endpoint=http_handler.get_sponsor, methods=["GET"], dependencies=[Depends(is_auth)]

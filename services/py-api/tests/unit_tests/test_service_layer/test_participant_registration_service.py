@@ -14,7 +14,7 @@ from src.exception import (
     ParticipantNotFoundError,
     TeamCapacityExceededError,
 )
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,

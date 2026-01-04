@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -36,7 +36,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             LOG.exception("Failed to fetch participant due to error", participant_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[List[Participant], Exception]:
+    async def fetch_all(self) -> Result[list[Participant], Exception]:
         try:
             LOG.info("Fetching all participants...")
 
@@ -86,10 +86,10 @@ class ParticipantsRepository(CRUDRepository[Participant]):
 
     async def bulk_update(
         self,
-        obj_ids: List[ObjectId],
+        obj_ids: list[ObjectId],
         obj_fields: UpdateParticipantParams,
         session: Optional[AsyncIOMotorClientSession] = None,
-    ) -> Result[List[ObjectId], Exception]:
+    ) -> Result[list[ObjectId], Exception]:
         try:
             LOG.info(f"Updating participants...", participant_ids=obj_ids, updated_fields=obj_fields.model_dump())
 
@@ -159,7 +159,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         """Returns the count of registered participants already in the team."""
         return await self._collection.count_documents({"team_id": ObjectId(team_id)})  # type: ignore
 
-    async def get_verified_random_participants(self) -> Result[List[Participant], Exception]:
+    async def get_verified_random_participants(self) -> Result[list[Participant], Exception]:
         """Returns a list of verified random participants."""
 
         try:

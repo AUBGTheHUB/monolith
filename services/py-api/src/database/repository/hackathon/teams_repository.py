@@ -1,4 +1,4 @@
-from typing import Optional, List, cast, Dict, Any
+from typing import Optional, cast, Any
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -59,7 +59,7 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[List[Team], Exception]:
+    async def fetch_all(self) -> Result[list[Team], Exception]:
         try:
             LOG.debug("Fetching all teams...")
 
@@ -149,7 +149,7 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.debug("Fetching team by name...", team_name=team_name)
 
             # Query the database for the team with the given name
-            team = cast(Dict[str, Any], await self._collection.find_one({"name": team_name}))
+            team = cast(dict[str, Any], await self._collection.find_one({"name": team_name}))
 
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())

@@ -8,7 +8,7 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
     hub_members_router = APIRouter(prefix="/hub-members", tags=["admin"])
 
     hub_members_router.add_api_route(
-        "", endpoint=http_handler.list_hub_members, methods=["GET"], dependencies=[Depends(is_auth)]
+        "", endpoint=http_handler.get_all_hub_members, methods=["GET"], dependencies=[Depends(is_auth)]
     )
     hub_members_router.add_api_route(
         "/{member_id}", endpoint=http_handler.get_hub_member, methods=["GET"], dependencies=[Depends(is_auth)]
