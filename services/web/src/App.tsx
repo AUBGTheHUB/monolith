@@ -4,6 +4,7 @@ import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
+import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
 import FeatureSwitchEditPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchEditPage';
@@ -18,7 +19,7 @@ function App() {
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
-
+                <Route path="/admin" element={<LoginPage />} />
                 <Route path="/" element={<Navigate to="/dashboard/feature-switches" replace />} />
                 <Route path="/dashboard/feature-switches" element={<FeatureSwitchesPage />} />
                 <Route path="/dashboard/feature-switches/add" element={<FeatureSwitchAddPage />} />

@@ -52,3 +52,5 @@ COPY --from=build-stage /app/dist /srv
 # This is the default location that the caddy Dockerfile uses to run server from the resulting image
 # https://github.com/caddyserver/caddy-docker/blob/d0c036065bee3bb086199d212be6f0d3b937c74a/2.10/alpine/Dockerfile#L61C7-L61C12
 COPY Caddyfile /etc/caddy/Caddyfile
+
+# We don't have ENTRYPOINT or CMD here, as we use the ones provided by the caddy image: https://github.com/caddyserver/caddy-docker/blob/cf30c98da75019494eedf13b00efc7c75956b099/2.10/alpine/Dockerfile#L61

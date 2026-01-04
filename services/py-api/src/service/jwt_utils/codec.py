@@ -1,6 +1,6 @@
 from dataclasses import fields
 from os import environ
-from typing import Any, Type, cast, Dict
+from typing import Any, cast
 
 from jwt import encode, decode, ExpiredSignatureError, InvalidSignatureError, DecodeError
 from result import Result, Err, Ok
@@ -30,11 +30,11 @@ class JwtUtility:
 
     def decode_data[
         T: JwtBase[DecodedJwtTokenBase]
-    ](self, token: str, schema: Type[T]) -> Result[
+    ](self, token: str, schema: type[T]) -> Result[
         T, JwtDecodeSchemaMismatch | JwtExpiredSignatureError | JwtInvalidSignatureError | JwtDecodeError
     ]:
         try:
-            decoded_token: Dict[str, Any] = decode(jwt=token, key=self._key, algorithms=[self._algorithm])
+            decoded_token: dict[str, Any] = decode(jwt=token, key=self._key, algorithms=[self._algorithm])
 
             # https://www.cuemath.com/algebra/equal-sets/
             expected_keys_set = {key.name for key in fields(schema)}

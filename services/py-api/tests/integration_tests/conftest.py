@@ -6,7 +6,7 @@ from httpx import AsyncClient, ASGITransport, Response
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
-from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
+from typing import AsyncGenerator, Any, Literal, Protocol, Union
 from src.app_entrypoint import app
 from os import environ
 from src.database.model.hackathon.participant_model import (
@@ -44,7 +44,7 @@ TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 # https://pytest-asyncio.readthedocs.io/en/latest/concepts.html
 # https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
 # https://docs.pytest.org/en/stable/how-to/writing_hook_functions.html
-def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     pytest_asyncio_tests = (item for item in items if pytest_asyncio.is_async_test(item))
     session_scope_marker = pytest.mark.asyncio(loop_scope="session")
     for async_test in pytest_asyncio_tests:
@@ -77,12 +77,11 @@ class CreateTestParticipantCallable(Protocol):
     - An awaitable dictionary containing the participant creation response.
     """
 
-    async def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
+    async def __call__(self, participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
-
+async def clean_up_test_participant(async_client: AsyncClient, result_json: dict[str, Any]) -> None:
     participant_id = result_json["participant"]["id"]
     await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
@@ -164,7 +163,7 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
 
     Yields:
     - CreateTestParticipantCallable: A callable to create participants. The callable signature is:
-      async def(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Dict[str, Any]
+      async def(participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> dict[str, Any]
 
       - participant_body: A dictionary containing the participant's details, such as email and registration type.
       - jwt_token: An optional JWT token as a string to authenticate the request.
@@ -191,7 +190,7 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
     """
     request_results = []
 
-    async def _create(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
+    async def _create(participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
         LOG.debug("Creating a test participant")
         if jwt_token is None:
             participant_result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
@@ -221,7 +220,7 @@ class ParticipantRequestBodyCallable(Protocol):
         email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
         **kwargs: Any,
-    ) -> Dict[str, Any]: ...
+    ) -> dict[str, Any]: ...
 
 
 @pytest_asyncio.fixture
@@ -244,7 +243,7 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
         has_previous_coding_experience: Union[bool | None] = True,
         share_info_with_sponsors: Union[bool | None] = True,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """This method is flexible with generating participant request bodies. To disable a property just call it with
         generate_participant_request_body(email=None) i.e.
         """
@@ -281,24 +280,22 @@ def obj_id_mock() -> str:
 
 
 @pytest.fixture
-def thirty_sec_jwt_exp_limit() -> int:
-    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+def one_minute_jwt_exp() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(minutes=1)).timestamp())
 
 
 @pytest.fixture
-def invite_link_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
-) -> JwtParticipantInviteRegistrationData:
+def invite_link_jwt_payload_mock(one_minute_jwt_exp: int, obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=one_minute_jwt_exp
     )
 
 
 @pytest.fixture
 def participant_verification_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+    one_minute_jwt_exp: int, obj_id_mock: str
 ) -> JwtParticipantVerificationData:
-    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=one_minute_jwt_exp)
 
 
 @pytest.fixture
