@@ -37,6 +37,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
     ParticipantRequestBody,
+    ResendEmailParticipantData,
 )
 
 from tests.integration_tests.conftest import (
@@ -1011,6 +1012,11 @@ def ten_sec_window() -> tuple[datetime, datetime]:
 @pytest.fixture
 def thirty_sec_jwt_exp_limit() -> int:
     return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+
+
+@pytest.fixture
+def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
+    return ResendEmailParticipantData(participant_id=obj_id_mock)
 
 
 # =================================================
