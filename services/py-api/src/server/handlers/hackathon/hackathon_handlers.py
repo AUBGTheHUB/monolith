@@ -11,13 +11,12 @@ from result import is_err
 from starlette import status
 
 from src.server.handlers.base_handler import BaseHandler
-from src.server.schemas.response_schemas.schemas import (
+from src.server.schemas.response_schemas.hackathon.schemas import (
     ParticipantDeletedResponse,
     TeamDeletedResponse,
-    Response,
     AllTeamsResponse,
-    FeatureSwitchResponse,
 )
+from src.server.schemas.response_schemas.schemas import Response, FeatureSwitchResponse
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.team_service import TeamService

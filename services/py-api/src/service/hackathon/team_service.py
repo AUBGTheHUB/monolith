@@ -1,6 +1,6 @@
 from math import ceil
 from secrets import token_hex
-from typing import Optional, List, TypedDict
+from typing import Optional, TypedDict
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import is_err, Ok, Result
@@ -43,7 +43,7 @@ class TeamService:
         self._participant_repo = participant_repo
         self._tx_manager = tx_manager
 
-    async def fetch_all_teams(self) -> Result[List[Team], Exception]:
+    async def fetch_all_teams(self) -> Result[list[Team], Exception]:
         return await self._teams_repo.fetch_all()
 
     async def delete_team(self, team_id: str) -> Result[Team, TeamNotFoundError | Exception]:
@@ -78,7 +78,7 @@ class TeamService:
 
     def form_random_participant_teams(
         self, prog_participants: list[Participant], non_prog_participants: list[Participant]
-    ) -> List[_RandomTeam]:
+    ) -> list[_RandomTeam]:
         # Calculate the number of hackathon participants
         number_of_random_participants = len(prog_participants) + len(non_prog_participants)
         # Calculate the number of teams that are going to be needed for the given number of participants
@@ -106,8 +106,8 @@ class TeamService:
         return teams
 
     async def _create_random_participant_teams_in_transaction_callback(
-        self, random_teams: List[_RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[List[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        self, random_teams: list[_RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[list[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         # Loop through each RandomTeam in the list. Create the team. Update all the participants with the id of the team
         # created
         for random_team in random_teams:
@@ -140,8 +140,8 @@ class TeamService:
         return Ok(random_teams)
 
     async def create_random_participant_teams_in_transaction(
-        self, input_data: List[_RandomTeam]
-    ) -> Result[List[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
+        self, input_data: list[_RandomTeam]
+    ) -> Result[list[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         return await self._tx_manager.with_transaction(
             self._create_random_participant_teams_in_transaction_callback, input_data
         )

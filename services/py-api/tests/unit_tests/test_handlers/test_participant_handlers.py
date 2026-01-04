@@ -15,13 +15,14 @@ from src.exception import (
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from starlette import status
 
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     ParticipantRequestBody,
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.server.schemas.response_schemas.schemas import ErrResponse, Response, ParticipantRegisteredResponse
+from src.server.schemas.response_schemas.hackathon.schemas import ParticipantRegisteredResponse
+from src.server.schemas.response_schemas.schemas import Response, ErrResponse
 from src.service.hackathon.registration_service import RegistrationService
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_EMAIL, TEST_USER_NAME
 from tests.unit_tests.conftest import ParticipantRegistrationServiceMock, BackgroundTasksMock

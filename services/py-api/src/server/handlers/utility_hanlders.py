@@ -2,7 +2,7 @@ from starlette import status
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.server.handlers.base_handler import BaseHandler
-from src.server.schemas.response_schemas.schemas import ErrResponse, PongResponse, Response
+from src.server.schemas.response_schemas.schemas import Response, ErrResponse, PongResponse
 
 
 class UtilityHandlers(BaseHandler):

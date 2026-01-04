@@ -53,7 +53,7 @@ async def is_registration_open(request: Request) -> None:
     if is_err(result):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
 
-    if result.ok_value.state is False:
+    if not result.ok_value.state:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
 
 
