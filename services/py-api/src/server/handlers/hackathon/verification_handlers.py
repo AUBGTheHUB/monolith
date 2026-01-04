@@ -3,6 +3,7 @@ from result import is_err
 from starlette import status
 
 from src.server.handlers.base_handler import BaseHandler
+from src.server.schemas.request_schemas.hackathon.schemas import ResendEmailParticipantData
 from src.server.schemas.response_schemas.hackathon.schemas import (
     ParticipantVerifiedResponse,
     VerificationEmailSentSuccessfullyResponse,
@@ -47,10 +48,12 @@ class VerificationHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-    async def resend_verification_email(self, participant_id: str, background_tasks: BackgroundTasks) -> Response:
+    async def resend_verification_email(
+        self, resend_email_data: ResendEmailParticipantData, background_tasks: BackgroundTasks
+    ) -> Response:
 
         result = await self._service.resend_verification_email(
-            participant_id=participant_id, background_tasks=background_tasks
+            participant_id=resend_email_data.participant_id, background_tasks=background_tasks
         )
 
         if is_err(result):
