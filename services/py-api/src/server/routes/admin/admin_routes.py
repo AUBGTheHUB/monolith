@@ -9,7 +9,7 @@ from src.server.routes.admin.sponsors_routes import register_sponsor_routes
 
 
 def register_admin_routes(http_handler: AdminHandlers) -> APIRouter:
-    admin_router = APIRouter(prefix="/admin", tags=["admin"])
+    admin_router = APIRouter(prefix="/admin")
 
     sponsors_router = register_sponsor_routes(http_handler=http_handler.sponsors_handlers)
     mentors_router = register_mentors_routes(http_handler=http_handler.mentors_handlers)

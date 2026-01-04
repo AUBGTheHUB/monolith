@@ -5,7 +5,7 @@ from src.server.routes.route_dependencies import is_auth
 
 
 def register_mentors_routes(http_handler: MentorsHandlers) -> APIRouter:
-    mentors_router = APIRouter(prefix="/mentors", tags=["admin"])
+    mentors_router = APIRouter(prefix="/mentors", tags=["mentors"])
 
     mentors_router.add_api_route(
         "", endpoint=http_handler.get_all_mentors, methods=["GET"], dependencies=[Depends(is_auth)]
