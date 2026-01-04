@@ -5,7 +5,7 @@ from src.server.routes.route_dependencies import is_auth
 
 
 def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
-    judges_router = APIRouter(prefix="/judges", tags=["admin"])
+    judges_router = APIRouter(prefix="/judges", tags=["judges"])
 
     judges_router.add_api_route(
         "", endpoint=http_handler.get_all_judges, methods=["GET"], dependencies=[Depends(is_auth)]
