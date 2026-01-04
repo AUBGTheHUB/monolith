@@ -7,7 +7,6 @@ import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
-import FeatureSwitchEditPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchEditPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -23,7 +22,6 @@ function App() {
                 <Route path="/" element={<Navigate to="/dashboard/feature-switches" replace />} />
                 <Route path="/dashboard/feature-switches" element={<FeatureSwitchesPage />} />
                 <Route path="/dashboard/feature-switches/add" element={<FeatureSwitchAddPage />} />
-                <Route path="/dashboard/feature-switches/:id" element={<FeatureSwitchEditPage />} />
                 <Route path="*" element={<div style={{ padding: 24 }}>Not Found</div>} />
             </Routes>
         </QueryClientProvider>

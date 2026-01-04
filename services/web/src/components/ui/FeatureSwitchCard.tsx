@@ -3,7 +3,6 @@ import { Input } from '@/components/ui/input';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export type FSCardProps = {
-    id: string;
     name: string;
     currentState: boolean;
     onRename: (name: string) => void;
@@ -11,12 +10,12 @@ export type FSCardProps = {
     onDelete: () => void;
 };
 
-export default function FeatureSwitchCard({ id, name, currentState, onRename, onToggle, onDelete }: FSCardProps) {
+export default function FeatureSwitchCard({ name, currentState, onRename, onToggle, onDelete }: FSCardProps) {
     const [isRenaming, setIsRenaming] = useState(false);
     const [draft, setDraft] = useState(name);
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const valid = draft.trim().length >= 2 && draft.trim().length <= 40;
+    const valid = draft.trim().length >= 2 && draft.trim().length <= 12;
 
     const outlineBtn =
         'px-4 py-2 rounded-md border border-slate-300 bg-white text-slate-900 ' +
@@ -48,15 +47,6 @@ export default function FeatureSwitchCard({ id, name, currentState, onRename, on
                             Delete
                         </button>
                     </div>
-
-                    <div className="mt-4 text-center">
-                        <a
-                            className="text-sm underline text-blue-600 hover:text-blue-500"
-                            href={`/dashboard/feature-switches/${id}`}
-                        >
-                            Edit details
-                        </a>
-                    </div>
                 </>
             ) : (
                 <>
@@ -64,7 +54,7 @@ export default function FeatureSwitchCard({ id, name, currentState, onRename, on
                         <Input
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            maxLength={60}
+                            maxLength={12}
                             placeholder="Feature switch name"
                         />
                         <div className="text-xs text-slate-500 mt-1">Min 2, max 12 characters.</div>

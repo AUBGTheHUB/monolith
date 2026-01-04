@@ -4,9 +4,9 @@ import {
     getAllFeatureSwitches,
     updateFeatureSwitch,
     deleteFeatureSwitch,
-    toggleFeatureSwitch,
-    type FeatureSwitch,
+    toggleFeatureSwitch
 } from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/store/useFeatureSwitches';
+import type { FeatureSwitch } from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/types';
 
 export default function FeatureSwitchesPage() {
     const [items, setItems] = useState<FeatureSwitch[]>(getAllFeatureSwitches());
@@ -22,7 +22,6 @@ export default function FeatureSwitchesPage() {
                     {items.map((it: FeatureSwitch) => (
                         <FeatureSwitchCard
                             key={it.id}
-                            id={it.id}
                             name={it.name}
                             currentState={it.currentState}
                             onRename={(name) => {
