@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from result import Err, is_err, Ok, Result
@@ -16,7 +16,7 @@ from src.exception import (
     ParticipantNotFoundError,
     TeamNotFoundError,
 )
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
 )
 from src.service.jwt_utils.schemas import JwtParticipantVerificationData
@@ -39,7 +39,7 @@ class AdminTeamService:
 
     async def _create_participant_and_team_in_transaction_callback(
         self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
+    ) -> Result[tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
         function.
@@ -63,7 +63,7 @@ class AdminTeamService:
 
     async def create_participant_and_team_in_transaction(
         self, input_data: AdminParticipantInputData
-    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
+    ) -> Result[tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """Creates a participant and team in a transactional manner. The participant is added to the team created. If
         any of the db operations: creation of a Team obj, creation of a Participant obj fails, the whole operation
         fails, and no permanent changes are made to the database."""
@@ -75,7 +75,7 @@ class AdminTeamService:
     async def verify_admin_participant_and_team_in_transaction(
         self, jwt_data: JwtParticipantVerificationData
     ) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         ParticipantNotFoundError | TeamNotFoundError | Exception,
     ]:
         return await self._tx_manager.with_transaction(self._verify_admin_participant_and_team_callback, jwt_data)
@@ -85,7 +85,7 @@ class AdminTeamService:
         jwt_data: JwtParticipantVerificationData,
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         ParticipantNotFoundError | TeamNotFoundError | ParticipantAlreadyVerifiedError | Exception,
     ]:
         # This step is taken to ensure that we are not verifying an already verified participant

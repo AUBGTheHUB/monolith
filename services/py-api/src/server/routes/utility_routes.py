@@ -1,10 +1,7 @@
 from fastapi import APIRouter
 
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.schemas.response_schemas.schemas import (
-    PongResponse,
-    ErrResponse,
-)
+from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse
 
 
 def register_utility_routes(http_handler: UtilityHandlers) -> APIRouter:

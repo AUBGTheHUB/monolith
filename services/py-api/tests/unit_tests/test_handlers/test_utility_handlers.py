@@ -5,7 +5,7 @@ from result import Err
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.server.handlers.utility_hanlders import UtilityHandlers
-from src.server.schemas.response_schemas.schemas import PongResponse, Response, ErrResponse
+from src.server.schemas.response_schemas.schemas import Response, PongResponse, ErrResponse
 from tests.unit_tests.conftest import MongoDbManagerMock
 
 

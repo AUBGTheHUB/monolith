@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from fastapi import BackgroundTasks
 from result import Result, Err, is_err, Ok
 
@@ -17,7 +15,7 @@ from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
@@ -46,7 +44,7 @@ class RegistrationService:
     async def register_admin_participant(
         self, input_data: AdminParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         DuplicateEmailError
         | DuplicateTeamNameError
         | HackathonCapacityExceededError
@@ -77,7 +75,7 @@ class RegistrationService:
     async def register_random_participant(
         self, input_data: RandomParticipantInputData, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, None],
+        tuple[Participant, None],
         DuplicateEmailError | HackathonCapacityExceededError | ParticipantNotFoundError | Exception,
     ]:
         # Capacity Check 1
@@ -104,7 +102,7 @@ class RegistrationService:
     async def register_invite_link_participant(
         self, input_data: InviteLinkParticipantInputData, jwt_token: str, background_tasks: BackgroundTasks
     ) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         DuplicateEmailError | DuplicateTeamNameError | TeamCapacityExceededError | TeamNameMissmatchError | Exception,
     ]:
         # Decode the token
