@@ -38,4 +38,3 @@ class Routes:
         main_router.include_router(verification_router)
         main_router.include_router(admin_router)
         main_router.include_router(authentication_router)
-        main_router.include_router(admin_router)
