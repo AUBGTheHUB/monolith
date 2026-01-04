@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from src.server.handlers.http_handlers import HttpHandlersContainer
-from src.server.routes.admin_panel.authentication_routes import register_authentication_routes
+from src.server.routes.authentication.authentication_routes import register_authentication_routes
 from src.server.routes.feature_swithces_routes import register_feature_switches_routes
 from src.server.routes.hackathon.hackathon_management_routes import register_hackathon_management_routes
 from src.server.routes.hackathon.participant_reg_routes import register_participants_reg_routes

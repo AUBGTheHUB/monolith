@@ -37,6 +37,7 @@ from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
+from src.service.authentication.authentication_service import AuthenticationService
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -184,6 +185,7 @@ def create_app() -> FastAPI:
     hub_members_service = HubMembersService(repo=hub_members_repo)
     past_events_service = PastEventsService(repo=past_events_repo)
 
+    authentication_service = AuthenticationService(repo=hub_members_repo)
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
@@ -204,7 +206,7 @@ def create_app() -> FastAPI:
             past_events_handlers=PastEventsHandlers(service=past_events_service),
             hub_members_handlers=HubMembersHandlers(service=hub_members_service),
         ),
-        authentication_handlers=AuthenticationHandlers(),
+        authentication_handlers=AuthenticationHandlers(service=authentication_service),
     )
 
     Routes.register_routes(app.router, http_handlers)
