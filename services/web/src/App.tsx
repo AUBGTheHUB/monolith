@@ -4,6 +4,8 @@ import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
+import { SponsorsPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
+import { SponsorsAddPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsAddPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -15,6 +17,9 @@ function App() {
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
+
+                <Route path="/dashboard/sponsors" element={<SponsorsPage />} />
+                <Route path="/dashboard/sponsors/add" element={<SponsorsAddPage />} />
             </Routes>
         </QueryClientProvider>
     );
