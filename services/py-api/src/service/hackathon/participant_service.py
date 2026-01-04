@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from datetime import timezone
 
 from fastapi import BackgroundTasks
-from typing import Tuple, List
 
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
@@ -21,7 +20,7 @@ from src.exception import (
     ParticipantAlreadyVerifiedError,
     EmailRateLimitExceededError,
 )
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     RandomParticipantInputData,
     InviteLinkParticipantInputData,
 )
@@ -55,7 +54,7 @@ class ParticipantService:
 
     async def retrieve_and_categorize_random_participants(
         self,
-    ) -> Result[Tuple[List[Participant], List[Participant]], Exception]:
+    ) -> Result[tuple[list[Participant], list[Participant]], Exception]:
         programming_oriented = []
         non_programming_oriented = []
         # Fetch all the verified random participants
@@ -76,7 +75,7 @@ class ParticipantService:
 
     async def create_random_participant(
         self, input_data: RandomParticipantInputData
-    ) -> Result[Tuple[Participant, None], DuplicateEmailError | Exception]:
+    ) -> Result[tuple[Participant, None], DuplicateEmailError | Exception]:
 
         result = await self._participant_repo.create(
             Participant(**input_data.model_dump(), is_admin=False, team_id=None)
@@ -89,7 +88,7 @@ class ParticipantService:
 
     async def create_invite_link_participant(
         self, input_data: InviteLinkParticipantInputData, decoded_jwt_token: JwtParticipantInviteRegistrationData
-    ) -> Result[Tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
+    ) -> Result[tuple[Participant, Team], DuplicateEmailError | TeamNotFoundError | TeamNameMissmatchError | Exception]:
 
         # Check if team still exists - Returns an error when it doesn't
         team_result = await self._teams_repo.fetch_by_id(decoded_jwt_token.team_id)
@@ -121,7 +120,7 @@ class ParticipantService:
 
     async def verify_random_participant(
         self, jwt_data: JwtParticipantVerificationData
-    ) -> Result[Tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
+    ) -> Result[tuple[Participant, None], ParticipantNotFoundError | ParticipantAlreadyVerifiedError | Exception]:
 
         # This step is taken to ensure that we are not verifying an already verified participant
         result = await self._participant_repo.fetch_by_id(jwt_data.sub)
@@ -274,7 +273,7 @@ class ParticipantService:
         return None
 
     async def check_send_verification_email_rate_limit(self, participant_id: str) -> Result[
-        Tuple[Participant, Team],
+        tuple[Participant, Team],
         ParticipantNotFoundError
         | TeamNotFoundError
         | ParticipantAlreadyVerifiedError
@@ -284,7 +283,7 @@ class ParticipantService:
         """Check if the verification email rate limit has been reached
 
         Returns:
-            * A Tuple[Participant, Team] if the participant has not exceeded their email sending rate
+            * A tuple[Participant, Team] if the participant has not exceeded their email sending rate
             * A ParticipantNotFoundError if the participant resending the email is not found in the Database
             * A TeamNotFoundError if the team of the participant is not found in the Database
             * A ParticipantAlreadyVerifiedError if the participant has already been verified

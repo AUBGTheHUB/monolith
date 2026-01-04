@@ -16,6 +16,8 @@ from tests.integration_tests.conftest import (
 from tests.integration_tests.conftest import PARTICIPANT_VERIFY_URL
 from starlette import status
 
+SEND_VERIFICATION_EMAIL_URL = f"{PARTICIPANT_VERIFY_URL}/send-email"
+
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
@@ -411,3 +413,225 @@ async def test_verify_random_participant_case_already_verified(
 
     # Check the error message
     assert verify_resp_json["error"] == "You have already been verified"
+
+
+# ============================================
+# Tests for /send-email route
+# ============================================
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_admin_participant_success(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+) -> None:
+    # Given
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
+    create_resp = await create_test_participant(participant_body=admin_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+    participant_id = create_resp_json["participant"]["id"]
+
+    # When
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": participant_id})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_202_ACCEPTED
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["participant"]["id"] == participant_id
+    assert resend_resp_json["participant"]["email"] == create_resp_json["participant"]["email"]
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_random_participant_success(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+) -> None:
+    # Given
+    random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
+    create_resp = await create_test_participant(participant_body=random_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+    participant_id = create_resp_json["participant"]["id"]
+
+    # When
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": participant_id})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_202_ACCEPTED
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["participant"]["id"] == participant_id
+    assert resend_resp_json["participant"]["email"] == create_resp_json["participant"]["email"]
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_participant_not_found(
+    async_client: AsyncClient,
+    obj_id_mock: str,
+) -> None:
+    # Given - A participant id that does not exist
+    non_existent_participant_id = obj_id_mock
+
+    # When
+    resend_resp = await async_client.post(
+        url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": non_existent_participant_id}
+    )
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_404_NOT_FOUND
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["error"] == "The specified participant was not found"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_invalid_object_id_format(
+    async_client: AsyncClient,
+) -> None:
+    # Given - An invalid object id format
+    invalid_participant_id = "invalid_object_id"
+
+    # When
+    resend_resp = await async_client.post(
+        url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": invalid_participant_id}
+    )
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["error"] == "Wrong Object ID format"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_already_verified_admin_participant(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+    jwt_utility_mock: JwtUtility,
+    one_minute_jwt_exp: int,
+) -> None:
+    # Given
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
+    create_resp = await create_test_participant(participant_body=admin_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+    participant_id = create_resp_json["participant"]["id"]
+
+    # Verify the participant first
+    verify_jwt_token_payload = JwtParticipantVerificationData(sub=participant_id, is_admin=True, exp=one_minute_jwt_exp)
+    jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
+    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+    assert verify_resp.status_code == status.HTTP_200_OK
+
+    # When - Try to resend verification email to an already verified participant
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": participant_id})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["error"] == "You have already been verified"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_already_verified_random_participant(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+    jwt_utility_mock: JwtUtility,
+    one_minute_jwt_exp: int,
+) -> None:
+    # Given
+    random_participant_body = generate_participant_request_body(registration_type="random", is_admin=None)
+    create_resp = await create_test_participant(participant_body=random_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+    participant_id = create_resp_json["participant"]["id"]
+
+    # Verify the participant first
+    verify_jwt_token_payload = JwtParticipantVerificationData(
+        sub=participant_id, is_admin=False, exp=one_minute_jwt_exp
+    )
+    jwt_token = jwt_utility_mock.encode_data(data=verify_jwt_token_payload)
+    verify_resp = await async_client.patch(url=f"{PARTICIPANT_VERIFY_URL}?jwt_token={jwt_token}")
+    assert verify_resp.status_code == status.HTTP_200_OK
+
+    # When - Try to resend verification email to an already verified participant
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": participant_id})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_400_BAD_REQUEST
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["error"] == "You have already been verified"
+
+
+@patch.dict(
+    "os.environ",
+    {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"},
+)
+@pytest.mark.asyncio
+async def test_resend_verification_email_admin_team_not_found(
+    generate_participant_request_body: ParticipantRequestBodyCallable,
+    create_test_participant: CreateTestParticipantCallable,
+    async_client: AsyncClient,
+) -> None:
+    # Given
+    admin_participant_body = generate_participant_request_body(
+        registration_type="admin", is_admin=True, team_name=TEST_TEAM_NAME
+    )
+    create_resp = await create_test_participant(participant_body=admin_participant_body)
+    assert create_resp.status_code == status.HTTP_201_CREATED
+
+    create_resp_json = create_resp.json()
+    participant_id = create_resp_json["participant"]["id"]
+    team_id = create_resp_json["team"]["id"]
+
+    # Delete the team before trying to resend the verification email
+    delete_team_resp = await async_client.delete(
+        url=f"{TEAM_ENDPOINT_URL}/{team_id}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+    )
+    assert delete_team_resp.status_code == status.HTTP_200_OK
+
+    # When
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={"participant_id": participant_id})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_404_NOT_FOUND
+
+    resend_resp_json = resend_resp.json()
+    assert resend_resp_json["error"] == "The specified team was not found"
+
+
+@patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"})
+@pytest.mark.asyncio
+async def test_resend_verification_email_missing_participant_id(
+    async_client: AsyncClient,
+) -> None:
+    # Given - Empty request body
+
+    # When
+    resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={})
+
+    # Then
+    assert resend_resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

@@ -2,7 +2,7 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
-from typing import Tuple, cast
+from typing import cast
 from unittest.mock import Mock, MagicMock, AsyncMock
 
 import pytest
@@ -32,11 +32,12 @@ from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from typing_extensions import Protocol
 
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
     ParticipantRequestBody,
+    ResendEmailParticipantData,
 )
 
 from tests.integration_tests.conftest import (
@@ -47,7 +48,7 @@ from tests.integration_tests.conftest import (
     TEST_LOCATION,
     TEST_ALLOWED_AGE,
 )
-from typing import Dict, Any
+from typing import Any
 
 
 def _create_typed_mock[T](class_type: T) -> T:
@@ -821,7 +822,7 @@ def verified_team_mock(obj_id_mock: str) -> Team:
 
 
 @pytest.fixture
-def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> Dict[str, Any]:
+def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
@@ -831,7 +832,7 @@ def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> Dict[str, Any
 
 
 @pytest.fixture
-def verified_team_dump_no_id_mock(verified_team_mock: Team) -> Dict[str, Any]:
+def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
@@ -866,7 +867,7 @@ def verified_admin_participant_mock(admin_participant_mock: Participant) -> Part
 
 
 @pytest.fixture
-def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> dict[str, Any]:
     mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_admin_participant_mongo_db_document.pop("_id")
@@ -874,7 +875,7 @@ def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> Di
 
 
 @pytest.fixture
-def admin_participant_dump_verified_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+def admin_participant_dump_verified_mock(admin_participant_mock: Participant) -> dict[str, Any]:
     admin_participant_mock.email_verified = True
     mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -909,7 +910,7 @@ def verified_invite_participant_mock(invite_participant_mock: Participant) -> Pa
 
 
 @pytest.fixture
-def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> dict[str, Any]:
     mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_invite_participant_mongo_db_document.pop("_id")
@@ -917,7 +918,7 @@ def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> 
 
 
 @pytest.fixture
-def invite_participant_dump_verified_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+def invite_participant_dump_verified_mock(invite_participant_mock: Participant) -> dict[str, Any]:
     invite_participant_mock.email_verified = True
     mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -951,7 +952,7 @@ def verified_random_participant_mock(random_participant_mock: Participant) -> Pa
 
 
 @pytest.fixture
-def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> dict[str, Any]:
     mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
@@ -959,7 +960,7 @@ def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> 
 
 
 @pytest.fixture
-def random_participant_dump_verified_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+def random_participant_dump_verified_mock(random_participant_mock: Participant) -> dict[str, Any]:
     random_participant_mock.email_verified = True
     mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -1003,7 +1004,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 
 @pytest.fixture
-def ten_sec_window() -> Tuple[datetime, datetime]:
+def ten_sec_window() -> tuple[datetime, datetime]:
     now = datetime.now()
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
 
@@ -1011,6 +1012,11 @@ def ten_sec_window() -> Tuple[datetime, datetime]:
 @pytest.fixture
 def thirty_sec_jwt_exp_limit() -> int:
     return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+
+
+@pytest.fixture
+def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
+    return ResendEmailParticipantData(participant_id=obj_id_mock)
 
 
 # =================================================

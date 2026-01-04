@@ -22,7 +22,7 @@ from src.exception import (
     TeamNameMissmatchError,
     TeamNotFoundError,
 )
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,

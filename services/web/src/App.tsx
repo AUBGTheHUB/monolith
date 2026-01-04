@@ -6,6 +6,7 @@ import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { SponsorsPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
 import { SponsorsAddPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsAddPage';
+import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
 
+                <Route path="/admin" element={<LoginPage />} />
                 <Route path="/dashboard/sponsors" element={<SponsorsPage />} />
                 <Route path="/dashboard/sponsors/add" element={<SponsorsAddPage />} />
             </Routes>

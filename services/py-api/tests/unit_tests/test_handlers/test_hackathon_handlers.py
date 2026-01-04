@@ -5,13 +5,13 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.exception import ParticipantNotFoundError, TeamNotFoundError
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
-from src.server.schemas.response_schemas.schemas import (
-    ErrResponse,
+from src.server.schemas.response_schemas.hackathon.schemas import (
     ParticipantDeletedResponse,
-    Response,
     TeamDeletedResponse,
 )
 from starlette import status
+
+from src.server.schemas.response_schemas.schemas import Response, ErrResponse
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.team_service import TeamService
