@@ -12,14 +12,13 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
-from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.exception_handler import ExceptionHandlers
-from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
 from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
+from src.server.handlers.authentication.authentication_handlers import AuthenticationHandlers
 from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
@@ -197,7 +196,6 @@ def create_app() -> FastAPI:
             ),
             participant_handlers=ParticipantHandlers(service=registration_service),
             verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
-            authentication_handlers=AuthenticationHandlers()
         ),
         admin_handlers=AdminHandlers(
             sponsors_handlers=SponsorsHandlers(service=sponsors_service),

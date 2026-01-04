@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
+from src.server.handlers.authentication.authentication_handlers import AuthenticationHandlers
 
 
 def register_authentication_routes(http_handler: AuthenticationHandlers) -> APIRouter:

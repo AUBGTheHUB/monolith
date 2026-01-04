@@ -5,18 +5,12 @@ from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
 from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
+from src.server.handlers.authentication.authentication_handlers import AuthenticationHandlers
 from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
-from src.server.handlers.admin_panel.authentication_handler import AuthenticationHandlers
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.utility_hanlders import UtilityHandlers
-
-
-@dataclass(kw_only=True, frozen=True)
-class AuthenticationHandlers:
-    """Container for holding HTTP handlers for the authentication domain"""
-    authentication_handlers: AuthenticationHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -26,7 +20,6 @@ class HackathonHandlers:
     hackathon_management_handlers: HackathonManagementHandlers
     participant_handlers: ParticipantHandlers
     verification_handlers: VerificationHandlers
-    authentication_handlers: AuthenticationHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
