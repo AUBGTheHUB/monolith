@@ -7,24 +7,33 @@ from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationErr
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.mongo.db_manager import (
-    MongoDatabaseManager,
-    PARTICIPANTS_COLLECTION,
-    TEAMS_COLLECTION,
-    FEATURE_SWITCH_COLLECTION,
-    DB_NAME,
-)
+from src.database.mongo.db_manager import MongoDatabaseManager, DB_NAME
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.server.exception_handler import ExceptionHandlers
-from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
+from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
+from src.server.handlers.admin.judges_handlers import JudgesHandlers
+from src.server.handlers.admin.mentor_handlers import MentorsHandlers
+from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
+from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
+from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
-from src.server.handlers.http_handlers import HttpHandlersContainer
+from src.server.handlers.http_handlers import HttpHandlersContainer, HackathonHandlers, AdminHandlers
 from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.database.repository.admin.sponsors_repository import SponsorsRepository
+from src.database.repository.admin.mentors_repository import MentorsRepository
+from src.database.repository.admin.judges_repository import JudgesRepository
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
+from src.database.repository.admin.past_events_repository import PastEventsRepository
+from src.service.admin.sponsors_service import SponsorsService
+from src.service.admin.mentors_service import MentorsService
+from src.service.admin.judges_service import JudgesService
+from src.service.admin.hub_members_service import HubMembersService
+from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
@@ -115,9 +124,14 @@ def create_app() -> FastAPI:
     # Database layer dependency wiring
     db_manager = MongoDatabaseManager(client=mongo_db_client_provider())
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
-    participants_repo = ParticipantsRepository(db_manager=db_manager, collection_name=PARTICIPANTS_COLLECTION)
-    teams_repo = TeamsRepository(db_manager=db_manager, collection_name=TEAMS_COLLECTION)
-    fs_repo = FeatureSwitchRepository(db_manager=db_manager, collection_name=FEATURE_SWITCH_COLLECTION)
+    participants_repo = ParticipantsRepository(db_manager=db_manager)
+    teams_repo = TeamsRepository(db_manager=db_manager)
+    fs_repo = FeatureSwitchRepository(db_manager=db_manager)
+    sponsors_repo = SponsorsRepository(db_manager=db_manager)
+    mentors_repo = MentorsRepository(db_manager=db_manager)
+    judges_repo = JudgesRepository(db_manager=db_manager)
+    hub_members_repo = HubMembersRepository(db_manager=db_manager)
+    past_events_repo = PastEventsRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -163,18 +177,32 @@ def create_app() -> FastAPI:
         participant_service=participant_service,
     )
     fs_service = FeatureSwitchService(repository=fs_repo)
+    sponsors_service = SponsorsService(repo=sponsors_repo)
+    mentors_service = MentorsService(repo=mentors_repo)
+    judges_service = JudgesService(repo=judges_repo)
+    hub_members_service = HubMembersService(repo=hub_members_repo)
+    past_events_service = PastEventsService(repo=past_events_repo)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
-        fs_handlers=FeatureSwitchHandler(service=fs_service),
-        hackathon_management_handlers=HackathonManagementHandlers(
-            hackathon_utility_service=hackathon_utility_service,
-            participant_service=participant_service,
-            team_service=team_service,
+        fs_handlers=FeatureSwitchHandlers(service=fs_service),
+        hackathon_handlers=HackathonHandlers(
+            hackathon_management_handlers=HackathonManagementHandlers(
+                hackathon_utility_service=hackathon_utility_service,
+                participant_service=participant_service,
+                team_service=team_service,
+            ),
+            participant_handlers=ParticipantHandlers(service=registration_service),
+            verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
         ),
-        participant_handlers=ParticipantHandlers(service=registration_service),
-        verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
+        admin_handlers=AdminHandlers(
+            sponsors_handlers=SponsorsHandlers(service=sponsors_service),
+            mentors_handlers=MentorsHandlers(service=mentors_service),
+            judges_handlers=JudgesHandlers(service=judges_service),
+            past_events_handlers=PastEventsHandlers(service=past_events_service),
+            hub_members_handlers=HubMembersHandlers(service=hub_members_service),
+        ),
     )
 
     Routes.register_routes(app.router, http_handlers)

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 
-from src.server.schemas.response_schemas.schemas import Response, ErrResponse
+from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 
 
 async def _http_exception_handler(request: Request, exc: HTTPException) -> Response:
