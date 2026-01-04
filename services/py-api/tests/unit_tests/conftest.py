@@ -2,7 +2,7 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
-from typing import Tuple, cast
+from typing import cast
 from unittest.mock import Mock, MagicMock, AsyncMock
 
 import pytest
@@ -21,15 +21,18 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.service.hackathon.hackathon_service import HackathonService
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
-from src.service.hackathon.participants_verification_service import ParticipantVerificationService
+from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
+from src.service.hackathon.participant_service import ParticipantService
+from src.service.hackathon.team_service import TeamService
+from src.service.hackathon.registration_service import RegistrationService
+from src.service.hackathon.verification_service import VerificationService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from typing_extensions import Protocol
 
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
     RandomParticipantInputData,
@@ -44,7 +47,7 @@ from tests.integration_tests.conftest import (
     TEST_LOCATION,
     TEST_ALLOWED_AGE,
 )
-from typing import Dict, Any
+from typing import Any
 
 
 def _create_typed_mock[T](class_type: T) -> T:
@@ -274,7 +277,6 @@ class MotorDbCursorMock(Protocol):
 
 @pytest.fixture
 def db_cursor_mock() -> MotorDbCursorMock:
-
     db_cursor_mock = _create_typed_mock(AsyncIOMotorCursor)
     db_cursor_mock.to_list = AsyncMock()
 
@@ -381,7 +383,6 @@ def participant_repo_mock() -> ParticipantRepoMock:
     """
 
     participant_repo = _create_typed_mock(ParticipantsRepository)
-
     participant_repo.fetch_by_id = AsyncMock()
     participant_repo.fetch_all = AsyncMock()
     participant_repo.update = AsyncMock()
@@ -440,7 +441,6 @@ def team_repo_mock() -> TeamRepoMock:
 
 
 class FeatureSwitchRepoMock(Protocol):
-
     get_feature_switch: AsyncMock
     create: AsyncMock
     delete: AsyncMock
@@ -478,31 +478,19 @@ def feature_switch_repo_mock() -> FeatureSwitchRepoMock:
 # ======================================
 
 
-class HackathonServiceMock(Protocol):
+class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
 
     Should not be initialized directly by application developers to create a HackathonServiceMock instance. It is
     used just for type hinting purposes.
     """
 
-    create_participant_and_team_in_transaction: AsyncMock
     check_capacity_register_admin_participant_case: AsyncMock
     check_capacity_register_random_participant_case: AsyncMock
-    check_send_verification_email_rate_limit: AsyncMock
-    create_random_participant: AsyncMock
-    create_invite_link_participant: AsyncMock
-    check_team_capacity: AsyncMock
-    verify_random_participant: AsyncMock
-    verify_admin_participant_and_team_in_transaction: AsyncMock
-    delete_participant: AsyncMock
-    delete_team: AsyncMock
-    verify_admin_participant: AsyncMock
-    send_verification_email: AsyncMock
-    send_successful_registration_email: Mock
 
 
 @pytest.fixture
-def hackathon_service_mock() -> HackathonServiceMock:
+def hackathon_utility_service_mock() -> HackathonUtilityServiceMock:
     """Mock object for HackathonService.
 
     For mocking purposes, you can modify the return values of its methods::
@@ -517,22 +505,94 @@ def hackathon_service_mock() -> HackathonServiceMock:
         A mocked HackathonService
     """
 
-    hackathon_service = _create_typed_mock(HackathonService)
-    hackathon_service.create_participant_and_team_in_transaction = AsyncMock()
+    hackathon_service = _create_typed_mock(HackathonUtilityService)
     hackathon_service.check_capacity_register_admin_participant_case = AsyncMock()
     hackathon_service.check_capacity_register_random_participant_case = AsyncMock()
-    hackathon_service.check_send_verification_email_rate_limit = AsyncMock()
-    hackathon_service.create_random_participant = AsyncMock()
-    hackathon_service.create_invite_link_participant = AsyncMock()
-    hackathon_service.check_team_capacity = AsyncMock()
-    hackathon_service.verify_random_participant = AsyncMock()
-    hackathon_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
-    hackathon_service.delete_participant = AsyncMock()
-    hackathon_service.delete_team = AsyncMock()
-    hackathon_service.send_verification_email = AsyncMock()
-    hackathon_service.send_successful_registration_email = Mock()
 
-    return cast(HackathonServiceMock, hackathon_service)
+    return cast(HackathonUtilityServiceMock, hackathon_service)
+
+
+class ParticipantServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked ParticipantService
+
+    Should not be initialized directly by application developers to create a ParticipantServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    create_random_participant: AsyncMock
+    create_invite_link_participant: AsyncMock
+    delete_participant: AsyncMock
+    send_verification_email: AsyncMock
+    send_successful_registration_email: AsyncMock
+    check_send_verification_email_rate_limit: AsyncMock
+    verify_random_participant: AsyncMock
+
+
+@pytest.fixture
+def participant_service_mock() -> ParticipantServiceMock:
+    """Mock object for ParticipantService.
+
+    Returns:
+        A mocked ParticipantService
+    """
+    participant_service = _create_typed_mock(ParticipantService)
+    participant_service.create_random_participant = AsyncMock()
+    participant_service.create_invite_link_participant = AsyncMock()
+    participant_service.delete_participant = AsyncMock()
+    participant_service.verify_random_participant = AsyncMock()
+    participant_service.send_verification_email = AsyncMock()
+    participant_service.send_successful_registration_email = Mock()
+    participant_service.check_send_verification_email_rate_limit = AsyncMock()
+    return cast(ParticipantServiceMock, participant_service)
+
+
+class TeamServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked TeamService
+
+    Should not be initialized directly by application developers to create a ParticipantServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    check_team_capacity: AsyncMock
+    delete_team: AsyncMock
+
+
+@pytest.fixture
+def team_service_mock() -> TeamServiceMock:
+    """Mock object for TeamService.
+
+    Returns:
+        A mocked TeamService
+    """
+    team_service = _create_typed_mock(TeamService)
+    team_service.delete_team = AsyncMock()
+    team_service.check_team_capacity = _create_typed_mock(TeamService.check_team_capacity)
+    return cast(TeamServiceMock, team_service)
+
+
+class AdminTeamServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked HackathonService
+
+    Should not be initialized directly by application developers to create a HackathonServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    create_participant_and_team_in_transaction: AsyncMock
+    verify_admin_participant_and_team_in_transaction: AsyncMock
+
+
+@pytest.fixture
+def admin_team_service_mock() -> AdminTeamServiceMock:
+    """Mock object for AdminTeamService.
+
+    Returns:
+        A mocked AdminTeamService
+    """
+
+    admin_team_service = _create_typed_mock(AdminTeamService)
+    admin_team_service.verify_admin_participant_and_team_in_transaction = AsyncMock()
+    admin_team_service.create_participant_and_team_in_transaction = AsyncMock()
+    return cast(AdminTeamServiceMock, admin_team_service)
 
 
 class ParticipantRegistrationServiceMock(Protocol):
@@ -562,7 +622,7 @@ def participant_registration_service_mock() -> ParticipantRegistrationServiceMoc
     Returns:
         A mocked ParticipantRegistrationService
     """
-    service = _create_typed_mock(ParticipantRegistrationService)
+    service = _create_typed_mock(RegistrationService)
     service.register_admin_participant = AsyncMock()
     service.register_random_participant = AsyncMock()
     service.register_invite_link_participant = AsyncMock()
@@ -598,7 +658,7 @@ def participant_verification_service_mock() -> ParticipantVerificationServiceMoc
         A mocked ParticipantVerificationService
     """
 
-    service = _create_typed_mock(ParticipantVerificationService)
+    service = _create_typed_mock(VerificationService)
     service.verify_random_participant = AsyncMock()
     service.verify_admin_participant = AsyncMock()
     service.resend_verification_email = AsyncMock()
@@ -761,7 +821,7 @@ def verified_team_mock(obj_id_mock: str) -> Team:
 
 
 @pytest.fixture
-def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> Dict[str, Any]:
+def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
@@ -771,7 +831,7 @@ def unverified_team_dump_no_id_mock(unverified_team_mock: Team) -> Dict[str, Any
 
 
 @pytest.fixture
-def verified_team_dump_no_id_mock(verified_team_mock: Team) -> Dict[str, Any]:
+def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
     """
     This method is used when trying to mock the MongoDB operations in the database layers
     """
@@ -806,7 +866,7 @@ def verified_admin_participant_mock(admin_participant_mock: Participant) -> Part
 
 
 @pytest.fixture
-def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> dict[str, Any]:
     mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_admin_participant_mongo_db_document.pop("_id")
@@ -814,7 +874,7 @@ def admin_participant_dump_no_id_mock(admin_participant_mock: Participant) -> Di
 
 
 @pytest.fixture
-def admin_participant_dump_verified_mock(admin_participant_mock: Participant) -> Dict[str, Any]:
+def admin_participant_dump_verified_mock(admin_participant_mock: Participant) -> dict[str, Any]:
     admin_participant_mock.email_verified = True
     mock_admin_participant_mongo_db_document = admin_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -849,7 +909,7 @@ def verified_invite_participant_mock(invite_participant_mock: Participant) -> Pa
 
 
 @pytest.fixture
-def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> dict[str, Any]:
     mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_invite_participant_mongo_db_document.pop("_id")
@@ -857,7 +917,7 @@ def invite_participant_dump_no_id_mock(invite_participant_mock: Participant) -> 
 
 
 @pytest.fixture
-def invite_participant_dump_verified_mock(invite_participant_mock: Participant) -> Dict[str, Any]:
+def invite_participant_dump_verified_mock(invite_participant_mock: Participant) -> dict[str, Any]:
     invite_participant_mock.email_verified = True
     mock_invite_participant_mongo_db_document = invite_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -891,7 +951,7 @@ def verified_random_participant_mock(random_participant_mock: Participant) -> Pa
 
 
 @pytest.fixture
-def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> dict[str, Any]:
     mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
     mock_random_participant_mongo_db_document.pop("_id")
@@ -899,7 +959,7 @@ def random_participant_dump_no_id_mock(random_participant_mock: Participant) -> 
 
 
 @pytest.fixture
-def random_participant_dump_verified_mock(random_participant_mock: Participant) -> Dict[str, Any]:
+def random_participant_dump_verified_mock(random_participant_mock: Participant) -> dict[str, Any]:
     random_participant_mock.email_verified = True
     mock_random_participant_mongo_db_document = random_participant_mock.dump_as_mongo_db_document()
     # Remove the id here
@@ -943,7 +1003,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 
 @pytest.fixture
-def ten_sec_window() -> Tuple[datetime, datetime]:
+def ten_sec_window() -> tuple[datetime, datetime]:
     now = datetime.now()
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
 

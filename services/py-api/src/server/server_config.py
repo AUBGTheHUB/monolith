@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from os import cpu_count
+from pathlib import Path
 
 from structlog.stdlib import get_logger
 from uvicorn import run
@@ -9,6 +10,9 @@ from src.logger.logger_factory import get_uvicorn_logger
 from src.utils import singleton
 
 LOG = get_logger()
+
+# Directory where this file is located
+_THIS_DIR = Path(__file__).parent
 
 
 def _get_ssl_config() -> tuple[None, None] | tuple[str, str]:
@@ -24,7 +28,8 @@ def _get_ssl_config() -> tuple[None, None] | tuple[str, str]:
     if DOMAIN != "localhost":
         return None, None
 
-    return "src/server/certs/localhost.crt", "src/server/certs/localhost.key"
+    cert_dir = _THIS_DIR / "certs"
+    return str(cert_dir / "localhost.crt"), str(cert_dir / "localhost.key")
 
 
 @dataclass
