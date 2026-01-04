@@ -13,3 +13,5 @@ services/py-api/shared/*.log.*
 node_modules
 
 **/.DS_Store
+
+.idea/copilot.*
