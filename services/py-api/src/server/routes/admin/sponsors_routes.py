@@ -5,7 +5,7 @@ from src.server.routes.route_dependencies import is_auth
 
 
 def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
-    sponsors_router = APIRouter(prefix="/sponsors", tags=["admin"])
+    sponsors_router = APIRouter(prefix="/sponsors", tags=["sponsors"])
 
     sponsors_router.add_api_route(
         "", endpoint=http_handler.get_all_sponsors, methods=["GET"], dependencies=[Depends(is_auth)]
