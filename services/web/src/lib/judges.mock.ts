@@ -1,9 +1,4 @@
-export type Judge = {
-    id: string;
-    name: string;
-    companyName: string;
-    imageUrl: string;
-};
+import type { Judge } from './types';
 
 export const MOCK_JUDGES: Judge[] = [
     {

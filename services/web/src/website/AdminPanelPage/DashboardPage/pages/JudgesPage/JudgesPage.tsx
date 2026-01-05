@@ -1,7 +1,8 @@
 import { Fragment } from 'react/jsx-runtime';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { MOCK_JUDGES, Judge } from '@/lib/judges.mock';
+import { MOCK_JUDGES } from '@/lib/judges.mock';
+import { Judge } from '@/lib/types';
 import { AdminCard } from '@/components/ui/admin-card';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
