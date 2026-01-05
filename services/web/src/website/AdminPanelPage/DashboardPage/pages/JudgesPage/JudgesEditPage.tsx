@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields';
-import { JudgesEditMessages as MESSAGES } from './messagesConsts.tsx';
+import { JudgesEditMessages as MESSAGES } from './messagesConsts';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './lib/judges.validation';
 

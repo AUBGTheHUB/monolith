@@ -5,9 +5,9 @@ import { HackathonPage } from './website/HackathonPage/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
-import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage.tsx';
-import { JudgesAddPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesAddPage.tsx';
-import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage.tsx';
+import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
+import { JudgesAddPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesAddPage';
+import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
 
 function App() {
     const queryClient = new QueryClient();

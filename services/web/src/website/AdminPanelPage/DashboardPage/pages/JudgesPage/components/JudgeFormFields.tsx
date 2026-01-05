@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
-import { JudgeFormData } from '../lib/judges.validation.tsx';
+import { JudgeFormData } from '../lib/judges.validation';
 
 const MESSAGES = {
     LABELS: {
