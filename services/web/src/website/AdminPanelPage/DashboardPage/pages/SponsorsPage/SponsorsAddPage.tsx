@@ -3,9 +3,10 @@ import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Trash } from 'lucide-react';
+import { ArrowLeft, Trash } from 'lucide-react';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import { Controller, useForm } from 'react-hook-form';
+import { Link } from 'react-router';
 import { z } from 'zod';
 
 const ONE_MEGABYTE = 1 * 1024 * 1024;
@@ -58,6 +59,12 @@ export function SponsorsAddPage() {
 
     return (
         <div className="min-h-screen flex justify-center items-center flex-col gap-8">
+            <Link to="/dashboard/sponsors">
+                <Button className="fixed top-8 left-8" variant="secondary">
+                    <ArrowLeft />
+                    Back to Sponsors
+                </Button>
+            </Link>
             <div className="text-xl font-bold text-white">Add a new sponsor!</div>
             <form id="add-sponsor" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                 <Controller
