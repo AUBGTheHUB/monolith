@@ -22,3 +22,16 @@ export const JudgesPageMessages = {
     EDIT_BUTTON: 'Edit',
     DELETE_BUTTON: 'Delete',
 };
+
+export const JudgesFormFieldMessages = {
+    LABELS: {
+        NAME: 'Name',
+        COMPANY: 'Company Name',
+        IMAGE: 'Image URL',
+    },
+    PLACEHOLDERS: {
+        NAME: "Enter judge's full name",
+        COMPANY: 'Enter company name',
+        IMAGE: 'Enter image URL (e.g., /judge_photo.webp)',
+    },
+};

@@ -1,19 +1,7 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
 import { JudgeFormData } from '../lib/judges.validation';
-
-const MESSAGES = {
-    LABELS: {
-        NAME: 'Name',
-        COMPANY: 'Company Name',
-        IMAGE: 'Image URL',
-    },
-    PLACEHOLDERS: {
-        NAME: "Enter judge's full name",
-        COMPANY: 'Enter company name',
-        IMAGE: 'Enter image URL (e.g., /judge_photo.webp)',
-    },
-};
+import { JudgesFormFieldMessages as MESSAGES } from '../messagesConsts';
 
 type JudgeFormFieldsProps = {
     control: Control<JudgeFormData>;
@@ -41,7 +29,7 @@ export function JudgeFormFields({ control }: JudgeFormFieldsProps) {
                 name="imageUrl"
                 label={MESSAGES.LABELS.IMAGE}
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
-                type="text"
+                type="url"
             />
         </>
     );
