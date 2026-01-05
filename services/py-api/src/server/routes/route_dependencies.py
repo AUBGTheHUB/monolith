@@ -26,7 +26,7 @@ LOG = get_logger()
 
 
 # TODO Update with new auth
-def is_auth(authorization: Annotated[str, Header()]) -> None:
+def is_authorized(authorization: Annotated[str, Header()]) -> None:
     # This follows the dependency pattern that is provided to us by FastAPI
     # You can read more about it here:
     # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/

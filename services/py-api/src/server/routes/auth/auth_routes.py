@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from src.server.handlers.authentication.authentication_handlers import AuthenticationHandlers
+from src.server.handlers.auth.auth_handlers import AuthHandlers
 
 
-def register_authentication_routes(http_handler: AuthenticationHandlers) -> APIRouter:
-    """Registers all authentication routes for the admin panel under a separate router, along with their respective handler funcs,
+def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
+    """Registers all auth routes for the admin panel under a separate router, along with their respective handler funcs,
     and returns the router"""
 
     # TODO ADD responses to each path according to prior project structure

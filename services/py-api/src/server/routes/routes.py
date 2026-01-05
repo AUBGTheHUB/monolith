@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from src.server.handlers.http_handlers import HttpHandlersContainer
-from src.server.routes.authentication.authentication_routes import register_authentication_routes
+from src.server.routes.auth.auth_routes import register_auth_routes
 from src.server.routes.feature_swithces_routes import register_feature_switches_routes
 from src.server.routes.hackathon.hackathon_management_routes import register_hackathon_management_routes
 from src.server.routes.hackathon.participant_reg_routes import register_participants_reg_routes
@@ -28,7 +28,7 @@ class Routes:
         )
         admin_router = register_admin_routes(http_handler=http_handlers.admin_handlers)
 
-        authentication_router = register_authentication_routes(http_handler=http_handlers.authentication_handlers)
+        auth_router = register_auth_routes(http_handler=http_handlers.auth_handlers)
 
         # Bind all routers to the main one
         main_router.include_router(utility_router)
@@ -37,4 +37,4 @@ class Routes:
         main_router.include_router(hackathon_reg_router)
         main_router.include_router(verification_router)
         main_router.include_router(admin_router)
-        main_router.include_router(authentication_router)
+        main_router.include_router(auth_router)

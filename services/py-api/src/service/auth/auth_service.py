@@ -3,6 +3,6 @@ from src.database.repository.admin.hub_members_repository import HubMembersRepos
 
 # TODO IMPLEMENT
 # NOTE REPO might change here implement as you find suitable
-class AuthenticationService:
+class AuthService:
     def __init__(self, repo: HubMembersRepository):
         self._repo = repo
