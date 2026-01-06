@@ -6,8 +6,11 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields';
+import { JudgesAddMessages as MESSAGES } from './messagesConsts';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
+import { Styles } from './components/style';
+import { cn } from '@/lib/utils';
 
 export function JudgesAddPage() {
     const navigate = useNavigate();
@@ -25,42 +28,54 @@ export function JudgesAddPage() {
     const { control, handleSubmit, watch } = form;
     const imageUrl = watch('imageUrl');
 
-    const onSubmit = (data: JudgeFormData) => {
-        console.log('Creating judge:', data);
-        alert('Judge added successfully!');
+    const onSubmit = () => {
+        alert(MESSAGES.SUCCESS_MESSAGE);
+        navigate('/dashboard/judges');
     };
+
+    const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
 
     return (
         <Fragment>
             <Helmet>
-                <title>Add Judge - Admin Dashboard</title>
+                <title>{MESSAGES.PAGE_TITLE}</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gray-50 p-8">
+            <div className={pageWrapperClass}>
                 <div className="max-w-5xl mx-auto">
-                    <Button variant="ghost" onClick={() => navigate('/dashboard/judges')} className="mb-4">
-                        ← Back to Judges
+                    <Button
+                        variant="ghost"
+                        onClick={() => navigate('/dashboard/judges')}
+                        className={cn('mb-4', Styles.glass.ghostButton)}
+                    >
+                        {MESSAGES.BACK_BUTTON}
                     </Button>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-3xl">Add New Judge</CardTitle>
-                            <p className="text-gray-600 mt-2">Fill in the details to add a new judge</p>
+                    <Card className={Styles.glass.card}>
+                        <CardHeader className="border-b border-white/5 pb-8">
+                            <CardTitle className={cn('text-3xl', Styles.text.title)}>{MESSAGES.HEADING}</CardTitle>
+                            <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                         </CardHeader>
 
                         <Form {...form}>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <CardContent className="flex flex-col md:flex-row gap-8">
-                                    <div className="flex-1 space-y-6">
-                                        <JudgeFormFields control={control} />
+                                <CardContent className="flex flex-col md:flex-row gap-12 p-8">
+                                    <div className={Styles.forms.fieldContainer}>
+                                        <div className="form-dark-theme">
+                                            <JudgeFormFields control={control} />
+                                        </div>
                                     </div>
-                                    <div className="flex-1 flex flex-col items-center justify-start gap-2">
-                                        <span className="text-sm font-medium text-gray-500 self-start">Preview</span>
-                                        {imageUrl ? (
-                                            <div
-                                                className="w-full max-w-[300px] aspect-square rounded-lg border 
-                                                    border-gray-200 overflow-hidden bg-gray-50"
-                                            >
+
+                                    <div className="flex-1 flex flex-col items-center justify-start gap-4">
+                                        <span className={cn('self-start !text-white', Styles.text.label)}>Preview</span>
+
+                                        <div
+                                            className={cn(
+                                                'relative w-full max-w-[300px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
+                                                Styles.backgrounds.previewBox,
+                                            )}
+                                        >
+                                            {imageUrl ? (
                                                 <img
                                                     src={imageUrl}
                                                     alt="Preview"
@@ -70,31 +85,31 @@ export function JudgesAddPage() {
                                                             'https://placehold.co/300?text=Invalid+Image';
                                                     }}
                                                 />
-                                            </div>
-                                        ) : (
-                                            <div
-                                                className="w-full max-w-[300px] aspect-square rounded-lg border-2 
-                                                    border-dashed border-gray-200 flex items-center justify-center 
-                                                    text-gray-400 bg-gray-50"
-                                            >
-                                                No image URL provided
-                                            </div>
-                                        )}
+                                            ) : (
+                                                <p className={cn('px-4 text-center', Styles.colors.textMuted)}>
+                                                    No image URL provided
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                 </CardContent>
 
-                                <CardFooter className="flex gap-3">
+                                <CardFooter className={cn('flex gap-4 p-8', Styles.backgrounds.footerDark)}>
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className="flex-1"
+                                        className="flex-1 text-black bg-white border-white hover:bg-gray-200 transition-colors"
                                         onClick={() => navigate('/dashboard/judges')}
                                     >
-                                        Cancel
+                                        {MESSAGES.CANCEL_BUTTON}
                                     </Button>
 
-                                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
-                                        Add Judge
+                                    <Button
+                                        type="submit"
+                                        style={{ backgroundColor: Styles.colors.hubCyan }}
+                                        className="flex-1 text-white font-bold shadow-lg shadow-blue-500/20 transition-all hover:opacity-90"
+                                    >
+                                        {MESSAGES.SUBMIT_BUTTON}
                                     </Button>
                                 </CardFooter>
                             </form>

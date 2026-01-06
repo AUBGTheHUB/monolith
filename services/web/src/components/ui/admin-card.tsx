@@ -12,21 +12,36 @@ interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const AdminCard = React.forwardRef<HTMLDivElement, AdminCardProps>(
     ({ className, imageUrl, imageAlt, title, subtitle, actions, ...props }, ref) => (
-        <Card ref={ref} className={cn('overflow-hidden hover:shadow-lg transition-shadow', className)} {...props}>
-            <CardHeader className="bg-gradient-to-br from-blue-50 to-white p-6">
+        <Card
+            ref={ref}
+            className={cn(
+                'overflow-hidden transition-all duration-300',
+                'bg-white/5 backdrop-blur-md border-white/10 hover:border-white/20 hover:bg-white/10',
+                'shadow-xl shadow-black/20',
+                className,
+            )}
+            {...props}
+        >
+            <CardHeader className="p-6">
                 <div className="flex flex-col items-center">
                     {imageUrl && (
-                        <img
-                            src={imageUrl}
-                            alt={imageAlt || title}
-                            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mb-4"
-                        />
+                        <div className="relative group">
+                            <div className="absolute inset-0 rounded-full bg-[#00B2FF]/20 blur-xl group-hover:bg-[#00B2FF]/40 transition-colors" />
+                            <img
+                                src={imageUrl}
+                                alt={imageAlt || title}
+                                className="relative w-32 h-32 rounded-full object-cover border-2 border-white/20 shadow-lg mb-4"
+                            />
+                        </div>
                     )}
-                    <CardTitle className="text-xl text-center">{title}</CardTitle>
-                    {subtitle && <p className="text-sm text-gray-600 text-center mt-1">{subtitle}</p>}
+                    <CardTitle className="text-xl text-center text-white">{title}</CardTitle>
+                    {subtitle && <p className="text-sm text-blue-200/60 text-center mt-1 font-medium">{subtitle}</p>}
                 </div>
             </CardHeader>
-            {actions && <CardContent className="p-4 flex gap-2">{actions}</CardContent>}
+
+            {actions && (
+                <CardContent className="p-4 flex gap-2 bg-black/20 border-t border-white/5">{actions}</CardContent>
+            )}
         </Card>
     ),
 );

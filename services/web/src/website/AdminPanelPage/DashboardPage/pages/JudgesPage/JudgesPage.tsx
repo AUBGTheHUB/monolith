@@ -1,5 +1,4 @@
-import { Fragment } from 'react/jsx-runtime';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
 import { MOCK_JUDGES } from '@/lib/judges.mock';
 import { Judge } from '@/lib/types';
@@ -8,17 +7,15 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgesPageMessages as MESSAGES } from './messagesConsts';
+import { Styles } from './components/style';
+import { cn } from '@/lib/utils';
 
 export function JudgesListPage() {
     const [judges, setJudges] = useState<Judge[]>(MOCK_JUDGES);
 
     const handleDelete = (id: string) => {
         const judge = judges.find((j) => j.id === id);
-
-        if (!judge) {
-            console.error(`Judge with id ${id} not found`);
-            return;
-        }
+        if (!judge) return;
 
         if (window.confirm(MESSAGES.DELETE_CONFIRM(judge.name))) {
             setJudges((prevJudges) => prevJudges.filter((j) => j.id !== id));
@@ -26,17 +23,24 @@ export function JudgesListPage() {
     };
 
     const renderJudgeActions = (judgeId: string) => (
-        <>
+        <div className="flex gap-3 w-full">
             <Link to={`/dashboard/judges/${judgeId}`} className="flex-1">
-                <Button variant="outline" className="w-full">
+                <Button
+                    variant="outline"
+                    className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
+                >
                     {MESSAGES.EDIT_BUTTON}
                 </Button>
             </Link>
 
-            <Button variant="destructive" className="flex-1" onClick={() => handleDelete(judgeId)}>
+            <Button
+                variant="destructive"
+                className="flex-1 shadow-lg shadow-red-500/10 hover:shadow-red-500/20 transition-all"
+                onClick={() => handleDelete(judgeId)}
+            >
                 {MESSAGES.DELETE_BUTTON}
             </Button>
-        </>
+        </div>
     );
 
     return (
@@ -45,41 +49,53 @@ export function JudgesListPage() {
                 <title>{MESSAGES.PAGE_TITLE}</title>
             </Helmet>
 
-            <div className="min-h-screen bg-gray-50 p-8">
+            <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
                 <div className="max-w-7xl mx-auto">
                     <Link to="/dashboard">
-                        <Button variant="ghost" className="mb-4">
+                        <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
                             {MESSAGES.BACK_BUTTON}
                         </Button>
                     </Link>
 
-                    <div className="flex justify-between items-center mb-8">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                         <div>
-                            <h1 className="text-4xl font-bold">{MESSAGES.HEADING}</h1>
-                            <p className="text-gray-600 mt-2">{MESSAGES.SUBTITLE}</p>
+                            <h1 className={cn('text-4xl', Styles.text.title)}>{MESSAGES.HEADING}</h1>
+                            <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                         </div>
+
                         <Link to="/dashboard/judges/add">
-                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                            <Button
+                                size="lg"
+                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                className={cn('px-8 py-6 text-lg', Styles.actions.primaryButton)}
+                            >
                                 {MESSAGES.ADD_BUTTON}
                             </Button>
                         </Link>
                     </div>
 
                     {judges.length === 0 ? (
-                        <Card className="p-12 text-center">
-                            <p className="text-gray-500 text-lg">{MESSAGES.EMPTY_STATE}</p>
+                        <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
+                            <p className={cn('text-xl font-medium', Styles.text.subtitle)}>{MESSAGES.EMPTY_STATE}</p>
                         </Card>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {judges.map((judge) => (
-                                <AdminCard
-                                    key={judge.id}
-                                    imageUrl={judge.imageUrl}
-                                    imageAlt={judge.name}
-                                    title={judge.name}
-                                    subtitle={judge.companyName}
-                                    actions={renderJudgeActions(judge.id)}
-                                />
+                                <div key={judge.id} className="group">
+                                    <AdminCard
+                                        imageUrl={judge.imageUrl}
+                                        imageAlt={judge.name}
+                                        title={judge.name}
+                                        subtitle={judge.companyName}
+                                        actions={renderJudgeActions(judge.id)}
+                                        className={cn(
+                                            'transition-all duration-300 group-hover:translate-y-[-4px]',
+                                            Styles.glass.card,
+                                            Styles.glass.cardHover,
+                                            'rounded-2xl',
+                                        )}
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}
