@@ -21,7 +21,6 @@ export function JudgesListPage() {
         }
 
         if (window.confirm(MESSAGES.DELETE_CONFIRM(judge.name))) {
-            // Remove the judge from the list using filter
             setJudges((prevJudges) => prevJudges.filter((j) => j.id !== id));
         }
     };

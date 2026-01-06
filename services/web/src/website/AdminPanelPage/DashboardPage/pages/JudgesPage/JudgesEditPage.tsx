@@ -28,7 +28,8 @@ export function JudgesEditPage() {
         mode: 'onTouched',
     });
 
-    const { control, handleSubmit, reset } = form;
+    const { control, handleSubmit, reset, watch } = form;
+    const imageUrl = watch('imageUrl');
 
     useEffect(() => {
         if (judge) {
@@ -43,13 +44,6 @@ export function JudgesEditPage() {
     const onSubmit = (data: JudgeFormData) => {
         console.log('Updating judge:', { id, ...data });
         alert(MESSAGES.SUCCESS_MESSAGE);
-        // TODO: Replace with actual API call
-        // try {
-        //     await updateJudge(id, data);
-        //     navigate('/dashboard/judges');
-        // } catch (error) {
-        //     console.error('Failed to update judge:', error);
-        // }
     };
 
     const goBack = () => {
@@ -94,8 +88,37 @@ export function JudgesEditPage() {
 
                         <Form {...form}>
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <CardContent className="space-y-6">
-                                    <JudgeFormFields control={control} />
+                                <CardContent className="flex flex-col md:flex-row gap-8">
+                                    <div className="flex-1 space-y-6">
+                                        <JudgeFormFields control={control} />
+                                    </div>
+                                    <div className="flex-1 flex flex-col items-center justify-start gap-2">
+                                        <span className="text-sm font-medium text-gray-500 self-start">Preview</span>
+                                        {imageUrl ? (
+                                            <div
+                                                className="w-full max-w-[300px] aspect-square rounded-lg border 
+                                                    border-gray-200 overflow-hidden bg-gray-50"
+                                            >
+                                                <img
+                                                    src={imageUrl}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).src =
+                                                            'https://placehold.co/300?text=Invalid+Image';
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className="w-full max-w-[300px] aspect-square rounded-lg border-2 
+                                                    border-dashed border-gray-200 flex items-center justify-center 
+                                                    text-gray-400 bg-gray-50"
+                                            >
+                                                No image URL provided
+                                            </div>
+                                        )}
+                                    </div>
                                 </CardContent>
 
                                 <CardFooter className="flex gap-3">
