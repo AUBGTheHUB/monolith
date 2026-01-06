@@ -6,6 +6,9 @@ from pydantic import HttpUrl
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
 DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Design"]
+MEMBER_TYPE = Literal["member", "admin"]
+"""This is to distinguish between ordinary club members with NO access to the admin panel
+    and admins with specific access based on their role defined in the hub_admin_model"""
 
 
 class SocialLinks(TypedDict):
@@ -19,7 +22,8 @@ class HubMember(BaseDbModel):
     """Represents a Hub club member"""
 
     name: str
-    role_title: str
+    member_type: MEMBER_TYPE = "member"
+    position: str
     department: DEPARTMENTS_LIST
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
@@ -28,7 +32,8 @@ class HubMember(BaseDbModel):
         return {
             "_id": self.id,
             "name": self.name,
-            "role_title": self.role_title,
+            "member_type": self.member_type,
+            "position": self.position,
             "avatar_url": self.avatar_url,
             "social_links": self.social_links,
             "created_at": self.created_at,
@@ -39,7 +44,8 @@ class HubMember(BaseDbModel):
         return {
             "id": str(self.id),
             "name": self.name,
-            "role_title": self.role_title,
+            "member_type": self.member_type,
+            "position": self.position,
             "avatar_url": self.avatar_url,
             "social_links": self.social_links,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -49,6 +55,6 @@ class HubMember(BaseDbModel):
 
 class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
-    role_title: str | None = None
+    position: str | None = None
     avatar_url: str | None = None
     social_links: SocialLinks | None = None
