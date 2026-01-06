@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields';
-import { JudgesAddMessages as MESSAGES } from './messagesConsts';
+import { JudgesAddMessages as MESSAGES } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
 import { Styles } from './components/style';

@@ -6,7 +6,7 @@ import { AdminCard } from '@/components/ui/admin-card';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-import { JudgesPageMessages as MESSAGES } from './messagesConsts';
+import { JudgesPageMessages as MESSAGES } from './messages';
 import { Styles } from './components/style';
 import { cn } from '@/lib/utils';
 
