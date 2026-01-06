@@ -4,7 +4,7 @@ from typing import Optional
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
-from result import Err, Result
+from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 
 from src.database.mongo.collections.admin_collections import PAST_EVENTS_COLLECTION
@@ -31,7 +31,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             else:
                 await self._collection.insert_one(document)
 
-            return Result.ok(obj)
+            return Ok(obj)
         except Exception as exc:
             LOG.exception("Failed to create past event")
             return Err(exc)
@@ -43,7 +43,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             if not document:
                 return Err(PastEventNotFoundError())
 
-            return Result.ok(PastEvent(**document))
+            document["id"] = document.pop("_id")
+            return Ok(PastEvent(**document))
         except Exception as exc:
             LOG.exception("Failed to fetch past event by id")
             return Err(exc)
@@ -53,8 +54,12 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             cursor = self._collection.find({})
             documents = await cursor.to_list(length=None)
 
-            past_events = [PastEvent(**doc) for doc in documents]
-            return Result.ok(past_events)
+            past_events: list[PastEvent] = []
+            for doc in documents:
+                doc["id"] = doc.pop("_id")
+                past_events.append(PastEvent(**doc))
+
+            return Ok(past_events)
         except Exception as exc:
             LOG.exception("Failed to fetch past events")
             return Err(exc)
@@ -69,7 +74,9 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                 document = await self._collection.find_one({"_id": ObjectId(obj_id)})
                 if not document:
                     return Err(PastEventNotFoundError())
-                return Result.ok(PastEvent(**document))
+
+                document["id"] = document.pop("_id")
+                return Ok(PastEvent(**document))
 
             update_data["updated_at"] = datetime.now(tz=timezone.utc)
 
@@ -90,7 +97,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             if not document:
                 return Err(PastEventNotFoundError())
 
-            return Result.ok(PastEvent(**document))
+            document["id"] = document.pop("_id")
+            return Ok(PastEvent(**document))
         except Exception as exc:
             LOG.exception("Failed to update past event")
             return Err(exc)
@@ -107,7 +115,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             if not document:
                 return Err(PastEventNotFoundError())
 
-            return Result.ok(PastEvent(**document))
+            document["id"] = document.pop("_id")
+            return Ok(PastEvent(**document))
         except Exception as exc:
             LOG.exception("Failed to delete past event")
             return Err(exc)
