@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields';
 import { Form } from '@/components/ui/form';
-import { judgeSchema, JudgeFormData } from './lib/judges.validation';
+import { judgeSchema, JudgeFormData } from './validation/validation';
 
 export function JudgesAddPage() {
     const navigate = useNavigate();
