@@ -75,7 +75,7 @@ export function JudgesEditPage() {
             </Helmet>
 
             <div className="min-h-screen bg-gray-50 p-8">
-                <div className="max-w-2xl mx-auto">
+                <div className="max-w-5xl mx-auto">
                     <Button variant="ghost" onClick={goBack} className="mb-4">
                         {MESSAGES.BACK_BUTTON}
                     </Button>
