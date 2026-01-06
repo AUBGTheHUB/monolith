@@ -42,9 +42,17 @@ def is_authorized(authorization: Annotated[str, Header()]) -> None:
         raise HTTPException(detail="Unauthorized", status_code=401)
 
 
-def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
-    if not ObjectId.is_valid(object_id):
+def _validate_object_id(value: str) -> None:
+    if not ObjectId.is_valid(value):
         raise HTTPException(detail="Wrong Object ID format", status_code=400)
+
+
+def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
+    _validate_object_id(object_id)
+
+
+def validate_id(id: Annotated[str, Path()]) -> None:
+    _validate_object_id(id)
 
 
 async def is_registration_open(request: Request) -> None:
