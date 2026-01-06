@@ -9,8 +9,9 @@ export const Styles = {
     },
 
     backgrounds: {
-        primaryGradient: 'bg-[#020F1B] bg-[linear-gradient(145deg,_#020F1B_0%,_#0B1E3B_50%,_#18305F_100%)]',
-        previewBox: 'bg-white/[0.02] border-white/10 border-2 border-dashed hover:border-white/20 transition-all duration-300',
+        primaryGradient: 'bg-[linear-gradient(145deg,_#020F1B_0%,_#0B1E3B_50%,_#18305F_100%)]',
+        previewBox:
+            'bg-white/[0.02] border-white/10 border-2 border-dashed hover:border-white/20 transition-all duration-300',
         footerDark: 'bg-black/40 border-t border-white/5 backdrop-blur-md',
     },
 
