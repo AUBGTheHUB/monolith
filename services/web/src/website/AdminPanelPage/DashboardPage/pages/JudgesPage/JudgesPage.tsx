@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgesPageMessages as MESSAGES } from './messages';
-import { Styles } from './components/style';
+import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 
 export function JudgesListPage() {

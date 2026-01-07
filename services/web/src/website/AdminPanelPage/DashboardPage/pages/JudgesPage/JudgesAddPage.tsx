@@ -9,7 +9,7 @@ import { JudgeFormFields } from './components/JudgeFormFields';
 import { JudgesAddMessages as MESSAGES } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
-import { Styles } from './components/style';
+import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 
 export function JudgesAddPage() {
