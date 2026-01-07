@@ -21,9 +21,9 @@ function App() {
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
                 <Route path="/admin" element={<LoginPage />} />
 
-                <Route path="/dashboard/judges" element={<JudgesListPage />} />
-                <Route path="/dashboard/judges/add" element={<JudgesAddPage />} />
-                <Route path="/dashboard/judges/:id" element={<JudgesEditPage />} />
+                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
+                <Route path="/admin/dashboard/judges/add" element={<JudgesAddPage />} />
+                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
             </Routes>
         </QueryClientProvider>
     );

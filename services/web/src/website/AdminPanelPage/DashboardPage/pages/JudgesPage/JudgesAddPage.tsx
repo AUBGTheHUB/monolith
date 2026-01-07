@@ -30,7 +30,7 @@ export function JudgesAddPage() {
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/dashboard/judges');
+        navigate('/admin/dashboard/judges');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
@@ -45,7 +45,7 @@ export function JudgesAddPage() {
                 <div className="max-w-5xl mx-auto">
                     <Button
                         variant="ghost"
-                        onClick={() => navigate('/dashboard/judges')}
+                        onClick={() => navigate('/admin/dashboard/judges')}
                         className={cn('mb-4', Styles.glass.ghostButton)}
                     >
                         {MESSAGES.BACK_BUTTON}
@@ -99,7 +99,7 @@ export function JudgesAddPage() {
                                         type="button"
                                         variant="outline"
                                         className="flex-1 text-black bg-white border-white hover:bg-gray-200 transition-colors"
-                                        onClick={() => navigate('/dashboard/judges')}
+                                        onClick={() => navigate('/admin/dashboard/judges')}
                                     >
                                         {MESSAGES.CANCEL_BUTTON}
                                     </Button>

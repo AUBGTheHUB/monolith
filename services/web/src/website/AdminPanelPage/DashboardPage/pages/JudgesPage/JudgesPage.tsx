@@ -24,7 +24,7 @@ export function JudgesListPage() {
 
     const renderJudgeActions = (judgeId: string) => (
         <div className="flex gap-3 w-full">
-            <Link to={`/dashboard/judges/${judgeId}`} className="flex-1">
+            <Link to={`/admin/dashboard/judges/${judgeId}`} className="flex-1">
                 <Button
                     variant="outline"
                     className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
@@ -51,7 +51,7 @@ export function JudgesListPage() {
 
             <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
                 <div className="max-w-7xl mx-auto">
-                    <Link to="/dashboard">
+                    <Link to="/admin/dashboard">
                         <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
                             {MESSAGES.BACK_BUTTON}
                         </Button>
@@ -63,7 +63,7 @@ export function JudgesListPage() {
                             <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                         </div>
 
-                        <Link to="/dashboard/judges/add">
+                        <Link to="/admin/dashboard/judges/add">
                             <Button
                                 size="lg"
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
