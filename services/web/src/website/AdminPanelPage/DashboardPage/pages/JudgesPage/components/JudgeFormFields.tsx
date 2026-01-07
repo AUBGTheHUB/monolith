@@ -36,7 +36,7 @@ export function JudgeFormFields({ control }: JudgeFormFieldsProps) {
                 name="position"
                 label={MESSAGES.LABELS.POSITION}
                 placeholder={MESSAGES.PLACEHOLDERS.POSITION}
-                type="url"
+                type="text"
             />
             <InputComponent
                 control={control}
