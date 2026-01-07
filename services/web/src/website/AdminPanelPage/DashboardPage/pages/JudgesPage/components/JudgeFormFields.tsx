@@ -31,6 +31,20 @@ export function JudgeFormFields({ control }: JudgeFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
                 type="url"
             />
+            <InputComponent
+                control={control}
+                name="position"
+                label={MESSAGES.LABELS.POSITION}
+                placeholder={MESSAGES.PLACEHOLDERS.POSITION}
+                type="url"
+            />
+            <InputComponent
+                control={control}
+                name="linkedinURL"
+                label={MESSAGES.LABELS.LINKEDIN}
+                placeholder={MESSAGES.PLACEHOLDERS.LINKEDIN}
+                type="url"
+            />
         </>
     );
 }

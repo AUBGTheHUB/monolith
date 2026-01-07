@@ -26,6 +26,8 @@ export function JudgesEditPage() {
             name: '',
             companyName: '',
             imageUrl: '',
+            position: '',
+            linkedinURL: '',
         },
         mode: 'onTouched',
     });
@@ -39,6 +41,8 @@ export function JudgesEditPage() {
                 name: judge.name,
                 companyName: judge.companyName,
                 imageUrl: judge.imageUrl,
+                position: judge.position || '',
+                linkedinURL: judge.linkedinURL || '',
             });
         }
     }, [judge, reset]);
@@ -109,7 +113,7 @@ export function JudgesEditPage() {
 
                                         <div
                                             className={cn(
-                                                'relative w-full max-w-[300px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
+                                                'relative w-full max-w-[500px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >

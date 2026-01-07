@@ -7,11 +7,13 @@ interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
     imageAlt?: string;
     title: string;
     subtitle?: string;
+    position?: string;
+    linkedinUrl?: string;
     actions?: React.ReactNode;
 }
 
 const AdminCard = React.forwardRef<HTMLDivElement, AdminCardProps>(
-    ({ className, imageUrl, imageAlt, title, subtitle, actions, ...props }, ref) => (
+    ({ className, imageUrl, imageAlt, title, subtitle, position, linkedinUrl, actions, ...props }, ref) => (
         <Card
             ref={ref}
             className={cn(
@@ -24,18 +26,33 @@ const AdminCard = React.forwardRef<HTMLDivElement, AdminCardProps>(
         >
             <CardHeader className="p-6">
                 <div className="flex flex-col items-center">
+                    <CardTitle className="text-xl text-center text-white mb-4">{title}</CardTitle>
+
                     {imageUrl && (
-                        <div className="relative group">
+                        <div className="relative group mb-4">
                             <div className="absolute inset-0 rounded-full bg-[#00B2FF]/20 blur-xl group-hover:bg-[#00B2FF]/40 transition-colors" />
                             <img
                                 src={imageUrl}
                                 alt={imageAlt || title}
-                                className="relative w-32 h-32 rounded-full object-cover border-2 border-white/20 shadow-lg mb-4"
+                                className="relative w-32 h-32 rounded-full object-cover border-2 border-white/20 shadow-lg"
                             />
                         </div>
                     )}
-                    <CardTitle className="text-xl text-center text-white">{title}</CardTitle>
-                    {subtitle && <p className="text-sm text-blue-200/60 text-center mt-1 font-medium">{subtitle}</p>}
+
+                    {subtitle && <p className="text-sm text-white/80 text-center font-semibold mt-1">{subtitle}</p>}
+
+                    {position && <p className="text-sm text-blue-200/60 text-center mt-1 font-medium">{position}</p>}
+
+                    {linkedinUrl && (
+                        <a
+                            href={linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-[#0077B5] hover:text-[#00A0DC] hover:underline mt-3 transition-colors"
+                        >
+                            LinkedIn Profile
+                        </a>
+                    )}
                 </div>
             </CardHeader>
 

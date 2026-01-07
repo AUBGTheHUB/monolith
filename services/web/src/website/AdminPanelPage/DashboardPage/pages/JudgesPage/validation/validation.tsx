@@ -22,6 +22,15 @@ export const judgeSchema = z.object({
         .string()
         .min(1, { message: 'Image URL is required' })
         .url({ message: 'Please enter a valid URL (e.g., https://example.com/image.png)' }),
+
+    position: z
+        .string()
+        .optional(),
+    
+    linkedinURL: z
+        .string()
+        .min(1, { message: 'Image URL is required' })
+        .url({ message: 'Please enter a valid URL (e.g., https://linkedin.com/in/username)' })  
 });
 
 

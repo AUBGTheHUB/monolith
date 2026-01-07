@@ -87,6 +87,8 @@ export function JudgesListPage() {
                                         imageAlt={judge.name}
                                         title={judge.name}
                                         subtitle={judge.companyName}
+                                        position={judge.position}
+                                        linkedinUrl={judge.linkedinURL}
                                         actions={renderJudgeActions(judge.id)}
                                         className={cn(
                                             'transition-all duration-300 group-hover:translate-y-[-4px]',

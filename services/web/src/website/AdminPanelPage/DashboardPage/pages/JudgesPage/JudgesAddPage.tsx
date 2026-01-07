@@ -21,6 +21,8 @@ export function JudgesAddPage() {
             name: '',
             companyName: '',
             imageUrl: '',
+            position: '',
+            linkedinURL: '',
         },
         mode: 'onTouched',
     });
@@ -71,7 +73,7 @@ export function JudgesAddPage() {
 
                                         <div
                                             className={cn(
-                                                'relative w-full max-w-[300px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
+                                                'relative w-full max-w-[500px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >

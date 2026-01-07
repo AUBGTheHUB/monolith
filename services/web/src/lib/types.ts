@@ -3,4 +3,6 @@ export type Judge = {
     name: string;
     companyName: string;
     imageUrl: string;
+    position?: string;
+    linkedinURL?: string;
 };
