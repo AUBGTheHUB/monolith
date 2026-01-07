@@ -10,13 +10,15 @@
 
 ## > How to set up the project
 
-### Prerequisites
+### Prerequisites for using the devcontainer on vscode
 
 > To understand why we need the following, read more about [Dev Containers](https://containers.dev/).
 
 - Download [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 - Download [Visual Studio Code](https://code.visualstudio.com/Download).
-- Install the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in Visual Studio Code.
+- Install
+  the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  in Visual Studio Code.
 
 #### For WSL users
 
@@ -36,7 +38,8 @@ wsl -l -v
 wsl --set-version <distro name> 2
 ```
 
-> Change the <distro name> to match the one that you are running. You could see your distro name from the result of the previous command.
+> Change the <distro name> to match the one that you are running. You could see your distro name from the result of the
+> previous command.
 
 - After your WSL version is updated set it as default by running:
 
@@ -84,7 +87,17 @@ cd monolith
 
 ---
 
-### Extra Step: For WSL users
+### Choose Your Development Environment
+
+Depending on your preference, follow Option A for a pre-configured containerized environment (currently only vscode
+supported) or Option B for a direct
+local installation (if you want to use pycharm).
+
+### Option A: Dev Container Setup:
+
+> Use this if you want a consistent environment without installing dependencies directly on your machine.
+
+#### Extra Step: For WSL devcontainer users
 
 In order to make sure that your WSL SSH keys are forwarded to the DEV Container you should run the following script:
 
@@ -96,24 +109,26 @@ bash wsl_ssh_forwarding.sh
 
 ---
 
-### 4. Open your project in Visual Studio code. Run:
+#### Open your project in Visual Studio code. Run:
 
 ```bash
 code .
 ```
 
-### 5. Navigate to Visual Studio Code and perform:
+#### Navigate to Visual Studio Code and perform:
 
-- <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Windows) to open the command palette
+- <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (Mac) or <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>P</kbd> (
+  Windows) to open the command palette
 - In the command palette write and select:
 
 ```
 >Dev Containers: Reopen in Container
 ```
 
-> After this step you should wait until the container is built. It will install all the dependencies needed for development on its own.
+> After this step you should wait until the container is built. It will install all the dependencies needed for
+> development on its own.
 
-### 6. Check if Dev Container is running successfully
+#### Check if Dev Container is running successfully
 
 If your Dev Container is running successfully you should be able to see the following in the bottom-right of your
 Visual Studio Code client.
@@ -121,6 +136,18 @@ Visual Studio Code client.
 ![](/docs/images/connected_devContainer.png)
 
 ---
+
+### Option B: Local Setup
+
+> Use this if you prefer to run the services directly on your host OS, allowing you to use any IDE of your choice:
+
+#### Install Dependencies
+
+Run the provided setup script **from the monolith root directory:**
+
+```bash
+bash ./setup/install_depts.sh
+```
 
 ### **HOW TO RUN THE PROJECT**:
 
@@ -182,7 +209,8 @@ git push --set-upstream origin 11-Optimizations
 
 - If you encounter any issues setting up the project, ping the team in Discord or Messenger
 - If you are stuck and you need help, ping the dev group chat in facebook 🤼
-- Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging rendering issues 😁
+- Do not forget to <em>crack open a cold one</em> 🍻 with your fellow colleagues after spending countless hours debugging
+  rendering issues 😁
 
 ### Possible problems:
 
@@ -200,7 +228,8 @@ make: *** [Makefile:11: run-api] Error 1
 
 ### Tips & Tricks:
 
-- If you suspend either the react app job or the api job by mistake and cannot kill the job for some reason, use this to unbind the port `lsof -ti:PortNumberGoesHere | xargs kill -9`
+- If you suspend either the react app job or the api job by mistake and cannot kill the job for some reason, use this to
+  unbind the port `lsof -ti:PortNumberGoesHere | xargs kill -9`
 
 ---
 
