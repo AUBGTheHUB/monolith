@@ -149,6 +149,18 @@ Run the provided setup script **from the monolith root directory:**
 bash ./setup/install_depts.sh
 ```
 
+---
+
+### Note for PyCharm users:
+
+- After installing all dependencies you need to configure the project interpreter:
+
+> Python Interpreter → Add New Interpreter → Add Local Interpreter → Select Existing →
+> monolith/services/py-api/.venv/bin/python
+
+- Also set the py-api folder as sources root by:
+  Right-Clicking on it → Mark Directory As → Sources Root
+
 ### **HOW TO RUN THE PROJECT**:
 
 > Run the following command after navigating to the project root directory
