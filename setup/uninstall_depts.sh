@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Ensure gum is used for the confirmation if available
-CONFIRM_CMD="read -p"
 if command -v gum &> /dev/null; then
     gum confirm "Are you sure you want to uninstall all dev tools (pyenv, poetry, node, gum)?" && confirmed=yes
 else
