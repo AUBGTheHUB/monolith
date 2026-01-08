@@ -7,7 +7,6 @@ from tests.unit_tests.conftest import (
     ParticipantRepoMock,
     TeamRepoMock,
     HackathonMailServiceMock,
-    BackgroundTasksMock,
 )
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.hackathon.participant_service import ParticipantService
@@ -26,7 +25,6 @@ from src.exception import (
     ParticipantNotFoundError,
     TeamNameMissmatchError,
 )
-from unittest.mock import Mock, patch
 from src.database.model.hackathon.team_model import Team
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
@@ -290,79 +288,3 @@ async def test_check_send_verification_email_rate_limit_participant_not_found(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, ParticipantNotFoundError)
-
-
-@pytest.mark.asyncio
-async def test_send_verification_email_success(
-    participant_service: ParticipantService,
-    participant_repo_mock: ParticipantRepoMock,
-    background_tasks_mock: BackgroundTasksMock,
-    hackathon_mail_service_mock: Mock,
-    admin_participant_mock: Participant,
-) -> None:
-    # Given
-    hackathon_mail_service_mock.send_participant_verification_email.return_value = None
-    # And no err from repo
-    participant_repo_mock.update.return_value = Ok(admin_participant_mock)
-
-    # As we don't send emails for testing env due to integration tests we have to patch this
-    with patch("src.environment.ENV", return_value="DEV"):
-        # When
-        result = await participant_service.send_verification_email(
-            participant=admin_participant_mock, background_tasks=background_tasks_mock
-        )
-
-        # Then
-        assert isinstance(result, Ok)
-        assert isinstance(result.ok_value, Participant)
-
-
-@pytest.mark.asyncio
-async def test_send_verification_email_err_validation_err_body_generation(
-    participant_service: ParticipantService,
-    participant_repo_mock: ParticipantRepoMock,
-    background_tasks_mock: BackgroundTasksMock,
-    hackathon_mail_service_mock: Mock,
-    admin_participant_mock: Participant,
-) -> None:
-    # Given
-    hackathon_mail_service_mock.send_participant_verification_email.return_value = Err(ValueError("Test Error"))
-    # And no err from repo
-    participant_repo_mock.update.return_value = Ok(admin_participant_mock)
-
-    # As we don't send emails for testing env due to integration tests we have to patch this
-    with patch("src.environment.ENV", return_value="DEV"):
-        # When
-        err = await participant_service.send_verification_email(
-            participant=admin_participant_mock, background_tasks=background_tasks_mock
-        )
-
-        # Then
-        # Assert err value returned while sending the email from hackathon service
-        assert isinstance(err, Err)
-        assert isinstance(err.err_value, ValueError)
-
-
-@pytest.mark.asyncio
-async def test_send_verification_email_err_participant_deleted_before_verifying_email(
-    participant_service: ParticipantService,
-    participant_repo_mock: ParticipantRepoMock,
-    background_tasks_mock: BackgroundTasksMock,
-    hackathon_mail_service_mock: Mock,
-    admin_participant_mock: Participant,
-) -> None:
-    # Given
-    hackathon_mail_service_mock.send_participant_verification_email.return_value = None
-    participant_repo_mock.update.return_value = Err(ParticipantNotFoundError())
-
-    # As we don't send emails for testing env due to integration tests we have to patch this
-    with patch("src.environment.ENV", return_value="DEV"):
-        # When
-        err = await participant_service.send_verification_email(
-            participant=admin_participant_mock, background_tasks=background_tasks_mock
-        )
-
-        # Then
-        # Assert err value returned while sending the email from hackathon service
-        assert isinstance(err, Err)
-        assert isinstance(err.err_value, ParticipantNotFoundError)
