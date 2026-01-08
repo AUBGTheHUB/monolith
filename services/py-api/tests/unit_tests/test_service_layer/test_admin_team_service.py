@@ -107,26 +107,6 @@ async def test_create_participant_and_team_in_transaction_duplicate_email_err(
 
 
 @pytest.mark.asyncio
-async def test_register_admin_participant_general_exception(
-    admin_team_service: AdminTeamService,
-    admin_case_input_data_mock: AdminParticipantInputData,
-    tx_manager_mock: MongoTransactionManagerMock,
-) -> None:
-    # Given
-    # Mock `with_transaction` to raise a general exception
-    tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
-
-    # When
-    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
-
-    # Then
-    # Verify the result is an `Err` containing a general Exception
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
-    assert str(result.err_value) == "Test error"
-
-
-@pytest.mark.asyncio
 async def verify_admin_participant_and_team_in_transaction_success(
     admin_team_service: AdminTeamService,
     participant_repo_mock: ParticipantRepoMock,
@@ -199,3 +179,23 @@ async def verify_admin_participant_and_team_in_transaction_general_error(
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
     str(result.err_value) == "Test error"
+
+
+@pytest.mark.asyncio
+async def test_register_admin_participant_general_exception(
+    admin_team_service: AdminTeamService,
+    admin_case_input_data_mock: AdminParticipantInputData,
+    tx_manager_mock: MongoTransactionManagerMock,
+) -> None:
+    # Given
+    # Mock `with_transaction` to raise a general exception
+    tx_manager_mock.with_transaction.return_value = Err(Exception("Test error"))
+
+    # When
+    result = await admin_team_service.create_participant_and_team_in_transaction(admin_case_input_data_mock)
+
+    # Then
+    # Verify the result is an `Err` containing a general Exception
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "Test error"
