@@ -123,7 +123,7 @@ class RequestIdFilter(Filter):
         # noinspection PyTypeChecker
         ctx: _StructlogContextVars = get_contextvars()
 
-        request_id = ctx["request_id"]
+        request_id = ctx.get("request_id", "")
         # Empty string so formatter with %(request_id)s never explodes
         record.request_id = request_id
         # Return True to allow the log record to be emitted
