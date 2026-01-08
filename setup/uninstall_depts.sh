@@ -4,7 +4,7 @@
 if command -v gum &> /dev/null; then
     gum confirm "Are you sure you want to uninstall all dev tools (pyenv, poetry, node, gum)?" && confirmed=yes
 else
-    read -p "Are you sure you want to uninstall all dev tools? (y/N): " confirmed
+    read -pr "Are you sure you want to uninstall all dev tools? (y/N): " confirmed
 fi
 
 if [[ ! $confirmed =~ ^[Yy]$ && $confirmed != "yes" ]]; then
