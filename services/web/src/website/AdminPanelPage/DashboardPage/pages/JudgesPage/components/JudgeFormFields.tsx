@@ -1,5 +1,5 @@
 import { Control } from 'react-hook-form';
-import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
 import { JudgeFormData } from '../validation/validation';
 import { JudgesFormFieldMessages as MESSAGES } from '../messages';
 

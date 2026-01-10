@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
 import { Button } from '@/components/ui/button';
 
 import { validateAdminCredentials } from '@/lib/auth/mockAdmins';
