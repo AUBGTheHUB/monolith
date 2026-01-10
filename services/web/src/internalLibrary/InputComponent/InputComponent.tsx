@@ -3,7 +3,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
-export type InputTypes = 'text' | 'email' | 'password' | 'number';
+export type InputTypes = 'text' | 'email' | 'password' | 'number' | 'url';
 
 type InputProps<T extends FieldValues> = {
     control: Control<T>;
