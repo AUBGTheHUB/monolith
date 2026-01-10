@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './card';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
