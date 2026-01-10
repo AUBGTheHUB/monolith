@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
 import { MOCK_JUDGES } from '@/lib/judges.mock';
 import { Judge } from '@/lib/types';
-import { AdminCard } from '@/components/ui/admin-card';
+import { AdminCard } from '@/components/ui/adminCard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
