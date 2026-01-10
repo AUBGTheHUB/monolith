@@ -19,20 +19,49 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
     async def create(
         self, obj: Sponsor, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Sponsor, Exception]:
-        return Err(NotImplementedError())
+        await self._collection.insert_one(obj)
+        return Ok()
 
     async def fetch_by_id(self, obj_id: str) -> Result[Sponsor, Exception]:
-        return Err(NotImplementedError())
+        sponsor = await self._collection.find_one({"_id": obj_id})
+        if sponsor is None:
+            return Err(NotImplementedError()) # TODO: Change with proper exception
+        return Ok(sponsor)
 
     async def fetch_all(self) -> Result[list[Sponsor], Exception]:
-        return Err(NotImplementedError())
+        try: 
+            sponsors_data = await self._collection.find({}).to_list()
+
+            sponsors: List[Sponsor] = []
+
+            async for sponsor in sponsors_data:
+                sponsor["id"] = sponsor.pop("_id")
+
+                sponsor.append(Sponsor(**sponsor))
+
+            return Ok(sponsors)
+
+        except Exception as e:
+            return Err(e)
 
     async def update(
         self, obj_id: str, obj_fields: UpdateSponsorParams, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Sponsor, Exception]:
-        return Err(NotImplementedError())
+        try:
+            query_filter = {'_id': obj_id}
+            operation = { '$set' : obj_fields }
+            result = await self._collection.update(query_filter, operation)
+            
+            if result is None:
+                return Err(NotImplementedError()) # TODO: Add proper handling
+
+        except Exception as e:
+            return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[Sponsor, Exception]:
-        return Err(NotImplementedError())
+        try:
+            pass
+        except Exception as e:
+            return Err(e)
