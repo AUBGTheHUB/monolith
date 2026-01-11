@@ -1,9 +1,9 @@
 from abc import ABC
-from typing import Any, Dict, Tuple, Type
+from typing import Any
 from starlette import status
 from pymongo.errors import DuplicateKeyError
 
-ERROR_MAPPING: Dict[Type[BaseException], Tuple[str, int]] = {}
+ERROR_MAPPING: dict[type[BaseException], tuple[str, int]] = {}
 """Maps custom errors to their representation (message, status_code), dynamically populated once a subclass of
 CustomError is created (not instantiated)"""
 

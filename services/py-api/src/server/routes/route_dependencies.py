@@ -9,7 +9,7 @@ from starlette.requests import Request
 from structlog.stdlib import get_logger
 
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.service.hackathon.hackathon_service import HackathonService
+from src.service.feature_switches.feature_switches import REG_ALL_PARTICIPANTS_SWITCH
 
 LOG = get_logger()
 
@@ -32,9 +32,9 @@ async def is_registration_open(request: Request) -> None:
     """Blocks requests when hackathon registration is closed."""
     fs_repo: FeatureSwitchRepository = request.app.state.fs_repo
 
-    result = await fs_repo.get_feature_switch(HackathonService.REG_ALL_PARTICIPANTS_SWITCH)
+    result = await fs_repo.get_feature_switch(REG_ALL_PARTICIPANTS_SWITCH)
     if is_err(result):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
 
-    if result.ok_value.state is False:
+    if not result.ok_value.state:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
