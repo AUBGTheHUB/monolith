@@ -146,3 +146,19 @@ class RegistrationClosedSuccessfullyResponse(FeatureSwitchResponse):
     """
     Response sent when the endpoint for closing the application is triggered.
     """
+
+
+class AdminTeamMemberOut(BaseModel):
+    name: str
+    photo_url: str
+    linkedin_url: str
+
+
+class AdminDepartmentOut(BaseModel):
+    id: str
+    name: str
+    members: List[AdminTeamMemberOut]
+
+
+class AdminDepartmentsListOut(BaseModel):
+    departments: List[AdminDepartmentOut]

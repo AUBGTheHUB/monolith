@@ -125,3 +125,8 @@ class JwtDecodeError(CustomError):
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class DepartmentNotFoundError(CustomError):
+    message = "The department was not found."
+    status_code = status.HTTP_404_NOT_FOUND

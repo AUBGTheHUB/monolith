@@ -115,3 +115,32 @@ class ParticipantRequestBody(BaseModel):
 class FeatureSwitchUpdateBody(BaseModel):
     name: str
     state: bool
+
+
+class AdminTeamMemberIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(max_length=100, min_length=1)
+    photo_url: str = Field(max_length=500)
+    linkedin_url: str = Field(max_length=500)
+
+    @field_validator("linkedin_url")
+    @classmethod
+    def _check_linkedin_format(cls, v: str) -> str:
+        if not v.startswith("https://www.linkedin.com/"):
+            raise ValueError("Invalid LinkedIn URL")
+        return v
+
+
+class AdminDepartmentCreateIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(max_length=100, min_length=1)
+    members: list[AdminTeamMemberIn] = Field(min_length=0)
+
+
+class AdminDepartmentUpdateIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(max_length=100, min_length=1)
+    members: list[AdminTeamMemberIn] = Field(min_length=0)

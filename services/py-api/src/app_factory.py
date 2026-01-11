@@ -12,12 +12,15 @@ from src.database.mongo.db_manager import (
     PARTICIPANTS_COLLECTION,
     TEAMS_COLLECTION,
     FEATURE_SWITCH_COLLECTION,
+    DEPARTMENTS_COLLECTION,
     DB_NAME,
 )
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.departments_repository import DepartmentsRepository
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.server.handlers.admin.departments_handlers import DepartmentsHandlers
 from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
@@ -26,6 +29,7 @@ from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.handlers.utility_hanlders import UtilityHandlers
 from src.server.middleware.middleware import Middleware
 from src.server.routes.routes import Routes
+from src.service.admin.departments_service import DepartmentsService
 from src.service.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_service import HackathonService
@@ -114,6 +118,7 @@ def create_app() -> FastAPI:
     participants_repo = ParticipantsRepository(db_manager=db_manager, collection_name=PARTICIPANTS_COLLECTION)
     teams_repo = TeamsRepository(db_manager=db_manager, collection_name=TEAMS_COLLECTION)
     fs_repo = FeatureSwitchRepository(db_manager=db_manager, collection_name=FEATURE_SWITCH_COLLECTION)
+    departments_repo = DepartmentsRepository(db_manager=db_manager, collection_name=DEPARTMENTS_COLLECTION)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -136,6 +141,7 @@ def create_app() -> FastAPI:
     )
     participants_verification_service = ParticipantVerificationService(hackathon_service=hackathon_service)
     fs_service = FeatureSwitchService(repository=fs_repo)
+    departments_service = DepartmentsService(repository=departments_repo)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
@@ -144,6 +150,7 @@ def create_app() -> FastAPI:
         hackathon_management_handlers=HackathonManagementHandlers(service=hackathon_service),
         participant_handlers=ParticipantHandlers(service=participants_reg_service),
         verification_handlers=VerificationHandlers(service=participants_verification_service, jwt_utility=jwt_utility),
+        departments_handlers=DepartmentsHandlers(service=departments_service),
     )
 
     Routes.register_routes(app.router, http_handlers)

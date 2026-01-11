@@ -1,9 +1,3 @@
-"""Here we store functions made to be passed as arguments to the route dependencies. These acts as a middleware but on
-route level instead of an application level, and get executed first before the request is handled.
-
-For more info: https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
-"""
-
 from os import environ
 from typing import Annotated
 
@@ -20,19 +14,7 @@ from src.service.hackathon.hackathon_service import HackathonService
 LOG = get_logger()
 
 
-# ===============================
-# Path Operation Decorators start
-# ===============================
-
-
-def is_auth(authorization: Annotated[str, Header()]) -> None:
-    # This follows the dependency pattern that is provided to us by FastAPI
-    # You can read more about it here:
-    # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
-    # I have exported this function on a separate dependencies file likes suggested in:
-    # https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
-    # TODO: When the admin panel is implemented, the secret auth toke env variable should be removed as tokens
-    #  will be automatically rotated
+def is_auth(authorization: str = Header(..., alias="Authorization")) -> None:
     if not (
         authorization
         and authorization.startswith("Bearer ")
@@ -47,6 +29,7 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
 
 
 async def is_registration_open(request: Request) -> None:
+    """Blocks requests when hackathon registration is closed."""
     fs_repo: FeatureSwitchRepository = request.app.state.fs_repo
 
     result = await fs_repo.get_feature_switch(HackathonService.REG_ALL_PARTICIPANTS_SWITCH)
@@ -55,8 +38,3 @@ async def is_registration_open(request: Request) -> None:
 
     if result.ok_value.state is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
-
-
-# ===============================
-# Path Operation Decorators end
-# ===============================
