@@ -21,7 +21,6 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.server.handlers.admin.departments_handlers import DepartmentsHandlers
-from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.exception_handler import ExceptionHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
@@ -177,7 +176,6 @@ def create_app() -> FastAPI:
         team_service=team_service,
         feature_switch_repo=fs_repo,
     )
-    participants_verification_service = ParticipantVerificationService(hackathon_service=hackathon_service)
     fs_service = FeatureSwitchService(repository=fs_repo)
     departments_service = DepartmentsService(repository=departments_repo)
 
@@ -194,7 +192,6 @@ def create_app() -> FastAPI:
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )
-    fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)
     judges_service = JudgesService(repo=judges_repo)

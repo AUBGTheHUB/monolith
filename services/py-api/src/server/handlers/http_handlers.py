@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from src.server.handlers.admin.departments_handlers import DepartmentsHandlers
-from src.server.handlers.feature_switch_handler import FeatureSwitchHandler
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
@@ -40,12 +39,11 @@ class HttpHandlersContainer:
     """Container for holding all HTTP handlers"""
 
     utility_handlers: UtilityHandlers
-    fs_handlers: FeatureSwitchHandler
+    fs_handlers: FeatureSwitchHandlers
     hackathon_management_handlers: HackathonManagementHandlers
     participant_handlers: ParticipantHandlers
     verification_handlers: VerificationHandlers
     departments_handlers: DepartmentsHandlers
-    fs_handlers: FeatureSwitchHandlers
     hackathon_handlers: HackathonHandlers
     admin_handlers: AdminHandlers
     auth_handlers: AuthHandlers
