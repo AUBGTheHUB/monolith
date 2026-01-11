@@ -47,7 +47,6 @@ from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.admin.departments_service import DepartmentsService
-from src.service.feature_switch_service import FeatureSwitchService
 from src.service.auth.auth_service import AuthService
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
@@ -200,22 +199,25 @@ def create_app() -> FastAPI:
 
     auth_service = AuthService(repo=hub_members_repo)
     # Handlers layer wiring
+    hackathon_management_handlers = HackathonManagementHandlers(
+        hackathon_utility_service=hackathon_utility_service,
+        participant_service=participant_service,
+        team_service=team_service,
+    )
+    participant_handlers = ParticipantHandlers(service=registration_service)
+    verification_handlers = VerificationHandlers(service=verification_service, jwt_utility=jwt_utility)
+
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
-        fs_handlers=FeatureSwitchHandler(service=fs_service),
-        hackathon_management_handlers=HackathonManagementHandlers(service=hackathon_service),
-        participant_handlers=ParticipantHandlers(service=participants_reg_service),
-        verification_handlers=VerificationHandlers(service=participants_verification_service, jwt_utility=jwt_utility),
-        departments_handlers=DepartmentsHandlers(service=departments_service),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),
+        hackathon_management_handlers=hackathon_management_handlers,
+        participant_handlers=participant_handlers,
+        verification_handlers=verification_handlers,
+        departments_handlers=DepartmentsHandlers(service=departments_service),
         hackathon_handlers=HackathonHandlers(
-            hackathon_management_handlers=HackathonManagementHandlers(
-                hackathon_utility_service=hackathon_utility_service,
-                participant_service=participant_service,
-                team_service=team_service,
-            ),
-            participant_handlers=ParticipantHandlers(service=registration_service),
-            verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
+            hackathon_management_handlers=hackathon_management_handlers,
+            participant_handlers=participant_handlers,
+            verification_handlers=verification_handlers,
         ),
         admin_handlers=AdminHandlers(
             sponsors_handlers=SponsorsHandlers(service=sponsors_service),

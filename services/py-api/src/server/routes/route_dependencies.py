@@ -1,3 +1,9 @@
+"""Here we store functions made to be passed as arguments to the route dependencies. These acts as a middleware but on
+route level instead of an application level, and get executed first before the request is handled.
+
+For more info: https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
+"""
+
 from os import environ
 from typing import Annotated
 
@@ -12,6 +18,11 @@ from src.database.repository.feature_switch_repository import FeatureSwitchRepos
 from src.service.feature_switches.feature_switches import REG_ALL_PARTICIPANTS_SWITCH
 
 LOG = get_logger()
+
+
+# ===============================
+# Path Operation Decorators start
+# ===============================
 
 
 def is_auth(authorization: str = Header(..., alias="Authorization")) -> None:
@@ -38,3 +49,8 @@ async def is_registration_open(request: Request) -> None:
 
     if not result.ok_value.state:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Registration is closed")
+
+
+# ===============================
+# Path Operation Decorators end
+# ===============================
