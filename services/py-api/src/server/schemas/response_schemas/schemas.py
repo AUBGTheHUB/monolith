@@ -1,10 +1,12 @@
-from typing import Mapping, Any
+from typing import Dict, List, Mapping, Any, Optional
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
 
 from src.database.model.feature_switch_model import FeatureSwitch
+from src.database.model.hackathon.participant_model import Participant
+from src.database.model.hackathon.team_model import Team
 
 
 class Response(JSONResponse):
