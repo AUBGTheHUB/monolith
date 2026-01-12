@@ -1,4 +1,4 @@
-import type { Judge } from './types';
+import type { Judge } from '../../../../../types/judge';
 
 export const MOCK_JUDGES: Judge[] = [
     {

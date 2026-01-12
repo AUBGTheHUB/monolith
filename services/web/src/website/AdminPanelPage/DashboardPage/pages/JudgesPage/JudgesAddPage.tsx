@@ -10,7 +10,7 @@ import { JudgesAddMessages as MESSAGES } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 export function JudgesAddPage() {
     const navigate = useNavigate();

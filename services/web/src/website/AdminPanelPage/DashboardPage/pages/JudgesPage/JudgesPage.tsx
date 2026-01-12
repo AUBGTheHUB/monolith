@@ -1,14 +1,14 @@
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { MOCK_JUDGES } from '@/lib/judges.mock';
-import { Judge } from '@/lib/types';
+import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPage/pages/JudgesPage/mockJudges';
+import { Judge } from '@/types/judge';
 import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgesPageMessages as MESSAGES } from './messages';
 import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 export function JudgesListPage() {
     const [judges, setJudges] = useState<Judge[]>(MOCK_JUDGES);

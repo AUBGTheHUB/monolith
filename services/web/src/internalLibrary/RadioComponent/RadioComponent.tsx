@@ -1,7 +1,7 @@
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 type Option = {
     label: string;

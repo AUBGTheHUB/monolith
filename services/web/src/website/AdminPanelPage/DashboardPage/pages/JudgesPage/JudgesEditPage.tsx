@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_JUDGES } from '@/lib/judges.mock';
+import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPage/pages/JudgesPage/mockJudges';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
@@ -12,7 +12,7 @@ import { JudgesEditMessages as MESSAGES } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils';
 
 export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
