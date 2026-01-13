@@ -127,6 +127,6 @@ class FeatureSwitchNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class DepartmentNotFoundError(CustomError):
-    message = "The department was not found."
+class DepartmentMemberNotFoundError(CustomError):
+    message = "The department member was not found."
     status_code = status.HTTP_404_NOT_FOUND

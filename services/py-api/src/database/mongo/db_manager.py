@@ -12,7 +12,7 @@ DB_NAME = {"TEST": "TheHubTESTS", "PROD": "TheHubPROD", "DEV": "TheHubDEV", "LOC
 PARTICIPANTS_COLLECTION = "participants"
 TEAMS_COLLECTION = "teams"
 FEATURE_SWITCH_COLLECTION = "feature-switches"
-DEPARTMENTS_COLLECTION = "departments"
+DEPARTMENT_MEMBERS_COLLECTION = "department-members"
 
 
 class MongoDatabaseManager:

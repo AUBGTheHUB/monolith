@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from src.server.handlers.http_handlers import HttpHandlersContainer
-from src.server.routes.admin.departments_routes import register_departments_routes
+from src.server.routes.admin.department_members_routes import register_department_members_routes
 from src.server.routes.auth.auth_routes import register_auth_routes
 from src.server.routes.feature_swithces_routes import register_feature_switches_routes
 from src.server.routes.hackathon.hackathon_management_routes import register_hackathon_management_routes
@@ -21,13 +21,10 @@ class Routes:
         participant_reg_router = register_participants_reg_routes(
             http_handler=http_handlers.hackathon_handlers.participant_handlers
         )
-        verification_router = register_verification_routes(http_handler=http_handlers.verification_handlers)
-        departments_router = register_departments_routes(http_handler=http_handlers.departments_handlers)
+        verification_router = register_verification_routes(http_handler=http_handlers.hackathon_handlers.verification_handlers)
+        department_members_router = register_department_members_routes(http_handler=http_handlers.department_members_handlers)
         hackathon_reg_router = register_hackathon_management_routes(
             http_handler=http_handlers.hackathon_handlers.hackathon_management_handlers
-        )
-        verification_router = register_verification_routes(
-            http_handler=http_handlers.hackathon_handlers.verification_handlers
         )
         admin_router = register_admin_routes(http_handler=http_handlers.admin_handlers)
 
@@ -39,6 +36,6 @@ class Routes:
         main_router.include_router(participant_reg_router)
         main_router.include_router(hackathon_reg_router)
         main_router.include_router(verification_router)
-        main_router.include_router(departments_router)
+        main_router.include_router(department_members_router)
         main_router.include_router(admin_router)
         main_router.include_router(auth_router)

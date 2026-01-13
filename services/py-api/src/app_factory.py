@@ -12,16 +12,16 @@ from src.database.mongo.db_manager import (
     PARTICIPANTS_COLLECTION,
     TEAMS_COLLECTION,
     FEATURE_SWITCH_COLLECTION,
-    DEPARTMENTS_COLLECTION,
+    DEPARTMENT_MEMBERS_COLLECTION,
     DB_NAME,
 )
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.database.repository.admin.departments_repository import DepartmentsRepository
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
+from src.database.repository.admin.department_members_repository import DepartmentMembersRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
-from src.server.handlers.admin.departments_handlers import DepartmentsHandlers
 from src.server.exception_handler import ExceptionHandlers
+from src.server.handlers.admin.department_members_handlers import DepartmentMembersHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
@@ -44,9 +44,9 @@ from src.service.admin.mentors_service import MentorsService
 from src.service.admin.judges_service import JudgesService
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
+from src.service.admin.department_members_service import DepartmentMembersService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
-from src.service.admin.departments_service import DepartmentsService
 from src.service.auth.auth_service import AuthService
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
@@ -139,12 +139,12 @@ def create_app() -> FastAPI:
     participants_repo = ParticipantsRepository(db_manager=db_manager)
     teams_repo = TeamsRepository(db_manager=db_manager)
     fs_repo = FeatureSwitchRepository(db_manager=db_manager)
-    departments_repo = DepartmentsRepository(db_manager=db_manager, collection_name=DEPARTMENTS_COLLECTION)
     sponsors_repo = SponsorsRepository(db_manager=db_manager)
     mentors_repo = MentorsRepository(db_manager=db_manager)
     judges_repo = JudgesRepository(db_manager=db_manager)
     hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
+    department_members_repo = DepartmentMembersRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -176,7 +176,7 @@ def create_app() -> FastAPI:
         feature_switch_repo=fs_repo,
     )
     fs_service = FeatureSwitchService(repository=fs_repo)
-    departments_service = DepartmentsService(repository=departments_repo)
+    department_members_service = DepartmentMembersService(repository=department_members_repo)
 
     registration_service = RegistrationService(
         participant_service=participant_service,
@@ -207,13 +207,15 @@ def create_app() -> FastAPI:
     participant_handlers = ParticipantHandlers(service=registration_service)
     verification_handlers = VerificationHandlers(service=verification_service, jwt_utility=jwt_utility)
 
+    department_members_handlers = DepartmentMembersHandlers(service=department_members_service)
+
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),
         hackathon_management_handlers=hackathon_management_handlers,
         participant_handlers=participant_handlers,
         verification_handlers=verification_handlers,
-        departments_handlers=DepartmentsHandlers(service=departments_service),
+        department_members_handlers=department_members_handlers,
         hackathon_handlers=HackathonHandlers(
             hackathon_management_handlers=hackathon_management_handlers,
             participant_handlers=participant_handlers,
