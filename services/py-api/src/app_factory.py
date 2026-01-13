@@ -7,12 +7,21 @@ from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationErr
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.mongo.db_manager import MongoDatabaseManager, DB_NAME
+from src.database.mongo.db_manager import (
+    MongoDatabaseManager,
+    PARTICIPANTS_COLLECTION,
+    TEAMS_COLLECTION,
+    FEATURE_SWITCH_COLLECTION,
+    DEPARTMENT_MEMBERS_COLLECTION,
+    DB_NAME,
+)
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
+from src.database.repository.admin.department_members_repository import DepartmentMembersRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.server.exception_handler import ExceptionHandlers
+from src.server.handlers.admin.department_members_handlers import DepartmentMembersHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
@@ -35,6 +44,7 @@ from src.service.admin.mentors_service import MentorsService
 from src.service.admin.judges_service import JudgesService
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
+from src.service.admin.department_members_service import DepartmentMembersService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.auth.auth_service import AuthService
@@ -134,6 +144,7 @@ def create_app() -> FastAPI:
     judges_repo = JudgesRepository(db_manager=db_manager)
     hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
+    department_members_repo = DepartmentMembersRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -164,6 +175,8 @@ def create_app() -> FastAPI:
         team_service=team_service,
         feature_switch_repo=fs_repo,
     )
+    fs_service = FeatureSwitchService(repository=fs_repo)
+    department_members_service = DepartmentMembersService(repository=department_members_repo)
 
     registration_service = RegistrationService(
         participant_service=participant_service,
@@ -178,7 +191,6 @@ def create_app() -> FastAPI:
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )
-    fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)
     judges_service = JudgesService(repo=judges_repo)
@@ -187,17 +199,27 @@ def create_app() -> FastAPI:
 
     auth_service = AuthService(repo=hub_members_repo)
     # Handlers layer wiring
+    hackathon_management_handlers = HackathonManagementHandlers(
+        hackathon_utility_service=hackathon_utility_service,
+        participant_service=participant_service,
+        team_service=team_service,
+    )
+    participant_handlers = ParticipantHandlers(service=registration_service)
+    verification_handlers = VerificationHandlers(service=verification_service, jwt_utility=jwt_utility)
+
+    department_members_handlers = DepartmentMembersHandlers(service=department_members_service)
+
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),
+        hackathon_management_handlers=hackathon_management_handlers,
+        participant_handlers=participant_handlers,
+        verification_handlers=verification_handlers,
+        department_members_handlers=department_members_handlers,
         hackathon_handlers=HackathonHandlers(
-            hackathon_management_handlers=HackathonManagementHandlers(
-                hackathon_utility_service=hackathon_utility_service,
-                participant_service=participant_service,
-                team_service=team_service,
-            ),
-            participant_handlers=ParticipantHandlers(service=registration_service),
-            verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
+            hackathon_management_handlers=hackathon_management_handlers,
+            participant_handlers=participant_handlers,
+            verification_handlers=verification_handlers,
         ),
         admin_handlers=AdminHandlers(
             sponsors_handlers=SponsorsHandlers(service=sponsors_service),
@@ -209,8 +231,8 @@ def create_app() -> FastAPI:
         auth_handlers=AuthHandlers(service=auth_service),
     )
 
-    Routes.register_routes(app.router, http_handlers)
     ExceptionHandlers.register_exception_handlers(app)
+    Routes.register_routes(app.router, http_handlers)
     Middlewares.register_middlewares(app)
 
     return app
