@@ -231,8 +231,8 @@ def create_app() -> FastAPI:
         auth_handlers=AuthHandlers(service=auth_service),
     )
 
-    Routes.register_routes(app.router, http_handlers)
     ExceptionHandlers.register_exception_handlers(app)
+    Routes.register_routes(app.router, http_handlers)
     Middlewares.register_middlewares(app)
 
     return app
