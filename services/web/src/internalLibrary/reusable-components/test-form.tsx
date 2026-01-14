@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
+import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent';
 
 const FormSchema = z.object({
     fruit: z.string().min(1, { message: 'Please select a fruit' }),
