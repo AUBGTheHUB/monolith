@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields';
-import { JudgesEditMessages as MESSAGES } from './messages';
+import { JudgesEditMessages, JudgesAddMessages } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
@@ -17,6 +17,9 @@ import { cn } from '@/utils';
 export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+
+    const isEditMode = Boolean(id);
+    const MESSAGES = isEditMode ? JudgesEditMessages : JudgesAddMessages;
 
     const judge = MOCK_JUDGES.find((j) => j.id === id);
 
@@ -36,7 +39,7 @@ export function JudgesEditPage() {
     const imageUrl = watch('imageUrl');
 
     useEffect(() => {
-        if (judge) {
+        if (isEditMode && judge) {
             reset({
                 name: judge.name,
                 companyName: judge.companyName,
@@ -44,11 +47,20 @@ export function JudgesEditPage() {
                 position: judge.position || '',
                 linkedinURL: judge.linkedinURL || '',
             });
+        } else {
+            reset({
+                name: '',
+                companyName: '',
+                imageUrl: '',
+                position: '',
+                linkedinURL: '',
+            });
         }
-    }, [judge, reset]);
+    }, [isEditMode, judge, reset]);
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
+        navigate('/admin/dashboard/judges');
     };
 
     const goBack = () => {
@@ -57,22 +69,22 @@ export function JudgesEditPage() {
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
 
-    if (!judge) {
+    if (isEditMode && !judge) {
         return (
             <Fragment>
                 <Helmet>
-                    <title>{MESSAGES.NOT_FOUND_TITLE}</title>
+                    <title>{JudgesEditMessages.NOT_FOUND_TITLE}</title>
                 </Helmet>
                 <div className={pageWrapperClass}>
                     <div className="max-w-2xl mx-auto">
                         <Card className={cn('p-12 text-center', Styles.glass.card)}>
-                            <p className="text-red-400 text-lg mb-6">{MESSAGES.NOT_FOUND_MESSAGE}</p>
+                            <p className="text-red-400 text-lg mb-6">{JudgesEditMessages.NOT_FOUND_MESSAGE}</p>
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="text-white hover:opacity-90 transition-opacity"
                                 onClick={goBack}
                             >
-                                {MESSAGES.RETURN_BUTTON}
+                                {JudgesEditMessages.RETURN_BUTTON}
                             </Button>
                         </Card>
                     </div>
@@ -140,7 +152,7 @@ export function JudgesEditPage() {
                                     <Button
                                         type="button"
                                         variant="outline"
-                                        className={Styles.forms.fieldContainer}
+                                        className="flex-1 text-black bg-white border-white hover:bg-gray-200 transition-colors"
                                         onClick={goBack}
                                     >
                                         {MESSAGES.CANCEL_BUTTON}
@@ -148,7 +160,7 @@ export function JudgesEditPage() {
                                     <Button
                                         type="submit"
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
-                                        className={Styles.forms.fieldContainer}
+                                        className="flex-1 text-white font-bold shadow-lg shadow-blue-500/20 transition-all hover:opacity-90"
                                     >
                                         {MESSAGES.SUBMIT_BUTTON}
                                     </Button>
