@@ -11,6 +11,7 @@ from src.database.mongo.collections.admin_collections import SPONSORS_COLLECTION
 from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import SponsorNotFoundError
+from datetime import datetime
 
 LOG = get_logger()
 
@@ -39,12 +40,12 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             LOG.info("Fetching all sponsors")
 
             sponsors_data = await self._collection.find({}).to_list(length=None)
-            sponsors: List[Sponsor] = []
+            sponsors: list[Sponsor] = []
 
             for sponsor in sponsors_data:
                 sponsor["id"] = sponsor.pop("_id")
 
-                sponsor.append(Sponsor(**sponsor))
+                sponsors.append(Sponsor(**sponsor))
 
             LOG.debug(f"Fetched {len(sponsors)} sponsors.")
             return Ok(sponsors)
@@ -59,6 +60,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
         try:
             filter = {"_id": ObjectId(obj_id)}
             update = {"$set": obj_fields.model_dump()}
+            print(update)
             projection = {"_id": 0}
 
             # ReturnDocument.AFTER returns the updated document with the new data

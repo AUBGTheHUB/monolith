@@ -10,7 +10,6 @@ from src.database.db_clients import mongo_db_client_provider
 from src.database.mongo.db_manager import MongoDatabaseManager, DB_NAME
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
-from src.database.repository.sponsor_repository import SponsorRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.server.exception_handler import ExceptionHandlers
@@ -25,7 +24,7 @@ from src.server.handlers.hackathon.hackathon_handlers import HackathonManagement
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.http_handlers import HttpHandlersContainer, HackathonHandlers, AdminHandlers
-from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.handlers.utility_handlers import UtilityHandlers
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.database.repository.admin.judges_repository import JudgesRepository
@@ -49,7 +48,6 @@ from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
-from src.service.sponsor_service import SponsorService
 
 LOG = get_logger()
 
