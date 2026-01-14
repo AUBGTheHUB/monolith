@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.handlers.utility_handlers import UtilityHandlers
 from src.server.schemas.response_schemas.schemas import PongResponse, ErrResponse
 
 
