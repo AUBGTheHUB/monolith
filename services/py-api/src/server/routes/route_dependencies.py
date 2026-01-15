@@ -51,10 +51,6 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
     _validate_object_id(object_id)
 
 
-def validate_id(id: Annotated[str, Path()]) -> None:
-    _validate_object_id(id)
-
-
 async def is_registration_open(request: Request) -> None:
     fs_repo: FeatureSwitchRepository = request.app.state.fs_repo
 

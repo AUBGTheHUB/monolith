@@ -39,8 +39,8 @@ class PastEventsHandlers(BaseHandler):
             status_code=200,
         )
 
-    async def get_past_event(self, id: str) -> Response:
-        result = await self._service.get(id)
+    async def get_past_event(self, object_id: str) -> Response:
+        result = await self._service.get(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -50,8 +50,8 @@ class PastEventsHandlers(BaseHandler):
             status_code=200,
         )
 
-    async def update_past_event(self, id: str, req_data: PastEventPutReqData) -> Response:
-        result = await self._service.update(id, req_data)
+    async def update_past_event(self, object_id: str, req_data: PastEventPutReqData) -> Response:
+        result = await self._service.update(object_id, req_data)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -61,8 +61,8 @@ class PastEventsHandlers(BaseHandler):
             status_code=200,
         )
 
-    async def delete_past_event(self, id: str) -> Response:
-        result = await self._service.delete(id)
+    async def delete_past_event(self, object_id: str) -> Response:
+        result = await self._service.delete(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
