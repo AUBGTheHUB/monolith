@@ -25,11 +25,14 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
+            LOG.info("Inserting past event...", past_event=obj.dump_as_json())
+
             document = obj.dump_as_mongo_db_document()
             await self._collection.insert_one(document, session=session)
+
             return Ok(obj)
         except Exception as exc:
-            LOG.exception("Failed to create past event")
+            LOG.exception("Past event insertion failed due to error", past_event_id=str(obj.id), error=exc)
             return Err(exc)
 
     async def fetch_by_id(
@@ -38,6 +41,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
+            LOG.debug("Fetching past event by ObjectId...", past_event_id=obj_id)
+
             document = await self._collection.find_one(
                 filter={"_id": ObjectId(obj_id)},
                 projection={"_id": 0},
@@ -49,7 +54,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
             return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
-            LOG.exception("Failed to fetch past event by id")
+            LOG.exception("Failed to fetch past event due to error", past_event_id=obj_id, error=exc)
             return Err(exc)
 
     async def fetch_all(
@@ -57,6 +62,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[list[PastEvent], Exception]:
         try:
+            LOG.debug("Fetching all past events...")
+
             cursor = self._collection.find(
                 {},
                 projection={
@@ -80,9 +87,10 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                 doc.pop("_id", None)
                 past_events.append(PastEvent(id=doc_id, **doc))
 
+            LOG.debug("Fetched past events.", count=len(past_events))
             return Ok(past_events)
         except Exception as exc:
-            LOG.exception("Failed to fetch past events")
+            LOG.exception("Failed to fetch past events due to error", error=exc)
             return Err(exc)
 
     async def update(
@@ -121,7 +129,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
             return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
-            LOG.exception("Failed to update past event")
+            LOG.exception("Failed to update past event due to error", past_event_id=obj_id, error=exc)
             return Err(exc)
 
     async def delete(
@@ -130,6 +138,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
+            LOG.info("Deleting past event...", past_event_id=obj_id)
+
             document = await self._collection.find_one_and_delete(
                 filter={"_id": ObjectId(obj_id)},
                 projection={"_id": 0},
@@ -141,5 +151,5 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
             return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
-            LOG.exception("Failed to delete past event")
+            LOG.exception("Past event deletion failed due to error", past_event_id=obj_id, error=exc)
             return Err(exc)
