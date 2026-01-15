@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from typing import Optional
 
 from bson import ObjectId
@@ -102,8 +101,6 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                     return Err(PastEventNotFoundError())
 
                 return Ok(PastEvent(id=ObjectId(obj_id), **document))
-
-            update_data["updated_at"] = datetime.now(tz=timezone.utc)
 
             document = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
