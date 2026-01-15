@@ -20,7 +20,9 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         self._collection = db_manager.get_collection(PAST_EVENTS_COLLECTION)
 
     async def create(
-        self, obj: PastEvent, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        obj: PastEvent,
+        session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             document = obj.dump_as_mongo_db_document()
@@ -30,11 +32,16 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             LOG.exception("Failed to create past event")
             return Err(exc)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[PastEvent, Exception]:
+    async def fetch_by_id(
+        self,
+        obj_id: str,
+        session: Optional[AsyncIOMotorClientSession] = None,
+    ) -> Result[PastEvent, Exception]:
         try:
             document = await self._collection.find_one(
                 filter={"_id": ObjectId(obj_id)},
                 projection={"_id": 0},
+                session=session,
             )
 
             if document is None:
@@ -45,7 +52,10 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             LOG.exception("Failed to fetch past event by id")
             return Err(exc)
 
-    async def fetch_all(self) -> Result[list[PastEvent], Exception]:
+    async def fetch_all(
+        self,
+        session: Optional[AsyncIOMotorClientSession] = None,
+    ) -> Result[list[PastEvent], Exception]:
         try:
             cursor = self._collection.find(
                 {},
@@ -57,6 +67,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                     "cover_picture": 1,
                     "tags": 1,
                 },
+                session=session,
             )
             documents = await cursor.to_list(length=None)
 
@@ -64,7 +75,6 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             for doc in documents:
                 doc_id = doc.get("_id")
                 if doc_id is None:
-                    # Defensive: should not happen, but keeps parsing safe.
                     continue
 
                 doc.pop("_id", None)
@@ -82,9 +92,10 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
-            update_data = obj_fields.model_dump(exclude_none=True)
+            update_data = obj_fields.model_dump()
+            LOG.info("Updating past event...", past_event_id=obj_id, updated_fields=update_data)
 
-            # If no fields are provided, return the current document (same pattern as other repos).
+            # If no fields are provided, return the current document (single DB call).
             if not update_data:
                 document = await self._collection.find_one(
                     filter={"_id": ObjectId(obj_id)},
@@ -114,7 +125,9 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             return Err(exc)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        obj_id: str,
+        session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             document = await self._collection.find_one_and_delete(
