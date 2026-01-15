@@ -38,26 +38,43 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
     async def fetch_by_id(self, obj_id: str) -> Result[PastEvent, Exception]:
         try:
-            document = await self._collection.find_one({"_id": ObjectId(obj_id)})
+            document = await self._collection.find_one(
+                filter={"_id": ObjectId(obj_id)},
+                projection={"_id": 0},
+            )
 
-            if not document:
+            if document is None:
                 return Err(PastEventNotFoundError())
 
-            document["id"] = document.pop("_id")
-            return Ok(PastEvent(**document))
+            return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
             LOG.exception("Failed to fetch past event by id")
             return Err(exc)
 
     async def fetch_all(self) -> Result[list[PastEvent], Exception]:
         try:
-            cursor = self._collection.find({})
+            cursor = self._collection.find(
+                {},
+                projection={
+                    "_id": 1,
+                    "created_at": 1,
+                    "updated_at": 1,
+                    "title": 1,
+                    "cover_picture": 1,
+                    "tags": 1,
+                },
+            )
             documents = await cursor.to_list(length=None)
 
             past_events: list[PastEvent] = []
             for doc in documents:
-                doc["id"] = doc.pop("_id")
-                past_events.append(PastEvent(**doc))
+                doc_id = doc.get("_id")
+                if doc_id is None:
+                    # Defensive: should not happen, but keeps parsing safe.
+                    continue
+
+                doc.pop("_id", None)
+                past_events.append(PastEvent(id=doc_id, **doc))
 
             return Ok(past_events)
         except Exception as exc:
@@ -65,40 +82,41 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
             return Err(exc)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdatePastEventParams, session: Optional[AsyncIOMotorClientSession] = None
+        self,
+        obj_id: str,
+        obj_fields: UpdatePastEventParams,
+        session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             update_data = obj_fields.model_dump(exclude_none=True)
 
+            # If no fields are provided, return the current document (same pattern as other repos).
             if not update_data:
-                document = await self._collection.find_one({"_id": ObjectId(obj_id)})
-                if not document:
+                document = await self._collection.find_one(
+                    filter={"_id": ObjectId(obj_id)},
+                    projection={"_id": 0},
+                    session=session,
+                )
+
+                if document is None:
                     return Err(PastEventNotFoundError())
 
-                document["id"] = document.pop("_id")
-                return Ok(PastEvent(**document))
+                return Ok(PastEvent(id=ObjectId(obj_id), **document))
 
             update_data["updated_at"] = datetime.now(tz=timezone.utc)
 
-            if session:
-                document = await self._collection.find_one_and_update(
-                    {"_id": ObjectId(obj_id)},
-                    {"$set": update_data},
-                    return_document=ReturnDocument.AFTER,
-                    session=session,
-                )
-            else:
-                document = await self._collection.find_one_and_update(
-                    {"_id": ObjectId(obj_id)},
-                    {"$set": update_data},
-                    return_document=ReturnDocument.AFTER,
-                )
+            document = await self._collection.find_one_and_update(
+                filter={"_id": ObjectId(obj_id)},
+                update={"$set": update_data},
+                return_document=ReturnDocument.AFTER,
+                projection={"_id": 0},
+                session=session,
+            )
 
-            if not document:
+            if document is None:
                 return Err(PastEventNotFoundError())
 
-            document["id"] = document.pop("_id")
-            return Ok(PastEvent(**document))
+            return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
             LOG.exception("Failed to update past event")
             return Err(exc)
@@ -107,16 +125,16 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[PastEvent, Exception]:
         try:
-            if session:
-                document = await self._collection.find_one_and_delete({"_id": ObjectId(obj_id)}, session=session)
-            else:
-                document = await self._collection.find_one_and_delete({"_id": ObjectId(obj_id)})
+            document = await self._collection.find_one_and_delete(
+                filter={"_id": ObjectId(obj_id)},
+                projection={"_id": 0},
+                session=session,
+            )
 
-            if not document:
+            if document is None:
                 return Err(PastEventNotFoundError())
 
-            document["id"] = document.pop("_id")
-            return Ok(PastEvent(**document))
+            return Ok(PastEvent(id=ObjectId(obj_id), **document))
         except Exception as exc:
             LOG.exception("Failed to delete past event")
             return Err(exc)
