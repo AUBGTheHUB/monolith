@@ -24,12 +24,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
     ) -> Result[PastEvent, Exception]:
         try:
             document = obj.dump_as_mongo_db_document()
-
-            if session:
-                await self._collection.insert_one(document, session=session)
-            else:
-                await self._collection.insert_one(document)
-
+            await self._collection.insert_one(document, session=session)
             return Ok(obj)
         except Exception as exc:
             LOG.exception("Failed to create past event")
