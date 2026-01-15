@@ -177,7 +177,7 @@ async def test_update_past_event_success(async_client: AsyncClient) -> None:
     }
 
     # Act: update
-    result = await async_client.put(
+    result = await async_client.patch(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         json=update_payload,

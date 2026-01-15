@@ -45,7 +45,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
     events_router.add_api_route(
         "/{object_id}",
         endpoint=http_handler.update_past_event,
-        methods=["PUT"],
+        methods=["PATCH"],
         responses={
             200: {"model": PastEventResponse},
             400: {"model": ErrResponse},
