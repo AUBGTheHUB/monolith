@@ -24,12 +24,15 @@ def past_events_handlers(past_events_service_mock: PastEventsServiceMock) -> Pas
 
 @pytest.mark.asyncio
 async def test_create_past_event_returns_201(
-    past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
+    past_events_handlers: PastEventsHandlers,
+    past_events_service_mock: PastEventsServiceMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    req = PastEventPostReqData(title="t", cover_picture="https://example.com/img.jpg", tags=["x"])
-    event = PastEvent(title="t", cover_picture="https://example.com/img.jpg", tags=["x"])
+    req = PastEventPostReqData(
+        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
+    )
 
-    past_events_service_mock.create.return_value = Ok(event)
+    past_events_service_mock.create.return_value = Ok(past_event_mock)
 
     resp = await past_events_handlers.create_past_event(req)
 
@@ -40,10 +43,11 @@ async def test_create_past_event_returns_201(
 
 @pytest.mark.asyncio
 async def test_get_all_past_events_returns_200(
-    past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
+    past_events_handlers: PastEventsHandlers,
+    past_events_service_mock: PastEventsServiceMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    events = [PastEvent(title="t", cover_picture="https://example.com/img.jpg", tags=[])]
-    past_events_service_mock.get_all.return_value = Ok(events)
+    past_events_service_mock.get_all.return_value = Ok([past_event_mock])
 
     resp = await past_events_handlers.get_all_past_events()
 
@@ -53,58 +57,57 @@ async def test_get_all_past_events_returns_200(
 
 @pytest.mark.asyncio
 async def test_get_past_event_returns_200(
-    past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
+    past_events_handlers: PastEventsHandlers,
+    past_events_service_mock: PastEventsServiceMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
-    event = PastEvent(title="t", cover_picture="https://example.com/img.jpg", tags=[])
+    past_events_service_mock.get.return_value = Ok(past_event_mock)
 
-    past_events_service_mock.get.return_value = Ok(event)
-
-    resp = await past_events_handlers.get_past_event(event_id)
+    resp = await past_events_handlers.get_past_event(str(past_event_mock.id))
 
     assert resp.status_code == 200
-    past_events_service_mock.get.assert_awaited_once_with(event_id)
+    past_events_service_mock.get.assert_awaited_once_with(str(past_event_mock.id))
 
 
 @pytest.mark.asyncio
 async def test_update_past_event_returns_200(
-    past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
+    past_events_handlers: PastEventsHandlers,
+    past_events_service_mock: PastEventsServiceMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
-    req = PastEventPutReqData(title="new", cover_picture="https://example.com/img2.jpg", tags=["t2"])
-    updated = PastEvent(title="new", cover_picture="https://example.com/img2.jpg", tags=["t2"])
+    req = PastEventPutReqData(
+        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
+    )
 
-    past_events_service_mock.update.return_value = Ok(updated)
+    past_events_service_mock.update.return_value = Ok(past_event_mock)
 
-    resp = await past_events_handlers.update_past_event(event_id, req)
+    resp = await past_events_handlers.update_past_event(str(past_event_mock.id), req)
 
     assert resp.status_code == 200
-    past_events_service_mock.update.assert_awaited_once_with(event_id, req)
+    past_events_service_mock.update.assert_awaited_once_with(str(past_event_mock.id), req)
 
 
 @pytest.mark.asyncio
 async def test_delete_past_event_returns_200(
-    past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
+    past_events_handlers: PastEventsHandlers,
+    past_events_service_mock: PastEventsServiceMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
-    deleted = PastEvent(title="t", cover_picture="https://example.com/img.jpg", tags=[])
+    past_events_service_mock.delete.return_value = Ok(past_event_mock)
 
-    past_events_service_mock.delete.return_value = Ok(deleted)
-
-    resp = await past_events_handlers.delete_past_event(event_id)
+    resp = await past_events_handlers.delete_past_event(str(past_event_mock.id))
 
     assert resp.status_code == 200
-    past_events_service_mock.delete.assert_awaited_once_with(event_id)
+    past_events_service_mock.delete.assert_awaited_once_with(str(past_event_mock.id))
 
 
 @pytest.mark.asyncio
 async def test_get_past_event_returns_404_when_missing(
     past_events_handlers: PastEventsHandlers, past_events_service_mock: PastEventsServiceMock
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
     past_events_service_mock.get.return_value = Err(PastEventNotFoundError())
 
-    resp = await past_events_handlers.get_past_event(event_id)
+    resp = await past_events_handlers.get_past_event("mii")
 
     assert resp.status_code == 404
-    past_events_service_mock.get.assert_awaited_once_with(event_id)
+    past_events_service_mock.get.assert_awaited_once_with("mii")

@@ -16,6 +16,7 @@ from motor.motor_asyncio import (
 )
 from typing_extensions import Protocol
 
+from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -883,6 +884,18 @@ def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
     mock_verified_team_db_document = verified_team_mock.dump_as_mongo_db_document()
     mock_verified_team_db_document.pop("_id")
     return mock_verified_team_db_document
+
+
+@pytest.fixture
+def past_event_mock(obj_id_mock: str) -> PastEvent:
+    return PastEvent(id=obj_id_mock, title="t", cover_picture="https://url.com")
+
+
+@pytest.fixture
+def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
+    document = past_event_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
 
 
 @pytest.fixture

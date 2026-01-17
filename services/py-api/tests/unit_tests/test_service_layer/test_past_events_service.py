@@ -23,9 +23,9 @@ def past_events_service(past_events_repo_mock: PastEventsRepoMock) -> PastEvents
 
 @pytest.mark.asyncio
 async def test_get_all_returns_ok(
-    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock
+    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    events = [PastEvent(title="t", cover_picture="url", tags=[])]
+    events = [past_event_mock]
     past_events_repo_mock.fetch_all.return_value = Ok(events)
 
     result = await past_events_service.get_all()
@@ -37,16 +37,17 @@ async def test_get_all_returns_ok(
 
 @pytest.mark.asyncio
 async def test_get_returns_ok(
-    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock
+    past_events_service: PastEventsService,
+    past_events_repo_mock: PastEventsRepoMock,
+    past_event_mock: PastEvent,
 ) -> None:
-    event = PastEvent(title="t", cover_picture="url", tags=[])
-    past_events_repo_mock.fetch_by_id.return_value = Ok(event)
+    past_events_repo_mock.fetch_by_id.return_value = Ok(past_event_mock)
 
-    result = await past_events_service.get("507f1f77bcf86cd799439011")
+    result = await past_events_service.get(str(past_event_mock.id))
 
     assert result.is_ok()
-    assert result.unwrap() == event
-    past_events_repo_mock.fetch_by_id.assert_awaited_once_with("507f1f77bcf86cd799439011")
+    assert result.unwrap() == past_event_mock
+    past_events_repo_mock.fetch_by_id.assert_awaited_once_with(str(past_event_mock.id))
 
 
 @pytest.mark.asyncio
@@ -55,11 +56,11 @@ async def test_get_returns_err_when_not_found(
 ) -> None:
     past_events_repo_mock.fetch_by_id.return_value = Err(PastEventNotFoundError())
 
-    result = await past_events_service.get("507f1f77bcf86cd799439011")
+    result = await past_events_service.get("mii")
 
     assert result.is_err()
     assert isinstance(result.unwrap_err(), PastEventNotFoundError)
-    past_events_repo_mock.fetch_by_id.assert_awaited_once_with("507f1f77bcf86cd799439011")
+    past_events_repo_mock.fetch_by_id.assert_awaited_once_with("mii")
 
 
 @pytest.mark.asyncio
@@ -86,21 +87,24 @@ async def test_create_calls_repo_with_built_model(
 
 @pytest.mark.asyncio
 async def test_update_calls_repo_with_update_params(
-    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock
+    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
-    req = PastEventPutReqData(title="New", cover_picture="https://a.b/c.jpg", tags=["t2"])
-    updated = PastEvent(title=req.title, cover_picture=str(req.cover_picture), tags=req.tags)
+    req = PastEventPutReqData(
+        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
+    )
+    updated = PastEvent(
+        title=past_event_mock.title, cover_picture=str(past_event_mock.cover_picture), tags=past_event_mock.tags
+    )
 
     past_events_repo_mock.update.return_value = Ok(updated)
 
-    result = await past_events_service.update(event_id, req)
+    result = await past_events_service.update(past_event_mock.id, req)
 
     assert result.is_ok()
     past_events_repo_mock.update.assert_awaited_once()
 
     assert past_events_repo_mock.update.call_args is not None
-    assert past_events_repo_mock.update.call_args.args[0] == event_id
+    assert past_events_repo_mock.update.call_args.args[0] == past_event_mock.id
     passed_params = past_events_repo_mock.update.call_args.args[1]
     assert isinstance(passed_params, UpdatePastEventParams)
     assert passed_params.title == req.title
@@ -110,14 +114,11 @@ async def test_update_calls_repo_with_update_params(
 
 @pytest.mark.asyncio
 async def test_delete_calls_repo(
-    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock
+    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    event_id = "507f1f77bcf86cd799439011"
-    deleted = PastEvent(title="t", cover_picture="url", tags=[])
+    past_events_repo_mock.delete.return_value = Ok(past_event_mock)
 
-    past_events_repo_mock.delete.return_value = Ok(deleted)
-
-    result = await past_events_service.delete(event_id)
+    result = await past_events_service.delete(str(past_event_mock.id))
 
     assert result.is_ok()
-    past_events_repo_mock.delete.assert_awaited_once_with(event_id)
+    past_events_repo_mock.delete.assert_awaited_once_with(str(past_event_mock.id))
