@@ -12,6 +12,15 @@ from src.exception import PastEventNotFoundError
 from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
 
 
+def _fields_are_correct(expected: PastEvent, result: PastEvent) -> bool:
+    return (
+        result.title == expected.title
+        and str(result.id) == str(expected.id)
+        and result.cover_picture == expected.cover_picture
+        and result.tags == expected.tags
+    )
+
+
 @pytest.fixture
 def repo(mongo_db_manager_mock: MongoDbManagerMock) -> PastEventsRepository:
     return PastEventsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock))
@@ -32,7 +41,7 @@ async def test_create_past_event_success(
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, PastEvent)
-    assert result.ok_value.id == past_event_mock.id
+    assert _fields_are_correct(result.ok_value, past_event_mock)
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
     assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
@@ -82,7 +91,7 @@ async def test_delete_team_not_found(
     mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: PastEventsRepository
 ) -> None:
     # Given
-    # When the past event with the sepcified object id is not found find_one_and_delete returns None
+    # When the past event with the specified object id is not found find_one_and_delete returns None
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
 
     # When
@@ -153,7 +162,6 @@ async def test_update_past_event_not_found(
 @pytest.mark.asyncio
 async def test_fetch_by_id_successful(
     mongo_db_manager_mock: MongoDbManagerMock,
-    obj_id_mock: str,
     past_event_dump_no_id_mock: dict[str, Any],
     past_event_mock: PastEvent,
     repo: PastEventsRepository,
@@ -162,14 +170,12 @@ async def test_fetch_by_id_successful(
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=past_event_dump_no_id_mock)
 
     # When
-    result = await repo.fetch_by_id(obj_id_mock)
+    result = await repo.fetch_by_id(str(past_event_mock.id))
 
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, PastEvent)
-    assert result.ok_value.id == ObjectId(obj_id_mock)
-    assert result.ok_value.title == past_event_mock.title
-    assert result.ok_value.cover_picture == past_event_mock.cover_picture
+    assert _fields_are_correct(past_event_mock, result.ok_value)
 
 
 @pytest.mark.asyncio
