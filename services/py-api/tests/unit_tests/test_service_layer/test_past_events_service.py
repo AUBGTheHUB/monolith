@@ -65,12 +65,13 @@ async def test_get_returns_err_when_not_found(
 
 @pytest.mark.asyncio
 async def test_create_calls_repo_with_built_model(
-    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock
+    past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    req = PastEventPostReqData(title="Hello", cover_picture="https://x.y/z.jpg", tags=["tag1"])
-    created = PastEvent(title=req.title, cover_picture=str(req.cover_picture), tags=req.tags)
+    req = PastEventPostReqData(
+        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
+    )
 
-    past_events_repo_mock.create.return_value = Ok(created)
+    past_events_repo_mock.create.return_value = Ok(past_event_mock)
 
     result = await past_events_service.create(req)
 
@@ -89,12 +90,8 @@ async def test_create_calls_repo_with_built_model(
 async def test_update_calls_repo_with_update_params(
     past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    req = PastEventPutReqData(
-        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
-    )
-    updated = PastEvent(
-        title=past_event_mock.title, cover_picture=str(past_event_mock.cover_picture), tags=past_event_mock.tags
-    )
+    req = PastEventPutReqData(title="new", cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags)
+    updated = PastEvent(title="new", cover_picture=str(past_event_mock.cover_picture), tags=past_event_mock.tags)
 
     past_events_repo_mock.update.return_value = Ok(updated)
 

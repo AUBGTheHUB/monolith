@@ -87,7 +87,7 @@ async def test_delete_past_event_success(
 
 
 @pytest.mark.asyncio
-async def test_delete_team_not_found(
+async def test_delete_past_event_not_found(
     mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: PastEventsRepository
 ) -> None:
     # Given
@@ -103,7 +103,7 @@ async def test_delete_team_not_found(
 
 
 @pytest.mark.asyncio
-async def test_delete_team_general_exception(
+async def test_delete_past_event_general_exception(
     mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: PastEventsRepository
 ) -> None:
     # Given
@@ -157,6 +157,24 @@ async def test_update_past_event_not_found(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, PastEventNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_update_past_event_general_exception(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: PastEventsRepository, obj_id_mock: str
+) -> None:
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
+        side_effect=Exception("Test error")
+    )
+
+    # When
+    result = await repo.delete(obj_id_mock)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    # Check that the error message is the one in the Exception
+    assert str(result.err_value) == "Test error"
 
 
 @pytest.mark.asyncio
