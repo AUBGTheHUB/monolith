@@ -142,13 +142,3 @@ class RegistrationClosedSuccessfullyResponse(FeatureSwitchResponse):
     """
 
 
-class AdminDepartmentMemberOut(BaseModel):
-    id: str
-    name: str
-    photo_url: str
-    linkedin_url: str
-    departments: List[str]
-
-
-class AdminDepartmentMembersListOut(BaseModel):
-    members: List[AdminDepartmentMemberOut]

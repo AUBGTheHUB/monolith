@@ -61,33 +61,3 @@ class AdminTeamMemberIn(BaseModel):
         return v
 
 
-class AdminDepartmentMemberCreateIn(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    name: str = Field(max_length=100, min_length=1)
-    photo_url: str = Field(max_length=500)
-    linkedin_url: str = Field(max_length=500)
-    departments: list[str] = Field(min_length=1)
-
-    @field_validator("linkedin_url")
-    @classmethod
-    def _check_linkedin_format(cls, v: str) -> str:
-        if not v.startswith("https://www.linkedin.com/"):
-            raise ValueError("Invalid LinkedIn URL")
-        return v
-
-
-class AdminDepartmentMemberUpdateIn(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    name: str | None = Field(max_length=100, min_length=1, default=None)
-    photo_url: str | None = Field(max_length=500, default=None)
-    linkedin_url: str | None = Field(max_length=500, default=None)
-    departments: list[str] | None = Field(min_length=1, default=None)
-
-    @field_validator("linkedin_url")
-    @classmethod
-    def _check_linkedin_format(cls, v: str | None) -> str | None:
-        if v is not None and not v.startswith("https://www.linkedin.com/"):
-            raise ValueError("Invalid LinkedIn URL")
-        return v

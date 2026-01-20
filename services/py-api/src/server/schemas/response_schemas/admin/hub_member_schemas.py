@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 
@@ -13,3 +13,7 @@ class HubMemberResponse(BaseModel):
     @field_serializer("hub_member")
     def serialize_hub_member(self, hub_member: HubMember) -> dict[str, Any]:
         return hub_member.dump_as_json()
+
+
+class HubMembersListResponse(BaseModel):
+    members: List[dict[str, Any]]
