@@ -25,7 +25,7 @@ LOG = get_logger()
 # ===============================
 
 
-def is_auth(authorization: str = Header(..., alias="Authorization")) -> None:
+def is_authorized(authorization: str = Header(..., alias="Authorization")) -> None:
     if not (
         authorization
         and authorization.startswith("Bearer ")

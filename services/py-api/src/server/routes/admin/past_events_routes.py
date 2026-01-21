@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
-from src.server.routes.route_dependencies import is_auth, validate_obj_id
+from src.server.routes.route_dependencies import is_authorized, validate_obj_id
 
 
 def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
@@ -12,7 +12,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "",
         endpoint=http_handler.get_all_past_events,
         methods=["GET"],
-        dependencies=[Depends(is_auth)],
+        dependencies=[Depends(is_authorized)],
     )
 
     # Create a past event
@@ -20,7 +20,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "",
         endpoint=http_handler.create_past_event,
         methods=["POST"],
-        dependencies=[Depends(is_auth)],
+        dependencies=[Depends(is_authorized)],
     )
 
     # Get a single past event by id
@@ -28,7 +28,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "/{object_id}",
         endpoint=http_handler.get_past_event,
         methods=["GET"],
-        dependencies=[Depends(is_auth), Depends(validate_obj_id)],
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
     )
 
     # Update a past event
@@ -36,7 +36,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "/{object_id}",
         endpoint=http_handler.update_past_event,
         methods=["PATCH"],
-        dependencies=[Depends(is_auth), Depends(validate_obj_id)],
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
     )
 
     # Delete a past event
@@ -44,7 +44,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "/{object_id}",
         endpoint=http_handler.delete_past_event,
         methods=["DELETE"],
-        dependencies=[Depends(is_auth), Depends(validate_obj_id)],
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
     )
 
     return events_router
