@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { JudgesPageMessages as MESSAGES } from './messages';
 import { Styles } from '../../../AdminStyle';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils';
 
 export function JudgesListPage() {
     const [judges, setJudges] = useState<Judge[]>(MOCK_JUDGES);

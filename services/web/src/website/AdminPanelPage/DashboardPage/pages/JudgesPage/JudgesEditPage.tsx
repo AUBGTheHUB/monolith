@@ -12,7 +12,7 @@ import { JudgesEditMessages, JudgesAddMessages } from './messages';
 import { Form } from '@/components/ui/form';
 import { judgeSchema, JudgeFormData } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utils';
 
 export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
