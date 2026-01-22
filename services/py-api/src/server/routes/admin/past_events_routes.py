@@ -11,16 +11,16 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         "", endpoint=http_handler.get_all_past_events, methods=["GET"], dependencies=[Depends(is_authorized)]
     )
     past_events_router.add_api_route(
-        "/{event_id}", endpoint=http_handler.get_past_event, methods=["GET"], dependencies=[Depends(is_authorized)]
+        "/{object_id}", endpoint=http_handler.get_past_event, methods=["GET"], dependencies=[Depends(is_authorized)]
     )
     past_events_router.add_api_route(
         "", endpoint=http_handler.create_past_event, methods=["POST"], dependencies=[Depends(is_authorized)]
     )
     past_events_router.add_api_route(
-        "/{event_id}", endpoint=http_handler.update_past_event, methods=["PATCH"], dependencies=[Depends(is_authorized)]
+        "/{object_id}", endpoint=http_handler.update_past_event, methods=["PATCH"], dependencies=[Depends(is_authorized)]
     )
     past_events_router.add_api_route(
-        "/{event_id}",
+        "/{object_id}",
         endpoint=http_handler.delete_past_event,
         methods=["DELETE"],
         dependencies=[Depends(is_authorized)],
