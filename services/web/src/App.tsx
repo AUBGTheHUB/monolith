@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
-import { HackathonPage } from './website/HackathonPage/HackathonPage';
+import { HackathonPage } from './website/HackathonPage7.0/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
