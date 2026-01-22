@@ -20,8 +20,8 @@ function App() {
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
 
                 <Route path="/admin" element={<LoginPage />} />
-                <Route path="/dashboard/sponsors" element={<SponsorsPage />} />
-                <Route path="/dashboard/sponsors/add" element={<SponsorsAddPage />} />
+                <Route path="/admin/dashboard/sponsors" element={<SponsorsPage />} />
+                <Route path="/admin/dashboard/sponsors/add" element={<SponsorsAddPage />} />
             </Routes>
         </QueryClientProvider>
     );
