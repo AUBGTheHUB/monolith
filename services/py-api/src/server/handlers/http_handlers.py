@@ -39,9 +39,6 @@ class HttpHandlersContainer:
 
     utility_handlers: UtilityHandlers
     fs_handlers: FeatureSwitchHandlers
-    hackathon_management_handlers: HackathonManagementHandlers
-    participant_handlers: ParticipantHandlers
-    verification_handlers: VerificationHandlers
     hackathon_handlers: HackathonHandlers
     admin_handlers: AdminHandlers
     auth_handlers: AuthHandlers

@@ -45,19 +45,3 @@ class FeatureSwitchUpdateBody(BasePatchReqData):
     name: NonEmptyStr
     state: bool
 
-
-class AdminTeamMemberIn(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    name: str = Field(max_length=100, min_length=1)
-    photo_url: str = Field(max_length=500)
-    linkedin_url: str = Field(max_length=500)
-
-    @field_validator("linkedin_url")
-    @classmethod
-    def _check_linkedin_format(cls, v: str) -> str:
-        if not v.startswith("https://www.linkedin.com/"):
-            raise ValueError("Invalid LinkedIn URL")
-        return v
-
-

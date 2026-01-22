@@ -20,9 +20,11 @@ class Routes:
         participant_reg_router = register_participants_reg_routes(
             http_handler=http_handlers.hackathon_handlers.participant_handlers
         )
-        verification_router = register_verification_routes(http_handler=http_handlers.hackathon_handlers.verification_handlers)
         hackathon_reg_router = register_hackathon_management_routes(
             http_handler=http_handlers.hackathon_handlers.hackathon_management_handlers
+        )
+        verification_router = register_verification_routes(
+            http_handler=http_handlers.hackathon_handlers.verification_handlers
         )
         admin_router = register_admin_routes(http_handler=http_handlers.admin_handlers)
 

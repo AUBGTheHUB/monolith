@@ -1,4 +1,4 @@
-from typing import Optional, cast, Any
+from typing import Optional
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -35,7 +35,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     async def fetch_by_id(self, obj_id: str) -> Result[HubMember, HubMemberNotFoundError | Exception]:
         try:
             LOG.debug("Fetching hub member by ObjectId...", member_id=obj_id)
-            member = cast(dict[str, Any], await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}))
+            member = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
 
             if member is None:
                 return Err(HubMemberNotFoundError())
@@ -88,7 +88,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     ) -> Result[HubMember, HubMemberNotFoundError | Exception]:
         try:
             LOG.debug("Deleting hub member...", member_id=obj_id)
-            member = cast(dict[str, Any], await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, session=session))
+            member = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, session=session)
 
             if member is None:
                 return Err(HubMemberNotFoundError())

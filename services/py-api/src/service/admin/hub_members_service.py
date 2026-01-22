@@ -28,17 +28,11 @@ class HubMembersService:
     async def update(self, member_id: str, data: HubMemberPatchReqData) -> Result[HubMember, Exception]:
         from src.database.model.admin.hub_member_model import UpdateHubMemberParams
         
-        update_data = {}
-        if data.name is not None:
-            update_data["name"] = data.name
-        if data.role_title is not None:
-            update_data["position"] = data.role_title
-        if data.department is not None:
-            update_data["department"] = data.department
-        if data.avatar_url is not None:
-            update_data["avatar_url"] = str(data.avatar_url)
-        if data.social_links is not None:
-            update_data["social_links"] = data.social_links
+        update_data = data.model_dump(exclude_none=True)
+        if "role_title" in update_data:
+            update_data["position"] = update_data.pop("role_title")
+        if "avatar_url" in update_data:
+            update_data["avatar_url"] = str(update_data["avatar_url"])
         
         update_params = UpdateHubMemberParams(**update_data)
         return await self._repo.update(member_id, update_params)

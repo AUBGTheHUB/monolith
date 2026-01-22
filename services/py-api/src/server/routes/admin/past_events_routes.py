@@ -1,50 +1,29 @@
 from fastapi import APIRouter, Depends
+from src.server.routes.route_dependencies import is_authorized
 
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
-from src.server.routes.route_dependencies import is_authorized, validate_obj_id
 
 
 def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
-    events_router = APIRouter(prefix="/events", tags=["events"])
+    past_events_router = APIRouter(prefix="/past-events", tags=["past-events"])
 
-    # List all past events
-    events_router.add_api_route(
-        "",
-        endpoint=http_handler.get_all_past_events,
-        methods=["GET"],
-        dependencies=[Depends(is_authorized)],
+    past_events_router.add_api_route(
+        "", endpoint=http_handler.get_all_past_events, methods=["GET"], dependencies=[Depends(is_authorized)]
     )
-
-    # Create a past event
-    events_router.add_api_route(
-        "",
-        endpoint=http_handler.create_past_event,
-        methods=["POST"],
-        dependencies=[Depends(is_authorized)],
+    past_events_router.add_api_route(
+        "/{event_id}", endpoint=http_handler.get_past_event, methods=["GET"], dependencies=[Depends(is_authorized)]
     )
-
-    # Get a single past event by id
-    events_router.add_api_route(
-        "/{object_id}",
-        endpoint=http_handler.get_past_event,
-        methods=["GET"],
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+    past_events_router.add_api_route(
+        "", endpoint=http_handler.create_past_event, methods=["POST"], dependencies=[Depends(is_authorized)]
     )
-
-    # Update a past event
-    events_router.add_api_route(
-        "/{object_id}",
-        endpoint=http_handler.update_past_event,
-        methods=["PATCH"],
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+    past_events_router.add_api_route(
+        "/{event_id}", endpoint=http_handler.update_past_event, methods=["PATCH"], dependencies=[Depends(is_authorized)]
     )
-
-    # Delete a past event
-    events_router.add_api_route(
-        "/{object_id}",
+    past_events_router.add_api_route(
+        "/{event_id}",
         endpoint=http_handler.delete_past_event,
         methods=["DELETE"],
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(is_authorized)],
     )
 
-    return events_router
+    return past_events_router

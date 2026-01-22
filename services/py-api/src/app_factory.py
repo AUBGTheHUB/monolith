@@ -7,13 +7,7 @@ from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationErr
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
-from src.database.mongo.db_manager import (
-    MongoDatabaseManager,
-    PARTICIPANTS_COLLECTION,
-    TEAMS_COLLECTION,
-    FEATURE_SWITCH_COLLECTION,
-    DB_NAME,
-)
+from src.database.mongo.db_manager import MongoDatabaseManager, DB_NAME
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
@@ -170,8 +164,6 @@ def create_app() -> FastAPI:
         team_service=team_service,
         feature_switch_repo=fs_repo,
     )
-    fs_service = FeatureSwitchService(repository=fs_repo)
-
     registration_service = RegistrationService(
         participant_service=participant_service,
         hackathon_utility_service=hackathon_utility_service,
@@ -185,6 +177,7 @@ def create_app() -> FastAPI:
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )
+    fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)
     judges_service = JudgesService(repo=judges_repo)
@@ -193,24 +186,17 @@ def create_app() -> FastAPI:
 
     auth_service = AuthService(repo=hub_members_repo)
     # Handlers layer wiring
-    hackathon_management_handlers = HackathonManagementHandlers(
-        hackathon_utility_service=hackathon_utility_service,
-        participant_service=participant_service,
-        team_service=team_service,
-    )
-    participant_handlers = ParticipantHandlers(service=registration_service)
-    verification_handlers = VerificationHandlers(service=verification_service, jwt_utility=jwt_utility)
-
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),
-        hackathon_management_handlers=hackathon_management_handlers,
-        participant_handlers=participant_handlers,
-        verification_handlers=verification_handlers,
         hackathon_handlers=HackathonHandlers(
-            hackathon_management_handlers=hackathon_management_handlers,
-            participant_handlers=participant_handlers,
-            verification_handlers=verification_handlers,
+            hackathon_management_handlers=HackathonManagementHandlers(
+                hackathon_utility_service=hackathon_utility_service,
+                participant_service=participant_service,
+                team_service=team_service,
+            ),
+            participant_handlers=ParticipantHandlers(service=registration_service),
+            verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
         ),
         admin_handlers=AdminHandlers(
             sponsors_handlers=SponsorsHandlers(service=sponsors_service),
