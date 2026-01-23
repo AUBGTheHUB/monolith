@@ -9,85 +9,91 @@ export default function AwardsSection() {
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className="w-full flex items-center justify-center mb-24 sm:mb-32 px-8 relative z-10">
-                <div className="flex-1 h-[2px] bg-white"></div>
-                <h2 className="text-white text-4xl sm:text-6xl font-orbitron font-normal tracking-[0.4em] mx-8 sm:mx-16 whitespace-nowrap">
+            <div className="absolute left-8 sm:left-16 top-0 bottom-0 w-[8px] bg-white z-20"></div>
+            <div className="absolute right-8 sm:right-16 top-0 bottom-0 w-[8px] bg-white z-20"></div>
+
+            <div className="w-full flex items-center justify-center mb-28 sm:mb-36 relative z-30 px-8 sm:px-16">
+                <div className="flex-1 h-[8px] bg-white"></div>
+                <h2 className="text-white text-5xl sm:text-7xl font-orbitron font-bold tracking-[0.4em] mx-8 sm:mx-16 whitespace-nowrap">
                     AWARDS
                 </h2>
-                <div className="flex-1 h-[2px] bg-white"></div>
+                <div className="flex-1 h-[8px] bg-white"></div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-center items-end w-full max-w-7xl px-8 mb-24 sm:mb-32 gap-8 sm:gap-16 relative z-10">
-                <div className="flex flex-col items-center w-full sm:w-auto order-2 sm:order-1 sm:mb-12">
-                    <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[280px] h-[420px] bg-orange-500 shadow-2xl">
-                        <div className="relative z-10 flex flex-col items-start justify-between h-full p-8">
-                            <p className="text-white text-xl sm:text-2xl font-orbitron font-normal">Second Place</p>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <p className="text-white text-[10rem] sm:text-[12rem] font-orbitron font-bold leading-none">
-                                    2
-                                </p>
+            <div className="w-full flex justify-center relative z-10 mb-28 sm:mb-36">
+                <div className="flex flex-col sm:flex-row items-center gap-12 sm:gap-20 px-8">
+                    <div className="flex flex-col items-center w-full sm:w-auto order-2 sm:order-1">
+                        <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[400px] h-[625px] bg-orange-500 shadow-2xl flex flex-col">
+                            <div className="pt-6 px-9 pb-5 flex items-center justify-center">
+                                <p className="text-white text-4xl font-orbitron font-bold text-center">Second Place</p>
                             </div>
-                            <div className="self-start mt-auto">
-                                <p className="text-white text-4xl sm:text-5xl font-orbitron font-bold">2000 BGN</p>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="flex-1 flex items-center justify-center">
+                                <p className="text-white text-[11rem] font-orbitron font-bold leading-none">2</p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col items-center w-full sm:w-auto order-1 sm:order-2">
-                    <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[320px] h-[480px] bg-yellow-400 shadow-2xl">
-                        <div className="relative z-10 flex flex-col items-start justify-between h-full p-8">
-                            <p className="text-white text-xl sm:text-2xl font-orbitron font-normal">First Place</p>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <p className="text-white text-[12rem] sm:text-[14rem] font-orbitron font-bold leading-none">
-                                    1
-                                </p>
-                            </div>
-                            <div className="self-start mt-auto">
-                                <p className="text-white text-5xl sm:text-6xl font-orbitron font-bold">3000 BGN</p>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="pt-5 pb-6 px-9 flex items-center justify-center">
+                                <p className="text-white text-4xl font-orbitron font-bold text-center">2000 BGN</p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="flex flex-col items-center w-full sm:w-auto order-3 sm:mb-12">
-                    <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[280px] h-[420px] bg-red-500 shadow-2xl">
-                        <div className="relative z-10 flex flex-col items-start justify-between h-full p-8">
-                            <p className="text-white text-xl sm:text-2xl font-orbitron font-normal">Third Place</p>
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <p className="text-white text-[10rem] sm:text-[12rem] font-orbitron font-bold leading-none">
-                                    3
-                                </p>
+                    <div className="flex flex-col items-center w-full sm:w-auto order-1 sm:order-2">
+                        <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[500px] h-[750px] bg-yellow-400 shadow-2xl flex flex-col">
+                            <div className="pt-8 px-10 pb-6 flex items-center justify-center">
+                                <p className="text-white text-6xl font-orbitron font-bold text-center">First Place</p>
                             </div>
-                            <div className="self-start mt-auto">
-                                <p className="text-white text-4xl sm:text-5xl font-orbitron font-bold">1000 BGN</p>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="flex-1 flex items-center justify-center">
+                                <p className="text-white text-[14rem] font-orbitron font-bold leading-none">1</p>
+                            </div>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="pt-6 pb-8 px-10 flex items-center justify-center">
+                                <p className="text-white text-6xl font-orbitron font-bold text-center">3000 BGN</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col items-center w-full sm:w-auto order-3">
+                        <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[344px] h-[550px] bg-red-500 shadow-2xl flex flex-col">
+                            <div className="pt-5 px-8 pb-4 flex items-center justify-center">
+                                <p className="text-white text-3xl font-orbitron font-bold text-center">Third Place</p>
+                            </div>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="flex-1 flex items-center justify-center">
+                                <p className="text-white text-[9.5rem] font-orbitron font-bold leading-none">3</p>
+                            </div>
+                            <div className="w-full h-[2px] bg-white"></div>
+                            <div className="pt-4 pb-5 px-8 flex items-center justify-center">
+                                <p className="text-white text-4xl font-orbitron font-bold text-center">1000 BGN</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col items-center w-11/12 sm:w-4/5 max-w-6xl relative z-10">
-                <div className="w-full h-[2px] bg-white mb-12"></div>
-
-                <div className="flex flex-col sm:flex-row justify-between items-start w-full text-white text-base sm:text-lg font-oxanium gap-8 sm:gap-16 mb-12">
+            <div className="flex flex-col items-center w-full relative z-30">
+                <div className="flex flex-col sm:flex-row justify-between items-start w-full text-white text-xl sm:text-2xl font-oxanium gap-8 sm:gap-16 mb-10 px-24 sm:px-48 leading-relaxed">
                     <div className="flex-1 text-left">
-                        <p className="mb-3">And much more!</p>
-                        <p>Take part in all of the games we have prepared!</p>
+                        <p className="leading-relaxed">And much more!</p>
+                        <p className="leading-relaxed">Take part in all of the games we have prepared!</p>
                     </div>
                     <div className="flex-1 text-left sm:text-right">
-                        <p>
-                            All participants will receive giftbags with swag from The Hub and all HackAUBG 6.0 partners!
-                        </p>
+                        <p className="leading-relaxed">All participants will receive giftbags with</p>
+                        <p className="leading-relaxed">swag from The Hub and all HackAUBG 6.0 partners!</p>
                     </div>
                 </div>
 
-                <div className="mb-8">
-                    <img
-                        src="/AwardsSection/HackAUBG_8.0-Awards-Logo.png"
-                        alt="HackAUBG Logo"
-                        className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
-                    />
+                <div className="w-full flex items-center justify-center px-8 sm:px-16">
+                    <div className="flex-1 h-[8px] bg-white"></div>
+                    <div className="mx-12 sm:mx-16">
+                        <img
+                            src="/AwardsSection/HackAUBG_8.0-Awards-Logo.png"
+                            alt="HackAUBG Logo"
+                            className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+                        />
+                    </div>
+                    <div className="flex-1 h-[8px] bg-white"></div>
                 </div>
             </div>
         </div>
