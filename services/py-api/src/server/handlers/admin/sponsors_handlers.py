@@ -24,8 +24,6 @@ class SponsorsHandlers(BaseHandler):
     async def get_all_sponsors(self) -> Response:
         result = await self._service.get_all()
 
-        print(result)
-
         if is_err(result):
             return self.handle_error(result.err_value)
 

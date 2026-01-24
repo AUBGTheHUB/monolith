@@ -60,7 +60,6 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
         try:
             filter = {"_id": ObjectId(obj_id)}
             update = {"$set": obj_fields.model_dump()}
-            print(update)
             projection = {"_id": 0}
 
             # ReturnDocument.AFTER returns the updated document with the new data
