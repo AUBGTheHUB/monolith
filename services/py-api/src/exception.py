@@ -130,3 +130,10 @@ class JwtDecodeError(CustomError):
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class PastEventNotFoundError(CustomError):
+    """Exception raised when a past event with the given id does not exist"""
+
+    message = "The specified past event was not found"
+    status_code = status.HTTP_404_NOT_FOUND
