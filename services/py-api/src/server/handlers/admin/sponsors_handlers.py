@@ -29,24 +29,24 @@ class SponsorsHandlers(BaseHandler):
 
         return Response(SponsorsResponse(sponsors=result.ok_value), status_code=200)
 
-    async def get_sponsor(self, sponsor_id: str) -> Response:
-        result = await self._service.get(sponsor_id)
+    async def get_sponsor(self, object_id: str) -> Response:
+        result = await self._service.get(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
         return Response(SponsorResponse(sponsor=result.ok_value), status_code=200)
 
-    async def update_sponsor(self, sponsor_id: str, sponsor_data: SponsorPatchReqData) -> Response:
-        result = await self._service.update(sponsor_id, sponsor_data)
+    async def update_sponsor(self, object_id: str, sponsor_data: SponsorPatchReqData) -> Response:
+        result = await self._service.update(object_id, sponsor_data)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
         return Response(SponsorResponse(sponsor=result.ok_value), status_code=200)
 
-    async def delete_sponsor(self, sponsor_id: str) -> Response:
-        result = await self._service.delete(sponsor_id)
+    async def delete_sponsor(self, object_id: str) -> Response:
+        result = await self._service.delete(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)

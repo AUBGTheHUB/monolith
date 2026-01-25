@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.admin.sponsors_handlers import SponsorsHandlers
-from src.server.routes.route_dependencies import is_authorized
+from src.server.routes.route_dependencies import is_authorized, validate_obj_id
 from src.server.schemas.response_schemas.admin.sponsor_schemas import SponsorResponse, SponsorsResponse
 from src.server.schemas.response_schemas.schemas import ErrResponse
 
@@ -19,7 +19,7 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
         dependencies=[Depends(is_authorized)]
     )
     sponsors_router.add_api_route(
-        path="/{sponsor_id}", 
+        path="/{object_id}", 
         endpoint=http_handler.get_sponsor, 
         methods=["GET"], 
         responses={
@@ -28,7 +28,7 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse}
         },
-        dependencies=[Depends(is_authorized)]
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)]
     )
     sponsors_router.add_api_route(
         path="", 
@@ -43,7 +43,7 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
         dependencies=[Depends(is_authorized)]
     )
     sponsors_router.add_api_route(
-        path="/{sponsor_id}", 
+        path="/{object_id}", 
         endpoint=http_handler.update_sponsor, 
         methods=["PATCH"],
         responses={
@@ -52,10 +52,10 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse}
         }, 
-        dependencies=[Depends(is_authorized)]
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)]
     )
     sponsors_router.add_api_route(
-        path="/{sponsor_id}", 
+        path="/{object_id}", 
         endpoint=http_handler.delete_sponsor, 
         methods=["DELETE"], 
         responses={
@@ -64,7 +64,7 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse}
         },
-        dependencies=[Depends(is_authorized)]
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)]
     )
 
     return sponsors_router

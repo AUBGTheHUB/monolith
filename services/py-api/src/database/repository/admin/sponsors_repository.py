@@ -20,7 +20,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(SPONSORS_COLLECTION)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[Sponsor, Exception]:
+    async def fetch_by_id(self, obj_id: str) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             LOG.info("Fetching sponsor by ObjectId", sponsor_id = obj_id)
 
@@ -56,15 +56,15 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
 
     async def update(
         self, obj_id: str, obj_fields: UpdateSponsorParams, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Sponsor, Exception]:
+    ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
-            update = {"$set": obj_fields.model_dump()}
+            update = {"$set": obj_fields.model_dump(exclude_none=True, exclude_unset=True)}
             projection = {"_id": 0}
 
             # ReturnDocument.AFTER returns the updated document with the new data
             result = await self._collection.find_one_and_update(
-                filter=filter, 
+                filter=filter,
                 update=update, 
                 projection=projection,
                 return_document=ReturnDocument.AFTER,
@@ -74,7 +74,10 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             if result is None:
                 return Err(SponsorNotFoundError())
 
-            return Ok(Sponsor(id=ObjectId(obj_id), **result))
+            result.pop("_id", None)
+            print(update)
+            print(result)
+            return Ok(Sponsor(id = ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Could not update sponsor", sponsor_id=ObjectId(obj_id), error=e)
@@ -82,7 +85,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Sponsor, Exception]:
+    ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
             projection = {"_id": 0}
@@ -91,7 +94,8 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             if result is None:
                 return Err(SponsorNotFoundError())
 
-            return Ok(Sponsor(id=ObjectId(obj_id), **result))
+            result.id = ObjectId(obj_id)
+            return Ok(result)
 
         except Exception as e:
             LOG.exception("Sponsor deletion failed due to error", sponsor_id=obj_id, error=e)
@@ -99,7 +103,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
 
     async def create(
         self, sponsor: Sponsor, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[Sponsor, Exception]:
+    ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             LOG.info("Inserting sponsor...", sponsor=sponsor.dump_as_json())
             await self._collection.insert_one(document=sponsor.dump_as_mongo_db_document(), session=session)
