@@ -20,14 +20,19 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(SPONSORS_COLLECTION)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[Sponsor, SponsorNotFoundError | Exception]:
+    async def fetch_by_id(
+        self, 
+        obj_id: str,
+        session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             LOG.info("Fetching sponsor by ObjectId", sponsor_id = obj_id)
 
             # Query the db for the sponsor with the given id 
             sponsor = await self._collection.find_one(
                 filter={"_id": ObjectId(obj_id)}, 
-                projection={"_id": 0}
+                projection={"_id": 0},
+                session=session
             )
 
             if sponsor is None:
@@ -38,11 +43,11 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             LOG.exception("Failed to fetch sponsor due to error", sponsor_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[list[Sponsor], Exception]:
+    async def fetch_all(self, session: Optional[AsyncIOMotorClientSession] = None) -> Result[list[Sponsor], Exception]:
         try: 
             LOG.info("Fetching all sponsors")
 
-            sponsors_data = await self._collection.find({}).to_list(length=None)
+            sponsors_data = await self._collection.find({}, session=session).to_list(length=None)
             sponsors: list[Sponsor] = []
 
             for sponsor in sponsors_data:
