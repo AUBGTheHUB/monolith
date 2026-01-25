@@ -81,10 +81,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             
             if result is None:
                 return Err(SponsorNotFoundError())
-
-            result.pop("_id", None)
-            print(update)
-            print(result)
+            
             return Ok(Sponsor(id = ObjectId(obj_id), **result))
 
         except Exception as e:
@@ -106,8 +103,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             if result is None:
                 return Err(SponsorNotFoundError())
 
-            result.id = ObjectId(obj_id)
-            return Ok(result)
+            return Ok(Sponsor(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Sponsor deletion failed due to error", sponsor_id=obj_id, error=e)
