@@ -69,13 +69,13 @@ async def test_create_sponsor_general_exception(
 @pytest.mark.asyncio
 async def test_delete_sponsor_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    sponsor_mock: dict[str, Any],
+    sponsor_no_id_mock: dict[str, Any],
     obj_id_mock: str,
     repo: SponsorsRepository,
 ) -> None:
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=sponsor_mock
+        return_value=sponsor_no_id_mock
     )
 
     # When
@@ -246,7 +246,7 @@ async def test_fetch_all_success(
             "created_at": sponsor_mock.created_at,
             "updated_at": sponsor_mock.updated_at,
         }
-        for _ in range(5) # ????
+        for _ in range(5)
     ]
     db_cursor_mock.to_list.return_value = mock_sponsors_data
     mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
