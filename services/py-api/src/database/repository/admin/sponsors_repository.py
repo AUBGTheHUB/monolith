@@ -25,7 +25,10 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             LOG.info("Fetching sponsor by ObjectId", sponsor_id = obj_id)
 
             # Query the db for the sponsor with the given id 
-            sponsor = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+            sponsor = await self._collection.find_one(
+                filter={"_id": ObjectId(obj_id)}, 
+                projection={"_id": 0}
+            )
 
             if sponsor is None:
                 return Err(SponsorNotFoundError())
@@ -89,7 +92,11 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
         try:
             filter = {"_id": ObjectId(obj_id)}
             projection = {"_id": 0}
-            result = await self._collection.find_one_and_delete(filter=filter, projection=projection)
+            result = await self._collection.find_one_and_delete(
+                filter=filter, 
+                projection=projection, 
+                session=session
+            )
 
             if result is None:
                 return Err(SponsorNotFoundError())
