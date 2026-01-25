@@ -1,4 +1,4 @@
-import { AdminCard } from '@/components/ui/admin-card';
+import { AdminCard } from '@/components/admin-card';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router';
