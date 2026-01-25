@@ -6,6 +6,9 @@ export default defineConfig(({ mode }) => {
     const serverConfig: ServerOptions = {
         host: '0.0.0.0',
         port: 3000,
+        watch: {
+            usePolling: true,
+        },
     };
 
     if (mode === 'local') {
