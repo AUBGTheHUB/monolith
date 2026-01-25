@@ -73,10 +73,10 @@ async def test_create_admin_participant_no_team_name(
     resp = await create_test_participant(participant_body=is_admin_true_body)
 
     # Then
-    assert resp.status_code == 400
+    assert resp.status_code == 422
 
     resp_json = resp.json()
-    assert "error" in resp_json
+    assert resp_json["detail"][0]["msg"] == "Field required"
 
 
 @patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
@@ -92,10 +92,11 @@ async def test_create_random_participant_missing_required_fields(
     resp = await create_test_participant(participant_body=missing_req_fields_body)
 
     # Then
-    assert resp.status_code == 400
+    assert resp.status_code == 422
 
     resp_json = resp.json()
-    assert "error" in resp_json
+    assert resp_json["detail"][0]["type"] == "missing"
+    assert resp_json["detail"][0]["msg"] == "Field required"
 
 
 @patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})

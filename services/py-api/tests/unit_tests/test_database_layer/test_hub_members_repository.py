@@ -74,10 +74,8 @@ async def test_delete_hub_member_success(
     repo: HubMembersRepository,
 ) -> None:
     # Given
-    hub_member_dump_with_id = hub_member_dump_no_id_mock.copy()
-    hub_member_dump_with_id["_id"] = ObjectId(obj_id_mock)
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=hub_member_dump_with_id
+        return_value=hub_member_dump_no_id_mock
     )
 
     # When
@@ -135,9 +133,7 @@ async def test_update_hub_member_success(
     # Given
     updated_doc = hub_member_dump_no_id_mock.copy()
     updated_doc["name"] = "Updated Name"
-    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=updated_doc
-    )
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=updated_doc)
     # When
     result = await repo.update(obj_id_mock, UpdateHubMemberParams(name="Updated Name"))
 
@@ -303,4 +299,3 @@ async def test_fetch_all_error(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-

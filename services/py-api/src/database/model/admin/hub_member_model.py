@@ -28,14 +28,16 @@ class HubMember(BaseDbModel):
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
-    def dump_as_mongo_db_document(self) -> dict[str, Any]:
-        # Convert HttpUrl objects to strings for MongoDB serialization
+    def _serialize_social_links(self) -> dict[str, Any]:  # Convert HttpUrl objects to strings for MongoDB serialization
         social_links_dict = {}
         if self.social_links:
             for key, value in self.social_links.items():
                 if value is not None:
                     social_links_dict[key] = str(value)
-        
+        return social_links_dict
+
+    def dump_as_mongo_db_document(self) -> dict[str, Any]:
+
         return {
             "_id": self.id,
             "name": self.name,
@@ -43,19 +45,13 @@ class HubMember(BaseDbModel):
             "position": self.position,
             "department": self.department,
             "avatar_url": self.avatar_url,
-            "social_links": social_links_dict,
+            "social_links": self._serialize_social_links(),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
 
     def dump_as_json(self) -> dict[str, Any]:
-        # Convert HttpUrl objects to strings for JSON serialization
-        social_links_dict = {}
-        if self.social_links:
-            for key, value in self.social_links.items():
-                if value is not None:
-                    social_links_dict[key] = str(value)
-        
+
         return {
             "id": str(self.id),
             "name": self.name,
@@ -63,7 +59,7 @@ class HubMember(BaseDbModel):
             "position": self.position,
             "department": self.department,
             "avatar_url": self.avatar_url,
-            "social_links": social_links_dict,
+            "social_links": self._serialize_social_links(),
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }

@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 from httpx import AsyncClient
 
-PAST_EVENTS_ENDPOINT_URL = "/api/v3/admin/past-events"
+PAST_EVENTS_ENDPOINT_URL = "/api/v3/admin/events"
 
 
 def _valid_past_event_payload() -> dict[str, Any]:
@@ -138,7 +138,8 @@ async def test_get_past_event_by_id_invalid_format(async_client: AsyncClient) ->
         follow_redirects=True,
     )
 
-    assert result.status_code == 500
+    assert result.status_code == 400
+    assert result.json()["error"] == "Wrong Object ID format"
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})

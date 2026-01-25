@@ -16,4 +16,9 @@ class HubMemberResponse(BaseModel):
 
 
 class HubMembersListResponse(BaseModel):
-    members: List[dict[str, Any]]
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    members: List[HubMember]
+
+    @field_serializer("members")
+    def serialize_hub_members(self, hub_members: list[HubMember]) -> list[dict[str, Any]]:
+        return [hub_member.dump_as_json() for hub_member in hub_members]

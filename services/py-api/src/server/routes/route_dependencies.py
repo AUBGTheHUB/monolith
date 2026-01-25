@@ -25,7 +25,15 @@ LOG = get_logger()
 # ===============================
 
 
+# TODO Update with new auth
 def is_authorized(authorization: str = Header(..., alias="Authorization")) -> None:
+    # This follows the dependency pattern that is provided to us by FastAPI
+    # You can read more about it here:
+    # https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
+    # I have exported this function on a separate dependencies file likes suggested in:
+    # https://fastapi.tiangolo.com/tutorial/bigger-applications/#another-module-with-apirouter
+    # TODO: When the admin panel is implemented, the secret auth toke env variable should be removed as tokens
+    #  will be automatically rotated
     if not (
         authorization
         and authorization.startswith("Bearer ")
@@ -40,7 +48,6 @@ def validate_obj_id(object_id: Annotated[str, Path()]) -> None:
 
 
 async def is_registration_open(request: Request) -> None:
-    """Blocks requests when hackathon registration is closed."""
     fs_repo: FeatureSwitchRepository = request.app.state.fs_repo
 
     result = await fs_repo.get_feature_switch(REG_ALL_PARTICIPANTS_SWITCH)

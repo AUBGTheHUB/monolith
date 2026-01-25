@@ -32,7 +32,7 @@ async def test_create_hub_member_returns_201(
 
     req = HubMemberPostReqData(
         name=hub_member_mock.name,
-        role_title=hub_member_mock.position,
+        position=hub_member_mock.position,
         department=hub_member_mock.department,
         avatar_url=HttpUrl(hub_member_mock.avatar_url),
         social_links=hub_member_mock.social_links,
@@ -81,11 +81,11 @@ async def test_update_hub_member_returns_200(
     hub_members_service_mock: HubMembersServiceMock,
     hub_member_mock: HubMember,
 ) -> None:
-    from pydantic import HttpUrl
+    pass
 
     req = HubMemberPatchReqData(
         name="Updated Name",
-        role_title="Updated Position",
+        position="Updated Position",
     )
 
     hub_members_service_mock.update.return_value = Ok(hub_member_mock)
@@ -120,4 +120,3 @@ async def test_get_hub_member_returns_404_when_missing(
 
     assert resp.status_code == 404
     hub_members_service_mock.get.assert_awaited_once_with("mii")
-

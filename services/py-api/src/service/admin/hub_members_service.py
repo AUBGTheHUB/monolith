@@ -2,6 +2,7 @@ from result import Result
 
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
+from src.database.model.admin.hub_member_model import UpdateHubMemberParams
 from src.server.schemas.request_schemas.admin.hub_member_schemas import HubMemberPostReqData, HubMemberPatchReqData
 
 
@@ -18,7 +19,7 @@ class HubMembersService:
     async def create(self, data: HubMemberPostReqData) -> Result[HubMember, Exception]:
         member = HubMember(
             name=data.name,
-            position=data.role_title,
+            position=data.position,
             department=data.department,
             avatar_url=str(data.avatar_url),
             social_links=data.social_links,
@@ -26,14 +27,7 @@ class HubMembersService:
         return await self._repo.create(member)
 
     async def update(self, member_id: str, data: HubMemberPatchReqData) -> Result[HubMember, Exception]:
-        from src.database.model.admin.hub_member_model import UpdateHubMemberParams
-        
         update_data = data.model_dump(exclude_none=True)
-        if "role_title" in update_data:
-            update_data["position"] = update_data.pop("role_title")
-        if "avatar_url" in update_data:
-            update_data["avatar_url"] = str(update_data["avatar_url"])
-        
         update_params = UpdateHubMemberParams(**update_data)
         return await self._repo.update(member_id, update_params)
 

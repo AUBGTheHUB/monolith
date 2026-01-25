@@ -35,6 +35,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     async def fetch_by_id(self, obj_id: str) -> Result[HubMember, HubMemberNotFoundError | Exception]:
         try:
             LOG.debug("Fetching hub member by ObjectId...", member_id=obj_id)
+
             member = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
 
             if member is None:
@@ -48,6 +49,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     async def fetch_all(self) -> Result[list[HubMember], Exception]:
         try:
             LOG.debug("Fetching all hub members...")
+
             members_data = await self._collection.find({}).to_list(length=None)
 
             members = []
@@ -57,6 +59,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
 
             LOG.debug("Fetched hub members.", count=len(members))
             return Ok(members)
+
         except Exception as e:
             LOG.exception("Failed to fetch all hub members due to error", error=e)
             return Err(e)
@@ -88,13 +91,14 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     ) -> Result[HubMember, HubMemberNotFoundError | Exception]:
         try:
             LOG.debug("Deleting hub member...", member_id=obj_id)
-            member = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, session=session)
 
+            member = await self._collection.find_one_and_delete(
+                filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
+            )
             if member is None:
                 return Err(HubMemberNotFoundError())
 
-            member["id"] = member.pop("_id")
-            return Ok(HubMember(**member))
+            return Ok(HubMember(id=ObjectId(obj_id), **member))
         except Exception as e:
             LOG.exception("Failed to delete hub member due to error", member_id=obj_id, error=e)
             return Err(e)

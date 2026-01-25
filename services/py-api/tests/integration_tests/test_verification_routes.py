@@ -634,4 +634,4 @@ async def test_resend_verification_email_missing_participant_id(
     resend_resp = await async_client.post(url=SEND_VERIFICATION_EMAIL_URL, json={})
 
     # Then
-    assert resend_resp.status_code == 400
+    assert resend_resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

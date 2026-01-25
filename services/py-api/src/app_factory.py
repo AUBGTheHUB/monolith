@@ -164,6 +164,7 @@ def create_app() -> FastAPI:
         team_service=team_service,
         feature_switch_repo=fs_repo,
     )
+
     registration_service = RegistrationService(
         participant_service=participant_service,
         hackathon_utility_service=hackathon_utility_service,
@@ -208,8 +209,8 @@ def create_app() -> FastAPI:
         auth_handlers=AuthHandlers(service=auth_service),
     )
 
-    ExceptionHandlers.register_exception_handlers(app)
     Routes.register_routes(app.router, http_handlers)
+    ExceptionHandlers.register_exception_handlers(app)
     Middlewares.register_middlewares(app)
 
     return app

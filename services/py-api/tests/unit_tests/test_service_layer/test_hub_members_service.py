@@ -71,7 +71,7 @@ async def test_create_calls_repo_with_built_model(
 
     req = HubMemberPostReqData(
         name=hub_member_mock.name,
-        role_title=hub_member_mock.position,
+        position=hub_member_mock.position,
         department=hub_member_mock.department,
         avatar_url=HttpUrl(hub_member_mock.avatar_url),
         social_links=hub_member_mock.social_links,
@@ -88,7 +88,7 @@ async def test_create_calls_repo_with_built_model(
     passed_member = hub_members_repo_mock.create.call_args.args[0]
     assert isinstance(passed_member, HubMember)
     assert passed_member.name == req.name
-    assert passed_member.position == req.role_title
+    assert passed_member.position == req.position
     assert passed_member.department == req.department
     assert passed_member.avatar_url == str(req.avatar_url)
 
@@ -97,9 +97,9 @@ async def test_create_calls_repo_with_built_model(
 async def test_update_calls_repo_with_update_params(
     hub_members_service: HubMembersService, hub_members_repo_mock: HubMembersRepoMock, hub_member_mock: HubMember
 ) -> None:
-    from pydantic import HttpUrl
+    pass
 
-    req = HubMemberPatchReqData(name="new", role_title="new position")
+    req = HubMemberPatchReqData(name="new", position="new position")
     updated = HubMember(
         id=hub_member_mock.id,
         name="new",
@@ -121,7 +121,7 @@ async def test_update_calls_repo_with_update_params(
     passed_params = hub_members_repo_mock.update.call_args.args[1]
     assert isinstance(passed_params, UpdateHubMemberParams)
     assert passed_params.name == req.name
-    assert passed_params.position == req.role_title
+    assert passed_params.position == req.position
 
 
 @pytest.mark.asyncio
@@ -134,4 +134,3 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     hub_members_repo_mock.delete.assert_awaited_once_with(str(hub_member_mock.id))
-

@@ -4,7 +4,6 @@ from typing import Any
 
 import pytest
 from httpx import AsyncClient
-from pydantic import HttpUrl
 
 HUB_MEMBERS_ENDPOINT_URL = "/api/v3/admin/hub-members"
 
@@ -12,7 +11,7 @@ HUB_MEMBERS_ENDPOINT_URL = "/api/v3/admin/hub-members"
 def _valid_hub_member_payload() -> dict[str, Any]:
     return {
         "name": "John Doe",
-        "role_title": "Senior Developer",
+        "position": "Senior Developer",
         "department": "Development",
         "avatar_url": "https://example.com/avatar.jpg",
         "social_links": {
@@ -145,7 +144,7 @@ async def test_get_hub_member_by_id_invalid_format(async_client: AsyncClient) ->
         follow_redirects=True,
     )
 
-    assert result.status_code == 500
+    assert result.status_code == 400
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
@@ -178,7 +177,7 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
 
     update_payload = {
         "name": "Jane Doe",
-        "role_title": "Lead Developer",
+        "position": "Lead Developer",
         "department": "Development",
     }
 
@@ -234,4 +233,3 @@ async def test_delete_hub_member_success(async_client: AsyncClient) -> None:
         follow_redirects=True,
     )
     assert get_after_delete.status_code == 404
-
