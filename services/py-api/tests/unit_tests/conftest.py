@@ -25,6 +25,7 @@ from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
+from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
@@ -47,6 +48,7 @@ from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, 
 
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
+from src.service.admin.sponsors_service import SponsorsService
 
 from tests.integration_tests.conftest import (
     TEST_ALLOWED_AGE,
@@ -518,6 +520,26 @@ def past_events_repo_mock() -> PastEventsRepoMock:
     return cast(PastEventsRepoMock, past_events_repo)
 
 
+class SponsorsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def sponsors_repo_mock() -> SponsorsRepoMock:
+    sponsors_repo = _create_typed_mock(SponsorsRepository)
+
+    sponsors_repo.fetch_by_id = AsyncMock()
+    sponsors_repo.fetch_all = AsyncMock()
+    sponsors_repo.update = AsyncMock()
+    sponsors_repo.create = AsyncMock()
+    sponsors_repo.delete = AsyncMock()
+
+    return cast(SponsorsRepoMock, sponsors_repo)
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -569,6 +591,26 @@ def past_events_service_mock() -> PastEventsServiceMock:
 
     return cast(PastEventsServiceMock, service)
 
+
+class SponsorsServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def sponsors_service_mock() -> SponsorsServiceMock:
+    service = _create_typed_mock(SponsorsService)
+
+    service.get_all = _create_typed_async_mock(SponsorsService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(SponsorsServiceMock, service)
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
@@ -961,6 +1003,12 @@ def hub_member_mock(obj_id_mock: str) -> HubMember:
 @pytest.fixture
 def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
     document = hub_member_mock.dump_as_mongo_db_document()
+def sponsor_mock(obj_id_mock: str) -> Sponsor:
+    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
+
+@pytest.fixture
+def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
+    document = sponsor_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
