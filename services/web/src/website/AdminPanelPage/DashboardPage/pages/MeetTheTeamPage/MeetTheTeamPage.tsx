@@ -9,18 +9,13 @@ import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 import teamMembersData from './resources/teamMembers.json';
 
-// Define a type locally since we don't have a shared type file for Team Member yet
-// or we could export it from validation/validation.tsx if we aligned the types perfectly.
-// For now, let's infer from the JSON or validation.
 import { TeamMemberFormData } from './validation/validation';
 
-// Extend FormData with ID since validation type doesn't have it
 interface TeamMember extends TeamMemberFormData {
     id: string;
 }
 
 export function MeetTheTeamPage() {
-    // Cast the JSON data to our type. Ensure JSON matches expected structure.
     const [members, setMembers] = useState<TeamMember[]>(teamMembersData as unknown as TeamMember[]);
 
     const handleDelete = (id: string, name: string) => {
