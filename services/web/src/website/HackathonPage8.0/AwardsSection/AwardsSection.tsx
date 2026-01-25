@@ -1,7 +1,7 @@
 export default function AwardsSection() {
     return (
         <div
-            className="w-full flex flex-col items-center py-20 sm:py-32 relative bg-black before:absolute before:inset-0 before:bg-black before:opacity-50 before:z-0"
+            className="w-full flex flex-col items-center py-20 sm:py-32 relative bg-black before:absolute before:inset-0 before:bg-black before:opacity-70 before:z-0"
             style={{
                 backgroundImage: "url('/AwardsSection/HackAUBG_8.0-Awards-Background.png')",
                 backgroundSize: 'cover',
@@ -21,7 +21,7 @@ export default function AwardsSection() {
             </div>
 
             <div className="w-full flex justify-center relative z-10 mb-28 sm:mb-36">
-                <div className="flex flex-col sm:flex-row items-center gap-12 sm:gap-20 px-8">
+                <div className="flex flex-col sm:flex-row items-center gap-12 sm:gap-20 sm:mr-[72px]">
                     <div className="flex flex-col items-center w-full sm:w-auto order-2 sm:order-1">
                         <div className="relative rounded-[2rem] border-2 border-white overflow-hidden w-[400px] h-[625px] bg-orange-500 shadow-2xl flex flex-col">
                             <div className="pt-6 px-9 pb-5 flex items-center justify-center">
