@@ -133,10 +133,11 @@ async def test_update_hub_member_success(
     repo: HubMembersRepository,
 ) -> None:
     # Given
+    updated_doc = hub_member_dump_no_id_mock.copy()
+    updated_doc["name"] = "Updated Name"
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=hub_member_dump_no_id_mock
+        return_value=updated_doc
     )
-    hub_member_dump_no_id_mock["name"] = "Updated Name"
     # When
     result = await repo.update(obj_id_mock, UpdateHubMemberParams(name="Updated Name"))
 

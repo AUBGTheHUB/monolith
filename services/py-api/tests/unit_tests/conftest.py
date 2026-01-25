@@ -946,9 +946,10 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 
 @pytest.fixture
 def hub_member_mock(obj_id_mock: str) -> HubMember:
+    from bson import ObjectId
     from pydantic import HttpUrl
     return HubMember(
-        id=obj_id_mock,
+        id=ObjectId(obj_id_mock),
         name="Test Member",
         position="Developer",
         department="Development",
