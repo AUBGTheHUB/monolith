@@ -1,83 +1,108 @@
-import { Fragment } from 'react/jsx-runtime';
+import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-import { toast } from 'react-toastify';
-import teamMembers from './resources/teamMembers.json';
+import { TeamPageMessages as MESSAGES } from './messages';
+import { Styles } from '../../../AdminStyle';
+import { cn } from '@/lib/utils';
+import teamMembersData from './resources/teamMembers.json';
+
+// Define a type locally since we don't have a shared type file for Team Member yet
+// or we could export it from validation/validation.tsx if we aligned the types perfectly.
+// For now, let's infer from the JSON or validation.
+import { TeamMemberFormData } from './validation/validation';
+
+// Extend FormData with ID since validation type doesn't have it
+interface TeamMember extends TeamMemberFormData {
+    id: string;
+}
 
 export function MeetTheTeamPage() {
+    // Cast the JSON data to our type. Ensure JSON matches expected structure.
+    const [members, setMembers] = useState<TeamMember[]>(teamMembersData as unknown as TeamMember[]);
+
     const handleDelete = (id: string, name: string) => {
-        if (window.confirm(`Are you sure you want to delete ${name}?`)) {
-            console.log('Deleting team member:', id);
-            toast.success(`${name} has been deleted successfully!`);
+        if (window.confirm(MESSAGES.DELETE_CONFIRM(name))) {
+            setMembers((prev) => prev.filter((m) => m.id !== id));
         }
     };
+
+    const renderMemberActions = (id: string, name: string) => (
+        <div className="flex gap-3 w-full">
+            <Link to={`/admin/dashboard/meet-the-team/${id}`} className="flex-1">
+                <Button
+                    variant="outline"
+                    className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
+                >
+                    {MESSAGES.EDIT_BUTTON}
+                </Button>
+            </Link>
+
+            <Button
+                variant="destructive"
+                className="flex-1 shadow-lg shadow-red-500/10 hover:shadow-red-500/20 transition-all"
+                onClick={() => handleDelete(id, name)}
+            >
+                {MESSAGES.DELETE_BUTTON}
+            </Button>
+        </div>
+    );
 
     return (
         <Fragment>
             <Helmet>
-                <title>Meet the Team - Admin Panel</title>
-                <link rel="icon" href="/faviconHack.ico" />
+                <title>{MESSAGES.PAGE_TITLE}</title>
             </Helmet>
-            <div className="min-h-screen bg-gray-50 p-8">
+
+            <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex justify-between items-center mb-8">
+                    <Link to="/admin/dashboard">
+                        <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
+                            {MESSAGES.BACK_BUTTON}
+                        </Button>
+                    </Link>
+
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                         <div>
-                            <h1 className="text-4xl font-bold">Meet the Team</h1>
-                            <p className="text-gray-600 mt-2">Manage team members</p>
+                            <h1 className={cn('text-4xl', Styles.text.title)}>{MESSAGES.HEADING}</h1>
+                            <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                         </div>
-                        <Link to="/dashboard/meet-the-team/add">
-                            <Button className="bg-blue-600 hover:bg-blue-700 text-lg px-6 py-6">+ Add Member</Button>
+
+                        <Link to="/admin/dashboard/meet-the-team/add">
+                            <Button
+                                size="lg"
+                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                className={cn('px-8 py-6 text-lg', Styles.actions.primaryButton)}
+                            >
+                                {MESSAGES.ADD_BUTTON}
+                            </Button>
                         </Link>
                     </div>
 
-                    {teamMembers.length === 0 ? (
-                        <div className="text-center py-12 bg-white rounded-lg shadow">
-                            <p className="text-gray-500 mb-4 text-lg">No team members yet</p>
-                            <Link to="/dashboard/meet-the-team/add">
-                                <Button className="bg-blue-600 hover:bg-blue-700">Add Your First Member</Button>
-                            </Link>
-                        </div>
+                    {members.length === 0 ? (
+                        <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
+                            <p className={cn('text-xl font-medium', Styles.text.subtitle)}>{MESSAGES.EMPTY_STATE}</p>
+                        </Card>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {teamMembers.map((member) => (
-                                <Card key={member.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                                    <CardHeader className="p-0">
-                                        <img
-                                            src={member.image}
-                                            alt={member.name}
-                                            className="w-full h-64 object-cover"
-                                        />
-                                    </CardHeader>
-                                    <CardContent className="pt-4 pb-3">
-                                        <CardTitle className="mb-2">{member.name}</CardTitle>
-                                        <div className="flex flex-wrap gap-2">
-                                            {member.departments.map((dept) => (
-                                                <span
-                                                    key={dept}
-                                                    className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
-                                                >
-                                                    {dept}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </CardContent>
-                                    <CardFooter className="flex gap-2">
-                                        <Button
-                                            variant="destructive"
-                                            className="flex-1 bg-red-600 hover:bg-red-700"
-                                            onClick={() => handleDelete(member.id, member.name)}
-                                        >
-                                            Delete
-                                        </Button>
-                                        <Link to={`/dashboard/meet-the-team/${member.id}`} className="flex-1">
-                                            <Button variant="outline" className="w-full">
-                                                Edit
-                                            </Button>
-                                        </Link>
-                                    </CardFooter>
-                                </Card>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {members.map((member) => (
+                                <div key={member.id} className="group">
+                                    <AdminCard
+                                        imageUrl={member.image || ''}
+                                        imageAlt={member.name}
+                                        title={member.name}
+                                        subtitle={member.departments.join(', ')} // Display departments as subtitle
+                                        actions={renderMemberActions(member.id, member.name)}
+                                        className={cn(
+                                            'transition-all duration-300 group-hover:translate-y-[-4px]',
+                                            Styles.glass.card,
+                                            Styles.glass.cardHover,
+                                            'rounded-2xl',
+                                        )}
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}

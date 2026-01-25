@@ -1,12 +1,15 @@
 import { Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
-import { HackathonPage } from './website/HackathonPage/HackathonPage';
+import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { MeetTheTeamPage } from './website/AdminPanelPage/DashboardPage/pages/MeetTheTeamPage/MeetTheTeamPage';
-import { AddMemberPage } from './website/AdminPanelPage/DashboardPage/pages/MeetTheTeamPage/AddMemberPage';
-import { EditMemberPage } from './website/AdminPanelPage/DashboardPage/pages/MeetTheTeamPage/EditMemberPage';
+import { MeetTheTeamEditPage } from './website/AdminPanelPage/DashboardPage/pages/MeetTheTeamPage/MeetTheTeamEditPage';
+import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
+import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
+import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
+import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -15,14 +18,21 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <Routes>
                 <Route path="/" element={<MainPage />} />
+                <Route path="/hackathon7.0" element={<Hackathon7 />} />
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
 
                 {/* Meet the Team Routes */}
-                <Route path="/dashboard/meet-the-team" element={<MeetTheTeamPage />} />
-                <Route path="/dashboard/meet-the-team/add" element={<AddMemberPage />} />
-                <Route path="/dashboard/meet-the-team/:id" element={<EditMemberPage />} />
+                <Route path="/admin/dashboard/meet-the-team" element={<MeetTheTeamPage />} />
+                <Route path="/admin/dashboard/meet-the-team/add" element={<MeetTheTeamEditPage />} />
+                <Route path="/admin/dashboard/meet-the-team/:id" element={<MeetTheTeamEditPage />} />
+
+                <Route path="/admin" element={<LoginPage />} />
+
+                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
+                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
+                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
             </Routes>
         </QueryClientProvider>
     );

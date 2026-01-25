@@ -11,22 +11,19 @@ from fastapi import BackgroundTasks
 from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from starlette import status
-from src.server.schemas.request_schemas.schemas import (
+from src.server.schemas.request_schemas.hackathon.schemas import (
     ParticipantRequestBody,
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
 )
-from src.server.schemas.response_schemas.schemas import (
-    ParticipantRegisteredResponse,
-    ErrResponse,
-    Response,
-)
-from src.service.hackathon.participants_registration_service import ParticipantRegistrationService
+from src.server.schemas.response_schemas.hackathon.schemas import ParticipantRegisteredResponse
+from src.server.schemas.response_schemas.schemas import Response, ErrResponse
+from src.service.hackathon.registration_service import RegistrationService
 
 
 class ParticipantHandlers(BaseHandler):
 
-    def __init__(self, service: ParticipantRegistrationService) -> None:
+    def __init__(self, service: RegistrationService) -> None:
         self._service = service
 
     async def create_participant(
