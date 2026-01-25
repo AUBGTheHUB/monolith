@@ -1,8 +1,7 @@
-// You might need to define this interface in your @/types/sponsor file
 export interface Sponsor {
     id: string;
     name: string;
-    tier: string; // This represents the "Badge" (e.g., Gold, Silver)
+    tier: string; 
     logoUrl: string;
     websiteUrl: string;
     careersUrl?: string;

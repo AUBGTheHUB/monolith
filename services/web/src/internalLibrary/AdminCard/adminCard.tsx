@@ -1,69 +1,95 @@
-import * as React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
+import { ExternalLink } from 'lucide-react';
 
 interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
-    imageUrl?: string;
-    imageAlt?: string;
+    imageUrl: string;
+    imageAlt: string;
     title: string;
-    subtitle?: string;
-    position?: string;
-    linkedinUrl?: string;
+    subtitle: string;
     tierColor?: string;
     tierBgColor?: string;
-    actions?: React.ReactNode;
+    position?: string;
+    linkedinUrl?: string;
+    actions?: ReactNode;
 }
 
-const AdminCard = React.forwardRef<HTMLDivElement, AdminCardProps>(
-    ({ className, imageUrl, imageAlt, title, subtitle, position, linkedinUrl, actions, ...props }, ref) => (
-        <Card
-            ref={ref}
-            className={cn(
-                'overflow-hidden transition-all duration-300',
-                'bg-white/5 backdrop-blur-md border-white/10 hover:border-white/20 hover:bg-white/10',
-                'shadow-xl shadow-black/20',
-                className,
-            )}
-            {...props}
+export function AdminCard({
+    imageUrl,
+    imageAlt,
+    title,
+    subtitle,
+    tierColor,
+    tierBgColor,
+    position,
+    linkedinUrl,
+    actions,
+    className,
+    ...rest
+}: AdminCardProps) {
+    return (
+        <Card 
+            className={cn('overflow-hidden flex flex-col h-full border-0', className)}
+            {...rest}
         >
-            <CardHeader className="p-6">
-                <div className="flex flex-col items-center">
-                    <CardTitle className="text-xl text-center text-white mb-4">{title}</CardTitle>
+            <div className="relative h-48 w-full bg-white/5 p-6 flex items-center justify-center overflow-hidden">
+                <div 
+                    className={cn(
+                        "absolute inset-0 opacity-10 pointer-events-none", 
+                        tierBgColor
+                    )} 
+                />
+                
+                <img
+                    src={imageUrl}
+                    alt={imageAlt}
+                    className="max-h-full max-w-full object-contain relative z-10 transition-transform duration-500 hover:scale-110"
+                />
+            </div>
 
-                    {imageUrl && (
-                        <div className="relative group mb-4">
-                            <div className="absolute inset-0 rounded-full bg-[#00B2FF]/20 blur-xl group-hover:bg-[#00B2FF]/40 transition-colors" />
-                            <img
-                                src={imageUrl}
-                                alt={imageAlt || title}
-                                className="relative w-32 h-32 rounded-full object-cover border-2 border-white/20 shadow-lg"
-                            />
+            <div className="flex flex-col flex-grow p-6 space-y-4">
+                <div className="flex justify-between items-start gap-4">
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
+                        
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            <span
+                                className={cn(
+                                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm',
+                                    'bg-gray-100 text-gray-800', 
+                                    tierBgColor, 
+                                    tierColor   
+                                )}
+                            >
+                                {subtitle}
+                            </span>
+
+                            {position && (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                                    {position}
+                                </span>
+                            )}
                         </div>
-                    )}
-
-                    {subtitle && <p className="text-sm text-white/80 text-center font-semibold mt-1">{subtitle}</p>}
-
-                    {position && <p className="text-sm text-blue-200/60 text-center mt-1 font-medium">{position}</p>}
-
-                    {linkedinUrl && (
-                        <a
-                            href={linkedinUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-[#0077B5] hover:text-[#00A0DC] hover:underline mt-3 transition-colors"
-                        >
-                            LinkedIn Profile
-                        </a>
-                    )}
+                    </div>
                 </div>
-            </CardHeader>
 
-            {actions && (
-                <CardContent className="p-4 flex gap-2 bg-black/20 border-t border-white/5">{actions}</CardContent>
-            )}
+                {linkedinUrl && (
+                    <a
+                        href={linkedinUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center text-sm text-gray-400 hover:text-white transition-colors group/link w-fit"
+                    >
+                        <span className="truncate max-w-[200px]">{linkedinUrl.replace(/^https?:\/\//, '')}</span>
+                        <ExternalLink className="w-3 h-3 ml-2 opacity-0 -translate-x-2 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all" />
+                    </a>
+                )}
+
+                <div className="flex-grow" />
+
+                {actions && <div className="pt-2">{actions}</div>}
+            </div>
         </Card>
-    ),
-);
-AdminCard.displayName = 'AdminCard';
-
-export { AdminCard };
+    );
+}

@@ -39,7 +39,7 @@ export function SponsorsListPage() {
 
     const renderSponsorActions = (sponsorId: string) => (
         <div className="flex gap-3 w-full">
-            <Link to={`admin/sponsors/${sponsorId}`} className="flex-1">
+            <Link to={`${sponsorId}`} className="flex-1">
                 <Button
                     variant="outline"
                     className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
