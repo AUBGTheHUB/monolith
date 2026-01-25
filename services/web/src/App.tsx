@@ -24,9 +24,9 @@ function App() {
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
 
                 {/* Meet the Team Routes */}
-                <Route path="/admin/dashboard/meet-the-team" element={<MeetTheTeamPage />} />
-                <Route path="/admin/dashboard/meet-the-team/add" element={<MeetTheTeamEditPage />} />
-                <Route path="/admin/dashboard/meet-the-team/:id" element={<MeetTheTeamEditPage />} />
+                <Route path="/admin/meet-the-team" element={<MeetTheTeamPage />} />
+                <Route path="/admin/meet-the-team/add" element={<MeetTheTeamEditPage />} />
+                <Route path="/admin/meet-the-team/:id" element={<MeetTheTeamEditPage />} />
 
                 <Route path="/admin" element={<LoginPage />} />
 

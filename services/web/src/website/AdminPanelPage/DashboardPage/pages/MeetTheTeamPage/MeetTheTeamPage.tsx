@@ -26,7 +26,7 @@ export function MeetTheTeamPage() {
 
     const renderMemberActions = (id: string, name: string) => (
         <div className="flex gap-3 w-full">
-            <Link to={`/admin/dashboard/meet-the-team/${id}`} className="flex-1">
+            <Link to={`/admin/meet-the-team/${id}`} className="flex-1">
                 <Button
                     variant="outline"
                     className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
@@ -65,7 +65,7 @@ export function MeetTheTeamPage() {
                             <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                         </div>
 
-                        <Link to="/admin/dashboard/meet-the-team/add">
+                        <Link to="/admin/meet-the-team/add">
                             <Button
                                 size="lg"
                                 style={{ backgroundColor: Styles.colors.hubCyan }}

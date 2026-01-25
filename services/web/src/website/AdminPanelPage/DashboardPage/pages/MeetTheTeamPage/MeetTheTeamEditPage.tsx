@@ -56,11 +56,11 @@ export function MeetTheTeamEditPage() {
     const onSubmit = (data: TeamMemberFormData) => {
         toast.success(MESSAGES.SUCCESS_MESSAGE);
         console.log({ id: id || 'new', ...data });
-        navigate('/admin/dashboard/meet-the-team');
+        navigate('/admin/meet-the-team');
     };
 
     const goBack = () => {
-        navigate('/admin/dashboard/meet-the-team');
+        navigate('/admin/meet-the-team');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
