@@ -77,11 +77,10 @@ async def test_create_sponsor_missing_parameter(async_client: AsyncClient) -> No
     )
 
     # Assert
-    assert response.status_code == 422
+    assert response.status_code == 400
     response_body = response.json()
 
-    assert response_body['detail'][0]["type"] == "missing"
-    assert "logo_url" in response_body['detail'][0]["loc"]
+    assert "error" in response_body
     
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio

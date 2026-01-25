@@ -1003,19 +1003,13 @@ def hub_member_mock(obj_id_mock: str) -> HubMember:
 @pytest.fixture
 def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
     document = hub_member_mock.dump_as_mongo_db_document()
-def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
-
-@pytest.fixture
-def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
-    document = sponsor_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
 
 @pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://example.com/logo.jpg")
+    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
 
 
 @pytest.fixture
