@@ -59,11 +59,11 @@ export function SponsorsEditPage() {
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/dashboard/sponsors');
+        navigate('/admin/sponsors');
     };
 
     const goBack = () => {
-        navigate('/dashboard/sponsors');
+        navigate('/admin/sponsors');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);

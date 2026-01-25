@@ -24,15 +24,15 @@ function App() {
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
                 <Route path="/admin" element={<LoginPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/dashboard" element={<DashboardPage />} />
 
-                <Route path="/dashboard/judges" element={<JudgesListPage />} />
-                <Route path="/dashboard/judges/add" element={<JudgesEditPage />} />
-                <Route path="/dashboard/judges/:id" element={<JudgesEditPage />} />
+                <Route path="/admin/judges" element={<JudgesListPage />} />
+                <Route path="/admin/judges/add" element={<JudgesEditPage />} />
+                <Route path="/admin/judges/:id" element={<JudgesEditPage />} />
 
-                <Route path="/dashboard/sponsors" element={<SponsorsListPage />} />
-                <Route path="/dashboard/sponsors/add" element={<SponsorsEditPage />} />
-                <Route path="/dashboard/sponsors/:id" element={<SponsorsEditPage />} />
+                <Route path="/admin/sponsors" element={<SponsorsListPage />} />
+                <Route path="/admin/sponsors/add" element={<SponsorsEditPage />} />
+                <Route path="/admin/sponsors/:id" element={<SponsorsEditPage />} />
             </Routes>
         </QueryClientProvider>
     );
