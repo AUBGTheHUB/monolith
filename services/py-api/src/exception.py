@@ -1,9 +1,9 @@
 from abc import ABC
-from typing import Any, Dict, Tuple, Type
+from typing import Any
 from starlette import status
 from pymongo.errors import DuplicateKeyError
 
-ERROR_MAPPING: Dict[Type[BaseException], Tuple[str, int]] = {}
+ERROR_MAPPING: dict[type[BaseException], tuple[str, int]] = {}
 """Maps custom errors to their representation (message, status_code), dynamically populated once a subclass of
 CustomError is created (not instantiated)"""
 
@@ -93,6 +93,11 @@ class TeamNameMissmatchError(CustomError):
     message = "team_name passed in the request body is different from the team_name in the decoded JWT token"
     status_code = status.HTTP_400_BAD_REQUEST
 
+class SponsorNotFoundError(CustomError):
+    """Exception raised when the sponsor cannot be found in the database"""
+
+    message = "The specified sponsor was not found"
+    status_code = status.HTTP_404_NOT_FOUND
 
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
@@ -124,4 +129,11 @@ class JwtDecodeError(CustomError):
 
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class PastEventNotFoundError(CustomError):
+    """Exception raised when a past event with the given id does not exist"""
+
+    message = "The specified past event was not found"
     status_code = status.HTTP_404_NOT_FOUND
