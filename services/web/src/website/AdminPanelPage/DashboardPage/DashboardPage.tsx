@@ -43,7 +43,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/judges">
+                                <Link to="/dashboard/judges">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -73,7 +73,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/feature-switches">
+                                <Link to="/dashboard/feature-switches">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -103,7 +103,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/sponsors">
+                                <Link to="/dashboard/sponsors">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -133,7 +133,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/meet-the-team">
+                                <Link to="/dashboard/meet-the-team">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -163,7 +163,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/mentors">
+                                <Link to="/dashboard/mentors">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -193,7 +193,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/past-events">
+                                <Link to="/dashboard/past-events">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}
@@ -223,7 +223,7 @@ export function DashboardPage() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/s3-bucket">
+                                <Link to="/dashboard/s3-bucket">
                                     <Button
                                         className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
                                         style={{ backgroundColor: Styles.colors.hubCyan }}

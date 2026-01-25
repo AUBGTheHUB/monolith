@@ -60,11 +60,11 @@ export function JudgesEditPage() {
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/dashboard/judges');
+        navigate('/dashboard/judges');
     };
 
     const goBack = () => {
-        navigate('/admin/dashboard/judges');
+        navigate('/dashboard/judges');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);

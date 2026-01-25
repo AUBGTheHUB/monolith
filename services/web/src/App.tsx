@@ -8,6 +8,8 @@ import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
 import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
 import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
+import { SponsorsListPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
+import { SponsorsEditPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsEditPage';
 import { DashboardPage } from './website/AdminPanelPage/DashboardPage/DashboardPage';
 
 function App() {
@@ -22,11 +24,15 @@ function App() {
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
                 <Route path="/admin" element={<LoginPage />} />
-                <Route path="/admin/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
 
-                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
-                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
-                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
+                <Route path="/dashboard/judges" element={<JudgesListPage />} />
+                <Route path="/dashboard/judges/add" element={<JudgesEditPage />} />
+                <Route path="/dashboard/judges/:id" element={<JudgesEditPage />} />
+
+                <Route path="/dashboard/sponsors" element={<SponsorsListPage />} />
+                <Route path="/dashboard/sponsors/add" element={<SponsorsEditPage />} />
+                <Route path="/dashboard/sponsors/:id" element={<SponsorsEditPage />} />
             </Routes>
         </QueryClientProvider>
     );

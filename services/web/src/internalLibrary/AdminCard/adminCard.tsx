@@ -9,6 +9,8 @@ interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
     subtitle?: string;
     position?: string;
     linkedinUrl?: string;
+    tierColor?: string;
+    tierBgColor?: string;
     actions?: React.ReactNode;
 }
 
