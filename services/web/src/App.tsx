@@ -19,6 +19,10 @@ function App() {
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
                 <Route path="/admin" element={<LoginPage />} />
+
+                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
+                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
+                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
             </Routes>
         </QueryClientProvider>
     );
