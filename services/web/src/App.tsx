@@ -6,6 +6,8 @@ import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
+import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
+import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
 
 function App() {
     const queryClient = new QueryClient();
