@@ -1,10 +1,10 @@
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { RadioComponent } from '@/internal_library/RadioComponent/RadioComponent';
+import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
-import { InputComponent } from '@/internal_library/InputComponent/InputComponent';
-import { DropdownComponent } from '@/internal_library/DropdownComponent/DropdownComponent';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
+import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent';
 import { registrationSchema } from './schema';
 import {
     LEVEL_OPTIONS,
