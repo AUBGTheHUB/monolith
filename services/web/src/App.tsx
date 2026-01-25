@@ -1,12 +1,13 @@
 import { Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
-import { HackathonPage } from './website/HackathonPage/HackathonPage';
+import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { SponsorsPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
 import { SponsorsAddPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsAddPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
+import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -15,6 +16,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <Routes>
                 <Route path="/" element={<MainPage />} />
+                <Route path="/hackathon7.0" element={<Hackathon7 />} />
                 <Route path="/hackathon" element={<HackathonPage />} />
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
@@ -22,6 +24,10 @@ function App() {
                 <Route path="/admin" element={<LoginPage />} />
                 <Route path="/admin/dashboard/sponsors" element={<SponsorsPage />} />
                 <Route path="/admin/dashboard/sponsors/add" element={<SponsorsAddPage />} />
+
+                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
+                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
+                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
             </Routes>
         </QueryClientProvider>
     );

@@ -71,7 +71,7 @@ class CreateTestParticipantCallable(Protocol):
 
     This callable takes the following parameters:
     - participant_body: A dictionary containing participant data.
-    - jwt_token: An optional JWT token as a string for authentication.
+    - jwt_token: An optional JWT token as a string for auth.
 
     Returns:
     - An awaitable dictionary containing the participant creation response.
