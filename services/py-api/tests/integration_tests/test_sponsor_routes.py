@@ -240,35 +240,35 @@ async def test_update_sponsor_success(async_client: AsyncClient) -> None:
     await _delete_sponsor(async_client, sponsor_id)
 
 
-# @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
-# @pytest.mark.asyncio
-# async def test_delete_sponsor_success(async_client: AsyncClient) -> None:
-#     # Arrange
-#     created = await async_client.post(
-#         url=SPONSORS_ENDPOINT_URL,
-#         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-#         json=valid_sponsor_body,
-#         follow_redirects=True,
-#     )
-#     assert created.status_code == 201
-#     sponsor_id = created.json()["sponsor"]["id"]
+@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
+@pytest.mark.asyncio
+async def test_delete_sponsor_success(async_client: AsyncClient) -> None:
+    # Arrange
+    created = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        json=valid_sponsor_body,
+        follow_redirects=True,
+    )
+    assert created.status_code == 201
+    sponsor_id = created.json()["sponsor"]["id"]
 
-#     # Act
-#     response = await async_client.delete(
-#         url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
-#         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-#         follow_redirects=True,
-#     )
+    # Act
+    response = await async_client.delete(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        follow_redirects=True,
+    )
 
-#     # Assert - Make sure the correct event is deleted
-#     assert response.status_code == 200
-#     response_body = response.json()
-#     assert response_body["sponsor"]["id"] == sponsor_id
+    # Assert - Make sure the correct event is deleted
+    assert response.status_code == 200
+    response_body = response.json()
+    assert response_body["sponsor"]["id"] == sponsor_id
 
-#     # Assert - Make sure that the event no longer exists
-#     get_deleted_sponsor = await async_client.get(
-#         url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
-#         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-#         follow_redirects=True,
-#     )
-#     assert get_deleted_sponsor.status_code == 404
+    # Assert - Make sure that the event no longer exists
+    get_deleted_sponsor = await async_client.get(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        follow_redirects=True,
+    )
+    assert get_deleted_sponsor.status_code == 404
