@@ -18,6 +18,7 @@ from typing_extensions import Protocol
 
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.past_event_model import PastEvent
+from src.database.model.admin.sponsor_model import Sponsor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -959,6 +960,18 @@ def hub_member_mock(obj_id_mock: str) -> HubMember:
 @pytest.fixture
 def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
     document = hub_member_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def sponsor_mock(obj_id_mock: str) -> Sponsor:
+    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://example.com/logo.jpg")
+
+
+@pytest.fixture
+def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
+    document = sponsor_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
