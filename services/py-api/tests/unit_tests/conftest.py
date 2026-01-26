@@ -41,6 +41,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
+from src.service.aws_service import AwsService
+from src.service.image_service import ImageService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
@@ -566,6 +568,35 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class AwsServiceMock(Protocol):
+    get_s3_client: AsyncMock
+    upload_file: AsyncMock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    service.get_s3_client = _create_typed_async_mock(AwsServiceMock.get_s3_client)
+    service.upload_file = AsyncMock()
+
+    return cast(AwsServiceMock, service)
+
+class ImageServiceMock(Protocol):
+    upload_image: AsyncMock
+    compress_image: AsyncMock
+
+
+@pytest.fixture
+def image_service_mock() -> ImageServiceMock:
+    service = _create_typed_mock(ImageService)
+
+    service.upload_image = _create_typed_async_mock(ImageServiceMock.upload_image)
+    service.compress_image = AsyncMock()
+
+    return cast(ImageServiceMock, service)
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService

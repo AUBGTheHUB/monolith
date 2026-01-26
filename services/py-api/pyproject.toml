@@ -18,6 +18,10 @@ motor = "^3.6.0"
 resend = "^2.4.0"
 pydantic = { extras = ["email"], version = "^2.9.2" }
 pyjwt = "^2.10.1"
+boto3 = "^1.42.34"
+pillow = "^12.1.0"
+mypy-boto3-s3 = "^1.42.21"
+python-multipart = "^0.0.22"
 
 
 [tool.poetry.group.dev.dependencies]
