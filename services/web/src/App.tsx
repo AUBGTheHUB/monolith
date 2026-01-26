@@ -26,9 +26,6 @@ function App() {
                 <Route path="/hackathon/registration" element={<FormPage />} />
                 <Route path="/hackathon/verification" element={<VerificationPage />} />
 
-                <Route path="/dashboard/past-events" element={<PastEventsPage />} />
-                <Route path="/dashboard/past-events/add" element={<AddPastEventPage />} />
-                <Route path="/dashboard/past-events/:id" element={<EditPastEventPage />} />
                 <Route path="/admin" element={<LoginPage />} />
                 <Route path="/admin/dashboard" element={<DashboardPage />} />
 
@@ -36,9 +33,9 @@ function App() {
                 <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
                 <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
 
-                <Route path="/dashboard/past-events" element={<PastEventsPage />} />
-                <Route path="/dashboard/past-events/add" element={<AddPastEventPage />} />
-                <Route path="/dashboard/past-events/:id" element={<EditPastEventPage />} />
+                <Route path="/admin/past-events" element={<PastEventsPage />} />
+                <Route path="/admin/past-events/add" element={<AddPastEventPage />} />
+                <Route path="/admin/past-events/:id" element={<EditPastEventPage />} />
             </Routes>
         </QueryClientProvider>
     );
