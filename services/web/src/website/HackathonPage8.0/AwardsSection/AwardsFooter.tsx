@@ -1,7 +1,7 @@
 export const AwardsFooter = () => (
     <div className="flex flex-col items-center w-full relative z-30">
         <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start w-full text-white text-[1.8vh] lg:text-[1.5vh] font-oxanium gap-[2vh] mb-[2vh] px-8 lg:px-[4vw] xl:px-32 leading-relaxed">
-            <div className="flex-1">
+            <div className="flex-1 lg:max-w-[40%]">
                 <p>And much more!</p>
                 <p>Take part in all of the games we have prepared!</p>
             </div>
@@ -16,7 +16,7 @@ export const AwardsFooter = () => (
                 <img
                     src="/AwardsSection/HackAUBG_8.0-Awards-Logo.png"
                     alt="HackAUBG logo"
-                    className="w-[3vh] h-[3vh] lg:w-[3vh] lg:h-[3vh] object-contain"
+                    className="w-[4vh] h-[4vh] lg:w-[4vh] lg:h-[4vh] object-contain"
                 />
             </div>
             <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
