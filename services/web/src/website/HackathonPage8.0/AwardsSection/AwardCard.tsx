@@ -32,9 +32,14 @@ export const AwardCard: React.FC<Award> = ({ title, prize, currency, number, ima
     return (
         <article className="flex flex-col items-center w-full lg:w-auto">
             <div
-                className={`relative rounded-[1.5rem] lg:rounded-[2rem] border-2 border-white overflow-hidden shadow-2xl flex flex-col bg-cover bg-center bg-no-repeat ${classes.w} ${classes.h}`}
-                style={{ backgroundImage: `url('${image}')` }}
+                className={`relative rounded-[1.5rem] lg:rounded-[2rem] border-2 border-white overflow-hidden shadow-2xl flex flex-col ${classes.w} ${classes.h}`}
             >
+                <img
+                    src={image}
+                    alt={`${title} award background`}
+                    className="absolute inset-0 w-full h-full object-cover -z-10"
+                />
+
                 <div className="flex items-center justify-center border-b-[2px] border-white px-6 lg:px-[2vw] pt-4 lg:pt-[1vw] xl:pt-6 pb-3 lg:pb-[0.8vw] xl:pb-5">
                     <h3 className={`text-white font-orbitron font-bold text-center ${classes.fontTitle}`}>{title}</h3>
                 </div>
