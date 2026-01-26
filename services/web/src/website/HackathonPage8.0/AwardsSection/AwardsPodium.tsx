@@ -8,8 +8,8 @@ export const AwardsPodium = () => {
     });
 
     return (
-        <div className="w-full flex justify-center relative z-10 mb-16 lg:mb-24 xl:mb-36">
-            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-[3vw] xl:gap-20 xl:mr-[75px] px-4">
+        <div className="w-full flex justify-center items-center relative z-10 mb-[4vh] flex-1">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-[2vw] px-4 xl:mr-[75px]">
                 {sortedAwards.map((award) => (
                     <AwardCard key={award.position} {...award} />
                 ))}

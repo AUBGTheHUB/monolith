@@ -5,7 +5,7 @@ import { AwardsFooter } from './AwardsFooter';
 export const AwardsSection = () => {
     return (
         <section
-            className="w-full flex flex-col items-center py-12 lg:py-20 xl:py-32 relative bg-black before:absolute before:inset-0 before:bg-black before:opacity-70 before:z-0 rounded-t-lg"
+            className="w-full h-dvh flex flex-col items-center justify-center py-8 relative bg-black before:absolute before:inset-0 before:bg-black before:opacity-70 before:z-0 rounded-t-lg overflow-hidden"
             style={{
                 backgroundImage: "url('/AwardsSection/HackAUBG_8.0-Awards-Background.png')",
                 backgroundSize: 'cover',

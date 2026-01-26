@@ -2,30 +2,39 @@ import React from 'react';
 import { Award } from './awardsConfig';
 
 export const AwardCard: React.FC<Award> = ({ title, prize, currency, number, image }) => {
-    const classMap: Record<number, { w: string; h: string; fontNumber: string; fontPrize: string; fontTitle: string }> =
+    // Removed max constraints so cards can scale properly with vh/vw
+    const classMap: Record<
+        number,
         {
-            1: {
-                w: 'w-[280px] lg:w-[32vw] xl:w-[500px]',
-                h: 'h-[440px] lg:h-[48vw] xl:h-[750px]',
-                fontNumber: 'text-[8rem] lg:text-[9vw] xl:text-[14rem]',
-                fontPrize: 'text-2xl lg:text-[3.5vw] xl:text-6xl',
-                fontTitle: 'text-2xl lg:text-[3.5vw] xl:text-6xl',
-            },
-            2: {
-                w: 'w-[240px] lg:w-[25vw] xl:w-[400px]',
-                h: 'h-[380px] lg:h-[40vw] xl:h-[625px]',
-                fontNumber: 'text-[6rem] lg:text-[7vw] xl:text-[11rem]',
-                fontPrize: 'text-xl lg:text-[2.5vw] xl:text-5xl',
-                fontTitle: 'text-xl lg:text-[2vw] xl:text-4xl',
-            },
-            3: {
-                w: 'w-[200px] lg:w-[22vw] xl:w-[344px]',
-                h: 'h-[320px] lg:h-[35vw] xl:h-[550px]',
-                fontNumber: 'text-[5rem] lg:text-[6vw] xl:text-[9.5rem]',
-                fontPrize: 'text-lg lg:text-[2vw] xl:text-4xl',
-                fontTitle: 'text-lg lg:text-[1.8vw] xl:text-3xl',
-            },
-        };
+            w: string;
+            h: string;
+            fontNumber: string;
+            fontPrize: string;
+            fontTitle: string;
+        }
+    > = {
+        1: {
+            w: 'w-[280px] lg:w-[20vw] xl:w-[20vw]',
+            h: 'h-[440px] lg:h-[55vh] xl:h-[55vh]',
+            fontNumber: 'text-[8rem] lg:text-[12vh] xl:text-[12vh]',
+            fontPrize: 'text-2xl lg:text-[3vh] xl:text-[3vh]',
+            fontTitle: 'text-2xl lg:text-[3vh] xl:text-[3vh]',
+        },
+        2: {
+            w: 'w-[240px] lg:w-[16vw] xl:w-[16vw]',
+            h: 'h-[380px] lg:h-[46vh] xl:h-[46vh]',
+            fontNumber: 'text-[6rem] lg:text-[10vh] xl:text-[10vh]',
+            fontPrize: 'text-xl lg:text-[2.5vh] xl:text-[2.5vh]',
+            fontTitle: 'text-xl lg:text-[2.3vh] xl:text-[2.3vh]',
+        },
+        3: {
+            w: 'w-[200px] lg:w-[14vw] xl:w-[14vw]',
+            h: 'h-[320px] lg:h-[40vh] xl:h-[40vh]',
+            fontNumber: 'text-[5rem] lg:text-[8vh] xl:text-[8vh]',
+            fontPrize: 'text-lg lg:text-[2vh] xl:text-[2vh]',
+            fontTitle: 'text-lg lg:text-[1.8vh] xl:text-[1.8vh]',
+        },
+    };
 
     const classes = classMap[number];
 
@@ -40,7 +49,7 @@ export const AwardCard: React.FC<Award> = ({ title, prize, currency, number, ima
                     className="absolute inset-0 w-full h-full object-cover -z-10"
                 />
 
-                <div className="flex items-center justify-center border-b-[2px] border-white px-6 lg:px-[2vw] pt-4 lg:pt-[1vw] xl:pt-6 pb-3 lg:pb-[0.8vw] xl:pb-5">
+                <div className="flex items-center justify-center border-b-[2px] border-white px-6 lg:px-[2vw] pt-4 lg:pt-[1.5vh] pb-3 lg:pb-[1vh]">
                     <h3 className={`text-white font-orbitron font-bold text-center ${classes.fontTitle}`}>{title}</h3>
                 </div>
 
@@ -48,7 +57,7 @@ export const AwardCard: React.FC<Award> = ({ title, prize, currency, number, ima
                     <p className={`text-white font-orbitron font-bold leading-none ${classes.fontNumber}`}>{number}</p>
                 </div>
 
-                <div className="flex items-center justify-center border-t-[2px] border-white px-6 lg:px-[2vw] pt-3 lg:pt-[0.8vw] xl:pt-5 pb-4 lg:pb-[1vw] xl:pb-6">
+                <div className="flex items-center justify-center border-t-[2px] border-white px-6 lg:px-[2vw] pt-3 lg:pt-[1vh] pb-4 lg:pb-[1.5vh]">
                     <p className={`text-white font-orbitron font-bold text-center ${classes.fontPrize}`}>
                         <span className="award-amount">{prize}</span>{' '}
                         <span className="award-currency-unit">{currency}</span>
