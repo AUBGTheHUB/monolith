@@ -3,26 +3,46 @@
 echo "🚀 Starting environment setup..."
 
 OS_TYPE="$(uname)"
+# Detect Linux distribution
+DISTRO=$( [ -f /etc/os-release ] && grep -Po '(?<=^ID=)\w+' /etc/os-release || echo "unknown" )
 SHELL_CONFIG="$HOME/.bashrc"
 [[ "$SHELL" == */zsh ]] && SHELL_CONFIG="$HOME/.zshrc"
 
-# --- 1. Linux / WSL2 Block (Ubuntu-based) ---
+# --- 1. Linux / WSL2 Block ---
 if [[ "$OS_TYPE" == "Linux" ]]; then
-    echo "🐧 Detected Linux/WSL2. Bundling system installations..."
 
-    # 1a. Add External Repositories (Gum & Node)
-    sudo mkdir -p /etc/apt/keyrings
-    curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    # 1a. Ubuntu/Debian Logic
+    if [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" ]]; then
+        echo "🐧 Detected Ubuntu/Debian. Bundling system installations..."
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
+        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 
-    # 1b. Install everything in one apt command
-    sudo apt-get update && sudo apt-get install -y \
-        make build-essential libssl-dev zlib1g-dev libbz2-dev \
-        libreadline-dev libsqlite3-dev wget curl git libffi-dev \
-        liblzma-dev tk-dev libncursesw5-dev xz-utils gum nodejs
+        sudo apt-get update && sudo apt-get install -y \
+            make build-essential libssl-dev zlib1g-dev libbz2-dev \
+            libreadline-dev libsqlite3-dev wget curl git libffi-dev \
+            liblzma-dev tk-dev libncursesw5-dev xz-utils gum nodejs
 
-    # 1c. Install User-space tools (Pyenv & Poetry)
+    # 1b. Fedora Logic
+    elif [[ "$DISTRO" == "fedora" ]]; then
+        echo "🎩 Detected Fedora. Bundling system installations..."
+        # Add Gum repo for Fedora
+        echo '[charm]
+        name=Charm
+        baseurl=https://repo.charm.sh/yum/
+        enabled=1
+        gpgcheck=1
+        gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+
+        sudo dnf groupinstall -y "Development Tools"
+        sudo dnf install -y \
+            zlib-devel bzip2-devel readline-devel sqlite-devel \
+            openssl-devel xz-devel libffi-devel findutils \
+            gum nodejs
+    fi
+
+    # 1c. User-space tools (Shared Linux)
     [[ ! -d "$HOME/.pyenv" ]] && curl https://pyenv.run | bash
     [[ ! -f "$HOME/.local/share/pypoetry" ]] && curl -sSL https://install.python-poetry.org | python3 -
 
@@ -34,16 +54,21 @@ elif [[ "$OS_TYPE" == "Darwin" ]]; then
     fi
     brew install gum pyenv poetry node
 fi
-# --- 3. Cross-Platform Configuration (Applies to both) ---
 
-SHELL_CONFIG="$HOME/.bashrc"
-[[ "$SHELL" == */zsh ]] && SHELL_CONFIG="$HOME/.zshrc"
+# --- 3. Cross-Platform Configuration ---
 
-# Ensure PATHs are in the config file
-sed -i '' '/pyenv/d' "$SHELL_CONFIG" 2>/dev/null || true # Cleanup old entries on Mac
-echo 'export PYENV_ROOT="$HOME/.pyenv"' >> "$SHELL_CONFIG"
-echo 'export PATH="$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"' >> "$SHELL_CONFIG"
-echo 'eval "$(pyenv init -)"' >> "$SHELL_CONFIG"
+# Clean up existing pyenv lines to avoid duplicates (Portable sed logic)
+if [[ "$OS_TYPE" == "Darwin" ]]; then
+    sed -i '' '/pyenv/d' "$SHELL_CONFIG" 2>/dev/null || true
+else
+    sed -i '/pyenv/d' "$SHELL_CONFIG" 2>/dev/null || true
+fi
+
+{
+    echo 'export PYENV_ROOT="$HOME/.pyenv"'
+    echo 'export PATH="$PYENV_ROOT/bin:$HOME/.local/bin:$PATH"'
+    echo 'eval "$(pyenv init -)"'
+} >> "$SHELL_CONFIG"
 
 # Activate for the current session
 export PYENV_ROOT="$HOME/.pyenv"
@@ -55,6 +80,8 @@ echo "🐍 Installing Python 3.12.9..."
 pyenv install 3.12.9 -s
 pyenv global 3.12.9
 
+# --- 5. Project Dependency Installation ---
+# [Remaining logic unchanged...]
 # --- 5. Project Dependency Installation ---
 echo "📦 Installing root dependencies..."
 npm install
