@@ -8,11 +8,13 @@ import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
 import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
 import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
+import { SponsorsListPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
+import { SponsorsEditPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsEditPage';
 import { DashboardPage } from './website/AdminPanelPage/DashboardPage/DashboardPage';
 
-import PastEventsPage from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/PastEventsPage';
-import AddPastEventPage from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/AddPastEventPage';
-import EditPastEventPage from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/EditPastEventPage';
+import { PastEventsPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/PastEventsPage';
+import { AddPastEventPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/AddPastEventPage';
+import { EditPastEventPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/EditPastEventPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -29,9 +31,13 @@ function App() {
                 <Route path="/admin" element={<LoginPage />} />
                 <Route path="/admin/dashboard" element={<DashboardPage />} />
 
-                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
-                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
-                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
+                <Route path="/admin/judges" element={<JudgesListPage />} />
+                <Route path="/admin/judges/add" element={<JudgesEditPage />} />
+                <Route path="/admin/judges/:id" element={<JudgesEditPage />} />
+
+                <Route path="/admin/sponsors" element={<SponsorsListPage />} />
+                <Route path="/admin/sponsors/add" element={<SponsorsEditPage />} />
+                <Route path="/admin/sponsors/:id" element={<SponsorsEditPage />} />
 
                 <Route path="/admin/past-events" element={<PastEventsPage />} />
                 <Route path="/admin/past-events/add" element={<AddPastEventPage />} />
