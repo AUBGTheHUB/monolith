@@ -7,35 +7,36 @@ export const ScheduleSection = () => {
     const [activeTab, setActiveTab] = useState<Day>('Friday');
 
     return (
-        <section className="relative w-full min-h-screen flex flex-col items-center pt-32 pb-20 bg-white" id="schedule">
-            <div className="absolute left-4 lg:left-8 xl:left-16 top-0 bottom-0 w-[4px] lg:w-[6px] xl:w-[8px] bg-black z-20"></div>
-            <div className="absolute right-4 lg:right-8 xl:right-16 top-0 bottom-0 w-[4px] lg:w-[6px] xl:w-[8px] bg-black z-20"></div>
+        <section
+            className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden pt-16 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 bg-white"
+            id="schedule"
+        >
+            <div className="absolute left-4 lg:left-8 xl:left-16 top-0 bottom-0 w-[2px] sm:w-[4px] lg:w-[6px] xl:w-[8px] bg-black z-20"></div>
+            <div className="absolute right-4 lg:right-8 xl:right-16 top-0 bottom-0 w-[2px] sm:w-[4px] lg:w-[6px] xl:w-[8px] bg-black z-20"></div>
 
             <img
                 src="/ScheduleSection/left-background.png"
                 alt=""
-                className="absolute left-0 bottom-0 h-2/3 w-auto object-cover pointer-events-none opacity-60"
+                className="absolute left-0 bottom-0 max-h-[70vh] w-auto object-contain pointer-events-none opacity-60"
             />
             <img
                 src="/ScheduleSection/right-background.png"
                 alt=""
-                className="absolute right-0 bottom-0 h-2/3 w-auto object-cover pointer-events-none opacity-60"
+                className="absolute right-0 bottom-0 max-h-[70vh] w-auto object-contain pointer-events-none opacity-60"
             />
 
             <div className="relative z-10 w-full max-w-[100vw]">
                 <div
-                    className="flex items-center gap-4 lg:gap-6 mb-32 bg-white border-2 border-black rounded-r-3xl px-6 lg:px-8 py-6 -ml-8 mr-16 lg:mr-24 xl:mr-40"
-                    style={{
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                    }}
+                    className="flex items-center gap-4 lg:gap-6 mb-24 bg-white border-y-2 border-r-2 sm:border-2 border-black rounded-r-3xl px-6 lg:px-8 py-6 -ml-0 sm:-ml-8 mr-16 lg:mr-24 xl:mr-40"
+                    style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
                 >
-                    <div className="ml-16 lg:ml-28 xl:ml-40 flex items-center gap-4 lg:gap-6">
+                    <div className="ml-4 sm:ml-16 lg:ml-28 xl:ml-40 flex items-center gap-4 lg:gap-6">
                         <img
                             src="/ScheduleSection/logo.png"
                             alt="HackAUBG Logo"
-                            className="w-12 h-12 lg:w-16 lg:h-16 object-contain"
+                            className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 object-contain"
                         />
-                        <h2 className="text-black text-3xl lg:text-4xl xl:text-5xl font-orbitron font-normal tracking-[0.3em]">
+                        <h2 className="text-black font-orbitron font-normal tracking-[0.3em] text-[clamp(1.25rem,3.5vw,3rem)]">
                             SCHEDULE
                         </h2>
                     </div>
@@ -47,7 +48,7 @@ export const ScheduleSection = () => {
                         onValueChange={(value: string) => setActiveTab(value as Day)}
                         className="w-full"
                     >
-                        <TabsList className="mb-12 h-auto p-0 gap-4 bg-transparent">
+                        <TabsList className="mb-12 h-auto p-0 gap-4 bg-transparent flex flex-wrap justify-start w-full">
                             <div
                                 className="relative p-[2px] rounded-xl"
                                 style={{
@@ -56,7 +57,7 @@ export const ScheduleSection = () => {
                             >
                                 <TabsTrigger
                                     value="Friday"
-                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-lg lg:text-xl font-semibold transition-all border-0"
+                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
                                     style={
                                         activeTab === 'Friday'
                                             ? { backgroundColor: 'white', color: '#DC2626' }
@@ -78,7 +79,7 @@ export const ScheduleSection = () => {
                             >
                                 <TabsTrigger
                                     value="Saturday"
-                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-lg lg:text-xl font-semibold transition-all border-0"
+                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
                                     style={
                                         activeTab === 'Saturday'
                                             ? { backgroundColor: 'white', color: '#DC2626' }
@@ -100,7 +101,7 @@ export const ScheduleSection = () => {
                             >
                                 <TabsTrigger
                                     value="Sunday"
-                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-lg lg:text-xl font-semibold transition-all border-0"
+                                    className="px-6 lg:px-8 py-2 rounded-xl font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
                                     style={
                                         activeTab === 'Sunday'
                                             ? { backgroundColor: 'white', color: '#F97316' }
@@ -128,10 +129,10 @@ export const ScheduleSection = () => {
                                         {scheduleData[day].map((event, index) => (
                                             <div key={index}>
                                                 <div className="flex justify-between items-center py-6 lg:py-8 px-8 lg:px-10 text-white">
-                                                    <span className="text-lg lg:text-xl font-oxanium">
+                                                    <span className="text-sm sm:text-base lg:text-xl font-oxanium break-words max-w-[65%]">
                                                         {event.event}
                                                     </span>
-                                                    <span className="text-lg lg:text-xl font-oxanium font-bold">
+                                                    <span className="text-sm sm:text-base lg:text-xl font-oxanium font-bold">
                                                         {event.time}
                                                     </span>
                                                 </div>
