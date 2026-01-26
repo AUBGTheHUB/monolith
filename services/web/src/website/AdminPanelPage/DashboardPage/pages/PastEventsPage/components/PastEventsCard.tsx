@@ -1,14 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-
-interface PastEventCardProps {
-    id: number;
-    title: string;
-    image: string;
-    tags: string[];
-    link?: string;
-}
+import { PastEventCardProps } from '@/types/past-events';
 
 export const PastEventCard = ({ id, title, image, tags, link }: PastEventCardProps) => (
     <Card className="overflow-hidden transition hover:shadow-md">

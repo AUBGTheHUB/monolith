@@ -1,7 +1,8 @@
 'use client';
 import events from './data/PastEvents.json';
-import { PastEventForm, PastEventFormProps } from './components/PastEventForm';
+import { PastEventForm } from './components/PastEventForm';
 import { useParams } from 'react-router';
+import { PastEventFormValues } from './components/schema';
 
 export const EditPastEventPage = () => {
     const { id } = useParams() as { id: string };
@@ -10,7 +11,7 @@ export const EditPastEventPage = () => {
     if (!event)
         return <div className="text-lg min-h-screen text-white flex items-center justify-center">Event not found.</div>;
 
-    const handleUpdate = (data: PastEventFormProps) => {
+    const handleUpdate = (data: PastEventFormValues) => {
         console.log('Mock update:', data);
         alert('Event updated (mocked)');
     };

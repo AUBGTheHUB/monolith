@@ -1,8 +1,9 @@
 'use client';
-import { PastEventForm, PastEventFormProps } from './components/PastEventForm';
+import { PastEventForm } from './components/PastEventForm';
+import { PastEventFormValues } from './components/schema';
 
 export const AddPastEventPage = () => {
-    const handleCreate = (data: PastEventFormProps) => {
+    const handleCreate = (data: PastEventFormValues) => {
         console.log('Mock create:', data);
         alert('Event created (mocked)');
     };
