@@ -51,7 +51,7 @@ export function JudgesListPage() {
 
             <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
                 <div className="max-w-7xl mx-auto">
-                    <Link to="admin/dashboard">
+                    <Link to="/admin/dashboard">
                         <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
                             {MESSAGES.BACK_BUTTON}
                         </Button>
