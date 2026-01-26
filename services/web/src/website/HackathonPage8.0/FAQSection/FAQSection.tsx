@@ -26,7 +26,7 @@ export const FAQSection = () => {
                     <h2 className="font-orbitron text-[40px] leading-[100%] text-[#FFFDF5]">FAQ</h2>
                 </div>
 
-                <div className="mt-16">
+                <div className="mt-24">
                     {faqs.map((faq) => (
                         <FAQItem
                             key={faq.id}
