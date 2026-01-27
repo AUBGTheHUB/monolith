@@ -1,6 +1,6 @@
-export type Day = 'Friday' | 'Saturday' | 'Sunday';
+import { Day, ScheduleEvent } from './Schedule.types';
 
-export const scheduleData: Record<Day, Array<{ time: string; event: string }>> = {
+export const scheduleData: Record<Day, ScheduleEvent[]> = {
     Friday: [
         { time: '16:00', event: 'Registration' },
         { time: '18:00', event: 'Opening Ceremony' },
