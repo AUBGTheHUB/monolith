@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FaqItem } from './FAQ.types';
+import type { FaqItem } from './types';
 
 type Props = {
     faq: FaqItem;
@@ -19,8 +19,10 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
 
     return (
         <div className="relative">
+            {/* Top separator */}
             <div className="h-px w-full bg-[#521010]" />
 
+            {/* Question row */}
             <button
                 onClick={onToggle}
                 aria-expanded={isOpen}
@@ -28,18 +30,15 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
             >
                 <span className="font-oxanium text-[19px] leading-[100%] text-[#A9B4C3]">{faq.question}</span>
 
-                <span className="flex items-center justify-center select-none">
-                    {isOpen ? (
-                        <span className="block h-[1px] w-[19px] bg-[#DA2F2F]" />
-                    ) : (
-                        <span className="relative block h-[11px] w-[11px]">
-                            <span className="absolute inset-x-0 top-1/2 h-[1px] bg-[#DA2F2F]" />
-                            <span className="absolute inset-y-0 left-1/2 w-[1px] bg-[#DA2F2F]" />
-                        </span>
-                    )}
-                </span>
+                {/* Plus / Minus icon */}
+                {isOpen ? (
+                    <img src="/minus.svg" alt="Collapse answer" className="h-[19px] w-[19px] select-none" />
+                ) : (
+                    <img src="/plus.svg" alt="Expand answer" className="h-[11px] w-[11px] select-none" />
+                )}
             </button>
 
+            {/* Answer */}
             <div style={{ height }} className="overflow-hidden transition-[height] duration-300 ease-in-out">
                 <div
                     ref={contentRef}
@@ -49,6 +48,7 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
                 </div>
             </div>
 
+            {/* Bottom separator */}
             <div className={`h-px w-full ${isOpen ? 'bg-[#DA2F2F]' : 'bg-[#521010]'}`} />
         </div>
     );
