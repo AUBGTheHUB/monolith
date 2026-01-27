@@ -8,7 +8,7 @@ const RULES = {
 export const sponsorSchema = z.object({
     name: z
         .string()
-        .min(1, { message: 'Sponsor name is required' })
+        .min(1, { message: 'Validation name is required' })
         .min(RULES.NAME.MIN, { message: `Name must be at least ${RULES.NAME.MIN} characters` })
         .max(RULES.NAME.MAX, { message: `Name must be less than ${RULES.NAME.MAX} characters` }),
 
@@ -17,14 +17,14 @@ export const sponsorSchema = z.object({
         .min(1, { message: 'Sponsorship tier is required' })
         .min(RULES.TIER.MIN, { message: `Tier must be at least ${RULES.TIER.MIN} characters` }),
 
-    logoUrl: z
+    logo_url: z
         .string()
         .min(1, { message: 'Logo URL is required' })
         .url({ message: 'Please enter a valid URL for the logo' }),
 
-    websiteUrl: z.string().min(1, { message: 'Website URL is required' }).url({ message: 'Please enter a valid URL' }),
+    website_url: z.string().min(1, { message: 'Website URL is required' }).url({ message: 'Please enter a valid URL' }),
 
-    careersUrl: z.string().optional().or(z.literal('')), // Allow empty string or valid URL
+    // careersUrl: z.string().optional().or(z.literal('')), // Allow empty string or valid URL
 });
 
 export type SponsorFormData = z.infer<typeof sponsorSchema>;
