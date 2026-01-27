@@ -28,8 +28,8 @@ export const HackathonPage = () => {
             <RecapSection />
             <GradingSection />
             <AwardsSection />
-            <SponsorsSection />
             <FAQSection />
+            <SponsorsSection />
             <FooterSection />
         </div>
     );
