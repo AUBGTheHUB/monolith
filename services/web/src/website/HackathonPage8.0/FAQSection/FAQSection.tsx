@@ -20,7 +20,7 @@ export const FAQSection = () => {
             <div className="pointer-events-none absolute top-0 bottom-0 right-[39px] w-[7px] bg-[#FFFDF5] hidden md:block" />
 
             {/* Content */}
-            <div className="relative z-10 mx-auto max-w-[1400px] px-8">
+            <div className="relative z-10 mx-20 max-w-[1400px] px-8">
                 <div className="flex items-center gap-[5px]">
                     <img src="/yellow_icon.svg" alt="FAQ icon" className="h-[42px] w-auto" />
                     <h2 className="font-orbitron text-[40px] leading-[100%] text-[#FFFDF5]">FAQ</h2>
