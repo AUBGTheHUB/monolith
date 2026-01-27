@@ -19,10 +19,8 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
 
     return (
         <div className="relative">
-            {/* Top separator */}
             <div className="h-px w-full bg-[#521010]" />
 
-            {/* Question row */}
             <button
                 onClick={onToggle}
                 aria-expanded={isOpen}
@@ -30,29 +28,27 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
             >
                 <span className="font-oxanium text-[19px] leading-[100%] text-[#A9B4C3]">{faq.question}</span>
 
-                {/* Icon container (LOCKED SIZE) */}
-                <span className="relative h-[19px] w-[19px] flex items-center justify-center">
-                    {/* PLUS */}
+                <span className="relative flex h-[19px] w-[19px] items-center justify-center">
+                    {/* Plus icon shown when isOpen === false */}
                     <img
                         src="/plus.svg"
                         alt="Expand answer"
-                        className={`absolute h-[11px] w-[11px] transition-opacity duration-100 ${
-                            isOpen ? 'opacity-0' : 'opacity-100'
+                        className={`absolute h-[11px] w-[11px] transition-all duration-200 ease-out ${
+                            isOpen ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
                         }`}
                     />
 
-                    {/* MINUS */}
+                    {/* Minus icon shown when isOpen === true */}
                     <img
                         src="/minus.svg"
                         alt="Collapse answer"
-                        className={`absolute h-[19px] w-[19px] transition-opacity duration-100 ${
-                            isOpen ? 'opacity-100' : 'opacity-0'
+                        className={`absolute h-[19px] w-[19px] transition-all duration-200 ease-out ${
+                            isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                         }`}
                     />
                 </span>
             </button>
 
-            {/* Answer */}
             <div style={{ height }} className="overflow-hidden transition-[height] duration-300 ease-in-out">
                 <div
                     ref={contentRef}
@@ -62,7 +58,6 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
                 </div>
             </div>
 
-            {/* Bottom separator */}
             <div className={`h-px w-full ${isOpen ? 'bg-[#DA2F2F]' : 'bg-[#521010]'}`} />
         </div>
     );
