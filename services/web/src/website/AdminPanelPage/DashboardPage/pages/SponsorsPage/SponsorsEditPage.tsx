@@ -41,7 +41,7 @@ export function SponsorsEditPage() {
     const logoUrl = watch('logo_url');
 
     // 1. Fetch data if in Edit Mode
-    const { data: existingSponsor, isLoading: isFetching } = useQuery({
+    const { data: sponsor, isLoading } = useQuery({
         queryKey: ['sponsor', id],
         queryFn: () => apiClient.get<{ sponsor: Sponsor }>(`/admin/sponsors/${id}`),
         enabled: isEditMode, // Only run query if id exists
@@ -49,15 +49,15 @@ export function SponsorsEditPage() {
     });
     // 2. Fill form when data is received
     useEffect(() => {
-        if (existingSponsor) {
+        if (sponsor) {
             reset({
-                name: existingSponsor.name,
-                tier: existingSponsor.tier,
-                logo_url: existingSponsor.logo_url,
-                website_url: existingSponsor.website_url,
+                name: sponsor.name,
+                tier: sponsor.tier,
+                logo_url: sponsor.logo_url,
+                website_url: sponsor.website_url,
             });
         }
-    }, [existingSponsor, reset]);
+    }, [sponsor, reset]);
 
     // 3. Mutation for Save (Create or Update)
     const mutation = useMutation({
@@ -70,8 +70,8 @@ export function SponsorsEditPage() {
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
             navigate('/admin/sponsors');
         },
-        onError: (error: Error) => {
-            alert(error.message || 'An error occurred while saving.');
+        onError: () => {
+            alert('An error occurred while saving.');
         },
     });
 
@@ -85,7 +85,7 @@ export function SponsorsEditPage() {
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
     // Show loading state only when fetching existing data
-    if (isEditMode && isFetching) {
+    if (isEditMode && isLoading) {
         return (
             <div className={pageWrapperClass}>
                 <div className="max-w-5xl mx-auto text-white text-center py-20">Loading sponsor details...</div>
@@ -93,7 +93,7 @@ export function SponsorsEditPage() {
         );
     }
 
-    if (isEditMode && !existingSponsor) {
+    if (isEditMode && !sponsor) {
         return (
             <Fragment>
                 <Helmet>

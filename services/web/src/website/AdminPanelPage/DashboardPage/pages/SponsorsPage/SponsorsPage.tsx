@@ -14,7 +14,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 export function SponsorsListPage() {
     const queryClient = useQueryClient();
     // 1. Fetching Logic
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['sponsors'],
         queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors'),
         select: (res) => res.sponsors, // Automatically extract the array
@@ -72,72 +72,75 @@ export function SponsorsListPage() {
             </Button>
         </div>
     );
+    if (!isLoading) {
+        return (
+            <Fragment>
+                <Helmet>
+                    <title>{MESSAGES.PAGE_TITLE}</title>
+                </Helmet>
 
-    return (
-        <Fragment>
-            <Helmet>
-                <title>{MESSAGES.PAGE_TITLE}</title>
-            </Helmet>
-
-            <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
-                <div className="max-w-7xl mx-auto">
-                    <Link to="/admin/dashboard">
-                        <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
-                            {MESSAGES.BACK_BUTTON}
-                        </Button>
-                    </Link>
-
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-                        <div>
-                            <h1 className={cn('text-4xl', Styles.text.title)}>{MESSAGES.HEADING}</h1>
-                            <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
-                        </div>
-
-                        <Link to="/admin/sponsors/add">
-                            <Button
-                                size="lg"
-                                style={{ backgroundColor: Styles.colors.hubCyan }}
-                                className={cn('px-8 py-6 text-lg', Styles.actions.primaryButton)}
-                            >
-                                {MESSAGES.ADD_BUTTON}
+                <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
+                    <div className="max-w-7xl mx-auto">
+                        <Link to="/admin/dashboard">
+                            <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
+                                {MESSAGES.BACK_BUTTON}
                             </Button>
                         </Link>
-                    </div>
 
-                    {!data || data.length === 0 ? (
-                        <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
-                            <p className={cn('text-xl font-medium', Styles.text.subtitle)}>{MESSAGES.EMPTY_STATE}</p>
-                        </Card>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {data.map((sponsor) => {
-                                const tierColors = getTierColors(sponsor.tier);
-                                return (
-                                    <div key={sponsor.id} className="group">
-                                        <AdminCard
-                                            imageUrl={sponsor.logo_url}
-                                            imageAlt={sponsor.name}
-                                            title={sponsor.name}
-                                            subtitle={sponsor.tier}
-                                            tierColor={tierColors.text}
-                                            tierBgColor={tierColors.bg}
-                                            // position={sponsor.ca ? 'Careers Available' : ''}
-                                            linkedinUrl={sponsor.website_url}
-                                            actions={renderSponsorActions(sponsor.id, sponsor.name)}
-                                            className={cn(
-                                                'transition-all duration-300 group-hover:translate-y-[-4px]',
-                                                Styles.glass.card,
-                                                Styles.glass.cardHover,
-                                                'rounded-2xl',
-                                            )}
-                                        />
-                                    </div>
-                                );
-                            })}
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                            <div>
+                                <h1 className={cn('text-4xl', Styles.text.title)}>{MESSAGES.HEADING}</h1>
+                                <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
+                            </div>
+
+                            <Link to="/admin/sponsors/add">
+                                <Button
+                                    size="lg"
+                                    style={{ backgroundColor: Styles.colors.hubCyan }}
+                                    className={cn('px-8 py-6 text-lg', Styles.actions.primaryButton)}
+                                >
+                                    {MESSAGES.ADD_BUTTON}
+                                </Button>
+                            </Link>
                         </div>
-                    )}
+
+                        {!data || data.length === 0 ? (
+                            <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
+                                <p className={cn('text-xl font-medium', Styles.text.subtitle)}>
+                                    {MESSAGES.EMPTY_STATE}
+                                </p>
+                            </Card>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {data.map((sponsor) => {
+                                    const tierColors = getTierColors(sponsor.tier);
+                                    return (
+                                        <div key={sponsor.id} className="group">
+                                            <AdminCard
+                                                imageUrl={sponsor.logo_url}
+                                                imageAlt={sponsor.name}
+                                                title={sponsor.name}
+                                                subtitle={sponsor.tier}
+                                                tierColor={tierColors.text}
+                                                tierBgColor={tierColors.bg}
+                                                // position={sponsor.ca ? 'Careers Available' : ''}
+                                                linkedinUrl={sponsor.website_url}
+                                                actions={renderSponsorActions(sponsor.id, sponsor.name)}
+                                                className={cn(
+                                                    'transition-all duration-300 group-hover:translate-y-[-4px]',
+                                                    Styles.glass.card,
+                                                    Styles.glass.cardHover,
+                                                    'rounded-2xl',
+                                                )}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </Fragment>
-    );
+            </Fragment>
+        );
+    }
 }

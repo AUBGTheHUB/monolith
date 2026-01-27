@@ -18,19 +18,19 @@ export const HackathonPage = () => {
             <Helmet>
                 <title>Hackathon 7.0</title>
                 <link rel="icon" href="/faviconHack.ico" />
-                <NavigationSection />
-                <LandingSection />
-                <MissionSection />
-                <JourneySection />
-                <MentorsAndJudgesSection />
-                <ScheduleSection />
-                <RecapSection />
-                <GradingSection />
-                <AwardsSection />
-                <SponsorsSection />
-                <FAQSection />
-                <FooterSection />
             </Helmet>
+            <NavigationSection />
+            <LandingSection />
+            <MissionSection />
+            <JourneySection />
+            <MentorsAndJudgesSection />
+            <ScheduleSection />
+            <RecapSection />
+            <GradingSection />
+            <AwardsSection />
+            <SponsorsSection />
+            <FAQSection />
+            <FooterSection />
         </div>
     );
 };
