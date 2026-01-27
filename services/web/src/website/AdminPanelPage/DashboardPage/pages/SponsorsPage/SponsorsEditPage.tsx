@@ -3,23 +3,27 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_SPONSORS } from './mockSponsors';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/components/SponsorshipFormFields';
 import { SponsorsEditMessages, SponsorsAddMessages } from './messages';
 import { Form } from '@/components/ui/form';
-import { sponsorSchema, SponsorFormData } from './validation/validation';
+import {
+    sponsorSchema,
+    SponsorFormData,
+    Sponsor,
+} from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/validation/sponsor.tsx';
 import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient.ts';
 
 export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
-    const sponsor = id ? MOCK_SPONSORS.find((s) => s.id === id) : undefined;
-    const isEditMode = Boolean(sponsor);
+    const queryClient = useQueryClient();
+    const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
 
     const form = useForm<SponsorFormData>({
@@ -27,39 +31,52 @@ export function SponsorsEditPage() {
         defaultValues: {
             name: '',
             tier: '',
-            logoUrl: '',
-            websiteUrl: '',
-            careersUrl: '',
+            logo_url: '',
+            website_url: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const logoUrl = watch('logoUrl');
+    const logoUrl = watch('logo_url');
 
+    // 1. Fetch data if in Edit Mode
+    const { data: existingSponsor, isLoading: isFetching } = useQuery({
+        queryKey: ['sponsor', id],
+        queryFn: () => apiClient.get<{ sponsor: Sponsor }>(`/admin/sponsors/${id}`),
+        enabled: isEditMode, // Only run query if id exists
+        select: (res) => res.sponsor,
+    });
+    // 2. Fill form when data is received
     useEffect(() => {
-        if (isEditMode && sponsor) {
+        if (existingSponsor) {
             reset({
-                name: sponsor.name,
-                tier: sponsor.tier,
-                logoUrl: sponsor.logoUrl,
-                websiteUrl: sponsor.websiteUrl,
-                careersUrl: sponsor.careersUrl || '',
-            });
-        } else {
-            reset({
-                name: '',
-                tier: '',
-                logoUrl: '',
-                websiteUrl: '',
-                careersUrl: '',
+                name: existingSponsor.name,
+                tier: existingSponsor.tier,
+                logo_url: existingSponsor.logo_url,
+                website_url: existingSponsor.website_url,
             });
         }
-    }, [isEditMode, sponsor, reset]);
+    }, [existingSponsor, reset]);
 
-    const onSubmit = () => {
-        alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/sponsors');
+    // 3. Mutation for Save (Create or Update)
+    const mutation = useMutation({
+        mutationFn: (formData: SponsorFormData) => {
+            return isEditMode
+                ? apiClient.patch<Sponsor, SponsorFormData>(`/admin/sponsors/${id}`, formData)
+                : apiClient.post<Sponsor, SponsorFormData>(`/admin/sponsors`, formData);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
+            navigate('/admin/sponsors');
+        },
+        onError: (error: Error) => {
+            alert(error.message || 'An error occurred while saving.');
+        },
+    });
+
+    const onSubmit = (data: SponsorFormData) => {
+        mutation.mutate(data);
     };
 
     const goBack = () => {
@@ -67,8 +84,16 @@ export function SponsorsEditPage() {
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
+    // Show loading state only when fetching existing data
+    if (isEditMode && isFetching) {
+        return (
+            <div className={pageWrapperClass}>
+                <div className="max-w-5xl mx-auto text-white text-center py-20">Loading sponsor details...</div>
+            </div>
+        );
+    }
 
-    if (isEditMode && !sponsor) {
+    if (isEditMode && !existingSponsor) {
         return (
             <Fragment>
                 <Helmet>
