@@ -518,6 +518,7 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 
     return cast(SponsorsRepoMock, sponsors_repo)
 
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -571,32 +572,34 @@ def sponsors_service_mock() -> SponsorsServiceMock:
 
 
 class AwsServiceMock(Protocol):
-    get_s3_client: AsyncMock
-    upload_file: AsyncMock
+    get_s3_client: Mock
+    upload_file: Mock
 
 
 @pytest.fixture
 def aws_service_mock() -> AwsServiceMock:
     service = _create_typed_mock(AwsService)
 
-    service.get_s3_client = _create_typed_async_mock(AwsServiceMock.get_s3_client)
-    service.upload_file = AsyncMock()
+    service.get_s3_client = Mock()
+    service.upload_file = Mock()
 
     return cast(AwsServiceMock, service)
 
+
 class ImageServiceMock(Protocol):
     upload_image: AsyncMock
-    compress_image: AsyncMock
+    compress_image: Mock
 
 
 @pytest.fixture
 def image_service_mock() -> ImageServiceMock:
     service = _create_typed_mock(ImageService)
 
-    service.upload_image = _create_typed_async_mock(ImageServiceMock.upload_image)
-    service.compress_image = AsyncMock()
+    service.upload_image = _create_typed_async_mock(ImageService.upload_image)
+    service.compress_image = Mock()
 
     return cast(ImageServiceMock, service)
+
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
@@ -974,7 +977,14 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 
 @pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
+    return Sponsor(
+        id=obj_id_mock,
+        name="Coca-Cola",
+        tier="GOLD",
+        website_url="https://coca-cola.com/",
+        logo_url="https://eu.aws.com/coca-cola.jpg",
+    )
+
 
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
