@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FaqItem } from './types';
+import type { FaqItem } from './FAQ.types';
 
 type Props = {
     faq: FaqItem;

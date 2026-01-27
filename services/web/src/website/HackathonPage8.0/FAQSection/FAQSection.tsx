@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FAQItem } from './FAQItem';
-import { faqs } from './faq.data';
+import { faqs } from './FAQ.data';
 
 export const FAQSection = () => {
     const [openFaqId, setOpenFaqId] = useState<number | null>(null);
