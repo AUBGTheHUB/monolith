@@ -1,7 +1,7 @@
 import React from 'react';
-import { Award } from './awardsConfig';
+import { Award } from './Awards.types';
 
-export const AwardCard: React.FC<Award> = ({ title, prize, currency, number, image }) => {
+export const AwardItem: React.FC<Award> = ({ title, prize, currency, number, image }) => {
     const classMap: Record<
         number,
         {
