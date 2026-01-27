@@ -1,6 +1,5 @@
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router';
-import { MOCK_SPONSORS, Sponsor } from './mockSponsors';
 import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,9 +7,34 @@ import { Helmet } from 'react-helmet';
 import { SponsorsPageMessages as MESSAGES } from './messages';
 import { Styles } from '../../../AdminStyles';
 import { cn } from '@/lib/utils';
+import { Sponsor } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/validation/sponsor.tsx';
+import { apiClient } from '@/services/apiClient.ts';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function SponsorsListPage() {
-    const [sponsors, setSponsors] = useState<Sponsor[]>(MOCK_SPONSORS);
+    const queryClient = useQueryClient();
+    // 1. Fetching Logic
+    const { data } = useQuery({
+        queryKey: ['sponsors'],
+        queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors'),
+        select: (res) => res.sponsors, // Automatically extract the array
+    });
+
+    // 2. Deletion Logic (Mutation)
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => apiClient.delete(`/admin/sponsors/${id}`),
+        onSuccess: async () => {
+            // Invalidate and refetch the list automatically
+            await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
+        },
+        onError: () => alert('Failed to delete sponsor'),
+    });
+
+    const handleDelete = (id: string, name: string) => {
+        if (window.confirm(MESSAGES.DELETE_CONFIRM(name))) {
+            deleteMutation.mutate(id);
+        }
+    };
 
     const getTierColors = (tier: string): { text: string; bg: string } => {
         const tierLower = tier.toLowerCase().trim();
@@ -28,16 +52,7 @@ export function SponsorsListPage() {
         return tierColorMap[tierLower] || { text: 'text-white', bg: 'bg-gradient-to-r from-blue-500 to-purple-500' };
     };
 
-    const handleDelete = (id: string) => {
-        const sponsor = sponsors.find((s) => s.id === id);
-        if (!sponsor) return;
-
-        if (window.confirm(MESSAGES.DELETE_CONFIRM(sponsor.name))) {
-            setSponsors((prevSponsors) => prevSponsors.filter((s) => s.id !== id));
-        }
-    };
-
-    const renderSponsorActions = (sponsorId: string) => (
+    const renderSponsorActions = (sponsorId: string, sponsorName: string) => (
         <div className="flex gap-3 w-full">
             <Link to={`${sponsorId}`} className="flex-1">
                 <Button
@@ -51,7 +66,7 @@ export function SponsorsListPage() {
             <Button
                 variant="destructive"
                 className="flex-1 shadow-lg shadow-red-500/10 hover:shadow-red-500/20 transition-all"
-                onClick={() => handleDelete(sponsorId)}
+                onClick={() => handleDelete(sponsorId, sponsorName)}
             >
                 {MESSAGES.DELETE_BUTTON}
             </Button>
@@ -89,26 +104,26 @@ export function SponsorsListPage() {
                         </Link>
                     </div>
 
-                    {sponsors.length === 0 ? (
+                    {!data || data.length === 0 ? (
                         <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
                             <p className={cn('text-xl font-medium', Styles.text.subtitle)}>{MESSAGES.EMPTY_STATE}</p>
                         </Card>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {sponsors.map((sponsor) => {
+                            {data.map((sponsor) => {
                                 const tierColors = getTierColors(sponsor.tier);
                                 return (
                                     <div key={sponsor.id} className="group">
                                         <AdminCard
-                                            imageUrl={sponsor.logoUrl}
+                                            imageUrl={sponsor.logo_url}
                                             imageAlt={sponsor.name}
                                             title={sponsor.name}
                                             subtitle={sponsor.tier}
                                             tierColor={tierColors.text}
                                             tierBgColor={tierColors.bg}
-                                            position={sponsor.careersUrl ? 'Careers Available' : ''}
-                                            linkedinUrl={sponsor.websiteUrl}
-                                            actions={renderSponsorActions(sponsor.id)}
+                                            // position={sponsor.ca ? 'Careers Available' : ''}
+                                            linkedinUrl={sponsor.website_url}
+                                            actions={renderSponsorActions(sponsor.id, sponsor.name)}
                                             className={cn(
                                                 'transition-all duration-300 group-hover:translate-y-[-4px]',
                                                 Styles.glass.card,
