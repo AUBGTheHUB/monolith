@@ -30,12 +30,26 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
             >
                 <span className="font-oxanium text-[19px] leading-[100%] text-[#A9B4C3]">{faq.question}</span>
 
-                {/* Plus / Minus icon */}
-                {isOpen ? (
-                    <img src="/minus.svg" alt="Collapse answer" className="h-[19px] w-[19px] select-none" />
-                ) : (
-                    <img src="/plus.svg" alt="Expand answer" className="h-[11px] w-[11px] select-none" />
-                )}
+                {/* Icon container (LOCKED SIZE) */}
+                <span className="relative h-[19px] w-[19px] flex items-center justify-center">
+                    {/* PLUS */}
+                    <img
+                        src="/plus.svg"
+                        alt="Expand answer"
+                        className={`absolute h-[11px] w-[11px] transition-opacity duration-100 ${
+                            isOpen ? 'opacity-0' : 'opacity-100'
+                        }`}
+                    />
+
+                    {/* MINUS */}
+                    <img
+                        src="/minus.svg"
+                        alt="Collapse answer"
+                        className={`absolute h-[19px] w-[19px] transition-opacity duration-100 ${
+                            isOpen ? 'opacity-100' : 'opacity-0'
+                        }`}
+                    />
+                </span>
             </button>
 
             {/* Answer */}
