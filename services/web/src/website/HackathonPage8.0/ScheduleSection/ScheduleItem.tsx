@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScheduleEvent } from './Schedule.types';
+import { ScheduleEvent } from './types';
 
 interface ScheduleItemProps extends ScheduleEvent {
     isLast: boolean;

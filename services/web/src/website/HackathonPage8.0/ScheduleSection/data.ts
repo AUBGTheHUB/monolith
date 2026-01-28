@@ -1,4 +1,4 @@
-import { Day, ScheduleEvent } from './Schedule.types';
+import { Day, ScheduleEvent } from './types';
 
 export const scheduleData: Record<Day, ScheduleEvent[]> = {
     Friday: [
