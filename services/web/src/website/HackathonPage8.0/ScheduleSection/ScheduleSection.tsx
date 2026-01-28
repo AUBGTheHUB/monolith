@@ -2,6 +2,7 @@ import { Tabs } from '@/components/ui/tabs';
 import { useState } from 'react';
 import { Day } from './types';
 import { ScheduleHeader, ScheduleTable, ScheduleTabs } from './ScheduleItem';
+import { VerticalBar } from '@/components/ui/verticalBar';
 
 export const ScheduleSection = () => {
     const [activeTab, setActiveTab] = useState<Day>('Friday');
@@ -11,6 +12,11 @@ export const ScheduleSection = () => {
             className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden pt-16 sm:pt-24 lg:pt-32 pb-12 sm:pb-16 lg:pb-20 bg-white"
             id="schedule"
         >
+            <div className="absolute inset-0 z-50 pointer-events-none">
+                <VerticalBar isRight={false} isBlack={true} />
+                <VerticalBar isRight={true} isBlack={true} />
+            </div>
+
             <img
                 src="/ScheduleSection/left-background.png"
                 alt=""
