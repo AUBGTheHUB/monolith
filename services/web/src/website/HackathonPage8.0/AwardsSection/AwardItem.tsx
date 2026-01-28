@@ -74,16 +74,6 @@ export const AwardItem: React.FC<Award> = ({ title, prize, currency, number, ima
     );
 };
 
-export const AwardsHeader = () => (
-    <div className="w-full flex items-center justify-center mb-[4vh] relative z-30 px-4 lg:px-8 xl:px-16">
-        <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
-        <h2 className="text-white text-[4vh] lg:text-[5vh] xl:text-[6vh] font-orbitron font-bold tracking-[0.4em] ml-4 lg:ml-16 xl:ml-22 mr-4 lg:mr-4 xl:mr-12 whitespace-nowrap">
-            AWARDS
-        </h2>
-        <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
-    </div>
-);
-
 export const AwardsPodium = () => {
     const sortedAwards = awards.slice().sort((a, b) => {
         const order = [2, 1, 3];
@@ -101,9 +91,19 @@ export const AwardsPodium = () => {
     );
 };
 
+export const AwardsHeader = () => (
+    <div className="w-full flex items-center justify-center mb-[4vh] relative z-30 px-10 lg:px-10 xl:px-10">
+        <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
+        <h2 className="text-white text-[4vh] lg:text-[5vh] xl:text-[6vh] font-orbitron font-bold tracking-[0.4em] mx-4 lg:mx-8 xl:mx-16 whitespace-nowrap">
+            AWARDS
+        </h2>
+        <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
+    </div>
+);
+
 export const AwardsFooter = () => (
     <div className="flex flex-col items-center w-full relative z-30">
-        <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start w-full text-white text-[1.8vh] lg:text-[1.5vh] font-oxanium gap-[2vh] mb-[2vh] px-8 lg:px-[4vw] xl:px-32 leading-relaxed">
+        <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start w-full text-white text-[1.8vh] lg:text-[1.5vh] font-oxanium gap-[2vh] mb-[2vh] px-16 lg:px-[5vw] xl:px-36 leading-relaxed">
             <div className="flex-1 lg:max-w-[40%]">
                 <p>And much more!</p>
                 <p>Take part in all of the games we have prepared!</p>
@@ -113,7 +113,7 @@ export const AwardsFooter = () => (
             </div>
         </div>
 
-        <div className="w-full flex items-center justify-center px-4 lg:px-8 xl:px-16">
+        <div className="w-full flex items-center justify-center px-10 lg:px-10 xl:px-10">
             <div className="flex-1 h-[4px] lg:h-[6px] xl:h-[8px] bg-white" aria-hidden="true" />
             <div className="mx-6 lg:mx-[2vw] xl:mx-16">
                 <img

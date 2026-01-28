@@ -1,3 +1,4 @@
+import { VerticalBar } from '@/components/ui/verticalBar';
 import { AwardsFooter, AwardsHeader, AwardsPodium } from './AwardItem';
 
 export const AwardsSection = () => {
@@ -11,6 +12,11 @@ export const AwardsSection = () => {
                 backgroundRepeat: 'no-repeat',
             }}
         >
+            <div className="absolute inset-0 z-50 pointer-events-none">
+                <VerticalBar isRight={false} isBlack={false} />
+                <VerticalBar isRight={true} isBlack={false} />
+            </div>
+
             <AwardsHeader />
             <AwardsPodium />
             <AwardsFooter />
