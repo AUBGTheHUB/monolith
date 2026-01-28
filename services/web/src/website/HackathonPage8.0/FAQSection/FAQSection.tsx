@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FAQItem } from './FAQItem';
 import { faqs } from './data';
-import { VerticalLine } from '@/components/ui/verticalLine.tsx';
+import { VerticalBar } from '@/components/ui/verticalBar.tsx';
 
 export const FAQSection = () => {
     const [openFaqId, setOpenFaqId] = useState<number | null>(null);
@@ -14,10 +14,10 @@ export const FAQSection = () => {
                 style={{ backgroundImage: "url('/rocksBG.png')" }}
             />
 
-            <VerticalLine isRight={true} isBlack={false} />
-            <VerticalLine isRight={false} isBlack={false} />
+            <VerticalBar isRight={true} isBlack={false} />
+            <VerticalBar isRight={false} isBlack={false} />
             {/* Content */}
-            <div className="relative z-10 mx-20 max-w-[1400px] px-8 py-10">
+            <div className="relative z-10 mx-20 max-w-[1400px] px-8 py-12">
                 <div className="flex items-center gap-[5px]">
                     <img src="/yellow_icon.svg" alt="FAQ icon" className="h-[42px] w-auto" />
                     <h2 className="font-orbitron text-[40px] leading-[100%] text-[#FFFDF5]">FAQ</h2>

@@ -1,4 +1,4 @@
-export const VerticalLine = ({ isRight, isBlack }: { isRight: boolean; isBlack: boolean }) => {
+export const VerticalBar = ({ isRight, isBlack }: { isRight: boolean; isBlack: boolean }) => {
     const color = isBlack ? 'bg-[#000000]' : 'bg-[#FFFDF5]';
     const position = isRight ? 'right-[39px]' : 'left-[39px]';
     return (
