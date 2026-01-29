@@ -4,7 +4,7 @@ import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-import { SponsorsPageMessages as MESSAGES } from './messages';
+import { SponsorsPageMessages as MESSAGES, ERROR_MESSAGES } from './messages';
 import { Styles } from '../../../AdminStyles';
 import { cn } from '@/lib/utils';
 import { Sponsor } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/validation/sponsor.tsx';
@@ -27,7 +27,7 @@ export function SponsorsListPage() {
             // Invalidate and refetch the list automatically
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
         },
-        onError: () => alert('Failed to delete sponsor'),
+        onError: () => alert(ERROR_MESSAGES.FAILED_DELETE),
     });
 
     const handleDelete = (id: string, name: string) => {

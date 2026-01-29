@@ -3,6 +3,7 @@ import { API_URL } from '../constants.ts';
 const getHeaders = (contentType?: string) => {
     const headers: HeadersInit = {
         // Shared headers
+        //TEMP SOLUTION: Will change when auth is implemented
         Authorization: 'Bearer a0e923d30b613ce5cf57d9af35a3d4d2e8efa660f579b9a547918bd1c83fdb7b',
     };
 
@@ -14,10 +15,10 @@ const getHeaders = (contentType?: string) => {
     return headers;
 };
 
-const handleResponse = async <T>(response: Response): Promise<T> => {
+const handleResponse = async <R>(response: Response): Promise<R> => {
     if (response.status == 204 || response.status == 404) {
         //only cases for 404 are invalid route or not existing object
-        return {} as T;
+        return {} as R;
     }
     if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'An error occurred' }));
@@ -29,11 +30,11 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 
 export const apiClient = {
     // GET and DELETE don't need Content-Type headers
-    get: <T>(endpoint: string) =>
+    get: <R>(endpoint: string) =>
         fetch(`${API_URL}${endpoint}`, {
             method: 'GET',
             headers: getHeaders(),
-        }).then((res) => handleResponse<T>(res)),
+        }).then((res) => handleResponse<R>(res)),
 
     delete: (endpoint: string) =>
         fetch(`${API_URL}${endpoint}`, {
@@ -42,17 +43,17 @@ export const apiClient = {
         }).then((res) => handleResponse(res)),
 
     // POST and PATCH require the JSON content-type
-    post: <T, D>(endpoint: string, data: D) =>
+    post: <R, D>(endpoint: string, data: D) =>
         fetch(`${API_URL}${endpoint}`, {
             method: 'POST',
             headers: getHeaders('application/json'),
             body: JSON.stringify(data),
-        }).then((res) => handleResponse<T>(res)),
+        }).then((res) => handleResponse<R>(res)),
 
-    patch: <T, D>(endpoint: string, data: D) =>
+    patch: <R, D>(endpoint: string, data: D) =>
         fetch(`${API_URL}${endpoint}`, {
             method: 'PATCH',
             headers: getHeaders('application/json'),
             body: JSON.stringify(data),
-        }).then((res) => handleResponse<T>(res)),
+        }).then((res) => handleResponse<R>(res)),
 };

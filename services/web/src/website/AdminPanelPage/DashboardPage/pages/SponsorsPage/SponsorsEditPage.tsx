@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/components/SponsorshipFormFields';
-import { SponsorsEditMessages, SponsorsAddMessages } from './messages';
+import { SponsorsEditMessages, SponsorsAddMessages, ERROR_MESSAGES } from './messages';
 import { Form } from '@/components/ui/form';
 import {
     sponsorSchema,
@@ -71,7 +71,7 @@ export function SponsorsEditPage() {
             navigate('/admin/sponsors');
         },
         onError: () => {
-            alert('An error occurred while saving.');
+            alert(ERROR_MESSAGES.FAILED_SAVE);
         },
     });
 
