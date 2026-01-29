@@ -147,7 +147,25 @@ class ImageCompressionError(Exception):
     message = "There was an error when compressing the image"
 
 
+class ImageUploadError(Exception):
+    """Exception raised when the image upload fails"""
+
+    message = "There was an error when uploading the image"
+
+
+class ImageDeleteError(Exception):
+    """Exception raised when the image delete fails"""
+
+    message = "There was an error when deleteing the image"
+
+
 class FileUploadError(Exception):
     """Exception raised when uploading a file to aws fails"""
 
     message = "There was an error when uploading the file"
+
+
+class FileDeleteError(Exception):
+    """Exception raised when deleting a file in aws fails"""
+
+    message = "There was an error when deleting the file"
