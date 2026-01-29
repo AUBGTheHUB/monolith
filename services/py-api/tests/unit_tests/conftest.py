@@ -6,12 +6,6 @@ from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
-"""Mock AWS Credentials for testing moto."""
-environ["AWS_ACCESS_KEY_ID"] = "test-key"
-environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
-environ["AWS_DEFAULT_REGION"] = "us-east-2"
-environ["AWS_BUCKET"] = "dabucket"
-
 import pytest
 from fastapi import BackgroundTasks
 from motor.motor_asyncio import (
@@ -1176,6 +1170,15 @@ def thirty_sec_jwt_exp_limit() -> int:
 @pytest.fixture
 def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
     return ResendEmailParticipantData(participant_id=obj_id_mock)
+
+
+@pytest.fixture
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "us-east-2"
+    environ["AWS_BUCKET"] = "dabucket"
 
 
 # =================================================
