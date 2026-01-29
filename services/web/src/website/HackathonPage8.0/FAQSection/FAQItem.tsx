@@ -1,0 +1,64 @@
+import { useEffect, useRef, useState } from 'react';
+import type { FaqItem } from './types';
+
+type Props = {
+    faq: FaqItem;
+    isOpen: boolean;
+    onToggle: () => void;
+};
+
+export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState(0);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            setHeight(isOpen ? contentRef.current.scrollHeight : 0);
+        }
+    }, [isOpen]);
+
+    return (
+        <div className="relative">
+            <div className="h-px w-full bg-[#521010]" />
+
+            <button
+                onClick={onToggle}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between py-[19px] text-left"
+            >
+                <span className="font-oxanium text-[19px] leading-[100%] text-[#A9B4C3]">{faq.question}</span>
+
+                <span className="relative flex h-[19px] w-[19px] items-center justify-center">
+                    {/* Plus icon shown when isOpen === false */}
+                    <img
+                        src="/plus.svg"
+                        alt="Expand answer"
+                        className={`absolute h-[11px] w-[11px] transition-all duration-200 ease-out ${
+                            isOpen ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+                        }`}
+                    />
+
+                    {/* Minus icon shown when isOpen === true */}
+                    <img
+                        src="/minus.svg"
+                        alt="Collapse answer"
+                        className={`absolute h-[19px] w-[19px] transition-all duration-200 ease-out ${
+                            isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                        }`}
+                    />
+                </span>
+            </button>
+
+            <div style={{ height }} className="overflow-hidden transition-[height] duration-300 ease-in-out">
+                <div
+                    ref={contentRef}
+                    className="pt-[19px] pb-[19px] font-oxanium text-[19px] leading-[100%] text-[#FFFFFF]"
+                >
+                    {faq.answer}
+                </div>
+            </div>
+
+            <div className={`h-px w-full ${isOpen ? 'bg-[#DA2F2F]' : 'bg-[#521010]'}`} />
+        </div>
+    );
+};

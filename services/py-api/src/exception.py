@@ -93,6 +93,11 @@ class TeamNameMissmatchError(CustomError):
     message = "team_name passed in the request body is different from the team_name in the decoded JWT token"
     status_code = status.HTTP_400_BAD_REQUEST
 
+class SponsorNotFoundError(CustomError):
+    """Exception raised when the sponsor cannot be found in the database"""
+
+    message = "The specified sponsor was not found"
+    status_code = status.HTTP_404_NOT_FOUND
 
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
