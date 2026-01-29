@@ -57,7 +57,7 @@ def test_ensure_bucket_exists_existing_bucket(aws_service: AwsService, monkeypat
 
     monkeypatch.setattr(s3_client, "create_bucket", call_create_bucket)
 
-    aws_service.ensure_bucket_exists("dabucket")  # parameter is environ["AWS_S3_DEFAULT_BUCKET"]
+    aws_service.ensure_bucket_exists("dabucket")  # parameter is environ["AWS_BUCKET"]
 
     assert create_bucket_called is True
 
