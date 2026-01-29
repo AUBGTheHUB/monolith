@@ -14,15 +14,17 @@ const getHeaders = (contentType?: string) => {
     return headers;
 };
 
-async function handleResponse<T>(response: Response): Promise<T> {
+const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         const error = await response.json().catch(() => ({ message: 'An unexpected error occurred' }));
         throw new Error(error.message || `Error: ${response.status}`);
     }
+
     // Return empty object for 204 No Content, otherwise parse JSON
     if (response.status === 204) return {} as T;
+
     return response.json();
-}
+};
 
 export const apiClient = {
     // GET and DELETE don't need Content-Type headers
