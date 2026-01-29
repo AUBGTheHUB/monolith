@@ -3,88 +3,87 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPage/pages/JudgesPage/mockJudges';
+import { MOCK_SPONSORS } from './mockSponsors';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
-import { JudgeFormFields } from './components/JudgeFormFields';
-import { JudgesEditMessages, JudgesAddMessages } from './messages';
+import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/components/SponsorshipFormFields';
+import { SponsorsEditMessages, SponsorsAddMessages } from './messages';
 import { Form } from '@/components/ui/form';
-import { judgeSchema, JudgeFormData } from './validation/validation';
+import { sponsorSchema, SponsorFormData } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 
-export function JudgesEditPage() {
+export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    const isEditMode = Boolean(id);
-    const MESSAGES = isEditMode ? JudgesEditMessages : JudgesAddMessages;
+    const sponsor = id ? MOCK_SPONSORS.find((s) => s.id === id) : undefined;
+    const isEditMode = Boolean(sponsor);
+    const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
 
-    const judge = MOCK_JUDGES.find((j) => j.id === id);
-
-    const form = useForm<JudgeFormData>({
-        resolver: zodResolver(judgeSchema),
+    const form = useForm<SponsorFormData>({
+        resolver: zodResolver(sponsorSchema),
         defaultValues: {
             name: '',
-            companyName: '',
-            imageUrl: '',
-            position: '',
-            linkedinURL: '',
+            tier: '',
+            logoUrl: '',
+            websiteUrl: '',
+            careersUrl: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('imageUrl');
+    const logoUrl = watch('logoUrl');
 
     useEffect(() => {
-        if (isEditMode && judge) {
+        if (isEditMode && sponsor) {
             reset({
-                name: judge.name,
-                companyName: judge.companyName,
-                imageUrl: judge.imageUrl,
-                position: judge.position || '',
-                linkedinURL: judge.linkedinURL || '',
+                name: sponsor.name,
+                tier: sponsor.tier,
+                logoUrl: sponsor.logoUrl,
+                websiteUrl: sponsor.websiteUrl,
+                careersUrl: sponsor.careersUrl || '',
             });
         } else {
             reset({
                 name: '',
-                companyName: '',
-                imageUrl: '',
-                position: '',
-                linkedinURL: '',
+                tier: '',
+                logoUrl: '',
+                websiteUrl: '',
+                careersUrl: '',
             });
         }
-    }, [isEditMode, judge, reset]);
+    }, [isEditMode, sponsor, reset]);
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/judges');
+        navigate('/admin/sponsors');
     };
 
     const goBack = () => {
-        navigate('/admin/judges');
+        navigate('/admin/sponsors');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
 
-    if (isEditMode && !judge) {
+    if (isEditMode && !sponsor) {
         return (
             <Fragment>
                 <Helmet>
-                    <title>{JudgesEditMessages.NOT_FOUND_TITLE}</title>
+                    <title>{SponsorsEditMessages.NOT_FOUND_TITLE}</title>
                 </Helmet>
                 <div className={pageWrapperClass}>
                     <div className="max-w-2xl mx-auto">
                         <Card className={cn('p-12 text-center', Styles.glass.card)}>
-                            <p className="text-red-400 text-lg mb-6">{JudgesEditMessages.NOT_FOUND_MESSAGE}</p>
+                            <p className="text-red-400 text-lg mb-6">{SponsorsEditMessages.NOT_FOUND_MESSAGE}</p>
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="text-white hover:opacity-90 transition-opacity"
                                 onClick={goBack}
                             >
-                                {JudgesEditMessages.RETURN_BUTTON}
+                                {SponsorsEditMessages.RETURN_BUTTON}
                             </Button>
                         </Card>
                     </div>
@@ -116,7 +115,7 @@ export function JudgesEditPage() {
                                 <CardContent className="flex flex-col md:flex-row gap-12 p-8">
                                     <div className={Styles.forms.fieldContainer}>
                                         <div className="form-dark-theme">
-                                            <JudgeFormFields control={control} />
+                                            <SponsorFormFields control={control} />
                                         </div>
                                     </div>
 
@@ -129,11 +128,11 @@ export function JudgesEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageUrl ? (
+                                            {logoUrl ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={logoUrl}
                                                     alt="Preview"
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-contain p-4"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).src =
                                                             'https://placehold.co/300?text=Invalid+Image';
@@ -141,7 +140,7 @@ export function JudgesEditPage() {
                                                 />
                                             ) : (
                                                 <p className={cn('px-4 text-center', Styles.colors.textMuted)}>
-                                                    No image URL provided
+                                                    No logo URL provided
                                                 </p>
                                             )}
                                         </div>
