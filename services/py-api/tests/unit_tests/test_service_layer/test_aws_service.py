@@ -12,21 +12,11 @@ from src.service.utility.aws_service import AwsService
 from botocore.exceptions import ClientError
 
 from io import BytesIO
-from os import environ
 from moto import mock_aws
 
 from structlog.stdlib import get_logger
 
 LOG = get_logger()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def generate_aws_data() -> None:
-    """Mock AWS Credentials for testing moto."""
-    environ["AWS_ACCESS_KEY_ID"] = "test-key"
-    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
-    environ["AWS_DEFAULT_REGION"] = "us-east-2"
-    environ["AWS_S3_DEFAULT_BUCKET"] = "dabucket"
 
 
 @pytest.fixture
