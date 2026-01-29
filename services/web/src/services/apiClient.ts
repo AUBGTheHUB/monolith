@@ -15,13 +15,13 @@ const getHeaders = (contentType?: string) => {
 };
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
+    if (response.status == 204 || response.status == 404) {
+        return {} as T;
+    }
     if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'An unexpected error occurred' }));
+        const error = await response.json().catch(() => ({ message: 'An error occurred' }));
         throw new Error(error.message || `Error: ${response.status}`);
     }
-
-    // Return empty object for 204 No Content, otherwise parse JSON
-    if (response.status === 204) return {} as T;
 
     return response.json();
 };
