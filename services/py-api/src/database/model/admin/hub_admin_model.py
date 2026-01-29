@@ -33,3 +33,12 @@ class HubAdmin(HubMember):
             }
         )
         return data
+
+    @classmethod
+    def from_mongo_db_document(cls, doc: dict[str, Any]) -> "HubAdmin":
+        base_data = cls._base_from_mongo_db_document(doc)
+        return cls(
+            **base_data,
+            password_hash=doc["password_hash"],
+            site_role=doc["site_role"],
+        )

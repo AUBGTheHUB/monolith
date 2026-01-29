@@ -8,6 +8,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TypedDict, Self, TypeVar, Generic
 
+from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_member_model import MEMBER_TYPE
+
 
 class DecodedJwtTokenBase(TypedDict):
     """
@@ -35,6 +38,19 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 
     team_name: str
     team_id: str
+
+
+class _DecodedJwtAdminToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for authenticating HUB Admins"""
+
+    member_type: MEMBER_TYPE = "admin"
+    site_role: ROLES
+
+
+class _RefreshJwtToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for refreshing"""
+
+    token_type: str = "refresh"
 
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
@@ -114,3 +130,33 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
             exp=decoded_token["exp"],
             team_name=decoded_token["team_name"],
         )
+
+
+@dataclass(kw_only=True)
+class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
+    member_type: MEMBER_TYPE = "admin"
+    site_role: ROLES
+
+    def serialize(self) -> _DecodedJwtAdminToken:
+        return _DecodedJwtAdminToken(sub=self.sub, exp=self.exp, member_type=self.member_type, site_role=self.site_role)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedJwtAdminToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            member_type=decoded_token["member_type"],
+            exp=decoded_token["exp"],
+            site_role=decoded_token["site_role"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
+    token_type: str = "refresh"
+
+    def serialize(self) -> _RefreshJwtToken:
+        return _RefreshJwtToken(sub=self.sub, exp=self.exp, token_type=self.token_type)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
+        return cls(sub=decoded_token["sub"], token_type=decoded_token["token_type"], exp=decoded_token["exp"])

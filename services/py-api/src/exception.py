@@ -125,3 +125,23 @@ class JwtDecodeError(CustomError):
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class HubMemberNotFoundError(CustomError):
+    message = "The HUB member was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class DuplicateHUBMemberNameError(CustomError):
+    message = "HUB member with this name already exists"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class PasssordsMismatchError(CustomError):
+    message = "The name and password do not match!"
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenNotFound(CustomError):
+    message = "The refresh token was not found."
+    status_code = status.HTTP_404_NOT_FOUND

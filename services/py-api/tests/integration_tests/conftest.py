@@ -3,6 +3,9 @@ from unittest.mock import patch
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
+from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
+from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
@@ -35,6 +38,17 @@ TEST_ALLOWED_AGE = 21
 TEST_REFERRAL_SOURCE: REFERRAL_SOURCES_LIST = "Friends"
 TEST_PROGRAMMING_LANGUAGE: PROGRAMMING_LANGUAGES_LIST = "Programming in Python"
 TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
+
+TEST_HUB_MEMBER_NAME = "Test member"
+TEST_HUB_MEMBER_MEMBER_TYPE: MEMBER_TYPE = "member"
+TEST_HUB_MEMBER_ADMIN: MEMBER_TYPE = "admin"
+TEST_HUB_MEMBER_POSITON = "none"
+TEST_HUB_MEMBER_DEPARTMENT: DEPARTMENTS_LIST = "Development"
+TEST_HUB_MEMBER_AVATAR_URL = "https://www.bing.com"
+TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
+TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
+TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
+TEST_HUB_ADMIN_ROLE: ROLES = "super_admin"
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -306,3 +320,47 @@ def expired_jwt_payload_mock(obj_id_mock: str) -> JwtParticipantInviteRegistrati
 @pytest.fixture
 def jwt_utility_mock() -> JwtUtility:
     return JwtUtility()
+
+
+class RegisterHubAdminBodyCallable(Protocol):
+    def __call__(
+        self,
+        name: str = TEST_USER_NAME,
+        position: str = TEST_HUB_MEMBER_POSITON,
+        department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
+        avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
+        member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
+        social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
+        password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        **kwargs: Any,
+    ) -> RegisterHubAdminData: ...
+
+
+@pytest.fixture
+def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
+    def register_hub_admin_request_body_generator(
+        name: str = TEST_HUB_MEMBER_NAME,
+        position: str = TEST_HUB_MEMBER_POSITON,
+        department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
+        avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
+        member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
+        social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
+        password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        **kwargs: Any,
+    ) -> RegisterHubAdminData:
+
+        return RegisterHubAdminData(
+            name=name,
+            position=position,
+            department=department,
+            avatar_url=avatar_url,
+            member_type=member_type,
+            social_links=social_links,
+            password=password,
+            repeat_password=repeat_password,
+            **kwargs,
+        )
+
+    return register_hub_admin_request_body_generator

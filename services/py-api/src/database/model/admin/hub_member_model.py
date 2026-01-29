@@ -28,14 +28,24 @@ class HubMember(BaseDbModel):
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
+    def _serialize_social_links(self) -> dict[str, Any]:
+        social_links_serialized = {}
+        for link_name, link_url in self.social_links.items():
+            if link_url is not None:
+                social_links_serialized[link_name] = str(link_url)
+
+        return social_links_serialized
+
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
+
         return {
             "_id": self.id,
             "name": self.name,
             "member_type": self.member_type,
             "position": self.position,
+            "department": self.department,
             "avatar_url": self.avatar_url,
-            "social_links": self.social_links,
+            "social_links": self._serialize_social_links(),
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
@@ -47,9 +57,28 @@ class HubMember(BaseDbModel):
             "member_type": self.member_type,
             "position": self.position,
             "avatar_url": self.avatar_url,
-            "social_links": self.social_links,
+            "department": self.department,
+            "social_links": self._serialize_social_links(),
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+    @classmethod
+    def from_mongo_db_document(cls, doc: dict[str, Any]) -> "HubMember":
+        return cls(**cls._base_from_mongo_db_document(doc))
+
+    @classmethod
+    def _base_from_mongo_db_document(cls, doc: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": doc["_id"],
+            "name": doc["name"],
+            "member_type": doc["member_type"],
+            "position": doc["position"],
+            "avatar_url": doc["avatar_url"],
+            "department": doc["department"],
+            "social_links": doc["social_links"],
+            "created_at": doc["created_at"],
+            "updated_at": doc["updated_at"],
         }
 
 

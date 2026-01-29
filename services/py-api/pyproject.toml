@@ -18,6 +18,7 @@ motor = "^3.6.0"
 resend = "^2.4.0"
 pydantic = { extras = ["email"], version = "^2.9.2" }
 pyjwt = "^2.10.1"
+bcrypt = "^5.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
