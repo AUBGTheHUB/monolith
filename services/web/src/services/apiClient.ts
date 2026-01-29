@@ -16,6 +16,7 @@ const getHeaders = (contentType?: string) => {
 
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (response.status == 204 || response.status == 404) {
+        //only cases for 404 are invalid route or not existing object
         return {} as T;
     }
     if (!response.ok) {
