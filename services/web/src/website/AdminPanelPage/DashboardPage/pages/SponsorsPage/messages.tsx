@@ -118,6 +118,6 @@ export const SponsorsFormFieldMessages = {
 };
 
 export const ERROR_MESSAGES = {
-    FAILED_DELETE: 'Failed to delete sponsor. Contact dev',
+    FAILED_DELETE: 'Failed to delete sponsor.',
     FAILED_SAVE: 'An error occurred while saving.',
 };

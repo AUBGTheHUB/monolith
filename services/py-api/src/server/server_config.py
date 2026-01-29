@@ -58,8 +58,6 @@ def start_server() -> None:
         port=PORT,
         reload=server_config.ENV == "LOCAL",
         log_config=get_uvicorn_logger(server_config.ENV),
-        ssl_certfile=server_config.SSL_CERT,
-        ssl_keyfile=server_config.SSL_KEY,
         # https://docs.gunicorn.org/en/stable/design.html#how-many-workers
         # https://stackoverflow.com/questions/65278110/how-does-gunicorn-distribute-requests-across-sync-workers
         # As cpu_count could return None we use 0 instead, as 2 * None would produce an error
