@@ -31,8 +31,10 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
 
         throw new Error(messages);
     }
-    if (response.status == 401) {
-        throw new Error('Unauthorized user');
+    if (response.status == 400 || response.status == 401 || response.status == 404) {
+        const errorData = await response.json();
+        const message = errorData.error || 'Unexpected error occurred!';
+        throw new Error(message);
     }
     if (!response.ok) {
         throw new Error('Unexpected error occurred. Contact TheHub.');
