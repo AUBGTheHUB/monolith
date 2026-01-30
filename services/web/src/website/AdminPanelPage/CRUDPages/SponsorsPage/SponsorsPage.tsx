@@ -4,7 +4,7 @@ import { AdminCard } from '@/internalLibrary/AdminCard/adminCard.tsx';
 import { Card } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { SponsorsPageMessages as MESSAGES, ERROR_MESSAGES } from './messages.tsx';
+import { SponsorsPageMessages as MESSAGES } from './messages.tsx';
 import { Styles } from '../../AdminStyles.ts';
 import { cn } from '@/lib/utils.ts';
 import { Sponsor } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/validation/sponsor.tsx';
@@ -16,13 +16,13 @@ export function SponsorsListPage() {
     // 1. Fetching Logic
     const { data, isLoading } = useQuery({
         queryKey: ['sponsors'],
-        queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors', ERROR_MESSAGES.FAILED_FETCH),
+        queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors'),
         select: (res) => res.sponsors, // Automatically extract the array
     });
 
     // 2. Deletion Logic (Mutation)
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => apiClient.delete(`/admin/sponsors/${id}`, ERROR_MESSAGES.FAILED_DELETE),
+        mutationFn: (id: string) => apiClient.delete(`/admin/sponsors/${id}`),
         onSuccess: async () => {
             // Invalidate and refetch the list automatically
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
