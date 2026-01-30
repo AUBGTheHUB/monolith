@@ -1,14 +1,14 @@
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPage/pages/JudgesPage/mockJudges';
-import { Judge } from '@/types/judge';
-import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { MOCK_JUDGES } from '@/website/AdminPanelPage/CRUDPages/JudgesPage/mockJudges.ts';
+import { Judge } from '@/types/judge.ts';
+import { AdminCard } from '@/internalLibrary/AdminCard/adminCard.tsx';
+import { Card } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { JudgesPageMessages as MESSAGES } from './messages';
-import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { JudgesPageMessages as MESSAGES } from './messages.tsx';
+import { Styles } from '../../AdminStyle.ts';
+import { cn } from '@/lib/utils.ts';
 
 export function JudgesListPage() {
     const [judges, setJudges] = useState<Judge[]>(MOCK_JUDGES);

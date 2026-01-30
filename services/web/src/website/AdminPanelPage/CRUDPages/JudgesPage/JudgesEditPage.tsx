@@ -3,84 +3,88 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import teamMembers from './resources/teamMembers.json';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { MOCK_JUDGES } from '@/website/AdminPanelPage/CRUDPages/JudgesPage/mockJudges.ts';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { TeamMemberFormFields } from './components/TeamMemberFormFields';
-import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages';
-import { Form } from '@/components/ui/form';
-import { teamMemberSchema, TeamMemberFormData } from './validation/validation';
-import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
-import { toast } from 'react-toastify';
+import { JudgeFormFields } from './components/JudgeFormFields.tsx';
+import { JudgesEditMessages, JudgesAddMessages } from './messages.tsx';
+import { Form } from '@/components/ui/form.tsx';
+import { judgeSchema, JudgeFormData } from './validation/validation.tsx';
+import { Styles } from '../../AdminStyle.ts';
+import { cn } from '@/lib/utils.ts';
 
-export function MeetTheTeamEditPage() {
+export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
     const isEditMode = Boolean(id);
-    const MESSAGES = isEditMode ? TeamMemberEditMessages : TeamMemberAddMessages;
+    const MESSAGES = isEditMode ? JudgesEditMessages : JudgesAddMessages;
 
-    const member = teamMembers.find((m) => m.id === id);
+    const judge = MOCK_JUDGES.find((j) => j.id === id);
 
-    const form = useForm<TeamMemberFormData>({
-        resolver: zodResolver(teamMemberSchema),
+    const form = useForm<JudgeFormData>({
+        resolver: zodResolver(judgeSchema),
         defaultValues: {
             name: '',
-            image: '',
-            departments: [],
+            companyName: '',
+            imageUrl: '',
+            position: '',
+            linkedinURL: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('image');
+    const imageUrl = watch('imageUrl');
 
     useEffect(() => {
-        if (isEditMode && member) {
+        if (isEditMode && judge) {
             reset({
-                name: member.name,
-                image: member.image || '',
-                departments: member.departments,
+                name: judge.name,
+                companyName: judge.companyName,
+                imageUrl: judge.imageUrl,
+                position: judge.position || '',
+                linkedinURL: judge.linkedinURL || '',
             });
         } else {
             reset({
                 name: '',
-                image: '',
-                departments: [],
+                companyName: '',
+                imageUrl: '',
+                position: '',
+                linkedinURL: '',
             });
         }
-    }, [isEditMode, member, reset]);
+    }, [isEditMode, judge, reset]);
 
-    const onSubmit = (data: TeamMemberFormData) => {
-        toast.success(MESSAGES.SUCCESS_MESSAGE);
-        console.log({ id: id || 'new', ...data });
-        navigate('/admin/meet-the-team');
+    const onSubmit = () => {
+        alert(MESSAGES.SUCCESS_MESSAGE);
+        navigate('/admin/judges');
     };
 
     const goBack = () => {
-        navigate('/admin/meet-the-team');
+        navigate('/admin/judges');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
 
-    if (isEditMode && !member) {
+    if (isEditMode && !judge) {
         return (
             <Fragment>
                 <Helmet>
-                    <title>{TeamMemberEditMessages.NOT_FOUND_TITLE}</title>
+                    <title>{JudgesEditMessages.NOT_FOUND_TITLE}</title>
                 </Helmet>
                 <div className={pageWrapperClass}>
                     <div className="max-w-2xl mx-auto">
                         <Card className={cn('p-12 text-center', Styles.glass.card)}>
-                            <p className="text-red-400 text-lg mb-6">{TeamMemberEditMessages.NOT_FOUND_MESSAGE}</p>
+                            <p className="text-red-400 text-lg mb-6">{JudgesEditMessages.NOT_FOUND_MESSAGE}</p>
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="text-white hover:opacity-90 transition-opacity"
                                 onClick={goBack}
                             >
-                                {TeamMemberEditMessages.RETURN_BUTTON}
+                                {JudgesEditMessages.RETURN_BUTTON}
                             </Button>
                         </Card>
                     </div>
@@ -112,7 +116,7 @@ export function MeetTheTeamEditPage() {
                                 <CardContent className="flex flex-col md:flex-row gap-12 p-8">
                                     <div className={Styles.forms.fieldContainer}>
                                         <div className="form-dark-theme">
-                                            <TeamMemberFormFields control={control} />
+                                            <JudgeFormFields control={control} />
                                         </div>
                                     </div>
 

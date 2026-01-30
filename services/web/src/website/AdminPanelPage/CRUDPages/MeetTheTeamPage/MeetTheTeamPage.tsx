@@ -1,15 +1,15 @@
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { AdminCard } from '@/internalLibrary/AdminCard/adminCard.tsx';
+import { Card } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { TeamPageMessages as MESSAGES } from './messages';
-import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { TeamPageMessages as MESSAGES } from './messages.tsx';
+import { Styles } from '../../AdminStyle.ts';
+import { cn } from '@/lib/utils.ts';
 import teamMembersData from './resources/teamMembers.json';
 
-import { TeamMemberFormData } from './validation/validation';
+import { TeamMemberFormData } from './validation/validation.tsx';
 
 interface TeamMember extends TeamMemberFormData {
     id: string;

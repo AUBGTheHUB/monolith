@@ -16,15 +16,16 @@ const getHeaders = (contentType?: string) => {
 };
 
 const handleResponse = async <R>(response: Response): Promise<R> => {
-    if (response.status == 204 || response.status == 404) {
-        //only cases for 404 are invalid route or not existing object
+    if (response.status == 204) {
         return {} as R;
     }
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-        throw new Error(error.message || `Error: ${response.status}`);
+    if (response.status == 401 || response.status == 404 || response.status == 422) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error: ${response.status}`);
     }
-
+    if (!response.ok) {
+        throw new Error('Unexpected error occurred. Contact TheHub.');
+    }
     return response.json();
 };
 

@@ -1,13 +1,13 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router';
-import { AdminCard } from '@/internalLibrary/AdminCard/adminCard';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { AdminCard } from '@/internalLibrary/AdminCard/adminCard.tsx';
+import { Card } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { SponsorsPageMessages as MESSAGES, ERROR_MESSAGES } from './messages';
-import { Styles } from '../../../AdminStyles';
-import { cn } from '@/lib/utils';
-import { Sponsor } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/validation/sponsor.tsx';
+import { SponsorsPageMessages as MESSAGES, ERROR_MESSAGES } from './messages.tsx';
+import { Styles } from '../../AdminStyles.ts';
+import { cn } from '@/lib/utils.ts';
+import { Sponsor } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/validation/sponsor.tsx';
 import { apiClient } from '@/services/apiClient.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -16,18 +16,18 @@ export function SponsorsListPage() {
     // 1. Fetching Logic
     const { data, isLoading } = useQuery({
         queryKey: ['sponsors'],
-        queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors'),
+        queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors', ERROR_MESSAGES.FAILED_FETCH),
         select: (res) => res.sponsors, // Automatically extract the array
     });
 
     // 2. Deletion Logic (Mutation)
     const deleteMutation = useMutation({
-        mutationFn: (id: string) => apiClient.delete(`/admin/sponsors/${id}`),
+        mutationFn: (id: string) => apiClient.delete(`/admin/sponsors/${id}`, ERROR_MESSAGES.FAILED_DELETE),
         onSuccess: async () => {
             // Invalidate and refetch the list automatically
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
         },
-        onError: () => alert(ERROR_MESSAGES.FAILED_DELETE),
+        onError: (error) => alert(error.message),
     });
 
     const handleDelete = (id: string, name: string) => {

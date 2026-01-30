@@ -1,7 +1,7 @@
 import { Control } from 'react-hook-form';
-import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
-import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/validation/sponsor.tsx';
-import { SponsorsFormFieldMessages as MESSAGES } from '../messages';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
+import { SponsorFormData } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/validation/sponsor.tsx';
+import { SponsorsFormFieldMessages as MESSAGES } from '../messages.tsx';
 
 type SponsorFormFieldsProps = {
     control: Control<SponsorFormData>;

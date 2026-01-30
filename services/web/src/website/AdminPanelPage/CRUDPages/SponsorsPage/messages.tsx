@@ -116,8 +116,3 @@ export const SponsorsFormFieldMessages = {
         CAREERS: 'Enter careers page URL (optional)',
     },
 };
-
-export const ERROR_MESSAGES = {
-    FAILED_DELETE: 'Failed to delete sponsor.',
-    FAILED_SAVE: 'An error occurred while saving.',
-};
