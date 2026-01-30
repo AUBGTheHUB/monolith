@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Link } from 'react-router';
 import { AdminCard } from '@/internalLibrary/AdminCard/adminCard.tsx';
 import { Card } from '@/components/ui/card.tsx';
@@ -14,11 +14,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 export function SponsorsListPage() {
     const queryClient = useQueryClient();
     // 1. Fetching Logic
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, error, isError } = useQuery({
         queryKey: ['sponsors'],
         queryFn: () => apiClient.get<{ sponsors: Sponsor[] }>('/admin/sponsors'),
         select: (res) => res.sponsors, // Automatically extract the array
     });
+    useEffect(() => {
+        if (isError) {
+            console.error(error);
+            alert(error);
+        }
+    }, [isError, error]);
 
     // 2. Deletion Logic (Mutation)
     const deleteMutation = useMutation({

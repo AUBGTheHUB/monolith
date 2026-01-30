@@ -19,9 +19,20 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
     if (response.status == 204) {
         return {} as R;
     }
-    if (response.status == 401 || response.status == 404 || response.status == 422) {
+    if (response.status == 422) {
+        //Here server returns the verification members under msg
         const errorData = await response.json();
-        throw new Error(errorData.message || `Error: ${response.status}`);
+        const messages = errorData.detail
+            .map((e: { loc: string[]; msg: string }) => {
+                const field = e.loc?.slice(1).join('.') ?? 'field';
+                return `${field}: ${e.msg}`;
+            })
+            .join('\n');
+
+        throw new Error(messages);
+    }
+    if (response.status == 401) {
+        throw new Error('Unauthorized user');
     }
     if (!response.ok) {
         throw new Error('Unexpected error occurred. Contact TheHub.');
