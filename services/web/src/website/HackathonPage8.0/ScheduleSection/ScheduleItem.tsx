@@ -1,11 +1,7 @@
 import React from 'react';
-import { Day, ScheduleEvent } from './types';
+import { Day, ScheduleItemProps, ScheduleTabsProps } from './types';
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { scheduleData } from './data';
-
-interface ScheduleItemProps extends ScheduleEvent {
-    isLast: boolean;
-}
 
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast }) => (
     <div>
@@ -42,10 +38,6 @@ export const ScheduleHeader = () => (
         </div>
     </div>
 );
-
-interface ScheduleTabsProps {
-    activeTab: Day;
-}
 
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
     <TabsList className="mb-12 h-auto p-0 gap-4 bg-transparent flex flex-wrap justify-start w-full">
