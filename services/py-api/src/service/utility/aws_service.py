@@ -1,6 +1,4 @@
 from typing import Any
-import boto3
-from functools import lru_cache
 from io import BytesIO
 from os import environ
 
@@ -18,20 +16,15 @@ LOG = get_logger()
 
 class AwsService:
 
-    def __init__(self) -> None:
-        self.ensure_bucket_exists()
-
-    @lru_cache
-    def get_s3_client(self) -> S3Client:
-        return boto3.client("s3")
+    def __init__(self, s3_client: S3Client) -> None:
+        self._s3_client = s3_client
 
     """A method to ensure that the bucket exists before calling any methods"""
 
     def ensure_bucket_exists(self, bucket: str = AWS_S3_DEFAULT_BUCKET) -> None:
-        s3_client = self.get_s3_client()
 
         try:
-            s3_client.head_bucket(Bucket=bucket)
+            self._s3_client.head_bucket(Bucket=bucket)
 
         except ClientError as e:
             error_code = e.response["Error"]["Code"]
@@ -39,10 +32,12 @@ class AwsService:
             if error_code != "404":
                 raise  # Handle other errors
 
-            kwargs: dict[str, Any] = {"Bucket": bucket}
-            kwargs["CreateBucketConfiguration"] = {"LocationConstraint": AWS_DEFAULT_REGION}
+            kwargs: dict[str, Any] = {
+                "Bucket": bucket,
+                "CreateBucketConfiguration": {"LocationConstraint": AWS_DEFAULT_REGION},
+            }
 
-            s3_client.create_bucket(**kwargs)
+            self._s3_client.create_bucket(**kwargs)
 
     """
     This method uploads the file to AWS and returns
@@ -56,7 +51,6 @@ class AwsService:
         content_type: str | None,
         bucket: str = AWS_S3_DEFAULT_BUCKET,
         region: str = AWS_DEFAULT_REGION,
-        s3_client: S3Client | None = None,
     ) -> HttpUrl:
 
         if not file:
@@ -68,11 +62,8 @@ class AwsService:
         if not content_type:
             raise ValueError("Parameter content_type is required")
 
-        if s3_client is None:
-            s3_client = self.get_s3_client()
-
         try:
-            s3_client.upload_fileobj(
+            self._s3_client.upload_fileobj(
                 Fileobj=file, Bucket=bucket, Key=file_name, ExtraArgs={"ContentType": content_type}
             )
             return HttpUrl(url=f"https://{bucket}.s3.{region}.amazonaws.com/{file_name}")
@@ -81,15 +72,10 @@ class AwsService:
             LOG.exception("There was an error when uploading the file", error=e)
             raise FileUploadError() from e
 
-    def delete_file(
-        self, file_name: str, bucket: str = AWS_S3_DEFAULT_BUCKET, s3_client: S3Client | None = None
-    ) -> None:
-
-        if s3_client is None:
-            s3_client = self.get_s3_client()
+    def delete_file(self, file_name: str, bucket: str = AWS_S3_DEFAULT_BUCKET) -> None:
 
         try:
-            s3_client.delete_object(Bucket=bucket, Key=file_name)
+            self._s3_client.delete_object(Bucket=bucket, Key=file_name)
 
         except Exception as e:
             LOG.exception("There was an error when deleting the file", error=e)

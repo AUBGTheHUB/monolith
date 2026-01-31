@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
-
+import boto3
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
@@ -180,8 +180,8 @@ def create_app() -> FastAPI:
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )
-
-    aws_service = AwsService()
+    s3_client = boto3.client("s3")
+    aws_service = AwsService(s3_client)
     image_storing_service = ImageStoringService(aws_service=aws_service)
 
     fs_service = FeatureSwitchService(repository=fs_repo)
