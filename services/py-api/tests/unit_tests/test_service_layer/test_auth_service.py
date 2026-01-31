@@ -7,7 +7,7 @@ from src.database.repository.admin.refresh_token_repository import RefreshTokenR
 from src.exception import (
     DuplicateHUBMemberNameError,
     HubMemberNotFoundError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from src.service.auth.auth_service import AuthService
@@ -172,7 +172,7 @@ async def test_login_hub_admin_passwords_mismatch(
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, PasssordsMismatchError)
+    assert isinstance(result.err_value, PasswordsMismatchError)
 
 
 @pytest.mark.asyncio

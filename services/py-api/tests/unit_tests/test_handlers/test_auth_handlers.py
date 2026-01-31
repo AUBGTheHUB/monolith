@@ -5,7 +5,7 @@ from src.exception import (
     DuplicateHUBMemberNameError,
     HubMemberNotFoundError,
     JwtExpiredSignatureError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from starlette import status
@@ -92,7 +92,7 @@ async def test_login_hub_admin_wrong_password(
     auth_handlers: AuthHandlers, auth_service_mock: AuthServiceMock, login_hub_admin_data_mock: LoginHubAdminData
 ) -> None:
     # Given
-    auth_service_mock.login_admin.return_value = Err(PasssordsMismatchError())
+    auth_service_mock.login_admin.return_value = Err(PasswordsMismatchError())
 
     # When
     resp = await auth_handlers.login(credentials=login_hub_admin_data_mock)

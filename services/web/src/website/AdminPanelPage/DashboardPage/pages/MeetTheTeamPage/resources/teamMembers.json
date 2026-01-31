@@ -1,0 +1,35 @@
+[
+    {
+        "id": "1",
+        "name": "John Doe NAME 2",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+        "departments": [
+            "Development"
+        ]
+    },
+    {
+        "id": "2",
+        "name": "Jane Smith",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+        "departments": [
+            "Design",
+            "Marketing"
+        ]
+    },
+    {
+        "id": "3",
+        "name": "Bob Johnson",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+        "departments": [
+            "PR"
+        ]
+    },
+    {
+        "id": "4",
+        "name": "Alice Williams",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+        "departments": [
+            "Design"
+        ]
+    }
+]

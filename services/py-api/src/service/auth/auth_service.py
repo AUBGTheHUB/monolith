@@ -10,7 +10,7 @@ from src.database.repository.admin.refresh_token_repository import RefreshTokenR
 from src.exception import (
     DuplicateHUBMemberNameError,
     HubMemberNotFoundError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
@@ -35,7 +35,7 @@ class AuthService:
 
     async def login_admin(
         self, credentials: LoginHubAdminData
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasssordsMismatchError | Exception]:
+    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
         result = await self._hub_members_repo.fetch_admin_by_name(name=credentials.name)
 
@@ -50,7 +50,7 @@ class AuthService:
         )
 
         if not passwords_match:
-            return Err(PasssordsMismatchError())
+            return Err(PasswordsMismatchError())
 
         # Build the auth token
         jwt_auth_token = self._auth_token_service.generate_auth_token(hub_admin=hub_admin)
