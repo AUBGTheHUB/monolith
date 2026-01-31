@@ -29,18 +29,10 @@ export function AdminCard({
     ...rest
 }: AdminCardProps) {
     return (
-        <Card 
-            className={cn('overflow-hidden flex flex-col h-full border-0', className)}
-            {...rest}
-        >
+        <Card className={cn('overflow-hidden flex flex-col h-full border-0', className)} {...rest}>
             <div className="relative h-48 w-full bg-white/5 p-6 flex items-center justify-center overflow-hidden">
-                <div 
-                    className={cn(
-                        "absolute inset-0 opacity-10 pointer-events-none", 
-                        tierBgColor
-                    )} 
-                />
-                
+                <div className={cn('absolute inset-0 opacity-10 pointer-events-none', tierBgColor)} />
+
                 <img
                     src={imageUrl}
                     alt={imageAlt}
@@ -52,14 +44,14 @@ export function AdminCard({
                 <div className="flex justify-between items-start gap-4">
                     <div>
                         <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-                        
+
                         <div className="flex flex-wrap gap-2 mt-2">
                             <span
                                 className={cn(
                                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm',
-                                    'bg-gray-100 text-gray-800', 
-                                    tierBgColor, 
-                                    tierColor   
+                                    'bg-gray-100 text-gray-800',
+                                    tierBgColor,
+                                    tierColor,
                                 )}
                             >
                                 {subtitle}
