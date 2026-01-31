@@ -16,8 +16,7 @@ const getHeaders = (contentType?: string) => {
 };
 
 const handleResponse = async <R>(response: Response): Promise<R> => {
-
-    //
+    //Handle responses based on FastAPI's response schemas
     if (response.status == 204) {
         return {} as R;
     }
