@@ -16,6 +16,8 @@ const getHeaders = (contentType?: string) => {
 };
 
 const handleResponse = async <R>(response: Response): Promise<R> => {
+
+    //
     if (response.status == 204) {
         return {} as R;
     }
