@@ -107,6 +107,15 @@ class BackgroundTasksMock(Protocol):
     add_task: Mock
 
 
+@pytest.fixture(autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
+
+
 @pytest.fixture
 def background_tasks_mock() -> BackgroundTasksMock:
     mock_background_tasks = _create_typed_mock(BackgroundTasks)
@@ -1170,15 +1179,6 @@ def thirty_sec_jwt_exp_limit() -> int:
 @pytest.fixture
 def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
     return ResendEmailParticipantData(participant_id=obj_id_mock)
-
-
-@pytest.fixture(autouse=True)
-def generate_aws_data() -> None:
-    """Mock AWS Credentials for testing moto."""
-    environ["AWS_ACCESS_KEY_ID"] = "test-key"
-    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
-    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
-    environ["AWS_BUCKET"] = "dabucket"
 
 
 # =================================================
