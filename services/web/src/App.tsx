@@ -10,6 +10,12 @@ import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
 import { JudgesListPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesPage';
 import { JudgesEditPage } from './website/AdminPanelPage/DashboardPage/pages/JudgesPage/JudgesEditPage';
+import { SponsorsListPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsPage';
+import { SponsorsEditPage } from './website/AdminPanelPage/DashboardPage/pages/SponsorsPage/SponsorsEditPage';
+import { DashboardPage } from './website/AdminPanelPage/DashboardPage/DashboardPage';
+import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
+import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
+import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 
 function App() {
     const queryClient = new QueryClient();
@@ -17,22 +23,50 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
-                <Route path="/hackathon7.0" element={<Hackathon7 />} />
-                <Route path="/hackathon" element={<HackathonPage />} />
-                <Route path="/hackathon/registration" element={<FormPage />} />
-                <Route path="/hackathon/verification" element={<VerificationPage />} />
 
-                {/* Meet the Team Routes */}
-                <Route path="/admin/meet-the-team" element={<MeetTheTeamPage />} />
-                <Route path="/admin/meet-the-team/add" element={<MeetTheTeamEditPage />} />
-                <Route path="/admin/meet-the-team/:id" element={<MeetTheTeamEditPage />} />
+                {/* Hackathon Group */}
+                <Route path="/hackathon">
+                    <Route index element={<HackathonPage />} />
+                    <Route path="7.0" element={<Hackathon7 />} />
+                    <Route path="registration" element={<FormPage />} />
+                    <Route path="verification" element={<VerificationPage />} />
+                    {/* 404 Catch-all */}
+                    <Route path="*" element={<Hackathon404Page />} />
+                </Route>
 
-                <Route path="/admin" element={<LoginPage />} />
+                {/* Admin Group */}
+                <Route path="/admin">
+                    <Route index element={<LoginPage />} />
 
-                <Route path="/admin/dashboard/judges" element={<JudgesListPage />} />
-                <Route path="/admin/dashboard/judges/add" element={<JudgesEditPage />} />
-                <Route path="/admin/dashboard/judges/:id" element={<JudgesEditPage />} />
+                    <Route path="dashboard" element={<DashboardPage />} />
+
+                    {/* Meet the Team Sub-group */}
+                    <Route path="meet-the-team">
+                        <Route index element={<MeetTheTeamPage />} />
+                        <Route path="add" element={<MeetTheTeamEditPage />} />
+                        <Route path=":id" element={<MeetTheTeamEditPage />} />
+                    </Route>
+
+                    {/* Judges Sub-group */}
+                    <Route path="judges">
+                        <Route index element={<JudgesListPage />} />
+                        <Route path="add" element={<JudgesEditPage />} />
+                        <Route path=":id" element={<JudgesEditPage />} />
+                    </Route>
+
+                    {/* Sponsors Sub-group */}
+                    <Route path="sponsors">
+                        <Route index element={<SponsorsListPage />} />
+                        <Route path="add" element={<SponsorsEditPage />} />
+                        <Route path=":id" element={<SponsorsEditPage />} />
+                    </Route>
+                    {/* 404 Catch-all */}
+                    <Route path="*" element={<Admin404Page />} />
+                </Route>
+                {/* 404 Catch-all */}
+                <Route path="*" element={<Global404Page />} />
             </Routes>
         </QueryClientProvider>
     );
