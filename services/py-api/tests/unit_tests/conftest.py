@@ -573,7 +573,7 @@ def sponsors_service_mock() -> SponsorsServiceMock:
 
 
 class AwsServiceMock(Protocol):
-    get_s3_client: Mock
+    # get_s3_client: Mock
     upload_file: Mock
 
 
@@ -581,7 +581,7 @@ class AwsServiceMock(Protocol):
 def aws_service_mock() -> AwsServiceMock:
     service = _create_typed_mock(AwsService)
 
-    service.get_s3_client = Mock()
+    # service.get_s3_client = Mock()
     service.upload_file = Mock()
 
     return cast(AwsServiceMock, service)
@@ -1172,12 +1172,12 @@ def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticip
     return ResendEmailParticipantData(participant_id=obj_id_mock)
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def generate_aws_data() -> None:
     """Mock AWS Credentials for testing moto."""
     environ["AWS_ACCESS_KEY_ID"] = "test-key"
     environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
-    environ["AWS_DEFAULT_REGION"] = "us-east-2"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
     environ["AWS_BUCKET"] = "dabucket"
 
 

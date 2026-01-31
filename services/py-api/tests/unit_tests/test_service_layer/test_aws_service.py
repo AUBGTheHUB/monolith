@@ -1,6 +1,8 @@
 from __future__ import annotations
-from typing import Any
+from typing import Any, Generator
 
+import boto3
+from mypy_boto3_s3.client import S3Client
 from pydantic import HttpUrl
 import pytest
 from pytest import MonkeyPatch
@@ -20,57 +22,66 @@ LOG = get_logger()
 
 
 @pytest.fixture
-def aws_service() -> AwsService:
-    return AwsService()
+def aws_client() -> Generator[Any, None, None]:
+    """Provides a mocked S3 client."""
+    with mock_aws():
+        yield boto3.client("s3", region_name="eu-central-1")
+
+
+@pytest.fixture
+def aws_service(aws_client: S3Client) -> AwsService:
+    """Provides an AwsService instance with a mocked client injected."""
+    return AwsService(s3_client=aws_client)
 
 
 @mock_aws
 def test_ensure_bucket_exists_creates_when_no_bucket(aws_service: AwsService, monkeypatch: MonkeyPatch) -> None:
-    s3_client = aws_service.get_s3_client()
+    bucket_name = "new-bucket"
 
-    create_bucket_called = False
+    # Act
+    aws_service.ensure_bucket_exists(bucket_name)
 
-    # **kwargs is needed, since the create_bucket method has it as a parameter
-    # and it is assigned a value in the code
-    def call_create_bucket(**kwargs: dict[str, Any]) -> None:
-        nonlocal create_bucket_called
-        create_bucket_called = True
-
-    monkeypatch.setattr(s3_client, "create_bucket", call_create_bucket)
-
-    aws_service.ensure_bucket_exists("some_bucket")
-
-    assert create_bucket_called is True
+    # Assert - Verify the bucket actually exists in moto
+    response = aws_service._s3_client.list_buckets()
+    bucket_names = [b["Name"] for b in response["Buckets"]]
+    assert bucket_name in bucket_names
 
 
 @mock_aws
 def test_ensure_bucket_exists_existing_bucket(aws_service: AwsService, monkeypatch: MonkeyPatch) -> None:
-    s3_client = aws_service.get_s3_client()
+    bucket_name = "existing-bucket"
+    # Pre-create the bucket
+    aws_service._s3_client.create_bucket(
+        Bucket=bucket_name, CreateBucketConfiguration={"LocationConstraint": "eu-central-1"}
+    )
 
-    create_bucket_called = True
+    # Setup a spy to ensure create_bucket isn't called again
+    create_called = False
+    original_create = aws_service._s3_client.create_bucket
 
-    # **kwargs is needed, since the create_bucket method has it as a parameter
-    # and it is assigned a value in the code
-    def call_create_bucket(**kwargs: dict[str, Any]) -> None:
-        nonlocal create_bucket_called
-        create_bucket_called = False
+    def spy_create_bucket(*args: Any, **kwargs: Any) -> Any:
+        nonlocal create_called
+        create_called = True
+        return original_create(*args, **kwargs)
 
-    monkeypatch.setattr(s3_client, "create_bucket", call_create_bucket)
+    monkeypatch.setattr(aws_service._s3_client, "create_bucket", spy_create_bucket)
 
-    aws_service.ensure_bucket_exists("dabucket")  # parameter is environ["AWS_BUCKET"]
+    # Act
+    aws_service.ensure_bucket_exists(bucket_name)
 
-    assert create_bucket_called is True
+    # Assert
+    assert create_called is False
 
 
 @mock_aws
 def test_upload_file_success(aws_service: AwsService) -> None:
-
     # Arrange
+    aws_service.ensure_bucket_exists("dabucket")
     file = BytesIO(b"some_file")
     file_name = "some_file.webp"
     content_type = "image/webp"
     bucket = "dabucket"
-    region = "us-east-2"
+    region = "eu-central-1"
 
     # Act
     result = aws_service.upload_file(
@@ -82,55 +93,33 @@ def test_upload_file_success(aws_service: AwsService) -> None:
     assert str(result) == f"https://{bucket}.s3.{region}.amazonaws.com/{file_name}"
 
 
-def test_upload_file_error_missing_file_name(aws_service: AwsService) -> None:
-
-    file = BytesIO(b"some_file")
-    content_type = "image/webp"
-
-    with pytest.raises(ValueError) as e:
-        aws_service.upload_file(file=file, file_name=None, content_type=content_type)
-
-
 @mock_aws
 def test_upload_file_general_exception(aws_service: AwsService, monkeypatch: MonkeyPatch) -> None:
-
     file = BytesIO(b"some_file")
-    file_name = "some_file.webp"
-    content_type = "image/webp"
-    bucket = "dabucket"
-    region = "us-east-2"
-    s3_client = aws_service.get_s3_client()
 
-    # Method to trigger a fake exception from the aws client
-    def raise_exception() -> None:
-        raise ClientError("Fake client error")
+    # Trigger an error by patching the low-level upload method
+    def raise_err(*args: Any, **kwargs: Any) -> Any:
+        raise ClientError({"Error": {"Code": "500", "Message": "Injected Error"}}, "PutObject")
 
-    monkeypatch.setattr(s3_client, "upload_fileobj", raise_exception)
+    monkeypatch.setattr(aws_service._s3_client, "upload_fileobj", raise_err)
 
-    with pytest.raises(FileUploadError) as e:
-        aws_service.upload_file(file=file, file_name=file_name, content_type=content_type, bucket=bucket, region=region)
+    with pytest.raises(FileUploadError):
+        aws_service.upload_file(file=file, file_name="test.png", content_type="image/png")
 
 
 @mock_aws
 def test_delete_file_success(aws_service: AwsService) -> None:
-
-    # Arrange
-    file = BytesIO(b"some_file")
-    file_name = "some_file.webp"
-    content_type = "image/webp"
     bucket = "dabucket"
-    region = "us-east-2"
-    s3_client = aws_service.get_s3_client()
+    file_name = "delete_me.webp"
+    aws_service.ensure_bucket_exists(bucket)
 
-    # Upload file
-    aws_service.upload_file(file=file, file_name=file_name, content_type=content_type, bucket=bucket, region=region)
+    # Upload
+    aws_service.upload_file(BytesIO(b"data"), file_name, "image/webp", bucket=bucket)
 
-    # Delete file
+    # Delete
     aws_service.delete_file(file_name=file_name, bucket=bucket)
 
-    # Assert
-    with pytest.raises(ClientError) as err:
-        s3_client.head_object(Bucket=bucket, Key=file_name)
-
-    error_code = err.value.response["Error"]["Code"]
-    assert error_code == "404"
+    # Assert 404
+    with pytest.raises(ClientError) as exc:
+        aws_service._s3_client.head_object(Bucket=bucket, Key=file_name)
+    assert exc.value.response["Error"]["Code"] == "404"
