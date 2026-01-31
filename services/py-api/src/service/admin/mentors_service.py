@@ -16,11 +16,11 @@ class MentorsService:
         return await self._repo.fetch_by_id(mentor_id)
 
     async def create(self, data: MentorPostReqData) -> Result[Mentor, Exception]:
-        mentor = Mentor(**data.model_dump())
+        mentor = Mentor(**data.model_dump(mode="json"))
         return await self._repo.create(mentor)
 
     async def update(self, mentor_id: str, data: MentorPatchReqData) -> Result[Mentor, Exception]:
-        params = UpdateMentorParams(**data.model_dump())
+        params = UpdateMentorParams(**data.model_dump(mode="json"))
         return await self._repo.update(mentor_id, params)
 
     async def delete(self, mentor_id: str) -> Result[Mentor, Exception]:

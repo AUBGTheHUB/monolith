@@ -18,6 +18,7 @@ from typing_extensions import Protocol
 
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
+from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -516,6 +517,28 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 
     return cast(SponsorsRepoMock, sponsors_repo)
 
+
+class MentorsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def mentors_repo_mock() -> MentorsRepoMock:
+    mentors_repo = _create_typed_mock(MagicMock)
+
+    mentors_repo.fetch_by_id = AsyncMock()
+    mentors_repo.fetch_all = AsyncMock()
+    mentors_repo.update = AsyncMock()
+    mentors_repo.create = AsyncMock()
+    mentors_repo.delete = AsyncMock()
+
+    return cast(MentorsRepoMock, mentors_repo)
+
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -566,6 +589,7 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
@@ -943,11 +967,38 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 
 @pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
+    return Sponsor(
+        id=obj_id_mock,
+        name="Coca-Cola",
+        tier="GOLD",
+        website_url="https://coca-cola.com/",
+        logo_url="https://eu.aws.com/coca-cola.jpg",
+    )
+
 
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
     document = sponsor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def mentor_mock(obj_id_mock: str) -> Mentor:
+    return Mentor(
+        id=obj_id_mock,
+        name="Jane Doe",
+        company="ACME",
+        job_title="Engineer",
+        avatar_url="https://acme.com/avatar.jpg",
+        expertise_areas=["AI"],
+        linkedin_url="https://linkedin.com/janedoe",
+    )
+
+
+@pytest.fixture
+def mentor_no_id_mock(mentor_mock: Mentor) -> dict[str, Any]:
+    document = mentor_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
