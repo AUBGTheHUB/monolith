@@ -1,16 +1,21 @@
-// services/web/src/website/HackathonPage8.0/SponsorsSection/SponsorsSection.tsx
-import { Sponsors } from './sponsors';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import type { Sponsor as BackendSponsor } from '@/types/sponsors';
+import { apiClient } from '@/services/apiClient';
 import type { HackathonSponsorProps, SponsorRank } from './types';
 import { VerticalBar } from '@/components/ui/verticalBar';
 import type { CSSProperties } from 'react';
 
-type Slot = { kind: 'sponsor'; sponsor: HackathonSponsorProps } | { kind: 'placeholder'; key: string };
+type Slot = { kind: 'sponsor'; sponsor: HackathonSponsorProps };
 
 const RANK_CONFIG: Record<Extract<SponsorRank, 'Platinum' | 'Gold' | 'Silver'>, { label: string; color: string }> = {
     Platinum: { label: 'PLATINUM', color: '#19A0F0' },
     Gold: { label: 'GOLD', color: '#FFDE06' },
     Silver: { label: 'SILVER', color: '#8294A2' },
 };
+
+const SPONSORS_ENDPOINT = '/admin/sponsors';
 
 // Pixel-matched layout constants (DESKTOP ARTBOARD)
 const FRAME_W = 1520;
@@ -23,7 +28,7 @@ const PANEL_ML = 100;
 const PANEL_W = 1256;
 const PANEL_PL = 30;
 
-const TILE = 103;
+const TILE = 230;
 const COLS = 9;
 
 const PANEL_BG =
@@ -31,10 +36,27 @@ const PANEL_BG =
 
 const FLAMES_TOP = 20;
 
-function buildSlots(sponsors: HackathonSponsorProps[], minSlots = 10): Slot[] {
-    const out: Slot[] = sponsors.map((sponsor) => ({ kind: 'sponsor', sponsor }));
-    for (let i = out.length; i < minSlots; i += 1) out.push({ kind: 'placeholder', key: `ph-${i}` });
-    return out;
+function buildSlots(sponsors: HackathonSponsorProps[]): Slot[] {
+    return sponsors.map((sponsor) => ({ kind: 'sponsor', sponsor }));
+}
+
+function tierToRank(tier: string): SponsorRank {
+    const t = tier.trim().toLowerCase();
+    if (t === 'platinum') return 'Platinum';
+    if (t === 'gold') return 'Gold';
+    if (t === 'silver') return 'Silver';
+    if (t === 'bronze') return 'Bronze';
+    return 'Custom';
+}
+
+/** Map backend sponsor -> UI sponsor props */
+function mapBackendSponsors(list: BackendSponsor[]): HackathonSponsorProps[] {
+    return list.map((s) => ({
+        name: s.name,
+        rank: tierToRank(s.tier),
+        logoSrc: s.logo_url,
+        websiteLink: s.website_url,
+    }));
 }
 
 /* ------------------------------- DESKTOP ARTBOARD ------------------------------- */
@@ -45,41 +67,27 @@ function SponsorTileFixed({ sponsor }: { sponsor: HackathonSponsorProps }) {
             href={sponsor.websiteLink}
             target="_blank"
             rel="noreferrer"
-            className="block w-[100px] h-[100px] rounded-[16px] border border-[#6E6E6E] bg-transparent overflow-hidden"
+            className="block w-[230px] h-[230px] rounded-[16px] border border-[#6E6E6E] bg-transparent overflow-hidden"
         >
-            <div className="w-full h-full p-[18px] flex items-center justify-center">
-                <img
-                    src={sponsor.logoSrc}
-                    alt={sponsor.name}
-                    className="w-full h-full object-contain select-none"
-                    draggable={false}
-                />
-            </div>
+            <img
+                src={sponsor.logoSrc}
+                alt={sponsor.name}
+                className="w-full rounded-[16px] h-full object-contain select-none"
+                draggable={false}
+            />
         </a>
-    );
-}
-
-function PlaceholderTileFixed() {
-    return (
-        <div className="w-[100px] h-[100px] rounded-[16px] border border-[#6E6E6E] bg-transparent relative overflow-hidden">
-            <span className="absolute inset-0 flex items-center justify-center text-[#BFC6CC] opacity-35 text-[16px] tracking-[0.14em] select-none">
-                EVIDEN
-            </span>
-        </div>
     );
 }
 
 function RankSectionFixed({
     rank,
     sponsors,
-    minSlots = 10,
 }: {
     rank: Extract<SponsorRank, 'Platinum' | 'Gold' | 'Silver'>;
     sponsors: HackathonSponsorProps[];
-    minSlots?: number;
 }) {
     const { label, color } = RANK_CONFIG[rank];
-    const slots = buildSlots(sponsors, minSlots);
+    const slots = buildSlots(sponsors);
 
     return (
         <section className="relative">
@@ -105,31 +113,37 @@ function RankSectionFixed({
                     <div className="h-[1px] bg-[#1D1B1A]" style={{ width: DIVIDER_W, marginTop: 29 }} />
                 </div>
 
-                <div
-                    className="grid gap-x-[31px] gap-y-[24px]"
-                    style={{
-                        gridTemplateColumns: `repeat(${COLS}, ${TILE}px)`,
-                        width: 1140,
-                        marginTop: 50,
-                    }}
-                >
-                    {slots.map((slot, idx) =>
-                        slot.kind === 'sponsor' ? (
+                {slots.length === 0 ? <div style={{ height: 280 }} /> : null}
+
+                {slots.length > 0 ? (
+                    <div
+                        className="grid gap-x-[31px] gap-y-[24px]"
+                        style={{
+                            gridTemplateColumns: `repeat(${COLS}, ${TILE}px)`,
+                            width: 1140,
+                            marginTop: 50,
+                        }}
+                    >
+                        {slots.map((slot) => (
                             <SponsorTileFixed key={slot.sponsor.name} sponsor={slot.sponsor} />
-                        ) : (
-                            <PlaceholderTileFixed key={`${slot.key}-${idx}`} />
-                        ),
-                    )}
-                </div>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         </section>
     );
 }
 
-function SponsorsArtboard({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
-    const platinumSponsors = Sponsors.filter((s) => s.rank === 'Platinum').sort((a, b) => a.name.localeCompare(b.name));
-    const goldSponsors = Sponsors.filter((s) => s.rank === 'Gold').sort((a, b) => a.name.localeCompare(b.name));
-    const silverSponsors = Sponsors.filter((s) => s.rank === 'Silver').sort((a, b) => a.name.localeCompare(b.name));
+function SponsorsArtboard({
+    sponsorsSwitch,
+    sponsors,
+}: {
+    sponsorsSwitch: boolean;
+    sponsors: HackathonSponsorProps[];
+}) {
+    const platinumSponsors = sponsors.filter((s) => s.rank === 'Platinum').sort((a, b) => a.name.localeCompare(b.name));
+    const goldSponsors = sponsors.filter((s) => s.rank === 'Gold').sort((a, b) => a.name.localeCompare(b.name));
+    const silverSponsors = sponsors.filter((s) => s.rank === 'Silver').sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <div
@@ -172,22 +186,13 @@ function SponsorsArtboard({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
                 </div>
             ) : (
                 <div className="absolute left-0 right-0" style={{ top: 275 }}>
-                    <RankSectionFixed rank="Platinum" sponsors={platinumSponsors} minSlots={10} />
+                    <RankSectionFixed rank="Platinum" sponsors={platinumSponsors} />
                     <div style={{ height: 45 }} />
-                    <RankSectionFixed rank="Gold" sponsors={goldSponsors} minSlots={10} />
+                    <RankSectionFixed rank="Gold" sponsors={goldSponsors} />
                     <div style={{ height: 45 }} />
-                    <RankSectionFixed rank="Silver" sponsors={silverSponsors} minSlots={10} />
+                    <RankSectionFixed rank="Silver" sponsors={silverSponsors} />
                 </div>
             )}
-
-            {/* Corner flame stays positioned relative to artboard */}
-            <img
-                src="/hackathon8/sponsors/flame-corner.png"
-                alt=""
-                className="absolute pointer-events-none select-none"
-                style={{ right: -140, bottom: 40, width: 520 }}
-                draggable={false}
-            />
         </div>
     );
 }
@@ -202,39 +207,25 @@ function SponsorTileFluid({ sponsor }: { sponsor: HackathonSponsorProps }) {
             rel="noreferrer"
             className="w-full aspect-square rounded-[16px] border border-[#6E6E6E] bg-transparent overflow-hidden"
         >
-            <div className="w-full h-full p-[12px] flex items-center justify-center">
-                <img
-                    src={sponsor.logoSrc}
-                    alt={sponsor.name}
-                    className="w-full h-full object-contain select-none"
-                    draggable={false}
-                />
-            </div>
+            <img
+                src={sponsor.logoSrc}
+                alt={sponsor.name}
+                className="w-full h-full rounded-[16px] object-contain select-none"
+                draggable={false}
+            />
         </a>
-    );
-}
-
-function PlaceholderTileFluid() {
-    return (
-        <div className="w-full aspect-square rounded-[16px] border border-[#6E6E6E] bg-transparent relative overflow-hidden">
-            <span className="absolute inset-0 flex items-center justify-center text-[#BFC6CC] opacity-35 text-[14px] tracking-[0.14em] select-none">
-                EVIDEN
-            </span>
-        </div>
     );
 }
 
 function RankSectionMobile({
     rank,
     sponsors,
-    minSlots = 10,
 }: {
     rank: Extract<SponsorRank, 'Platinum' | 'Gold' | 'Silver'>;
     sponsors: HackathonSponsorProps[];
-    minSlots?: number;
 }) {
     const { label, color } = RANK_CONFIG[rank];
-    const slots = buildSlots(sponsors, minSlots);
+    const slots = buildSlots(sponsors);
 
     return (
         <div
@@ -249,35 +240,33 @@ function RankSectionMobile({
             </div>
             <div className="h-[1px] bg-[#1D1B1A]" style={{ width: '100%', marginTop: 18 }} />
 
-            <div
-                className="grid mt-[18px]"
-                style={{
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(76px, 100px))',
-                    columnGap: 14,
-                    rowGap: 14,
-                    justifyContent: 'start',
-                }}
-            >
-                {slots.map((slot, idx) =>
-                    slot.kind === 'sponsor' ? (
-                        <div key={slot.sponsor.name} style={{ maxWidth: 100 }}>
+            {slots.length === 0 ? <div style={{ height: 140 }} /> : null}
+
+            {slots.length > 0 ? (
+                <div
+                    className="grid mt-[18px]"
+                    style={{
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 230px))',
+                        columnGap: 14,
+                        rowGap: 14,
+                        justifyContent: 'start',
+                    }}
+                >
+                    {slots.map((slot) => (
+                        <div key={slot.sponsor.name} style={{ maxWidth: 230 }}>
                             <SponsorTileFluid sponsor={slot.sponsor} />
                         </div>
-                    ) : (
-                        <div key={`${slot.key}-${idx}`} style={{ maxWidth: 100 }}>
-                            <PlaceholderTileFluid />
-                        </div>
-                    ),
-                )}
-            </div>
+                    ))}
+                </div>
+            ) : null}
         </div>
     );
 }
 
-function SponsorsMobile({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
-    const platinumSponsors = Sponsors.filter((s) => s.rank === 'Platinum').sort((a, b) => a.name.localeCompare(b.name));
-    const goldSponsors = Sponsors.filter((s) => s.rank === 'Gold').sort((a, b) => a.name.localeCompare(b.name));
-    const silverSponsors = Sponsors.filter((s) => s.rank === 'Silver').sort((a, b) => a.name.localeCompare(b.name));
+function SponsorsMobile({ sponsorsSwitch, sponsors }: { sponsorsSwitch: boolean; sponsors: HackathonSponsorProps[] }) {
+    const platinumSponsors = sponsors.filter((s) => s.rank === 'Platinum').sort((a, b) => a.name.localeCompare(b.name));
+    const goldSponsors = sponsors.filter((s) => s.rank === 'Gold').sort((a, b) => a.name.localeCompare(b.name));
+    const silverSponsors = sponsors.filter((s) => s.rank === 'Silver').sort((a, b) => a.name.localeCompare(b.name));
 
     return (
         <div className="relative rounded-[24px] bg-[#FFFDF5] shadow-[0_18px_60px_rgba(0,0,0,0.45)] overflow-hidden w-full">
@@ -314,9 +303,9 @@ function SponsorsMobile({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
                     </div>
                 ) : (
                     <div className="mt-[22px] flex flex-col gap-[16px]">
-                        <RankSectionMobile rank="Platinum" sponsors={platinumSponsors} minSlots={10} />
-                        <RankSectionMobile rank="Gold" sponsors={goldSponsors} minSlots={10} />
-                        <RankSectionMobile rank="Silver" sponsors={silverSponsors} minSlots={10} />
+                        <RankSectionMobile rank="Platinum" sponsors={platinumSponsors} />
+                        <RankSectionMobile rank="Gold" sponsors={goldSponsors} />
+                        <RankSectionMobile rank="Silver" sponsors={silverSponsors} />
                     </div>
                 )}
             </div>
@@ -327,21 +316,34 @@ function SponsorsMobile({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
 /* ---------------------------------- EXPORT ---------------------------------- */
 
 export const SponsorsSection = ({ sponsorsSwitch = true }: { sponsorsSwitch?: boolean }) => {
+    // Fetch from backend (same approach as Admin SponsorsPage)
+    const { data, isError } = useQuery({
+        queryKey: ['public-sponsors'],
+        queryFn: () => apiClient.get<{ sponsors: BackendSponsor[] }>(SPONSORS_ENDPOINT),
+        select: (res) => res.sponsors,
+    });
+
+    const sponsorsFromBackend = useMemo(() => mapBackendSponsors(data ?? []), [data]);
+
+    // If backend fails, we still render (with placeholders)
+    const effectiveSponsors = isError ? [] : sponsorsFromBackend;
+
     const scaledStyle: CSSProperties & { ['--s']: string } = {
         width: '100%',
         maxWidth: FRAME_W,
         ['--s']: `min(1, calc(100% / ${FRAME_W}))`,
         height: `calc(${FRAME_H}px * var(--s))`,
     };
+
     return (
         <div className="w-full bg-black flex justify-center">
             <div className="w-full">
-                {/* Mobile: reflow layout */}
+                {/* Mobile */}
                 <div className="block sm:hidden max-w-[560px] mx-auto">
-                    <SponsorsMobile sponsorsSwitch={sponsorsSwitch} />
+                    <SponsorsMobile sponsorsSwitch={sponsorsSwitch} sponsors={effectiveSponsors} />
                 </div>
 
-                {/* Tablet/Laptop/Desktop: pixel-perfect artboard that scales down proportionally */}
+                {/* Tablet/Laptop/Desktop */}
                 <div className="hidden sm:block mx-auto" style={scaledStyle}>
                     <div
                         style={{
@@ -351,7 +353,7 @@ export const SponsorsSection = ({ sponsorsSwitch = true }: { sponsorsSwitch?: bo
                             transformOrigin: 'top left',
                         }}
                     >
-                        <SponsorsArtboard sponsorsSwitch={sponsorsSwitch} />
+                        <SponsorsArtboard sponsorsSwitch={sponsorsSwitch} sponsors={effectiveSponsors} />
                     </div>
                 </div>
             </div>
