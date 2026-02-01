@@ -26,7 +26,6 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
         endpoint=http_handler.get_all_past_events,
         methods=["GET"],
         responses={200: {"model": AllPastEventsResponse}, 401: {"model": ErrResponse}},
-        dependencies=[Depends(is_authorized)],
     )
 
     events_router.add_api_route(
@@ -39,7 +38,7 @@ def register_past_events_routes(http_handler: PastEventsHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(validate_obj_id)],
     )
 
     events_router.add_api_route(
