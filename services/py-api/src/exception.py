@@ -94,6 +94,13 @@ class TeamNameMissmatchError(CustomError):
     status_code = status.HTTP_400_BAD_REQUEST
 
 
+class SponsorNotFoundError(CustomError):
+    """Exception raised when the sponsor cannot be found in the database"""
+
+    message = "The specified sponsor was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
@@ -144,4 +151,11 @@ class PasswordsMismatchError(CustomError):
 
 class RefreshTokenNotFound(CustomError):
     message = "The refresh token was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class PastEventNotFoundError(CustomError):
+    """Exception raised when a past event with the given id does not exist"""
+
+    message = "The specified past event was not found"
     status_code = status.HTTP_404_NOT_FOUND

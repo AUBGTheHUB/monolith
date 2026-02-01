@@ -26,7 +26,7 @@ from src.server.handlers.hackathon.hackathon_handlers import HackathonManagement
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.http_handlers import HttpHandlersContainer, HackathonHandlers, AdminHandlers
-from src.server.handlers.utility_hanlders import UtilityHandlers
+from src.server.handlers.utility_handlers import UtilityHandlers
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.database.repository.admin.judges_repository import JudgesRepository
