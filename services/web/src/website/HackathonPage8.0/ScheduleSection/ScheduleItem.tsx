@@ -4,17 +4,17 @@ import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { scheduleData } from './data';
 
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast }) => (
-    <div>
-        <div className="flex justify-between items-center py-6 lg:py-8 px-8 lg:px-10 text-white">
-            <span className="text-sm sm:text-base lg:text-xl font-oxanium break-words max-w-[65%]">{event}</span>
-            <span className="text-sm sm:text-base lg:text-xl font-oxanium font-bold">{time}</span>
+    <div className={!isLast ? 'mb-[1rem] md:mb-[1.5rem]' : ''}>
+        <div className="flex justify-between items-center py-[0.75rem] md:py-[1.25rem] text-white">
+            <span className="text-[0.875rem] md:text-[1.188rem] font-oxanium leading-[1.25]">{event}</span>
+            <span className="text-[0.875rem] md:text-[1.188rem] font-oxanium font-bold leading-[1.25]">{time}</span>
         </div>
         {!isLast && (
             <div
-                className="h-[2px] mx-8 lg:mx-10"
+                className="h-[1px]"
                 style={{
-                    background: 'rgba(255, 255, 255, 0.3)',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.25)',
+                    background: '#A9B4C3',
+                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                 }}
             />
         )}
@@ -22,17 +22,17 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast 
 );
 
 export const ScheduleHeader = () => (
-    <div
-        className="flex items-center gap-4 lg:gap-6 mb-24 bg-white border-y-2 border-r-2 sm:border-2 border-black rounded-r-3xl px-6 lg:px-8 py-6 -ml-0 sm:-ml-8 mr-16 lg:mr-24 xl:mr-40"
-        style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}
-    >
-        <div className="ml-4 sm:ml-16 lg:ml-28 xl:ml-40 flex items-center gap-4 lg:gap-6">
+    <div className="w-full max-w-[100vw] md:pl-8 lg:pl-16 xl:pl-28">
+        <div
+            className="flex items-center justify-center md:justify-start lg:justify-center gap-3 md:gap-4 lg:gap-6 bg-white border-2 border-black rounded-[1rem] md:rounded-[1.25rem] px-4 md:px-6 lg:pl-6 lg:pr-8 py-4 md:py-6 w-full md:w-[24rem] lg:w-[29rem] h-auto md:h-[5rem] lg:h-[5.75rem]"
+            style={{ boxShadow: '0 4px 12px rgba(28, 26, 25, 0.3)' }}
+        >
             <img
                 src="/ScheduleSection/logo.png"
                 alt="HackAUBG Logo"
-                className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 object-contain"
+                className="w-[2rem] h-[1.6rem] md:w-[2.5rem] md:h-[2rem] lg:w-[3.238rem] lg:h-[2.579rem] object-contain"
             />
-            <h2 className="text-black font-orbitron font-normal tracking-[0.3em] text-[clamp(1.25rem,3.5vw,3rem)]">
+            <h2 className="text-black font-orbitron font-normal text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] leading-[1.25] tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em]">
                 SCHEDULE
             </h2>
         </div>
@@ -40,16 +40,16 @@ export const ScheduleHeader = () => (
 );
 
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
-    <TabsList className="mb-12 h-auto p-0 gap-4 bg-transparent flex flex-wrap justify-start w-full">
+    <TabsList className="mb-[1.5rem] h-auto p-0 gap-[0.75rem] md:gap-[1.625rem] bg-transparent flex flex-wrap justify-center md:justify-start w-full">
         <div
-            className="relative p-[2px] rounded-[14px]"
+            className="relative p-[2px] rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #B91C1C 0%, #DC2626 100%)',
             }}
         >
             <TabsTrigger
                 value="Friday"
-                className="px-6 lg:px-8 py-2 rounded-[12px] font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
+                className="px-3 md:px-6 py-1 md:py-2 rounded-[1.125rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0"
                 style={
                     activeTab === 'Friday'
                         ? { backgroundColor: 'white', color: '#DC2626' }
@@ -64,14 +64,14 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         </div>
 
         <div
-            className="relative p-[2px] rounded-[14px]"
+            className="relative p-[2px] rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #DC2626 0%, #F97316 100%)',
             }}
         >
             <TabsTrigger
                 value="Saturday"
-                className="px-6 lg:px-8 py-2 rounded-[12px] font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
+                className="px-3 md:px-6 py-1 md:py-2 rounded-[1.125rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0"
                 style={
                     activeTab === 'Saturday'
                         ? { backgroundColor: 'white', color: '#DC2626' }
@@ -86,14 +86,14 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         </div>
 
         <div
-            className="relative p-[2px] rounded-[14px]"
+            className="relative p-[2px] rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
             }}
         >
             <TabsTrigger
                 value="Sunday"
-                className="px-6 lg:px-8 py-2 rounded-[12px] font-oxanium text-sm sm:text-base lg:text-xl font-semibold transition-all border-0"
+                className="px-3 md:px-6 py-1 md:py-2 rounded-[1.125rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0"
                 style={
                     activeTab === 'Sunday'
                         ? { backgroundColor: 'white', color: '#F97316' }
@@ -114,12 +114,12 @@ export const ScheduleTable = () => (
         {(['Friday', 'Saturday', 'Sunday'] as Day[]).map((day) => (
             <TabsContent key={day} value={day}>
                 <div
-                    className="rounded-3xl py-1 lg:py-2 w-full"
+                    className="rounded-[1rem] md:rounded-[1.25rem] w-full"
                     style={{
                         background: 'linear-gradient(135deg, #B91C1C 0%, #DC2626 30%, #F97316 70%, #FB923C 100%)',
                     }}
                 >
-                    <div>
+                    <div className="px-[1.5rem] md:px-[2.25rem] py-[1rem] md:py-[1.313rem]">
                         {scheduleData[day].map((event, index) => (
                             <ScheduleItem
                                 key={index}
