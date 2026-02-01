@@ -12,7 +12,8 @@ class PasswordHashService:
         bytes_pass = password_string.encode("utf-8")
         salt = gensalt(SALT_ROUNDS)
 
-        return cast(bytes, hashpw(password=bytes_pass, salt=salt))
+        pass_hash: bytes = hashpw(bytes_pass, salt)
+        return pass_hash
 
     def check_password(self, actual_password: str, password_attempt: str) -> bool:
         attempt_bytes = password_attempt.encode("utf-8")
