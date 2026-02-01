@@ -1,7 +1,7 @@
 import { Control } from 'react-hook-form';
-import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
-import { SponsorFormData } from '../validation/validation';
-import { SponsorsFormFieldMessages as MESSAGES } from '../messages';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
+import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
+import { SponsorsFormFieldMessages as MESSAGES } from '../messages.tsx';
 
 type SponsorFormFieldsProps = {
     control: Control<SponsorFormData>;
@@ -26,25 +26,26 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
             />
             <InputComponent
                 control={control}
-                name="logoUrl"
+                name="logo_url"
                 label={MESSAGES.LABELS.LOGO}
                 placeholder={MESSAGES.PLACEHOLDERS.LOGO}
                 type="url"
             />
             <InputComponent
                 control={control}
-                name="websiteUrl"
+                name="website_url"
                 label={MESSAGES.LABELS.WEBSITE}
                 placeholder={MESSAGES.PLACEHOLDERS.WEBSITE}
                 type="url"
             />
-            <InputComponent
-                control={control}
-                name="careersUrl"
-                label={MESSAGES.LABELS.CAREERS}
-                placeholder={MESSAGES.PLACEHOLDERS.CAREERS}
-                type="url"
-            />
+            {/*TODO Add in BE*/}
+            {/*<InputComponent*/}
+            {/*    control={control}*/}
+            {/*    name="careersUrl"*/}
+            {/*    label={MESSAGES.LABELS.CAREERS}*/}
+            {/*    placeholder={MESSAGES.PLACEHOLDERS.CAREERS}*/}
+            {/*    type="url"*/}
+            {/*/>*/}
         </>
     );
 }
