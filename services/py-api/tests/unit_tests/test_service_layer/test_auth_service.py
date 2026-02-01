@@ -5,9 +5,9 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.exception import (
-    DuplicateHUBMemberNameError,
+    DuplicateHubMemberNameError,
     HubMemberNotFoundError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from src.service.auth.auth_service import AuthService
@@ -56,7 +56,6 @@ async def test_register_hub_admin_success(
 
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
-    hub_members_repo_mock.check_if_admin_exists_by_name.return_value = Ok(False)
     hub_members_repo_mock.create.return_value = Ok(hub_admin_mock)
 
     # When
@@ -77,15 +76,14 @@ async def test_register_hub_admin_fails_when_name_is_duplicate(
 
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
-    hub_members_repo_mock.check_if_admin_exists_by_name.return_value = Ok(True)
-    hub_members_repo_mock.create.return_value = Err(DuplicateHUBMemberNameError())
+    hub_members_repo_mock.create.return_value = Err(DuplicateHubMemberNameError())
 
     # When
     result = await auth_service.register_admin(register_hub_admin_data_mock)
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, DuplicateHUBMemberNameError)
+    assert isinstance(result.err_value, DuplicateHubMemberNameError)
 
 
 @pytest.mark.asyncio
@@ -98,7 +96,6 @@ async def test_register_hub_admin_fails_general_error(
 
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
-    hub_members_repo_mock.check_if_admin_exists_by_name.return_value = Ok(False)
     hub_members_repo_mock.create.return_value = Err(Exception())
 
     # When
@@ -122,9 +119,9 @@ async def test_login_hub_admin_success(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
-    auth_tokens_service_mock.generate_auth_token.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
 
@@ -144,7 +141,7 @@ async def test_login_hub_admin_not_found(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_name.return_value = Err(HubMemberNotFoundError())
+    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Err(HubMemberNotFoundError())
 
     # When
     result = await auth_service.login_admin(login_hub_admin_data_mock)
@@ -164,7 +161,7 @@ async def test_login_hub_admin_passwords_mismatch(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = False
 
     # When
@@ -172,7 +169,7 @@ async def test_login_hub_admin_passwords_mismatch(
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, PasssordsMismatchError)
+    assert isinstance(result.err_value, PasswordsMismatchError)
 
 
 @pytest.mark.asyncio
@@ -187,9 +184,9 @@ async def test_login_hub_admin_could_not_create_refresh_token(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
-    auth_tokens_service_mock.generate_auth_token.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Err(Exception())
 
     # When
@@ -217,7 +214,7 @@ async def test_refresh_token_success(
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
 
-    auth_tokens_service_mock.generate_auth_token.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     tx_manager_mock.with_transaction.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
 
@@ -308,7 +305,7 @@ async def test_refresh_token_transaction_failed(
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
 
-    auth_tokens_service_mock.generate_auth_token.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     tx_manager_mock.with_transaction.return_value = Err(Exception())
 
     # When

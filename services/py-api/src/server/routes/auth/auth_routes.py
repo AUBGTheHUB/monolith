@@ -33,7 +33,7 @@ def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
     auth_router.add_api_route(
         path="/refresh",
         methods=["POST"],
-        endpoint=http_handler.refresh_token,
+        endpoint=http_handler.refresh_token_pair,
         responses={
             200: {"model": AccessTokenSuccessfullyIssued},
             400: {"model": ErrResponse},

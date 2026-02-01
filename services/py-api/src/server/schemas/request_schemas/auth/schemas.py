@@ -1,5 +1,5 @@
 from dataclasses import field
-from typing import cast
+from typing import cast, Self
 
 from pydantic import BaseModel, ConfigDict, model_validator
 from src.server.schemas.request_schemas.schemas import NonEmptyStr
@@ -22,24 +22,26 @@ class BaseHubMemberData(BaseModel):
 
 class RegisterHubAdminData(BaseHubMemberData):
 
+    user_name: str
     password: str
     repeat_password: str
 
     @model_validator(mode="after")
-    def check_passwords_match(self) -> "RegisterHubAdminData":
+    def check_passwords_match(self) -> Self:
         if self.password != self.repeat_password:
             raise ValueError("Passwords do not match")
         return self
 
-    def convert_to_hub_admin(self) -> HubAdmin:
+    def convert_to_hub_admin(self, password_hash: str) -> HubAdmin:
         return HubAdmin(
             name=self.name,
+            user_name=self.user_name,
             member_type=self.member_type,
             position=self.position,
             avatar_url=self.avatar_url,
             social_links=self.social_links,
             department=self.department,
-            password_hash="",
+            password_hash=password_hash,
             # TODO change site roles
             site_role="dev",
         )
@@ -49,5 +51,5 @@ class LoginHubAdminData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")
 
-    name: NonEmptyStr
+    user_name: NonEmptyStr
     password: str

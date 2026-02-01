@@ -2,10 +2,10 @@ from typing import cast
 import pytest
 from result import Err, Ok
 from src.exception import (
-    DuplicateHUBMemberNameError,
+    DuplicateHubMemberNameError,
     HubMemberNotFoundError,
     JwtExpiredSignatureError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from starlette import status
@@ -56,7 +56,7 @@ async def test_register_hub_admin_conflict(
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
     # Given
-    auth_service_mock.register_admin.return_value = Err(DuplicateHUBMemberNameError())
+    auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberNameError())
 
     # When
     resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)
@@ -92,7 +92,7 @@ async def test_login_hub_admin_wrong_password(
     auth_handlers: AuthHandlers, auth_service_mock: AuthServiceMock, login_hub_admin_data_mock: LoginHubAdminData
 ) -> None:
     # Given
-    auth_service_mock.login_admin.return_value = Err(PasssordsMismatchError())
+    auth_service_mock.login_admin.return_value = Err(PasswordsMismatchError())
 
     # When
     resp = await auth_handlers.login(credentials=login_hub_admin_data_mock)
@@ -130,7 +130,7 @@ async def test_refresh_token_success(
     auth_service_mock.refresh_token.return_value = Ok(("token_1", "token_2"))
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     cookies = resp.headers.getlist("Set-Cookie")
 
     # Then
@@ -150,7 +150,7 @@ async def test_refresh_token_not_found(
     auth_service_mock.refresh_token.return_value = Err(RefreshTokenNotFound())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
@@ -167,7 +167,7 @@ async def test_hub_admin_not_found_for_refresh_token(
     auth_service_mock.refresh_token.return_value = Err(HubMemberNotFoundError())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
@@ -184,7 +184,7 @@ async def test_expired_refresh_token(
     auth_service_mock.refresh_token.return_value = Err(JwtExpiredSignatureError())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)

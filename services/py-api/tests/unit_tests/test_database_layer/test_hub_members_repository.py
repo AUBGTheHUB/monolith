@@ -11,7 +11,7 @@ from src.database.model.admin.hub_member_model import HubMember, UpdateHubMember
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 
-from src.exception import DuplicateHUBMemberNameError, HubMemberNotFoundError
+from src.exception import DuplicateHubMemberNameError, HubMemberNotFoundError
 from structlog.stdlib import get_logger
 from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_NAME,
@@ -92,7 +92,7 @@ async def test_create_duplicate_hub_member_error(
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, DuplicateHUBMemberNameError)
+    assert isinstance(result.err_value, DuplicateHubMemberNameError)
 
 
 @pytest.mark.asyncio
@@ -407,7 +407,7 @@ async def test_fetch_admin_by_name_success(
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_admin_dict_mock)
 
     # When
-    result = await repo.fetch_admin_by_name(TEST_HUB_MEMBER_NAME)
+    result = await repo.fetch_admin_by_user_name(TEST_HUB_MEMBER_NAME)
 
     # Then
     assert isinstance(result, Ok)
@@ -425,39 +425,8 @@ async def test_fetch_admin_by_name_not_found(
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
 
     # When
-    result = await repo.fetch_admin_by_name(TEST_HUB_MEMBER_NAME)
+    result = await repo.fetch_admin_by_user_name(TEST_HUB_MEMBER_NAME)
 
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, HubMemberNotFoundError)
-
-
-@pytest.mark.asyncio
-async def check_if_admin_exists_by_name_success(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository
-) -> None:
-    # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(True)
-
-    # When
-    result = await repo.check_if_admin_exists_by_name(TEST_HUB_MEMBER_NAME)
-
-    # Then
-    assert isinstance(result, Ok)
-    result.ok_value == True
-
-
-@pytest.mark.asyncio
-async def check_if_admin_exists_by_name_general_error(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
-) -> None:
-    # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(side_effect=Exception("General Error"))
-
-    # When
-    result = await repo.check_if_admin_exists_by_name(TEST_HUB_MEMBER_NAME)
-
-    # Then
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
-    assert str(result.err_value) == "General Error"

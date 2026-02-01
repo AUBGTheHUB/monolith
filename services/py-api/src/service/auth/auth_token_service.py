@@ -9,7 +9,7 @@ class AuthTokenService:
     def __init__(self, jwt_utility: JwtUtility):
         self._jwt_utility = jwt_utility
 
-    def generate_auth_token(self, hub_admin: HubAdmin) -> str:
+    def generate_access_token_for(self, hub_admin: HubAdmin) -> str:
         expiration = int((datetime.now(timezone.utc) + timedelta(minutes=7)).timestamp())
         payload = JwtAdminToken(
             sub=str(hub_admin.id), exp=expiration, site_role=hub_admin.site_role, member_type=hub_admin.member_type

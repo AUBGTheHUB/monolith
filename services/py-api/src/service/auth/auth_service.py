@@ -8,9 +8,9 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.exception import (
-    DuplicateHUBMemberNameError,
+    DuplicateHubMemberNameError,
     HubMemberNotFoundError,
-    PasssordsMismatchError,
+    PasswordsMismatchError,
     RefreshTokenNotFound,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
@@ -35,9 +35,9 @@ class AuthService:
 
     async def login_admin(
         self, credentials: LoginHubAdminData
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasssordsMismatchError | Exception]:
+    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
-        result = await self._hub_members_repo.fetch_admin_by_name(name=credentials.name)
+        result = await self._hub_members_repo.fetch_admin_by_user_name(user_name=credentials.user_name)
 
         if is_err(result):
             return result
@@ -45,15 +45,15 @@ class AuthService:
         hub_admin = result.ok_value
 
         # check_passwords
-        passwords_match = self._password_hash_service.check_password(
+        passwords_match = await self._password_hash_service.check_password(
             password_attempt=credentials.password, actual_password=hub_admin.password_hash
         )
 
         if not passwords_match:
-            return Err(PasssordsMismatchError())
+            return Err(PasswordsMismatchError())
 
         # Build the auth token
-        jwt_auth_token = self._auth_token_service.generate_auth_token(hub_admin=hub_admin)
+        jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
 
         # Save the refresh token in db
         refresh_token = RefreshToken(hub_member_id=hub_admin.id)
@@ -71,21 +71,11 @@ class AuthService:
 
     async def register_admin(
         self, credentials: RegisterHubAdminData
-    ) -> Result[HubAdmin, DuplicateHUBMemberNameError | Exception]:
+    ) -> Result[HubAdmin, DuplicateHubMemberNameError | Exception]:
 
-        # Check if there is another admin with the same name
-        hub_admin_exists = await self._hub_members_repo.check_if_admin_exists_by_name(credentials.name)
+        password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
 
-        if is_err(hub_admin_exists):
-            return hub_admin_exists
-
-        if hub_admin_exists.ok_value:
-            return Err(DuplicateHUBMemberNameError())
-
-        hub_admin = credentials.convert_to_hub_admin()
-        hub_admin.password_hash = self._password_hash_service.hash_password(
-            password_string=credentials.password
-        ).decode("utf-8")
+        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"))
 
         result = await self._hub_members_repo.create(hub_member=hub_admin)
 
@@ -127,7 +117,7 @@ class AuthService:
         hub_admin = hub_admin_result.ok_value
 
         # Generate new access token for hub admin
-        jwt_auth_token = self._auth_token_service.generate_auth_token(hub_admin=hub_admin)
+        jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
 
         # Delete the old refresh token in db and create a new one in transaction
         result = await self._tx_manager.with_transaction(

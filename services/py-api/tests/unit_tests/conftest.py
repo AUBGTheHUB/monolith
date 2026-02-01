@@ -66,6 +66,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_PASSWORD_HASH,
     TEST_HUB_ADMIN_MEMBER_TYPE,
     TEST_HUB_ADMIN_ROLE,
+    TEST_HUB_MEMBER_USER_NAME,
 )
 from typing import Any
 
@@ -527,13 +528,11 @@ class HubMembersRepoMock(Protocol):
     """
 
     fetch_by_id: AsyncMock
-    fetch_by_team_name: AsyncMock
     fetch_all: AsyncMock
     update: AsyncMock
     create: AsyncMock
     delete: AsyncMock
-    fetch_admin_by_name: AsyncMock
-    check_if_admin_exists_by_name: AsyncMock
+    fetch_admin_by_user_name: AsyncMock
 
 
 @pytest.fixture
@@ -548,8 +547,7 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_all = AsyncMock()
     hub_members_repo.fetch_by_id = AsyncMock()
     hub_members_repo.update = AsyncMock()
-    hub_members_repo.fetch_admin_by_name = AsyncMock()
-    hub_members_repo.check_if_admin_exists_by_name = AsyncMock()
+    hub_members_repo.fetch_admin_by_user_name = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
 
@@ -791,8 +789,8 @@ def auth_service_mock() -> AuthServiceMock:
 
 
 class PasswordHashServiceMock(Protocol):
-    hash_password = Mock
-    check_password = Mock
+    hash_password = AsyncMock
+    check_password = AsyncMock
 
 
 @pytest.fixture
@@ -802,14 +800,14 @@ def password_hash_service_mock() -> PasswordHashServiceMock:
 
     password_hash_service_mock = _create_typed_mock(PasswordHashServiceMock)
 
-    password_hash_service_mock.check_password = Mock()
-    password_hash_service_mock.hash_password = Mock()
+    password_hash_service_mock.check_password = AsyncMock()
+    password_hash_service_mock.hash_password = AsyncMock()
 
     return cast(PasswordHashServiceMock, password_hash_service_mock)
 
 
 class AuthTokensServiceMock(Protocol):
-    generate_auth_token = Mock
+    generate_access_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
 
@@ -821,7 +819,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
 
     auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
 
-    auth_tokens_service_mock.generate_auth_token = Mock()
+    auth_tokens_service_mock.generate_access_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
 
@@ -1139,6 +1137,7 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
     return HubAdmin(
         id=obj_id_mock,
         name=TEST_HUB_MEMBER_NAME,
+        user_name=TEST_HUB_MEMBER_USER_NAME,
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
@@ -1168,6 +1167,7 @@ def refresh_token_dict_mock(refresh_token_mock: RefreshToken) -> dict[str, Any]:
 def register_hub_admin_data_mock() -> RegisterHubAdminData:
     return RegisterHubAdminData(
         name=TEST_HUB_MEMBER_NAME,
+        user_name=TEST_HUB_MEMBER_USER_NAME,
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
@@ -1180,7 +1180,7 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
 
 @pytest.fixture
 def login_hub_admin_data_mock() -> LoginHubAdminData:
-    return LoginHubAdminData(name=TEST_HUB_MEMBER_NAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    return LoginHubAdminData(user_name=TEST_HUB_MEMBER_USER_NAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
 
 @pytest.fixture

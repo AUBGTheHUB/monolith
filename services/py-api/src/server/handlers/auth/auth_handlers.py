@@ -29,7 +29,7 @@ class AuthHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True)
+        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
 
         return response
 
@@ -41,7 +41,7 @@ class AuthHandlers(BaseHandler):
 
         return Response(HubMemberSuccessfullyRegistered(hub_admin=result.ok_value), status_code=status.HTTP_201_CREATED)
 
-    async def refresh_token(self, refresh_token: str | None = Cookie(default=None)) -> Response:
+    async def refresh_token_pair(self, refresh_token: str | None = Cookie(default=None)) -> Response:
         result = await self._service.refresh_token(refresh_token=refresh_token)
 
         if is_err(result):
@@ -56,6 +56,6 @@ class AuthHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True)
+        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
 
         return response

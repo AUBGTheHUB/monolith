@@ -132,12 +132,12 @@ class HubMemberNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class DuplicateHUBMemberNameError(CustomError):
+class DuplicateHubMemberNameError(CustomError):
     message = "HUB member with this name already exists"
     status_code = status.HTTP_409_CONFLICT
 
 
-class PasssordsMismatchError(CustomError):
+class PasswordsMismatchError(CustomError):
     message = "The name and password do not match!"
     status_code = status.HTTP_401_UNAUTHORIZED
 
