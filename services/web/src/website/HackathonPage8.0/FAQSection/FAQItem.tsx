@@ -12,39 +12,38 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
     const [height, setHeight] = useState(0);
 
     useEffect(() => {
-        if (contentRef.current) {
-            setHeight(isOpen ? contentRef.current.scrollHeight : 0);
-        }
+        const updateHeight = () => {
+            if (contentRef.current) {
+                setHeight(isOpen ? contentRef.current.scrollHeight : 0);
+            }
+        };
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
     }, [isOpen]);
 
     return (
-        <div className="relative">
-            <div className="h-px w-full bg-[#521010]" />
-
+        <div className="relative border-b border-[#521010]">
             <button
                 onClick={onToggle}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between py-[19px] text-left"
+                className="flex w-full items-center justify-between py-5 text-left group"
             >
-                <span className="font-oxanium text-[19px] leading-[100%] text-[#A9B4C3]">{faq.question}</span>
+                {/* TEXT FIX: Scales smoothly between 16px and 20px depending on screen width */}
+                <span className="font-oxanium text-[clamp(16px,1.5vw,20px)] leading-tight text-[#A9B4C3] group-hover:text-white transition-colors">
+                    {faq.question}
+                </span>
 
-                <span className="relative flex h-[19px] w-[19px] items-center justify-center">
-                    {/* Plus icon shown when isOpen === false */}
+                <span className="relative flex h-6 w-6 flex-shrink-0 items-center justify-center ml-4">
                     <img
                         src="/plus.svg"
-                        alt="Expand answer"
-                        className={`absolute h-[11px] w-[11px] transition-all duration-200 ease-out ${
-                            isOpen ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-                        }`}
+                        alt="Expand"
+                        className={`absolute h-3 w-3 transition-transform duration-200 ${isOpen ? 'rotate-90 opacity-0' : 'opacity-100'}`}
                     />
-
-                    {/* Minus icon shown when isOpen === true */}
                     <img
                         src="/minus.svg"
-                        alt="Collapse answer"
-                        className={`absolute h-[19px] w-[19px] transition-all duration-200 ease-out ${
-                            isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                        }`}
+                        alt="Collapse"
+                        className={`absolute h-3 w-auto transition-transform duration-200 ${isOpen ? 'opacity-100' : '-rotate-90 opacity-0'}`}
                     />
                 </span>
             </button>
@@ -52,13 +51,12 @@ export const FAQItem = ({ faq, isOpen, onToggle }: Props) => {
             <div style={{ height }} className="overflow-hidden transition-[height] duration-300 ease-in-out">
                 <div
                     ref={contentRef}
-                    className="pt-[19px] pb-[19px] font-oxanium text-[19px] leading-[100%] text-[#FFFFFF]"
+                    // TEXT FIX: Same smooth scaling for the answer
+                    className="pb-6 pt-2 font-oxanium text-[clamp(16px,1.5vw,19px)] leading-relaxed text-[#FFFFFF] opacity-90"
                 >
                     {faq.answer}
                 </div>
             </div>
-
-            <div className={`h-px w-full ${isOpen ? 'bg-[#DA2F2F]' : 'bg-[#521010]'}`} />
         </div>
     );
 };
