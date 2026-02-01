@@ -110,7 +110,7 @@ export const SponsorsFormFieldMessages = {
     },
     PLACEHOLDERS: {
         NAME: "Enter sponsor's name",
-        TIER: 'Enter tier (e.g., Gold, Silver, Partner)',
+        TIER: 'Choose a tier',
         LOGO: 'Enter logo URL (e.g., /logos/sponsor.png)',
         WEBSITE: 'Enter main website URL',
         CAREERS: 'Enter careers page URL (optional)',
