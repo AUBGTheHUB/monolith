@@ -70,7 +70,6 @@ async def test_create_calls_repo_with_built_model(
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
         avatar_url=mentor_mock.avatar_url,
-        expertise_areas=mentor_mock.expertise_areas,
         linkedin_url=mentor_mock.linkedin_url,
     )
 
@@ -99,7 +98,6 @@ async def test_update_calls_repo_with_update_params(
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
         avatar_url=mentor_mock.avatar_url,
-        expertise_areas=mentor_mock.expertise_areas,
         linkedin_url=mentor_mock.linkedin_url,
     )
     updated = Mentor(
@@ -107,7 +105,6 @@ async def test_update_calls_repo_with_update_params(
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
         avatar_url=mentor_mock.avatar_url,
-        expertise_areas=mentor_mock.expertise_areas,
         linkedin_url=mentor_mock.linkedin_url,
     )
 

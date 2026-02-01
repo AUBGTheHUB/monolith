@@ -991,7 +991,6 @@ def mentor_mock(obj_id_mock: str) -> Mentor:
         company="ACME",
         job_title="Engineer",
         avatar_url="https://acme.com/avatar.jpg",
-        expertise_areas=["AI"],
         linkedin_url="https://linkedin.com/janedoe",
     )
 

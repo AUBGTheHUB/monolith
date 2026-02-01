@@ -11,7 +11,6 @@ TEST_MENTOR_NAME = "Jane Doe"
 TEST_MENTOR_COMPANY = "ACME"
 TEST_MENTOR_JOB_TITLE = "Engineer"
 TEST_MENTOR_AVATAR_URL = "https://acme.com/avatar.jpg"
-TEST_MENTOR_EXPERTISE_AREAS = ["Web Development", "Quantum Computing"]
 TEST_MENTOR_LINKEDIN_URL = "https://linkedin.com/janedoe"
 
 valid_mentor_body: dict[str, Any] = {
@@ -19,7 +18,6 @@ valid_mentor_body: dict[str, Any] = {
     "company": TEST_MENTOR_COMPANY,
     "job_title": TEST_MENTOR_JOB_TITLE,
     "avatar_url": TEST_MENTOR_AVATAR_URL,
-    "expertise_areas": TEST_MENTOR_EXPERTISE_AREAS,
     "linkedin_url": TEST_MENTOR_LINKEDIN_URL,
 }
 
@@ -53,7 +51,6 @@ async def test_create_mentor_success(async_client: AsyncClient) -> None:
     assert response_body["mentor"]["company"] == TEST_MENTOR_COMPANY
     assert response_body["mentor"]["job_title"] == TEST_MENTOR_JOB_TITLE
     assert response_body["mentor"]["avatar_url"] == TEST_MENTOR_AVATAR_URL
-    assert response_body["mentor"]["expertise_areas"] == TEST_MENTOR_EXPERTISE_AREAS
     assert response_body["mentor"]["linkedin_url"] == TEST_MENTOR_LINKEDIN_URL
     assert "id" in response_body["mentor"]
 
@@ -165,7 +162,6 @@ async def test_get_mentor_by_id_success(async_client: AsyncClient) -> None:
     assert response_body["mentor"]["name"] == mentor["name"]
     assert response_body["mentor"]["company"] == mentor["company"]
     assert response_body["mentor"]["avatar_url"] == mentor["avatar_url"]
-    assert response_body["mentor"]["expertise_areas"] == mentor["expertise_areas"]
     assert response_body["mentor"]["job_title"] == mentor["job_title"]
 
     # Cleanup

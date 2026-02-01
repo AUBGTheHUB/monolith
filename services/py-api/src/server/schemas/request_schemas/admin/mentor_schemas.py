@@ -12,7 +12,6 @@ class MentorPostReqData(BaseModel):
     company: NonEmptyStr
     job_title: NonEmptyStr
     avatar_url: HttpUrl
-    expertise_areas: list[NonEmptyStr]
     linkedin_url: Optional[HttpUrl] = None
 
 
@@ -23,5 +22,4 @@ class MentorPatchReqData(BasePatchReqData):
     company: Optional[NonEmptyStr] = None
     job_title: Optional[NonEmptyStr] = None
     avatar_url: Optional[HttpUrl] = None
-    expertise_areas: Optional[list[NonEmptyStr]] = None
     linkedin_url: Optional[HttpUrl] = None
