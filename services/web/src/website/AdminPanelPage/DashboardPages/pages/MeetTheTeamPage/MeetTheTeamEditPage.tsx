@@ -3,87 +3,84 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_SPONSORS } from './mockSponsors';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import teamMembers from './resources/teamMembers.json';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPage/pages/SponsorsPage/components/SponsorshipFormFields';
-import { SponsorsEditMessages, SponsorsAddMessages } from './messages';
-import { Form } from '@/components/ui/form';
-import { sponsorSchema, SponsorFormData } from './validation/validation';
-import { Styles } from '../../../AdminStyle';
-import { cn } from '@/lib/utils';
+import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
+import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
+import { Form } from '@/components/ui/form.tsx';
+import { teamMemberSchema, TeamMemberFormData } from './validation/validation.tsx';
+import { Styles } from '../../../AdminStyle.ts';
+import { cn } from '@/lib/utils.ts';
+import { toast } from 'react-toastify';
 
-export function SponsorsEditPage() {
+export function MeetTheTeamEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
 
-    const sponsor = id ? MOCK_SPONSORS.find((s) => s.id === id) : undefined;
-    const isEditMode = Boolean(sponsor);
-    const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
+    const isEditMode = Boolean(id);
+    const MESSAGES = isEditMode ? TeamMemberEditMessages : TeamMemberAddMessages;
 
-    const form = useForm<SponsorFormData>({
-        resolver: zodResolver(sponsorSchema),
+    const member = teamMembers.find((m) => m.id === id);
+
+    const form = useForm<TeamMemberFormData>({
+        resolver: zodResolver(teamMemberSchema),
         defaultValues: {
             name: '',
-            tier: '',
-            logoUrl: '',
-            websiteUrl: '',
-            careersUrl: '',
+            image: '',
+            departments: [],
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const logoUrl = watch('logoUrl');
+    const imageUrl = watch('image');
 
     useEffect(() => {
-        if (isEditMode && sponsor) {
+        if (isEditMode && member) {
             reset({
-                name: sponsor.name,
-                tier: sponsor.tier,
-                logoUrl: sponsor.logoUrl,
-                websiteUrl: sponsor.websiteUrl,
-                careersUrl: sponsor.careersUrl || '',
+                name: member.name,
+                image: member.image || '',
+                departments: member.departments,
             });
         } else {
             reset({
                 name: '',
-                tier: '',
-                logoUrl: '',
-                websiteUrl: '',
-                careersUrl: '',
+                image: '',
+                departments: [],
             });
         }
-    }, [isEditMode, sponsor, reset]);
+    }, [isEditMode, member, reset]);
 
-    const onSubmit = () => {
-        alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/sponsors');
+    const onSubmit = (data: TeamMemberFormData) => {
+        toast.success(MESSAGES.SUCCESS_MESSAGE);
+        console.log({ id: id || 'new', ...data });
+        navigate('/admin/dashboard/meet-the-team');
     };
 
     const goBack = () => {
-        navigate('/admin/sponsors');
+        navigate('/admin/dashboard/meet-the-team');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
 
-    if (isEditMode && !sponsor) {
+    if (isEditMode && !member) {
         return (
             <Fragment>
                 <Helmet>
-                    <title>{SponsorsEditMessages.NOT_FOUND_TITLE}</title>
+                    <title>{TeamMemberEditMessages.NOT_FOUND_TITLE}</title>
                 </Helmet>
                 <div className={pageWrapperClass}>
                     <div className="max-w-2xl mx-auto">
                         <Card className={cn('p-12 text-center', Styles.glass.card)}>
-                            <p className="text-red-400 text-lg mb-6">{SponsorsEditMessages.NOT_FOUND_MESSAGE}</p>
+                            <p className="text-red-400 text-lg mb-6">{TeamMemberEditMessages.NOT_FOUND_MESSAGE}</p>
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="text-white hover:opacity-90 transition-opacity"
                                 onClick={goBack}
                             >
-                                {SponsorsEditMessages.RETURN_BUTTON}
+                                {TeamMemberEditMessages.RETURN_BUTTON}
                             </Button>
                         </Card>
                     </div>
@@ -115,7 +112,7 @@ export function SponsorsEditPage() {
                                 <CardContent className="flex flex-col md:flex-row gap-12 p-8">
                                     <div className={Styles.forms.fieldContainer}>
                                         <div className="form-dark-theme">
-                                            <SponsorFormFields control={control} />
+                                            <TeamMemberFormFields control={control} />
                                         </div>
                                     </div>
 
@@ -128,11 +125,11 @@ export function SponsorsEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {logoUrl ? (
+                                            {imageUrl ? (
                                                 <img
-                                                    src={logoUrl}
+                                                    src={imageUrl}
                                                     alt="Preview"
-                                                    className="w-full h-full object-contain p-4"
+                                                    className="w-full h-full object-cover"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).src =
                                                             'https://placehold.co/300?text=Invalid+Image';
@@ -140,7 +137,7 @@ export function SponsorsEditPage() {
                                                 />
                                             ) : (
                                                 <p className={cn('px-4 text-center', Styles.colors.textMuted)}>
-                                                    No logo URL provided
+                                                    No image URL provided
                                                 </p>
                                             )}
                                         </div>

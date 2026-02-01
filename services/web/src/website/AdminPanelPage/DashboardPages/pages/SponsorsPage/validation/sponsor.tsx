@@ -17,14 +17,15 @@ export const sponsorSchema = z.object({
         .min(1, { message: 'Sponsorship tier is required' })
         .min(RULES.TIER.MIN, { message: `Tier must be at least ${RULES.TIER.MIN} characters` }),
 
-    logoUrl: z
+    logo_url: z
         .string()
         .min(1, { message: 'Logo URL is required' })
         .url({ message: 'Please enter a valid URL for the logo' }),
 
-    websiteUrl: z.string().min(1, { message: 'Website URL is required' }).url({ message: 'Please enter a valid URL' }),
-
-    careersUrl: z.string().optional().or(z.literal('')), // Allow empty string or valid URL
+    website_url: z.string().min(1, { message: 'Website URL is required' }).url({ message: 'Please enter a valid URL' }),
+    //TODO Add in BE
+    // careersUrl: z.string().optional().or(z.literal('')), // Allow empty string or valid URL
 });
 
 export type SponsorFormData = z.infer<typeof sponsorSchema>;
+export type Sponsor = SponsorFormData & { id: string };
