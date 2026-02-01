@@ -155,7 +155,7 @@ async def test_refresh_token_not_found(
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.response_model.error == "The refresh token was not found."
-    assert resp.status_code == status.HTTP_404_NOT_FOUND
+    assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.asyncio

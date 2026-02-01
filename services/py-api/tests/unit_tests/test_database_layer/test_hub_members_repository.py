@@ -407,7 +407,7 @@ async def test_fetch_admin_by_name_success(
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_admin_dict_mock)
 
     # When
-    result = await repo.fetch_admin_by_user_name(TEST_HUB_MEMBER_NAME)
+    result = await repo.fetch_admin_by_username(TEST_HUB_MEMBER_NAME)
 
     # Then
     assert isinstance(result, Ok)
@@ -425,7 +425,7 @@ async def test_fetch_admin_by_name_not_found(
     mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
 
     # When
-    result = await repo.fetch_admin_by_user_name(TEST_HUB_MEMBER_NAME)
+    result = await repo.fetch_admin_by_username(TEST_HUB_MEMBER_NAME)
 
     # Then
     assert isinstance(result, Err)

@@ -10,7 +10,7 @@ ROLES = Literal["board", "dev", "super_admin"]
 class HubAdmin(HubMember):
     """Represents a Hub Admin member"""
 
-    user_name: str
+    username: str
     member_type: MEMBER_TYPE = "admin"
     password_hash: str
     site_role: ROLES
@@ -19,7 +19,7 @@ class HubAdmin(HubMember):
         doc = super().dump_as_mongo_db_document()
         doc.update(
             {
-                "user_name": self.user_name,
+                "username": self.username,
                 "password_hash": self.password_hash,
                 "site_role": self.site_role,
             }
@@ -31,7 +31,7 @@ class HubAdmin(HubMember):
         data.update(
             {
                 "site_role": self.site_role,
-                "user_name": self.user_name,
+                "username": self.username,
                 # intentionally exclude password_hash
             }
         )
@@ -42,7 +42,7 @@ class HubAdmin(HubMember):
         base_data = cls._base_from_mongo_db_document(doc)
         return cls(
             **base_data,
-            user_name=doc["user_name"],
+            username=doc["username"],
             password_hash=doc["password_hash"],
             site_role=doc["site_role"],
         )

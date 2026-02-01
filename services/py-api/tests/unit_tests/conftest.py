@@ -72,8 +72,10 @@ from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_PASSWORD_HASH,
     TEST_HUB_ADMIN_MEMBER_TYPE,
     TEST_HUB_ADMIN_ROLE,
-    TEST_HUB_MEMBER_USER_NAME,
+    TEST_HUB_MEMBER_USERNAME,
 )
+
+TEST_REFRESH_ID = "1234567"
 
 
 def _create_typed_mock[T](class_type: T) -> T:
@@ -579,7 +581,7 @@ class HubMembersRepoMock(Protocol):
     update: AsyncMock
     create: AsyncMock
     delete: AsyncMock
-    fetch_admin_by_user_name: AsyncMock
+    fetch_admin_by_username: AsyncMock
 
 
 @pytest.fixture
@@ -594,7 +596,7 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_all = AsyncMock()
     hub_members_repo.fetch_by_id = AsyncMock()
     hub_members_repo.update = AsyncMock()
-    hub_members_repo.fetch_admin_by_user_name = AsyncMock()
+    hub_members_repo.fetch_admin_by_username = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
 
@@ -1256,7 +1258,7 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
     return HubAdmin(
         id=obj_id_mock,
         name=TEST_HUB_MEMBER_NAME,
-        user_name=TEST_HUB_MEMBER_USER_NAME,
+        username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
@@ -1274,7 +1276,7 @@ def hub_admin_dict_mock(hub_admin_mock: HubMember) -> dict[str, Any]:
 
 @pytest.fixture
 def refresh_token_mock(obj_id_mock: str, hub_admin_mock: HubAdmin) -> RefreshToken:
-    return RefreshToken(id=obj_id_mock, hub_member_id=hub_admin_mock.id)
+    return RefreshToken(id=obj_id_mock, hub_member_id=hub_admin_mock.id, family_id=TEST_REFRESH_ID, is_valid=True)
 
 
 @pytest.fixture
@@ -1286,7 +1288,7 @@ def refresh_token_dict_mock(refresh_token_mock: RefreshToken) -> dict[str, Any]:
 def register_hub_admin_data_mock() -> RegisterHubAdminData:
     return RegisterHubAdminData(
         name=TEST_HUB_MEMBER_NAME,
-        user_name=TEST_HUB_MEMBER_USER_NAME,
+        username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
@@ -1299,7 +1301,7 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
 
 @pytest.fixture
 def login_hub_admin_data_mock() -> LoginHubAdminData:
-    return LoginHubAdminData(user_name=TEST_HUB_MEMBER_USER_NAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    return LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
 
 @pytest.fixture
@@ -1339,7 +1341,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 @pytest.fixture
 def jwt_refresh_token_mock(obj_id_mock: str) -> JwtRefreshToken:
-    return JwtRefreshToken(sub=obj_id_mock, exp=20)
+    return JwtRefreshToken(sub=obj_id_mock, exp=20, family_id=TEST_REFRESH_ID)
 
 
 @pytest.fixture

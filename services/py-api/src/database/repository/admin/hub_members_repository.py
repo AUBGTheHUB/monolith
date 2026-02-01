@@ -111,11 +111,11 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             LOG.exception("HUB member deletion failed due to error", hub_member_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_admin_by_user_name(self, user_name: str) -> Result[HubAdmin, HubMemberNotFoundError | Exception]:
+    async def fetch_admin_by_username(self, username: str) -> Result[HubAdmin, HubMemberNotFoundError | Exception]:
         try:
-            LOG.info("Trying to get HUB admin by username...", user_name=user_name)
+            LOG.info("Trying to get HUB admin by username...", username=username)
 
-            hub_admin = await self._collection.find_one(filter={"user_name": user_name})
+            hub_admin = await self._collection.find_one(filter={"username": username})
 
             if hub_admin is None:
                 return Err(HubMemberNotFoundError())

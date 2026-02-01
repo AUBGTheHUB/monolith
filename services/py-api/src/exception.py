@@ -151,7 +151,12 @@ class PasswordsMismatchError(CustomError):
 
 class RefreshTokenNotFound(CustomError):
     message = "The refresh token was not found."
-    status_code = status.HTTP_404_NOT_FOUND
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenIsInvalid(CustomError):
+    message = "The refresh token is invalid."
+    status_code = status.HTTP_401_UNAUTHORIZED
 
 
 class PastEventNotFoundError(CustomError):

@@ -22,7 +22,7 @@ class BaseHubMemberData(BaseModel):
 
 class RegisterHubAdminData(BaseHubMemberData):
 
-    user_name: str
+    username: str
     password: str
     repeat_password: str
 
@@ -35,7 +35,7 @@ class RegisterHubAdminData(BaseHubMemberData):
     def convert_to_hub_admin(self, password_hash: str) -> HubAdmin:
         return HubAdmin(
             name=self.name,
-            user_name=self.user_name,
+            username=self.username,
             member_type=self.member_type,
             position=self.position,
             avatar_url=self.avatar_url,
@@ -51,5 +51,5 @@ class LoginHubAdminData(BaseModel):
     # Forbid extra fields
     model_config = ConfigDict(extra="forbid")
 
-    user_name: NonEmptyStr
+    username: NonEmptyStr
     password: str

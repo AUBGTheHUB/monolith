@@ -16,9 +16,9 @@ class AuthTokenService:
         )
         return self._jwt_utility.encode_data(data=payload)
 
-    def generate_refresh_token(self, refresh_token_id: str) -> str:
+    def generate_refresh_token(self, refresh_token_id: str, family_id: str) -> str:
         refresh_expiration = int((datetime.now(timezone.utc) + timedelta(days=1)).timestamp())
-        refresh_payload = JwtRefreshToken(sub=refresh_token_id, exp=refresh_expiration)
+        refresh_payload = JwtRefreshToken(sub=refresh_token_id, exp=refresh_expiration, family_id=family_id)
 
         return self._jwt_utility.encode_data(data=refresh_payload)
 

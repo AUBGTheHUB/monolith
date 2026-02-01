@@ -40,7 +40,7 @@ TEST_PROGRAMMING_LANGUAGE: PROGRAMMING_LANGUAGES_LIST = "Programming in Python"
 TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 
 TEST_HUB_MEMBER_NAME = "Test member"
-TEST_HUB_MEMBER_USER_NAME = "Test member_123"
+TEST_HUB_MEMBER_USERNAME = "Test member_123"
 TEST_HUB_MEMBER_MEMBER_TYPE: MEMBER_TYPE = "member"
 TEST_HUB_MEMBER_ADMIN: MEMBER_TYPE = "admin"
 TEST_HUB_MEMBER_POSITON = "none"
@@ -327,7 +327,7 @@ class RegisterHubAdminBodyCallable(Protocol):
     def __call__(
         self,
         name: str = TEST_USER_NAME,
-        user_name: str = TEST_HUB_MEMBER_USER_NAME,
+        username: str = TEST_HUB_MEMBER_USERNAME,
         position: str = TEST_HUB_MEMBER_POSITON,
         department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
@@ -343,7 +343,7 @@ class RegisterHubAdminBodyCallable(Protocol):
 def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
     def register_hub_admin_request_body_generator(
         name: str = TEST_HUB_MEMBER_NAME,
-        user_name: str = TEST_HUB_MEMBER_USER_NAME,
+        username: str = TEST_HUB_MEMBER_USERNAME,
         position: str = TEST_HUB_MEMBER_POSITON,
         department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
@@ -356,7 +356,7 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
 
         return RegisterHubAdminData(
             name=name,
-            user_name=user_name,
+            username=username,
             position=position,
             department=department,
             avatar_url=avatar_url,

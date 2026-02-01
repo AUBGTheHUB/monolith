@@ -50,6 +50,8 @@ class _DecodedJwtAdminToken(DecodedJwtTokenBase):
 class _RefreshJwtToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used for refreshing"""
 
+    family_id: str
+
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
 # in the `JwtUtils.decode` method (passing a schema), if this schema was one of the following TypeDicts above, when the
@@ -150,10 +152,11 @@ class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
 
 @dataclass(kw_only=True)
 class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
+    family_id: str
 
     def serialize(self) -> _RefreshJwtToken:
-        return _RefreshJwtToken(sub=self.sub, exp=self.exp)
+        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id)
 
     @classmethod
     def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
-        return cls(sub=decoded_token["sub"], exp=decoded_token["exp"])
+        return cls(sub=decoded_token["sub"], exp=decoded_token["exp"], family_id=decoded_token["family_id"])

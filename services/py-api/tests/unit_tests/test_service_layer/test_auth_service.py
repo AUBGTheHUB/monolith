@@ -119,7 +119,7 @@ async def test_login_hub_admin_success(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
@@ -141,7 +141,7 @@ async def test_login_hub_admin_not_found(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Err(HubMemberNotFoundError())
+    hub_members_repo_mock.fetch_admin_by_username.return_value = Err(HubMemberNotFoundError())
 
     # When
     result = await auth_service.login_admin(login_hub_admin_data_mock)
@@ -161,7 +161,7 @@ async def test_login_hub_admin_passwords_mismatch(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = False
 
     # When
@@ -184,7 +184,7 @@ async def test_login_hub_admin_could_not_create_refresh_token(
 ) -> None:
 
     # Given
-    hub_members_repo_mock.fetch_admin_by_user_name.return_value = Ok(hub_admin_mock)
+    hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Err(Exception())

@@ -86,6 +86,8 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
     ) -> Result[RefreshToken, RefreshTokenNotFound | Exception]:
         try:
             LOG.info("Updating refresh token...", refresh_token_id=obj_id)
+            #
+            LOG.debug(obj_fields.model_dump(exclude_none=True))
 
             refresh_token = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
@@ -102,4 +104,24 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
 
         except Exception as e:
             LOG.exception("Could not update refresh token due to error", refresh_token_id=obj_id, error=e)
+            return Err(e)
+
+    async def invalidate_all_tokens_by_family_id(
+        self, family_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[int, RefreshTokenNotFound | Exception]:
+        try:
+            LOG.info("Invalidating refresh tokens with family id...", family_id=family_id)
+
+            invalidate_result = await self._collection.update_many(
+                filter={"family_id": family_id},
+                update={"$set": {"is_valid": False}},
+                session=session,
+            )
+
+            return Ok(invalidate_result.modified_count)
+
+        except Exception as e:
+            LOG.exception(
+                "Could not invalidate refresh tokens with family id due to error", family_id=family_id, error=e
+            )
             return Err(e)
