@@ -4,15 +4,15 @@ import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
-import { MeetTheTeamPage } from '@/website/AdminPanelPage/CRUDPages/MeetTheTeamPage/MeetTheTeamPage';
-import { MeetTheTeamEditPage } from '@/website/AdminPanelPage/CRUDPages/MeetTheTeamPage/MeetTheTeamEditPage';
+import { MeetTheTeamPage } from '@/website/AdminPanelPage/DashboardPages/pages/MeetTheTeamPage/MeetTheTeamPage';
+import { MeetTheTeamEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/MeetTheTeamPage/MeetTheTeamEditPage';
 import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
-import { JudgesListPage } from '@/website/AdminPanelPage/CRUDPages/JudgesPage/JudgesPage';
-import { JudgesEditPage } from '@/website/AdminPanelPage/CRUDPages/JudgesPage/JudgesEditPage';
-import { SponsorsListPage } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/SponsorsPage';
-import { SponsorsEditPage } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/SponsorsEditPage';
-import { DashboardPage } from './website/AdminPanelPage/DashboardPage/DashboardPage';
+import { JudgesListPage } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/JudgesPage';
+import { JudgesEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/JudgesEditPage';
+import { SponsorsListPage } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/SponsorsPage';
+import { SponsorsEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/SponsorsEditPage';
+import { DashboardPage } from '@/website/AdminPanelPage/DashboardPages/DashboardPage';
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
@@ -40,27 +40,28 @@ function App() {
                 <Route path="/admin">
                     <Route index element={<LoginPage />} />
 
-                    <Route path="dashboard" element={<DashboardPage />} />
+                    <Route path="dashboard">
+                        <Route index element={<DashboardPage />} />
+                        {/* Meet the Team Sub-group */}
+                        <Route path="meet-the-team">
+                            <Route index element={<MeetTheTeamPage />} />
+                            <Route path="add" element={<MeetTheTeamEditPage />} />
+                            <Route path=":id" element={<MeetTheTeamEditPage />} />
+                        </Route>
 
-                    {/* Meet the Team Sub-group */}
-                    <Route path="meet-the-team">
-                        <Route index element={<MeetTheTeamPage />} />
-                        <Route path="add" element={<MeetTheTeamEditPage />} />
-                        <Route path=":id" element={<MeetTheTeamEditPage />} />
-                    </Route>
+                        {/* Judges Sub-group */}
+                        <Route path="judges">
+                            <Route index element={<JudgesListPage />} />
+                            <Route path="add" element={<JudgesEditPage />} />
+                            <Route path=":id" element={<JudgesEditPage />} />
+                        </Route>
 
-                    {/* Judges Sub-group */}
-                    <Route path="judges">
-                        <Route index element={<JudgesListPage />} />
-                        <Route path="add" element={<JudgesEditPage />} />
-                        <Route path=":id" element={<JudgesEditPage />} />
-                    </Route>
-
-                    {/* Sponsors Sub-group */}
-                    <Route path="sponsors">
-                        <Route index element={<SponsorsListPage />} />
-                        <Route path="add" element={<SponsorsEditPage />} />
-                        <Route path=":id" element={<SponsorsEditPage />} />
+                        {/* Sponsors Sub-group */}
+                        <Route path="sponsors">
+                            <Route index element={<SponsorsListPage />} />
+                            <Route path="add" element={<SponsorsEditPage />} />
+                            <Route path=":id" element={<SponsorsEditPage />} />
+                        </Route>
                     </Route>
                     {/* 404 Catch-all */}
                     <Route path="*" element={<Admin404Page />} />

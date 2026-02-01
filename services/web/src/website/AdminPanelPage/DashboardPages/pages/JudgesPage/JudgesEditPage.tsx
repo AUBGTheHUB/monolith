@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_JUDGES } from '@/website/AdminPanelPage/CRUDPages/JudgesPage/mockJudges.ts';
+import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/mockJudges.ts';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
@@ -11,7 +11,7 @@ import { JudgeFormFields } from './components/JudgeFormFields.tsx';
 import { JudgesEditMessages, JudgesAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import { judgeSchema, JudgeFormData } from './validation/validation.tsx';
-import { Styles } from '../../AdminStyle.ts';
+import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 
 export function JudgesEditPage() {
@@ -60,11 +60,11 @@ export function JudgesEditPage() {
 
     const onSubmit = () => {
         alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/judges');
+        navigate('/admin/dashboard/judges');
     };
 
     const goBack = () => {
-        navigate('/admin/judges');
+        navigate('/admin/dashboard/judges');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);

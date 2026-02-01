@@ -3,84 +3,112 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import teamMembers from './resources/teamMembers.json';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
-import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
+import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/components/SponsorshipFormFields.tsx';
+import { SponsorsEditMessages, SponsorsAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { teamMemberSchema, TeamMemberFormData } from './validation/validation.tsx';
-import { Styles } from '../../AdminStyle.ts';
+import {
+    sponsorSchema,
+    SponsorFormData,
+    Sponsor,
+} from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
+import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
-import { toast } from 'react-toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient.ts';
 
-export function MeetTheTeamEditPage() {
+export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
+    const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
-    const MESSAGES = isEditMode ? TeamMemberEditMessages : TeamMemberAddMessages;
+    const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
 
-    const member = teamMembers.find((m) => m.id === id);
-
-    const form = useForm<TeamMemberFormData>({
-        resolver: zodResolver(teamMemberSchema),
+    const form = useForm<SponsorFormData>({
+        resolver: zodResolver(sponsorSchema),
         defaultValues: {
             name: '',
-            image: '',
-            departments: [],
+            tier: '',
+            logo_url: '',
+            website_url: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('image');
+    const logoUrl = watch('logo_url');
 
+    // 1. Fetch data if in Edit Mode
+    const { data: sponsor, isLoading } = useQuery({
+        queryKey: ['sponsor', id],
+        queryFn: () => apiClient.get<{ sponsor: Sponsor }>(`/admin/sponsors/${id}`),
+        enabled: isEditMode, // Only run query if id exists
+        select: (res) => res.sponsor,
+    });
+    // 2. Fill form when data is received
     useEffect(() => {
-        if (isEditMode && member) {
+        if (sponsor) {
             reset({
-                name: member.name,
-                image: member.image || '',
-                departments: member.departments,
-            });
-        } else {
-            reset({
-                name: '',
-                image: '',
-                departments: [],
+                name: sponsor.name,
+                tier: sponsor.tier,
+                logo_url: sponsor.logo_url,
+                website_url: sponsor.website_url,
             });
         }
-    }, [isEditMode, member, reset]);
+    }, [sponsor, reset]);
 
-    const onSubmit = (data: TeamMemberFormData) => {
-        toast.success(MESSAGES.SUCCESS_MESSAGE);
-        console.log({ id: id || 'new', ...data });
-        navigate('/admin/meet-the-team');
+    // 3. Mutation for Save (Create or Update)
+    const mutation = useMutation({
+        mutationFn: (formData: SponsorFormData) => {
+            return isEditMode
+                ? apiClient.patch<Sponsor, SponsorFormData>(`/admin/sponsors/${id}`, formData)
+                : apiClient.post<Sponsor, SponsorFormData>(`/admin/sponsors`, formData);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
+            navigate('/admin/dashboard/sponsors');
+        },
+        onError: (error) => {
+            alert(error.message);
+        },
+    });
+
+    const onSubmit = (data: SponsorFormData) => {
+        mutation.mutate(data);
     };
 
     const goBack = () => {
-        navigate('/admin/meet-the-team');
+        navigate('/admin/dashboard/sponsors');
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
+    // Show loading state only when fetching existing data
+    if (isEditMode && isLoading) {
+        return (
+            <div className={pageWrapperClass}>
+                <div className="max-w-5xl mx-auto text-white text-center py-20">Loading sponsor details...</div>
+            </div>
+        );
+    }
 
-    if (isEditMode && !member) {
+    if (isEditMode && !sponsor) {
         return (
             <Fragment>
                 <Helmet>
-                    <title>{TeamMemberEditMessages.NOT_FOUND_TITLE}</title>
+                    <title>{SponsorsEditMessages.NOT_FOUND_TITLE}</title>
                 </Helmet>
                 <div className={pageWrapperClass}>
                     <div className="max-w-2xl mx-auto">
                         <Card className={cn('p-12 text-center', Styles.glass.card)}>
-                            <p className="text-red-400 text-lg mb-6">{TeamMemberEditMessages.NOT_FOUND_MESSAGE}</p>
+                            <p className="text-red-400 text-lg mb-6">{SponsorsEditMessages.NOT_FOUND_MESSAGE}</p>
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="text-white hover:opacity-90 transition-opacity"
                                 onClick={goBack}
                             >
-                                {TeamMemberEditMessages.RETURN_BUTTON}
+                                {SponsorsEditMessages.RETURN_BUTTON}
                             </Button>
                         </Card>
                     </div>
@@ -112,7 +140,7 @@ export function MeetTheTeamEditPage() {
                                 <CardContent className="flex flex-col md:flex-row gap-12 p-8">
                                     <div className={Styles.forms.fieldContainer}>
                                         <div className="form-dark-theme">
-                                            <TeamMemberFormFields control={control} />
+                                            <SponsorFormFields control={control} />
                                         </div>
                                     </div>
 
@@ -125,11 +153,11 @@ export function MeetTheTeamEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageUrl ? (
+                                            {logoUrl ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={logoUrl}
                                                     alt="Preview"
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-contain p-4"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).src =
                                                             'https://placehold.co/300?text=Invalid+Image';
@@ -137,7 +165,7 @@ export function MeetTheTeamEditPage() {
                                                 />
                                             ) : (
                                                 <p className={cn('px-4 text-center', Styles.colors.textMuted)}>
-                                                    No image URL provided
+                                                    No logo URL provided
                                                 </p>
                                             )}
                                         </div>

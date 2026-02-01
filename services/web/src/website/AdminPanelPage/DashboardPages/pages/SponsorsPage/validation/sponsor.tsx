@@ -8,7 +8,7 @@ const RULES = {
 export const sponsorSchema = z.object({
     name: z
         .string()
-        .min(1, { message: 'Validation name is required' })
+        .min(1, { message: 'Sponsor name is required' })
         .min(RULES.NAME.MIN, { message: `Name must be at least ${RULES.NAME.MIN} characters` })
         .max(RULES.NAME.MAX, { message: `Name must be less than ${RULES.NAME.MAX} characters` }),
 

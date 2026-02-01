@@ -5,9 +5,9 @@ import { Card } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
 import { SponsorsPageMessages as MESSAGES } from './messages.tsx';
-import { Styles } from '../../AdminStyles.ts';
+import { Styles } from '../../../AdminStyles.ts';
 import { cn } from '@/lib/utils.ts';
-import { Sponsor } from '@/website/AdminPanelPage/CRUDPages/SponsorsPage/validation/sponsor.tsx';
+import { Sponsor } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { apiClient } from '@/services/apiClient.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -99,7 +99,7 @@ export function SponsorsListPage() {
                                 <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
                             </div>
 
-                            <Link to="/admin/sponsors/add">
+                            <Link to="/admin/dashboard/sponsors/add">
                                 <Button
                                     size="lg"
                                     style={{ backgroundColor: Styles.colors.hubCyan }}
