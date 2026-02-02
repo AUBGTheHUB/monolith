@@ -26,6 +26,8 @@ jobs:
       DOMAIN: "test-domain"
       DATABASE_URL: ${{secrets.DATABASE_URL}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
+      AWS_DEFAULT_REGION: 'eu-central-1'
+      AWS_BUCKET: 'kazan'
 
 
     steps:
