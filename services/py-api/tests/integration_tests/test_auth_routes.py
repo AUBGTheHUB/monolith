@@ -17,8 +17,8 @@ async def test_register_admin_success(
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
 ) -> None:
     # When
-    unique_name = str(uuid.uuid1())
-    register_hub_admin_body = generate_register_hub_admin_request_body(username=unique_name)
+    unique_name = str(uuid.uuid4())
+    register_hub_admin_body = generate_register_hub_admin_request_body(username=unique_name, name=unique_name)
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
