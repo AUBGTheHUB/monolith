@@ -38,9 +38,9 @@ class AwsService:
 
     def upload_file(
         self,
-        file: BytesIO | None,
-        file_name: str | None,
-        content_type: str | None,
+        file: BytesIO,
+        file_name: str,
+        content_type: str,
         bucket: str = AWS_S3_DEFAULT_BUCKET,
         region: str = AWS_DEFAULT_REGION,
     ) -> HttpUrl:
@@ -48,15 +48,6 @@ class AwsService:
         This method uploads the file to AWS and returns
         the address at which the file can be accessed.
         """
-
-        if not file:
-            raise ValueError("Parameter file is required")
-
-        if not file_name:
-            raise ValueError("Parameter file_name is required")
-
-        if not content_type:
-            raise ValueError("Parameter content_type is required")
 
         try:
             self._s3_client.upload_fileobj(

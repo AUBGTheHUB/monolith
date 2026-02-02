@@ -114,7 +114,7 @@ def test_delete_file_success(aws_service: AwsService) -> None:
     aws_service._ensure_bucket_exists(bucket)
 
     # Upload
-    aws_service.upload_file(BytesIO(b"data"), file_name, "image/webp", bucket=bucket)
+    aws_service.upload_file(file=BytesIO(b"data"), file_name=file_name, content_type="image/webp", bucket=bucket)
 
     # Delete
     aws_service.delete_file(file_name=file_name, bucket=bucket)
