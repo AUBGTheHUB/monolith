@@ -70,8 +70,10 @@ class ImageStoringService:
             LOG.exception("There was an error when uploading the image", error=e)
             raise ImageUploadError() from e
 
-    def delete_image(self, file_name: str) -> None:
+    def delete_image(self, image_url: str) -> None:
         try:
+            # Take the file name from the url
+            file_name = image_url[image_url.rindex("amazonaws.com") :]
             self._aws_service.delete_file(file_name)
 
         except Exception as e:
