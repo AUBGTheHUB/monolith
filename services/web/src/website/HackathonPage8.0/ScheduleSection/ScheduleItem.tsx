@@ -23,10 +23,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast 
 
 export const ScheduleHeader = () => (
     <div className="w-full max-w-[100vw] md:pl-8 lg:pl-16 xl:pl-28">
-        <div
-            className="flex items-center justify-center md:justify-start lg:justify-center gap-3 md:gap-4 lg:gap-6 bg-white border-2 border-black rounded-[1rem] md:rounded-[1.25rem] px-4 md:px-6 lg:pl-6 lg:pr-8 py-4 md:py-6 w-full md:w-[24rem] lg:w-[29rem] h-auto md:h-[5rem] lg:h-[5.75rem]"
-            style={{ boxShadow: '0 4px 12px rgba(28, 26, 25, 0.3)' }}
-        >
+        <div className="flex items-center justify-center md:justify-start lg:justify-center gap-3 md:gap-4 lg:gap-6 px-4 md:px-6 lg:pl-6 lg:pr-8 py-4 md:py-6 w-full md:w-[24rem] lg:w-[29rem] h-auto md:h-[5rem] lg:h-[5.75rem]">
             <img
                 src="/ScheduleSection/logo.png"
                 alt="HackAUBG Logo"
