@@ -1,7 +1,7 @@
 import { Control } from 'react-hook-form';
-import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
-import { JudgeFormData } from '../validation/validation';
-import { JudgesFormFieldMessages as MESSAGES } from '../messages';
+import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
+import { JudgeFormData } from '../validation/validation.tsx';
+import { JudgesFormFieldMessages as MESSAGES } from '../messages.tsx';
 
 type JudgeFormFieldsProps = {
     control: Control<JudgeFormData>;

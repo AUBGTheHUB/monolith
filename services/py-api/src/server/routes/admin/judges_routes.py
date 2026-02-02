@@ -7,12 +7,8 @@ from src.server.routes.route_dependencies import is_authorized
 def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     judges_router = APIRouter(prefix="/judges", tags=["judges"])
 
-    judges_router.add_api_route(
-        "", endpoint=http_handler.get_all_judges, methods=["GET"], dependencies=[Depends(is_authorized)]
-    )
-    judges_router.add_api_route(
-        "/{judge_id}", endpoint=http_handler.get_judge, methods=["GET"], dependencies=[Depends(is_authorized)]
-    )
+    judges_router.add_api_route("", endpoint=http_handler.get_all_judges, methods=["GET"])
+    judges_router.add_api_route("/{judge_id}", endpoint=http_handler.get_judge, methods=["GET"])
     judges_router.add_api_route(
         "", endpoint=http_handler.create_judge, methods=["POST"], dependencies=[Depends(is_authorized)]
     )
