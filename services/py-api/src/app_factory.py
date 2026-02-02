@@ -46,7 +46,7 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
-from src.service.utility.aws_service import AwsService
+from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients

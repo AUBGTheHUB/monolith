@@ -8,7 +8,7 @@ from pytest import MonkeyPatch
 from fastapi import UploadFile
 
 from src.exception import FileDeleteError, ImageCompressionError, ImageDeleteError, ImageUploadError
-from src.service.utility.aws_service import AwsService
+from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from tests.unit_tests.conftest import AwsServiceMock
 
@@ -66,6 +66,8 @@ async def test_upload_image_success(
 async def test_upload_image_invalid_file_name(
     image_storing_service: ImageStoringService, image_mock: UploadFile
 ) -> None:
+    image_name_mock = "invalid_file_name"
+
     with pytest.raises(ImageUploadError) as e:
         await image_storing_service.upload_image(image_mock, image_name_mock)
 
@@ -116,7 +118,7 @@ async def test_delete_image_not_existant_image(
 async def test_compress_image_returns_bytesio(
     image_storing_service: ImageStoringService, image_data_mock: bytes
 ) -> None:
-    output = image_storing_service.compress_image(image_data_mock)
+    output = image_storing_service._compress_image(image_data_mock)
 
     assert isinstance(output, BytesIO)
     assert output.tell() == 0  # Check if the pointer is at the start of the buffer
@@ -126,7 +128,7 @@ async def test_compress_image_returns_bytesio(
 async def test_compress_image_produces_valid_image(
     image_storing_service: ImageStoringService, image_data_mock: bytes
 ) -> None:
-    output = image_storing_service.compress_image(image_data_mock)
+    output = image_storing_service._compress_image(image_data_mock)
 
     image = Image.open(output)
     image.verify()  # Check if image is corrupted
@@ -137,7 +139,7 @@ async def test_compress_image_size_constraints(
     image_storing_service: ImageStoringService, image_data_mock: bytes
 ) -> None:
     max_size: tuple[float, float] = (1024, 1024)
-    output = image_storing_service.compress_image(file=image_data_mock, max_file_size=max_size)
+    output = image_storing_service._compress_image(file=image_data_mock, max_file_size=max_size)
 
     image = Image.open(output)
     assert image.width <= max_size[0]
@@ -146,7 +148,7 @@ async def test_compress_image_size_constraints(
 
 @pytest.mark.asyncio
 async def test_compress_image_format(image_storing_service: ImageStoringService, image_data_mock: bytes) -> None:
-    output = image_storing_service.compress_image(file=image_data_mock, output_format="WEBP")
+    output = image_storing_service._compress_image(file=image_data_mock, output_format="WEBP")
 
     image = Image.open(output)
     assert image.format == "WEBP"
@@ -154,7 +156,7 @@ async def test_compress_image_format(image_storing_service: ImageStoringService,
 
 @pytest.mark.asyncio
 async def test_compress_image_compression(image_storing_service: ImageStoringService, image_data_mock: bytes) -> None:
-    output = image_storing_service.compress_image(file=image_data_mock, image_quality=30)
+    output = image_storing_service._compress_image(file=image_data_mock, image_quality=30)
 
     Image.open(output)
     assert len(output.getvalue()) < len(image_data_mock)
@@ -163,4 +165,4 @@ async def test_compress_image_compression(image_storing_service: ImageStoringSer
 @pytest.mark.asyncio
 async def test_compress_error(image_storing_service: ImageStoringService) -> None:
     with pytest.raises(ImageCompressionError) as e:
-        image_storing_service.compress_image(file=b"some_fake_image")
+        image_storing_service._compress_image(file=b"some_fake_image")

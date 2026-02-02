@@ -9,7 +9,7 @@ from pytest import MonkeyPatch
 from moto import mock_aws
 
 from src.exception import FileUploadError
-from src.service.utility.aws_service import AwsService
+from src.service.utility.aws.aws_service import AwsService
 
 from botocore.exceptions import ClientError
 
@@ -39,7 +39,7 @@ def test_ensure_bucket_exists_creates_when_no_bucket(aws_service: AwsService, mo
     bucket_name = "new-bucket"
 
     # Act
-    aws_service.ensure_bucket_exists(bucket_name)
+    aws_service._ensure_bucket_exists(bucket_name)
 
     # Assert - Verify the bucket actually exists in moto
     response = aws_service._s3_client.list_buckets()
@@ -67,7 +67,7 @@ def test_ensure_bucket_exists_existing_bucket(aws_service: AwsService, monkeypat
     monkeypatch.setattr(aws_service._s3_client, "create_bucket", spy_create_bucket)
 
     # Act
-    aws_service.ensure_bucket_exists(bucket_name)
+    aws_service._ensure_bucket_exists(bucket_name)
 
     # Assert
     assert create_called is False
@@ -76,7 +76,7 @@ def test_ensure_bucket_exists_existing_bucket(aws_service: AwsService, monkeypat
 @mock_aws
 def test_upload_file_success(aws_service: AwsService) -> None:
     # Arrange
-    aws_service.ensure_bucket_exists("dabucket")
+    aws_service._ensure_bucket_exists("dabucket")
     file = BytesIO(b"some_file")
     file_name = "some_file.webp"
     content_type = "image/webp"
@@ -111,7 +111,7 @@ def test_upload_file_general_exception(aws_service: AwsService, monkeypatch: Mon
 def test_delete_file_success(aws_service: AwsService) -> None:
     bucket = "dabucket"
     file_name = "delete_me.webp"
-    aws_service.ensure_bucket_exists(bucket)
+    aws_service._ensure_bucket_exists(bucket)
 
     # Upload
     aws_service.upload_file(BytesIO(b"data"), file_name, "image/webp", bucket=bucket)
