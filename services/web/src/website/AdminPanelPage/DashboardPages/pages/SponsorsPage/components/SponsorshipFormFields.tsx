@@ -2,6 +2,8 @@ import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
 import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { SponsorsFormFieldMessages as MESSAGES } from '../messages.tsx';
+import {DropdownComponent} from '@/internalLibrary/DropdownComponent/DropdownComponent.tsx';
+const TIERS = ['Platinum', 'Gold', 'Silver', 'Bronze', 'Custom'];
 
 type SponsorFormFieldsProps = {
     control: Control<SponsorFormData>;
@@ -17,12 +19,12 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.NAME}
                 type="text"
             />
-            <InputComponent
+            <DropdownComponent
                 control={control}
                 name="tier"
                 label={MESSAGES.LABELS.TIER}
                 placeholder={MESSAGES.PLACEHOLDERS.TIER}
-                type="text"
+                items={TIERS.map((tier) => ({ label: tier, value: tier.toUpperCase(), name: tier }))}
             />
             <InputComponent
                 control={control}

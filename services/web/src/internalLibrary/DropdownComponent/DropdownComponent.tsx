@@ -1,6 +1,7 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import { cn } from '@/lib/utils';
 
 type DropdownItem = {
     name: string;
@@ -43,7 +44,7 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl className={formControlClassName}>
-                            <SelectTrigger data-testid="trigger">
+                            <SelectTrigger data-testid="trigger" className={cn(!field.value && 'text-muted-foreground')}>
                                 <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
