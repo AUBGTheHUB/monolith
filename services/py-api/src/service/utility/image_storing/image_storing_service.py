@@ -21,6 +21,28 @@ class ImageStoringService:
     def __init__(self, aws_service: AwsService) -> None:
         self._aws_service = aws_service
 
+    def _compress_image(
+        self,
+        file: bytes,
+        max_file_size: tuple[float, float] = DEFAULT_MAX_FILE_SIZE,
+        image_quality: int = DEFAULT_IMAGE_QUALITY,
+        output_format: str = DEFAULT_OUTPUT_FORMAT,
+    ) -> BytesIO:
+        try:
+            img = Image.open(BytesIO(file))
+            img.thumbnail(max_file_size, Resampling.LANCZOS)
+
+            output = BytesIO()
+
+            img.save(fp=output, format=output_format, quality=image_quality, optimize=True)
+
+            output.seek(0)  # Return reader to the start of the file
+            return output
+
+        except Exception as e:
+            LOG.exception("There was an error when compressing the image", error=e)
+            raise ImageCompressionError() from e
+
     async def upload_image(self, file: UploadFile, file_name: str) -> HttpUrl:
         """
         This method compresses the image,
@@ -55,25 +77,3 @@ class ImageStoringService:
         except Exception as e:
             LOG.exception("There was an error when deleting the image", error=e)
             raise ImageDeleteError() from e
-
-    def _compress_image(
-        self,
-        file: bytes,
-        max_file_size: tuple[float, float] = DEFAULT_MAX_FILE_SIZE,
-        image_quality: int = DEFAULT_IMAGE_QUALITY,
-        output_format: str = DEFAULT_OUTPUT_FORMAT,
-    ) -> BytesIO:
-        try:
-            img = Image.open(BytesIO(file))
-            img.thumbnail(max_file_size, Resampling.LANCZOS)
-
-            output = BytesIO()
-
-            img.save(fp=output, format=output_format, quality=image_quality, optimize=True)
-
-            output.seek(0)  # Return reader to the start of the file
-            return output
-
-        except Exception as e:
-            LOG.exception("There was an error when compressing the image", error=e)
-            raise ImageCompressionError() from e
