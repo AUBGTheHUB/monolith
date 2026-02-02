@@ -7,7 +7,7 @@ export const FAQSection = () => {
     const [openFaqId, setOpenFaqId] = useState<number | null>(null);
 
     return (
-        <section id="faq" className="relative min-h-dvh w-full py-28 rounded-[20px] overflow-hidden bg-[#151313]">
+        <section id="faq" className="relative w-full py-28 rounded-[20px] overflow-hidden bg-[#151313]">
             {/* Background image */}
             <div
                 className="absolute inset-0 bg-cover bg-center blur-[0.4px] opacity-[0.25]"
