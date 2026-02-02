@@ -1,11 +1,8 @@
 from os import environ
+from typing import Any
 from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
-from structlog.stdlib import get_logger
-
-from tests.integration_tests.conftest import async_client
-from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
 
 SPONSORS_ENDPOINT_URL = "/api/v3/admin/sponsors"
 
@@ -14,12 +11,13 @@ TEST_SPONSOR_TIER = "GOLD"
 TEST_SPONSOR_LOGO_URL = "https://eu.aws.com/coca-cola.jpg"
 TEST_SPONSOR_WEBSITE_URL = "https://coca-cola.com/"
 
-valid_sponsor_body: dict[str, any] = {
-        "name": TEST_SPONSOR_NAME,
-        "tier": TEST_SPONSOR_TIER,
-        "logo_url": TEST_SPONSOR_LOGO_URL,
-        "website_url": TEST_SPONSOR_WEBSITE_URL, 
-    }
+valid_sponsor_body: dict[str, Any] = {
+    "name": TEST_SPONSOR_NAME,
+    "tier": TEST_SPONSOR_TIER,
+    "logo_url": TEST_SPONSOR_LOGO_URL,
+    "website_url": TEST_SPONSOR_WEBSITE_URL,
+}
+
 
 async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
     await async_client.delete(
@@ -27,6 +25,7 @@ async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         follow_redirects=True,
     )
+
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
@@ -39,7 +38,7 @@ async def test_create_sponsor_success(async_client: AsyncClient) -> None:
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         json=valid_sponsor_body,
-        follow_redirects=True
+        follow_redirects=True,
     )
 
     # Assert
@@ -57,15 +56,16 @@ async def test_create_sponsor_success(async_client: AsyncClient) -> None:
     sponsor_id = response_body["sponsor"]["id"]
     await _delete_sponsor(async_client, sponsor_id)
 
+
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_missing_parameter(async_client: AsyncClient) -> None:
 
     # Arrange
-    invalid_sponsor_body: dict[str, any] = {
+    invalid_sponsor_body: dict[str, Any] = {
         "name": TEST_SPONSOR_NAME,
         "tier": TEST_SPONSOR_TIER,
-        "website_url": TEST_SPONSOR_WEBSITE_URL, 
+        "website_url": TEST_SPONSOR_WEBSITE_URL,
     }
 
     # Act
@@ -73,16 +73,17 @@ async def test_create_sponsor_missing_parameter(async_client: AsyncClient) -> No
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         json=invalid_sponsor_body,
-        follow_redirects=True
+        follow_redirects=True,
     )
 
     # Assert
     assert response.status_code == 422
     response_body = response.json()
 
-    assert response_body['detail'][0]["type"] == "missing"
-    assert "logo_url" in response_body['detail'][0]["loc"]
-    
+    assert response_body["detail"][0]["type"] == "missing"
+    assert "logo_url" in response_body["detail"][0]["loc"]
+
+
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_unauthorized(async_client: AsyncClient) -> None:
@@ -136,7 +137,6 @@ async def test_get_all_sponsors_success(async_client: AsyncClient) -> None:
     await _delete_sponsor(async_client, sponsor_id)
 
 
-
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_sponsor_by_id_success(async_client: AsyncClient) -> None:
@@ -172,6 +172,7 @@ async def test_get_sponsor_by_id_success(async_client: AsyncClient) -> None:
     # Cleanup
     await _delete_sponsor(async_client, sponsor_id)
 
+
 # Error handling is incorrect in impl - error isn't an instance of anything and it goes to default error
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
@@ -184,6 +185,7 @@ async def test_get_sponsor_by_id_invalid_format(async_client: AsyncClient) -> No
 
     assert response.status_code == 400
     assert response.json()["error"] == "Wrong Object ID format"
+
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
@@ -201,6 +203,7 @@ async def test_get_sponsor_by_id_not_found(async_client: AsyncClient) -> None:
     # Assert
     assert response.status_code == 404
     assert response.json()["error"] == "The specified sponsor was not found"
+
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
