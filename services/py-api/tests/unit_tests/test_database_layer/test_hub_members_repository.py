@@ -11,7 +11,7 @@ from src.database.model.admin.hub_member_model import HubMember, UpdateHubMember
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 
-from src.exception import DuplicateHubMemberNameError, HubMemberNotFoundError
+from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from structlog.stdlib import get_logger
 from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_NAME,
@@ -92,7 +92,7 @@ async def test_create_duplicate_hub_member_error(
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, DuplicateHubMemberNameError)
+    assert isinstance(result.err_value, DuplicateHubMemberUsernameError)
 
 
 @pytest.mark.asyncio

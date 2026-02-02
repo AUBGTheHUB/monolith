@@ -901,6 +901,7 @@ class AuthTokensServiceMock(Protocol):
     generate_access_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
+    generate_refresh_expiration = Mock
 
 
 @pytest.fixture
@@ -913,7 +914,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock.generate_access_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
-
+    auth_tokens_service_mock.generate_refresh_expiration = Mock()
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
 
 
@@ -1276,7 +1277,13 @@ def hub_admin_dict_mock(hub_admin_mock: HubMember) -> dict[str, Any]:
 
 @pytest.fixture
 def refresh_token_mock(obj_id_mock: str, hub_admin_mock: HubAdmin) -> RefreshToken:
-    return RefreshToken(id=obj_id_mock, hub_member_id=hub_admin_mock.id, family_id=TEST_REFRESH_ID, is_valid=True)
+    return RefreshToken(
+        id=obj_id_mock,
+        hub_member_id=hub_admin_mock.id,
+        family_id=TEST_REFRESH_ID,
+        is_valid=True,
+        expires_at=(datetime.now(timezone.utc) + timedelta(days=1)),
+    )
 
 
 @pytest.fixture
@@ -1341,7 +1348,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 @pytest.fixture
 def jwt_refresh_token_mock(obj_id_mock: str) -> JwtRefreshToken:
-    return JwtRefreshToken(sub=obj_id_mock, exp=20, family_id=TEST_REFRESH_ID)
+    return JwtRefreshToken(sub=obj_id_mock, exp=20, family_id=TEST_REFRESH_ID, jti=obj_id_mock)
 
 
 @pytest.fixture

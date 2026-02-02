@@ -5,7 +5,7 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.exception import (
-    DuplicateHubMemberNameError,
+    DuplicateHubMemberUsernameError,
     HubMemberNotFoundError,
     PasswordsMismatchError,
     RefreshTokenNotFound,
@@ -76,14 +76,14 @@ async def test_register_hub_admin_fails_when_name_is_duplicate(
 
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
-    hub_members_repo_mock.create.return_value = Err(DuplicateHubMemberNameError())
+    hub_members_repo_mock.create.return_value = Err(DuplicateHubMemberUsernameError())
 
     # When
     result = await auth_service.register_admin(register_hub_admin_data_mock)
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, DuplicateHubMemberNameError)
+    assert isinstance(result.err_value, DuplicateHubMemberUsernameError)
 
 
 @pytest.mark.asyncio
@@ -121,6 +121,7 @@ async def test_login_hub_admin_success(
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
+    auth_tokens_service_mock.generate_refresh_expiration.return_value = "1"
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
@@ -213,7 +214,7 @@ async def test_refresh_token_success(
     auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
-
+    auth_tokens_service_mock.generate_refresh_expiration.return_value = "1"
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     tx_manager_mock.with_transaction.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"

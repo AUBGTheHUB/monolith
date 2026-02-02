@@ -18,13 +18,13 @@ async def test_register_admin_success(
 ) -> None:
     # When
     unique_name = str(uuid.uuid1())
-    register_hub_admin_body = generate_register_hub_admin_request_body(name=unique_name)
+    register_hub_admin_body = generate_register_hub_admin_request_body(username=unique_name)
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # Then
     assert resp.status_code == 201
-    assert resp.json()["hub_admin"]["name"] == unique_name
+    assert resp.json()["hub_admin"]["username"] == unique_name
 
 
 @pytest.mark.asyncio

@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
 from result import Ok, Result, Err
 from src.database.model.admin.hub_admin_model import HubAdmin
-from src.exception import DuplicateHubMemberNameError, HubMemberNotFoundError
+from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from structlog.stdlib import get_logger
 from pymongo.errors import DuplicateKeyError
 
@@ -23,10 +23,10 @@ class HubMembersRepository(CRUDRepository[HubMember]):
 
     async def create(
         self, hub_member: HubMember | HubAdmin, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[HubMember | HubAdmin, DuplicateHubMemberNameError | Exception]:
+    ) -> Result[HubMember | HubAdmin, DuplicateHubMemberUsernameError | Exception]:
         try:
             LOG.info("Inserting HUB member...", hub_member=hub_member.dump_as_json())
-            result = await self._collection.insert_one(
+            await self._collection.insert_one(
                 document=hub_member.dump_as_mongo_db_document(),
                 session=session,
             )
@@ -35,7 +35,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
 
         except DuplicateKeyError:
             LOG.warning("HUB member insertion failed due to a duplicate name")
-            return Err(DuplicateHubMemberNameError(hub_member.name))
+            return Err(DuplicateHubMemberUsernameError(hub_member.name))
 
         except Exception as e:
             LOG.exception("HUB member insertion failed due to error", error=e)

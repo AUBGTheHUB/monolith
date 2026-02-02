@@ -2,7 +2,7 @@ from typing import cast
 import pytest
 from result import Err, Ok
 from src.exception import (
-    DuplicateHubMemberNameError,
+    DuplicateHubMemberUsernameError,
     HubMemberNotFoundError,
     JwtExpiredSignatureError,
     PasswordsMismatchError,
@@ -56,7 +56,7 @@ async def test_register_hub_admin_conflict(
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
     # Given
-    auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberNameError())
+    auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberUsernameError())
 
     # When
     resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)

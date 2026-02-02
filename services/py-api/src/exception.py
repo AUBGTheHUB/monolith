@@ -139,7 +139,7 @@ class HubMemberNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class DuplicateHubMemberNameError(CustomError):
+class DuplicateHubMemberUsernameError(CustomError):
     message = "HUB member with this name already exists"
     status_code = status.HTTP_409_CONFLICT
 

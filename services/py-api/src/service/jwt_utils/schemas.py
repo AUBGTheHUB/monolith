@@ -51,6 +51,7 @@ class _RefreshJwtToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used for refreshing"""
 
     family_id: str
+    jti: str
 
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
@@ -153,10 +154,16 @@ class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
 @dataclass(kw_only=True)
 class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
     family_id: str
+    jti: str
 
     def serialize(self) -> _RefreshJwtToken:
-        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id)
+        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
 
     @classmethod
     def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
-        return cls(sub=decoded_token["sub"], exp=decoded_token["exp"], family_id=decoded_token["family_id"])
+        return cls(
+            sub=decoded_token["sub"],
+            exp=decoded_token["exp"],
+            family_id=decoded_token["family_id"],
+            jti=decoded_token["jti"],
+        )
