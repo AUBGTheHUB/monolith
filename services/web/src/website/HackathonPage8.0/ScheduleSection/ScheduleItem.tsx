@@ -37,16 +37,16 @@ export const ScheduleHeader = () => (
 );
 
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
-    <TabsList className="mb-[1.5rem] h-auto p-0 gap-[0.75rem] md:gap-[1.625rem] bg-transparent flex flex-wrap justify-center md:justify-start w-full">
+    <TabsList className="mb-[1.5rem] h-auto p-0 gap-[0.75rem] md:gap-[1rem] lg:gap-[1.625rem] bg-transparent flex flex-wrap justify-center md:justify-start w-full">
         <div
-            className="relative p-[4px] rounded-[1.25rem]"
+            className="relative p-[3px] md:p-[3.5px] lg:p-[4px] rounded-[0.75rem] md:rounded-[1rem] lg:rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #B91C1C 0%, #DC2626 100%)',
             }}
         >
             <TabsTrigger
                 value="Friday"
-                className="px-3 md:px-6 py-1 md:py-2 rounded-[1rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0 relative"
+                className="px-3 md:px-4 lg:px-6 py-1.5 md:py-1.5 lg:py-2 rounded-[calc(0.75rem-3px)] md:rounded-[calc(1rem-3.5px)] lg:rounded-[calc(1.25rem-4px)] font-oxanium text-[1rem] md:text-[1.25rem] lg:text-[1.5rem] font-semibold border-0 relative"
                 style={
                     activeTab === 'Friday'
                         ? { backgroundColor: 'white' }
@@ -74,14 +74,14 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         </div>
 
         <div
-            className="relative p-[4px] rounded-[1.25rem]"
+            className="relative p-[3px] md:p-[3.5px] lg:p-[4px] rounded-[0.75rem] md:rounded-[1rem] lg:rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #DC2626 0%, #F97316 100%)',
             }}
         >
             <TabsTrigger
                 value="Saturday"
-                className="px-3 md:px-6 py-1 md:py-2 rounded-[1rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0 relative"
+                className="px-3 md:px-4 lg:px-6 py-1.5 md:py-1.5 lg:py-2 rounded-[calc(0.75rem-3px)] md:rounded-[calc(1rem-3.5px)] lg:rounded-[calc(1.25rem-4px)] font-oxanium text-[1rem] md:text-[1.25rem] lg:text-[1.5rem] font-semibold border-0 relative"
                 style={
                     activeTab === 'Saturday'
                         ? { backgroundColor: 'white' }
@@ -109,14 +109,14 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         </div>
 
         <div
-            className="relative p-[4px] rounded-[1.25rem]"
+            className="relative p-[3px] md:p-[3.5px] lg:p-[4px] rounded-[0.75rem] md:rounded-[1rem] lg:rounded-[1.25rem]"
             style={{
                 background: 'linear-gradient(135deg, #F97316 0%, #FB923C 100%)',
             }}
         >
             <TabsTrigger
                 value="Sunday"
-                className="px-3 md:px-6 py-1 md:py-2 rounded-[1rem] font-oxanium text-[1rem] md:text-[1.5rem] font-semibold border-0 relative"
+                className="px-3 md:px-4 lg:px-6 py-1.5 md:py-1.5 lg:py-2 rounded-[calc(0.75rem-3px)] md:rounded-[calc(1rem-3.5px)] lg:rounded-[calc(1.25rem-4px)] font-oxanium text-[1rem] md:text-[1.25rem] lg:text-[1.5rem] font-semibold border-0 relative"
                 style={
                     activeTab === 'Sunday'
                         ? { backgroundColor: 'white' }
