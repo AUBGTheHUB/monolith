@@ -15,7 +15,7 @@ class HubMemberResponse(BaseModel):
         return hub_member.dump_as_json()
 
 
-class HubMembersListResponse(BaseModel):
+class AllHubMembersResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
     members: List[HubMember]
 

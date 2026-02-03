@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from src.server.routes.route_dependencies import is_authorized, validate_obj_id
 
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
-from src.server.schemas.response_schemas.admin.hub_member_schemas import HubMembersListResponse, HubMemberResponse
+from src.server.schemas.response_schemas.admin.hub_member_schemas import AllHubMembersResponse, HubMemberResponse
 from src.server.schemas.response_schemas.schemas import ErrResponse
 
 
@@ -14,8 +14,7 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
         "",
         endpoint=http_handler.get_all_hub_members,
         methods=["GET"],
-        responses={200: {"model": HubMembersListResponse}, 401: {"model": ErrResponse}},
-        dependencies=[Depends(is_authorized)],
+        responses={200: {"model": AllHubMembersResponse}},
     )
     hub_members_router.add_api_route(
         "/{object_id}",
@@ -24,10 +23,9 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
         responses={
             200: {"model": HubMemberResponse},
             400: {"model": ErrResponse},
-            401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(validate_obj_id)],
     )
     hub_members_router.add_api_route(
         "",

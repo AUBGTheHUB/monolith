@@ -2,7 +2,7 @@ from result import is_err
 
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import Response
-from src.server.schemas.response_schemas.admin.hub_member_schemas import HubMemberResponse, HubMembersListResponse
+from src.server.schemas.response_schemas.admin.hub_member_schemas import HubMemberResponse, AllHubMembersResponse
 from src.server.schemas.request_schemas.admin.hub_member_schemas import HubMemberPostReqData, HubMemberPatchReqData
 from src.service.admin.hub_members_service import HubMembersService
 from starlette import status
@@ -29,7 +29,7 @@ class HubMembersHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(
-            response_model=HubMembersListResponse(members=result.ok_value),
+            response_model=AllHubMembersResponse(members=result.ok_value),
             status_code=status.HTTP_200_OK,
         )
 
