@@ -14,8 +14,7 @@ def register_mentors_routes(http_handler: MentorsHandlers) -> APIRouter:
         path="",
         endpoint=http_handler.get_all_mentors,
         methods=["GET"],
-        responses={200: {"model": MentorsResponse}},
-        dependencies=[Depends(is_authorized)],
+        responses={200: {"model": MentorsResponse}, 401: {"model": ErrResponse}},
     )
     mentors_router.add_api_route(
         path="/{object_id}",
@@ -27,7 +26,7 @@ def register_mentors_routes(http_handler: MentorsHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(validate_obj_id)],
     )
     mentors_router.add_api_route(
         path="",
