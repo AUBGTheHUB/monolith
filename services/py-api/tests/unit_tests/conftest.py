@@ -2,6 +2,7 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
@@ -43,6 +44,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
+from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
@@ -105,6 +108,15 @@ class BackgroundTasksMock(Protocol):
     """
 
     add_task: Mock
+
+
+@pytest.fixture(autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
 
 
 @pytest.fixture
@@ -540,6 +552,7 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 
     return cast(SponsorsRepoMock, sponsors_repo)
 
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -611,6 +624,37 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
+
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
@@ -990,6 +1034,7 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 def hub_member_mock(obj_id_mock: str) -> HubMember:
     from bson import ObjectId
     from pydantic import HttpUrl
+
     return HubMember(
         id=ObjectId(obj_id_mock),
         name="Test Member",
@@ -1009,7 +1054,13 @@ def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
 
 @pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
+    return Sponsor(
+        id=obj_id_mock,
+        name="Coca-Cola",
+        tier="GOLD",
+        website_url="https://coca-cola.com/",
+        logo_url="https://eu.aws.com/coca-cola.jpg",
+    )
 
 
 @pytest.fixture
