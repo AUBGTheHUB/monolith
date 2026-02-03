@@ -23,7 +23,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         self, obj: HubMember, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[HubMember, Exception]:
         try:
-            LOG.debug("Creating hub member...", member_name=obj.name)
+            LOG.debug("Inserting hub member...", member_name=obj.name)
             doc = obj.dump_as_mongo_db_document()
             await self._collection.insert_one(doc, session=session)
             LOG.debug("Hub member created successfully.", member_id=str(obj.id))
@@ -68,11 +68,21 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[HubMember, HubMemberNotFoundError | Exception]:
         try:
+            update_data = obj_fields.model_dump()
+            if update_data is None:
+                current = await self._collection.find_one(
+                    filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
+                )
+                if current is None:
+                    return Err(HubMemberNotFoundError())
+
+                return Ok(HubMember(id=ObjectId(obj_id), **current))
+
             LOG.debug("Updating hub member...", member_id=obj_id, updated_fields=obj_fields.model_dump())
 
             result = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
-                update={"$set": obj_fields.model_dump()},
+                update={"$set": update_data},
                 projection={"_id": 0},
                 return_document=ReturnDocument.AFTER,
                 session=session,
