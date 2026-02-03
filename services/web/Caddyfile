@@ -11,8 +11,12 @@
 dev.thehub-aubg.com, thehub-aubg.com {
 	# https://caddyserver.com/docs/caddyfile/matchers#named-matchers
     # https://caddyserver.com/docs/caddyfile/matchers#named-matchers
-	@dev host dev.thehub-aubg.com
 
+	# Matches host dev... AND path NOT starting with /api/
+	@dev {
+		host dev.thehub-aubg.com
+		not path /api/v3/admin/*
+	}
 	basicauth @dev {
     	hub $2a$14$ShnA6wrlbmeSnIYwZmr7.eJFdn.95MwYszz1nQ61zKQXkwuu4FAlC
 	}
