@@ -23,13 +23,13 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast 
 
 export const ScheduleHeader = () => (
     <div className="w-full max-w-[100vw] md:pl-8 lg:pl-16 xl:pl-28">
-        <div className="flex items-center justify-center md:justify-start lg:justify-center gap-3 md:gap-4 lg:gap-6 px-4 md:px-6 lg:pl-6 lg:pr-8 py-4 md:py-6 w-full md:w-[24rem] lg:w-[29rem] h-auto md:h-[5rem] lg:h-[5.75rem]">
+        <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4 lg:gap-6">
             <img
                 src="/ScheduleSection/logo.png"
                 alt="HackAUBG Logo"
-                className="w-[2rem] h-[1.6rem] md:w-[2.5rem] md:h-[2rem] lg:w-[3.238rem] lg:h-[2.579rem] object-contain"
+                className="w-[2.2rem] h-[1.75rem] md:w-[2.75rem] md:h-[2.2rem] lg:w-[3.5rem] lg:h-[2.8rem] object-contain"
             />
-            <h2 className="text-black font-orbitron font-normal text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] leading-[1.25] tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em]">
+            <h2 className="text-black font-orbitron font-normal text-[1.75rem] md:text-[2.25rem] lg:text-[2.75rem] leading-[1.25] tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em]">
                 SCHEDULE
             </h2>
         </div>
