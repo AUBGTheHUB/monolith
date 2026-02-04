@@ -1,4 +1,7 @@
+from unittest.mock import AsyncMock
+
 import pytest
+from typing import cast, Any
 from datetime import datetime
 from typing import Any, cast
 from unittest.mock import AsyncMock
@@ -10,6 +13,7 @@ from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
+from src.exception import HubMemberNotFoundError
 
 from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from structlog.stdlib import get_logger
@@ -26,8 +30,17 @@ from tests.integration_tests.conftest import (
 )
 from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
 
-
 LOG = get_logger()
+
+
+def _fields_are_correct(expected: HubMember, result: HubMember) -> bool:
+    return (
+        result.name == expected.name
+        and str(result.id) == str(expected.id)
+        and result.position == expected.position
+        and result.department == expected.department
+        and result.avatar_url == expected.avatar_url
+    )
 
 
 @pytest.fixture
@@ -72,6 +85,7 @@ async def test_create_hub_member_success(
     assert isinstance(result.ok_value, HubMember)
     assert result.ok_value.name == hub_member_mock.name
 
+    assert _fields_are_correct(result.ok_value, hub_member_mock)
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
     assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
@@ -115,6 +129,7 @@ async def test_create_general_exception(
 @pytest.mark.asyncio
 async def test_fetch_by_id_for_hub_member_success(
     mongo_db_manager_mock: MongoDbManagerMock,
+    hub_member_dump_no_id_mock: dict[str, Any],
     obj_id_mock: str,
     hub_member_dict_mock: dict[str, Any],
     repo: HubMembersRepository,

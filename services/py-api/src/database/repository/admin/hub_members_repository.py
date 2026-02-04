@@ -6,6 +6,8 @@ from pymongo import ReturnDocument
 from result import Ok, Result, Err
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
+from pymongo.asynchronous.collection import ReturnDocument
+from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 from pymongo.errors import DuplicateKeyError
 
@@ -13,6 +15,7 @@ from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.admin_collections import HUB_MEMBERS_COLLECTION
 from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
 from src.database.repository.base_repository import CRUDRepository
+from src.exception import HubMemberNotFoundError
 
 LOG = get_logger()
 

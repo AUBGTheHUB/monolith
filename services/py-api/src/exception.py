@@ -135,7 +135,7 @@ class FeatureSwitchNotFoundError(CustomError):
 
 
 class HubMemberNotFoundError(CustomError):
-    message = "The HUB member was not found."
+    message = "The hub member was not found."
     status_code = status.HTTP_404_NOT_FOUND
 
 
@@ -164,3 +164,33 @@ class PastEventNotFoundError(CustomError):
 
     message = "The specified past event was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class ImageCompressionError(Exception):
+    """Exception raised when the image compression fails"""
+
+    message = "There was an error when compressing the image"
+
+
+class ImageUploadError(Exception):
+    """Exception raised when the image upload fails"""
+
+    message = "There was an error when uploading the image"
+
+
+class ImageDeleteError(Exception):
+    """Exception raised when the image delete fails"""
+
+    message = "There was an error when deleteing the image"
+
+
+class FileUploadError(Exception):
+    """Exception raised when uploading a file to aws fails"""
+
+    message = "There was an error when uploading the file"
+
+
+class FileDeleteError(Exception):
+    """Exception raised when deleting a file in aws fails"""
+
+    message = "There was an error when deleting the file"

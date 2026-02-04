@@ -58,3 +58,4 @@ class AllFeatureSwitchesResponse(BaseModel):
     @field_serializer("features")
     def serialize_features(self, features: list[FeatureSwitch]) -> list[dict[str, Any]]:
         return [feature.dump_as_json() for feature in features]
+

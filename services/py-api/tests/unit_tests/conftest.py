@@ -2,6 +2,7 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
@@ -14,6 +15,9 @@ from motor.motor_asyncio import (
     AsyncIOMotorCursor,
     AsyncIOMotorDatabase,
 )
+from typing_extensions import Protocol
+
+from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.refresh_token import RefreshToken
@@ -23,6 +27,7 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -45,6 +50,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
+from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
@@ -53,6 +60,7 @@ from src.service.jwt_utils.schemas import (
 )
 from typing_extensions import Protocol
 
+from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
 
@@ -123,6 +131,15 @@ class BackgroundTasksMock(Protocol):
     """
 
     add_task: Mock
+
+
+@pytest.fixture(autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
 
 
 @pytest.fixture
@@ -611,6 +628,27 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
 # ======================================
 
 
+class HubMembersServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def hub_members_service_mock() -> HubMembersServiceMock:
+    service = _create_typed_mock(HubMembersService)
+
+    service.get_all = AsyncMock()
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(HubMembersServiceMock, service)
+
+
 class PastEventsServiceMock(Protocol):
     get_all: AsyncMock
     get: AsyncMock
@@ -651,6 +689,36 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -1082,6 +1150,13 @@ def past_event_mock(obj_id_mock: str) -> PastEvent:
 @pytest.fixture
 def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
     document = past_event_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
+    document = hub_member_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 

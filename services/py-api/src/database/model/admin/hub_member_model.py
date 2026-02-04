@@ -51,6 +51,7 @@ class HubMember(BaseDbModel):
         }
 
     def dump_as_json(self) -> dict[str, Any]:
+
         return {
             "id": str(self.id),
             "name": self.name,
@@ -85,5 +86,6 @@ class HubMember(BaseDbModel):
 class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
     position: str | None = None
+    department: DEPARTMENTS_LIST | None = None
     avatar_url: str | None = None
     social_links: SocialLinks | None = None
