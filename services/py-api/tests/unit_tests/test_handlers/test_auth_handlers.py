@@ -118,7 +118,7 @@ async def test_login_hub_admin_not_found(
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.status_code == status.HTTP_404_NOT_FOUND
-    assert resp.response_model.error == "The HUB member was not found."
+    assert resp.response_model.error == "The hub member was not found."
 
 
 @pytest.mark.asyncio
@@ -171,7 +171,7 @@ async def test_hub_admin_not_found_for_refresh_token(
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
-    assert resp.response_model.error == "The HUB member was not found."
+    assert resp.response_model.error == "The hub member was not found."
     assert resp.status_code == status.HTTP_404_NOT_FOUND
 
 

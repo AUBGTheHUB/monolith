@@ -1,5 +1,6 @@
 from typing import cast
 import pytest
+from datetime import datetime
 from result import Err, Ok
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -53,7 +54,6 @@ async def test_register_hub_admin_success(
     hub_admin_mock: HubAdmin,
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
-
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
     hub_members_repo_mock.create.return_value = Ok(hub_admin_mock)
@@ -73,7 +73,6 @@ async def test_register_hub_admin_fails_when_name_is_duplicate(
     hub_members_repo_mock: HubMembersRepoMock,
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
-
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
     hub_members_repo_mock.create.return_value = Err(DuplicateHubMemberUsernameError())
@@ -93,7 +92,6 @@ async def test_register_hub_admin_fails_general_error(
     hub_members_repo_mock: HubMembersRepoMock,
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
-
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
     hub_members_repo_mock.create.return_value = Err(Exception())
@@ -117,11 +115,10 @@ async def test_login_hub_admin_success(
     hub_admin_mock: HubAdmin,
     refresh_token_mock: RefreshToken,
 ) -> None:
-
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
-    auth_tokens_service_mock.generate_refresh_expiration.return_value = "1"
+    auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
@@ -140,7 +137,6 @@ async def test_login_hub_admin_success(
 async def test_login_hub_admin_not_found(
     auth_service: AuthService, hub_members_repo_mock: HubMembersRepoMock, login_hub_admin_data_mock: LoginHubAdminData
 ) -> None:
-
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Err(HubMemberNotFoundError())
 
@@ -160,7 +156,6 @@ async def test_login_hub_admin_passwords_mismatch(
     login_hub_admin_data_mock: LoginHubAdminData,
     hub_admin_mock: HubAdmin,
 ) -> None:
-
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = False
@@ -183,7 +178,6 @@ async def test_login_hub_admin_could_not_create_refresh_token(
     login_hub_admin_data_mock: LoginHubAdminData,
     hub_admin_mock: HubAdmin,
 ) -> None:
-
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
@@ -209,12 +203,11 @@ async def test_refresh_token_success(
     jwt_refresh_token_mock: JwtRefreshToken,
     refresh_token_mock: RefreshToken,
 ) -> None:
-
     # Given
     auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
-    auth_tokens_service_mock.generate_refresh_expiration.return_value = "1"
+    auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
     tx_manager_mock.with_transaction.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
@@ -234,7 +227,6 @@ async def test_refresh_token_decode_error(
     auth_service: AuthService,
     auth_tokens_service_mock: AuthTokensServiceMock,
 ) -> None:
-
     # Given
     auth_tokens_service_mock.decode_refresh_token.return_value = Err(Exception())
 
@@ -253,7 +245,6 @@ async def test_refresh_token_not_found(
     auth_tokens_service_mock: AuthTokensServiceMock,
     jwt_refresh_token_mock: JwtRefreshToken,
 ) -> None:
-
     # Given
     auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
     refresh_token_repo_mock.fetch_by_id.return_value = Err(RefreshTokenNotFound())
@@ -275,7 +266,6 @@ async def test_refresh_token_hub_admin_not_found(
     jwt_refresh_token_mock: JwtRefreshToken,
     refresh_token_mock: RefreshToken,
 ) -> None:
-
     # Given
     auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
@@ -300,7 +290,6 @@ async def test_refresh_token_transaction_failed(
     jwt_refresh_token_mock: JwtRefreshToken,
     refresh_token_mock: RefreshToken,
 ) -> None:
-
     # Given
     auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
     refresh_token_repo_mock.fetch_by_id.return_value = Ok(refresh_token_mock)
