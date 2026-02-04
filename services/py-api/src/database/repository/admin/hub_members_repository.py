@@ -24,6 +24,14 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(HUB_MEMBERS_COLLECTION)
 
+    def _hub_member_from_mongo(self, doc: dict[str, Any]) -> HubMember | HubAdmin:
+        member_type = doc.get("member_type")
+
+        if member_type == "admin":
+            return HubAdmin.from_mongo_db_document(doc)
+
+        return HubMember.from_mongo_db_document(doc)
+
     async def create(
         self, hub_member: HubMember | HubAdmin, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[HubMember | HubAdmin, DuplicateHubMemberUsernameError | Exception]:
@@ -129,11 +137,3 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         except Exception as e:
             LOG.exception(f"Failed to fetch HUB admin due to err", error=e)
             return Err(e)
-
-    def _hub_member_from_mongo(self, doc: dict[str, Any]) -> HubMember | HubAdmin:
-        member_type = doc.get("member_type")
-
-        if member_type == "admin":
-            return HubAdmin.from_mongo_db_document(doc)
-
-        return HubMember.from_mongo_db_document(doc)
