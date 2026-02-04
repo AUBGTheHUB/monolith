@@ -134,6 +134,11 @@ class FeatureSwitchNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class HubMemberNotFoundError(CustomError):
+    message = "The hub member was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class PastEventNotFoundError(CustomError):
     """Exception raised when a past event with the given id does not exist"""
 
