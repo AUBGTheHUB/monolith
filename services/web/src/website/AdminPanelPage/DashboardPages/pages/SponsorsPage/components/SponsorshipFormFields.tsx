@@ -2,7 +2,7 @@ import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
 import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { SponsorsFormFieldMessages as MESSAGES } from '../messages.tsx';
-import {DropdownComponent} from '@/internalLibrary/DropdownComponent/DropdownComponent.tsx';
+import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent.tsx';
 const TIERS = ['Platinum', 'Gold', 'Silver', 'Bronze', 'Custom'];
 
 type SponsorFormFieldsProps = {
