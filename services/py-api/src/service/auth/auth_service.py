@@ -1,16 +1,19 @@
+from datetime import datetime
 from typing import Optional
 from result import Err, Ok, Result, is_err
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from uuid import uuid4
 
 from src.database.model.admin.hub_admin_model import HubAdmin
-from src.database.model.admin.refresh_token import RefreshToken
+from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTokenParams
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.exception import (
-    DuplicateHUBMemberNameError,
+    DuplicateHubMemberUsernameError,
     HubMemberNotFoundError,
     PasswordsMismatchError,
+    RefreshTokenIsInvalid,
     RefreshTokenNotFound,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
@@ -37,7 +40,7 @@ class AuthService:
         self, credentials: LoginHubAdminData
     ) -> Result[tuple[str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
-        result = await self._hub_members_repo.fetch_admin_by_name(name=credentials.name)
+        result = await self._hub_members_repo.fetch_admin_by_username(username=credentials.username)
 
         if is_err(result):
             return result
@@ -45,7 +48,7 @@ class AuthService:
         hub_admin = result.ok_value
 
         # check_passwords
-        passwords_match = self._password_hash_service.check_password(
+        passwords_match = await self._password_hash_service.check_password(
             password_attempt=credentials.password, actual_password=hub_admin.password_hash
         )
 
@@ -53,10 +56,14 @@ class AuthService:
             return Err(PasswordsMismatchError())
 
         # Build the auth token
-        jwt_auth_token = self._auth_token_service.generate_auth_token(hub_admin=hub_admin)
+        jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
 
         # Save the refresh token in db
-        refresh_token = RefreshToken(hub_member_id=hub_admin.id)
+        family_id = str(uuid4())
+        refresh_expiration = self._auth_token_service.generate_refresh_expiration()
+        refresh_token = RefreshToken(
+            hub_member_id=hub_admin.id, is_valid=True, family_id=family_id, expires_at=refresh_expiration
+        )
         refresh_token_result = await self._refresh_token_repo.create(refresh_token=refresh_token)
 
         if is_err(refresh_token_result):
@@ -64,28 +71,23 @@ class AuthService:
 
         refresh_token_id = refresh_token_result.ok_value.id
 
-        # Build the actual refresh token
-        jwt_refresh_token = self._auth_token_service.generate_refresh_token(refresh_token_id=str(refresh_token_id))
+        # Build the refresh token
+        jwt_refresh_token = self._auth_token_service.generate_refresh_token(
+            refresh_token_id=str(refresh_token_id),
+            family_id=family_id,
+            hub_member_id=str(hub_admin.id),
+            refresh_expiration=int(refresh_expiration.timestamp()),
+        )
 
         return Ok((jwt_auth_token, jwt_refresh_token))
 
     async def register_admin(
         self, credentials: RegisterHubAdminData
-    ) -> Result[HubAdmin, DuplicateHUBMemberNameError | Exception]:
+    ) -> Result[HubAdmin, DuplicateHubMemberUsernameError | Exception]:
 
-        # Check if there is another admin with the same name
-        hub_admin_exists = await self._hub_members_repo.check_if_admin_exists_by_name(credentials.name)
+        password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
 
-        if is_err(hub_admin_exists):
-            return hub_admin_exists
-
-        if hub_admin_exists.ok_value:
-            return Err(DuplicateHUBMemberNameError())
-
-        hub_admin = credentials.convert_to_hub_admin()
-        hub_admin.password_hash = self._password_hash_service.hash_password(
-            password_string=credentials.password
-        ).decode("utf-8")
+        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"))
 
         result = await self._hub_members_repo.create(hub_member=hub_admin)
 
@@ -107,13 +109,20 @@ class AuthService:
         if is_err(decoded_token_result):
             return decoded_token_result
 
-        refresh_id = decoded_token_result.ok_value.sub
+        refresh_id = decoded_token_result.ok_value.jti
+        family_id = decoded_token_result.ok_value.family_id
 
         # Find the refresh token in db
         refresh_token_result = await self._refresh_token_repo.fetch_by_id(refresh_id)
 
         if is_err(refresh_token_result):
             return refresh_token_result
+
+        if refresh_token_result.ok_value.is_valid is False:
+            invalidate_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(family_id=family_id)
+            if is_err(invalidate_result):
+                return invalidate_result
+            return Err(RefreshTokenIsInvalid())
 
         # Get the id of the hub admin for whom a new access token should be generated
         hub_admin_id = refresh_token_result.ok_value.hub_member_id
@@ -127,11 +136,14 @@ class AuthService:
         hub_admin = hub_admin_result.ok_value
 
         # Generate new access token for hub admin
-        jwt_auth_token = self._auth_token_service.generate_auth_token(hub_admin=hub_admin)
+        jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
 
-        # Delete the old refresh token in db and create a new one in transaction
+        refresh_expiration = self._auth_token_service.generate_refresh_expiration()
+        # Invalidate the old refresh token in db and create a new one in transaction
         result = await self._tx_manager.with_transaction(
-            callback=self._delete_old_and_create_new_refresh_token_callback, refresh_token_id=refresh_id
+            callback=self._invalidate_old_and_create_new_refresh_token_callback,
+            refresh_token_id=refresh_id,
+            refresh_expiration=refresh_expiration,
         )
 
         if is_err(result):
@@ -140,23 +152,34 @@ class AuthService:
         new_refresh_id = result.ok_value.id
 
         # Generate new refresh token
-        jwt_refresh_token = self._auth_token_service.generate_refresh_token(refresh_token_id=str(new_refresh_id))
+        jwt_refresh_token = self._auth_token_service.generate_refresh_token(
+            refresh_token_id=str(new_refresh_id),
+            family_id=family_id,
+            refresh_expiration=int(refresh_expiration.timestamp()),
+            hub_member_id=str(hub_admin.id),
+        )
 
         return Ok((jwt_auth_token, jwt_refresh_token))
 
-    async def _delete_old_and_create_new_refresh_token_callback(
-        self, refresh_token_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    async def _invalidate_old_and_create_new_refresh_token_callback(
+        self, refresh_token_id: str, refresh_expiration: datetime, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[RefreshToken, Exception]:
 
-        # Delete the old refresh token
-        deleted_token_result = await self._refresh_token_repo.delete(obj_id=refresh_token_id, session=session)
+        # Invalidate the old refresh token
+        updated_token_result = await self._refresh_token_repo.update(
+            refresh_token_id, obj_fields=UpdateRefreshTokenParams(is_valid=False), session=session
+        )
 
-        if is_err(deleted_token_result):
-            return deleted_token_result
+        if is_err(updated_token_result):
+            return updated_token_result
 
-        hub_admin_id = deleted_token_result.ok_value.hub_member_id
+        hub_admin_id = updated_token_result.ok_value.hub_member_id
+        family_id = updated_token_result.ok_value.family_id
 
-        new_refresh_token = RefreshToken(hub_member_id=hub_admin_id)
+        # Create new refresh token from this family id
+        new_refresh_token = RefreshToken(
+            hub_member_id=hub_admin_id, family_id=family_id, is_valid=True, expires_at=refresh_expiration
+        )
         new_token_result = await self._refresh_token_repo.create(new_refresh_token, session=session)
 
         if is_err(new_token_result):

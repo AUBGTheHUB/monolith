@@ -9,18 +9,25 @@ class AuthTokenService:
     def __init__(self, jwt_utility: JwtUtility):
         self._jwt_utility = jwt_utility
 
-    def generate_auth_token(self, hub_admin: HubAdmin) -> str:
+    def generate_access_token_for(self, hub_admin: HubAdmin) -> str:
         expiration = int((datetime.now(timezone.utc) + timedelta(minutes=7)).timestamp())
         payload = JwtAdminToken(
             sub=str(hub_admin.id), exp=expiration, site_role=hub_admin.site_role, member_type=hub_admin.member_type
         )
         return self._jwt_utility.encode_data(data=payload)
 
-    def generate_refresh_token(self, refresh_token_id: str) -> str:
-        refresh_expiration = int((datetime.now(timezone.utc) + timedelta(days=1)).timestamp())
-        refresh_payload = JwtRefreshToken(sub=refresh_token_id, exp=refresh_expiration)
+    def generate_refresh_token(
+        self, hub_member_id: str, refresh_token_id: str, family_id: str, refresh_expiration: int
+    ) -> str:
+
+        refresh_payload = JwtRefreshToken(
+            sub=hub_member_id, exp=refresh_expiration, family_id=family_id, jti=refresh_token_id
+        )
 
         return self._jwt_utility.encode_data(data=refresh_payload)
+
+    def generate_refresh_expiration(self) -> datetime:
+        return datetime.now(timezone.utc) + timedelta(days=1)
 
     def decode_refresh_token(self, refresh_token: str) -> Result[JwtRefreshToken, Exception]:
         return self._jwt_utility.decode_data(token=refresh_token, schema=JwtRefreshToken)

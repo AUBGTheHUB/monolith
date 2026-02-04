@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Literal, NotRequired, TypedDict, cast
+from typing import Any, Literal, NotRequired, Self, TypedDict, cast
 
 from pydantic import HttpUrl
 
@@ -64,7 +64,7 @@ class HubMember(BaseDbModel):
         }
 
     @classmethod
-    def from_mongo_db_document(cls, doc: dict[str, Any]) -> "HubMember":
+    def from_mongo_db_document(cls, doc: dict[str, Any]) -> Self:
         return cls(**cls._base_from_mongo_db_document(doc))
 
     @classmethod

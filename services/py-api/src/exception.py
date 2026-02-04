@@ -139,7 +139,7 @@ class HubMemberNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class DuplicateHUBMemberNameError(CustomError):
+class DuplicateHubMemberUsernameError(CustomError):
     message = "HUB member with this name already exists"
     status_code = status.HTTP_409_CONFLICT
 
@@ -151,7 +151,12 @@ class PasswordsMismatchError(CustomError):
 
 class RefreshTokenNotFound(CustomError):
     message = "The refresh token was not found."
-    status_code = status.HTTP_404_NOT_FOUND
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenIsInvalid(CustomError):
+    message = "The refresh token is invalid."
+    status_code = status.HTTP_401_UNAUTHORIZED
 
 
 class PastEventNotFoundError(CustomError):

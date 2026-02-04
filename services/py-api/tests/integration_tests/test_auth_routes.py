@@ -4,7 +4,7 @@ from httpx import AsyncClient
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData
 from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_PASSWORD_HASH,
-    TEST_HUB_MEMBER_NAME,
+    TEST_HUB_MEMBER_USERNAME,
     RegisterHubAdminBodyCallable,
 )
 
@@ -17,14 +17,14 @@ async def test_register_admin_success(
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
 ) -> None:
     # When
-    unique_name = str(uuid.uuid1())
-    register_hub_admin_body = generate_register_hub_admin_request_body(name=unique_name)
+    unique_name = str(uuid.uuid4())
+    register_hub_admin_body = generate_register_hub_admin_request_body(username=unique_name, name=unique_name)
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # Then
     assert resp.status_code == 201
-    assert resp.json()["hub_admin"]["name"] == unique_name
+    assert resp.json()["hub_admin"]["username"] == unique_name
 
 
 @pytest.mark.asyncio
@@ -54,9 +54,8 @@ async def test_login_admin_success(
     await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # When
-    login_hub_admin_data = LoginHubAdminData(name=TEST_HUB_MEMBER_NAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
-    # Fire the request twice so it fails the second time
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
 
     # Then
@@ -73,7 +72,7 @@ async def test_login_admin_fails_when_passwords_dont_match(
     await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # When
-    login_hub_admin_data = LoginHubAdminData(name=TEST_HUB_MEMBER_NAME, password="Another hash")
+    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password="Another hash")
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
 
@@ -91,7 +90,7 @@ async def test_login_admin_fails_when_hub_admin_is_not_found(
     await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # When
-    login_hub_admin_data = LoginHubAdminData(name="Wrong username", password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    login_hub_admin_data = LoginHubAdminData(username="Wrong username", password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
 
@@ -109,7 +108,7 @@ async def test_refresh_token_success(
     await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # When
-    login_hub_admin_data = LoginHubAdminData(name=TEST_HUB_MEMBER_NAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
     tokens_result = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
     tokens_result.cookies.get("refresh_token")
 

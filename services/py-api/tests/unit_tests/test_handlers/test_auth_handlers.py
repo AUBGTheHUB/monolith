@@ -2,7 +2,7 @@ from typing import cast
 import pytest
 from result import Err, Ok
 from src.exception import (
-    DuplicateHUBMemberNameError,
+    DuplicateHubMemberUsernameError,
     HubMemberNotFoundError,
     JwtExpiredSignatureError,
     PasswordsMismatchError,
@@ -56,7 +56,7 @@ async def test_register_hub_admin_conflict(
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
     # Given
-    auth_service_mock.register_admin.return_value = Err(DuplicateHUBMemberNameError())
+    auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberUsernameError())
 
     # When
     resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)
@@ -130,7 +130,7 @@ async def test_refresh_token_success(
     auth_service_mock.refresh_token.return_value = Ok(("token_1", "token_2"))
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     cookies = resp.headers.getlist("Set-Cookie")
 
     # Then
@@ -150,12 +150,12 @@ async def test_refresh_token_not_found(
     auth_service_mock.refresh_token.return_value = Err(RefreshTokenNotFound())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.response_model.error == "The refresh token was not found."
-    assert resp.status_code == status.HTTP_404_NOT_FOUND
+    assert resp.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.asyncio
@@ -167,7 +167,7 @@ async def test_hub_admin_not_found_for_refresh_token(
     auth_service_mock.refresh_token.return_value = Err(HubMemberNotFoundError())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)
@@ -184,7 +184,7 @@ async def test_expired_refresh_token(
     auth_service_mock.refresh_token.return_value = Err(JwtExpiredSignatureError())
 
     # When
-    resp = await auth_handlers.refresh_token(refresh_token="token_2")
+    resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
     # Then
     assert isinstance(resp, Response)
     assert isinstance(resp.response_model, ErrResponse)

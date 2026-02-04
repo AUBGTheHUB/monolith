@@ -50,7 +50,8 @@ class _DecodedJwtAdminToken(DecodedJwtTokenBase):
 class _RefreshJwtToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used for refreshing"""
 
-    token_type: str = "refresh"
+    family_id: str
+    jti: str
 
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
@@ -134,7 +135,7 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
 
 @dataclass(kw_only=True)
 class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
-    member_type: MEMBER_TYPE = "admin"
+    member_type: MEMBER_TYPE
     site_role: ROLES
 
     def serialize(self) -> _DecodedJwtAdminToken:
@@ -152,11 +153,17 @@ class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
 
 @dataclass(kw_only=True)
 class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
-    token_type: str = "refresh"
+    family_id: str
+    jti: str
 
     def serialize(self) -> _RefreshJwtToken:
-        return _RefreshJwtToken(sub=self.sub, exp=self.exp, token_type=self.token_type)
+        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
 
     @classmethod
     def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
-        return cls(sub=decoded_token["sub"], token_type=decoded_token["token_type"], exp=decoded_token["exp"])
+        return cls(
+            sub=decoded_token["sub"],
+            exp=decoded_token["exp"],
+            family_id=decoded_token["family_id"],
+            jti=decoded_token["jti"],
+        )

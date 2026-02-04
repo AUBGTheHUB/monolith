@@ -139,7 +139,7 @@ async def test_update_refresh_token_not_found(
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
     # When
-    result = await repo.update(obj_id_mock, UpdateRefreshTokenParams(hub_member_id=obj_id_mock))
+    result = await repo.update(obj_id_mock, UpdateRefreshTokenParams(is_valid=False))
 
     # Then
     assert isinstance(result, Err)
