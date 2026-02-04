@@ -51,7 +51,7 @@ class UpdateParams(BaseModel, ABC):
         by_alias: bool = False,
         exclude_unset: bool = True,
         exclude_defaults: bool = False,
-        exclude_none: bool = True,
+        exclude_none: bool = False,
         round_trip: bool = False,
         warnings: bool | Literal["none", "warn", "error"] = True,
         serialize_as_any: bool = False,
