@@ -16,21 +16,22 @@ export const HackathonPage = () => {
     return (
         <div className="bg-[#000a12]">
             <Helmet>
-                <title>Hackathon 7.0</title>
+                <title>Hackathon 8.0</title>
                 <link rel="icon" href="/faviconHack.ico" />
-                <NavigationSection />
-                <LandingSection />
-                <MissionSection />
-                <JourneySection />
-                <MentorsAndJudgesSection />
-                <ScheduleSection />
-                <RecapSection />
-                <GradingSection />
-                <AwardsSection />
-                <SponsorsSection />
-                <FAQSection />
-                <FooterSection />
             </Helmet>
+
+            <NavigationSection />
+            <LandingSection />
+            <MissionSection />
+            <JourneySection />
+            <MentorsAndJudgesSection />
+            <ScheduleSection />
+            <RecapSection />
+            <GradingSection />
+            <AwardsSection />
+            <FAQSection />
+            <SponsorsSection />
+            <FooterSection />
         </div>
     );
 };

@@ -7,12 +7,8 @@ from src.server.routes.route_dependencies import is_authorized
 def register_mentors_routes(http_handler: MentorsHandlers) -> APIRouter:
     mentors_router = APIRouter(prefix="/mentors", tags=["mentors"])
 
-    mentors_router.add_api_route(
-        "", endpoint=http_handler.get_all_mentors, methods=["GET"], dependencies=[Depends(is_authorized)]
-    )
-    mentors_router.add_api_route(
-        "/{mentor_id}", endpoint=http_handler.get_mentor, methods=["GET"], dependencies=[Depends(is_authorized)]
-    )
+    mentors_router.add_api_route("", endpoint=http_handler.get_all_mentors, methods=["GET"])
+    mentors_router.add_api_route("/{mentor_id}", endpoint=http_handler.get_mentor, methods=["GET"])
     mentors_router.add_api_route(
         "", endpoint=http_handler.create_mentor, methods=["POST"], dependencies=[Depends(is_authorized)]
     )
