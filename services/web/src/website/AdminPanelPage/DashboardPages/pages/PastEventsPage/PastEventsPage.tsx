@@ -24,12 +24,19 @@ export function PastEventsPage() {
     const renderEventActions = (eventId: string) => (
         <div className="flex gap-3 w-full">
             <Link to={`/admin/dashboard/past-events/${eventId}`} className="flex-1">
-                <Button variant="outline" className="w-full">
+                <Button
+                    variant="outline"
+                    className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
+                >
                     {MESSAGES.EDIT_BUTTON}
                 </Button>
             </Link>
 
-            <Button variant="destructive" className="flex-1" onClick={() => handleDelete(eventId)}>
+            <Button
+                variant="destructive"
+                className="flex-1 shadow-lg shadow-red-500/10 hover:shadow-red-500/20 transition-all"
+                onClick={() => handleDelete(eventId)}
+            >
                 {MESSAGES.DELETE_BUTTON}
             </Button>
         </div>
