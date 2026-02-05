@@ -14,9 +14,8 @@ import { SponsorsListPage } from '@/website/AdminPanelPage/DashboardPages/pages/
 import { SponsorsEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/SponsorsEditPage';
 import { DashboardPage } from '@/website/AdminPanelPage/DashboardPages/DashboardPage';
 
-import { PastEventsPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/PastEventsPage';
-import { AddPastEventPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/AddPastEventPage';
-import { EditPastEventPage } from './website/AdminPanelPage/DashboardPage/pages/PastEventsPage/EditPastEventPage';
+import { PastEventsPage } from './website/AdminPanelPage/DashboardPages/pages/PastEventsPage/PastEventsPage';
+import { PastEventsEditPage } from './website/AdminPanelPage/DashboardPages/pages/PastEventsPage/PastEventsEditPage';
 
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
@@ -71,8 +70,8 @@ function App() {
                         {/* Past events Sub-group */}
                         <Route path="past-events">
                             <Route index element={<PastEventsPage />} />
-                            <Route path="add" element={<AddPastEventPage />} />
-                            <Route path=":id" element={<EditPastEventPage />} />
+                            <Route path="add" element={<PastEventsEditPage />} />
+                            <Route path=":id" element={<PastEventsEditPage />} />
                         </Route>
                     </Route>
                     {/* 404 Catch-all */}
