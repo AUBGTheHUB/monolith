@@ -1,10 +1,10 @@
 from abc import ABC
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated, Any, Literal, cast
 
 from bson import ObjectId
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from pydantic.json_schema import WithJsonSchema
 from pydantic.main import IncEx
 
@@ -24,12 +24,12 @@ class BaseDbModel(SerializableDbModel, ABC):
     id: SerializableObjectId = field(default_factory=ObjectId)
     """We create the ID on demand in order to use the created object as a return type of a function and have all the
     info as type safe attributes"""
-    created_at: datetime = field(default_factory=datetime.now)
-    updated_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class UpdateParams(BaseModel, ABC):
-    updated_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
     # We override BaseModel.model_dump to enforce safe PATCH semantics by default.
     # - exclude_unset=True: prevents accidentally overwriting existing DB fields with None
@@ -56,19 +56,24 @@ class UpdateParams(BaseModel, ABC):
         warnings: bool | Literal["none", "warn", "error"] = True,
         serialize_as_any: bool = False,
     ) -> dict[str, Any]:
-        return cast(
-            dict[str, Any],
-            super().model_dump(
-                mode=mode,
-                include=include,
-                exclude=exclude,
-                context=context,
-                by_alias=by_alias,
-                exclude_unset=exclude_unset,
-                exclude_defaults=exclude_defaults,
-                exclude_none=exclude_none,
-                round_trip=round_trip,
-                warnings=warnings,
-                serialize_as_any=serialize_as_any,
-            ),
+        data = super().model_dump(
+            mode=mode,
+            include=include,
+            exclude=exclude,
+            context=context,
+            by_alias=by_alias,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+            round_trip=round_trip,
+            warnings=warnings,
+            serialize_as_any=serialize_as_any,
         )
+
+        # updated_at is excluded by exclude_unset=True
+        # even though it is set by base model constructor.
+        # This is default Pydentic behavior, so to override we explicitly include updated_at
+        if "updated_at" not in data:
+            data["updated_at"] = self.updated_at
+
+        return cast(dict[str, Any], data)

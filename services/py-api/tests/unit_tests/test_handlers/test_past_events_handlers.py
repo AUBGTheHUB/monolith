@@ -10,7 +10,7 @@ from src.exception import PastEventNotFoundError
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
 from src.server.schemas.request_schemas.admin.past_event_schemas import (
     PastEventPostReqData,
-    PastEventPutReqData,
+    PastEventPatchReqData,
 )
 from src.server.schemas.response_schemas.schemas import Response
 from src.service.admin.past_events_service import PastEventsService
@@ -75,7 +75,7 @@ async def test_update_past_event_returns_200(
     past_events_service_mock: PastEventsServiceMock,
     past_event_mock: PastEvent,
 ) -> None:
-    req = PastEventPutReqData(
+    req = PastEventPatchReqData(
         title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
     )
 
