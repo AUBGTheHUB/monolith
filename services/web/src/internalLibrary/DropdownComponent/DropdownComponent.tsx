@@ -44,7 +44,10 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl className={formControlClassName}>
-                            <SelectTrigger data-testid="trigger" className={cn(!field.value && 'text-muted-foreground')}>
+                            <SelectTrigger
+                                data-testid="trigger"
+                                className={cn(!field.value && 'text-muted-foreground')}
+                            >
                                 <SelectValue className={selectValueClassName} placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>

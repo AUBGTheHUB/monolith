@@ -4,6 +4,7 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
+
 SPONSORS_ENDPOINT_URL = "/api/v3/admin/sponsors"
 
 TEST_SPONSOR_NAME = "Coca-Cola"
@@ -30,7 +31,6 @@ async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_success(async_client: AsyncClient) -> None:
-
     # Arrange - No new object needed
 
     # Act
@@ -60,7 +60,6 @@ async def test_create_sponsor_success(async_client: AsyncClient) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_missing_parameter(async_client: AsyncClient) -> None:
-
     # Arrange
     invalid_sponsor_body: dict[str, Any] = {
         "name": TEST_SPONSOR_NAME,

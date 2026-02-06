@@ -17,12 +17,14 @@ from motor.motor_asyncio import (
 )
 from typing_extensions import Protocol
 
+from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
@@ -47,6 +49,7 @@ from src.service.utility.image_storing.image_storing_service import ImageStoring
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
+from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
 
@@ -487,6 +490,27 @@ def feature_switch_repo_mock() -> FeatureSwitchRepoMock:
     return cast(FeatureSwitchRepoMock, feature_switch_repo)
 
 
+class HubMembersRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def hub_members_repo_mock() -> HubMembersRepoMock:
+    hub_members_repo = _create_typed_mock(HubMembersRepository)
+
+    hub_members_repo.fetch_by_id = AsyncMock()
+    hub_members_repo.fetch_all = AsyncMock()
+    hub_members_repo.update = AsyncMock()
+    hub_members_repo.create = AsyncMock()
+    hub_members_repo.delete = AsyncMock()
+
+    return cast(HubMembersRepoMock, hub_members_repo)
+
+
 class PastEventsRepoMock(Protocol):
     fetch_by_id: AsyncMock
     fetch_all: AsyncMock
@@ -537,6 +561,27 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 # ======================================
 # Mocking Service layer classes start
 # ======================================
+
+
+class HubMembersServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def hub_members_service_mock() -> HubMembersServiceMock:
+    service = _create_typed_mock(HubMembersService)
+
+    service.get_all = AsyncMock()
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(HubMembersServiceMock, service)
 
 
 class PastEventsServiceMock(Protocol):
@@ -986,6 +1031,28 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 
 
 @pytest.fixture
+def hub_member_mock(obj_id_mock: str) -> HubMember:
+    from bson import ObjectId
+    from pydantic import HttpUrl
+
+    return HubMember(
+        id=ObjectId(obj_id_mock),
+        name="Test Member",
+        position="Developer",
+        department="Development",
+        avatar_url="https://example.com/avatar.jpg",
+        social_links={"linkedin": HttpUrl("https://www.linkedin.com/in/test")},
+    )
+
+
+@pytest.fixture
+def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
+    document = hub_member_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
     return Sponsor(
         id=obj_id_mock,
@@ -1167,7 +1234,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 @pytest.fixture
 def ten_sec_window() -> tuple[datetime, datetime]:
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
 
 
