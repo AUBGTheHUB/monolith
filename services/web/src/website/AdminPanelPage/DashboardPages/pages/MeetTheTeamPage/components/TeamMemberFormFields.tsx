@@ -1,10 +1,10 @@
 import { Control } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { MultiSelect } from '@/components/ui/multi-select';
-import { AVAILABLE_DEPARTMENTS } from '../constants';
-import { TeamMemberFormFieldMessages as MESSAGES } from '../messages';
-import { TeamMemberFormData } from '../validation/validation';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { MultiSelect } from '@/components/ui/multi-select.tsx';
+import { AVAILABLE_DEPARTMENTS } from '../constants.tsx';
+import { TeamMemberFormFieldMessages as MESSAGES } from '../messages.tsx';
+import { TeamMemberFormData } from '../validation/validation.tsx';
 
 interface TeamMemberFormFieldsProps {
     control: Control<TeamMemberFormData>;
