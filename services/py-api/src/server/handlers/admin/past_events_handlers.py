@@ -3,7 +3,7 @@ from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.admin.past_event_schemas import (
     PastEventPostReqData,
-    PastEventPutReqData,
+    PastEventPatchReqData,
 )
 from src.server.schemas.response_schemas.admin.past_event_schemas import (
     AllPastEventsResponse,
@@ -50,7 +50,7 @@ class PastEventsHandlers(BaseHandler):
             status_code=200,
         )
 
-    async def update_past_event(self, object_id: str, req_data: PastEventPutReqData) -> Response:
+    async def update_past_event(self, object_id: str, req_data: PastEventPatchReqData) -> Response:
         result = await self._service.update(object_id, req_data)
 
         if is_err(result):

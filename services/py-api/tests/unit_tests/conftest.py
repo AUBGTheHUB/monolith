@@ -1234,7 +1234,7 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 @pytest.fixture
 def ten_sec_window() -> tuple[datetime, datetime]:
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
 
 
