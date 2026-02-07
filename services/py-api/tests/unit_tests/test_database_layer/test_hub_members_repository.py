@@ -1,15 +1,36 @@
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 
 import pytest
 from typing import cast, Any
 from datetime import datetime
-from bson import ObjectId
+from typing import Any, cast
+from unittest.mock import AsyncMock
+
+from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
+
+from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.exception import HubMemberNotFoundError
+
+from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
+from structlog.stdlib import get_logger
+from tests.integration_tests.conftest import (
+    TEST_HUB_MEMBER_NAME,
+    TEST_HUB_ADMIN_MEMBER_TYPE,
+    TEST_HUB_MEMBER_MEMBER_TYPE,
+    TEST_HUB_ADMIN_PASSWORD_HASH,
+    TEST_HUB_ADMIN_ROLE,
+    TEST_HUB_MEMBER_SOCIAL_LINKS,
+    TEST_HUB_MEMBER_POSITON,
+    TEST_HUB_MEMBER_AVATAR_URL,
+    TEST_HUB_MEMBER_DEPARTMENT,
+)
 from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+
+LOG = get_logger()
 
 
 def _fields_are_correct(expected: HubMember, result: HubMember) -> bool:
@@ -28,20 +49,42 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> HubMembersRepository:
 
 
 @pytest.mark.asyncio
-async def test_create_hub_member_success(
-    ten_sec_window: tuple[datetime, datetime],
-    hub_member_mock: HubMember,
-    repo: HubMembersRepository,
+async def test_create_hub_admin_success(
+    ten_sec_window: tuple[datetime, datetime], hub_admin_mock: HubAdmin, repo: HubMembersRepository
 ) -> None:
+
     # Given
     start_time, end_time = ten_sec_window
 
     # When
-    result = await repo.create(hub_member_mock)
+    result = await repo.create(hub_member=hub_admin_mock)
+
+    # Then
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, HubAdmin)
+    assert result.ok_value.name == hub_admin_mock.name
+
+    # Check that created_at and updated_at fall within the 10-second window
+    assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
+    assert start_time <= result.ok_value.updated_at <= end_time, "updated_at is not within the 10-second window"
+
+
+@pytest.mark.asyncio
+async def test_create_hub_member_success(
+    ten_sec_window: tuple[datetime, datetime], hub_member_mock: HubMember, repo: HubMembersRepository
+) -> None:
+
+    # Given
+    start_time, end_time = ten_sec_window
+
+    # When
+    result = await repo.create(hub_member=hub_member_mock)
 
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, HubMember)
+    assert result.ok_value.name == hub_member_mock.name
+
     assert _fields_are_correct(result.ok_value, hub_member_mock)
     # Check that created_at and updated_at fall within the 10-second window
     assert start_time <= result.ok_value.created_at <= end_time, "created_at is not within the 10-second window"
@@ -49,12 +92,30 @@ async def test_create_hub_member_success(
 
 
 @pytest.mark.asyncio
-async def test_create_hub_member_general_exception(
+async def test_create_duplicate_hub_member_error(
     mongo_db_manager_mock: MongoDbManagerMock, hub_member_mock: HubMember, repo: HubMembersRepository
 ) -> None:
     # Given
-    # Simulate a general exception raised by insert_one
-    mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("Test error"))
+    # Simulate a DuplicateKeyError raised when trying to insert a hub member with a duplicate name
+    mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
+        side_effect=DuplicateKeyError("Duplicate hub member name")
+    )
+
+    # When
+    result = await repo.create(hub_member_mock)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, DuplicateHubMemberUsernameError)
+
+
+@pytest.mark.asyncio
+async def test_create_general_exception(
+    mongo_db_manager_mock: MongoDbManagerMock, hub_member_mock: HubMember, repo: HubMembersRepository
+) -> None:
+    # Given
+    # Simulate a General Exception
+    mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(side_effect=Exception("General Error"))
 
     # When
     result = await repo.create(hub_member_mock)
@@ -62,21 +123,107 @@ async def test_create_hub_member_general_exception(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
+    assert str(result.err_value) == "General Error"
 
 
 @pytest.mark.asyncio
-async def test_delete_hub_member_success(
+async def test_fetch_by_id_for_hub_member_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     hub_member_dump_no_id_mock: dict[str, Any],
+    obj_id_mock: str,
+    hub_member_dict_mock: dict[str, Any],
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_member_dict_mock)
+    # When
+    result = await repo.fetch_by_id(obj_id=obj_id_mock)
+
+    # Then
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, HubMember)
+    assert isinstance(result.ok_value, HubAdmin) == False
+    assert result.ok_value.id == obj_id_mock
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
+    assert result.ok_value.social_links == TEST_HUB_MEMBER_SOCIAL_LINKS
+    assert result.ok_value.position == TEST_HUB_MEMBER_POSITON
+    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.avatar_url == TEST_HUB_MEMBER_AVATAR_URL
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_for_hub_admin_success(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    hub_admin_dict_mock: dict[str, Any],
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_admin_dict_mock)
+
+    # When
+    result = await repo.fetch_by_id(obj_id=obj_id_mock)
+
+    # Then
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, HubAdmin)
+    assert result.ok_value.id == obj_id_mock
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.member_type == TEST_HUB_ADMIN_MEMBER_TYPE
+    assert result.ok_value.social_links == TEST_HUB_MEMBER_SOCIAL_LINKS
+    assert result.ok_value.position == TEST_HUB_MEMBER_POSITON
+    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.avatar_url == TEST_HUB_MEMBER_AVATAR_URL
+    assert result.ok_value.password_hash == TEST_HUB_ADMIN_PASSWORD_HASH
+    assert result.ok_value.site_role == TEST_HUB_ADMIN_ROLE
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
     repo: HubMembersRepository,
 ) -> None:
     # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=hub_member_dump_no_id_mock
-    )
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+
+    # When
+    result = await repo.fetch_by_id(obj_id=obj_id_mock)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, HubMemberNotFoundError)
+
+
+@pytest.mark.asyncio
+async def test_fetch_by_id_general_error(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(side_effect=Exception("General Error"))
+
+    # When
+    result = await repo.fetch_by_id(obj_id=obj_id_mock)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "General Error"
+
+
+@pytest.mark.asyncio
+async def test_delete_hub_member_successful(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    hub_member_dict_mock: dict[str, Any],
+    repo: HubMembersRepository,
+) -> None:
+
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=hub_member_dict_mock)
 
     # When
     result = await repo.delete(obj_id_mock)
@@ -84,15 +231,41 @@ async def test_delete_hub_member_success(
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, HubMember)
-    assert result.ok_value.id == ObjectId(obj_id_mock)
+
+    assert result.ok_value.id == obj_id_mock
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
+    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+
+
+@pytest.mark.asyncio
+async def test_delete_hub_admin_successful(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    obj_id_mock: str,
+    hub_admin_dict_mock: dict[str, Any],
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=hub_admin_dict_mock)
+
+    # When
+    result = await repo.delete(obj_id_mock)
+
+    # Then
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, HubAdmin)
+
+    assert result.ok_value.id == obj_id_mock
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.member_type == TEST_HUB_ADMIN_MEMBER_TYPE
+    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
 
 
 @pytest.mark.asyncio
 async def test_delete_hub_member_not_found(
-    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: HubMembersRepository
+    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
 ) -> None:
     # Given
-    # When the hub member with the specified object id is not found find_one_and_delete returns None
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=None)
 
     # When
@@ -104,13 +277,12 @@ async def test_delete_hub_member_not_found(
 
 
 @pytest.mark.asyncio
-async def test_delete_hub_member_general_exception(
-    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: HubMembersRepository
+async def test_delete_general_error(
+    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
 ) -> None:
     # Given
-    # Simulate a general exception raised by find_one_and_delete
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        side_effect=Exception("Test error")
+        side_effect=Exception("General Error")
     )
 
     # When
@@ -119,28 +291,29 @@ async def test_delete_hub_member_general_exception(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
+    assert str(result.err_value) == "General Error"
 
 
 @pytest.mark.asyncio
 async def test_update_hub_member_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     obj_id_mock: str,
-    hub_member_dump_no_id_mock: dict[str, Any],
     repo: HubMembersRepository,
+    update_hub_member_dict_mock: dict[str, Any],
 ) -> None:
     # Given
-    updated_doc = hub_member_dump_no_id_mock.copy()
-    updated_doc["name"] = "Updated Name"
-    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=updated_doc)
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
+        return_value=update_hub_member_dict_mock
+    )
+
     # When
-    result = await repo.update(obj_id_mock, UpdateHubMemberParams(name="Updated Name"))
+    result = await repo.update(obj_id_mock, UpdateHubMemberParams(department="Marketing"))
 
     # Then
     assert isinstance(result, Ok)
-    assert result.ok_value.id == ObjectId(obj_id_mock)
-    assert result.ok_value.name == "Updated Name"
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
+    assert result.ok_value.department == "Marketing"
 
 
 @pytest.mark.asyncio
@@ -148,11 +321,10 @@ async def test_update_hub_member_not_found(
     mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: HubMembersRepository
 ) -> None:
     # Given
-    # When a hub member with the specified id is not found find_one_and_update returns none
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=None)
 
     # When
-    result = await repo.update(obj_id_mock, UpdateHubMemberParams(name="Updated Name"))
+    result = await repo.update(obj_id_mock, UpdateHubMemberParams(department="Marketing"))
 
     # Then
     assert isinstance(result, Err)
@@ -160,70 +332,21 @@ async def test_update_hub_member_not_found(
 
 
 @pytest.mark.asyncio
-async def test_update_hub_member_general_exception(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
+async def test_update_hub_member_general_error(
+    mongo_db_manager_mock: MongoDbManagerMock, obj_id_mock: str, repo: HubMembersRepository
 ) -> None:
+    # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        side_effect=Exception("Test error")
+        side_effect=Exception("General Error")
     )
 
     # When
-    result = await repo.update(obj_id_mock, UpdateHubMemberParams(name="Updated Name"))
+    result = await repo.update(obj_id_mock, UpdateHubMemberParams(department="Marketing"))
 
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
-    # Check that the error message is the one in the Exception
-    assert str(result.err_value) == "Test error"
-
-
-@pytest.mark.asyncio
-async def test_fetch_by_id_successful(
-    mongo_db_manager_mock: MongoDbManagerMock,
-    hub_member_dump_no_id_mock: dict[str, Any],
-    hub_member_mock: HubMember,
-    repo: HubMembersRepository,
-) -> None:
-    # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_member_dump_no_id_mock)
-
-    # When
-    result = await repo.fetch_by_id(str(hub_member_mock.id))
-
-    # Then
-    assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, HubMember)
-    assert _fields_are_correct(hub_member_mock, result.ok_value)
-
-
-@pytest.mark.asyncio
-async def test_fetch_by_id_hub_member_not_found(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
-) -> None:
-    # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
-
-    # When
-    result = await repo.fetch_by_id(obj_id_mock)
-
-    # Then
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, HubMemberNotFoundError)
-
-
-@pytest.mark.asyncio
-async def test_fetch_by_id_general_error(
-    mongo_db_manager_mock: MongoDbManagerMock, repo: HubMembersRepository, obj_id_mock: str
-) -> None:
-    # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(side_effect=Exception("Test Error"))
-
-    # When
-    result = await repo.fetch_by_id(obj_id_mock)
-
-    # Then
-    assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "General Error"
 
 
 @pytest.mark.asyncio
@@ -231,43 +354,31 @@ async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
     db_cursor_mock: MotorDbCursorMock,
     repo: HubMembersRepository,
-    hub_member_mock: HubMember,
+    hub_member_dict_mock: dict[str, Any],
 ) -> None:
     # Given
-    mock_hub_members_data = [
-        {
-            "_id": hub_member_mock.id,
-            "name": hub_member_mock.name,
-            "position": hub_member_mock.position,
-            "department": hub_member_mock.department,
-            "avatar_url": hub_member_mock.avatar_url,
-            "member_type": hub_member_mock.member_type,
-            "social_links": {},
-            "created_at": hub_member_mock.created_at,
-            "updated_at": hub_member_mock.updated_at,
-        }
-        for _ in range(5)
-    ]
+    # Prepare mock MongoDB documents
+    mock_hub_members_data = [hub_member_dict_mock for _ in range(5)]
     db_cursor_mock.to_list.return_value = mock_hub_members_data
     mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
+    # Run the method
     result = await repo.fetch_all()
 
     # Then
+    # Assertions
     assert isinstance(result, Ok)
     assert len(result.ok_value) == 5
 
-    for i, member in enumerate(result.ok_value):
-        assert member.name == mock_hub_members_data[i]["name"]
-        assert member.position == mock_hub_members_data[i]["position"]
-        assert member.department == mock_hub_members_data[i]["department"]
-        assert member.avatar_url == mock_hub_members_data[i]["avatar_url"]
+    for i, hub_member in enumerate(result.ok_value):
+        assert hub_member.name == mock_hub_members_data[i]["name"]
+        assert hub_member.member_type == mock_hub_members_data[i]["member_type"]
 
 
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
-    mongo_db_manager_mock: Mock,
+    mongo_db_manager_mock: MongoDbManagerMock,
     db_cursor_mock: MotorDbCursorMock,
     repo: HubMembersRepository,
 ) -> None:
@@ -284,13 +395,13 @@ async def test_fetch_all_empty(
 
 
 @pytest.mark.asyncio
-async def test_fetch_all_error(
-    mongo_db_manager_mock: Mock,
+async def test_fetch_all_general_exception(
+    mongo_db_manager_mock: MongoDbManagerMock,
     db_cursor_mock: MotorDbCursorMock,
     repo: HubMembersRepository,
 ) -> None:
     # Given
-    db_cursor_mock.to_list.side_effect = Exception("Test error")
+    db_cursor_mock.to_list.side_effect = Exception("General Error")
     mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
 
     # When
@@ -298,4 +409,39 @@ async def test_fetch_all_error(
 
     # Then
     assert isinstance(result, Err)
-    assert isinstance(result.err_value, Exception)
+    assert str(result.err_value) == "General Error"
+
+
+@pytest.mark.asyncio
+async def test_fetch_admin_by_name_success(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    hub_admin_dict_mock: dict[str, Any],
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=hub_admin_dict_mock)
+
+    # When
+    result = await repo.fetch_admin_by_username(TEST_HUB_MEMBER_NAME)
+
+    # Then
+    assert isinstance(result, Ok)
+    assert isinstance(result.ok_value, HubAdmin)
+    assert result.ok_value.name == TEST_HUB_MEMBER_NAME
+    assert result.ok_value.site_role == TEST_HUB_ADMIN_ROLE
+
+
+@pytest.mark.asyncio
+async def test_fetch_admin_by_name_not_found(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    repo: HubMembersRepository,
+) -> None:
+    # Given
+    mongo_db_manager_mock.get_collection.return_value.find_one = AsyncMock(return_value=None)
+
+    # When
+    result = await repo.fetch_admin_by_username(TEST_HUB_MEMBER_NAME)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, HubMemberNotFoundError)

@@ -8,6 +8,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TypedDict, Self, TypeVar, Generic
 
+from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_member_model import MEMBER_TYPE
+
 
 class DecodedJwtTokenBase(TypedDict):
     """
@@ -35,6 +38,20 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 
     team_name: str
     team_id: str
+
+
+class _DecodedJwtAdminToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for authenticating HUB Admins"""
+
+    member_type: MEMBER_TYPE = "admin"
+    site_role: ROLES
+
+
+class _RefreshJwtToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for refreshing"""
+
+    family_id: str
+    jti: str
 
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
@@ -113,4 +130,40 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
             team_id=decoded_token["team_id"],
             exp=decoded_token["exp"],
             team_name=decoded_token["team_name"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
+    member_type: MEMBER_TYPE
+    site_role: ROLES
+
+    def serialize(self) -> _DecodedJwtAdminToken:
+        return _DecodedJwtAdminToken(sub=self.sub, exp=self.exp, member_type=self.member_type, site_role=self.site_role)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedJwtAdminToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            member_type=decoded_token["member_type"],
+            exp=decoded_token["exp"],
+            site_role=decoded_token["site_role"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
+    family_id: str
+    jti: str
+
+    def serialize(self) -> _RefreshJwtToken:
+        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            exp=decoded_token["exp"],
+            family_id=decoded_token["family_id"],
+            jti=decoded_token["jti"],
         )

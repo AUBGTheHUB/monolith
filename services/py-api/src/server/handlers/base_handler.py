@@ -15,7 +15,17 @@ class BaseHandler(ABC):
         # Check if the error is a known type
         for error_type, (message, code) in ERROR_MAPPING.items():
             if isinstance(err, error_type):
-                return Response(ErrResponse(error=message), status_code=code)
+                response = Response(
+                    ErrResponse(error=message),
+                    status_code=code,
+                )
+                response.delete_cookie(
+                    key="refresh_token",
+                    httponly=True,
+                    secure=True,
+                    samesite="strict",
+                )
+                return response
 
         # Default error response
         return Response(
