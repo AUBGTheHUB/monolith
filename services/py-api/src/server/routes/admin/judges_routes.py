@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 
-from src.database.model.admin.judge_model import Judge
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.routes.route_dependencies import is_authorized, validate_obj_id
 from src.server.schemas.response_schemas.admin.judge_schemas import JudgesResponse, JudgeResponse
@@ -18,7 +17,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
         "/{judge_id}",
         endpoint=http_handler.get_judge,
         methods=["GET"],
-        responses={200: {"model": Judge}, 400: {"model": ErrResponse}, 404: {"model": ErrResponse}},
+        responses={200: {"model": JudgeResponse}, 400: {"model": ErrResponse}, 404: {"model": ErrResponse}},
         dependencies=[Depends(validate_obj_id)],
     )
 
