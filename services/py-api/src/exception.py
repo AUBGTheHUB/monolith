@@ -101,6 +101,13 @@ class SponsorNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class JudgeNotFoundError(CustomError):
+    """Exception raised when the sponsor cannot be found in the database"""
+
+    message = "The specified judge was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
