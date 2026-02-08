@@ -44,6 +44,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
@@ -556,6 +557,27 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
     return cast(SponsorsRepoMock, sponsors_repo)
 
 
+class JudgesRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_repo_mock() -> JudgesRepoMock:
+    judges_repo = _create_typed_mock(SponsorsRepository)
+
+    judges_repo.fetch_by_id = AsyncMock()
+    judges_repo.fetch_all = AsyncMock()
+    judges_repo.update = AsyncMock()
+    judges_repo.create = AsyncMock()
+    judges_repo.delete = AsyncMock()
+
+    return cast(JudgesRepoMock, judges_repo)
+
+
 class RefreshTokenRepoMock(Protocol):
     """A Static Duck Type, modeling a Mocked RefreshTokenRepository
 
@@ -690,6 +712,27 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class JudgesServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_service_mock() -> JudgesServiceMock:
+    service = _create_typed_mock(JudgesService)
+
+    service.get_all = _create_typed_async_mock(JudgesService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(JudgesServiceMock, service)
 
 
 class AwsServiceMock(Protocol):
