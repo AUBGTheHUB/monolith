@@ -20,6 +20,7 @@ from typing_extensions import Protocol
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.judge_model import Judge
 from src.database.model.admin.refresh_token import RefreshToken
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
@@ -1175,6 +1176,25 @@ def sponsor_mock(obj_id_mock: str) -> Sponsor:
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
     document = sponsor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def judge_mock(obj_id_mock: str) -> Judge:
+    return Judge(
+        id=obj_id_mock,
+        name="Sadiyata",
+        company="The Hub",
+        avatar_url="https://eu.aws.com/coca-cola.jpg",
+        job_title="Sadiya ma ooo",
+        linkedin_url=None,
+    )
+
+
+@pytest.fixture
+def judge_no_id_mock(judge_mock: Judge) -> dict[str, Any]:
+    document = judge_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
