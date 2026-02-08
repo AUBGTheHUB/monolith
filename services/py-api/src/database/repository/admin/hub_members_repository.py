@@ -1,10 +1,15 @@
-from typing import Optional
+from typing import Any, Optional
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo import ReturnDocument
+from result import Ok, Result, Err
+from src.database.model.admin.hub_admin_model import HubAdmin
+from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from pymongo.asynchronous.collection import ReturnDocument
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
+from pymongo.errors import DuplicateKeyError
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.admin_collections import HUB_MEMBERS_COLLECTION
@@ -19,96 +24,116 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(HUB_MEMBERS_COLLECTION)
 
+    def _hub_member_from_mongo(self, doc: dict[str, Any]) -> HubMember | HubAdmin:
+        member_type = doc.get("member_type")
+
+        if member_type == "admin":
+            return HubAdmin.from_mongo_db_document(doc)
+
+        return HubMember.from_mongo_db_document(doc)
+
     async def create(
-        self, obj: HubMember, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[HubMember, Exception]:
+        self, hub_member: HubMember | HubAdmin, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[HubMember | HubAdmin, DuplicateHubMemberUsernameError | Exception]:
         try:
-            LOG.debug("Inserting hub member...", member_name=obj.name)
-            doc = obj.dump_as_mongo_db_document()
-            await self._collection.insert_one(doc, session=session)
-            LOG.debug("Hub member created successfully.", member_id=str(obj.id))
-            return Ok(obj)
+            LOG.info("Inserting HUB member...", hub_member=hub_member.dump_as_json())
+            await self._collection.insert_one(
+                document=hub_member.dump_as_mongo_db_document(),
+                session=session,
+            )
+            LOG.info("Successfully inserted HUB member", hub_member=hub_member.dump_as_json())
+            return Ok(hub_member)
+
+        except DuplicateKeyError:
+            LOG.warning("HUB member insertion failed due to a duplicate name")
+            return Err(DuplicateHubMemberUsernameError(hub_member.name))
+
         except Exception as e:
-            LOG.exception("Failed to create hub member due to error", error=e, member_name=obj.name)
+            LOG.exception("HUB member insertion failed due to error", error=e)
             return Err(e)
 
-    async def fetch_by_id(self, obj_id: str) -> Result[HubMember, HubMemberNotFoundError | Exception]:
+    async def fetch_by_id(self, obj_id: str) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
-            LOG.debug("Fetching hub member by ObjectId...", member_id=obj_id)
+            LOG.info("Fetching hub_member by ObjectID...", hub_member_id=obj_id)
 
-            member = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, projection={"_id": 0})
+            hub_member = await self._collection.find_one(filter={"_id": ObjectId(obj_id)})
 
-            if member is None:
+            if hub_member is None:
                 return Err(HubMemberNotFoundError())
 
-            return Ok(HubMember(id=ObjectId(obj_id), **member))
+            return Ok(self._hub_member_from_mongo(doc=hub_member))
+
         except Exception as e:
-            LOG.exception("Failed to fetch hub member due to error", member_id=obj_id, error=e)
+            LOG.exception("Failed to fetch hub member due to error", hub_member_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[list[HubMember], Exception]:
+    async def fetch_all(self) -> Result[list[HubMember | HubAdmin], Exception]:
         try:
-            LOG.debug("Fetching all hub members...")
+            LOG.info("Fetching all HUB members...")
 
-            members_data = await self._collection.find({}).to_list(length=None)
+            hub_members_info = await self._collection.find({}).to_list(length=None)
 
-            members = []
-            for doc in members_data:
-                doc["id"] = doc.pop("_id")
-                members.append(HubMember(**doc))
+            hub_members = []
+            for hub_member in hub_members_info:
+                hub_members.append(self._hub_member_from_mongo(hub_member))
 
-            LOG.debug("Fetched hub members.", count=len(members))
-            return Ok(members)
+            LOG.debug(f"Fetched {len(hub_members)} hub members")
+            return Ok(hub_members)
 
         except Exception as e:
-            LOG.exception("Failed to fetch all hub members due to error", error=e)
+            LOG.exception(f"Failed to fetch all HUB members due to err {e}")
             return Err(e)
 
     async def update(
         self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[HubMember, HubMemberNotFoundError | Exception]:
+    ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
-            update_data = obj_fields.model_dump()
-            if update_data is None:
-                current = await self._collection.find_one(
-                    filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
-                )
-                if current is None:
-                    return Err(HubMemberNotFoundError())
-
-                return Ok(HubMember(id=ObjectId(obj_id), **current))
-
-            LOG.debug("Updating hub member...", member_id=obj_id, updated_fields=obj_fields.model_dump())
-
-            result = await self._collection.find_one_and_update(
+            LOG.info(f"Updating HUB member...", hub_member_id=obj_id, updated_fields=obj_fields.model_dump())
+            hub_member = await self._collection.find_one_and_update(
                 filter={"_id": ObjectId(obj_id)},
-                update={"$set": update_data},
-                projection={"_id": 0},
+                update={"$set": obj_fields.model_dump()},
                 return_document=ReturnDocument.AFTER,
                 session=session,
             )
 
-            if result is None:
+            if hub_member is None:
                 return Err(HubMemberNotFoundError())
 
-            return Ok(HubMember(id=ObjectId(obj_id), **result))
+            return Ok(self._hub_member_from_mongo(doc=hub_member))
+
         except Exception as e:
-            LOG.exception("Failed to update hub member", member_id=obj_id, error=e)
+            LOG.exception("Failed to update HUB member", hub_member_id=obj_id, error=e)
             return Err(e)
 
     async def delete(
         self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
-    ) -> Result[HubMember, HubMemberNotFoundError | Exception]:
+    ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
-            LOG.debug("Deleting hub member...", member_id=obj_id)
+            LOG.info("Deleting HUB member...", hub_member_id=obj_id)
 
-            member = await self._collection.find_one_and_delete(
-                filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
-            )
-            if member is None:
+            hub_member = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, session=session)
+
+            if hub_member is None:
                 return Err(HubMemberNotFoundError())
 
-            return Ok(HubMember(id=ObjectId(obj_id), **member))
+            return Ok(self._hub_member_from_mongo(doc=hub_member))
+
         except Exception as e:
-            LOG.exception("Failed to delete hub member due to error", member_id=obj_id, error=e)
+            LOG.exception("HUB member deletion failed due to error", hub_member_id=obj_id, error=e)
+            return Err(e)
+
+    async def fetch_admin_by_username(self, username: str) -> Result[HubAdmin, HubMemberNotFoundError | Exception]:
+        try:
+            LOG.info("Trying to get HUB admin by username...", username=username)
+
+            hub_admin = await self._collection.find_one(filter={"username": username})
+
+            if hub_admin is None:
+                return Err(HubMemberNotFoundError())
+
+            hub_admin["id"] = hub_admin.pop("_id")
+            return Ok(HubAdmin(**hub_admin))
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch HUB admin due to err", error=e)
             return Err(e)
