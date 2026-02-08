@@ -14,7 +14,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        "/{judge_id}",
+        path="/{object_id}",
         endpoint=http_handler.get_judge,
         methods=["GET"],
         responses={200: {"model": JudgeResponse}, 400: {"model": ErrResponse}, 404: {"model": ErrResponse}},
@@ -22,7 +22,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        "",
+        path="",
         endpoint=http_handler.create_judge,
         methods=["POST"],
         responses={
@@ -35,7 +35,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        "/{judge_id}",
+        path="/{judge_id}",
         endpoint=http_handler.update_judge,
         methods=["PATCH"],
         responses={
@@ -48,7 +48,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        "/{judge_id}",
+        path="/{judge_id}",
         endpoint=http_handler.delete_judge,
         methods=["DELETE"],
         responses={
