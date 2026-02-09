@@ -19,11 +19,3 @@ class PastEventPatchReqData(BasePatchReqData):
     title: Optional[NonEmptyStr] = None
     cover_picture: Optional[HttpUrl] = None
     tags: Optional[list[NonEmptyStr]] = None
-
-
-class PastEventPutReqData(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    title: NonEmptyStr
-    cover_picture: HttpUrl
-    tags: list[NonEmptyStr] = []
