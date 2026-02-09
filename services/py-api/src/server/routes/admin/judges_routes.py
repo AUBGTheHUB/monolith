@@ -35,7 +35,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        path="/{judge_id}",
+        path="/{object_id}",
         endpoint=http_handler.update_judge,
         methods=["PATCH"],
         responses={
@@ -48,7 +48,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
     )
 
     judges_router.add_api_route(
-        path="/{judge_id}",
+        path="/{object_id}",
         endpoint=http_handler.delete_judge,
         methods=["DELETE"],
         responses={
