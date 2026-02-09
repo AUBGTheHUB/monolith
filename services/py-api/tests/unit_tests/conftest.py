@@ -62,6 +62,7 @@ from typing_extensions import Protocol
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
+from src.service.utility.aws.aws_service import AwsService
 
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
@@ -974,6 +975,42 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
+
+
+class AwsServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AwsService
+
+    Should not be initialized directly by application developers to create an AwsServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    _ensure_bucket_exists: Mock
+    upload_file: Mock
+    delete_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    """Mock object for AwsService.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        aws_service_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        aws_service_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked AwsService
+    """
+
+    aws_service = _create_typed_mock(AwsService)
+    aws_service._ensure_bucket_exists = Mock()
+    aws_service.upload_file = Mock()
+    aws_service.delete_file = Mock()
+
+    return cast(AwsServiceMock, aws_service)
 
 
 # =================================================
