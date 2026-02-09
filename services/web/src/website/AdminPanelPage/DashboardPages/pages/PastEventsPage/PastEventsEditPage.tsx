@@ -4,66 +4,88 @@ import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { PastEvent } from '@/types/past-events';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { PastEventFields } from './components/PastEventFormFields';
 import { Form } from '@/components/ui/form';
 import { PastEventsEditMessages, PastEventsAddMessages } from './messages';
 import { pastEventSchema, PastEventFormData } from './validation/validation';
-import { MOCK_PAST_EVENTS } from './mockPastEvents';
 import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient';
 
 export const PastEventsEditPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
+    const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? PastEventsEditMessages : PastEventsAddMessages;
-
-    const event = MOCK_PAST_EVENTS.find((e) => e.id === id);
 
     const form = useForm<PastEventFormData>({
         resolver: zodResolver(pastEventSchema),
         defaultValues: {
             title: '',
-            image: '',
+            cover_picture: '',
             tags: [],
-            link: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageValue = watch('image');
+    const imageValue = watch('cover_picture');
 
+    // Fetch if in Edit mode
+    const { data: event, isLoading } = useQuery({
+        queryKey: ['event', id],
+        queryFn: () => apiClient.get<{ past_event: PastEvent }>(`/admin/events/${id}`),
+        enabled: isEditMode, // Only run if id exists
+        select: (res) => res.past_event,
+    });
     // Load default values in edit mode
     useEffect(() => {
-        if (isEditMode && event) {
+        if (event) {
             reset({
                 title: event.title,
-                image: event.image,
+                cover_picture: event.cover_picture,
                 tags: event.tags || [],
-                link: event.link || '',
-            });
-        } else {
-            reset({
-                title: '',
-                image: '',
-                tags: [],
-                link: '',
             });
         }
-    }, [isEditMode, event, reset]);
+    }, [event, reset]);
 
-    const onSubmit = () => {
-        alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/dashboard/past-events');
+    // Mutation for save
+    const mutation = useMutation({
+        mutationFn: (formData: PastEventFormData) => {
+            return isEditMode
+                ? apiClient.patch<PastEvent, PastEventFormData>(`/admin/events/${id}`, formData)
+                : apiClient.post<PastEvent, PastEventFormData>(`/admin/events`, formData);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['events'] });
+            navigate('/admin/dashboard/past-events');
+        },
+        onError: (error) => {
+            alert(error.message);
+        },
+    });
+
+    const onSubmit = (data: PastEventFormData) => {
+        mutation.mutate(data);
     };
 
     const goBack = () => navigate('/admin/dashboard/past-events');
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
+    if (isEditMode && isLoading) {
+        return (
+            <div className={pageWrapperClass}>
+                <div className="max-w-5xl mx-auto text-white text-center py-20">
+                    {PastEventsEditMessages.LOADING_STATE}
+                </div>
+            </div>
+        );
+    }
 
     if (isEditMode && !event) {
         return (

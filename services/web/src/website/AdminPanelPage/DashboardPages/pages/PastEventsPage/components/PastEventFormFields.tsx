@@ -27,7 +27,7 @@ export function PastEventFields({ control }: PastEventFormFieldsProps) {
 
             <InputComponent
                 control={control}
-                name="image"
+                name="cover_picture"
                 label={MESSAGES.LABELS.IMAGE}
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
                 type="url"
@@ -73,14 +73,6 @@ export function PastEventFields({ control }: PastEventFormFieldsProps) {
                         <div className="min-h-[24px] !mb-3">{error && <FormMessage>{error.message}</FormMessage>}</div>
                     </FormItem>
                 )}
-            />
-
-            <InputComponent
-                control={control}
-                name="link"
-                label={MESSAGES.LABELS.LINK}
-                placeholder={MESSAGES.PLACEHOLDERS.LINK}
-                type="url"
             />
         </>
     );

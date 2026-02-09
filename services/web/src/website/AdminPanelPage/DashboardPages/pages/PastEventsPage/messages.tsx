@@ -42,6 +42,7 @@ export const PastEventsPageMessages = {
         </span>
     ),
     EMPTY_STATE: 'No past events added yet. Click "Add New Event" to get started.',
+    LOADING_STATE: 'Loading past events, please wait...',
     DELETE_CONFIRM: (title: string) => `Are you sure you want to delete "${title}"?`,
     EDIT_BUTTON: 'Edit',
     DELETE_BUTTON: 'Delete',
@@ -69,6 +70,7 @@ export const PastEventsEditMessages = {
         </span>
     ),
     NOT_FOUND_MESSAGE: 'Event not found',
+    LOADING_STATE: 'Loading past event, please wait...',
     RETURN_BUTTON: 'Return to Events List',
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Update Event',
