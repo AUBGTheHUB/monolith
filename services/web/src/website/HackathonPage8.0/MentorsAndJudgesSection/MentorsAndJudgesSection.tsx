@@ -17,7 +17,7 @@ export const MentorsAndJudgesSection = () => {
         >
             <Carousel title="MENTORS" imgSrc={yellowPin} />
 
-            <Carousel title="JUDGES" imgSrc={redPin} />
+            <Carousel title="JURY" imgSrc={redPin} />
         </section>
     );
 };
