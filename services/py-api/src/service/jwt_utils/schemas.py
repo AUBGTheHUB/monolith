@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TypedDict, Self, TypeVar, Generic
 
-from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_admin_model import Role
 from src.database.model.admin.hub_member_model import MEMBER_TYPE
 
 
@@ -44,7 +44,7 @@ class _DecodedJwtAdminToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used for authenticating HUB Admins"""
 
     member_type: MEMBER_TYPE = "admin"
-    site_role: ROLES
+    site_role: Role
 
 
 class _RefreshJwtToken(DecodedJwtTokenBase):
@@ -136,7 +136,7 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
 @dataclass(kw_only=True)
 class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
     member_type: MEMBER_TYPE
-    site_role: ROLES
+    site_role: Role
 
     def serialize(self) -> _DecodedJwtAdminToken:
         return _DecodedJwtAdminToken(sub=self.sub, exp=self.exp, member_type=self.member_type, site_role=self.site_role)

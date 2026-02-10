@@ -147,6 +147,9 @@ def create_app() -> FastAPI:
 
     # Service layer wiring
     jwt_utility = JwtUtility()
+    # Store JwtUtility in app.state for access in route dependencies
+    app.state.jwt_utility = jwt_utility
+
     password_hash_service = PasswordHashService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
