@@ -44,7 +44,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized)],
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
     )
 
     judges_router.add_api_route(
@@ -57,7 +57,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized)],
+        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
     )
 
     return judges_router
