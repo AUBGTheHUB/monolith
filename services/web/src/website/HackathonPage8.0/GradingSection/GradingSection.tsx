@@ -4,7 +4,7 @@ import { VerticalBar } from '@/components/ui/verticalBar';
 
 export const GradingSection = () => {
     return (
-        <section className="relative w-full min-h-dvh flex flex-col items-center justify-center py-20 lg:py-[10vh] bg-[#FFFDF5] overflow-hidden">
+        <section className="relative w-full min-h-dvh flex flex-col items-center justify-center py-20 lg:py-[5vh] bg-[#FFFDF5] overflow-hidden">
             {/* Fire images for the background */}
             <img
                 src="/GradingFireTL.png"
