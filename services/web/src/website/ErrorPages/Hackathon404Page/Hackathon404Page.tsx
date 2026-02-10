@@ -3,11 +3,13 @@ export const Hackathon404Page = () => {
         <div className="relative min-h-screen w-full bg-white overflow-hidden flex items-center justify-center px-4">
             <img
                 src="/Hackathon404Page/left-bg.png"
+                alt="Left background fire image"
                 className="absolute left-0 top-0 h-full w-auto object-cover pointer-events-none"
             />
 
             <img
                 src="/Hackathon404Page/right-bg.png"
+                alt="Right background fire image"
                 className="absolute right-0 bottom-0 h-full w-auto object-cover pointer-events-none"
             />
 
