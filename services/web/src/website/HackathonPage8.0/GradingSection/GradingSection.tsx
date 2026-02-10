@@ -4,7 +4,7 @@ import { VerticalBar } from '@/components/ui/verticalBar';
 
 export const GradingSection = () => {
     return (
-        <section className="relative w-full min-h-dvh flex flex-col items-center justify-center py-20 lg:py-[5vh] bg-[#FFFDF5] overflow-hidden">
+        <section className="relative w-full h-dvh flex flex-col items-center justify-center py-[5vh] bg-[#FFFDF5] overflow-hidden">
             {/* Fire images for the background */}
             <img
                 src="/GradingFireTL.png"
@@ -21,9 +21,8 @@ export const GradingSection = () => {
             <VerticalBar isRight={false} isBlack={true} />
             <VerticalBar isRight={true} isBlack={true} />
 
-            {/* Main Content Container: Consistent with Mission and FAQ */}
             <div
-                className="relative z-10 w-full flex flex-col items-center gap-12 lg:gap-[5vh] px-6"
+                className="relative z-10 w-full flex flex-col items-center gap-[4vh] px-6"
                 style={{
                     maxWidth: 'clamp(40rem, 82vw, 80rem)',
                 }}
@@ -41,13 +40,12 @@ export const GradingSection = () => {
                 </div>
 
                 {/* Cards Container */}
-                <div className="w-full flex flex-col gap-8 lg:gap-[4vh]">
+                <div className="w-full flex flex-col gap-[4vh]">
                     <GradingCard left={topRowData.left} right={topRowData.right} isDarkTop={true} />
 
                     <GradingCard left={bottomRowData.left} right={bottomRowData.right} isDarkTop={false} />
                 </div>
 
-                {/* PDF Download Link */}
                 <a
                     href="#" // add actual PDF link here
                     className="mt-4 text-black/70 font-oxanium underline text-sm lg:text-[2vh] hover:text-black transition-colors"
