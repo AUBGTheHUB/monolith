@@ -11,10 +11,14 @@ const CriteriaRow = ({ label, points }: { label: string; points: number }) => (
 type GradingCardProps = {
     left: GradingCategory;
     right: GradingCategory;
-    gradientClass: string; // in order to pass different gradient styles because in the figma they are different idk
+    isDarkTop?: boolean; // for da style as per the design on the figma
 };
 
-export const GradingCard: React.FC<GradingCardProps> = ({ left, right, gradientClass }) => {
+export const GradingCard: React.FC<GradingCardProps> = ({ left, right, isDarkTop = false }) => {
+    const gradientClass = isDarkTop
+        ? 'bg-gradient-to-bl from-[#AA1515] via-[#EF5A1A] to-[#FA9E28]'
+        : 'bg-gradient-to-bl from-[#FA9E28] via-[#EF5A1A] to-[#AA1515]';
+
     return (
         <div className={`w-full rounded-[2rem] shadow-2xl p-8 lg:p-[3vh] overflow-hidden ${gradientClass}`}>
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-[4vw]">

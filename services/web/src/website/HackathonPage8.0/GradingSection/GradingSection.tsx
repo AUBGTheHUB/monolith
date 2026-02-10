@@ -42,17 +42,9 @@ export const GradingSection = () => {
 
                 {/* Cards Container */}
                 <div className="w-full flex flex-col gap-8 lg:gap-[4vh]">
-                    <GradingCard
-                        left={topRowData.left}
-                        right={topRowData.right}
-                        gradientClass="bg-gradient-to-bl from-[#AA1515] via-[#EF5A1A] to-[#FA9E28]"
-                    />
+                    <GradingCard left={topRowData.left} right={topRowData.right} isDarkTop={true} />
 
-                    <GradingCard
-                        left={bottomRowData.left}
-                        right={bottomRowData.right}
-                        gradientClass="bg-gradient-to-bl from-[#FA9E28] via-[#EF5A1A] to-[#AA1515]"
-                    />
+                    <GradingCard left={bottomRowData.left} right={bottomRowData.right} isDarkTop={false} />
                 </div>
 
                 {/* PDF Download Link */}
