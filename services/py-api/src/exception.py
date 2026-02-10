@@ -166,6 +166,13 @@ class PastEventNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class MentorNotFoundError(CustomError):
+    """Exception raised when the mentor cannot be found in the database"""
+
+    message = "The specified mentor was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class ImageCompressionError(Exception):
     """Exception raised when the image compression fails"""
 
