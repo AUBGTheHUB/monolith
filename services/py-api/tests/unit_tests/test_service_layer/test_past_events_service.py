@@ -10,7 +10,7 @@ from src.database.repository.admin.past_events_repository import PastEventsRepos
 from src.exception import PastEventNotFoundError
 from src.server.schemas.request_schemas.admin.past_event_schemas import (
     PastEventPostReqData,
-    PastEventPutReqData,
+    PastEventPatchReqData,
 )
 from src.service.admin.past_events_service import PastEventsService
 from tests.unit_tests.conftest import PastEventsRepoMock
@@ -90,7 +90,7 @@ async def test_create_calls_repo_with_built_model(
 async def test_update_calls_repo_with_update_params(
     past_events_service: PastEventsService, past_events_repo_mock: PastEventsRepoMock, past_event_mock: PastEvent
 ) -> None:
-    req = PastEventPutReqData(title="new", cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags)
+    req = PastEventPatchReqData(title="new", cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags)
     updated = PastEvent(title="new", cover_picture=str(past_event_mock.cover_picture), tags=past_event_mock.tags)
 
     past_events_repo_mock.update.return_value = Ok(updated)
