@@ -23,6 +23,7 @@ from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.refresh_token import RefreshToken
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
+from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -50,8 +51,6 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
-from src.service.utility.aws.aws_service import AwsService
-from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
@@ -63,6 +62,7 @@ from typing_extensions import Protocol
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
+from src.service.utility.aws.aws_service import AwsService
 
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
@@ -555,6 +555,27 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
     return cast(SponsorsRepoMock, sponsors_repo)
 
 
+class MentorsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def mentors_repo_mock() -> MentorsRepoMock:
+    mentors_repo = _create_typed_mock(MagicMock)
+
+    mentors_repo.fetch_by_id = AsyncMock()
+    mentors_repo.fetch_all = AsyncMock()
+    mentors_repo.update = AsyncMock()
+    mentors_repo.create = AsyncMock()
+    mentors_repo.delete = AsyncMock()
+
+    return cast(MentorsRepoMock, mentors_repo)
+
+
 class RefreshTokenRepoMock(Protocol):
     """A Static Duck Type, modeling a Mocked RefreshTokenRepository
 
@@ -689,36 +710,6 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
-
-
-class AwsServiceMock(Protocol):
-    # get_s3_client: Mock
-    upload_file: Mock
-
-
-@pytest.fixture
-def aws_service_mock() -> AwsServiceMock:
-    service = _create_typed_mock(AwsService)
-
-    # service.get_s3_client = Mock()
-    service.upload_file = Mock()
-
-    return cast(AwsServiceMock, service)
-
-
-class ImageStoringServiceMock(Protocol):
-    upload_image: AsyncMock
-    _compress_image: Mock
-
-
-@pytest.fixture
-def image_storing_service_mock() -> ImageStoringServiceMock:
-    service = _create_typed_mock(ImageStoringService)
-
-    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
-    service._compress_image = Mock()
-
-    return cast(ImageStoringServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -986,6 +977,42 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
 
 
+class AwsServiceMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AwsService
+
+    Should not be initialized directly by application developers to create an AwsServiceMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    _ensure_bucket_exists: Mock
+    upload_file: Mock
+    delete_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    """Mock object for AwsService.
+
+    For mocking purposes, you can modify the return values of its methods::
+
+        aws_service_mock.method_name.return_value = some_value
+
+    To simulate raising exceptions, set the side effects::
+
+        aws_service_mock.method_name.side_effect = SomeException()
+
+    Returns:
+        A mocked AwsService
+    """
+
+    aws_service = _create_typed_mock(AwsService)
+    aws_service._ensure_bucket_exists = Mock()
+    aws_service.upload_file = Mock()
+    aws_service.delete_file = Mock()
+
+    return cast(AwsServiceMock, aws_service)
+
+
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
@@ -1175,6 +1202,25 @@ def sponsor_mock(obj_id_mock: str) -> Sponsor:
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
     document = sponsor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def mentor_mock(obj_id_mock: str) -> Mentor:
+    return Mentor(
+        id=obj_id_mock,
+        name="Jane Doe",
+        company="ACME",
+        job_title="Engineer",
+        avatar_url="https://acme.com/avatar.jpg",
+        linkedin_url="https://linkedin.com/janedoe",
+    )
+
+
+@pytest.fixture
+def mentor_no_id_mock(mentor_mock: Mentor) -> dict[str, Any]:
+    document = mentor_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
