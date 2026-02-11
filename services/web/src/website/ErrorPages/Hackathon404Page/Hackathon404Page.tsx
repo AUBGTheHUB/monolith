@@ -15,7 +15,7 @@ export const Hackathon404Page = () => {
 
             <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-[2rem] md:gap-[4.063rem] lg:gap-[5rem]">
                 <img
-                    src="/Hackathon404Page/Hubzie.png"
+                    src="/Hackathon404Page/hubzie.png"
                     alt="Hubzie"
                     className="w-[10rem] h-[14rem] md:w-[14.125rem] md:h-[20.25rem] lg:w-[18rem] lg:h-[25.75rem]"
                 />
