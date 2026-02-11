@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const RULES = {
     TITLE: { MIN: 3, MAX: 100 },
-    TAG: { MIN: 1, MAX: 10, MIN_CHAR: 1, MAX_CHAR: 30 },
+    TAG: { MAX: 10, MIN_CHAR: 1, MAX_CHAR: 30 },
 };
 
 export const pastEventSchema = z.object({
@@ -24,7 +24,6 @@ export const pastEventSchema = z.object({
                 .min(RULES.TAG.MIN_CHAR, { message: 'Tag is too short' })
                 .max(RULES.TAG.MAX_CHAR, { message: 'Tag is too long' }),
         )
-        .min(RULES.TAG.MIN, `Event must have at least ${RULES.TAG.MIN} tags`)
         .max(RULES.TAG.MAX, `Event must have fewer than ${RULES.TAG.MAX} tags`)
         .optional(),
 });

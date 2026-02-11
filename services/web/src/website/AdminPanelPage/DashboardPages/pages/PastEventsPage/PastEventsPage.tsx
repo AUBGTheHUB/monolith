@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { PastEvent } from '@/types/past-events.ts';
 import { Card } from '@/components/ui/card.tsx';
@@ -150,7 +150,7 @@ export function PastEventsPage() {
                                         imageUrl={event.cover_picture}
                                         imageAlt="No Event Image"
                                         title={event.title}
-                                        subtitle={event.tags.join(', ')}
+                                        {...(event.tags?.length ? { subtitle: event.tags.join(', ') } : {})}
                                         actions={renderEventActions(event.id, event.title)}
                                         className={Styles.glass.card}
                                     />

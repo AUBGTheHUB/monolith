@@ -74,7 +74,6 @@ export const PastEventsEditMessages = {
     RETURN_BUTTON: 'Return to Events List',
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Update Event',
-    SUCCESS_MESSAGE: 'Event updated successfully! (This is a mock - no API call made)',
 };
 
 export const PastEventsAddMessages = {
@@ -99,7 +98,6 @@ export const PastEventsAddMessages = {
     ),
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Add Event',
-    SUCCESS_MESSAGE: 'Event added successfully!',
 };
 
 export const PastEventsFormFieldMessages = {
@@ -107,12 +105,10 @@ export const PastEventsFormFieldMessages = {
         TITLE: 'Event Name',
         IMAGE: 'Event Image',
         TAGS: 'Tags',
-        LINK: 'Event Link',
     },
     PLACEHOLDERS: {
         TITLE: 'Enter event name',
         IMAGE: 'Upload or enter image URL',
         TAGS: 'Type a tag and press Enter',
-        LINK: 'https://thehub-aubg.com/events/example',
     },
 };
