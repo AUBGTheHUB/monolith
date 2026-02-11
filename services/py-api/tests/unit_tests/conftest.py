@@ -20,9 +20,11 @@ from typing_extensions import Protocol
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.judge_model import Judge
 from src.database.model.admin.refresh_token import RefreshToken
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
+from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -43,6 +45,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
@@ -50,8 +53,6 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
-from src.service.utility.aws.aws_service import AwsService
-from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
@@ -63,6 +64,8 @@ from typing_extensions import Protocol
 from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
+from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
@@ -555,6 +558,48 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
     return cast(SponsorsRepoMock, sponsors_repo)
 
 
+class JudgesRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_repo_mock() -> JudgesRepoMock:
+    judges_repo = _create_typed_mock(SponsorsRepository)
+
+    judges_repo.fetch_by_id = AsyncMock()
+    judges_repo.fetch_all = AsyncMock()
+    judges_repo.update = AsyncMock()
+    judges_repo.create = AsyncMock()
+    judges_repo.delete = AsyncMock()
+
+    return cast(JudgesRepoMock, judges_repo)
+
+
+class MentorsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def mentors_repo_mock() -> MentorsRepoMock:
+    mentors_repo = _create_typed_mock(MagicMock)
+
+    mentors_repo.fetch_by_id = AsyncMock()
+    mentors_repo.fetch_all = AsyncMock()
+    mentors_repo.update = AsyncMock()
+    mentors_repo.create = AsyncMock()
+    mentors_repo.delete = AsyncMock()
+
+    return cast(MentorsRepoMock, mentors_repo)
+
+
 class RefreshTokenRepoMock(Protocol):
     """A Static Duck Type, modeling a Mocked RefreshTokenRepository
 
@@ -689,6 +734,27 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class JudgesServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_service_mock() -> JudgesServiceMock:
+    service = _create_typed_mock(JudgesService)
+
+    service.get_all = _create_typed_async_mock(JudgesService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(JudgesServiceMock, service)
 
 
 class AwsServiceMock(Protocol):
@@ -1175,6 +1241,44 @@ def sponsor_mock(obj_id_mock: str) -> Sponsor:
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
     document = sponsor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def mentor_mock(obj_id_mock: str) -> Mentor:
+    return Mentor(
+        id=obj_id_mock,
+        name="Jane Doe",
+        company="ACME",
+        job_title="Engineer",
+        avatar_url="https://acme.com/avatar.jpg",
+        linkedin_url="https://linkedin.com/janedoe",
+    )
+
+
+@pytest.fixture
+def mentor_no_id_mock(mentor_mock: Mentor) -> dict[str, Any]:
+    document = mentor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def judge_mock(obj_id_mock: str) -> Judge:
+    return Judge(
+        id=obj_id_mock,
+        name="Sadiyata",
+        company="The Hub",
+        avatar_url="https://eu.aws.com/coca-cola.jpg",
+        job_title="Sadiya ma ooo",
+        linkedin_url=None,
+    )
+
+
+@pytest.fixture
+def judge_no_id_mock(judge_mock: Judge) -> dict[str, Any]:
+    document = judge_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
