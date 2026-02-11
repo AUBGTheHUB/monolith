@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
@@ -21,6 +21,9 @@ import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackatho
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 
+import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
+
 function App() {
     const queryClient = new QueryClient();
 
@@ -29,7 +32,6 @@ function App() {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
-
                 {/* Hackathon Group */}
                 <Route path="/hackathon">
                     <Route index element={<HackathonPage />} />
@@ -79,6 +81,11 @@ function App() {
                 </Route>
                 {/* 404 Catch-all */}
                 <Route path="*" element={<Global404Page />} />
+
+                <Route path="/" element={<Navigate to="/dashboard/feature-switches" replace />} />
+                <Route path="/dashboard/feature-switches" element={<FeatureSwitchesPage />} />
+                <Route path="/dashboard/feature-switches/add" element={<FeatureSwitchAddPage />} />
+                <Route path="*" element={<div style={{ padding: 24 }}>Not Found</div>} />
             </Routes>
         </QueryClientProvider>
     );
