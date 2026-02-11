@@ -22,7 +22,7 @@ export const Global404Page = () => {
                     </p>
 
                     <a
-                        href="/hackathon"
+                        href="/"
                         className="text-[#37A5D8] hover:text-[#009CF9] font-oxanium text-[0.75rem] md:text-[0.875rem] lg:text-[1.125rem] leading-[1.25] underline"
                     >
                         Go to website &gt;
