@@ -46,16 +46,20 @@ export function AdminCard({
                         <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
 
                         <div className="flex flex-wrap gap-2 mt-2">
-                            <span
-                                className={cn(
-                                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm',
-                                    'bg-gray-100 text-gray-800',
-                                    tierBgColor,
-                                    tierColor,
-                                )}
-                            >
-                                {subtitle}
-                            </span>
+                            {subtitle != null && subtitle.length > 0 ? (
+                                <span
+                                    className={cn(
+                                        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm',
+                                        'bg-gray-100 text-gray-800',
+                                        tierBgColor,
+                                        tierColor,
+                                    )}
+                                >
+                                    {subtitle}
+                                </span>
+                            ) : (
+                                ''
+                            )}
 
                             {position && (
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
