@@ -19,7 +19,6 @@ def register_sponsor_routes(http_handler: SponsorsHandlers) -> APIRouter:
         responses={
             200: {"model": SponsorResponse},
             400: {"model": ErrResponse},
-            401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
         dependencies=[Depends(validate_obj_id)],
