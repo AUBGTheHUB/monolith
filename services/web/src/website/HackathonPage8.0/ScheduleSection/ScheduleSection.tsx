@@ -9,7 +9,7 @@ export const ScheduleSection = () => {
 
     return (
         <section
-            className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden pt-8 md:pt-16 lg:pt-24 pb-8 md:pb-12 lg:pb-16 bg-white"
+            className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden pt-14 md:pt-16 lg:pt-24 pb-8 md:pb-12 lg:pb-16 bg-white"
             id="schedule"
         >
             <div className="absolute inset-0 z-50 pointer-events-none">
@@ -29,7 +29,7 @@ export const ScheduleSection = () => {
             />
 
             <div className="relative z-10 w-full max-w-[100vw] px-4 md:px-8">
-                <div className="mb-[2rem] md:mb-[3rem] lg:mb-[4.125rem]">
+                <div className="mb-[3rem] md:mb-[3rem] lg:mb-[4.125rem]">
                     <ScheduleHeader />
                 </div>
 
