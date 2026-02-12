@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from os import cpu_count
 from pathlib import Path
 
 from structlog.stdlib import get_logger
@@ -64,5 +63,5 @@ def start_server() -> None:
         # https://stackoverflow.com/questions/65278110/how-does-gunicorn-distribute-requests-across-sync-workers
         # As cpu_count could return None we use 0 instead, as 2 * None would produce an error
         # Also "workers" flag is ignored when reloading is enabled (It is ignored for LOCAL env)
-        workers=2 * (cpu_count() or 0) + 1,
+        workers=5,
     )

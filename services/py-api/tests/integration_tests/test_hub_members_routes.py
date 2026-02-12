@@ -20,11 +20,12 @@ def _valid_hub_member_payload() -> dict[str, Any]:
 
 
 async def delete_hub_member(async_client: AsyncClient, member_id: str, super_auth_token: str) -> None:
-    await async_client.delete(
+    resp = await async_client.delete(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{member_id}",
         headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
+    assert resp.status_code == 200
 
 
 @pytest.mark.asyncio
