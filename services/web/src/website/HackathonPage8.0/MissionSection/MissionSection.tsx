@@ -12,13 +12,13 @@ export const MissionSection = () => {
             <VerticalBar isRight={true} isBlack={false} />
             <VerticalBar isRight={false} isBlack={false} />
 
-            <div className="relative z-10 grid place-items-center px-8 py-48">
+            <div className="relative z-10 grid place-items-center px-8 py-20 md:py-48">
                 <div
                     className="
                         w-full
                         flex
                         flex-col
-                        gap-[2.25rem]
+                        gap-9
                     "
                     style={{
                         maxWidth: 'clamp(40rem, 82vw, 80rem)',
