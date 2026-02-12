@@ -48,10 +48,13 @@ def _load_server_config() -> "_ServerConfig":
 def start_server() -> None:
     """Starts the Uvicorn server with different config based on the environment we are in"""
     server_config = _load_server_config()
+    workers = 5
 
     if server_config.ENV == "LOCAL":
         LOG.debug("To open swagger/docs of the API visit: https://localhost:8080/api/v3/docs")
 
+    if server_config.ENV == "DEV" or server_config.ENV == "PROD":
+        workers = 2 * (cpu_count() or 0) + 1
     run(
         app="src.app_entrypoint:app",
         host=server_config.HOST,
@@ -64,5 +67,5 @@ def start_server() -> None:
         # https://stackoverflow.com/questions/65278110/how-does-gunicorn-distribute-requests-across-sync-workers
         # As cpu_count could return None we use 0 instead, as 2 * None would produce an error
         # Also "workers" flag is ignored when reloading is enabled (It is ignored for LOCAL env)
-        workers=2 * (cpu_count() or 0) + 1,
+        workers=workers,
     )
