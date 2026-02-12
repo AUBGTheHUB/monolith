@@ -19,28 +19,28 @@ export function JudgeFormFields({ control }: JudgeFormFieldsProps) {
             />
             <InputComponent
                 control={control}
-                name="companyName"
+                name="company"
                 label={MESSAGES.LABELS.COMPANY}
                 placeholder={MESSAGES.PLACEHOLDERS.COMPANY}
                 type="text"
             />
             <InputComponent
                 control={control}
-                name="imageUrl"
+                name="avatar_url"
                 label={MESSAGES.LABELS.IMAGE}
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
                 type="url"
             />
             <InputComponent
                 control={control}
-                name="position"
+                name="job_title"
                 label={MESSAGES.LABELS.POSITION}
                 placeholder={MESSAGES.PLACEHOLDERS.POSITION}
                 type="text"
             />
             <InputComponent
                 control={control}
-                name="linkedinURL"
+                name="linkedin_url"
                 label={MESSAGES.LABELS.LINKEDIN}
                 placeholder={MESSAGES.PLACEHOLDERS.LINKEDIN}
                 type="url"

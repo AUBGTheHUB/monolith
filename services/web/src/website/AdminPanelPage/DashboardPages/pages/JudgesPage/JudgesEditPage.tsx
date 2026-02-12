@@ -3,64 +3,77 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MOCK_JUDGES } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/mockJudges.ts';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
 import { JudgeFormFields } from './components/JudgeFormFields.tsx';
 import { JudgesEditMessages, JudgesAddMessages } from './messages.tsx';
+import { Judge } from '@/types/judge.ts';
 import { Form } from '@/components/ui/form.tsx';
 import { judgeSchema, JudgeFormData } from './validation/validation.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
+import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient.ts';
 
 export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
+    const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? JudgesEditMessages : JudgesAddMessages;
-
-    const judge = MOCK_JUDGES.find((j) => j.id === id);
 
     const form = useForm<JudgeFormData>({
         resolver: zodResolver(judgeSchema),
         defaultValues: {
             name: '',
-            companyName: '',
-            imageUrl: '',
-            position: '',
-            linkedinURL: '',
+            company: '',
+            avatar_url: '',
+            job_title: '',
+            linkedin_url: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('imageUrl');
+    const imageUrl = watch('avatar_url');
 
+    // Fetch if in Edit mode
+    const { data: judge, isLoading } = useQuery({
+        queryKey: ['judge', id],
+        queryFn: () => apiClient.get<{ judge: Judge }>(`/admin/judges/${id}`),
+        enabled: isEditMode,
+        select: (res) => res.judge,
+    });
+    // Load defaults in edit
     useEffect(() => {
-        if (isEditMode && judge) {
+        if (judge) {
             reset({
                 name: judge.name,
-                companyName: judge.companyName,
-                imageUrl: judge.imageUrl,
-                position: judge.position || '',
-                linkedinURL: judge.linkedinURL || '',
-            });
-        } else {
-            reset({
-                name: '',
-                companyName: '',
-                imageUrl: '',
-                position: '',
-                linkedinURL: '',
+                company: judge.company,
+                avatar_url: judge.avatar_url,
+                job_title: judge.job_title || '',
+                linkedin_url: judge.linkedin_url || '',
             });
         }
-    }, [isEditMode, judge, reset]);
+    }, [judge, reset]);
 
-    const onSubmit = () => {
-        alert(MESSAGES.SUCCESS_MESSAGE);
-        navigate('/admin/dashboard/judges');
+    const mutation = useMutation({
+        mutationFn: (formData: JudgeFormData) => {
+            return isEditMode
+                ? apiClient.patch<Judge, JudgeFormData>(`/admin/judges/${id}`, formData)
+                : apiClient.post<Judge, JudgeFormData>('/admin/judges', formData);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['judges'] });
+            navigate('/admin/dashboard/judges');
+        },
+        onError: (error) => {
+            alert(error.message);
+        },
+    });
+    const onSubmit = (data: JudgeFormData) => {
+        mutation.mutate(data);
     };
 
     const goBack = () => {
@@ -68,7 +81,13 @@ export function JudgesEditPage() {
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
-
+    if (isEditMode && isLoading) {
+        return (
+            <div className={pageWrapperClass}>
+                <div className="max-w-5xl mx-auto text-white text-center py-20">{JudgesEditMessages.LOADING_STATE}</div>
+            </div>
+        );
+    }
     if (isEditMode && !judge) {
         return (
             <Fragment>

@@ -12,22 +12,22 @@ export const judgeSchema = z.object({
         .min(RULES.NAME.MIN, { message: `Name must be at least ${RULES.NAME.MIN} characters` })
         .max(RULES.NAME.MAX, { message: `Name must be less than ${RULES.NAME.MAX} characters` }),
 
-    companyName: z
+    company: z
         .string()
         .min(1, { message: 'Company name is required' })
         .min(RULES.COMPANY.MIN, { message: `Company name must be at least ${RULES.COMPANY.MIN} characters` })
         .max(RULES.COMPANY.MAX, { message: `Company name must be less than ${RULES.COMPANY.MAX} characters` }),
 
-    imageUrl: z
+    avatar_url: z
         .string()
         .min(1, { message: 'Image URL is required' })
         .url({ message: 'Please enter a valid URL (e.g., https://example.com/image.png)' }),
 
-    position: z.string().optional(),
+    job_title: z.string().optional(),
 
-    linkedinURL: z
+    linkedin_url: z
         .string()
-        .min(1, { message: 'Image URL is required' })
+        .min(1, { message: 'Linkedin URL is required' })
         .url({ message: 'Please enter a valid URL (e.g., https://linkedin.com/in/username)' }),
 });
 
