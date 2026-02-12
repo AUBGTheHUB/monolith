@@ -42,6 +42,7 @@ export const JudgesPageMessages = {
         </span>
     ),
     EMPTY_STATE: 'No judges added yet. Click "Add New Judge" to get started.',
+    LOADING_STATE: 'Loading judges, please wait...',
     DELETE_CONFIRM: (name: string) => `Are you sure you want to delete ${name}?`,
     EDIT_BUTTON: 'Edit',
     DELETE_BUTTON: 'Delete',
@@ -72,6 +73,7 @@ export const JudgesEditMessages = {
     RETURN_BUTTON: 'Return to Judges List',
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Update Judge',
+    LOADING_STATE: 'Loading judge, please wait...',
     SUCCESS_MESSAGE: 'Judge updated successfully! (This is a mock - no API call made)',
 };
 
