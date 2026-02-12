@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
 import { SponsorsPageMessages as MESSAGES } from './messages.tsx';
-import { Styles } from '../../../AdminStyles.ts';
+import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { Sponsor } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { apiClient } from '@/services/apiClient.ts';
