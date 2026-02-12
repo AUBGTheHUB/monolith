@@ -4,8 +4,7 @@ import { VerticalBar } from '@/components/ui/verticalBar';
 
 export const GradingSection = () => {
     return (
-        <section className="relative w-full h-dvh flex flex-col items-center justify-center py-[5vh] bg-[#FFFDF5] overflow-hidden">
-            {/* Fire images for the background */}
+        <section className="relative w-full min-h-dvh flex flex-col items-center justify-center py-[5vh] bg-[#FFFDF5] overflow-hidden">
             <img
                 src="/GradingFireTL.png"
                 alt="Fire decoration"
@@ -17,7 +16,6 @@ export const GradingSection = () => {
                 className="absolute bottom-0 right-0 w-[300px] lg:w-[35vw] opacity-90 z-0 pointer-events-none mix-blend-multiply"
             />
 
-            {/* Side decorative bars */}
             <VerticalBar isRight={false} isBlack={true} />
             <VerticalBar isRight={true} isBlack={true} />
 
@@ -27,7 +25,6 @@ export const GradingSection = () => {
                     maxWidth: 'clamp(40rem, 82vw, 80rem)',
                 }}
             >
-                {/* Section Header */}
                 <div className="w-full flex items-center justify-start gap-4 lg:gap-6">
                     <img
                         src="/gradingLogoicon.png"
@@ -39,7 +36,6 @@ export const GradingSection = () => {
                     </h2>
                 </div>
 
-                {/* Cards Container */}
                 <div className="w-full flex flex-col gap-[4vh]">
                     <GradingCard left={topRowData.left} right={topRowData.right} isDarkTop={true} />
 
