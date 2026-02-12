@@ -125,24 +125,26 @@ class CreateTestParticipantCallable(Protocol):
     async def __call__(self, participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def clean_up_test_participant(async_client: AsyncClient, result_json: dict[str, Any]) -> None:
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def clean_up_test_participant(
+    async_client: AsyncClient, result_json: dict[str, Any], super_auth_token: str
+) -> None:
     participant_id = result_json["participant"]["id"]
     await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     if result_json["team"] is not None:
         team_id = result_json["team"]["id"]
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team_id}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def revert_the_finalization_step(async_client: AsyncClient) -> None:
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def revert_the_finalization_step(async_client: AsyncClient, super_auth_token: str) -> None:
     """
     When the capacity for the registered teams is reached, there is a finalization step that runs creating possible
     random participant teams and flipping the feature switch that allows for the possible creation of new teams
@@ -154,7 +156,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     teams_result = await async_client.get(
         url=f"{TEAM_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -163,7 +165,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
     for team in teams_result.json()["teams"]:
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team["id"]}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
     LOG.debug(f"Recovering the state of the {TEAM_REGISTRATION_FEATURE} feature switch")
@@ -180,7 +182,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     await async_client.patch(
         f"{FEATURE_SWITCH_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=payload,
     )
 
@@ -196,7 +198,9 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest_asyncio.fixture
-async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[CreateTestParticipantCallable, None]:
+async def create_test_participant(
+    async_client: AsyncClient, super_auth_token: str
+) -> AsyncGenerator[CreateTestParticipantCallable, None]:
     """
     A pytest fixture for managing the lifecycle of test participants in asynchronous tests.
 
@@ -254,7 +258,7 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
             await clean_up_test_participant(async_client=async_client, result_json=result.json())
 
     # Revert the finalization if any random teams were created while integration testing
-    await revert_the_finalization_step(async_client=async_client)
+    await revert_the_finalization_step(async_client=async_client, super_auth_token=super_auth_token)
 
 
 class ParticipantRequestBodyCallable(Protocol):
