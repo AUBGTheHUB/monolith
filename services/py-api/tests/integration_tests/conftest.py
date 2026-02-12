@@ -3,11 +3,11 @@ from unittest.mock import patch
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
-from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_admin_model import Role
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Any, Literal, Protocol, Union
 from src.app_entrypoint import app
@@ -49,7 +49,7 @@ TEST_HUB_MEMBER_AVATAR_URL = "https://www.bing.com"
 TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
 TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
 TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
-TEST_HUB_ADMIN_ROLE: ROLES = "super_admin"
+TEST_HUB_ADMIN_ROLE: Role = Role.SUPER
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests

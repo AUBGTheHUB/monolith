@@ -16,7 +16,7 @@ from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken
-from src.service.jwt_utils.schemas import JwtRefreshToken
+from src.service.utility.jwt_utils.schemas import JwtRefreshToken
 from tests.unit_tests.conftest import (
     AuthTokensServiceMock,
     HubMembersRepoMock,

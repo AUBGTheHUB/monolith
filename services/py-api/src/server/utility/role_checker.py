@@ -2,7 +2,7 @@ from result import is_err
 from starlette.requests import Request
 from fastapi import Header, HTTPException
 
-from src.service.jwt_utils.schemas import JwtAdminToken
+from src.service.utility.jwt_utils.schemas import JwtAdminToken
 from src.database.model.admin.hub_admin_model import Role
 from structlog.stdlib import get_logger
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
-from src.server.routes.auth.role_checker import RoleChecker
+from src.server.utility.role_checker import RoleChecker
 from src.server.schemas.response_schemas.schemas import ErrResponse, AllFeatureSwitchesResponse, FeatureSwitchResponse
 from src.database.model.admin.hub_admin_model import Role
 

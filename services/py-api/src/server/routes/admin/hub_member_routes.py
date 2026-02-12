@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from src.server.routes.auth.role_checker import RoleChecker
+from src.server.utility.role_checker import RoleChecker
 from src.server.routes.route_dependencies import validate_obj_id
 from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers

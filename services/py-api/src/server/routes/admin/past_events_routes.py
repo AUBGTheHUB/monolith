@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
-from src.server.routes.auth.role_checker import RoleChecker
+from src.server.utility.role_checker import RoleChecker
 from src.server.routes.route_dependencies import validate_obj_id
 from src.server.schemas.response_schemas.admin.past_event_schemas import (
     AllPastEventsResponse,

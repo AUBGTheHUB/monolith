@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
-from src.server.routes.auth.role_checker import RoleChecker
+from src.server.utility.role_checker import RoleChecker
 from src.server.routes.route_dependencies import validate_obj_id
 from src.server.schemas.response_schemas.admin.mentor_schemas import MentorResponse, MentorsResponse
 from src.server.schemas.response_schemas.schemas import ErrResponse

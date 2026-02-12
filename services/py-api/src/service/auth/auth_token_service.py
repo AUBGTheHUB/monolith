@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from result import Result
 from src.database.model.admin.hub_admin_model import HubAdmin
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtAdminToken, JwtRefreshToken
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtAdminToken, JwtRefreshToken
 
 
 class AuthTokenService:
