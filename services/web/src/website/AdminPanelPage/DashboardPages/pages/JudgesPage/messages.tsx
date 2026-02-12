@@ -74,7 +74,6 @@ export const JudgesEditMessages = {
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Update Judge',
     LOADING_STATE: 'Loading judge, please wait...',
-    SUCCESS_MESSAGE: 'Judge updated successfully! (This is a mock - no API call made)',
 };
 
 export const JudgesAddMessages = {
@@ -99,7 +98,6 @@ export const JudgesAddMessages = {
     ),
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Add Judge',
-    SUCCESS_MESSAGE: 'Judge added successfully!',
 };
 
 export const JudgesFormFieldMessages = {
