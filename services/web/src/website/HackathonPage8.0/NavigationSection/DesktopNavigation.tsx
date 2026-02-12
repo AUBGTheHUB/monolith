@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 export const DesktopNavigationComponent = () => {
-    const NAV_ITEM_A = 'text-[rgb(233,253,245)] text-xs font-thin font-orbitron';
+    const NAV_ITEM_A = 'text-[rgba(255,253,245,1)] text-xs font-thin font-orbitron';
     const NAV_ITEM_A_EFFECT =
-        'hover:text-[rgb(233,253,245)] relative after:content-[""] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-[rgb(233,253,245)] after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left';
+        'hover:text-[rgba(255,253,245,1)] relative after:content-[""] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-[rgba(255,253,245,1)] after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left';
     const [fadeIn, setFadeIn] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => {

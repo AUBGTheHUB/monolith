@@ -29,7 +29,7 @@ export const MobileNavigationComponent = () => {
                             <img src={hamburgerMenuIcon} onClick={() => setIsOpen(true)} />
                         </SheetTrigger>
                         <SheetContent
-                            className="bg-[rgb(233,253,245)]"
+                            className="bg-[rgba(255,253,245,1)]"
                             onCloseAutoFocus={(event) => event.preventDefault()}
                         >
                             <div className={NAV_ITEM}>
