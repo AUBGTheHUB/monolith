@@ -1,5 +1,3 @@
-from os import environ
-from unittest.mock import patch
 from typing import Any
 
 import pytest
@@ -21,21 +19,20 @@ def _valid_hub_member_payload() -> dict[str, Any]:
     }
 
 
-async def _delete_hub_member(async_client: AsyncClient, member_id: str) -> None:
+async def delete_hub_member(async_client: AsyncClient, member_id: str, super_auth_token: str) -> None:
     await async_client.delete(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{member_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_hub_member_success(async_client: AsyncClient) -> None:
+async def test_create_hub_member_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # When
     result = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_hub_member_payload(),
         follow_redirects=True,
     )
@@ -52,10 +49,11 @@ async def test_create_hub_member_success(async_client: AsyncClient) -> None:
     assert "id" in body["hub_member"]
 
     # Cleanup
-    await _delete_hub_member(async_client=async_client, member_id=body["hub_member"]["id"])
+    await delete_hub_member(
+        async_client=async_client, member_id=body["hub_member"]["id"], super_auth_token=super_auth_token
+    )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_hub_member_unauthorized(async_client: AsyncClient) -> None:
     result = await async_client.post(
@@ -69,13 +67,12 @@ async def test_create_hub_member_unauthorized(async_client: AsyncClient) -> None
     assert result.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_all_hub_members_success(async_client: AsyncClient) -> None:
+async def test_get_all_hub_members_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one member so the list has a stable target
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_hub_member_payload(),
         follow_redirects=True,
     )
@@ -85,7 +82,7 @@ async def test_get_all_hub_members_success(async_client: AsyncClient) -> None:
     # Act: list all
     result = await async_client.get(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -98,16 +95,15 @@ async def test_get_all_hub_members_success(async_client: AsyncClient) -> None:
     assert any(m["id"] == created_id for m in body["members"])
 
     # Cleanup
-    await _delete_hub_member(async_client=async_client, member_id=created_id)
+    await delete_hub_member(async_client=async_client, member_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_hub_member_by_id_success(async_client: AsyncClient) -> None:
+async def test_get_hub_member_by_id_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create a member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_hub_member_payload(),
         follow_redirects=True,
     )
@@ -118,7 +114,7 @@ async def test_get_hub_member_by_id_success(async_client: AsyncClient) -> None:
     # Act: fetch by id
     result = await async_client.get(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -132,29 +128,27 @@ async def test_get_hub_member_by_id_success(async_client: AsyncClient) -> None:
     assert body["hub_member"]["department"] == created_member["department"]
 
     # Cleanup
-    await _delete_hub_member(async_client=async_client, member_id=created_id)
+    await delete_hub_member(async_client=async_client, member_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_hub_member_by_id_invalid_format(async_client: AsyncClient) -> None:
+async def test_get_hub_member_by_id_invalid_format(async_client: AsyncClient, super_auth_token: str) -> None:
     result = await async_client.get(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/not-a-valid-object-id",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
     assert result.status_code == 400
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_hub_member_by_id_not_found(async_client: AsyncClient) -> None:
+async def test_get_hub_member_by_id_not_found(async_client: AsyncClient, super_auth_token: str) -> None:
     non_existing_id = "507f1f77bcf86cd799439011"  # valid ObjectId, but not in DB
 
     result = await async_client.get(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{non_existing_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -162,13 +156,12 @@ async def test_get_hub_member_by_id_not_found(async_client: AsyncClient) -> None
     assert result.json()["error"] == "The hub member was not found."
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_update_hub_member_success(async_client: AsyncClient) -> None:
+async def test_update_hub_member_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_hub_member_payload(),
         follow_redirects=True,
     )
@@ -184,7 +177,7 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
     # Act: update
     result = await async_client.patch(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=update_payload,
         follow_redirects=True,
     )
@@ -198,16 +191,15 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
     assert body["hub_member"]["position"] == "Lead Developer"
 
     # Cleanup
-    await _delete_hub_member(async_client=async_client, member_id=created_id)
+    await delete_hub_member(async_client=async_client, member_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_delete_hub_member_success(async_client: AsyncClient) -> None:
+async def test_delete_hub_member_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_hub_member_payload(),
         follow_redirects=True,
     )
@@ -217,7 +209,7 @@ async def test_delete_hub_member_success(async_client: AsyncClient) -> None:
     # Act: delete
     result = await async_client.delete(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -229,7 +221,7 @@ async def test_delete_hub_member_success(async_client: AsyncClient) -> None:
     # Assert: the member is actually gone
     get_after_delete = await async_client.get(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
     assert get_after_delete.status_code == 404

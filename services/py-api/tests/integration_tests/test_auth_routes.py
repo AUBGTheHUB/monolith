@@ -7,6 +7,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_USERNAME,
     RegisterHubAdminBodyCallable,
 )
+from tests.integration_tests.test_hub_members_routes import delete_hub_member
 
 AUTH_ENDPOINT_URL = "/api/v3/auth"
 
@@ -15,6 +16,7 @@ AUTH_ENDPOINT_URL = "/api/v3/auth"
 async def test_register_admin_success(
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    super_auth_token: str,
 ) -> None:
     # When
     unique_name = str(uuid.uuid4())
@@ -24,7 +26,13 @@ async def test_register_admin_success(
 
     # Then
     assert resp.status_code == 201
-    assert resp.json()["hub_admin"]["username"] == unique_name
+
+    data = resp.json()
+    assert data["hub_admin"]["username"] == unique_name
+
+    # cleanup:
+    id = data["hub_admin"]["id"]
+    await delete_hub_member(async_client=async_client, member_id=id, super_auth_token=super_auth_token)
 
 
 @pytest.mark.asyncio
@@ -125,7 +133,6 @@ async def test_refresh_token_success(
 async def test_refresh_token_fails_for_invalid_refresh_token(
     async_client: AsyncClient,
 ) -> None:
-
     resp = await async_client.post(
         f"{AUTH_ENDPOINT_URL}/refresh", cookies={"refresh_token": "Some invalid refresh token"}
     )

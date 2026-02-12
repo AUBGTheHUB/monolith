@@ -71,6 +71,36 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
 # Read More: https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 
 
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def dev_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "dev", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def board_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "board", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def super_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "super", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
 @pytest_asyncio.fixture(scope="session")
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
     LOG.debug("Opening Async Client")
@@ -353,7 +383,6 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
         repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         **kwargs: Any,
     ) -> RegisterHubAdminData:
-
         return RegisterHubAdminData(
             name=name,
             username=username,
