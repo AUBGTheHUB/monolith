@@ -1,4 +1,5 @@
 import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.svg';
+import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useEffect, useState } from 'react';
 
@@ -20,7 +21,11 @@ export const MobileNavigationComponent = () => {
             className={`sticky h-[10vh] top-0 z-[50] bg-[rgba(28,26,25,0.9)] transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Mobile Navigation"
         >
-            <div className="flex px-4 items-center h-full">
+            <div className="flex px-2 justify-around items-center h-full">
+                <a href="/">
+                    <img src={logo} className="h-[50px]" />
+                </a>
+                <h2 className="text-[rgba(255,253,245,1)] font-medium text-2xl mr-[10px]">The Hub</h2>
                 <div className="h-[50px]">
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTitle />
