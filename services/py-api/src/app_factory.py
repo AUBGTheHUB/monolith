@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
-
+import boto3
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
+from src.service.auth.auth_token_service import AuthTokenService
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
@@ -46,7 +48,10 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
+from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.jwt_utils.codec import JwtUtility
+from src.service.auth.password_hash_service import PasswordHashService
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
 LOG = get_logger()
@@ -134,6 +139,7 @@ def create_app() -> FastAPI:
     judges_repo = JudgesRepository(db_manager=db_manager)
     hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
+    refresh_tokens_repo = RefreshTokenRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -141,6 +147,8 @@ def create_app() -> FastAPI:
 
     # Service layer wiring
     jwt_utility = JwtUtility()
+    password_hash_service = PasswordHashService()
+    auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
     hackathon_mail_service = HackathonMailService(client=mail_client)
     participant_service = ParticipantService(
@@ -178,6 +186,18 @@ def create_app() -> FastAPI:
         admin_team_service=admin_team_service,
         participant_service=participant_service,
     )
+    s3_client = boto3.client("s3")
+    aws_service = AwsService(s3_client)
+    image_storing_service = ImageStoringService(aws_service=aws_service)
+
+    auth_service = AuthService(
+        hub_members_repo=hub_members_repo,
+        password_hash_service=password_hash_service,
+        refresh_token_repo=refresh_tokens_repo,
+        auth_token_service=auth_token_service,
+        tx_manager=tx_manager,
+    )
+
     fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)
@@ -185,7 +205,6 @@ def create_app() -> FastAPI:
     hub_members_service = HubMembersService(repo=hub_members_repo)
     past_events_service = PastEventsService(repo=past_events_repo)
 
-    auth_service = AuthService(repo=hub_members_repo)
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
         utility_handlers=UtilityHandlers(db_manager=db_manager),

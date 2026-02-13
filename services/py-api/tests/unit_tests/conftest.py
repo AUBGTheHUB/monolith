@@ -2,6 +2,7 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
@@ -16,14 +17,23 @@ from motor.motor_asyncio import (
 )
 from typing_extensions import Protocol
 
+from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.hub_admin_model import HubAdmin
+from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.judge_model import Judge
+from src.database.model.admin.refresh_token import RefreshToken
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
+from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
+from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
@@ -34,6 +44,8 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     RandomParticipantInputData,
     ResendEmailParticipantData,
 )
+from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
@@ -42,19 +54,39 @@ from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
 from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.jwt_utils.schemas import (
+    JwtParticipantInviteRegistrationData,
+    JwtParticipantVerificationData,
+    JwtRefreshToken,
+)
+from typing_extensions import Protocol
 
+from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
+from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 from tests.integration_tests.conftest import (
-    TEST_ALLOWED_AGE,
-    TEST_LOCATION,
     TEST_TEAM_NAME,
     TEST_UNIVERSITY_NAME,
     TEST_USER_EMAIL,
     TEST_USER_NAME,
+    TEST_LOCATION,
+    TEST_ALLOWED_AGE,
+    TEST_HUB_MEMBER_NAME,
+    TEST_HUB_MEMBER_MEMBER_TYPE,
+    TEST_HUB_MEMBER_POSITON,
+    TEST_HUB_MEMBER_DEPARTMENT,
+    TEST_HUB_MEMBER_AVATAR_URL,
+    TEST_HUB_MEMBER_SOCIAL_LINKS,
+    TEST_HUB_ADMIN_PASSWORD_HASH,
+    TEST_HUB_ADMIN_MEMBER_TYPE,
+    TEST_HUB_ADMIN_ROLE,
+    TEST_HUB_MEMBER_USERNAME,
 )
+
+TEST_REFRESH_ID = "1234567"
 
 
 def _create_typed_mock[T](class_type: T) -> T:
@@ -102,6 +134,15 @@ class BackgroundTasksMock(Protocol):
     """
 
     add_task: Mock
+
+
+@pytest.fixture(autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
 
 
 @pytest.fixture
@@ -516,6 +557,112 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 
     return cast(SponsorsRepoMock, sponsors_repo)
 
+
+class JudgesRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_repo_mock() -> JudgesRepoMock:
+    judges_repo = _create_typed_mock(SponsorsRepository)
+
+    judges_repo.fetch_by_id = AsyncMock()
+    judges_repo.fetch_all = AsyncMock()
+    judges_repo.update = AsyncMock()
+    judges_repo.create = AsyncMock()
+    judges_repo.delete = AsyncMock()
+
+    return cast(JudgesRepoMock, judges_repo)
+
+
+class MentorsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def mentors_repo_mock() -> MentorsRepoMock:
+    mentors_repo = _create_typed_mock(MagicMock)
+
+    mentors_repo.fetch_by_id = AsyncMock()
+    mentors_repo.fetch_all = AsyncMock()
+    mentors_repo.update = AsyncMock()
+    mentors_repo.create = AsyncMock()
+    mentors_repo.delete = AsyncMock()
+
+    return cast(MentorsRepoMock, mentors_repo)
+
+
+class RefreshTokenRepoMock(Protocol):
+    """A Static Duck Type, modeling a Mocked RefreshTokenRepository
+
+    Should not be initialized directly by application developers to create a RefreshTokenRepoMock instance. It is
+    used just for type hinting purposes.
+    """
+
+    fetch_by_id: AsyncMock
+    fetch_by_team_name: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def refresh_token_repo_mock() -> RefreshTokenRepoMock:
+    """This is a mock obj of RefreshTokenRepoMock. To change the return values of its methods use:
+    `refresh_token_repo.method_name.return_value=some_return_value`"""
+
+    refresh_token_repo = _create_typed_mock(RefreshTokenRepository)
+
+    refresh_token_repo.create = AsyncMock()
+    refresh_token_repo.delete = AsyncMock()
+    refresh_token_repo.fetch_all = AsyncMock()
+    refresh_token_repo.fetch_by_id = AsyncMock()
+    refresh_token_repo.update = AsyncMock()
+
+    return cast(RefreshTokenRepoMock, refresh_token_repo)
+
+
+class HubMembersRepoMock(Protocol):
+    """A Static Duck Type, modeling a Mocked HubMembersRepository
+
+    Should not be initialized directly by application developers to create a HubMembersRepository instance. It is
+    used just for type hinting purposes.
+    """
+
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+    fetch_admin_by_username: AsyncMock
+
+
+@pytest.fixture
+def hub_members_repo_mock() -> HubMembersRepoMock:
+    """This is a mock obj of HubMembersRepoMock. To change the return values of its methods use:
+    `hub_members_repo.method_name.return_value=some_return_value`"""
+
+    hub_members_repo = _create_typed_mock(HubMembersRepository)
+
+    hub_members_repo.create = AsyncMock()
+    hub_members_repo.delete = AsyncMock()
+    hub_members_repo.fetch_all = AsyncMock()
+    hub_members_repo.fetch_by_id = AsyncMock()
+    hub_members_repo.update = AsyncMock()
+    hub_members_repo.fetch_admin_by_username = AsyncMock()
+
+    return cast(HubMembersRepoMock, hub_members_repo)
+
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -524,6 +671,27 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
 # ======================================
 # Mocking Service layer classes start
 # ======================================
+
+
+class HubMembersServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def hub_members_service_mock() -> HubMembersServiceMock:
+    service = _create_typed_mock(HubMembersService)
+
+    service.get_all = AsyncMock()
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(HubMembersServiceMock, service)
 
 
 class PastEventsServiceMock(Protocol):
@@ -566,6 +734,58 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class JudgesServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_service_mock() -> JudgesServiceMock:
+    service = _create_typed_mock(JudgesService)
+
+    service.get_all = _create_typed_async_mock(JudgesService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(JudgesServiceMock, service)
+
+
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
+
 
 class HackathonUtilityServiceMock(Protocol):
     """A Static Duck Type, modeling a Mocked HackathonService
@@ -773,6 +993,65 @@ def hackathon_mail_service_mock() -> HackathonMailServiceMock:
     return cast(HackathonMailServiceMock, hakcathon_mail_service_mock)
 
 
+class AuthServiceMock(Protocol):
+    refresh_token = AsyncMock
+    login_admin = AsyncMock
+    register_admin = AsyncMock
+
+
+@pytest.fixture
+def auth_service_mock() -> AuthServiceMock:
+    """This is a mock obj of AuthService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
+
+    auth_service_mock = _create_typed_mock(AuthServiceMock)
+
+    auth_service_mock.refresh_token = AsyncMock()
+    auth_service_mock.login_admin = AsyncMock()
+    auth_service_mock.register_admin = AsyncMock()
+
+    return cast(AuthServiceMock, auth_service_mock)
+
+
+class PasswordHashServiceMock(Protocol):
+    hash_password = AsyncMock
+    check_password = AsyncMock
+
+
+@pytest.fixture
+def password_hash_service_mock() -> PasswordHashServiceMock:
+    """This is a mock obj of AuthService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
+
+    password_hash_service_mock = _create_typed_mock(PasswordHashServiceMock)
+
+    password_hash_service_mock.check_password = AsyncMock()
+    password_hash_service_mock.hash_password = AsyncMock()
+
+    return cast(PasswordHashServiceMock, password_hash_service_mock)
+
+
+class AuthTokensServiceMock(Protocol):
+    generate_access_token_for = Mock
+    generate_refresh_token = Mock
+    decode_refresh_token = Mock
+    generate_refresh_expiration = Mock
+
+
+@pytest.fixture
+def auth_tokens_service_mock() -> AuthTokensServiceMock:
+    """This is a mock obj of AuthService. To change the return values of its methods use:
+    `hackathon_mail_service_mock.method_name.return_value=some_return_value`"""
+
+    auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
+
+    auth_tokens_service_mock.generate_access_token_for = Mock()
+    auth_tokens_service_mock.generate_refresh_token = Mock()
+    auth_tokens_service_mock.decode_refresh_token = Mock()
+    auth_tokens_service_mock.generate_refresh_expiration = Mock()
+    return cast(AuthTokensServiceMock, auth_tokens_service_mock)
+
+
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
@@ -942,12 +1221,64 @@ def past_event_dump_no_id_mock(past_event_mock: PastEvent) -> dict[str, Any]:
 
 
 @pytest.fixture
+def hub_member_dump_no_id_mock(hub_member_mock: HubMember) -> dict[str, Any]:
+    document = hub_member_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
 def sponsor_mock(obj_id_mock: str) -> Sponsor:
-    return Sponsor(id=obj_id_mock, name="Coca-Cola", tier="GOLD", website_url="https://coca-cola.com/", logo_url="https://eu.aws.com/coca-cola.jpg")
+    return Sponsor(
+        id=obj_id_mock,
+        name="Coca-Cola",
+        tier="GOLD",
+        website_url="https://coca-cola.com/",
+        logo_url="https://eu.aws.com/coca-cola.jpg",
+    )
+
 
 @pytest.fixture
 def sponsor_no_id_mock(sponsor_mock: Sponsor) -> dict[str, Any]:
     document = sponsor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def mentor_mock(obj_id_mock: str) -> Mentor:
+    return Mentor(
+        id=obj_id_mock,
+        name="Jane Doe",
+        company="ACME",
+        job_title="Engineer",
+        avatar_url="https://acme.com/avatar.jpg",
+        linkedin_url="https://linkedin.com/janedoe",
+    )
+
+
+@pytest.fixture
+def mentor_no_id_mock(mentor_mock: Mentor) -> dict[str, Any]:
+    document = mentor_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def judge_mock(obj_id_mock: str) -> Judge:
+    return Judge(
+        id=obj_id_mock,
+        name="Sadiyata",
+        company="The Hub",
+        avatar_url="https://eu.aws.com/coca-cola.jpg",
+        job_title="Sadiya ma ooo",
+        linkedin_url=None,
+    )
+
+
+@pytest.fixture
+def judge_no_id_mock(judge_mock: Judge) -> dict[str, Any]:
+    document = judge_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
 
@@ -1080,6 +1411,86 @@ def random_participant_dump_verified_mock(random_participant_mock: Participant) 
 
 
 @pytest.fixture
+def hub_member_mock(obj_id_mock: str) -> HubMember:
+    return HubMember(
+        id=obj_id_mock,
+        name=TEST_HUB_MEMBER_NAME,
+        position=TEST_HUB_MEMBER_POSITON,
+        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
+        member_type=TEST_HUB_MEMBER_MEMBER_TYPE,
+        department=TEST_HUB_MEMBER_DEPARTMENT,
+        social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
+    )
+
+
+@pytest.fixture
+def hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
+    return hub_member_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
+def update_hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
+    return {**hub_member_mock.dump_as_mongo_db_document(), "department": "Marketing"}
+
+
+@pytest.fixture
+def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
+    return HubAdmin(
+        id=obj_id_mock,
+        name=TEST_HUB_MEMBER_NAME,
+        username=TEST_HUB_MEMBER_USERNAME,
+        position=TEST_HUB_MEMBER_POSITON,
+        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
+        member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
+        department=TEST_HUB_MEMBER_DEPARTMENT,
+        social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
+        password_hash=TEST_HUB_ADMIN_PASSWORD_HASH,
+        site_role=TEST_HUB_ADMIN_ROLE,
+    )
+
+
+@pytest.fixture
+def hub_admin_dict_mock(hub_admin_mock: HubMember) -> dict[str, Any]:
+    return hub_admin_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
+def refresh_token_mock(obj_id_mock: str, hub_admin_mock: HubAdmin) -> RefreshToken:
+    return RefreshToken(
+        id=obj_id_mock,
+        hub_member_id=hub_admin_mock.id,
+        family_id=TEST_REFRESH_ID,
+        is_valid=True,
+        expires_at=(datetime.now(timezone.utc) + timedelta(days=1)),
+    )
+
+
+@pytest.fixture
+def refresh_token_dict_mock(refresh_token_mock: RefreshToken) -> dict[str, Any]:
+    return refresh_token_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
+def register_hub_admin_data_mock() -> RegisterHubAdminData:
+    return RegisterHubAdminData(
+        name=TEST_HUB_MEMBER_NAME,
+        username=TEST_HUB_MEMBER_USERNAME,
+        position=TEST_HUB_MEMBER_POSITON,
+        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
+        member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
+        department=TEST_HUB_MEMBER_DEPARTMENT,
+        social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
+        password=TEST_HUB_ADMIN_PASSWORD_HASH,
+        repeat_password=TEST_HUB_ADMIN_PASSWORD_HASH,
+    )
+
+
+@pytest.fixture
+def login_hub_admin_data_mock() -> LoginHubAdminData:
+    return LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+
+
+@pytest.fixture
 def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
 
@@ -1115,8 +1526,13 @@ def jwt_admin_user_verification_mock(obj_id_mock: str, thirty_sec_jwt_exp_limit:
 
 
 @pytest.fixture
+def jwt_refresh_token_mock(obj_id_mock: str) -> JwtRefreshToken:
+    return JwtRefreshToken(sub=obj_id_mock, exp=20, family_id=TEST_REFRESH_ID, jti=obj_id_mock)
+
+
+@pytest.fixture
 def ten_sec_window() -> tuple[datetime, datetime]:
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     return now - timedelta(seconds=10), now + timedelta(seconds=10)
 
 
