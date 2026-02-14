@@ -101,6 +101,13 @@ class SponsorNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class JudgeNotFoundError(CustomError):
+    """Exception raised when the judge cannot be found in the database"""
+
+    message = "The specified judge was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
@@ -132,6 +139,31 @@ class JwtDecodeError(CustomError):
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class HubMemberNotFoundError(CustomError):
+    message = "The hub member was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class DuplicateHubMemberUsernameError(CustomError):
+    message = "HUB member with this name already exists"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class PasswordsMismatchError(CustomError):
+    message = "The name and password do not match!"
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenNotFound(CustomError):
+    message = "The refresh token was not found."
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenIsInvalid(CustomError):
+    message = "The refresh token is invalid."
+    status_code = status.HTTP_401_UNAUTHORIZED
 
 
 class PastEventNotFoundError(CustomError):
@@ -169,3 +201,10 @@ class FileDeleteError(Exception):
     """Exception raised when deleting a file in aws fails"""
 
     message = "There was an error when deleting the file"
+
+
+class MentorNotFoundError(CustomError):
+    """Exception raised when the mentor cannot be found in the database"""
+
+    message = "The specified mentor was not found"
+    status_code = status.HTTP_404_NOT_FOUND

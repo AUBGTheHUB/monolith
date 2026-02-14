@@ -13,3 +13,13 @@ class JudgeResponse(BaseModel):
     @field_serializer("judge")
     def serialize_judge(self, judge: Judge) -> dict[str, Any]:
         return judge.dump_as_json()
+
+
+class JudgesResponse(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    judges: list[Judge]
+
+    @field_serializer("judges")
+    def serialize_judges(self, judges: list[Judge]) -> list[dict[str, Any]]:
+        return [judge.dump_as_json() for judge in judges]

@@ -5,7 +5,7 @@ from src.database.repository.admin.past_events_repository import PastEventsRepos
 from src.exception import PastEventNotFoundError
 from src.server.schemas.request_schemas.admin.past_event_schemas import (
     PastEventPostReqData,
-    PastEventPutReqData,
+    PastEventPatchReqData,
 )
 
 
@@ -30,7 +30,7 @@ class PastEventsService:
     async def update(
         self,
         event_id: str,
-        data: PastEventPutReqData,
+        data: PastEventPatchReqData,
     ) -> Result[PastEvent, PastEventNotFoundError | Exception]:
         update_params = UpdatePastEventParams(
             title=data.title,

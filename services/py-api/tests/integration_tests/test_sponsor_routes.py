@@ -7,6 +7,7 @@ from PIL import Image
 from fastapi import UploadFile
 from httpx import AsyncClient
 
+
 SPONSORS_ENDPOINT_URL = "/api/v3/admin/sponsors"
 
 TEST_SPONSOR_NAME = "Coca-Cola"
@@ -49,7 +50,6 @@ async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
 async def test_create_sponsor_success(
     async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
-
     # Arrange - No new object needed
 
     # Act
@@ -82,7 +82,6 @@ async def test_create_sponsor_success(
 async def test_create_sponsor_missing_parameter(
     async_client: AsyncClient, aws_mock: Generator[None, Any, None]
 ) -> None:
-
     # Arrange
     invalid_sponsor_body: dict[str, Any] = {
         "name": TEST_SPONSOR_NAME,
