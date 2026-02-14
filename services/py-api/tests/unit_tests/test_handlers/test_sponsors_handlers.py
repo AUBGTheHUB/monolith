@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from io import BytesIO
 from typing import cast
 
 import pytest
+from PIL import Image
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.sponsor_model import Sponsor
@@ -18,6 +21,15 @@ from tests.unit_tests.conftest import SponsorsServiceMock
 
 
 @pytest.fixture
+def logo_mock() -> UploadFile:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return UploadFile(filename="some_logo.jpg", file=output)
+
+
+@pytest.fixture
 def sponsors_handlers(sponsors_service_mock: SponsorsServiceMock) -> SponsorsHandlers:
     return SponsorsHandlers(cast(SponsorsService, sponsors_service_mock))
 
@@ -27,14 +39,17 @@ async def test_create_sponsor_returns_201(
     sponsors_handlers: SponsorsHandlers,
     sponsors_service_mock: SponsorsServiceMock,
     sponsor_mock: Sponsor,
+    logo_mock: UploadFile,
 ) -> None:
     req = SponsorPostReqData(
-        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
     )
 
     sponsors_service_mock.create.return_value = Ok(sponsor_mock)
 
-    resp = await sponsors_handlers.create_sponsor(req)
+    resp = await sponsors_handlers.create_sponsor(
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
+    )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
@@ -74,14 +89,21 @@ async def test_update_sponsor_returns_200(
     sponsors_handlers: SponsorsHandlers,
     sponsors_service_mock: SponsorsServiceMock,
     sponsor_mock: Sponsor,
+    logo_mock: UploadFile,
 ) -> None:
     req = SponsorPatchReqData(
-        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
     )
 
     sponsors_service_mock.update.return_value = Ok(sponsor_mock)
 
-    resp = await sponsors_handlers.update_sponsor(str(sponsor_mock.id), req)
+    resp = await sponsors_handlers.update_sponsor(
+        object_id=str(sponsor_mock.id),
+        name=sponsor_mock.name,
+        tier=sponsor_mock.tier,
+        website_url=sponsor_mock.website_url,
+        logo=logo_mock,
+    )
 
     assert resp.status_code == 200
     sponsors_service_mock.update.assert_awaited_once_with(str(sponsor_mock.id), req)

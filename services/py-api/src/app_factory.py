@@ -185,7 +185,7 @@ def create_app() -> FastAPI:
     image_storing_service = ImageStoringService(aws_service=aws_service)
 
     fs_service = FeatureSwitchService(repository=fs_repo)
-    sponsors_service = SponsorsService(repo=sponsors_repo)
+    sponsors_service = SponsorsService(repo=sponsors_repo, image_storing_service=image_storing_service)
     mentors_service = MentorsService(repo=mentors_repo)
     judges_service = JudgesService(repo=judges_repo)
     hub_members_service = HubMembersService(repo=hub_members_repo)

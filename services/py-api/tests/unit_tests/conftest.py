@@ -598,6 +598,7 @@ def aws_service_mock() -> AwsServiceMock:
 
 class ImageStoringServiceMock(Protocol):
     upload_image: AsyncMock
+    delete_image: Mock
     _compress_image: Mock
 
 
@@ -606,6 +607,7 @@ def image_storing_service_mock() -> ImageStoringServiceMock:
     service = _create_typed_mock(ImageStoringService)
 
     service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service.delete_image = Mock()
     service._compress_image = Mock()
 
     return cast(ImageStoringServiceMock, service)

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional, Literal, Any
 
+from pydantic import HttpUrl
+
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
 ALLOWED_SPONSOR_TIERS = Literal["PLATINUM", "GOLD", "SILVER", "BRONZE", "CUSTOM"]
@@ -40,5 +42,5 @@ class Sponsor(BaseDbModel):
 class UpdateSponsorParams(UpdateParams):
     name: str | None = None
     tier: ALLOWED_SPONSOR_TIERS | None = None
-    logo_url: str | None = None
-    website_url: str | None = None
+    logo_url: HttpUrl | None = None
+    website_url: HttpUrl | None = None

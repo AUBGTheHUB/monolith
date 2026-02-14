@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from io import BytesIO
 from typing import cast
 
 import pytest
+from PIL import Image
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
@@ -13,12 +16,27 @@ from src.server.schemas.request_schemas.admin.sponsor_schemas import (
     SponsorPatchReqData,
 )
 from src.service.admin.sponsors_service import SponsorsService
-from tests.unit_tests.conftest import SponsorsRepoMock
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+from tests.unit_tests.conftest import SponsorsRepoMock, ImageStoringServiceMock
 
 
 @pytest.fixture
-def sponsors_service(sponsors_repo_mock: SponsorsRepoMock) -> SponsorsService:
-    return SponsorsService(cast(SponsorsRepository, sponsors_repo_mock))
+def logo_mock() -> UploadFile:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return UploadFile(filename="some_logo.jpg", file=output)
+
+
+@pytest.fixture
+def sponsors_service(
+    sponsors_repo_mock: SponsorsRepoMock, image_storing_service_mock: ImageStoringServiceMock
+) -> SponsorsService:
+    return SponsorsService(
+        repo=cast(SponsorsRepository, sponsors_repo_mock),
+        image_storing_service=cast(ImageStoringService, image_storing_service_mock),
+    )
 
 
 @pytest.mark.asyncio
@@ -65,15 +83,20 @@ async def test_get_returns_err_when_not_found(
 
 @pytest.mark.asyncio
 async def test_create_calls_repo_with_built_model(
-    sponsors_service: SponsorsService, sponsors_repo_mock: SponsorsRepoMock, sponsor_mock: Sponsor
+    sponsors_service: SponsorsService,
+    sponsors_repo_mock: SponsorsRepoMock,
+    sponsor_mock: Sponsor,
+    logo_mock: UploadFile,
 ) -> None:
     req = SponsorPostReqData(
-        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
     )
 
     sponsors_repo_mock.create.return_value = Ok(sponsor_mock)
 
-    result = await sponsors_service.create(req)
+    result = await sponsors_service.create(
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
+    )
 
     assert result.is_ok()
     sponsors_repo_mock.create.assert_awaited_once()
@@ -84,15 +107,18 @@ async def test_create_calls_repo_with_built_model(
     assert sponsor.name == req.name
     assert sponsor.tier == req.tier
     assert sponsor.website_url == str(req.website_url)
-    assert sponsor.logo_url == str(req.logo_url)
+    assert sponsor.logo_url == str(req.logo)
 
 
 @pytest.mark.asyncio
 async def test_update_calls_repo_with_update_params(
-    sponsors_service: SponsorsService, sponsors_repo_mock: SponsorsRepoMock, sponsor_mock: Sponsor
+    sponsors_service: SponsorsService,
+    sponsors_repo_mock: SponsorsRepoMock,
+    sponsor_mock: Sponsor,
+    logo_mock: UploadFile,
 ) -> None:
     req = SponsorPatchReqData(
-        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
+        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=logo_mock
     )
     updated = Sponsor(
         name="New name", tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
@@ -100,7 +126,13 @@ async def test_update_calls_repo_with_update_params(
 
     sponsors_repo_mock.update.return_value = Ok(updated)
 
-    result = await sponsors_service.update(sponsor_mock.id, req)
+    result = await sponsors_service.update(
+        sponsor_id=str(sponsor_mock.id),
+        name=sponsor_mock.name,
+        tier=sponsor_mock.tier,
+        website_url=sponsor_mock.website_url,
+        logo=logo_mock,
+    )
 
     assert result.is_ok()
     sponsors_repo_mock.update.assert_awaited_once()
@@ -111,8 +143,8 @@ async def test_update_calls_repo_with_update_params(
     assert isinstance(updated_params, UpdateSponsorParams)
     assert updated_params.name == req.name
     assert updated_params.tier == req.tier
-    assert updated_params.website_url == str(req.website_url)
-    assert updated_params.logo_url == str(req.logo_url)
+    assert updated_params.website_url == req.website_url
+    assert updated_params.logo_url == str(req.logo)
 
 
 @pytest.mark.asyncio

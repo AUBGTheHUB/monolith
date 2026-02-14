@@ -29,11 +29,8 @@ class ImageStoringService:
         The return value is the address at which the image can be accessed.
         """
         try:
-            output = self._compress_image(file=await file.read())
-            stripped_file_name = file_name[: file_name.rindex(".")]  # The file name without the extension
-            formatted_file_name = (
-                f"{stripped_file_name}.{DEFAULT_OUTPUT_FORMAT.lower()}"  # The file name with the extension
-            )
+            output = self._compress_image(file=await file.read())  # The file name without the extension
+            formatted_file_name = f"{file_name}.{DEFAULT_OUTPUT_FORMAT.lower()}"  # The file name with the extension
             return self._aws_service.upload_file(
                 file=output, file_name=formatted_file_name, content_type=f"image/{DEFAULT_OUTPUT_FORMAT.lower()}"
             )

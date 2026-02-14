@@ -1,12 +1,18 @@
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
+
+import boto3
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport, Response
+from moto import mock_aws
+from mypy_boto3_s3 import S3Client
+from mypy_boto3_s3.client import S3Client
+
 from src.service.jwt_utils.codec import JwtUtility
 from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
-from typing import AsyncGenerator, Any, Literal, Protocol, Union
+from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app
 from os import environ
 from src.database.model.hackathon.participant_model import (
@@ -17,6 +23,7 @@ from src.database.model.hackathon.participant_model import (
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
 )
+from src.service.utility.aws.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
 
 LOG = get_logger()
 
@@ -63,6 +70,30 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     yield client
     LOG.debug("Closing Async Client")
     await client.aclose()
+
+
+@pytest.fixture(autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
+
+
+@pytest.fixture
+def aws_mock() -> Generator[None, Any, None]:
+    with mock_aws():
+        s3_client: S3Client = boto3.client("s3", region_name=AWS_DEFAULT_REGION)
+
+        s3_client.create_bucket(
+            Bucket=AWS_S3_DEFAULT_BUCKET,
+            CreateBucketConfiguration={
+                "LocationConstraint": "eu-central-1",
+            },
+        )
+
+        yield
 
 
 class CreateTestParticipantCallable(Protocol):
