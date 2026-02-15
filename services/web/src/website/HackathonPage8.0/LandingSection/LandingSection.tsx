@@ -22,7 +22,7 @@ export default function LandingSection() {
             <img
                 src="/hackLanding8.0/rightFlame.webp"
                 alt=""
-                className="absolute pointer-events-none block h-[45rem] right-[0] z-0"
+                className="absolute pointer-events-none top-[10rem] xs:top-[0] block h-[45rem] right-[0] z-0"
             />
 
             <div className="h-full flex justify-center items-center">

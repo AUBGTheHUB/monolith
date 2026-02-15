@@ -16,7 +16,7 @@ export const DesktopNavigationComponent = () => {
     return (
         <div className="p-4">
             <div
-                className={`rounded-2xl px-6 h-[10%] bg-[rgba(28,26,25,0.9)] border-gray-600 py-2 sticky top-0 z-[100]  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+                className={`rounded-2xl px-6 bg-[rgba(28,26,25,0.9)] border-gray-600 py-2 sticky top-0 z-[100]  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             >
                 <div className="w-full flex flex-row justify-center items-center py-3">
                     <div className="flex flex-row w-[85%] gap-8">
