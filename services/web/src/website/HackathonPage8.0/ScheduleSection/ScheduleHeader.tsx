@@ -1,5 +1,5 @@
 export const ScheduleHeader = () => (
-    <div className="w-full max-w-[100vw] md:pl-8 lg:pl-16 xl:pl-28">
+    <div className="w-full">
         <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4 lg:gap-6">
             <img
                 src="/ScheduleSection/logo.png"
