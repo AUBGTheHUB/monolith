@@ -1,0 +1,3 @@
+.schedule-item-text {
+    font-size: clamp(16px, 2.5vw, 22px);
+}
