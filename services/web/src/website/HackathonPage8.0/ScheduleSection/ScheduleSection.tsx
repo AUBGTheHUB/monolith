@@ -5,6 +5,7 @@ import { Day } from './types';
 import { ScheduleHeader } from './ScheduleHeader';
 import { ScheduleTabs } from './ScheduleTabs';
 import { ScheduleTable } from './ScheduleTable';
+import './ScheduleStyle.css';
 
 export const ScheduleSection = () => {
     const [activeTab, setActiveTab] = useState<Day>('Friday');
@@ -31,7 +32,7 @@ export const ScheduleSection = () => {
             />
 
             <div className="relative z-10 w-full grid place-items-center">
-                <div className="w-full flex flex-col md:px-0 px-8" style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}>
+                <div className="w-full flex flex-col md:px-0 px-8 schedule-container">
                     <div className="mb-[2rem] md:mb-[3rem] lg:mb-[4.125rem]">
                         <ScheduleHeader />
                     </div>
