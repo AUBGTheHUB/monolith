@@ -6,8 +6,8 @@ import { scheduleData } from './data';
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast }) => (
     <div className={!isLast ? 'mb-[1rem] md:mb-[1.5rem]' : ''}>
         <div className="flex justify-between items-center py-[0.75rem] md:py-[1.25rem] text-white">
-            <span className="text-[1rem] md:text-[1.6rem] lg:text-[2rem] font-oxanium leading-[1.25]">{event}</span>
-            <span className="text-[1rem] md:text-[1.6rem] lg:text-[2rem] font-oxanium font-bold leading-[1.25]">
+            <span className="text-[1rem] md:text-[1.4rem] lg:text-[1.6rem] font-oxanium leading-[1.25]">{event}</span>
+            <span className="text-[1rem] md:text-[1.4rem] lg:text-[1.6rem] font-oxanium font-bold leading-[1.25]">
                 {time}
             </span>
         </div>
@@ -48,7 +48,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         >
             <TabsTrigger
                 value="Friday"
-                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.6rem] lg:text-[2rem] font-semibold border-0 relative w-[5.5rem] md:w-[8rem] lg:w-[11rem] h-[2rem] md:h-[2.5rem] lg:h-[3.5rem] flex items-center justify-center"
+                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.4rem] lg:text-[1.6rem] font-semibold border-0 relative w-[5.5rem] md:w-[7rem] lg:w-[10rem] h-[2rem] lg:h-[3rem] flex items-center justify-center"
                 style={
                     activeTab === 'Friday'
                         ? { backgroundColor: 'white' }
@@ -83,7 +83,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         >
             <TabsTrigger
                 value="Saturday"
-                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.6rem] lg:text-[2rem] font-semibold border-0 relative w-[5.5rem] md:w-[8rem] lg:w-[11rem] h-[2rem] md:h-[2.5rem] lg:h-[3.5rem] flex items-center justify-center"
+                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.4rem] lg:text-[1.6rem] font-semibold border-0 relative w-[5.5rem] md:w-[7rem] lg:w-[10rem] h-[2rem] lg:h-[3rem] flex items-center justify-center"
                 style={
                     activeTab === 'Saturday'
                         ? { backgroundColor: 'white' }
@@ -118,7 +118,7 @@ export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
         >
             <TabsTrigger
                 value="Sunday"
-                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.6rem] lg:text-[2rem] font-semibold border-0 relative w-[5.5rem] md:w-[8rem] lg:w-[11rem] h-[2rem] md:h-[2.5rem] lg:h-[3.5rem] flex items-center justify-center"
+                className="rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] lg:rounded-[calc(0.75rem-4px)] font-oxanium text-[1rem] md:text-[1.4rem] lg:text-[1.6rem] font-semibold border-0 relative w-[5.5rem] md:w-[7rem] lg:w-[10rem] h-[2rem] lg:h-[3rem] flex items-center justify-center"
                 style={
                     activeTab === 'Sunday'
                         ? { backgroundColor: 'white' }
