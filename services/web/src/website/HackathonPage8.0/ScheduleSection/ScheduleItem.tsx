@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScheduleItemProps } from './types';
-import './ScheduleStyle.css';
+import './style.css';
 
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast }) => (
     <div className={!isLast ? 'mb-[1rem] md:mb-[1.5rem]' : ''}>

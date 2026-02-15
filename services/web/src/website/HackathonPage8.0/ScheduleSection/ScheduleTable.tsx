@@ -2,7 +2,7 @@ import { TabsContent } from '@/components/ui/tabs';
 import { scheduleData } from './data';
 import { ScheduleItem } from './ScheduleItem';
 import { Day } from './types';
-import './ScheduleStyle.css';
+import './style.css';
 
 export const ScheduleTable = () => (
     <>

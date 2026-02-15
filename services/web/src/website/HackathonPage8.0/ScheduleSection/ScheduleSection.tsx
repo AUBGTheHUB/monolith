@@ -5,7 +5,7 @@ import { Day } from './types';
 import { ScheduleHeader } from './ScheduleHeader';
 import { ScheduleTabs } from './ScheduleTabs';
 import { ScheduleTable } from './ScheduleTable';
-import './ScheduleStyle.css';
+import './style.css';
 
 export const ScheduleSection = () => {
     const [activeTab, setActiveTab] = useState<Day>('Friday');

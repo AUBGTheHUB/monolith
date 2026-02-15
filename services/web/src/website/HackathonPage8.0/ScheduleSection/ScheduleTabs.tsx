@@ -1,7 +1,7 @@
 import React from 'react';
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScheduleTabsProps } from './types';
-import './ScheduleStyle.css';
+import './style.css';
 
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
     <TabsList className="mb-[1.5rem] h-auto p-0 gap-[0.75rem] md:gap-[1rem] lg:gap-[1.625rem] bg-transparent flex flex-wrap justify-start w-full">
