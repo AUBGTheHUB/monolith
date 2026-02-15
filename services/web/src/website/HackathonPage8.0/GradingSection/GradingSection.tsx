@@ -1,5 +1,5 @@
 import { GradingCard } from './GradingCard';
-import { bottomRowData, topRowData } from './Grading.data';
+import { bottomRowData, topRowData } from './data.ts';
 import { VerticalBar } from '@/components/ui/verticalBar';
 
 export const GradingSection = () => {
