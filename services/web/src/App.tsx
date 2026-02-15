@@ -13,6 +13,10 @@ import { JudgesEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/Ju
 import { SponsorsListPage } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/SponsorsPage';
 import { SponsorsEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/SponsorsEditPage';
 import { DashboardPage } from '@/website/AdminPanelPage/DashboardPages/DashboardPage';
+
+import { PastEventsPage } from './website/AdminPanelPage/DashboardPages/pages/PastEventsPage/PastEventsPage';
+import { PastEventsEditPage } from './website/AdminPanelPage/DashboardPages/pages/PastEventsPage/PastEventsEditPage';
+
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
@@ -63,6 +67,13 @@ function App() {
                             <Route index element={<SponsorsListPage />} />
                             <Route path="add" element={<SponsorsEditPage />} />
                             <Route path=":id" element={<SponsorsEditPage />} />
+                        </Route>
+
+                        {/* Past events Sub-group */}
+                        <Route path="past-events">
+                            <Route index element={<PastEventsPage />} />
+                            <Route path="add" element={<PastEventsEditPage />} />
+                            <Route path=":id" element={<PastEventsEditPage />} />
                         </Route>
                     </Route>
                     {/* 404 Catch-all */}
