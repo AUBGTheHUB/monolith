@@ -3,8 +3,8 @@ import { GradingCategory } from './types';
 
 const CriteriaRow = ({ label, points }: { label: string; points: number }) => (
     <div className="flex justify-between items-center py-3 lg:py-[1.5vh] border-b border-white/20 shadow-[0_5px_10px_-7px_rgba(0,0,0,0.3)]">
-        <span className="text-white font-oxanium text-sm lg:text-[1.8vh] leading-tight pr-4">{label}</span>
-        <span className="text-white font-oxanium font-bold text-sm lg:text-[1.8vh]">{points}</span>
+        <span className="text-white font-oxanium text-sm lg:text-[2vh] leading-tight pr-4">{label}</span>
+        <span className="text-white font-oxanium font-bold text-sm lg:text-[2vh]">{points}</span>
     </div>
 );
 
@@ -24,10 +24,10 @@ export const GradingCard: React.FC<GradingCardProps> = ({ left, right, isDarkTop
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-[4vw]">
                 <div className="flex-1">
                     <div className="flex justify-between items-center pb-5 ">
-                        <h3 className="text-white font-orbitron font-bold text-sm lg:text-[2vh] tracking-wider uppercase">
+                        <h3 className="text-white font-orbitron font-bold text-sm lg:text-[2.1vh] tracking-wider uppercase">
                             {left.title}
                         </h3>
-                        <span className="text-white font-orbitron font-bold text-sm lg:text-[2vh]">Points</span>
+                        <span className="text-white font-orbitron font-bold text-sm lg:text-[2.1vh]">Points</span>
                     </div>
                     <div>
                         {left.items.map((item, idx) => (
@@ -38,10 +38,10 @@ export const GradingCard: React.FC<GradingCardProps> = ({ left, right, isDarkTop
 
                 <div className="flex-1">
                     <div className="flex justify-between items-center pb-5 ">
-                        <h3 className="text-white font-orbitron font-bold text-sm lg:text-[2vh] tracking-wider uppercase">
+                        <h3 className="text-white font-orbitron font-bold text-sm lg:text-[2.1vh] tracking-wider uppercase">
                             {right.title}
                         </h3>
-                        <span className="text-white font-orbitron font-bold text-sm lg:text-[2vh]">Points</span>
+                        <span className="text-white font-orbitron font-bold text-sm lg:text-[2.1vh]">Points</span>
                     </div>
                     <div>
                         {right.items.map((item, idx) => (
