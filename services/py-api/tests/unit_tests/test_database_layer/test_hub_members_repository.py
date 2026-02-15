@@ -52,7 +52,6 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> HubMembersRepository:
 async def test_create_hub_admin_success(
     ten_sec_window: tuple[datetime, datetime], hub_admin_mock: HubAdmin, repo: HubMembersRepository
 ) -> None:
-
     # Given
     start_time, end_time = ten_sec_window
 
@@ -73,7 +72,6 @@ async def test_create_hub_admin_success(
 async def test_create_hub_member_success(
     ten_sec_window: tuple[datetime, datetime], hub_member_mock: HubMember, repo: HubMembersRepository
 ) -> None:
-
     # Given
     start_time, end_time = ten_sec_window
 
@@ -93,16 +91,16 @@ async def test_create_hub_member_success(
 
 @pytest.mark.asyncio
 async def test_create_duplicate_hub_member_error(
-    mongo_db_manager_mock: MongoDbManagerMock, hub_member_mock: HubMember, repo: HubMembersRepository
+    mongo_db_manager_mock: MongoDbManagerMock, hub_admin_mock: HubAdmin, repo: HubMembersRepository
 ) -> None:
     # Given
     # Simulate a DuplicateKeyError raised when trying to insert a hub member with a duplicate name
     mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
-        side_effect=DuplicateKeyError("Duplicate hub member name")
+        side_effect=DuplicateKeyError("Duplicate hub member username")
     )
 
     # When
-    result = await repo.create(hub_member_mock)
+    result = await repo.create(hub_admin_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -221,7 +219,6 @@ async def test_delete_hub_member_successful(
     hub_member_dict_mock: dict[str, Any],
     repo: HubMembersRepository,
 ) -> None:
-
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=hub_member_dict_mock)
 
