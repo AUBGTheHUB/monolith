@@ -2,3 +2,7 @@
 .button-text {
     font-size: clamp(16px, 2.5vw, 22px);
 }
+
+.table {
+    max-width: clamp(40rem, 82vw, 80rem);
+}

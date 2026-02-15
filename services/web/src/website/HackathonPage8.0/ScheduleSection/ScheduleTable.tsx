@@ -2,13 +2,14 @@ import { TabsContent } from '@/components/ui/tabs';
 import { scheduleData } from './data';
 import { ScheduleItem } from './ScheduleItem';
 import { Day } from './types';
+import './ScheduleStyle.css';
 
 export const ScheduleTable = () => (
     <>
         {(['Friday', 'Saturday', 'Sunday'] as Day[]).map((day) => (
             <TabsContent key={day} value={day}>
                 <div
-                    className="rounded-[1rem] md:rounded-[1.25rem] w-full"
+                    className="rounded-[1rem] md:rounded-[1.25rem] w-full table"
                     style={{
                         background: 'linear-gradient(135deg, #B91C1C 0%, #DC2626 30%, #F97316 70%, #FB923C 100%)',
                     }}
