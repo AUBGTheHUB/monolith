@@ -44,7 +44,7 @@ def register_hackathon_management_routes(http_handler: HackathonManagementHandle
         methods=["GET"],
         endpoint=http_handler.get_all_teams,
         responses={200: {"model": AllTeamsResponse}, 401: {"model": ErrResponse}},
-        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
 
     hackathon_management_router.add_api_route(

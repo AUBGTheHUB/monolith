@@ -255,7 +255,9 @@ async def create_test_participant(
     for result in request_results:
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
-            await clean_up_test_participant(async_client=async_client, result_json=result.json())
+            await clean_up_test_participant(
+                async_client=async_client, result_json=result.json(), super_auth_token=super_auth_token
+            )
 
     # Revert the finalization if any random teams were created while integration testing
     await revert_the_finalization_step(async_client=async_client, super_auth_token=super_auth_token)

@@ -202,10 +202,10 @@ async def test_create_admin_participant_email_already_exists(
     assert resp_json["error"] == "Participant with this email already exists"
 
 
-@patch.dict("os.environ", {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict("os.environ", {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_participant_success(
-    generate_participant_request_body: ParticipantRequestBodyCallable, async_client: AsyncClient
+    generate_participant_request_body: ParticipantRequestBodyCallable, async_client: AsyncClient, super_auth_token: str
 ) -> None:
     # Given
     result_1 = await async_client.post(
@@ -215,7 +215,7 @@ async def test_delete_participant_success(
     # When
     result_2 = await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{result_1.json()["participant"]["id"]}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     # Then
@@ -242,12 +242,12 @@ async def test_delete_participant_unauthorized(async_client: AsyncClient, obj_id
     assert result.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient) -> None:
+async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient, super_auth_token: str) -> None:
     # When
     result = await async_client.delete(
-        url=f"{PARTICIPANT_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
+        url=f"{PARTICIPANT_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {super_auth_token}"}
     )
 
     # Then
@@ -255,13 +255,15 @@ async def test_delete_participant_wrong_obj_id_format(async_client: AsyncClient)
     assert result.json()["error"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_participant_obj_id_doesnt_exist(async_client: AsyncClient, obj_id_mock: str) -> None:
+async def test_delete_participant_obj_id_doesnt_exist(
+    async_client: AsyncClient, obj_id_mock: str, super_auth_token: str
+) -> None:
     # When
     result = await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{obj_id_mock}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     # Then
