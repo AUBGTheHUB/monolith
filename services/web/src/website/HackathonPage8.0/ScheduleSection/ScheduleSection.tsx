@@ -1,8 +1,10 @@
 import { VerticalBar } from '@/components/ui/verticalBar';
 import { useState } from 'react';
-import { ScheduleHeader, ScheduleTable, ScheduleTabs } from './ScheduleItem';
 import { Tabs } from '@radix-ui/react-tabs';
 import { Day } from './types';
+import { ScheduleHeader } from './ScheduleHeader';
+import { ScheduleTabs } from './ScheduleTabs';
+import { ScheduleTable } from './ScheduleTable';
 
 export const ScheduleSection = () => {
     const [activeTab, setActiveTab] = useState<Day>('Friday');
