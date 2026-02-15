@@ -45,8 +45,10 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             return Ok(hub_member)
 
         except DuplicateKeyError:
-            LOG.warning("HUB member insertion failed due to a duplicate name")
-            return Err(DuplicateHubMemberUsernameError(hub_member.name))
+            if isinstance(hub_member, HubAdmin):
+                LOG.warning("HUB member insertion failed due to a duplicate username")
+                return Err(DuplicateHubMemberUsernameError(hub_member.username))
+            # no actual other valid case
 
         except Exception as e:
             LOG.exception("HUB member insertion failed due to error", error=e)
