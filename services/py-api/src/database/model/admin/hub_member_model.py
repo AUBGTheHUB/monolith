@@ -5,7 +5,9 @@ from pydantic import HttpUrl
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
-DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Design"]
+DEPARTMENTS_LIST = Literal[
+    "Development", "Marketing", "Logistics", "PR", "Design", "President", "Vice President", "Treasurer"
+]
 MEMBER_TYPE = Literal["member", "admin"]
 """This is to distinguish between ordinary club members with NO access to the admin panel
     and admins with specific access based on their role defined in the hub_admin_model"""
