@@ -1,5 +1,3 @@
-from os import environ
-from unittest.mock import patch
 from typing import Any
 
 import pytest
@@ -16,21 +14,20 @@ def _valid_past_event_payload() -> dict[str, Any]:
     }
 
 
-async def _delete_past_event(async_client: AsyncClient, past_event_id: str) -> None:
+async def _delete_past_event(async_client: AsyncClient, past_event_id: str, super_auth_token: str) -> None:
     await async_client.delete(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{past_event_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_past_event_success(async_client: AsyncClient) -> None:
+async def test_create_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # When
     result = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_past_event_payload(),
         follow_redirects=True,
     )
@@ -46,10 +43,11 @@ async def test_create_past_event_success(async_client: AsyncClient) -> None:
     assert "id" in body["past_event"]
 
     # Cleanup
-    await _delete_past_event(async_client=async_client, past_event_id=body["past_event"]["id"])
+    await _delete_past_event(
+        async_client=async_client, past_event_id=body["past_event"]["id"], super_auth_token=super_auth_token
+    )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_past_event_unauthorized(async_client: AsyncClient) -> None:
     result = await async_client.post(
@@ -63,13 +61,12 @@ async def test_create_past_event_unauthorized(async_client: AsyncClient) -> None
     assert result.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_all_past_events_success(async_client: AsyncClient) -> None:
+async def test_get_all_past_events_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one event so the list has a stable target
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_past_event_payload(),
         follow_redirects=True,
     )
@@ -79,7 +76,7 @@ async def test_get_all_past_events_success(async_client: AsyncClient) -> None:
     # Act: list all
     result = await async_client.get(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -92,16 +89,15 @@ async def test_get_all_past_events_success(async_client: AsyncClient) -> None:
     assert any(e["id"] == created_id for e in body["past_events"])
 
     # Cleanup
-    await _delete_past_event(async_client=async_client, past_event_id=created_id)
+    await _delete_past_event(async_client=async_client, past_event_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_past_event_by_id_success(async_client: AsyncClient) -> None:
+async def test_get_past_event_by_id_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create an event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_past_event_payload(),
         follow_redirects=True,
     )
@@ -112,7 +108,7 @@ async def test_get_past_event_by_id_success(async_client: AsyncClient) -> None:
     # Act: fetch by id
     result = await async_client.get(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -126,15 +122,14 @@ async def test_get_past_event_by_id_success(async_client: AsyncClient) -> None:
     assert body["past_event"]["tags"] == created_event["tags"]
 
     # Cleanup
-    await _delete_past_event(async_client=async_client, past_event_id=created_id)
+    await _delete_past_event(async_client=async_client, past_event_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_past_event_by_id_invalid_format(async_client: AsyncClient) -> None:
+async def test_get_past_event_by_id_invalid_format(async_client: AsyncClient, super_auth_token: str) -> None:
     result = await async_client.get(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/not-a-valid-object-id",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -142,14 +137,13 @@ async def test_get_past_event_by_id_invalid_format(async_client: AsyncClient) ->
     assert result.json()["error"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_past_event_by_id_not_found(async_client: AsyncClient) -> None:
+async def test_get_past_event_by_id_not_found(async_client: AsyncClient, super_auth_token: str) -> None:
     non_existing_id = "507f1f77bcf86cd799439011"  # valid ObjectId, but not in DB
 
     result = await async_client.get(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{non_existing_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -157,13 +151,12 @@ async def test_get_past_event_by_id_not_found(async_client: AsyncClient) -> None
     assert result.json()["error"] == "The specified past event was not found"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_update_past_event_success(async_client: AsyncClient) -> None:
+async def test_update_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_past_event_payload(),
         follow_redirects=True,
     )
@@ -179,7 +172,7 @@ async def test_update_past_event_success(async_client: AsyncClient) -> None:
     # Act: update
     result = await async_client.patch(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=update_payload,
         follow_redirects=True,
     )
@@ -194,16 +187,15 @@ async def test_update_past_event_success(async_client: AsyncClient) -> None:
     assert body["past_event"]["tags"] == ["conference", "updated"]
 
     # Cleanup
-    await _delete_past_event(async_client=async_client, past_event_id=created_id)
+    await _delete_past_event(async_client=async_client, past_event_id=created_id, super_auth_token=super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_delete_past_event_success(async_client: AsyncClient) -> None:
+async def test_delete_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange: create one event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=_valid_past_event_payload(),
         follow_redirects=True,
     )
@@ -213,7 +205,7 @@ async def test_delete_past_event_success(async_client: AsyncClient) -> None:
     # Act: delete
     result = await async_client.delete(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -225,7 +217,7 @@ async def test_delete_past_event_success(async_client: AsyncClient) -> None:
     # Assert: the event is actually gone
     get_after_delete = await async_client.get(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
     assert get_after_delete.status_code == 404

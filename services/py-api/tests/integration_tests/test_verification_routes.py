@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-from os import environ
 from unittest.mock import patch
 from httpx import AsyncClient
 import pytest
@@ -85,7 +84,7 @@ async def test_verify_participant_admin_case_when_participant_is_not_found(
 
 @patch.dict(
     "os.environ",
-    {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"},
+    {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"},
 )
 @pytest.mark.asyncio
 async def test_verify_participant_admin_case_when_team_is_not_found(
@@ -94,6 +93,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
     async_client: AsyncClient,
     jwt_utility_mock: JwtUtility,
     one_minute_jwt_exp: int,
+    super_auth_token: str,
 ) -> None:
     # Given
     admin_participant_body = generate_participant_request_body(
@@ -112,7 +112,7 @@ async def test_verify_participant_admin_case_when_team_is_not_found(
 
     delete_team_resp = await async_client.delete(
         url=f"{TEAM_ENDPOINT_URL}/{create_resp_json["team"]["id"]}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
     assert delete_team_resp.status_code == status.HTTP_200_OK
 
@@ -587,13 +587,14 @@ async def test_resend_verification_email_already_verified_random_participant(
 
 @patch.dict(
     "os.environ",
-    {"SECRET_KEY": "abcdefghijklmnopqrst", "SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"},
+    {"SECRET_KEY": "abcdefghijklmnopqrst", "RESEND_API_KEY": "res_some_api_key"},
 )
 @pytest.mark.asyncio
 async def test_resend_verification_email_admin_team_not_found(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
+    super_auth_token: str,
 ) -> None:
     # Given
     admin_participant_body = generate_participant_request_body(
@@ -609,7 +610,7 @@ async def test_resend_verification_email_admin_team_not_found(
     # Delete the team before trying to resend the verification email
     delete_team_resp = await async_client.delete(
         url=f"{TEAM_ENDPOINT_URL}/{team_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
     assert delete_team_resp.status_code == status.HTTP_200_OK
 
