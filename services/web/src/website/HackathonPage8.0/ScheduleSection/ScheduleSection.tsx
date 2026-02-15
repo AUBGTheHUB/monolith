@@ -11,7 +11,7 @@ export const ScheduleSection = () => {
 
     return (
         <section
-            className="relative w-full min-h-[80vh] flex flex-col items-center overflow-x-hidden pt-8 md:pt-16 lg:pt-24 pb-8 md:pb-12 lg:pb-16 px-8 bg-white"
+            className="relative w-full min-h-[80vh] flex flex-col items-center overflow-x-hidden py-8 md:py-16 lg:py-24 bg-[#FFFDF5]"
             id="schedule"
         >
             <div className="absolute inset-0 z-50 pointer-events-none">
@@ -31,7 +31,7 @@ export const ScheduleSection = () => {
             />
 
             <div className="relative z-10 w-full grid place-items-center">
-                <div className="w-full flex flex-col" style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}>
+                <div className="w-full flex flex-col md:px-0 px-8" style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}>
                     <div className="mb-[2rem] md:mb-[3rem] lg:mb-[4.125rem]">
                         <ScheduleHeader />
                     </div>

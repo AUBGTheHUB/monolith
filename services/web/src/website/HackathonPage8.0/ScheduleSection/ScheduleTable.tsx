@@ -7,7 +7,7 @@ import './ScheduleStyle.css';
 export const ScheduleTable = () => (
     <>
         {(['Friday', 'Saturday', 'Sunday'] as Day[]).map((day) => (
-            <TabsContent key={day} value={day} className="w-full table">
+            <TabsContent key={day} value={day} className="w-full">
                 <div
                     className="rounded-[1rem] md:rounded-[1.25rem] w-full"
                     style={{

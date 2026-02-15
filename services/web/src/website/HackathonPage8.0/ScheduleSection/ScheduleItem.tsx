@@ -10,7 +10,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({ time, event, isLast 
         </div>
         {!isLast && (
             <div
-                className="h-[1px]"
+                className="h-[0.6px]"
                 style={{
                     background: '#A9B4C3',
                     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
