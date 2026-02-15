@@ -1,3 +1,4 @@
-.schedule-item-text {
+.table-row-text,
+.button-text {
     font-size: clamp(16px, 2.5vw, 22px);
 }
