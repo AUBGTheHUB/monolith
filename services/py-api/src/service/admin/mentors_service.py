@@ -51,4 +51,9 @@ class MentorsService:
         return await self._repo.update(mentor_id, params)
 
     async def delete(self, mentor_id: str) -> Result[Mentor, Exception]:
-        return await self._repo.delete(mentor_id)
+        result = await self._repo.delete(mentor_id)
+
+        if result.is_ok():
+            self._image_storing_service.delete_image(f"mentors/{str(mentor_id)}")
+
+        return result

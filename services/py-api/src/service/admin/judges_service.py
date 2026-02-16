@@ -47,4 +47,9 @@ class JudgesService:
         return await self._repo.update(judge_id, params)
 
     async def delete(self, judge_id: str) -> Result[Judge, Exception]:
-        return await self._repo.delete(judge_id)
+        result = await self._repo.delete(judge_id)
+
+        if result.is_ok():
+            self._image_storing_service.delete_image(f"judges/{str(judge_id)}")
+
+        return result

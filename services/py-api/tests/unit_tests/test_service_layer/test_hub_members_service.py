@@ -3,22 +3,24 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
+from fastapi import UploadFile
 from result import Err, Ok
 
-from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
+from src.database.model.admin.hub_member_model import HubMember
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.exception import HubMemberNotFoundError
-from src.server.schemas.request_schemas.admin.hub_member_schemas import (
-    HubMemberPostReqData,
-    HubMemberPatchReqData,
-)
 from src.service.admin.hub_members_service import HubMembersService
-from tests.unit_tests.conftest import HubMembersRepoMock
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+from tests.unit_tests.conftest import HubMembersRepoMock, ImageStoringServiceMock
 
 
 @pytest.fixture
-def hub_members_service(hub_members_repo_mock: HubMembersRepoMock) -> HubMembersService:
-    return HubMembersService(cast(HubMembersRepository, hub_members_repo_mock))
+def hub_members_service(
+    hub_members_repo_mock: HubMembersRepoMock, image_storing_service_mock: ImageStoringServiceMock
+) -> HubMembersService:
+    return HubMembersService(
+        cast(HubMembersRepository, hub_members_repo_mock), cast(ImageStoringService, image_storing_service_mock)
+    )
 
 
 @pytest.mark.asyncio
@@ -65,21 +67,23 @@ async def test_get_returns_err_when_not_found(
 
 @pytest.mark.asyncio
 async def test_create_calls_repo_with_built_model(
-    hub_members_service: HubMembersService, hub_members_repo_mock: HubMembersRepoMock, hub_member_mock: HubMember
+    hub_members_service: HubMembersService,
+    hub_members_repo_mock: HubMembersRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    hub_member_mock: HubMember,
+    image_mock: UploadFile,
 ) -> None:
-    from pydantic import HttpUrl
 
-    req = HubMemberPostReqData(
+    hub_members_repo_mock.create.return_value = Ok(hub_member_mock)
+    image_storing_service_mock.upload_image.return_value = hub_member_mock.avatar_url
+
+    result = await hub_members_service.create(
         name=hub_member_mock.name,
         position=hub_member_mock.position,
         department=hub_member_mock.department,
-        avatar_url=HttpUrl(hub_member_mock.avatar_url),
+        avatar=image_mock,
         social_links=hub_member_mock.social_links,
     )
-
-    hub_members_repo_mock.create.return_value = Ok(hub_member_mock)
-
-    result = await hub_members_service.create(req)
 
     assert result.is_ok()
     hub_members_repo_mock.create.assert_awaited_once()
@@ -87,19 +91,20 @@ async def test_create_calls_repo_with_built_model(
     assert hub_members_repo_mock.create.call_args is not None
     passed_member = hub_members_repo_mock.create.call_args.args[0]
     assert isinstance(passed_member, HubMember)
-    assert passed_member.name == req.name
-    assert passed_member.position == req.position
-    assert passed_member.department == req.department
-    assert passed_member.avatar_url == str(req.avatar_url)
+    assert passed_member.name == hub_member_mock.name
+    assert passed_member.position == hub_member_mock.position
+    assert passed_member.department == hub_member_mock.department
+    assert passed_member.avatar_url == str(hub_member_mock.avatar_url)
 
 
 @pytest.mark.asyncio
 async def test_update_calls_repo_with_update_params(
-    hub_members_service: HubMembersService, hub_members_repo_mock: HubMembersRepoMock, hub_member_mock: HubMember
+    hub_members_service: HubMembersService,
+    hub_members_repo_mock: HubMembersRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    hub_member_mock: HubMember,
+    image_mock: UploadFile,
 ) -> None:
-    pass
-
-    req = HubMemberPatchReqData(name="new", position="new position")
     updated = HubMember(
         id=hub_member_mock.id,
         name="new",
@@ -110,23 +115,34 @@ async def test_update_calls_repo_with_update_params(
     )
 
     hub_members_repo_mock.update.return_value = Ok(updated)
+    image_storing_service_mock.upload_image.return_value = hub_member_mock.avatar_url
 
-    result = await hub_members_service.update(str(hub_member_mock.id), req)
+    result = await hub_members_service.update(
+        member_id=str(hub_member_mock.id),
+        name="new",
+        position="new position",
+        department=hub_member_mock.department,
+        avatar=image_mock,
+        social_links=hub_member_mock.social_links,
+    )
 
     assert result.is_ok()
     hub_members_repo_mock.update.assert_awaited_once()
 
     assert hub_members_repo_mock.update.call_args is not None
     assert hub_members_repo_mock.update.call_args.args[0] == str(hub_member_mock.id)
-    passed_params = hub_members_repo_mock.update.call_args.args[1]
-    assert isinstance(passed_params, UpdateHubMemberParams)
-    assert passed_params.name == req.name
-    assert passed_params.position == req.position
+
+    body = result.ok_value
+    assert body.name == updated.name
+    assert body.position == updated.position
 
 
 @pytest.mark.asyncio
 async def test_delete_calls_repo(
-    hub_members_service: HubMembersService, hub_members_repo_mock: HubMembersRepoMock, hub_member_mock: HubMember
+    hub_members_service: HubMembersService,
+    hub_members_repo_mock: HubMembersRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    hub_member_mock: HubMember,
 ) -> None:
     hub_members_repo_mock.delete.return_value = Ok(hub_member_mock)
 
@@ -134,3 +150,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     hub_members_repo_mock.delete.assert_awaited_once_with(str(hub_member_mock.id))
+    image_storing_service_mock.delete_image.assert_called_once_with(f"hub-members/{str(hub_member_mock.id)}")

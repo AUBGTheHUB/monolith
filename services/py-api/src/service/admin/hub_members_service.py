@@ -60,4 +60,9 @@ class HubMembersService:
         return await self._repo.update(member_id, update_params)
 
     async def delete(self, member_id: str) -> Result[HubMember, Exception]:
-        return await self._repo.delete(member_id)
+        result = await self._repo.delete(member_id)
+
+        if result.is_ok():
+            self._image_storing_service.delete_image(f"hub-members/{str(member_id)}")
+
+        return result

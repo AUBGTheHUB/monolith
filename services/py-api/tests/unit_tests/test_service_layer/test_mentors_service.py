@@ -6,7 +6,7 @@ import pytest
 from fastapi import UploadFile
 from result import Err, Ok
 
-from src.database.model.admin.mentor_model import Mentor, UpdateMentorParams
+from src.database.model.admin.mentor_model import Mentor
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.exception import MentorNotFoundError
 from src.server.schemas.request_schemas.admin.mentor_schemas import (
@@ -114,7 +114,7 @@ async def test_update_calls_repo_with_update_params(
     mentor_mock: Mentor,
     image_mock: UploadFile,
 ) -> None:
-    req = MentorPatchReqData(
+    MentorPatchReqData(
         name=mentor_mock.name,
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
@@ -146,17 +146,20 @@ async def test_update_calls_repo_with_update_params(
 
     assert mentors_repo_mock.update.call_args is not None
     assert mentors_repo_mock.update.call_args.args[0] == mentor_mock.id
-    updated_params = mentors_repo_mock.update.call_args.args[1]
-    assert isinstance(updated_params, UpdateMentorParams)
-    assert updated_params.name == req.name
-    assert updated_params.company == req.company
-    assert updated_params.job_title == req.job_title
-    assert updated_params.avatar_url == mentor_mock.avatar_url
+
+    body = result.ok_value
+    assert body.name == updated.name
+    assert body.company == updated.company
+    assert body.job_title == updated.job_title
+    assert body.avatar_url == updated.avatar_url
 
 
 @pytest.mark.asyncio
 async def test_delete_calls_repo(
-    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock, mentor_mock: Mentor
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
 ) -> None:
     mentors_repo_mock.delete.return_value = Ok(mentor_mock)
 
@@ -164,3 +167,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     mentors_repo_mock.delete.assert_awaited_once_with(str(mentor_mock.id))
+    image_storing_service_mock.delete_image.assert_called_once_with(f"mentors/{str(mentor_mock.id)}")

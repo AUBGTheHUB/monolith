@@ -7,12 +7,11 @@ from fastapi import UploadFile
 from pydantic import HttpUrl
 from result import Err, Ok
 
-from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
+from src.database.model.admin.sponsor_model import Sponsor
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.exception import SponsorNotFoundError
 from src.server.schemas.request_schemas.admin.sponsor_schemas import (
     SponsorPostReqData,
-    SponsorPatchReqData,
 )
 from src.service.admin.sponsors_service import SponsorsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
@@ -110,9 +109,6 @@ async def test_update_calls_repo_with_update_params(
     sponsor_mock: Sponsor,
     image_mock: UploadFile,
 ) -> None:
-    req = SponsorPatchReqData(
-        name=sponsor_mock.name, tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo=image_mock
-    )
     updated = Sponsor(
         name="New name", tier=sponsor_mock.tier, website_url=sponsor_mock.website_url, logo_url=sponsor_mock.logo_url
     )
@@ -133,16 +129,19 @@ async def test_update_calls_repo_with_update_params(
 
     assert sponsors_repo_mock.update.call_args is not None
     assert sponsors_repo_mock.update.call_args.args[0] == sponsor_mock.id
-    updated_params = sponsors_repo_mock.update.call_args.args[1]
-    assert isinstance(updated_params, UpdateSponsorParams)
-    assert updated_params.name == req.name
-    assert updated_params.tier == req.tier
-    assert updated_params.website_url == req.website_url
+
+    body = result.ok_value
+    assert body.name == sponsor_mock.name
+    assert body.tier == sponsor_mock.tier
+    assert body.website_url == sponsor_mock.website_url
 
 
 @pytest.mark.asyncio
 async def test_delete_calls_repo(
-    sponsors_service: SponsorsService, sponsors_repo_mock: SponsorsRepoMock, sponsor_mock: Sponsor
+    sponsors_service: SponsorsService,
+    sponsors_repo_mock: SponsorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    sponsor_mock: Sponsor,
 ) -> None:
     sponsors_repo_mock.delete.return_value = Ok(sponsor_mock)
 
@@ -150,3 +149,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     sponsors_repo_mock.delete.assert_awaited_once_with(str(sponsor_mock.id))
+    image_storing_service_mock.delete_image.assert_called_once_with(f"sponsors/{str(sponsor_mock.id)}")

@@ -6,12 +6,11 @@ import pytest
 from fastapi import UploadFile
 from result import Err, Ok
 
-from src.database.model.admin.judge_model import Judge, UpdateJudgeParams
+from src.database.model.admin.judge_model import Judge
 from src.database.repository.admin.judges_repository import JudgesRepository
 from src.exception import JudgeNotFoundError
 from src.server.schemas.request_schemas.admin.judge_schemas import (
     JudgePostReqData,
-    JudgePatchReqData,
 )
 from src.service.admin.judges_service import JudgesService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
@@ -111,13 +110,6 @@ async def test_create_calls_repo_with_built_model(
 async def test_update_calls_repo_with_update_params(
     judges_service: JudgesService, judges_repo_mock: JudgesRepoMock, judge_mock: Judge, image_mock: UploadFile
 ) -> None:
-    req = JudgePatchReqData(
-        name="Updated Name",
-        company=judge_mock.company,
-        job_title="Updated Title",
-        linkedin_url=judge_mock.linkedin_url,
-        avatar=image_mock,
-    )
     updated = Judge(
         id=judge_mock.id,
         name="Updated Name",
@@ -143,18 +135,20 @@ async def test_update_calls_repo_with_update_params(
 
     assert judges_repo_mock.update.call_args is not None
     assert judges_repo_mock.update.call_args.args[0] == judge_mock.id
-    updated_params = judges_repo_mock.update.call_args.args[1]
 
-    assert isinstance(updated_params, UpdateJudgeParams)
-    assert updated_params.name == req.name
-    assert updated_params.company == req.company
-    assert updated_params.job_title == req.job_title
-    assert updated_params.linkedin_url == req.linkedin_url
+    body = result.ok_value
+    assert body.name == updated.name
+    assert body.company == updated.company
+    assert body.job_title == updated.job_title
+    assert body.linkedin_url == updated.linkedin_url
 
 
 @pytest.mark.asyncio
 async def test_delete_calls_repo(
-    judges_service: JudgesService, judges_repo_mock: JudgesRepoMock, judge_mock: Judge
+    judges_service: JudgesService,
+    judges_repo_mock: JudgesRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    judge_mock: Judge,
 ) -> None:
     judges_repo_mock.delete.return_value = Ok(judge_mock)
 
@@ -162,3 +156,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     judges_repo_mock.delete.assert_awaited_once_with(str(judge_mock.id))
+    image_storing_service_mock.delete_image.assert_called_once_with(f"judges/{str(judge_mock.id)}")
