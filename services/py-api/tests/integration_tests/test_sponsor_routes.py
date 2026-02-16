@@ -1,9 +1,7 @@
-from io import BytesIO
 from os import environ
 from typing import Any, Generator
 from unittest.mock import patch
 import pytest
-from PIL import Image
 from fastapi import UploadFile
 from httpx import AsyncClient
 
@@ -15,26 +13,11 @@ TEST_SPONSOR_TIER = "GOLD"
 TEST_SPONSOR_LOGO_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/sponsors"
 TEST_SPONSOR_WEBSITE_URL = "https://coca-cola.com/"
 
-valid_sponsor_body: dict[str, Any] = {
-    "name": TEST_SPONSOR_NAME,
-    "tier": TEST_SPONSOR_TIER,
-    "website_url": TEST_SPONSOR_WEBSITE_URL,
-}
-
 valid_sponsor_input: dict[str, Any] = {
     "name": TEST_SPONSOR_NAME,
     "tier": TEST_SPONSOR_TIER,
     "website_url": TEST_SPONSOR_WEBSITE_URL,
 }
-
-
-@pytest.fixture
-def logo_mock() -> tuple[str, BytesIO, str]:
-    image = Image.new("RGB", (2000, 1600), color="red")
-    output = BytesIO()
-    image.save(fp=output, format="JPEG")
-    output.seek(0)
-    return "some_logo.jpg", output, "image/jpeg"
 
 
 async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
@@ -48,7 +31,7 @@ async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_success(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange - No new object needed
 
@@ -57,7 +40,7 @@ async def test_create_sponsor_success(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
 
@@ -108,7 +91,7 @@ async def test_create_sponsor_missing_parameter(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_unauthorized(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange - No new object needed
 
@@ -117,7 +100,7 @@ async def test_create_sponsor_unauthorized(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer INVALID_TOKEN"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
 
@@ -129,7 +112,7 @@ async def test_create_sponsor_unauthorized(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_sponsors_success(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
 
@@ -137,7 +120,7 @@ async def test_get_all_sponsors_success(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
 
@@ -167,14 +150,14 @@ async def test_get_all_sponsors_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_sponsor_by_id_success(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -240,14 +223,14 @@ async def test_get_sponsor_by_id_not_found(async_client: AsyncClient, aws_mock: 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_sponsor_success(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -263,7 +246,7 @@ async def test_update_sponsor_success(
         url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=update_data,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
 
@@ -283,14 +266,14 @@ async def test_update_sponsor_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_sponsor_success(
-    async_client: AsyncClient, logo_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=SPONSORS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
         data=valid_sponsor_input,
-        files={"logo": logo_mock},
+        files={"logo": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201

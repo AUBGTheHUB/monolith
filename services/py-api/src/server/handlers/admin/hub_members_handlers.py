@@ -1,9 +1,14 @@
+import json
+from typing import Annotated
+
+from fastapi import Form, UploadFile
+from pydantic import StringConstraints
 from result import is_err
 
+from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, SocialLinks
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import Response
 from src.server.schemas.response_schemas.admin.hub_member_schemas import HubMemberResponse, AllHubMembersResponse
-from src.server.schemas.request_schemas.admin.hub_member_schemas import HubMemberPostReqData, HubMemberPatchReqData
 from src.service.admin.hub_members_service import HubMembersService
 from starlette import status
 
@@ -12,8 +17,19 @@ class HubMembersHandlers(BaseHandler):
     def __init__(self, service: HubMembersService) -> None:
         self._service = service
 
-    async def create_hub_member(self, data: HubMemberPostReqData) -> Response:
-        result = await self._service.create(data)
+    async def create_hub_member(
+        self,
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
+        position: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
+        department: Annotated[DEPARTMENTS_LIST, Form()],
+        avatar: Annotated[UploadFile, Form()],
+        social_links: Annotated[str, Form()],
+    ) -> Response:
+        social_links_dict: SocialLinks = json.loads(social_links)
+
+        result = await self._service.create(
+            name=name, position=position, department=department, avatar=avatar, social_links=social_links_dict
+        )
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -44,8 +60,27 @@ class HubMembersHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-    async def update_hub_member(self, object_id: str, data: HubMemberPatchReqData) -> Response:
-        result = await self._service.update(object_id, data)
+    async def update_hub_member(
+        self,
+        object_id: str,
+        name: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
+        position: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
+        department: Annotated[DEPARTMENTS_LIST | None, Form()] = None,
+        avatar: Annotated[UploadFile | None, Form()] = None,
+        social_links: Annotated[str | None, Form()] = None,
+    ) -> Response:
+        if social_links is not None:
+            social_links_dict: SocialLinks = json.loads(str(social_links))
+        else:
+            social_links_dict = {}
+        result = await self._service.update(
+            object_id,
+            name=name,
+            position=position,
+            department=department,
+            avatar=avatar,
+            social_links=social_links_dict,
+        )
 
         if is_err(result):
             return self.handle_error(result.err_value)

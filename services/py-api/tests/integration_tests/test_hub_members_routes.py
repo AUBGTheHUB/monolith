@@ -1,11 +1,14 @@
+import json
 from os import environ
+from typing import Any, Generator
 from unittest.mock import patch
-from typing import Any
 
 import pytest
+from fastapi import UploadFile
 from httpx import AsyncClient
 
 HUB_MEMBERS_ENDPOINT_URL = "/api/v3/admin/hub-members"
+TEST_MEMBER_AVATAR_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/hub-members"
 
 
 def _valid_hub_member_payload() -> dict[str, Any]:
@@ -13,11 +16,12 @@ def _valid_hub_member_payload() -> dict[str, Any]:
         "name": "John Doe",
         "position": "Senior Developer",
         "department": "Development",
-        "avatar_url": "https://example.com/avatar.jpg",
-        "social_links": {
-            "linkedin": "https://www.linkedin.com/in/johndoe",
-            "github": "https://github.com/johndoe",
-        },
+        "social_links": json.dumps(
+            {
+                "linkedin": "https://www.linkedin.com/in/johndoe",
+                "github": "https://github.com/johndoe",
+            }
+        ),
     }
 
 
@@ -31,12 +35,16 @@ async def _delete_hub_member(async_client: AsyncClient, member_id: str) -> None:
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_hub_member_success(async_client: AsyncClient) -> None:
+async def test_create_hub_member_success(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
+    print(_valid_hub_member_payload())
     # When
     result = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
 
@@ -48,7 +56,7 @@ async def test_create_hub_member_success(async_client: AsyncClient) -> None:
     assert body["hub_member"]["name"] == "John Doe"
     assert body["hub_member"]["position"] == "Senior Developer"
     assert body["hub_member"]["department"] == "Development"
-    assert body["hub_member"]["avatar_url"] == "https://example.com/avatar.jpg"
+    assert body["hub_member"]["avatar_url"] == f"{TEST_MEMBER_AVATAR_URL}/{body['hub_member']['id']}.webp"
     assert "id" in body["hub_member"]
 
     # Cleanup
@@ -57,11 +65,14 @@ async def test_create_hub_member_success(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_hub_member_unauthorized(async_client: AsyncClient) -> None:
+async def test_create_hub_member_unauthorized(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
     result = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": "Bearer WRONG_TOKEN"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
 
@@ -71,12 +82,15 @@ async def test_create_hub_member_unauthorized(async_client: AsyncClient) -> None
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_all_hub_members_success(async_client: AsyncClient) -> None:
+async def test_get_all_hub_members_success(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
     # Arrange: create one member so the list has a stable target
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -103,12 +117,15 @@ async def test_get_all_hub_members_success(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_hub_member_by_id_success(async_client: AsyncClient) -> None:
+async def test_get_hub_member_by_id_success(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
     # Arrange: create a member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -164,12 +181,15 @@ async def test_get_hub_member_by_id_not_found(async_client: AsyncClient) -> None
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_update_hub_member_success(async_client: AsyncClient) -> None:
+async def test_update_hub_member_success(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
     # Arrange: create one member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -185,7 +205,7 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
     result = await async_client.patch(
         url=f"{HUB_MEMBERS_ENDPOINT_URL}/{created_id}",
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=update_payload,
+        data=update_payload,
         follow_redirects=True,
     )
 
@@ -203,12 +223,15 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_delete_hub_member_success(async_client: AsyncClient) -> None:
+async def test_delete_hub_member_success(
+    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+) -> None:
     # Arrange: create one member
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
-        json=_valid_hub_member_payload(),
+        data=_valid_hub_member_payload(),
+        files={"avatar": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201

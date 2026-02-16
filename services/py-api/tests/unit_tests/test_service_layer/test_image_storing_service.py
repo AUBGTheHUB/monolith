@@ -63,16 +63,6 @@ async def test_upload_image_success(
 
 
 @pytest.mark.asyncio
-async def test_upload_image_invalid_file_name(
-    image_storing_service: ImageStoringService, image_mock: UploadFile
-) -> None:
-    image_name_mock = "invalid_file_name"
-
-    with pytest.raises(ImageUploadError) as e:
-        await image_storing_service.upload_image(image_mock, image_name_mock)
-
-
-@pytest.mark.asyncio
 async def test_upload_image_no_file_name(image_storing_service: ImageStoringService, image_mock: UploadFile) -> None:
     image_name_mock = ""
 

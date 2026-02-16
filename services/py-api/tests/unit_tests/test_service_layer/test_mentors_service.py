@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.mentor_model import Mentor, UpdateMentorParams
@@ -13,12 +14,17 @@ from src.server.schemas.request_schemas.admin.mentor_schemas import (
     MentorPatchReqData,
 )
 from src.service.admin.mentors_service import MentorsService
-from tests.unit_tests.conftest import MentorsRepoMock
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+from tests.unit_tests.conftest import MentorsRepoMock, ImageStoringServiceMock
 
 
 @pytest.fixture
-def mentors_service(mentors_repo_mock: MentorsRepoMock) -> MentorsService:
-    return MentorsService(cast(MentorsRepository, mentors_repo_mock))
+def mentors_service(
+    mentors_repo_mock: MentorsRepoMock, image_storing_service_mock: ImageStoringServiceMock
+) -> MentorsService:
+    return MentorsService(
+        cast(MentorsRepository, mentors_repo_mock), cast(ImageStoringService, image_storing_service_mock)
+    )
 
 
 @pytest.mark.asyncio
@@ -63,19 +69,30 @@ async def test_get_returns_err_when_not_found(
 
 @pytest.mark.asyncio
 async def test_create_calls_repo_with_built_model(
-    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock, mentor_mock: Mentor
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
+    image_mock: UploadFile,
 ) -> None:
     req = MentorPostReqData(
         name=mentor_mock.name,
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
-        avatar_url=mentor_mock.avatar_url,
+        avatar=image_mock,
         linkedin_url=mentor_mock.linkedin_url,
     )
 
     mentors_repo_mock.create.return_value = Ok(mentor_mock)
+    image_storing_service_mock.upload_image.return_value = mentor_mock.avatar_url
 
-    result = await mentors_service.create(req)
+    result = await mentors_service.create(
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
 
     assert result.is_ok()
     mentors_repo_mock.create.assert_awaited_once()
@@ -86,18 +103,22 @@ async def test_create_calls_repo_with_built_model(
     assert mentor.name == req.name
     assert mentor.company == req.company
     assert mentor.job_title == req.job_title
-    assert mentor.avatar_url == str(req.avatar_url)
+    assert mentor.avatar_url == mentor_mock.avatar_url
 
 
 @pytest.mark.asyncio
 async def test_update_calls_repo_with_update_params(
-    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock, mentor_mock: Mentor
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
+    image_mock: UploadFile,
 ) -> None:
     req = MentorPatchReqData(
         name=mentor_mock.name,
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
-        avatar_url=mentor_mock.avatar_url,
+        avatar=image_mock,
         linkedin_url=mentor_mock.linkedin_url,
     )
     updated = Mentor(
@@ -109,8 +130,16 @@ async def test_update_calls_repo_with_update_params(
     )
 
     mentors_repo_mock.update.return_value = Ok(updated)
+    image_storing_service_mock.upload_image.return_value = mentor_mock.avatar_url
 
-    result = await mentors_service.update(mentor_mock.id, req)
+    result = await mentors_service.update(
+        mentor_id=str(mentor_mock.id),
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
 
     assert result.is_ok()
     mentors_repo_mock.update.assert_awaited_once()
@@ -122,7 +151,7 @@ async def test_update_calls_repo_with_update_params(
     assert updated_params.name == req.name
     assert updated_params.company == req.company
     assert updated_params.job_title == req.job_title
-    assert updated_params.avatar_url == str(req.avatar_url)
+    assert updated_params.avatar_url == mentor_mock.avatar_url
 
 
 @pytest.mark.asyncio

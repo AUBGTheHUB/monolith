@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Form, UploadFile
-from pydantic import HttpUrl
+from pydantic import HttpUrl, StringConstraints
 from result import is_err
 
 from src.database.model.admin.sponsor_model import ALLOWED_SPONSOR_TIERS
@@ -18,7 +18,7 @@ class SponsorsHandlers(BaseHandler):
 
     async def create_sponsor(
         self,
-        name: Annotated[str, Form(...)],
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
         tier: Annotated[ALLOWED_SPONSOR_TIERS, Form()],
         logo: Annotated[UploadFile, Form()],
         website_url: Annotated[HttpUrl | None, Form()] = None,
@@ -49,7 +49,7 @@ class SponsorsHandlers(BaseHandler):
     async def update_sponsor(
         self,
         object_id: str,
-        name: Annotated[str | None, Form(...)] = None,
+        name: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
         tier: Annotated[ALLOWED_SPONSOR_TIERS | None, Form()] = None,
         logo: Annotated[UploadFile | None, Form()] = None,
         website_url: Annotated[HttpUrl | None, Form()] = None,

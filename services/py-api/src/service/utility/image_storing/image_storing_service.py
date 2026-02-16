@@ -29,6 +29,9 @@ class ImageStoringService:
         The return value is the address at which the image can be accessed.
         """
         try:
+            if len(file_name.strip()) == 0:
+                raise ImageUploadError("The file name cannot be an empty string")
+
             output = self._compress_image(file=await file.read())  # The file name without the extension
             formatted_file_name = f"{file_name}.{DEFAULT_OUTPUT_FORMAT.lower()}"  # The file name with the extension
             return self._aws_service.upload_file(

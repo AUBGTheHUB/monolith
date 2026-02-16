@@ -2,12 +2,14 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
-from fastapi import BackgroundTasks
+from PIL import Image
+from fastapi import BackgroundTasks, UploadFile
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorClientSession,
@@ -1497,6 +1499,15 @@ def login_hub_admin_data_mock() -> LoginHubAdminData:
 @pytest.fixture
 def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def image_mock() -> UploadFile:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return UploadFile(filename="my_image.jpg", file=output)
 
 
 @pytest.fixture

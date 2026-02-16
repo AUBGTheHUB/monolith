@@ -1,14 +1,17 @@
+from fastapi import UploadFile
 from result import Result
 
-from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.hub_member_model import HubMember, DEPARTMENTS_LIST, SocialLinks
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.model.admin.hub_member_model import UpdateHubMemberParams
-from src.server.schemas.request_schemas.admin.hub_member_schemas import HubMemberPostReqData, HubMemberPatchReqData
+from src.server.schemas.request_schemas.schemas import NonEmptyStr
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 
 class HubMembersService:
-    def __init__(self, repo: HubMembersRepository) -> None:
+    def __init__(self, repo: HubMembersRepository, image_storing_service: ImageStoringService) -> None:
         self._repo = repo
+        self._image_storing_service = image_storing_service
 
     async def get_all(self) -> Result[list[HubMember], Exception]:
         return await self._repo.fetch_all()
@@ -16,19 +19,44 @@ class HubMembersService:
     async def get(self, member_id: str) -> Result[HubMember, Exception]:
         return await self._repo.fetch_by_id(member_id)
 
-    async def create(self, data: HubMemberPostReqData) -> Result[HubMember, Exception]:
+    async def create(
+        self,
+        name: NonEmptyStr,
+        position: NonEmptyStr,
+        department: DEPARTMENTS_LIST,
+        avatar: UploadFile,
+        social_links: SocialLinks,
+    ) -> Result[HubMember, Exception]:
         member = HubMember(
-            name=data.name,
-            position=data.position,
-            department=data.department,
-            avatar_url=str(data.avatar_url),
-            social_links=data.social_links,
+            name=name,
+            position=position,
+            department=department,
+            avatar_url="",
+            social_links=social_links,
         )
+        avatar_url = await self._image_storing_service.upload_image(avatar, f"hub-members/{str(member.id)}")
+        member.avatar_url = str(avatar_url)
         return await self._repo.create(member)
 
-    async def update(self, member_id: str, data: HubMemberPatchReqData) -> Result[HubMember, Exception]:
-        update_data = data.model_dump(exclude_none=True)
-        update_params = UpdateHubMemberParams(**update_data)
+    async def update(
+        self,
+        member_id: str,
+        name: NonEmptyStr | None = None,
+        position: NonEmptyStr | None = None,
+        department: DEPARTMENTS_LIST | None = None,
+        avatar: UploadFile | None = None,
+        social_links: SocialLinks | None = None,
+    ) -> Result[HubMember, Exception]:
+
+        if avatar is not None:
+            avatar_url = await self._image_storing_service.upload_image(
+                file=avatar, file_name=f"hub-members/{str(member_id)}"
+            )
+        else:
+            avatar_url = None
+        update_params = UpdateHubMemberParams(
+            name=name, position=position, department=department, avatar_url=avatar_url, social_links=social_links
+        )
         return await self._repo.update(member_id, update_params)
 
     async def delete(self, member_id: str) -> Result[HubMember, Exception]:

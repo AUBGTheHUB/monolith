@@ -30,9 +30,11 @@ class HubMember(BaseDbModel):
 
     def _serialize_social_links(self) -> dict[str, Any]:
         social_links_serialized = {}
-        for link_name, link_url in self.social_links.items():
-            if link_url is not None:
-                social_links_serialized[link_name] = str(link_url)
+
+        if self.social_links is not None:
+            for link_name, link_url in self.social_links.items():
+                if link_url is not None:
+                    social_links_serialized[link_name] = str(link_url)
 
         return social_links_serialized
 

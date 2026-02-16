@@ -7,11 +7,13 @@ from src.server.schemas.request_schemas.admin.past_event_schemas import (
     PastEventPostReqData,
     PastEventPatchReqData,
 )
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 
 class PastEventsService:
-    def __init__(self, repo: PastEventsRepository) -> None:
+    def __init__(self, repo: PastEventsRepository, image_storing_service: ImageStoringService) -> None:
         self._repo = repo
+        self._image_storing_service = image_storing_service
 
     async def get_all(self) -> Result[list[PastEvent], Exception]:
         return await self._repo.fetch_all()
