@@ -51,7 +51,7 @@ class ImageStoringService:
     def delete_image(self, file_name: str) -> None:
         try:
             # Take the file name from the url
-            self._aws_service.delete_file(file_name)
+            self._aws_service.delete_file(f"{file_name}.{DEFAULT_OUTPUT_FORMAT.lower()}")
 
         except Exception as e:
             LOG.exception("There was an error when deleting the image", error=e)
