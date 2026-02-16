@@ -10,6 +10,8 @@ HOST = environ["HOST"]
 DOMAIN = environ["DOMAIN"]
 PORT = int(environ["PORT"])
 DATABASE_URL = environ["DATABASE_URL"]
+AWS_S3_DEFAULT_BUCKET = environ["AWS_BUCKET"]
+AWS_DEFAULT_REGION: str = environ["AWS_DEFAULT_REGION"]
 
 
 def _read_docker_secret(secret_path: str) -> str | None:
