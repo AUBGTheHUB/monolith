@@ -45,10 +45,10 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             return Ok(hub_member)
 
         except DuplicateKeyError:
-            if isinstance(hub_member, HubAdmin):
-                LOG.warning("HUB member insertion failed due to a duplicate username")
-                return Err(DuplicateHubMemberUsernameError(hub_member.username))
-            # no actual other valid case
+            # If we hit this, we know it's a username clash because of MongoDb partial index
+            username = getattr(hub_member, "username", "unknown")
+            LOG.warning("HUB member insertion failed: duplicate username", username=username)
+            return Err(DuplicateHubMemberUsernameError(username))
 
         except Exception as e:
             LOG.exception("HUB member insertion failed due to error", error=e)
