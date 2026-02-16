@@ -55,7 +55,7 @@ class HubMembersService:
         else:
             avatar_url = None
         update_params = UpdateHubMemberParams(
-            name=name, position=position, department=department, avatar_url=avatar_url, social_links=social_links
+            name=name, position=position, department=department, avatar_url=str(avatar_url), social_links=social_links
         )
         return await self._repo.update(member_id, update_params)
 
