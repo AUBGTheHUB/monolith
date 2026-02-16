@@ -28,7 +28,7 @@ class MentorsService:
         avatar: UploadFile,
         linkedin_url: Optional[HttpUrl] = None,
     ) -> Result[Mentor, Exception]:
-        mentor = Mentor(name=name, company=company, job_title=job_title, avatar_url="", linkedin_url=linkedin_url)
+        mentor = Mentor(name=name, company=company, job_title=job_title, avatar_url="", linkedin_url=str(linkedin_url))
         avatar_url = await self._image_storing_service.upload_image(file=avatar, file_name=f"mentors/{str(mentor.id)}")
         mentor.avatar_url = str(avatar_url)
 
@@ -47,7 +47,7 @@ class MentorsService:
         if avatar is not None:
             await self._image_storing_service.upload_image(file=avatar, file_name=f"mentors/{str(mentor_id)}")
 
-        params = UpdateMentorParams(name=name, company=company, job_title=job_title, linkedin_url=linkedin_url)
+        params = UpdateMentorParams(name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url))
         return await self._repo.update(mentor_id, params)
 
     async def delete(self, mentor_id: str) -> Result[Mentor, Exception]:

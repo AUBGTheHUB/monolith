@@ -1,8 +1,8 @@
+from io import BytesIO
 from os import environ
 from typing import Any, Generator
 from unittest.mock import patch
 import pytest
-from fastapi import UploadFile
 from httpx import AsyncClient
 
 
@@ -31,7 +31,7 @@ async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange - No new object needed
 
@@ -91,7 +91,7 @@ async def test_create_sponsor_missing_parameter(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_sponsor_unauthorized(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange - No new object needed
 
@@ -112,7 +112,7 @@ async def test_create_sponsor_unauthorized(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_sponsors_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
 
@@ -150,7 +150,7 @@ async def test_get_all_sponsors_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_sponsor_by_id_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
@@ -223,7 +223,7 @@ async def test_get_sponsor_by_id_not_found(async_client: AsyncClient, aws_mock: 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_sponsor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
@@ -266,7 +266,7 @@ async def test_update_sponsor_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_sponsor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(

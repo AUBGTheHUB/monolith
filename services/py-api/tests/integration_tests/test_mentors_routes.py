@@ -1,7 +1,7 @@
+from io import BytesIO
 from os import environ
 from unittest.mock import patch
 import pytest
-from fastapi import UploadFile
 from httpx import AsyncClient
 from typing import Any, Generator
 
@@ -33,7 +33,7 @@ async def _delete_mentor(async_client: AsyncClient, mentor_id: str) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_mentor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
 
     # Act
@@ -82,13 +82,13 @@ async def test_create_mentor_missing_parameter(async_client: AsyncClient) -> Non
     response_body = response.json()
 
     assert response_body["detail"][0]["type"] == "missing"
-    assert "avatar_url" in response_body["detail"][0]["loc"]
+    assert "avatar" in response_body["detail"][0]["loc"]
 
 
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_mentor_unauthorized(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Act
     response = await async_client.post(
@@ -107,7 +107,7 @@ async def test_create_mentor_unauthorized(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_mentors_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
@@ -119,7 +119,6 @@ async def test_get_all_mentors_success(
     )
 
     assert created.status_code == 201
-    print(created)
     mentor_id = created.json()["mentor"]["id"]
 
     # Act
@@ -144,7 +143,7 @@ async def test_get_all_mentors_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_mentor_by_id_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
@@ -215,7 +214,7 @@ async def test_get_mentor_by_id_not_found(async_client: AsyncClient) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_mentor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(
@@ -253,7 +252,7 @@ async def test_update_mentor_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_mentor_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange
     created = await async_client.post(

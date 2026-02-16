@@ -94,7 +94,7 @@ async def test_delete_image_success(
     monkeypatch.setattr(aws_service_mock, "delete_file", call_delete_file)
 
     image_storing_service.delete_image(
-        image_url=f"https://somebucket.s3.some-place-1.amazonaws.com/{formatted_image_name_mock}.webp"
+        file_name=f"https://somebucket.s3.some-place-1.amazonaws.com/{formatted_image_name_mock}.webp"
     )
 
     assert delete_file_called is True

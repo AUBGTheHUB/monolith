@@ -6,7 +6,6 @@ import boto3
 import pytest
 import pytest_asyncio
 from PIL import Image
-from fastapi import UploadFile
 from httpx import AsyncClient, ASGITransport, Response
 from moto import mock_aws
 from mypy_boto3_s3 import S3Client
@@ -324,12 +323,12 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 
 
 @pytest.fixture
-def image_mock() -> UploadFile:
+def image_mock() -> BytesIO:
     image = Image.new("RGB", (2000, 1600), color="red")
     output = BytesIO()
     image.save(fp=output, format="JPEG")
     output.seek(0)
-    return UploadFile(filename="my_image.jpg", file=output)
+    return output
 
 
 @pytest.fixture

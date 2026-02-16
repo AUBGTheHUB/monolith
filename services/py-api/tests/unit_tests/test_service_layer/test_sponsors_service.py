@@ -131,9 +131,9 @@ async def test_update_calls_repo_with_update_params(
     assert sponsors_repo_mock.update.call_args.args[0] == sponsor_mock.id
 
     body = result.ok_value
-    assert body.name == sponsor_mock.name
-    assert body.tier == sponsor_mock.tier
-    assert body.website_url == sponsor_mock.website_url
+    assert body.name == updated.name
+    assert body.tier == updated.tier
+    assert body.website_url == updated.website_url
 
 
 @pytest.mark.asyncio
@@ -144,6 +144,7 @@ async def test_delete_calls_repo(
     sponsor_mock: Sponsor,
 ) -> None:
     sponsors_repo_mock.delete.return_value = Ok(sponsor_mock)
+    image_storing_service_mock.delete_image.return_value = f"sponsors/{str(sponsor_mock.id)}"
 
     result = await sponsors_service.delete(str(sponsor_mock.id))
 

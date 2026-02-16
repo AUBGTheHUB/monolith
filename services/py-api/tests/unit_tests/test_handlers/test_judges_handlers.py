@@ -44,8 +44,8 @@ async def test_create_judge_returns_201(
         name=judge_mock.name,
         company=judge_mock.company,
         job_title=judge_mock.job_title,
-        linkedin_url=judge_mock.linkedin_url,
         avatar=image_mock,
+        linkedin_url=judge_mock.linkedin_url,
     )
 
     assert isinstance(resp, Response)
@@ -54,8 +54,8 @@ async def test_create_judge_returns_201(
         judge_mock.name,
         judge_mock.company,
         judge_mock.job_title,
-        judge_mock.linkedin_url,
         image_mock,
+        judge_mock.linkedin_url,
     )
 
 
@@ -115,12 +115,12 @@ async def test_update_judge_returns_200(
 
     assert resp.status_code == 200
     judges_service_mock.update.assert_awaited_once_with(
-        str(judge_mock.id),
-        judge_mock.name,
-        judge_mock.company,
-        judge_mock.job_title,
-        judge_mock.linkedin_url,
-        image_mock,
+        judge_id=str(judge_mock.id),
+        name=judge_mock.name,
+        company=judge_mock.company,
+        job_title=judge_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=judge_mock.linkedin_url,
     )
 
 

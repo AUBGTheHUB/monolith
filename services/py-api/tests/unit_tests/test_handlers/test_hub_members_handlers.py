@@ -97,7 +97,7 @@ async def test_update_hub_member_returns_200(
         position="Updated Position",
         department=None,
         avatar=None,
-        social_links=None,
+        social_links={},
     )
 
 

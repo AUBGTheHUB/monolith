@@ -1,10 +1,10 @@
 import json
+from io import BytesIO
 from os import environ
 from typing import Any, Generator
 from unittest.mock import patch
 
 import pytest
-from fastapi import UploadFile
 from httpx import AsyncClient
 
 HUB_MEMBERS_ENDPOINT_URL = "/api/v3/admin/hub-members"
@@ -36,9 +36,8 @@ async def _delete_hub_member(async_client: AsyncClient, member_id: str) -> None:
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_hub_member_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
-    print(_valid_hub_member_payload())
     # When
     result = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
@@ -49,6 +48,7 @@ async def test_create_hub_member_success(
     )
 
     # Then
+    print(result.json())
     assert result.status_code == 201
     body = result.json()
 
@@ -66,7 +66,7 @@ async def test_create_hub_member_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_hub_member_unauthorized(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     result = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
@@ -83,7 +83,7 @@ async def test_create_hub_member_unauthorized(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_hub_members_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange: create one member so the list has a stable target
     created = await async_client.post(
@@ -118,7 +118,7 @@ async def test_get_all_hub_members_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_hub_member_by_id_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange: create a member
     created = await async_client.post(
@@ -182,7 +182,7 @@ async def test_get_hub_member_by_id_not_found(async_client: AsyncClient) -> None
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_hub_member_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange: create one member
     created = await async_client.post(
@@ -224,7 +224,7 @@ async def test_update_hub_member_success(
 @patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_hub_member_success(
-    async_client: AsyncClient, image_mock: UploadFile, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
 ) -> None:
     # Arrange: create one member
     created = await async_client.post(

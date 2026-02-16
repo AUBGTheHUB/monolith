@@ -164,7 +164,7 @@ async def test_update_mentor_returns_404_when_not_found(
     resp = await mentors_handlers.update_mentor(object_id="missing mentor", name="Jane Updated")
 
     assert resp.status_code == 404
-    mentors_service_mock.update.assert_awaited_once_with("missing mentor", "Jane Updated")
+    mentors_service_mock.update.assert_awaited_once_with("missing mentor", "Jane Updated", None, None, None, None)
 
 
 @pytest.mark.asyncio
