@@ -101,6 +101,13 @@ class SponsorNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
+class JudgeNotFoundError(CustomError):
+    """Exception raised when the judge cannot be found in the database"""
+
+    message = "The specified judge was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
@@ -163,6 +170,13 @@ class PastEventNotFoundError(CustomError):
     """Exception raised when a past event with the given id does not exist"""
 
     message = "The specified past event was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class MentorNotFoundError(CustomError):
+    """Exception raised when the mentor cannot be found in the database"""
+
+    message = "The specified mentor was not found"
     status_code = status.HTTP_404_NOT_FOUND
 
 

@@ -1,0 +1,18 @@
+.table-row-text,
+.button-text {
+    font-size: clamp(16px, 2.5vw, 22px);
+}
+
+.schedule-container {
+    max-width: clamp(40rem, 82vw, 80rem);
+}
+
+.schedule-table {
+    background: linear-gradient(135deg, #b91c1c 0%, #dc2626 30%, #f97316 70%, #fb923c 100%);
+}
+
+.schedule-divider {
+    height: 0.6px;
+    background: #a9b4c3;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
