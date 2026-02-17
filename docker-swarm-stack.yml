@@ -144,7 +144,7 @@ services:
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:
-      - db-url
+      - db-url_v2
       - secret-key
       - secret-auth-key
       - resend-api-key
@@ -176,7 +176,7 @@ volumes:
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMontanaSecret" | docker secret create toni -`
-  db-url-v2:
+  db-url_v2:
     external: true
   secret-key:
     external: true
