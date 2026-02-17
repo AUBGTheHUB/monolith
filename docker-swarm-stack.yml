@@ -176,7 +176,7 @@ volumes:
 secrets:
   # These docker secrets have already been set on the PROD and DEV VMs, that's why we use external: true.
   # To set a new secret key-value pair you may use: `prinf "toniMontanaSecret" | docker secret create toni -`
-  db-url:
+  db-url-v2:
     external: true
   secret-key:
     external: true
