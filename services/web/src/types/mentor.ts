@@ -7,7 +7,7 @@ const zDateTime = z.string().refine((val) => {
     const zDate = z.string().date()
     const zTime= z.string().time()
 
-    return zDate.parse(date) && zTime.parse(time)
+    return zDate.safeParse(date) && zTime.safeParse(time)
 });
 
 export const zMentor = z.strictObject({
