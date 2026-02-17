@@ -125,6 +125,10 @@ services:
       SECRET_KEY: /run/secrets/secret-key
       SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
       RESEND_API_KEY: /run/secrets/resend-api-key
+      AWS_ACCESS_KEY_ID: /run/secrets/aws-access-key-id
+      AWS_SECRET_ACCESS_KEY: /run/secrets/aws-secret-access-key
+      AWS_DEFAULT_REGION: /run/secrets/aws-default-region
+      AWS_BUCKET: /run/secrets/aws-bucket
 
     # When running in Swarm mode, health checks are used for maintaining the desired state of the service. If a
     # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
@@ -144,6 +148,10 @@ services:
       - secret-key
       - secret-auth-key
       - resend-api-key
+      - aws-access-key-id
+      - aws-secret-access-key
+      - aws-default-region
+      - aws-bucket
 
     volumes:
       # Storing the logs like this is temporary solution until more sophisticated monitoring and observability system
