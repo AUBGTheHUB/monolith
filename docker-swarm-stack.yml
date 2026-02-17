@@ -84,7 +84,7 @@ services:
     # towards https://thehub-aubg.com for example, we will go through Cloudflare, which could lead to misleading results
     # as we are not directly checking the liveness of Caddy itself.
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost/health"]
+      test: [ "CMD-SHELL", "curl -f http://localhost/health" ]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -135,7 +135,7 @@ services:
     # replica task that spawns a new container in replacement of the unhealthy one.
     # https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#tasks-and-scheduling
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:$${PORT}/api/v3/ping"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:$${PORT}/api/v3/ping" ]
       interval: 1m
       timeout: 10s
       retries: 3
@@ -183,4 +183,12 @@ secrets:
   secret-auth-key:
     external: true
   resend-api-key:
+    external: true
+  aws-access-key-id:
+    external: true
+  aws-secret-access-key:
+    external: true
+  aws-default-region:
+    external: true
+  aws-bucket:
     external: true
