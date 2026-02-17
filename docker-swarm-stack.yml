@@ -144,7 +144,8 @@ services:
 
     # https://github.com/docker/compose/blob/v1/docs/Compose%20file%20reference%20(legacy)/version-3.md#secrets
     secrets:
-      - db-url_v2
+      - source: db-url_v2
+        target: db-url
       - secret-key
       - secret-auth-key
       - resend-api-key
