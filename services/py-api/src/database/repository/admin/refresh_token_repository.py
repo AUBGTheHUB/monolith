@@ -130,9 +130,9 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
         self, hub_admin_id: str, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[int, RefreshTokenNotFound | Exception]:
         try:
-            LOG.info("Invalidating refresh tokens with hub member id...", hub_admin_id=hub_admin_id)
+            LOG.info("Invalidating refresh tokens with hub member id...", hub_member_id=hub_admin_id)
             invalidate_result = await self._collection.update_many(
-                filter={"hub_member_id": hub_admin_id},
+                filter={"hub_member_id": ObjectId(hub_admin_id)},
                 update={"$set": {"is_valid": False}},
                 session=session,
             )
