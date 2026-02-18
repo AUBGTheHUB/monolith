@@ -15,7 +15,7 @@ class BaseHubMemberData(BaseModel):
     name: NonEmptyStr
     member_type: MEMBER_TYPE = "admin"
     position: str
-    department: DEPARTMENTS_LIST
+    departments: list[DEPARTMENTS_LIST]
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
@@ -40,7 +40,7 @@ class RegisterHubAdminData(BaseHubMemberData):
             position=self.position,
             avatar_url=self.avatar_url,
             social_links=self.social_links,
-            department=self.department,
+            departments=self.departments,
             password_hash=password_hash,
             # TODO change site roles
             site_role="dev",
