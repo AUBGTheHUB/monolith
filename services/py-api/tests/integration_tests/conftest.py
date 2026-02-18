@@ -8,7 +8,6 @@ import pytest_asyncio
 from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
 from moto import mock_aws
-from mypy_boto3_s3 import S3Client
 from mypy_boto3_s3.client import S3Client
 
 from src.database.model.admin.hub_admin_model import ROLES
@@ -28,7 +27,7 @@ from src.database.model.hackathon.participant_model import (
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
 )
-from src.service.utility.aws.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
 
 LOG = get_logger()
 
@@ -190,7 +189,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
     LOG.debug("Cleanup finished successfully")
 
 
-# The following is an exapmle of factories as fixtures in pytest
+# The following is an example of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
 # It uses the same philosophy for the teardown as it is suggested on the example of the docs above.
