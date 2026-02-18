@@ -31,5 +31,4 @@ export const teamMemberFormSchema = z.object({
     }),
 });
 
-// TypeScript type inferred from the form schema
 export type TeamMemberFormData = z.infer<typeof teamMemberFormSchema>;
