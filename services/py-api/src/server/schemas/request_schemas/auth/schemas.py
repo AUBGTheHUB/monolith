@@ -40,7 +40,7 @@ class RegisterHubAdminData(BaseHubMemberData):
             social_links=self.social_links,
             department=self.department,
             password_hash=password_hash,
-            site_role=Role.BOARD,
+            site_role=Role.MEMBER,
         )
 
 

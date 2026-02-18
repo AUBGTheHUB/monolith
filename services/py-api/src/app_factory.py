@@ -41,7 +41,7 @@ from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.auth.auth_service import AuthService
-from src.service.auth.user_service import UserService
+from src.service.user.user_service import UserService
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -202,7 +202,7 @@ def create_app() -> FastAPI:
         auth_token_service=auth_token_service,
         tx_manager=tx_manager,
     )
-    user_service = UserService(hub_members_repo=hub_members_repo)
+    user_service = UserService(hub_members_repo=hub_members_repo, refresh_token_repo=refresh_tokens_repo)
     fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo)
     mentors_service = MentorsService(repo=mentors_repo)

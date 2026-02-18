@@ -9,11 +9,13 @@ class Role(str, Enum):
     BOARD = "board"
     DEV = "dev"
     SUPER = "super_admin"
+    MEMBER = "member"
 
 
 class AssignableRole(str, Enum):
     BOARD = "board"
     DEV = "dev"
+    MEMBER = "member"
 
 
 @dataclass(kw_only=True)

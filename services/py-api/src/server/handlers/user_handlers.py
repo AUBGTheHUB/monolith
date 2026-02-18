@@ -5,7 +5,7 @@ from src.server.schemas.request_schemas.user.schemas import UserRoleChangeReques
 from src.server.schemas.response_schemas.auth.schemas import UserResponse
 from src.server.schemas.response_schemas.schemas import Response
 
-from src.service.auth.user_service import UserService
+from src.service.user.user_service import UserService
 
 
 class UserHandlers(BaseHandler):

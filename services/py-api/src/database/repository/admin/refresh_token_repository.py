@@ -125,3 +125,18 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
                 "Could not invalidate refresh tokens with family id due to error", family_id=family_id, error=e
             )
             return Err(e)
+
+    async def invalidate_all_tokens_by_hub_member_id(
+        self, hub_admin_id: str, session: Optional[AsyncIOMotorClientSession] = None
+    ) -> Result[int, RefreshTokenNotFound | Exception]:
+        try:
+            LOG.info("Invalidating refresh tokens with hub member id...", hub_admin_id=hub_admin_id)
+            invalidate_result = await self._collection.update_many(
+                filter={"hub_member_id": hub_admin_id},
+                update={"$set": {"is_valid": False}},
+                session=session,
+            )
+            return Ok(invalidate_result.modified_count)
+        except Exception as e:
+            LOG.exception("Could not invalidate refresh tokens with hub member id due to error", error=e)
+            return Err(e)
