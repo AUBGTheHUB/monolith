@@ -6,8 +6,10 @@ from typing import Any, Generator
 import pytest
 from httpx import AsyncClient
 
+from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
+
 PAST_EVENTS_ENDPOINT_URL = "/api/v3/admin/events"
-TEST_PAST_EVENT_COVER_PICTURE_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/past_events"
+TEST_PAST_EVENT_COVER_PICTURE_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/past_events"
 
 
 def _valid_past_event_payload() -> dict[str, Any]:

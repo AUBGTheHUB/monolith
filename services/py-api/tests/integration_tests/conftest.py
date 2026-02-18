@@ -88,7 +88,7 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     await client.aclose()
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def generate_aws_data() -> None:
     """Mock AWS Credentials for testing moto."""
     environ["AWS_ACCESS_KEY_ID"] = "test-key"

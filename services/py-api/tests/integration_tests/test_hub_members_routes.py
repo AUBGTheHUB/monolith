@@ -7,8 +7,10 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
+from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
+
 HUB_MEMBERS_ENDPOINT_URL = "/api/v3/admin/hub-members"
-TEST_MEMBER_AVATAR_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/hub-members"
+TEST_MEMBER_AVATAR_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/hub-members"
 
 
 def _valid_hub_member_payload() -> dict[str, Any]:
@@ -48,7 +50,6 @@ async def test_create_hub_member_success(
     )
 
     # Then
-    print(result.json())
     assert result.status_code == 201
     body = result.json()
 

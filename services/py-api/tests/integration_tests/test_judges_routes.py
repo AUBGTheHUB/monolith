@@ -5,6 +5,8 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
+from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
+
 JUDGES_ENDPOINT_URL = "/api/v3/admin/judges"
 
 TEST_JUDGE_NAME = "Dimitrichko"
@@ -12,7 +14,7 @@ TEST_JUDGE_COMPANY = "The Hub"
 TEST_JUDGE_JOB_TITLE = "Coder"
 TEST_JUDGE_LINKEDIN_URL = "https://example.com"
 
-TEST_JUDGE_AVATAR_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/judges"
+TEST_JUDGE_AVATAR_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/judges"
 
 valid_judge_body: dict[str, Any] = {
     "name": TEST_JUDGE_NAME,

@@ -5,12 +5,13 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
 
 SPONSORS_ENDPOINT_URL = "/api/v3/admin/sponsors"
 
 TEST_SPONSOR_NAME = "Coca-Cola"
 TEST_SPONSOR_TIER = "GOLD"
-TEST_SPONSOR_LOGO_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/sponsors"
+TEST_SPONSOR_LOGO_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/sponsors"
 TEST_SPONSOR_WEBSITE_URL = "https://coca-cola.com/"
 
 valid_sponsor_input: dict[str, Any] = {
@@ -125,7 +126,6 @@ async def test_get_all_sponsors_success(
     )
 
     assert created.status_code == 201
-    print(created)
     sponsor_id = created.json()["sponsor"]["id"]
 
     # Act
@@ -251,7 +251,6 @@ async def test_update_sponsor_success(
     )
 
     # Assert
-    print(response.json())
     assert response.status_code == 200
     response_body = response.json()
     assert "sponsor" in response_body

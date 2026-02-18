@@ -5,6 +5,8 @@ import pytest
 from httpx import AsyncClient
 from typing import Any, Generator
 
+from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
+
 MENTORS_ENDPOINT_URL = "/api/v3/admin/mentors"
 
 TEST_MENTOR_NAME = "Jane Doe"
@@ -12,7 +14,7 @@ TEST_MENTOR_COMPANY = "ACME"
 TEST_MENTOR_JOB_TITLE = "Engineer"
 TEST_MENTOR_LINKEDIN_URL = "https://linkedin.com/janedoe"
 
-TEST_MENTOR_AVATAR_URL = "https://hubarskibucket.s3.eu-central-1.amazonaws.com/mentors"
+TEST_MENTOR_AVATAR_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/mentors"
 
 valid_mentor_body: dict[str, Any] = {
     "name": TEST_MENTOR_NAME,
