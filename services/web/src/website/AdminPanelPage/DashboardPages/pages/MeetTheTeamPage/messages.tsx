@@ -42,6 +42,7 @@ export const TeamPageMessages = {
         </span>
     ),
     EMPTY_STATE: 'No team members added yet. Click "Add New Member" to get started.',
+    LOADING_STATE: 'Loading team members...',
     DELETE_CONFIRM: (name: string) => `Are you sure you want to delete ${name}?`,
     EDIT_BUTTON: 'Edit',
     DELETE_BUTTON: 'Delete',
@@ -52,6 +53,7 @@ export const TeamMemberEditMessages = {
     NOT_FOUND_TITLE: 'Team Member Not Found - Admin Dashboard',
     HEADING: 'Edit Team Member',
     SUBTITLE: 'Update team member information',
+    LOADING_STATE: 'Loading team member details...',
     BACK_BUTTON: (
         <span className="flex items-center gap-1">
             <svg
@@ -103,12 +105,22 @@ export const TeamMemberAddMessages = {
 export const TeamMemberFormFieldMessages = {
     LABELS: {
         NAME: 'Name',
-        IMAGE: 'Image URL',
-        DEPARTMENTS: 'Departments',
+        POSITION: 'Position',
+        DEPARTMENT: 'Department',
+        MEMBER_TYPE: 'Role',
+        IMAGE: 'Avatar URL',
+        SOCIAL_LINKEDIN: 'LinkedIn Profile',
+        SOCIAL_GITHUB: 'GitHub Profile',
+        SOCIAL_WEBSITE: 'Personal Website',
     },
     PLACEHOLDERS: {
         NAME: "Enter member's full name",
-        IMAGE: 'Enter image URL (e.g., /member_photo.webp)',
-        DEPARTMENTS: 'Select one or more departments',
+        POSITION: 'e.g. Lead Developer',
+        DEPARTMENT: 'Select a department',
+        MEMBER_TYPE: 'Select a role',
+        IMAGE: 'Enter image URL (e.g., https://example.com/photo.png)',
+        SOCIAL_LINKEDIN: 'https://linkedin.com/in/username',
+        SOCIAL_GITHUB: 'https://github.com/username',
+        SOCIAL_WEBSITE: 'https://example.com',
     },
 };

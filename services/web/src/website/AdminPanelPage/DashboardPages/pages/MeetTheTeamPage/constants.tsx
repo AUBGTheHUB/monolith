@@ -1,12 +1,3 @@
-export const AVAILABLE_DEPARTMENTS = [
-    'Development',
-    'Design',
-    'Marketing',
-    'PR',
-    'Logistics',
-    'Board (President)',
-    'Board (Vice President)',
-    'Board (Treasurer)',
-];
+export const AVAILABLE_DEPARTMENTS = ['Development', 'Marketing', 'Logistics', 'PR', 'Design'];
 
-export const DEFAULT_PLACEHOLDER = 'resources/placeholderPic.jpg';
+export const MEMBER_TYPES = ['member', 'admin'];

@@ -24,7 +24,7 @@ class HubMember(BaseDbModel):
     name: str
     member_type: MEMBER_TYPE = "member"
     position: str
-    departments: list[DEPARTMENTS_LIST]
+    departments: list[DEPARTMENTS_LIST] = field(default_factory=list)
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
@@ -73,11 +73,11 @@ class HubMember(BaseDbModel):
         return {
             "id": doc["_id"],
             "name": doc["name"],
-            "member_type": doc["member_type"],
+            "member_type": doc.get("member_type", "member"),
             "position": doc["position"],
             "avatar_url": doc["avatar_url"],
-            "departments": doc["departments"],
-            "social_links": doc["social_links"],
+            "departments": doc.get("departments", []),
+            "social_links": doc.get("social_links", {}),
             "created_at": doc["created_at"],
             "updated_at": doc["updated_at"],
         }
