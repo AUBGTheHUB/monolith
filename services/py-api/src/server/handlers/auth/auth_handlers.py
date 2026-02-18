@@ -4,7 +4,7 @@ from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.server.schemas.response_schemas.auth.schemas import (
     AccessTokenSuccessfullyIssued,
-    HubMemberSuccessfullyRegistered,
+    UserResponse,
 )
 from src.service.auth.auth_service import AuthService
 from src.server.schemas.response_schemas.schemas import Response
@@ -39,7 +39,7 @@ class AuthHandlers(BaseHandler):
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(HubMemberSuccessfullyRegistered(hub_admin=result.ok_value), status_code=status.HTTP_201_CREATED)
+        return Response(UserResponse(hub_admin=result.ok_value), status_code=status.HTTP_201_CREATED)
 
     async def refresh_token_pair(self, refresh_token: str | None = Cookie(default=None)) -> Response:
         result = await self._service.refresh_token(refresh_token=refresh_token)

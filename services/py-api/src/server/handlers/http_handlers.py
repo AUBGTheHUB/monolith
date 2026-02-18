@@ -10,6 +10,7 @@ from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
+from src.server.handlers.user_handlers import UserHandlers
 from src.server.handlers.utility_handlers import UtilityHandlers
 
 
@@ -42,3 +43,4 @@ class HttpHandlersContainer:
     hackathon_handlers: HackathonHandlers
     admin_handlers: AdminHandlers
     auth_handlers: AuthHandlers
+    user_handlers: UserHandlers

@@ -15,7 +15,7 @@ from src.server.handlers.auth.auth_handlers import AuthHandlers
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData, LoginHubAdminData
 from src.server.schemas.response_schemas.auth.schemas import (
     AccessTokenSuccessfullyIssued,
-    HubMemberSuccessfullyRegistered,
+    UserResponse,
 )
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from src.service.auth.auth_service import AuthService
@@ -44,7 +44,7 @@ async def test_register_hub_admin_success(
 
     # Then
     assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, HubMemberSuccessfullyRegistered)
+    assert isinstance(resp.response_model, UserResponse)
     assert resp.response_model.hub_admin.name == register_hub_admin_data_mock.name
     assert resp.status_code == status.HTTP_201_CREATED
 

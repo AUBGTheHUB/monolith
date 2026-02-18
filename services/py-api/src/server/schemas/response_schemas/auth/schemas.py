@@ -5,7 +5,7 @@ from pydantic import BaseModel, field_serializer, ConfigDict
 from src.database.model.admin.hub_admin_model import HubAdmin
 
 
-class HubMemberSuccessfullyRegistered(BaseModel):
+class UserResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
     # schema for <class 'bson.objectid.ObjectId'>
     model_config = ConfigDict(arbitrary_types_allowed=True)
