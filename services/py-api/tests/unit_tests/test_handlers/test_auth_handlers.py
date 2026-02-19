@@ -15,7 +15,7 @@ from starlette import status
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.server.handlers.auth.auth_handlers import AuthHandlers
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData, LoginHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued
+from src.server.schemas.response_schemas.auth.schemas import AuthTokensSuccessfullyIssued, AccessTokenSuccessfullyIssued
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from src.service.auth.auth_service import AuthService
 from tests.unit_tests.conftest import AuthServiceMock
@@ -70,7 +70,7 @@ async def test_login_hub_admin_success(
     auth_handlers: AuthHandlers, auth_service_mock: AuthServiceMock, login_hub_admin_data_mock: LoginHubAdminData
 ) -> None:
     # Given
-    auth_service_mock.login_admin.return_value = Ok(("token_1", "token_2"))
+    auth_service_mock.login_admin.return_value = Ok(("token_1", "token_2", "token_3"))
 
     # When
     resp = await auth_handlers.login(credentials=login_hub_admin_data_mock)
@@ -78,9 +78,9 @@ async def test_login_hub_admin_success(
 
     # Then
     assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, AccessTokenSuccessfullyIssued)
+    assert isinstance(resp.response_model, AuthTokensSuccessfullyIssued)
     assert resp.response_model.access_token == "token_1"
-    assert any("refresh_token=token_2" in c for c in cookies)
+    assert any("refresh_token=token_3" in c for c in cookies)
     assert resp.status_code == status.HTTP_200_OK
 
 

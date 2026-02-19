@@ -118,9 +118,10 @@ async def test_login_hub_admin_success(
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
     auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
-    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_auth"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "token_id"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
-    auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
+    auth_tokens_service_mock.generate_refresh_token.return_value = "token_refresh"
 
     # When
     result = await auth_service.login_admin(login_hub_admin_data_mock)
@@ -128,8 +129,9 @@ async def test_login_hub_admin_success(
     # Then
     assert isinstance(result, Ok)
     assert isinstance(result.ok_value, tuple)
-    assert result.ok_value[0] == "token_1"
-    assert result.ok_value[1] == "token_2"
+    assert result.ok_value[0] == "token_auth"
+    assert result.ok_value[1] == "token_id"
+    assert result.ok_value[2] == "token_refresh"
 
 
 @pytest.mark.asyncio
@@ -180,7 +182,8 @@ async def test_login_hub_admin_could_not_create_refresh_token(
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
-    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "auth_token"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "refresh_token"
     refresh_token_repo_mock.create.return_value = Err(Exception())
 
     # When

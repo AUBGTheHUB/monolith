@@ -1033,6 +1033,7 @@ def password_hash_service_mock() -> PasswordHashServiceMock:
 
 class AuthTokensServiceMock(Protocol):
     generate_access_token_for = Mock
+    generate_id_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
     generate_refresh_expiration = Mock
@@ -1046,6 +1047,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
 
     auth_tokens_service_mock.generate_access_token_for = Mock()
+    auth_tokens_service_mock.generate_id_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()

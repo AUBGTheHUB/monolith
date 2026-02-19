@@ -4,7 +4,7 @@ from fastapi import Cookie, HTTPException, status
 
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued
+from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued, AuthTokensSuccessfullyIssued
 from src.service.auth.auth_service import AuthService
 from src.server.schemas.response_schemas.schemas import Response
 
@@ -22,13 +22,11 @@ class AuthHandlers(BaseHandler):
 
         tokens = result.ok_value
         response = Response(
-            AccessTokenSuccessfullyIssued(
-                access_token=tokens[0],
-            ),
+            AuthTokensSuccessfullyIssued(access_token=tokens[0], id_token=tokens[1]),
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
+        response.set_cookie(key="refresh_token", value=tokens[2], httponly=True, secure=True, samesite="strict")
 
         return response
 
@@ -54,9 +52,7 @@ class AuthHandlers(BaseHandler):
         tokens = result.ok_value
 
         response = Response(
-            AccessTokenSuccessfullyIssued(
-                access_token=tokens[0],
-            ),
+            AccessTokenSuccessfullyIssued(access_token=tokens[0]),
             status_code=status.HTTP_200_OK,
         )
 
