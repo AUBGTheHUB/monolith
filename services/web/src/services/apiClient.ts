@@ -1,11 +1,14 @@
 import { API_URL } from '../constants.ts';
+import { useAuthStore } from '@/hooks/useAuthStote.ts';
+import { refreshToken } from './refreshToken.ts';
 
 const getHeaders = (contentType?: string) => {
-    const headers: HeadersInit = {
-        // Shared headers
-        //TEMP SOLUTION: Will change when auth is implemented
-        Authorization: 'Bearer a0e923d30b613ce5cf57d9af35a3d4d2e8efa660f579b9a547918bd1c83fdb7b',
-    };
+    const headers: HeadersInit = {};
+
+    const accessToken = useAuthStore.getState().accessToken;
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+    }
 
     // Only add Content-Type if we are actually sending data
     if (contentType) {
@@ -15,7 +18,7 @@ const getHeaders = (contentType?: string) => {
     return headers;
 };
 
-const handleResponse = async <R>(response: Response): Promise<R> => {
+const handleResponse = async <R>(response: Response, originalRequest: () => Promise<Response>): Promise<R> => {
     //Handle responses based on FastAPI's response schemas
     if (response.status == 204) {
         return {} as R;
@@ -32,7 +35,17 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
 
         throw new Error(messages);
     }
-    if (response.status == 400 || response.status == 401 || response.status == 404) {
+    //Unathorized
+    if (response.status == 401 && !response.url.includes('login')) {
+        try {
+            await refreshToken();
+            const retryResponse = await originalRequest();
+            return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'));
+        } catch (err) {
+            alert(err);
+        }
+    }
+    if (response.status == 400 || response.status == 404) {
         const errorData = await response.json();
         const message = errorData.error || 'Unexpected error occurred!';
         throw new Error(message);
@@ -45,30 +58,34 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
 
 export const apiClient = {
     // GET and DELETE don't need Content-Type headers
-    get: <R>(endpoint: string) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'GET',
-            headers: getHeaders(),
-        }).then((res) => handleResponse<R>(res)),
+    get: <R>(endpoint: string) => {
+        const req = () => fetch(`${API_URL}${endpoint}`, { method: 'GET', headers: getHeaders() });
+        return req().then((res) => handleResponse<R>(res, req));
+    },
 
-    delete: (endpoint: string) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'DELETE',
-            headers: getHeaders(),
-        }).then((res) => handleResponse(res)),
+    delete: (endpoint: string) => {
+        const req = () => fetch(`${API_URL}${endpoint}`, { method: 'DELETE', headers: getHeaders() });
+        return req().then((res) => handleResponse(res, req));
+    },
 
     // POST and PATCH require the JSON content-type
-    post: <R, D>(endpoint: string, data: D) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'POST',
-            headers: getHeaders('application/json'),
-            body: JSON.stringify(data),
-        }).then((res) => handleResponse<R>(res)),
+    post: <R, D>(endpoint: string, data: D) => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: getHeaders('application/json'),
+                body: JSON.stringify(data),
+            });
+        return req().then((res) => handleResponse<R>(res, req));
+    },
 
-    patch: <R, D>(endpoint: string, data: D) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'PATCH',
-            headers: getHeaders('application/json'),
-            body: JSON.stringify(data),
-        }).then((res) => handleResponse<R>(res)),
+    patch: <R, D>(endpoint: string, data: D) => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'PATCH',
+                headers: getHeaders('application/json'),
+                body: JSON.stringify(data),
+            });
+        return req().then((res) => handleResponse<R>(res, req));
+    },
 };

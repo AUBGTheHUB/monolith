@@ -6,7 +6,7 @@ import { VerificationPage } from './website/VerificationPage/VerificationPage';
 import { FormPage } from './website/RegistrationFormPage/RegistrationFormPage';
 import { MeetTheTeamPage } from '@/website/AdminPanelPage/DashboardPages/pages/MeetTheTeamPage/MeetTheTeamPage';
 import { MeetTheTeamEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/MeetTheTeamPage/MeetTheTeamEditPage';
-import { LoginPage } from './website/AdminPanelPage/LoginPage/LoginPage';
+import { LoginPage } from './website/AdminPanelPage/AuthPages/LoginPage/LoginPage';
 import { HackathonPage } from './website/HackathonPage8.0/HackathonPage';
 import { JudgesListPage } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/JudgesPage';
 import { JudgesEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/JudgesPage/JudgesEditPage';
@@ -20,6 +20,8 @@ import { PastEventsEditPage } from './website/AdminPanelPage/DashboardPages/page
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
+import { RegisterPage } from './website/AdminPanelPage/AuthPages/RegisterPage/RegisterPage';
+import { RefreshProvider } from './providers/RefreshProvider';
 
 function App() {
     const queryClient = new QueryClient();
@@ -42,38 +44,41 @@ function App() {
 
                 {/* Admin Group */}
                 <Route path="/admin">
-                    <Route index element={<LoginPage />} />
+                    <Route path="login" element={<LoginPage />} />
+                    <Route path="register" element={<RegisterPage />} />
 
-                    <Route path="dashboard">
-                        <Route index element={<DashboardPage />} />
-                        {/* Meet the Team Sub-group */}
-                        <Route path="meet-the-team">
-                            <Route index element={<MeetTheTeamPage />} />
-                            <Route path="add" element={<MeetTheTeamEditPage />} />
-                            <Route path=":id" element={<MeetTheTeamEditPage />} />
-                        </Route>
+                    <RefreshProvider>
+                        <Route path="dashboard">
+                            <Route index element={<DashboardPage />} />
+                            {/* Meet the Team Sub-group */}
+                            <Route path="meet-the-team">
+                                <Route index element={<MeetTheTeamPage />} />
+                                <Route path="add" element={<MeetTheTeamEditPage />} />
+                                <Route path=":id" element={<MeetTheTeamEditPage />} />
+                            </Route>
 
-                        {/* Judges Sub-group */}
-                        <Route path="judges">
-                            <Route index element={<JudgesListPage />} />
-                            <Route path="add" element={<JudgesEditPage />} />
-                            <Route path=":id" element={<JudgesEditPage />} />
-                        </Route>
+                            {/* Judges Sub-group */}
+                            <Route path="judges">
+                                <Route index element={<JudgesListPage />} />
+                                <Route path="add" element={<JudgesEditPage />} />
+                                <Route path=":id" element={<JudgesEditPage />} />
+                            </Route>
 
-                        {/* Sponsors Sub-group */}
-                        <Route path="sponsors">
-                            <Route index element={<SponsorsListPage />} />
-                            <Route path="add" element={<SponsorsEditPage />} />
-                            <Route path=":id" element={<SponsorsEditPage />} />
-                        </Route>
+                            {/* Sponsors Sub-group */}
+                            <Route path="sponsors">
+                                <Route index element={<SponsorsListPage />} />
+                                <Route path="add" element={<SponsorsEditPage />} />
+                                <Route path=":id" element={<SponsorsEditPage />} />
+                            </Route>
 
-                        {/* Past events Sub-group */}
-                        <Route path="past-events">
-                            <Route index element={<PastEventsPage />} />
-                            <Route path="add" element={<PastEventsEditPage />} />
-                            <Route path=":id" element={<PastEventsEditPage />} />
+                            {/* Past events Sub-group */}
+                            <Route path="past-events">
+                                <Route index element={<PastEventsPage />} />
+                                <Route path="add" element={<PastEventsEditPage />} />
+                                <Route path=":id" element={<PastEventsEditPage />} />
+                            </Route>
                         </Route>
-                    </Route>
+                    </RefreshProvider>
                     {/* 404 Catch-all */}
                     <Route path="*" element={<Admin404Page />} />
                 </Route>
