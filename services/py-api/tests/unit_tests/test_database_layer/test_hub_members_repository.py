@@ -26,7 +26,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_SOCIAL_LINKS,
     TEST_HUB_MEMBER_POSITON,
     TEST_HUB_MEMBER_AVATAR_URL,
-    TEST_HUB_MEMBER_DEPARTMENT,
+    TEST_HUB_MEMBER_DEPARTMENTS,
 )
 from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
 
@@ -38,7 +38,7 @@ def _fields_are_correct(expected: HubMember, result: HubMember) -> bool:
         result.name == expected.name
         and str(result.id) == str(expected.id)
         and result.position == expected.position
-        and result.department == expected.department
+        and result.departments == expected.departments
         and result.avatar_url == expected.avatar_url
     )
 
@@ -52,7 +52,6 @@ def repo(mongo_db_manager_mock: MongoDbManagerMock) -> HubMembersRepository:
 async def test_create_hub_admin_success(
     ten_sec_window: tuple[datetime, datetime], hub_admin_mock: HubAdmin, repo: HubMembersRepository
 ) -> None:
-
     # Given
     start_time, end_time = ten_sec_window
 
@@ -73,7 +72,6 @@ async def test_create_hub_admin_success(
 async def test_create_hub_member_success(
     ten_sec_window: tuple[datetime, datetime], hub_member_mock: HubMember, repo: HubMembersRepository
 ) -> None:
-
     # Given
     start_time, end_time = ten_sec_window
 
@@ -93,16 +91,16 @@ async def test_create_hub_member_success(
 
 @pytest.mark.asyncio
 async def test_create_duplicate_hub_member_error(
-    mongo_db_manager_mock: MongoDbManagerMock, hub_member_mock: HubMember, repo: HubMembersRepository
+    mongo_db_manager_mock: MongoDbManagerMock, hub_admin_mock: HubAdmin, repo: HubMembersRepository
 ) -> None:
     # Given
     # Simulate a DuplicateKeyError raised when trying to insert a hub member with a duplicate name
     mongo_db_manager_mock.get_collection.return_value.insert_one = AsyncMock(
-        side_effect=DuplicateKeyError("Duplicate hub member name")
+        side_effect=DuplicateKeyError("Duplicate hub member username")
     )
 
     # When
-    result = await repo.create(hub_member_mock)
+    result = await repo.create(hub_admin_mock)
 
     # Then
     assert isinstance(result, Err)
@@ -148,7 +146,7 @@ async def test_fetch_by_id_for_hub_member_success(
     assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
     assert result.ok_value.social_links == TEST_HUB_MEMBER_SOCIAL_LINKS
     assert result.ok_value.position == TEST_HUB_MEMBER_POSITON
-    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.departments == TEST_HUB_MEMBER_DEPARTMENTS
     assert result.ok_value.avatar_url == TEST_HUB_MEMBER_AVATAR_URL
 
 
@@ -173,7 +171,7 @@ async def test_fetch_by_id_for_hub_admin_success(
     assert result.ok_value.member_type == TEST_HUB_ADMIN_MEMBER_TYPE
     assert result.ok_value.social_links == TEST_HUB_MEMBER_SOCIAL_LINKS
     assert result.ok_value.position == TEST_HUB_MEMBER_POSITON
-    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.departments == TEST_HUB_MEMBER_DEPARTMENTS
     assert result.ok_value.avatar_url == TEST_HUB_MEMBER_AVATAR_URL
     assert result.ok_value.password_hash == TEST_HUB_ADMIN_PASSWORD_HASH
     assert result.ok_value.site_role == TEST_HUB_ADMIN_ROLE
@@ -221,7 +219,6 @@ async def test_delete_hub_member_successful(
     hub_member_dict_mock: dict[str, Any],
     repo: HubMembersRepository,
 ) -> None:
-
     # Given
     mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=hub_member_dict_mock)
 
@@ -235,7 +232,7 @@ async def test_delete_hub_member_successful(
     assert result.ok_value.id == obj_id_mock
     assert result.ok_value.name == TEST_HUB_MEMBER_NAME
     assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
-    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.departments == TEST_HUB_MEMBER_DEPARTMENTS
 
 
 @pytest.mark.asyncio
@@ -258,7 +255,7 @@ async def test_delete_hub_admin_successful(
     assert result.ok_value.id == obj_id_mock
     assert result.ok_value.name == TEST_HUB_MEMBER_NAME
     assert result.ok_value.member_type == TEST_HUB_ADMIN_MEMBER_TYPE
-    assert result.ok_value.department == TEST_HUB_MEMBER_DEPARTMENT
+    assert result.ok_value.departments == TEST_HUB_MEMBER_DEPARTMENTS
 
 
 @pytest.mark.asyncio
@@ -313,7 +310,7 @@ async def test_update_hub_member_success(
     assert isinstance(result, Ok)
     assert result.ok_value.name == TEST_HUB_MEMBER_NAME
     assert result.ok_value.member_type == TEST_HUB_MEMBER_MEMBER_TYPE
-    assert result.ok_value.department == "Marketing"
+    assert result.ok_value.departments == TEST_HUB_MEMBER_DEPARTMENTS
 
 
 @pytest.mark.asyncio

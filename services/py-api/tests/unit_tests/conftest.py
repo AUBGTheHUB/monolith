@@ -18,6 +18,7 @@ from motor.motor_asyncio import (
 
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
+from src.database.model.admin.judge_model import Judge
 from src.database.model.admin.refresh_token import RefreshToken
 from src.database.model.admin.past_event_model import PastEvent
 from src.database.model.admin.sponsor_model import Sponsor
@@ -41,6 +42,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
@@ -60,6 +62,7 @@ from src.service.admin.hub_members_service import HubMembersService
 from src.service.admin.past_events_service import PastEventsService
 from src.service.admin.sponsors_service import SponsorsService
 from src.service.utility.aws.aws_service import AwsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 from tests.integration_tests.conftest import (
     TEST_TEAM_NAME,
@@ -71,7 +74,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_NAME,
     TEST_HUB_MEMBER_MEMBER_TYPE,
     TEST_HUB_MEMBER_POSITON,
-    TEST_HUB_MEMBER_DEPARTMENT,
+    TEST_HUB_MEMBER_DEPARTMENTS,
     TEST_HUB_MEMBER_AVATAR_URL,
     TEST_HUB_MEMBER_SOCIAL_LINKS,
     TEST_HUB_ADMIN_PASSWORD_HASH,
@@ -552,6 +555,27 @@ def sponsors_repo_mock() -> SponsorsRepoMock:
     return cast(SponsorsRepoMock, sponsors_repo)
 
 
+class JudgesRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_repo_mock() -> JudgesRepoMock:
+    judges_repo = _create_typed_mock(SponsorsRepository)
+
+    judges_repo.fetch_by_id = AsyncMock()
+    judges_repo.fetch_all = AsyncMock()
+    judges_repo.update = AsyncMock()
+    judges_repo.create = AsyncMock()
+    judges_repo.delete = AsyncMock()
+
+    return cast(JudgesRepoMock, judges_repo)
+
+
 class MentorsRepoMock(Protocol):
     fetch_by_id: AsyncMock
     fetch_all: AsyncMock
@@ -707,6 +731,57 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     service.delete = AsyncMock()
 
     return cast(SponsorsServiceMock, service)
+
+
+class JudgesServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def judges_service_mock() -> JudgesServiceMock:
+    service = _create_typed_mock(JudgesService)
+
+    service.get_all = _create_typed_async_mock(JudgesService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(JudgesServiceMock, service)
+
+
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -974,42 +1049,6 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
 
 
-class AwsServiceMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AwsService
-
-    Should not be initialized directly by application developers to create an AwsServiceMock instance. It is
-    used just for type hinting purposes.
-    """
-
-    _ensure_bucket_exists: Mock
-    upload_file: Mock
-    delete_file: Mock
-
-
-@pytest.fixture
-def aws_service_mock() -> AwsServiceMock:
-    """Mock object for AwsService.
-
-    For mocking purposes, you can modify the return values of its methods::
-
-        aws_service_mock.method_name.return_value = some_value
-
-    To simulate raising exceptions, set the side effects::
-
-        aws_service_mock.method_name.side_effect = SomeException()
-
-    Returns:
-        A mocked AwsService
-    """
-
-    aws_service = _create_typed_mock(AwsService)
-    aws_service._ensure_bucket_exists = Mock()
-    aws_service.upload_file = Mock()
-    aws_service.delete_file = Mock()
-
-    return cast(AwsServiceMock, aws_service)
-
-
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
@@ -1223,6 +1262,25 @@ def mentor_no_id_mock(mentor_mock: Mentor) -> dict[str, Any]:
 
 
 @pytest.fixture
+def judge_mock(obj_id_mock: str) -> Judge:
+    return Judge(
+        id=obj_id_mock,
+        name="Sadiyata",
+        company="The Hub",
+        avatar_url="https://eu.aws.com/coca-cola.jpg",
+        job_title="Sadiya ma ooo",
+        linkedin_url=None,
+    )
+
+
+@pytest.fixture
+def judge_no_id_mock(judge_mock: Judge) -> dict[str, Any]:
+    document = judge_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
 def admin_participant_mock(unverified_team_mock: Team, obj_id_mock: str) -> Participant:
     return Participant(
         id=obj_id_mock,
@@ -1357,7 +1415,7 @@ def hub_member_mock(obj_id_mock: str) -> HubMember:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_MEMBER_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
     )
 
@@ -1369,7 +1427,7 @@ def hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
 
 @pytest.fixture
 def update_hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
-    return {**hub_member_mock.dump_as_mongo_db_document(), "department": "Marketing"}
+    return {**hub_member_mock.dump_as_mongo_db_document(), "departments": TEST_HUB_MEMBER_DEPARTMENTS}
 
 
 @pytest.fixture
@@ -1381,7 +1439,7 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
         password_hash=TEST_HUB_ADMIN_PASSWORD_HASH,
         site_role=TEST_HUB_ADMIN_ROLE,
@@ -1417,7 +1475,7 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
         password=TEST_HUB_ADMIN_PASSWORD_HASH,
         repeat_password=TEST_HUB_ADMIN_PASSWORD_HASH,
