@@ -17,7 +17,6 @@ def _valid_hub_member_payload() -> dict[str, Any]:
     return {
         "name": "John Doe",
         "position": "Senior Developer",
-        "department": "Development",
         "social_links": json.dumps(
             {
                 "linkedin": "https://www.linkedin.com/in/johndoe",

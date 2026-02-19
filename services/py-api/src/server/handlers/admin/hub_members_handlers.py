@@ -21,14 +21,14 @@ class HubMembersHandlers(BaseHandler):
         self,
         name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
         position: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
-        department: Annotated[DEPARTMENTS_LIST, Form()],
+        departments: Annotated[list[DEPARTMENTS_LIST], Form()],
         avatar: Annotated[UploadFile, Form()],
         social_links: Annotated[str, Form()],
     ) -> Response:
         social_links_dict: SocialLinks = json.loads(social_links)
 
         result = await self._service.create(
-            name=name, position=position, department=department, avatar=avatar, social_links=social_links_dict
+            name=name, position=position, departments=departments, avatar=avatar, social_links=social_links_dict
         )
 
         if is_err(result):
@@ -65,7 +65,7 @@ class HubMembersHandlers(BaseHandler):
         object_id: str,
         name: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
         position: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
-        department: Annotated[DEPARTMENTS_LIST | None, Form()] = None,
+        departments: Annotated[list[DEPARTMENTS_LIST] | None, Form()] = None,
         avatar: Annotated[UploadFile | None, Form()] = None,
         social_links: Annotated[str | None, Form()] = None,
     ) -> Response:
@@ -77,7 +77,7 @@ class HubMembersHandlers(BaseHandler):
             object_id,
             name=name,
             position=position,
-            department=department,
+            departments=departments,
             avatar=avatar,
             social_links=social_links_dict,
         )

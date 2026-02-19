@@ -43,7 +43,7 @@ class HubMembersService:
         member_id: str,
         name: NonEmptyStr | None = None,
         position: NonEmptyStr | None = None,
-        department: DEPARTMENTS_LIST | None = None,
+        departments: list[DEPARTMENTS_LIST] | None = None,
         avatar: UploadFile | None = None,
         social_links: SocialLinks | None = None,
     ) -> Result[HubMember, Exception]:
@@ -55,7 +55,7 @@ class HubMembersService:
         else:
             avatar_url = None
         update_params = UpdateHubMemberParams(
-            name=name, position=position, department=department, avatar_url=str(avatar_url), social_links=social_links
+            name=name, position=position, departments=departments, avatar_url=str(avatar_url), social_links=social_links
         )
         return await self._repo.update(member_id, update_params)
 
