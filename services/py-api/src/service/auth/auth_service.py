@@ -4,7 +4,6 @@ from result import Err, Ok, Result, is_err
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from uuid import uuid4
 
-from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTokenParams
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -109,7 +108,7 @@ class AuthService:
 
     async def register_admin(
         self, credentials: RegisterHubAdminData
-    ) -> Result[HubAdmin, DuplicateHubMemberUsernameError | Exception]:
+    ) -> Result[None, DuplicateHubMemberUsernameError | Exception]:
 
         password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
 
@@ -120,7 +119,7 @@ class AuthService:
         if is_err(result):
             return result
 
-        return Ok(result.ok_value)
+        return Ok(None)
 
     async def refresh_token(
         self, refresh_token: str | None

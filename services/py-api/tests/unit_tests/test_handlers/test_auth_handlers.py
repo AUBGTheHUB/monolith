@@ -1,4 +1,6 @@
 from typing import cast
+from fastapi import HTTPException
+from starlette.responses import Response as StarletteResponse
 import pytest
 from result import Err, Ok
 from src.exception import (
@@ -13,10 +15,7 @@ from starlette import status
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.server.handlers.auth.auth_handlers import AuthHandlers
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData, LoginHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import (
-    AccessTokenSuccessfullyIssued,
-    HubMemberSuccessfullyRegistered,
-)
+from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from src.service.auth.auth_service import AuthService
 from tests.unit_tests.conftest import AuthServiceMock
@@ -43,10 +42,8 @@ async def test_register_hub_admin_success(
     resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)
 
     # Then
-    assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, HubMemberSuccessfullyRegistered)
-    assert resp.response_model.hub_admin.name == register_hub_admin_data_mock.name
-    assert resp.status_code == status.HTTP_201_CREATED
+    assert isinstance(resp, StarletteResponse)
+    assert resp.status_code == status.HTTP_204_NO_CONTENT
 
 
 @pytest.mark.asyncio
@@ -55,17 +52,17 @@ async def test_register_hub_admin_conflict(
     auth_service_mock: AuthServiceMock,
     register_hub_admin_data_mock: RegisterHubAdminData,
 ) -> None:
-    # Given
-    auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberUsernameError())
+    with pytest.raises(HTTPException) as exception:
 
-    # When
-    resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)
+        # Given
+        auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberUsernameError())
 
-    # Then
-    assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, ErrResponse)
-    assert resp.response_model.error == "HUB member with this name already exists"
-    assert resp.status_code == status.HTTP_409_CONFLICT
+        # When
+        await auth_handlers.register(credentials=register_hub_admin_data_mock)
+
+        # Then
+        assert exception.value.detail == "HUB member with this name already exists"
+        assert exception.value.status_code == status.HTTP_409_CONFLICT
 
 
 @pytest.mark.asyncio

@@ -1,18 +1,14 @@
 from fastapi import APIRouter
-
+from starlette import status
 from src.server.handlers.auth.auth_handlers import AuthHandlers
 from src.server.schemas.response_schemas.schemas import ErrResponse
-from src.server.schemas.response_schemas.auth.schemas import (
-    AccessTokenSuccessfullyIssued,
-    HubMemberSuccessfullyRegistered,
-)
+from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued
 
 
 def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
     """Registers all auth routes for the admin panel under a separate router, along with their respective handler funcs,
     and returns the router"""
 
-    # TODO ADD responses to each path according to prior project structure
     auth_router = APIRouter(prefix="/auth", tags=["auth"])
     auth_router.add_api_route(
         path="/login",
@@ -28,7 +24,8 @@ def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
         path="/register",
         methods=["POST"],
         endpoint=http_handler.register,
-        responses={201: {"model": HubMemberSuccessfullyRegistered}, 409: {"model": ErrResponse}},
+        status_code=status.HTTP_204_NO_CONTENT,
+        responses={204: {"description": "Registration successful"}, 409: {"model": ErrResponse}},
     )
     auth_router.add_api_route(
         path="/refresh",

@@ -63,7 +63,6 @@ async def test_register_hub_admin_success(
 
     # Then
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, HubAdmin)
 
 
 @pytest.mark.asyncio
