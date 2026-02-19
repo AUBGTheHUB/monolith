@@ -4,10 +4,10 @@ const zDateTime = z.string().refine((val) => {
     const date = val.split(' ')[0];
     const time = val.split(' ')[1];
 
-    const zDate = z.string().date();
-    const zTime = z.string().time();
+    const zDate = z.string().date()
+    const zTime= z.string().time()
 
-    return zDate.parse(date) && zTime.parse(time);
+    return zDate.safeParse(date) && zTime.safeParse(time)
 });
 
 export const zMentor = z.strictObject({

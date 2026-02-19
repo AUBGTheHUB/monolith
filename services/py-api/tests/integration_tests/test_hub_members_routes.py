@@ -12,7 +12,7 @@ def _valid_hub_member_payload() -> dict[str, Any]:
     return {
         "name": "John Doe",
         "position": "Senior Developer",
-        "department": "Development",
+        "departments": ["Development", "Marketing"],
         "avatar_url": "https://example.com/avatar.jpg",
         "social_links": {
             "linkedin": "https://www.linkedin.com/in/johndoe",
@@ -47,7 +47,7 @@ async def test_create_hub_member_success(async_client: AsyncClient) -> None:
     assert "hub_member" in body
     assert body["hub_member"]["name"] == "John Doe"
     assert body["hub_member"]["position"] == "Senior Developer"
-    assert body["hub_member"]["department"] == "Development"
+    assert body["hub_member"]["departments"] == ["Development", "Marketing"]
     assert body["hub_member"]["avatar_url"] == "https://example.com/avatar.jpg"
     assert "id" in body["hub_member"]
 
@@ -129,7 +129,7 @@ async def test_get_hub_member_by_id_success(async_client: AsyncClient) -> None:
     assert body["hub_member"]["id"] == created_id
     assert body["hub_member"]["name"] == created_member["name"]
     assert body["hub_member"]["position"] == created_member["position"]
-    assert body["hub_member"]["department"] == created_member["department"]
+    assert body["hub_member"]["departments"] == created_member["departments"]
 
     # Cleanup
     await _delete_hub_member(async_client=async_client, member_id=created_id)
@@ -178,7 +178,7 @@ async def test_update_hub_member_success(async_client: AsyncClient) -> None:
     update_payload = {
         "name": "Jane Doe",
         "position": "Lead Developer",
-        "department": "Development",
+        "departments": ["Development"],
     }
 
     # Act: update

@@ -20,7 +20,7 @@ class HubMembersService:
         member = HubMember(
             name=data.name,
             position=data.position,
-            department=data.department,
+            departments=data.departments,
             avatar_url=str(data.avatar_url),
             social_links=data.social_links,
         )
