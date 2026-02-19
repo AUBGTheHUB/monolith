@@ -52,7 +52,7 @@ TEST_HUB_MEMBER_USERNAME = "Test member_123"
 TEST_HUB_MEMBER_MEMBER_TYPE: MEMBER_TYPE = "member"
 TEST_HUB_MEMBER_ADMIN: MEMBER_TYPE = "admin"
 TEST_HUB_MEMBER_POSITON = "none"
-TEST_HUB_MEMBER_DEPARTMENT: DEPARTMENTS_LIST = "Development"
+TEST_HUB_MEMBER_DEPARTMENTS: list[DEPARTMENTS_LIST] = ["Development", "Marketing"]
 TEST_HUB_MEMBER_AVATAR_URL = "https://www.bing.com"
 TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
 TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
@@ -370,7 +370,7 @@ class RegisterHubAdminBodyCallable(Protocol):
         name: str = TEST_USER_NAME,
         username: str = TEST_HUB_MEMBER_USERNAME,
         position: str = TEST_HUB_MEMBER_POSITON,
-        department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
+        departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
         member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
         social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
@@ -386,7 +386,7 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
         name: str = TEST_HUB_MEMBER_NAME,
         username: str = TEST_HUB_MEMBER_USERNAME,
         position: str = TEST_HUB_MEMBER_POSITON,
-        department: DEPARTMENTS_LIST = TEST_HUB_MEMBER_DEPARTMENT,
+        departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
         member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
         social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
@@ -399,7 +399,7 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
             name=name,
             username=username,
             position=position,
-            department=department,
+            departments=departments,
             avatar_url=avatar_url,
             member_type=member_type,
             social_links=social_links,

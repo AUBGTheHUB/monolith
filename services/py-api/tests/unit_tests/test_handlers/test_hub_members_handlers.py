@@ -33,7 +33,7 @@ async def test_create_hub_member_returns_201(
     resp = await hub_members_handlers.create_hub_member(
         name=hub_member_mock.name,
         position=hub_member_mock.position,
-        department=hub_member_mock.department,
+        departments=hub_member_mock.departments,
         avatar=image_mock,
         social_links=json.dumps(hub_member_mock.social_links),
     )

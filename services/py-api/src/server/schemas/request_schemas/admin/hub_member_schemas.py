@@ -12,7 +12,7 @@ class HubMemberPostReqData(BaseModel):
 
     name: NonEmptyStr
     position: NonEmptyStr
-    department: DEPARTMENTS_LIST
+    departments: list[DEPARTMENTS_LIST]
     avatar: UploadFile
     social_links: SocialLinks
 
@@ -22,6 +22,6 @@ class HubMemberPatchReqData(BasePatchReqData):
 
     name: Optional[NonEmptyStr] = None
     position: Optional[NonEmptyStr] = None
-    department: Optional[DEPARTMENTS_LIST] = None
+    departments: Optional[list[DEPARTMENTS_LIST]] = None
     avatar: Optional[UploadFile] = None
     social_links: Optional[SocialLinks] = None

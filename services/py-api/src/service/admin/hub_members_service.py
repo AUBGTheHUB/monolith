@@ -23,14 +23,14 @@ class HubMembersService:
         self,
         name: NonEmptyStr,
         position: NonEmptyStr,
-        department: DEPARTMENTS_LIST,
+        departments: list[DEPARTMENTS_LIST],
         avatar: UploadFile,
         social_links: SocialLinks,
     ) -> Result[HubMember, Exception]:
         member = HubMember(
             name=name,
             position=position,
-            department=department,
+            departments=departments,
             avatar_url="",
             social_links=social_links,
         )

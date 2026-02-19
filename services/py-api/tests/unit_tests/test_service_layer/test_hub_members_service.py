@@ -80,9 +80,8 @@ async def test_create_calls_repo_with_built_model(
     result = await hub_members_service.create(
         name=hub_member_mock.name,
         position=hub_member_mock.position,
-        department=hub_member_mock.department,
+        departments=hub_member_mock.departments,
         avatar=image_mock,
-        social_links=hub_member_mock.social_links,
     )
 
     assert result.is_ok()
@@ -93,7 +92,7 @@ async def test_create_calls_repo_with_built_model(
     assert isinstance(passed_member, HubMember)
     assert passed_member.name == hub_member_mock.name
     assert passed_member.position == hub_member_mock.position
-    assert passed_member.department == hub_member_mock.department
+    assert passed_member.departments == hub_member_mock.departments
     assert passed_member.avatar_url == str(hub_member_mock.avatar_url)
 
 
@@ -109,7 +108,7 @@ async def test_update_calls_repo_with_update_params(
         id=hub_member_mock.id,
         name="new",
         position="new position",
-        department=hub_member_mock.department,
+        departments=hub_member_mock.departments,
         avatar_url=hub_member_mock.avatar_url,
         social_links=hub_member_mock.social_links,
     )
