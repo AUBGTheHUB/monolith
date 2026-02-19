@@ -43,7 +43,7 @@ async def test_create_hub_member_returns_201(
     hub_members_service_mock.create.assert_awaited_once_with(
         name=hub_member_mock.name,
         position=hub_member_mock.position,
-        department=hub_member_mock.department,
+        departments=hub_member_mock.departments,
         avatar=image_mock,
         social_links=hub_member_mock.social_links,
     )
@@ -95,7 +95,7 @@ async def test_update_hub_member_returns_200(
         str(hub_member_mock.id),
         name="Updated Name",
         position="Updated Position",
-        department=None,
+        departments=None,
         avatar=None,
         social_links={},
     )

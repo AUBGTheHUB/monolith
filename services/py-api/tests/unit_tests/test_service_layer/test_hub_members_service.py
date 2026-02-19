@@ -82,6 +82,7 @@ async def test_create_calls_repo_with_built_model(
         position=hub_member_mock.position,
         departments=hub_member_mock.departments,
         avatar=image_mock,
+        social_links=hub_member_mock.social_links,
     )
 
     assert result.is_ok()
@@ -120,7 +121,7 @@ async def test_update_calls_repo_with_update_params(
         member_id=str(hub_member_mock.id),
         name="new",
         position="new position",
-        department=hub_member_mock.department,
+        departments=hub_member_mock.departments,
         avatar=image_mock,
         social_links=hub_member_mock.social_links,
     )
