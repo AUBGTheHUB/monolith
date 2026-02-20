@@ -15,6 +15,7 @@ from src.exception import (
     RefreshTokenIsInvalid,
     RefreshTokenNotFound,
 )
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
@@ -63,7 +64,7 @@ class AuthService:
 
     async def login_admin(
         self, credentials: LoginHubAdminData
-    ) -> Result[tuple[str, str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
+    ) -> Result[AdminTokens, HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
         result = await self._hub_members_repo.fetch_admin_by_username(username=credentials.username)
 
@@ -106,8 +107,8 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
             refresh_expiration=int(refresh_expiration.timestamp()),
         )
-
-        return Ok((jwt_auth_token, jwt_id_token, jwt_refresh_token))
+        tokens = AdminTokens(access_token=jwt_auth_token, id_token=jwt_id_token, refresh_token=jwt_refresh_token)
+        return Ok(tokens)
 
     async def register_admin(
         self, credentials: RegisterHubAdminData
@@ -126,7 +127,7 @@ class AuthService:
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[tuple[str, str], RefreshTokenNotFound | HubMemberNotFoundError | Exception]:
+    ) -> Result[AuthTokens, RefreshTokenNotFound | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -187,4 +188,5 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
         )
 
-        return Ok((jwt_auth_token, jwt_refresh_token))
+        tokens = AuthTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token)
+        return Ok(tokens)

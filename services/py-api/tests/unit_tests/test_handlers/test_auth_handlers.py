@@ -1,5 +1,6 @@
 from typing import cast
 from fastapi import HTTPException
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
 from starlette.responses import Response as StarletteResponse
 import pytest
 from result import Err, Ok
@@ -70,7 +71,9 @@ async def test_login_hub_admin_success(
     auth_handlers: AuthHandlers, auth_service_mock: AuthServiceMock, login_hub_admin_data_mock: LoginHubAdminData
 ) -> None:
     # Given
-    auth_service_mock.login_admin.return_value = Ok(("token_1", "token_2", "token_3"))
+    auth_service_mock.login_admin.return_value = Ok(
+        AdminTokens(access_token="token_1", id_token="token_2", refresh_token="token_3")
+    )
 
     # When
     resp = await auth_handlers.login(credentials=login_hub_admin_data_mock)
@@ -124,7 +127,7 @@ async def test_refresh_token_success(
     auth_service_mock: AuthServiceMock,
 ) -> None:
     # Given
-    auth_service_mock.refresh_token.return_value = Ok(("token_1", "token_2"))
+    auth_service_mock.refresh_token.return_value = Ok(AuthTokens(access_token="token_1", refresh_token="token_2"))
 
     # When
     resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")

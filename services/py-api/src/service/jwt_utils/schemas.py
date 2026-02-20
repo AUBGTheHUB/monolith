@@ -52,6 +52,7 @@ class _DecodedJwtAdminIdToken(DecodedJwtTokenBase):
     avatar_url: str
     site_role: ROLES
     username: str
+    name: str
 
 
 class _DecodedRefreshJwtToken(DecodedJwtTokenBase):
@@ -161,10 +162,16 @@ class JwtIdToken(JwtBase[_DecodedJwtAdminIdToken]):
     avatar_url: str
     site_role: ROLES
     username: str
+    name: str
 
     def serialize(self) -> _DecodedJwtAdminIdToken:
         return _DecodedJwtAdminIdToken(
-            sub=self.sub, exp=self.exp, avatar_url=self.avatar_url, site_role=self.site_role, username=self.username
+            sub=self.sub,
+            exp=self.exp,
+            name=self.name,
+            avatar_url=self.avatar_url,
+            site_role=self.site_role,
+            username=self.username,
         )
 
     @classmethod
@@ -173,6 +180,7 @@ class JwtIdToken(JwtBase[_DecodedJwtAdminIdToken]):
             sub=decoded_token["sub"],
             avatar_url=decoded_token["avatar_url"],
             exp=decoded_token["exp"],
+            name=decoded_token["name"],
             site_role=decoded_token["site_role"],
             username=decoded_token["username"],
         )

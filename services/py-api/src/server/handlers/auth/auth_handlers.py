@@ -22,11 +22,13 @@ class AuthHandlers(BaseHandler):
 
         tokens = result.ok_value
         response = Response(
-            AuthTokensSuccessfullyIssued(access_token=tokens[0], id_token=tokens[1]),
+            AuthTokensSuccessfullyIssued(access_token=tokens.access_token, id_token=tokens.id_token),
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[2], httponly=True, secure=True, samesite="strict")
+        response.set_cookie(
+            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
+        )
 
         return response
 
@@ -52,10 +54,14 @@ class AuthHandlers(BaseHandler):
         tokens = result.ok_value
 
         response = Response(
-            AccessTokenSuccessfullyIssued(access_token=tokens[0]),
+            AccessTokenSuccessfullyIssued(
+                access_token=tokens.access_token,
+            ),
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
+        response.set_cookie(
+            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
+        )
 
         return response

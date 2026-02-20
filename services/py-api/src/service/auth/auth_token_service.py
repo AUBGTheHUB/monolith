@@ -15,11 +15,11 @@ class AuthTokenService:
         return self._jwt_utility.encode_data(data=payload)
 
     def generate_id_token_for(self, hub_admin: HubAdmin) -> str:
-        # TODO: Discuss expiration for id tokens
         expiration = int((datetime.now(timezone.utc) + timedelta(hours=10)).timestamp())
         payload = JwtIdToken(
             sub=str(hub_admin.id),
             exp=expiration,
+            name=hub_admin.name,
             avatar_url=hub_admin.avatar_url,
             username=hub_admin.username,
             site_role=hub_admin.site_role,
