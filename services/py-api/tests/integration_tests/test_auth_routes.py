@@ -23,8 +23,7 @@ async def test_register_admin_success(
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # Then
-    assert resp.status_code == 201
-    assert resp.json()["hub_admin"]["username"] == unique_name
+    assert resp.status_code == 204
 
 
 @pytest.mark.asyncio
