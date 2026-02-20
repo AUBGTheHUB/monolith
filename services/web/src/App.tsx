@@ -21,8 +21,6 @@ import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackatho
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 import { RegisterPage } from './website/AdminPanelPage/AuthPages/RegisterPage/RegisterPage';
-import { RefreshProvider } from './providers/RefreshProvider';
-
 function App() {
     const queryClient = new QueryClient();
 
@@ -47,38 +45,36 @@ function App() {
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<RegisterPage />} />
 
-                    <RefreshProvider>
-                        <Route path="dashboard">
-                            <Route index element={<DashboardPage />} />
-                            {/* Meet the Team Sub-group */}
-                            <Route path="meet-the-team">
-                                <Route index element={<MeetTheTeamPage />} />
-                                <Route path="add" element={<MeetTheTeamEditPage />} />
-                                <Route path=":id" element={<MeetTheTeamEditPage />} />
-                            </Route>
-
-                            {/* Judges Sub-group */}
-                            <Route path="judges">
-                                <Route index element={<JudgesListPage />} />
-                                <Route path="add" element={<JudgesEditPage />} />
-                                <Route path=":id" element={<JudgesEditPage />} />
-                            </Route>
-
-                            {/* Sponsors Sub-group */}
-                            <Route path="sponsors">
-                                <Route index element={<SponsorsListPage />} />
-                                <Route path="add" element={<SponsorsEditPage />} />
-                                <Route path=":id" element={<SponsorsEditPage />} />
-                            </Route>
-
-                            {/* Past events Sub-group */}
-                            <Route path="past-events">
-                                <Route index element={<PastEventsPage />} />
-                                <Route path="add" element={<PastEventsEditPage />} />
-                                <Route path=":id" element={<PastEventsEditPage />} />
-                            </Route>
+                    <Route path="dashboard">
+                        <Route index element={<DashboardPage />} />
+                        {/* Meet the Team Sub-group */}
+                        <Route path="meet-the-team">
+                            <Route index element={<MeetTheTeamPage />} />
+                            <Route path="add" element={<MeetTheTeamEditPage />} />
+                            <Route path=":id" element={<MeetTheTeamEditPage />} />
                         </Route>
-                    </RefreshProvider>
+
+                        {/* Judges Sub-group */}
+                        <Route path="judges">
+                            <Route index element={<JudgesListPage />} />
+                            <Route path="add" element={<JudgesEditPage />} />
+                            <Route path=":id" element={<JudgesEditPage />} />
+                        </Route>
+
+                        {/* Sponsors Sub-group */}
+                        <Route path="sponsors">
+                            <Route index element={<SponsorsListPage />} />
+                            <Route path="add" element={<SponsorsEditPage />} />
+                            <Route path=":id" element={<SponsorsEditPage />} />
+                        </Route>
+
+                        {/* Past events Sub-group */}
+                        <Route path="past-events">
+                            <Route index element={<PastEventsPage />} />
+                            <Route path="add" element={<PastEventsEditPage />} />
+                            <Route path=":id" element={<PastEventsEditPage />} />
+                        </Route>
+                    </Route>
                     {/* 404 Catch-all */}
                     <Route path="*" element={<Admin404Page />} />
                 </Route>
