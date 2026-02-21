@@ -23,8 +23,7 @@ import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.
 import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
 import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
 
-import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
-import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
+import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -79,7 +78,6 @@ function App() {
                         </Route>
                         <Route path="feature-switches">
                             <Route index element={<FeatureSwitchesPage />} />
-                            <Route path="add" element={<FeatureSwitchAddPage />} />
                         </Route>
 
                         {/* Past events Sub-group */}
