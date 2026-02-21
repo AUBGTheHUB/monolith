@@ -24,7 +24,7 @@ class HubMember(BaseDbModel):
     name: str
     member_type: MEMBER_TYPE = "member"
     position: str
-    department: DEPARTMENTS_LIST
+    departments: list[DEPARTMENTS_LIST]
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
@@ -43,7 +43,7 @@ class HubMember(BaseDbModel):
             "name": self.name,
             "member_type": self.member_type,
             "position": self.position,
-            "department": self.department,
+            "departments": self.departments,
             "avatar_url": self.avatar_url,
             "social_links": self._serialize_social_links(),
             "created_at": self.created_at,
@@ -58,7 +58,7 @@ class HubMember(BaseDbModel):
             "member_type": self.member_type,
             "position": self.position,
             "avatar_url": self.avatar_url,
-            "department": self.department,
+            "departments": self.departments,
             "social_links": self._serialize_social_links(),
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -76,7 +76,7 @@ class HubMember(BaseDbModel):
             "member_type": doc["member_type"],
             "position": doc["position"],
             "avatar_url": doc["avatar_url"],
-            "department": doc["department"],
+            "departments": doc["departments"],
             "social_links": doc["social_links"],
             "created_at": doc["created_at"],
             "updated_at": doc["updated_at"],
@@ -86,6 +86,6 @@ class HubMember(BaseDbModel):
 class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
     position: str | None = None
-    department: DEPARTMENTS_LIST | None = None
+    departments: list[DEPARTMENTS_LIST] | None = None
     avatar_url: str | None = None
     social_links: SocialLinks | None = None

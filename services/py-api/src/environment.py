@@ -10,6 +10,8 @@ HOST = environ["HOST"]
 DOMAIN = environ["DOMAIN"]
 PORT = int(environ["PORT"])
 DATABASE_URL = environ["DATABASE_URL"]
+AWS_S3_DEFAULT_BUCKET = environ["AWS_BUCKET"]
+AWS_DEFAULT_REGION: str = environ["AWS_DEFAULT_REGION"]
 
 
 def _read_docker_secret(secret_path: str) -> str | None:
@@ -47,6 +49,10 @@ def _load_docker_secrets() -> None:
         "SECRET_KEY": "/run/secrets/secret-key",
         "SECRET_AUTH_TOKEN": "/run/secrets/secret-auth-key",
         "RESEND_API_KEY": "/run/secrets/resend-api-key",
+        "AWS_ACCESS_KEY_ID": "/run/secrets/aws-access-key-id",
+        "AWS_SECRET_ACCESS_KEY": "/run/secrets/aws-secret-access-key",
+        "AWS_DEFAULT_REGION": "/run/secrets/aws-default-region",
+        "AWS_BUCKET": "/run/secrets/aws-bucket",
     }
 
     # We set the env var value only if we are in a deployed env, and the env var has been set on the given Node

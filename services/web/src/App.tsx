@@ -20,6 +20,8 @@ import { PastEventsEditPage } from './website/AdminPanelPage/DashboardPages/page
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
 import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
+import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
+import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
 
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 import FeatureSwitchAddPage from '@/website/AdminPanelPage/DashboardPage/pages/FeatureSwitchesPage/FeatureSwitchAddPage';
@@ -60,6 +62,13 @@ function App() {
                             <Route index element={<JudgesListPage />} />
                             <Route path="add" element={<JudgesEditPage />} />
                             <Route path=":id" element={<JudgesEditPage />} />
+                        </Route>
+
+                        {/* Mentors Sub-group */}
+                        <Route path="mentors">
+                            <Route index element={<MentorsListPage />} />
+                            <Route path="add" element={<MentorsEditPage />} />
+                            <Route path=":id" element={<MentorsEditPage />} />
                         </Route>
 
                         {/* Sponsors Sub-group */}

@@ -77,7 +77,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_NAME,
     TEST_HUB_MEMBER_MEMBER_TYPE,
     TEST_HUB_MEMBER_POSITON,
-    TEST_HUB_MEMBER_DEPARTMENT,
+    TEST_HUB_MEMBER_DEPARTMENTS,
     TEST_HUB_MEMBER_AVATAR_URL,
     TEST_HUB_MEMBER_SOCIAL_LINKS,
     TEST_HUB_ADMIN_PASSWORD_HASH,
@@ -1033,6 +1033,7 @@ def password_hash_service_mock() -> PasswordHashServiceMock:
 
 class AuthTokensServiceMock(Protocol):
     generate_access_token_for = Mock
+    generate_id_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
     generate_refresh_expiration = Mock
@@ -1046,6 +1047,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
 
     auth_tokens_service_mock.generate_access_token_for = Mock()
+    auth_tokens_service_mock.generate_id_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
@@ -1418,7 +1420,7 @@ def hub_member_mock(obj_id_mock: str) -> HubMember:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_MEMBER_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
     )
 
@@ -1430,7 +1432,7 @@ def hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
 
 @pytest.fixture
 def update_hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
-    return {**hub_member_mock.dump_as_mongo_db_document(), "department": "Marketing"}
+    return {**hub_member_mock.dump_as_mongo_db_document(), "departments": TEST_HUB_MEMBER_DEPARTMENTS}
 
 
 @pytest.fixture
@@ -1442,7 +1444,7 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
         password_hash=TEST_HUB_ADMIN_PASSWORD_HASH,
         site_role=TEST_HUB_ADMIN_ROLE,
@@ -1478,7 +1480,7 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         position=TEST_HUB_MEMBER_POSITON,
         avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
-        department=TEST_HUB_MEMBER_DEPARTMENT,
+        departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
         password=TEST_HUB_ADMIN_PASSWORD_HASH,
         repeat_password=TEST_HUB_ADMIN_PASSWORD_HASH,
