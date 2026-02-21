@@ -1,5 +1,4 @@
 from typing import Mapping, Any
-
 from pydantic import BaseModel, ConfigDict, field_serializer
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse

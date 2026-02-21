@@ -13,3 +13,13 @@ class MentorResponse(BaseModel):
     @field_serializer("mentor")
     def serialize_mentor(self, mentor: Mentor) -> dict[str, Any]:
         return mentor.dump_as_json()
+
+
+class MentorsResponse(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    mentors: list[Mentor]
+
+    @field_serializer("mentors")
+    def serialize_mentors(self, mentors: list[Mentor]) -> list[dict[str, Any]]:
+        return [mentor.dump_as_json() for mentor in mentors]

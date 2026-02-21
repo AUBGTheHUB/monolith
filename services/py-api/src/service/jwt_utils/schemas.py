@@ -8,6 +8,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TypedDict, Self, TypeVar, Generic
 
+from src.database.model.admin.hub_admin_model import ROLES
+from src.database.model.admin.hub_member_model import MEMBER_TYPE
+
 
 class DecodedJwtTokenBase(TypedDict):
     """
@@ -35,6 +38,28 @@ class _DecodedJwtInviteRegistrationToken(DecodedJwtTokenBase):
 
     team_name: str
     team_id: str
+
+
+class _DecodedJwtAdminToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for authenticating HUB Admins"""
+
+    member_type: MEMBER_TYPE = "admin"
+
+
+class _DecodedJwtAdminIdToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for personal data of the hub admin"""
+
+    avatar_url: str
+    site_role: ROLES
+    username: str
+    name: str
+
+
+class _DecodedRefreshJwtToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for refreshing"""
+
+    family_id: str
+    jti: str
 
 
 # We need the following dataclasses, because Python typing system is not that advanced, and even though we use Generics
@@ -113,4 +138,67 @@ class JwtParticipantInviteRegistrationData(JwtBase[_DecodedJwtInviteRegistration
             team_id=decoded_token["team_id"],
             exp=decoded_token["exp"],
             team_name=decoded_token["team_name"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
+    member_type: MEMBER_TYPE
+
+    def serialize(self) -> _DecodedJwtAdminToken:
+        return _DecodedJwtAdminToken(sub=self.sub, exp=self.exp, member_type=self.member_type)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedJwtAdminToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            member_type=decoded_token["member_type"],
+            exp=decoded_token["exp"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtIdToken(JwtBase[_DecodedJwtAdminIdToken]):
+    avatar_url: str
+    site_role: ROLES
+    username: str
+    name: str
+
+    def serialize(self) -> _DecodedJwtAdminIdToken:
+        return _DecodedJwtAdminIdToken(
+            sub=self.sub,
+            exp=self.exp,
+            name=self.name,
+            avatar_url=self.avatar_url,
+            site_role=self.site_role,
+            username=self.username,
+        )
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedJwtAdminIdToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            avatar_url=decoded_token["avatar_url"],
+            exp=decoded_token["exp"],
+            name=decoded_token["name"],
+            site_role=decoded_token["site_role"],
+            username=decoded_token["username"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtRefreshToken(JwtBase[_DecodedRefreshJwtToken]):
+    family_id: str
+    jti: str
+
+    def serialize(self) -> _DecodedRefreshJwtToken:
+        return _DecodedRefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedRefreshJwtToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            exp=decoded_token["exp"],
+            family_id=decoded_token["family_id"],
+            jti=decoded_token["jti"],
         )
