@@ -1,139 +1,137 @@
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import flameTL from './flame_TL.png';
+import flameBR from './flame_BR.png';
+import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
-import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent';
 import { registrationSchema } from './schema';
-import {
-    LEVEL_OPTIONS,
-    PROGRAMMING_LANGUAGE_OPTIONS,
-    RADIO_OPTIONS,
-    REFERRAL_OPTIONS,
-    REGISTRATION_TYPE_OPTIONS_INV,
-    REGISTRATION_TYPE_OPTIONS_NO_INV,
-    RegistrationInfo,
-    ResendEmailType,
-    TSHIRT_OPTIONS,
-    UNIVERSITY_OPTIONS,
-} from './constants';
+import { TRAIT_OPTIONS, ROLE_OPTIONS, RegistrationInfo, ResendEmailType } from './constants';
 import { API_URL } from '@/constants';
-import { Fragment, useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { jwtDecode } from 'jwt-decode';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+//import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Loader2 } from 'lucide-react';
 
-interface DecodedToken {
-    sub: string;
-    team_id: string;
-    team_name: string;
-    exp: number;
-}
+// interface DecodedToken {
+//     sub: string;
+//     team_id: string;
+//     team_name: string;
+//     exp: number;
+// }
 
-async function registerParticipant(data: RegistrationInfo, token?: string) {
-    let response;
-    let params;
+const RESEND_COOLDOWN_SECONDS = 90;
+const REGISTRATION_CUTOFF_DATE = new Date('2025-03-14T00:00:00');
 
-    if (token) {
-        params = new URLSearchParams();
-        params.set('jwt_token', token);
-    }
+async function registerParticipant(data: RegistrationInfo, token?: string): Promise<string> {
+    const params = token ? new URLSearchParams({ jwt_token: token }) : undefined;
 
+    let response: Response;
     try {
-        response = await fetch(`${API_URL}/hackathon/participants?${params?.toString()}`, {
+        response = await fetch(`${API_URL}/hackathon/participants?${params?.toString() ?? ''}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
     } catch {
-        throw new Error('Registaration failed, try refreshing the page or contact us.');
+        throw new Error('Registration failed, try refreshing the page or contact us.');
     }
+
     const responseData = await response.json();
     if (!response.ok) {
-        throw new Error(
-            (responseData && responseData.error) || 'Registaration failed, try refreshing the page or contact us.',
-        );
+        throw new Error(responseData?.error || 'Registration failed, try refreshing the page or contact us.');
     }
+
     return responseData.participant?.id;
 }
 
-function resendEmail(data: ResendEmailType) {
-    fetch(`${API_URL}/hackathon/participants/verify/send-email`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+async function resendEmail(data: ResendEmailType): Promise<void> {
+    let response: Response;
+    try {
+        response = await fetch(`${API_URL}/hackathon/participants/verify/send-email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+    } catch {
+        throw new Error('Failed to resend verification email. Please try again.');
+    }
+
+    if (!response.ok) {
+        throw new Error('Failed to resend verification email.');
+    }
 }
 
-interface RegistrationFormType {
+function useCooldownTimer(durationSeconds: number) {
+    const [secondsLeft, setSecondsLeft] = useState(0);
+    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const start = useCallback(() => {
+        setSecondsLeft(durationSeconds);
+
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+
+        intervalRef.current = setInterval(() => {
+            setSecondsLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(intervalRef.current!);
+                    intervalRef.current = null;
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }, [durationSeconds]);
+
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
+
+    const isCoolingDown = secondsLeft > 0;
+
+    return { secondsLeft, isCoolingDown, start };
+}
+
+interface RegistrationFormProps {
     RegSwitch: boolean;
     isRegTeamsFull: boolean;
 }
 
-export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormType) {
-    const [formData, setFormData] = useState<RegistrationInfo | null>(null);
-    console.log(RegSwitch, isRegTeamsFull);
-
+export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormProps) {
     const params = new URLSearchParams(window.location.search);
-
     const token = params.get('jwt_token') ?? undefined;
+    //const _decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
 
-    const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
-
-    const [canResendEmail, setCanResendEmail] = useState(false);
-    const [resendTimerStart, setResendTimerStart] = useState<number | null>(null);
-    const [secondsLeft, setSecondsLeft] = useState(90);
     const [isSubmitted, setIsSubmitted] = useState(false);
-
     const [fadeIn, setFadeIn] = useState(false);
+    const cooldown = useCooldownTimer(RESEND_COOLDOWN_SECONDS);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setFadeIn(true);
-        }, 100);
+        const timer = setTimeout(() => setFadeIn(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
-    useEffect(() => {
-        if (resendTimerStart !== null) {
-            const interval = setInterval(() => {
-                const elapsedTime = Math.floor((Date.now() - resendTimerStart) / 1000);
-                const timeRemaining = 90 - elapsedTime;
-                setSecondsLeft(timeRemaining > 0 ? timeRemaining : 0);
-
-                if (timeRemaining <= 0) {
-                    setCanResendEmail(true);
-                    setResendTimerStart(null);
-                    clearInterval(interval);
-                }
-            }, 1000);
-            return () => clearInterval(interval);
-        }
-    }, [resendTimerStart]);
-
-    const { data, isLoading, isError, error } = useQuery({
-        queryKey: ['registerParticipant', formData],
-        queryFn: () => registerParticipant(formData!, token),
-        enabled: !!formData,
+    const {
+        mutate,
+        data: participantId,
+        isPending,
+        isError,
+        error,
+    } = useMutation({
+        mutationFn: (formData: RegistrationInfo) => registerParticipant(formData, token),
         retry: 1,
-        refetchOnWindowFocus: false,
-    });
-
-    let formFeedback;
-    if (isError && error instanceof Error) {
-        formFeedback = <p>{error.message}</p>;
-    }
-
-    useEffect(() => {
-        if (data) {
+        onSuccess: () => {
             setIsSubmitted(true);
+            cooldown.start();
             toast.success('Registration successful', {
                 position: 'top-right',
                 autoClose: 5000,
@@ -141,385 +139,303 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
-                className: 'bg-[#000912] text-white',
+                className: 'bg-white text-black border border-gray-200',
             });
-        }
-    }, [data]);
+        },
+    });
 
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
         defaultValues: {
-            name: '',
+            first_name: '',
+            last_name: '',
             email: '',
-            tshirt_size: '',
-            university: '',
-            location: '',
-            age: 0,
-            source_of_referral: '',
-            programming_language: '',
-            programming_level: undefined,
-            has_participated_in_hackaubg: undefined,
-            has_internship_interest: undefined,
+            country: '',
+            address: '',
+            has_team: undefined,
+            role: undefined,
             has_participated_in_hackathons: undefined,
-            has_previous_coding_experience: undefined,
-            share_info_with_sponsors: undefined,
-            registration_type: decodedToken?.team_name ? 'invite_link' : undefined,
-            team_name: decodedToken?.team_name ?? '',
+            idea: '',
+            challenge: '',
+            motivation: '',
+            best_describes: undefined,
         },
     });
 
-    const registrationType = useWatch({
-        control: form.control,
-        name: 'registration_type',
-    });
-
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
-        console.log('Form submitted:', data);
-
-        if (data.registration_type === 'random') {
-            delete data.team_name;
-        }
-
-        const wrapData: RegistrationInfo = {
-            registration_info: {
-                ...data,
-                ...((data.registration_type === 'admin' && { is_admin: true }) ||
-                    (data.registration_type === 'invite_link' && { is_admin: false })),
-            },
+        const payload: RegistrationInfo = {
+            registration_info: { ...data },
         };
-
-        setFormData(wrapData);
-
-        setCanResendEmail(false);
-        setResendTimerStart(Date.now());
-        setSecondsLeft(90);
+        mutate(payload);
     };
-    const onResendEmail = () => {
-        if (!canResendEmail) {
-            toast.info(`Please wait ${secondsLeft} seconds before resending.`, {
+
+    const onResendEmail = async () => {
+        if (cooldown.isCoolingDown) {
+            toast.info(`Please wait ${cooldown.secondsLeft} seconds before resending.`, {
                 position: 'top-right',
                 autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                className: 'bg-[#000912] text-white',
+                className: 'bg-white text-black',
             });
             return;
         }
 
-        const wrappedEmailData: ResendEmailType = { participant_id: data };
-        resendEmail(wrappedEmailData);
-
-        setCanResendEmail(false);
-        setResendTimerStart(Date.now());
-        setSecondsLeft(90);
-
-        toast.success('Verification email has been resent. Please wait 90 seconds before resending again.', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            className: 'bg-[#000912] text-white',
-        });
+        try {
+            await resendEmail({ participant_id: participantId! });
+            cooldown.start();
+            toast.success('Verification email resent.', {
+                position: 'top-right',
+                autoClose: 5000,
+                className: 'bg-white text-black',
+            });
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to resend email.', {
+                position: 'top-right',
+                autoClose: 5000,
+                className: 'bg-white text-black',
+            });
+        }
     };
 
-    const isAdmin = useWatch({
-        control: form.control,
-        name: 'registration_type',
-    });
-
-    useEffect(() => {
-        if (isAdmin === 'random') {
-            form.clearErrors('team_name');
-            form.setValue('team_name', '');
-        }
-    }, [isAdmin]);
-
     const currentDate = new Date();
-    const cutoffDate = new Date('2025-03-14T00:00:00');
-    const registrationMessage = currentDate < cutoffDate ? 'Registration is coming soon...' : 'Registration is closed';
+    const registrationMessage =
+        currentDate < REGISTRATION_CUTOFF_DATE ? 'Registration is coming soon...' : 'Registration is closed';
 
-    if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
+    const labelStyles = 'text-gray-700 font-medium text-sm mb-1';
+    const inputStyles =
+        'bg-white text-gray-800 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-400 transition-shadow';
+    const radioGroupStyles = 'flex flex-wrap gap-4 text-gray-600 text-sm';
+
+    if (!RegSwitch || isRegTeamsFull) {
         return (
             <div
-                className={`w-full flex bg-[url('/spaceBg.webp')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
-        transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+                className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             >
-                <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
-                    <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
-                    <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
+                <div className="w-11/12 sm:w-4/5 flex justify-center mb-10 mt-16 z-10">
+                    <p className="text-black tracking-[0.5em] text-4xl sm:text-5xl font-light">REGISTER</p>
                 </div>
-                <div className="h-[45vh] flex w-[80%] justify-center items-center">
-                    <div className="text-white  flex h-[200px] w-full justify-center">
-                        <div className="bg-[#000b13] h-full rounded-md w-full border border-[#202d38] flex justify-center items-center font-mont text-2xl">
-                            <p className="text-center p-5">{registrationMessage}</p>
-                        </div>
+                <div className="h-[45vh] flex w-[80%] justify-center items-center z-10">
+                    <div className="bg-white/80 backdrop-blur-md h-full rounded-3xl w-full border border-gray-200 shadow-xl flex justify-center items-center font-mont text-2xl">
+                        <p className="text-center p-5 text-gray-800">{registrationMessage}</p>
                     </div>
                 </div>
             </div>
         );
-    } else {
-        return (
-            <div
-                className={`w-full flex bg-[url('/spaceBg.webp')] flex-col items-center font-mont bg-[#000912] relative text-gray-400 min-h-[100vh]
-        transition-opacity duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
-            >
-                <div className="w-11/12 sm:w-4/5 flex items-start mb-20 mt-16">
-                    <img src="/RegistrationForm/s.png" alt="" className="w-[1.6rem] mt-3" />
-                    <p className="text-white ml-5 tracking-[0.2em] text-3xl sm:text-4xl">REGISTER</p>
-                </div>
-
-                <div className="flex justify-center w-full">
-                    <FormProvider {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="relative bg-[#000912] w-full max-w-[90%] sm:max-w-[70%] px-5 sm:px-14 py-8 border border-gray-700 rounded-lg shadow-md mb-16"
-                        >
-                            <img
-                                src="/RegistrationForm/reg_line.svg"
-                                alt=""
-                                className="absolute top-[-1px] sm:top-[-2px]  w-full h-auto z-10"
-                            />
-                            <div>
-                                <p className="text-white text-lg font-semibold mb-2 mt-12">Personal Info</p>
-                                <hr className="mb-8 h-0.5 bg-[#233340] border-0" />
-                                <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-6">
-                                    <InputComponent
-                                        control={form.control}
-                                        name="name"
-                                        label="Name"
-                                        type="text"
-                                        placeholder="Enter your name"
-                                        labelClassName="text-white"
-                                        inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="age"
-                                        label="Age"
-                                        type="number"
-                                        placeholder="Enter your age"
-                                        labelClassName="text-white"
-                                        inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]
-                                appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="email"
-                                        label="Email"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        labelClassName="text-white"
-                                        inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
-                                    />
-                                    <InputComponent
-                                        control={form.control}
-                                        name="location"
-                                        label="Location"
-                                        type="text"
-                                        placeholder="Enter your location"
-                                        labelClassName="text-white"
-                                        inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
-                                    />
-                                    <DropdownComponent
-                                        control={form.control}
-                                        name="university"
-                                        label="University"
-                                        placeholder="Select your university"
-                                        dropdownLabelClassName="text-white"
-                                        selectContentClassName="bg-[#000912] text-white border border-[#233340]"
-                                        formControlClassName="bg-[#000912] border border-[#233340]"
-                                        items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
-                                    />
-                                </div>
-
-                                <div>
-                                    <p className="text-white text-lg font-semibold mt-12 mb-2">Participation</p>
-                                    <hr className="mb-8 h-0.5 bg-[#233340] border-0" />
-                                    <div className="grid ">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <DropdownComponent
-                                                control={form.control}
-                                                name="tshirt_size"
-                                                label="T-Shirt Size"
-                                                placeholder="Select your size"
-                                                dropdownLabelClassName="text-white"
-                                                selectContentClassName="bg-[#000912] text-white border border-[#233340]"
-                                                formControlClassName="bg-[#000912] border border-[#233340]"
-                                                items={TSHIRT_OPTIONS.map(({ label, value }) => ({
-                                                    name: label,
-                                                    value,
-                                                }))}
-                                            />
-
-                                            <DropdownComponent
-                                                control={form.control}
-                                                name="source_of_referral"
-                                                label="Source of Referral"
-                                                placeholder="How did you hear about us?"
-                                                dropdownLabelClassName="text-white"
-                                                selectContentClassName="bg-[#000912] text-white border border-[#233340]"
-                                                formControlClassName="bg-[#000912] border border-[#233340]"
-                                                items={REFERRAL_OPTIONS.map(({ label, value }) => ({
-                                                    name: label,
-                                                    value,
-                                                }))}
-                                            />
-                                            <DropdownComponent
-                                                control={form.control}
-                                                name="programming_language"
-                                                label="Programming Language"
-                                                placeholder="Select your preferred language"
-                                                dropdownLabelClassName="text-white"
-                                                selectContentClassName="bg-[#000912] text-white border border-[#233340]"
-                                                formControlClassName="bg-[#000912] border border-[#233340]"
-                                                items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({
-                                                    name: label,
-                                                    value,
-                                                }))}
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 ">
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="programming_level"
-                                                options={LEVEL_OPTIONS}
-                                                groupLabel="Programming Level"
-                                                groupClassName="text-white"
-                                                radioGroupClassName="text-[#A6AAB2]"
-                                            />
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="has_participated_in_hackaubg"
-                                                options={RADIO_OPTIONS}
-                                                groupLabel="Have you participated in HackAUBG before?"
-                                                groupClassName="text-white"
-                                                radioGroupClassName="text-[#A6AAB2]"
-                                            />
-
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="has_internship_interest"
-                                                options={RADIO_OPTIONS}
-                                                groupLabel="Are you interested in internships?"
-                                                groupClassName="text-white"
-                                                radioGroupClassName=" text-[#A6AAB2]"
-                                            />
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="has_participated_in_hackathons"
-                                                options={RADIO_OPTIONS}
-                                                groupLabel="Have you participated in hackathons before?"
-                                                groupClassName="text-white"
-                                                radioGroupClassName=" text-[#A6AAB2]"
-                                            />
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="has_previous_coding_experience"
-                                                options={RADIO_OPTIONS}
-                                                groupLabel="Do you have previous coding experience?"
-                                                groupClassName="text-white"
-                                                radioGroupClassName=" text-[#A6AAB2]"
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 ">
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="registration_type"
-                                                options={
-                                                    decodedToken
-                                                        ? REGISTRATION_TYPE_OPTIONS_INV
-                                                        : REGISTRATION_TYPE_OPTIONS_NO_INV
-                                                }
-                                                groupLabel="Enter registration type"
-                                                disabled={decodedToken?.team_name ? true : false}
-                                                groupClassName="text-white"
-                                                radioGroupClassName="text-[#A6AAB2]"
-                                            />
-
-                                            <InputComponent
-                                                control={form.control}
-                                                name="team_name"
-                                                label="Team Name"
-                                                type="text"
-                                                placeholder="Enter your team name"
-                                                disabled={isAdmin !== 'admin'}
-                                                labelClassName="text-white"
-                                                inputClassName="bg-transparent text-[#A6AAB2] border border-[#233340] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A6AAB2]"
-                                            />
-                                            <RadioComponent
-                                                control={form.control}
-                                                name="share_info_with_sponsors"
-                                                options={[
-                                                    { label: 'Yes', value: true },
-                                                    { label: 'No', value: false },
-                                                ]}
-                                                groupLabel="Do you agree to share your info with sponsors?"
-                                                groupClassName="text-white"
-                                                radioGroupClassName=" text-[#A6AAB2]"
-                                            />
-                                        </div>
-                                        <img src="/AwardsSection/line.svg" alt="Divider" className="w-full h-auto" />
-                                    </div>
-                                </div>
-                                <div className="flex justify-start mt-4">
-                                    <Button
-                                        disabled={isLoading || isSubmitted}
-                                        type="submit"
-                                        className={`mt-10 text-white border-2 border-sky-600 rounded-full bg-transparent hover:bg-sky-600 transition-colors duration-500 hover:text-white ${
-                                            isLoading || isSubmitted
-                                                ? 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed'
-                                                : ''
-                                        }`}
-                                    >
-                                        {isLoading ? (
-                                            <Fragment>
-                                                <Loader2 className="animate-spin" />
-                                                Please wait
-                                            </Fragment>
-                                        ) : (
-                                            'Participate now'
-                                        )}
-                                    </Button>
-                                </div>
-                                {data && registrationType !== 'invite_link' && (
-                                    <p className="text-[#A6AAB2] mt-4 text-sm">
-                                        Did not receive an email?
-                                        <span
-                                            onClick={onResendEmail}
-                                            className={`underline mx-1 ${
-                                                canResendEmail
-                                                    ? 'cursor-pointer text-white hover:text-[#A6AAB2] transition duration-200'
-                                                    : 'cursor-not-allowed text-gray-500'
-                                            }`}
-                                        >
-                                            Click here
-                                        </span>
-                                        {canResendEmail ? '' : `(Wait ${secondsLeft}s)`}
-                                    </p>
-                                )}
-                            </div>
-                            <div className="text-sm text-red-600 mt-4">{formFeedback}</div>
-                        </form>
-                    </FormProvider>
-                </div>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick={true}
-                    rtl={false}
-                    pauseOnFocusLoss={true}
-                    draggable={true}
-                    pauseOnHover={true}
-                    aria-label="Notification"
-                />
-            </div>
-        );
     }
+
+    return (
+        <div
+            className={`w-full flex flex-col items-center overflow-x-hidden font-mont bg-[#fafafa] relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+        >
+            <img
+                src={flameTL}
+                alt=""
+                className="absolute top-0 left-0 w-[800px] opacity-90 z-0 pointer-events-none mix-blend-multiply"
+            />
+            <img
+                src={flameBR}
+                alt=""
+                className="absolute bottom-0 right-0 w-[800px] opacity-90 z-0 pointer-events-none mix-blend-multiply"
+            />
+
+            <div className="w-11/12 sm:w-4/5 flex justify-center mb-12 mt-16 z-10">
+                <p className="text-gray-900 tracking-[0.4em] text-3xl sm:text-4xl font-medium uppercase">REGISTER</p>
+            </div>
+
+            <div className="flex justify-center w-full z-10">
+                <FormProvider {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="bg-white/10 backdrop-blur-lg w-full max-w-[90%] sm:max-w-[75%] px-6 sm:px-14 py-12 border border-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] mb-16"
+                    >
+                        {/* Personal Info Section */}
+                        <div>
+                            <p className="text-gray-800 text-base mb-2 mt-4 font-normal">Personal Info</p>
+                            <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <InputComponent
+                                    control={form.control}
+                                    name="first_name"
+                                    label="First Name"
+                                    type="text"
+                                    placeholder="John"
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="last_name"
+                                    label="Last Name"
+                                    type="text"
+                                    placeholder="Doe"
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="email"
+                                    label="Email"
+                                    type="email"
+                                    placeholder="john@doe.com"
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <InputComponent
+                                    control={form.control}
+                                    name="country"
+                                    label="Country"
+                                    type="text"
+                                    placeholder="Enter your country"
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="address"
+                                    label="Address"
+                                    type="text"
+                                    placeholder="123 Main Street"
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Participation Section */}
+                        <div>
+                            <p className="text-gray-800 text-base mt-12 mb-2 font-normal">Participation</p>
+                            <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
+
+                            <div className="flex flex-col gap-8">
+                                <RadioComponent
+                                    control={form.control}
+                                    name="has_team"
+                                    options={[
+                                        { label: 'Yes', value: true },
+                                        { label: 'No', value: false },
+                                    ]}
+                                    groupLabel="Do you have a team?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+
+                                <RadioComponent
+                                    control={form.control}
+                                    name="role"
+                                    options={ROLE_OPTIONS}
+                                    groupLabel="Which role will you take?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+
+                                <RadioComponent
+                                    control={form.control}
+                                    name="has_participated_in_hackathons"
+                                    options={[
+                                        { label: 'Yes', value: true },
+                                        { label: 'No', value: false },
+                                    ]}
+                                    groupLabel="Have you participated in a hackathon before?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+
+                                <InputComponent
+                                    control={form.control}
+                                    name="idea"
+                                    label="What is your idea?"
+                                    type="text"
+                                    placeholder="Type here..."
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+
+                                <InputComponent
+                                    control={form.control}
+                                    name="challenge"
+                                    label="What challenge/problem does it address?"
+                                    type="text"
+                                    placeholder="Type here..."
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+
+                                <InputComponent
+                                    control={form.control}
+                                    name="motivation"
+                                    label="Why do you want to take part in the hackathon?"
+                                    type="text"
+                                    placeholder="Type here..."
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+
+                                <RadioComponent
+                                    control={form.control}
+                                    name="best_describes"
+                                    options={TRAIT_OPTIONS}
+                                    groupLabel="Which describes you best?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-start mt-8">
+                            <Button
+                                disabled={isPending || isSubmitted}
+                                type="submit"
+                                className={`mt-4 px-8 py-2 text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-400 transition-all duration-300 hover:text-white ${
+                                    isPending || isSubmitted ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
+                            >
+                                {isPending ? (
+                                    <Fragment>
+                                        <Loader2 className="animate-spin mr-2" size={16} />
+                                        Please wait
+                                    </Fragment>
+                                ) : (
+                                    'Participate now'
+                                )}
+                            </Button>
+                        </div>
+
+                        {isError && error instanceof Error && (
+                            <p className="text-sm text-red-600 mt-4">{error.message}</p>
+                        )}
+
+                        {isSubmitted && (
+                            <div className="mt-4">
+                                <Button
+                                    type="button"
+                                    onClick={onResendEmail}
+                                    disabled={cooldown.isCoolingDown}
+                                    className="px-6 py-2 text-sm text-gray-800 border border-gray-400 rounded-full bg-transparent hover:bg-gray-100 transition-all duration-300"
+                                >
+                                    {cooldown.isCoolingDown
+                                        ? `Resend email (${cooldown.secondsLeft}s)`
+                                        : 'Resend verification email'}
+                                </Button>
+                            </div>
+                        )}
+                    </form>
+                </FormProvider>
+            </div>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss={true}
+                draggable={true}
+                pauseOnHover={true}
+            />
+        </div>
+    );
 }
