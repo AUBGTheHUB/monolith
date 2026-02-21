@@ -1,8 +1,8 @@
 export type Judge = {
     id: string;
     name: string;
-    companyName: string;
-    imageUrl: string;
-    position?: string;
-    linkedinURL?: string;
+    company: string;
+    job_title?: string;
+    avatar_url: string;
+    linkedin_url?: string;
 };

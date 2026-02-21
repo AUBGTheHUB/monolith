@@ -26,14 +26,17 @@ function SponsorTile({ sponsor }: { sponsor: HackathonSponsorProps }) {
             href={sponsor.websiteLink}
             target="_blank"
             rel="noreferrer"
-            className="w-full aspect-square rounded-[16px] border border-[#6E6E6E] bg-transparent overflow-hidden block"
+            className="block aspect-square w-full justify-self-center sm:justify-self-start
+                max-w-[150px] sm:max-w-[170px] lg:max-w-[190px] xl:max-w-[200px] 2xl:max-w-[210px]
+                rounded-[16px] border border-[#6E6E6E]
+                bg-[#FFFDF5] overflow-hidden"
         >
             {/* Fill the tile, rounded corners */}
             <img
                 src={sponsor.logoSrc}
                 alt={sponsor.name}
                 draggable={false}
-                className="w-full h-full object-cover rounded-[16px] select-none"
+                className="w-full h-full object-contain rounded-[16px] select-none"
             />
         </a>
     );
@@ -64,12 +67,15 @@ function RankPanel({ rank, sponsors }: { rank: SponsorRank; sponsors: HackathonS
                     <div
                         className="
                             grid mt-6 sm:mt-8
-                            gap-x-[18px] sm:gap-x-[24px] lg:gap-x-[31px]
-                            gap-y-[18px] sm:gap-y-[22px] lg:gap-y-[24px]
-                            justify-items-start
-                            grid-cols-[repeat(auto-fit,minmax(140px,1fr))]
-                            sm:grid-cols-[repeat(auto-fit,minmax(180px,1fr))]
-                            lg:grid-cols-[repeat(auto-fit,minmax(230px,230px))]
+                            gap-x-4 sm:gap-x-5 lg:gap-x-6 xl:gap-x-[31px]
+                            gap-y-4 sm:gap-y-5 lg:gap-y-6 xl:gap-y-[24px]
+                            justify-center justify-items-center
+                            sm:justify-start sm:justify-items-start
+                            grid-cols-[repeat(auto-fit,minmax(150px,1fr))]
+                            sm:grid-cols-[repeat(auto-fit,minmax(170px,1fr))]
+                            lg:grid-cols-[repeat(auto-fit,minmax(190px,1fr))]
+                            xl:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]
+                            2xl:grid-cols-[repeat(auto-fit,minmax(210px,210px))]
                         "
                     >
                         {sponsors.map((s) => (
@@ -95,7 +101,8 @@ export function SponsorsCard({
             <img
                 src="/flames.png"
                 alt="Flame Background"
-                className="absolute inset-0 w-full h-full pointer-events-none select-none object-cover object-[50%_70%] md:object-contain md:object-center"
+                className="absolute inset-0 w-full h-full pointer-events-none select-none object-cover object-[50%_70%] transform-gpu
+                    scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
                 draggable={false}
             />
 
