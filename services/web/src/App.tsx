@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from 'react-router';
+import { Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
@@ -77,6 +77,10 @@ function App() {
                             <Route path="add" element={<SponsorsEditPage />} />
                             <Route path=":id" element={<SponsorsEditPage />} />
                         </Route>
+                        <Route path="feature-switches">
+                            <Route index element={<FeatureSwitchesPage />} />
+                            <Route path="add" element={<FeatureSwitchAddPage />} />
+                        </Route>
 
                         {/* Past events Sub-group */}
                         <Route path="past-events">
@@ -90,11 +94,6 @@ function App() {
                 </Route>
                 {/* 404 Catch-all */}
                 <Route path="*" element={<Global404Page />} />
-
-                <Route path="/" element={<Navigate to="/dashboard/feature-switches" replace />} />
-                <Route path="/dashboard/feature-switches" element={<FeatureSwitchesPage />} />
-                <Route path="/dashboard/feature-switches/add" element={<FeatureSwitchAddPage />} />
-                <Route path="*" element={<div style={{ padding: 24 }}>Not Found</div>} />
             </Routes>
         </QueryClientProvider>
     );
