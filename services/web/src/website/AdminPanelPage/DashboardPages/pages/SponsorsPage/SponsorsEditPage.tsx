@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
 import { Sponsor } from '@/types/sponsor.ts';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -64,7 +65,7 @@ export function SponsorsEditPage() {
             reset({
                 name: sponsor.name,
                 tier: sponsor.tier,
-                logo: sponsor.logo_url,
+                //exclude image here
                 website_url: sponsor.website_url,
             });
         }
@@ -72,10 +73,10 @@ export function SponsorsEditPage() {
 
     // 3. Mutation for Save (Create or Update)
     const mutation = useMutation({
-        mutationFn: (formData: SponsorFormData) => {
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<Sponsor, SponsorFormData>(`/admin/sponsors/${id}`, formData)
-                : apiClient.post<Sponsor, SponsorFormData>(`/admin/sponsors`, formData);
+                ? apiClient.patchForm<Sponsor>(`/admin/sponsors/${id}`, formData)
+                : apiClient.postForm<Sponsor>(`/admin/sponsors`, formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
@@ -85,10 +86,15 @@ export function SponsorsEditPage() {
             alert(error.message);
         },
     });
-
     const onSubmit = (data: SponsorFormData) => {
-        mutation.mutate(data);
+        // Just wrap your data!
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
+
+    // const onSubmit = (data: SponsorFormData) => {
+    //     mutation.mutate(data);
+    // };
 
     const goBack = () => {
         navigate('/admin/dashboard/sponsors');
