@@ -52,7 +52,13 @@ export default function FeatureSwitchCard({
 
                 <Button
                     variant="outline"
-                    className="w-full bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white transition-all"
+                    className={cn(
+                        'w-full transition-all border font-medium',
+                        // Current State is ON (Button will turn it OFF) -> Red Style
+                        currentState
+                            ? 'bg-red-500/10 border-red-500/50 text-red-400 hover:bg-red-500/20 hover:text-red-300'
+                            : 'bg-white/5 border-white/10 text-white hover:bg-white/20 hover:text-white',
+                    )}
                     onClick={onToggle}
                 >
                     {currentState ? toggleOnLabel : toggleOffLabel}
