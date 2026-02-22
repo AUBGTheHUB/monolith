@@ -1,0 +1,18 @@
+.embla__viewport {
+  overflow: hidden;
+  padding: 0 32px;
+}
+
+.embla__container {
+  display: flex;
+  gap: 32px;
+}
+
+.embla__slide {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.embla__slide:not(.is-snapped) {
+    opacity: 0.16;
+}
