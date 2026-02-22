@@ -22,14 +22,16 @@ import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
 import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
-
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
     const queryClient = new QueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
