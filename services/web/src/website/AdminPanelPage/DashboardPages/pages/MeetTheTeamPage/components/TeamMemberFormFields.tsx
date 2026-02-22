@@ -1,11 +1,10 @@
 import { Control } from 'react-hook-form';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form.tsx';
 import { Input } from '@/components/ui/input.tsx';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import { MultiSelect } from '@/components/ui/multi-select.tsx';
 import { TeamMemberFormFieldMessages as MESSAGES } from '../messages.tsx';
 import { TeamMemberFormData } from '../validation/validation.tsx';
-import { AVAILABLE_DEPARTMENTS, MEMBER_TYPES } from '../constants.tsx';
+import { AVAILABLE_DEPARTMENTS } from '../constants.tsx';
 
 interface TeamMemberFormFieldsProps {
     control: Control<TeamMemberFormData>;
@@ -58,51 +57,24 @@ export function TeamMemberFormFields({ control }: TeamMemberFormFieldsProps) {
                 )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField
-                    control={control}
-                    name="departments"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>{MESSAGES.LABELS.DEPARTMENT}</FormLabel>
-                            <FormControl>
-                                <MultiSelect
-                                    options={AVAILABLE_DEPARTMENTS}
-                                    selected={field.value}
-                                    onChange={field.onChange}
-                                    placeholder={MESSAGES.PLACEHOLDERS.DEPARTMENT}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={control}
-                    name="member_type"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>{MESSAGES.LABELS.MEMBER_TYPE}</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={MESSAGES.PLACEHOLDERS.MEMBER_TYPE} />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {MEMBER_TYPES.map((type) => (
-                                        <SelectItem key={type} value={type}>
-                                            {type.charAt(0).toUpperCase() + type.slice(1)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
+            <FormField
+                control={control}
+                name="departments"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>{MESSAGES.LABELS.DEPARTMENT}</FormLabel>
+                        <FormControl>
+                            <MultiSelect
+                                options={AVAILABLE_DEPARTMENTS}
+                                selected={field.value}
+                                onChange={field.onChange}
+                                placeholder={MESSAGES.PLACEHOLDERS.DEPARTMENT}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
 
             <div className="space-y-4 pt-4 border-t border-white/10">
                 <h3 className="text-lg font-medium text-white">Social Links</h3>

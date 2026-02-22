@@ -107,7 +107,6 @@ export const TeamMemberFormFieldMessages = {
         NAME: 'Name',
         POSITION: 'Position',
         DEPARTMENT: 'Department',
-        MEMBER_TYPE: 'Role',
         IMAGE: 'Avatar URL',
         SOCIAL_LINKEDIN: 'LinkedIn Profile',
         SOCIAL_GITHUB: 'GitHub Profile',
@@ -115,9 +114,8 @@ export const TeamMemberFormFieldMessages = {
     },
     PLACEHOLDERS: {
         NAME: "Enter member's full name",
-        POSITION: 'e.g. Lead Developer',
+        POSITION: 'e.g. Head of Development',
         DEPARTMENT: 'Select a department',
-        MEMBER_TYPE: 'Select a role',
         IMAGE: 'Enter image URL (e.g., https://example.com/photo.png)',
         SOCIAL_LINKEDIN: 'https://linkedin.com/in/username',
         SOCIAL_GITHUB: 'https://github.com/username',

@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
 import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { teamMemberFormSchema, TeamMemberFormData, BackendHubMember } from './validation/validation.tsx';
+import { teamMemberFormSchema, TeamMemberFormData } from './validation/validation.tsx';
+import { HubMember } from '@/types/hub-member.ts';
 import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
@@ -29,7 +30,6 @@ export function MeetTheTeamEditPage() {
             name: '',
             position: '',
             departments: [],
-            member_type: 'member',
             avatar_url: '',
             social_links: {
                 linkedin: '',
@@ -46,7 +46,7 @@ export function MeetTheTeamEditPage() {
     // 1. Fetch data if in Edit Mode
     const { data: member, isLoading } = useQuery({
         queryKey: ['hub-member', id],
-        queryFn: () => apiClient.get<{ hub_member: BackendHubMember }>(`/admin/hub-members/${id}`),
+        queryFn: () => apiClient.get<{ hub_member: HubMember }>(`/admin/hub-members/${id}`),
         enabled: isEditMode,
         select: (res) => res.hub_member,
     });
@@ -58,7 +58,6 @@ export function MeetTheTeamEditPage() {
                 name: member.name,
                 position: member.position,
                 departments: member.departments as ('Development' | 'Marketing' | 'Logistics' | 'PR' | 'Design')[],
-                member_type: member.member_type,
                 avatar_url: member.avatar_url,
                 social_links: {
                     linkedin: member.social_links?.linkedin || '',
@@ -92,8 +91,8 @@ export function MeetTheTeamEditPage() {
             };
 
             return isEditMode
-                ? apiClient.patch<BackendHubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
-                : apiClient.post<BackendHubMember, typeof payload>(`/admin/hub-members`, payload);
+                ? apiClient.patch<HubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
+                : apiClient.post<HubMember, typeof payload>(`/admin/hub-members`, payload);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['hub-members'] });
