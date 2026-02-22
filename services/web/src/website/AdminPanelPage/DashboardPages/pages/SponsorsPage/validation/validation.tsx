@@ -1,12 +1,9 @@
 import { z } from 'zod';
+import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 
 const RULES = {
     NAME: { MIN: 2, MAX: 100 },
     TIER: { MIN: 2, MAX: 50 },
-    FILE: {
-        MAX_SIZE: 5 * 1024 * 1024,
-        ACCEPTED_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'],
-    },
 };
 
 export const sponsorSchema = z.object({
@@ -24,10 +21,10 @@ export const sponsorSchema = z.object({
     logo: z
         .any()
         .refine((files) => files?.length > 0, 'Logo file is required')
-        .refine((files) => files?.[0]?.size <= RULES.FILE.MAX_SIZE, `Max file size is 5MB.`)
+        .refine((files) => files?.[0]?.size <= FILE_RULES.MAX_SIZE, `Max file size is 5MB.`)
         .refine(
-            (files) => RULES.FILE.ACCEPTED_TYPES.includes(files?.[0]?.type),
-            '.jpg, .jpeg, .png, .webp and .svg files are accepted.',
+            (files) => FILE_RULES.ACCEPTED_TYPES.includes(files?.[0]?.type),
+            '.jpg, .jpeg, .png, .webp files are accepted.',
         ),
 
     website_url: z.string().min(1, { message: 'Website URL is required' }).url({ message: 'Please enter a valid URL' }),
