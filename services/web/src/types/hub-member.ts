@@ -1,7 +1,6 @@
 export interface HubMember {
     id: string;
     name: string;
-    member_type: 'member' | 'admin';
     position: string;
     departments: string[];
     avatar_url: string;
