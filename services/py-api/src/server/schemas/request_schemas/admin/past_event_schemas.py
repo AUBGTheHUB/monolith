@@ -10,6 +10,7 @@ class PastEventPostReqData(BaseModel):
 
     title: NonEmptyStr
     cover_picture: HttpUrl
+    description: Optional[str] = None
     tags: list[NonEmptyStr] = []
 
 
@@ -18,4 +19,5 @@ class PastEventPatchReqData(BasePatchReqData):
 
     title: Optional[NonEmptyStr] = None
     cover_picture: Optional[HttpUrl] = None
+    description: Optional[str] = None
     tags: Optional[list[NonEmptyStr]] = None
