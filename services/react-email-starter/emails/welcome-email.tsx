@@ -4,7 +4,7 @@ import * as React from 'react';
 export const WelcomeEmail = () => (
     <Html>
         <Head />
-        <Preview>You&apos;re now verified for HackAUBG 7.0</Preview>
+        <Preview>You&apos;re now verified for HackAUBG 8.0</Preview>
         <Body style={main}>
             <Container style={container}>
                 <Section style={box}>
@@ -18,7 +18,7 @@ export const WelcomeEmail = () => (
                     </Section>
                     <Hr style={hr} />
                     <Text style={title}>
-                        Welcome to HackAUBG 7.0, <br />
+                        Welcome to HackAUBG 8.0, <br />
                         {`{participant_greeting}`}!<br />
                     </Text>
                     <Text style={paragraph}>
@@ -28,7 +28,7 @@ export const WelcomeEmail = () => (
                         <Text style={invite_link}>{`{invite_link_statement}`}</Text>
                     </Section>
                     <Text style={paragraph}>
-                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 7.0 Facebook
+                        To ensure you stay in the loop, we will invite you to join the Official HackAUBG 8.0 Facebook
                         group. That is where we&apos;ll share all the latest updates and instructions about the event.
                     </Text>
                     <Text style={paragraph}>
@@ -59,7 +59,7 @@ export const WelcomeEmail = () => (
                     <Hr style={hr} />
                     <Text style={footer}>
                         <Link style={anchor} href="https://thehub-aubg.com/hackathon">
-                            HackAUBG 7.0
+                            HackAUBG 8.0
                         </Link>
                     </Text>
                 </Section>
