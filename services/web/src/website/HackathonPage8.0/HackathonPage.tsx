@@ -11,6 +11,7 @@ import { NavigationSection } from './NavigationSection/NavigationSection';
 import { RecapSection } from './RecapSection/RecapSection';
 import { ScheduleSection } from './ScheduleSection/ScheduleSection';
 import { SponsorsSection } from './SponsorsSection/SponsorsSection';
+import SponsorsSectionNew from './SponsorsSectionNew/SponsorsSection';
 
 export const HackathonPage = () => {
     return (
@@ -31,6 +32,7 @@ export const HackathonPage = () => {
             <AwardsSection />
             <FAQSection />
             <SponsorsSection />
+            <SponsorsSectionNew sponsorsSwitch={true} />
             <FooterSection />
         </div>
     );
