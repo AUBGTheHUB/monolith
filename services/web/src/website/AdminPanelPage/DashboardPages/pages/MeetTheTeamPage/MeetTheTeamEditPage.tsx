@@ -1,62 +1,111 @@
-import { Fragment } from 'react/jsx-runtime';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import teamMembers from './resources/teamMembers.json';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
-import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { teamMemberSchema, TeamMemberFormData } from './validation/validation.tsx';
+import { teamMemberFormSchema, TeamMemberFormData } from './validation/validation.tsx';
+import { HubMember } from '@/types/hub-member.ts';
+import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { toast } from 'react-toastify';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient.ts';
 
 export function MeetTheTeamEditPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? TeamMemberEditMessages : TeamMemberAddMessages;
 
-    const member = teamMembers.find((m) => m.id === id);
-
     const form = useForm<TeamMemberFormData>({
-        resolver: zodResolver(teamMemberSchema),
+        resolver: zodResolver(teamMemberFormSchema),
         defaultValues: {
             name: '',
-            image: '',
+            position: '',
             departments: [],
+            avatar_url: '',
+            social_links: {
+                linkedin: '',
+                github: '',
+                website: '',
+            },
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('image');
+    const imageUrl = watch('avatar_url');
 
+    // 1. Fetch data if in Edit Mode
+    const { data: member, isLoading } = useQuery({
+        queryKey: ['hub-member', id],
+        queryFn: () => apiClient.get<{ hub_member: HubMember }>(`/admin/hub-members/${id}`),
+        enabled: isEditMode,
+        select: (res) => res.hub_member,
+    });
+
+    // 2. Fill form when data is received
     useEffect(() => {
-        if (isEditMode && member) {
+        if (member) {
             reset({
                 name: member.name,
-                image: member.image || '',
-                departments: member.departments,
-            });
-        } else {
-            reset({
-                name: '',
-                image: '',
-                departments: [],
+                position: member.position,
+                departments: member.departments as ('Development' | 'Marketing' | 'Logistics' | 'PR' | 'Design')[],
+                avatar_url: member.avatar_url,
+                social_links: {
+                    linkedin: member.social_links?.linkedin || '',
+                    github: member.social_links?.github || '',
+                    website: member.social_links?.website || '',
+                },
             });
         }
-    }, [isEditMode, member, reset]);
+    }, [member, reset]);
+
+    // 3. Mutation for Save (Create or Update)
+    const mutation = useMutation({
+        mutationFn: (formData: TeamMemberFormData) => {
+            // Clean up empty strings from social_links to avoid sending them
+            const cleanedSocialLinks = Object.entries(formData.social_links).reduce(
+                (acc, [key, value]) => {
+                    if (value) {
+                        acc[key] = value;
+                    }
+                    return acc;
+                },
+                {} as Record<string, string>,
+            );
+
+            const payload = {
+                name: formData.name,
+                position: formData.position,
+                departments: formData.departments,
+                avatar_url: formData.avatar_url,
+                social_links: cleanedSocialLinks,
+            };
+
+            return isEditMode
+                ? apiClient.patch<HubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
+                : apiClient.post<HubMember, typeof payload>(`/admin/hub-members`, payload);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['hub-members'] });
+            toast.success(MESSAGES.SUCCESS_MESSAGE);
+            navigate('/admin/dashboard/meet-the-team');
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        },
+    });
 
     const onSubmit = (data: TeamMemberFormData) => {
-        toast.success(MESSAGES.SUCCESS_MESSAGE);
-        console.log({ id: id || 'new', ...data });
-        navigate('/admin/dashboard/meet-the-team');
+        mutation.mutate(data);
     };
 
     const goBack = () => {
@@ -64,6 +113,16 @@ export function MeetTheTeamEditPage() {
     };
 
     const pageWrapperClass = cn('min-h-screen p-8', Styles.backgrounds.primaryGradient);
+
+    if (isEditMode && isLoading) {
+        return (
+            <div className={pageWrapperClass}>
+                <div className="max-w-5xl mx-auto text-white text-center py-20">
+                    {TeamMemberEditMessages.LOADING_STATE}
+                </div>
+            </div>
+        );
+    }
 
     if (isEditMode && !member) {
         return (
@@ -110,18 +169,19 @@ export function MeetTheTeamEditPage() {
                         <Form {...form}>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <CardContent className="flex flex-col md:flex-row gap-12 p-8">
-                                    <div className={Styles.forms.fieldContainer}>
+                                    <div className={cn('flex-1 space-y-6', Styles.forms.fieldContainer)}>
                                         <div className="form-dark-theme">
                                             <TeamMemberFormFields control={control} />
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 flex flex-col items-center justify-start gap-4">
-                                        <span className={cn('self-start !text-white', Styles.text.label)}>Preview</span>
-
+                                    <div className="flex-1 flex flex-col items-center justify-start gap-4 pt-8 md:pt-0">
+                                        <span className={cn('self-start !text-white', Styles.text.label)}>
+                                            Avatar Preview
+                                        </span>
                                         <div
                                             className={cn(
-                                                'relative w-full max-w-[500px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
+                                                'relative w-full max-w-[400px] aspect-square rounded-lg flex items-center justify-center overflow-hidden',
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
@@ -132,7 +192,7 @@ export function MeetTheTeamEditPage() {
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).src =
-                                                            'https://placehold.co/300?text=Invalid+Image';
+                                                            'https://placehold.co/400?text=Invalid+Image';
                                                     }}
                                                 />
                                             ) : (
