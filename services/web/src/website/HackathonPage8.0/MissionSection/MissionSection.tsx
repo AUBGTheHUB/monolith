@@ -3,7 +3,7 @@ import { MissionItem } from './MissionItem';
 
 export const MissionSection = () => {
     return (
-        <section id="mission" className="relative w-full rounded-[20px] overflow-hidden bg-[#151313]">
+        <section id="mission" className="relative w-full rounded-t-[20px] overflow-hidden bg-[#151313]">
             <div
                 className="absolute inset-0 bg-cover bg-center blur-[0.4px] opacity-[0.25]"
                 style={{ backgroundImage: "url('/rocksBG.png')" }}

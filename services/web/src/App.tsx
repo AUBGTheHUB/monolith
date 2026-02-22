@@ -23,11 +23,14 @@ import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.
 import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
 import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
 
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 function App() {
     const queryClient = new QueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
