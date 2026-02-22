@@ -32,7 +32,13 @@ export function PastEventFields({ control }: PastEventFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
                 type="url"
             />
-
+            <InputComponent
+                control={control}
+                name="description"
+                label={MESSAGES.LABELS.DESCRIPTION}
+                placeholder={MESSAGES.PLACEHOLDERS.DESCRIPTION}
+                type="text"
+            />
             <Controller
                 control={control}
                 name="tags"

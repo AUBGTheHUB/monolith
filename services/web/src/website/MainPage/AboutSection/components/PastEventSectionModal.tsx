@@ -1,46 +1,21 @@
-import { useEffect, useState } from 'react';
-import { apiClient } from '../../../../services/apiClient.ts';
+import { useEffect } from 'react';
+import { apiClient } from '@/services/apiClient.ts';
 import { Button } from '@/components/ui/button';
-import { X, Calendar, MapPin, Loader2 } from 'lucide-react';
-
-type EventDetail = {
-    id: number;
-    title: string;
-    description: string;
-    location?: string;
-    date?: string;
-    tags: string[];
-    cover_picture: string;
-};
+import { X, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { PastEvent } from '@/types/past-events.ts';
 
 type EventModalProps = {
-    eventId: number;
+    eventId: string;
     onClose: () => void;
 };
 
 export default function EventModal({ eventId, onClose }: EventModalProps) {
-    const [event, setEvent] = useState<EventDetail | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-
-    useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                setLoading(true);
-                const data = await apiClient.get<EventDetail>(`/api/v3/admin/events/${eventId}`);
-                setEvent(data);
-            } catch (err) {
-                console.error(err);
-                setError('Failed to load event details.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (eventId) {
-            fetchDetails();
-        }
-    }, [eventId]);
+    const { isLoading, data: event } = useQuery({
+        queryKey: ['event'],
+        queryFn: () => apiClient.get<{ past_event: PastEvent }>(`/admin/events/${eventId}`),
+        select: (res) => res.past_event,
+    });
 
     useEffect(() => {
         const handleEsc = (e: KeyboardEvent) => {
@@ -68,12 +43,10 @@ export default function EventModal({ eventId, onClose }: EventModalProps) {
                     <X className="w-6 h-6 text-gray-800" />
                 </button>
 
-                {loading ? (
+                {isLoading ? (
                     <div className="flex h-64 items-center justify-center">
                         <Loader2 className="w-8 h-8 animate-spin text-primary" />
                     </div>
-                ) : error ? (
-                    <div className="flex h-64 items-center justify-center text-red-500">{error}</div>
                 ) : event ? (
                     <>
                         <div className="w-full h-64 sm:h-80 relative shrink-0">
@@ -84,33 +57,16 @@ export default function EventModal({ eventId, onClose }: EventModalProps) {
                             </h2>
                         </div>
 
-                        <div className="p-6 sm:p-8 space-y-6">
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                                {event.date && (
-                                    <div className="flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-primary" />
-                                        <span>{new Date(event.date).toLocaleDateString()}</span>
-                                    </div>
-                                )}
-                                {event.location && (
-                                    <div className="flex items-center gap-2">
-                                        <MapPin className="w-4 h-4 text-primary" />
-                                        <span>{event.location}</span>
-                                    </div>
-                                )}
-                            </div>
+                        <div className="flex flex-wrap gap-2">
+                            {event.tags.map((tag, idx) => (
+                                <Button key={idx} variant="tag_xs" size="round_xs">
+                                    {tag.toUpperCase()}
+                                </Button>
+                            ))}
+                        </div>
 
-                            <div className="flex flex-wrap gap-2">
-                                {event.tags.map((tag, idx) => (
-                                    <Button key={idx} variant="tag_xs" size="round_xs">
-                                        {tag.toUpperCase()}
-                                    </Button>
-                                ))}
-                            </div>
-
-                            <div className="prose max-w-none text-gray-700 leading-relaxed">
-                                <p>{event.description || 'No description available.'}</p>
-                            </div>
+                        <div className="prose max-w-none text-gray-700 leading-relaxed">
+                            <p>{event.description || 'No description available.'}</p>
                         </div>
                     </>
                 ) : null}

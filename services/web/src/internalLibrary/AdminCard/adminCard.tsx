@@ -7,7 +7,7 @@ interface AdminCardProps extends React.HTMLAttributes<HTMLDivElement> {
     imageUrl: string;
     imageAlt: string;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     tierColor?: string;
     tierBgColor?: string;
     position?: string;

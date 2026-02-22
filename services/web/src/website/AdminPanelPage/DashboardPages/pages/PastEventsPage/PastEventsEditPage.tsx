@@ -28,6 +28,7 @@ export const PastEventsEditPage = () => {
         defaultValues: {
             title: '',
             cover_picture: '',
+            description: '',
             tags: [],
         },
         mode: 'onTouched',
@@ -49,6 +50,7 @@ export const PastEventsEditPage = () => {
             reset({
                 title: event.title,
                 cover_picture: event.cover_picture,
+                description: event.description,
                 tags: event.tags || [],
             });
         }

@@ -1,36 +1,20 @@
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import EventTicket from './EventTicket.tsx';
 import EventModal from './PastEventSectionModal.tsx';
-import { apiClient } from '../../../../services/apiClient.ts';
+import { apiClient } from '@/services/apiClient.ts';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-
-type EventSummary = {
-    id: number;
-    title: string;
-    cover_picture: string;
-    tags: string[];
-};
+import { PastEvent } from '@/types/past-events.ts';
+import { useQuery } from '@tanstack/react-query';
 
 export default function PastEventSection() {
-    const [events, setEvents] = useState<EventSummary[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+    const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const data = await apiClient.get<EventSummary[]>('/api/v3/admin/events');
-                setEvents(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEvents();
-    }, []);
+    const { isLoading, data: events } = useQuery({
+        queryKey: ['events', 'carousel'],
+        queryFn: () => apiClient.get<{ past_events: PastEvent[] }>('/admin/events'),
+        select: (res) => res.past_events,
+    });
 
     const scroll = (direction: 'left' | 'right') => {
         if (scrollContainerRef.current) {
@@ -65,11 +49,11 @@ export default function PastEventSection() {
                 </div>
             </div>
 
-            {loading ? (
+            {isLoading ? (
                 <div className="w-full h-60 flex items-center justify-center">
                     <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
                 </div>
-            ) : events.length > 0 ? (
+            ) : events && events.length > 0 ? (
                 <div
                     ref={scrollContainerRef}
                     className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide px-1"
