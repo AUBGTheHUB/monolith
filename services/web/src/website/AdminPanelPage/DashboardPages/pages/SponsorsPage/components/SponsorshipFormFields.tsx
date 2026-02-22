@@ -28,10 +28,11 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
             />
             <InputComponent
                 control={control}
-                name="logo_url"
+                name="logo"
                 label={MESSAGES.LABELS.LOGO}
                 placeholder={MESSAGES.PLACEHOLDERS.LOGO}
-                type="url"
+                type="file"
+                accept="image/*"
             />
             <InputComponent
                 control={control}
@@ -40,14 +41,6 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.WEBSITE}
                 type="url"
             />
-            {/*TODO Add in BE*/}
-            {/*<InputComponent*/}
-            {/*    control={control}*/}
-            {/*    name="careersUrl"*/}
-            {/*    label={MESSAGES.LABELS.CAREERS}*/}
-            {/*    placeholder={MESSAGES.PLACEHOLDERS.CAREERS}*/}
-            {/*    type="url"*/}
-            {/*/>*/}
         </>
     );
 }

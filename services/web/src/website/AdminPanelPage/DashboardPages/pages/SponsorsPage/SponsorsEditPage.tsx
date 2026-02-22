@@ -1,5 +1,5 @@
 import { Fragment } from 'react/jsx-runtime';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,12 +12,12 @@ import { Form } from '@/components/ui/form.tsx';
 import {
     sponsorSchema,
     SponsorFormData,
-    Sponsor,
 } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
+import { Sponsor } from '@/types/sponsor.ts';
 
 export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -31,14 +31,25 @@ export function SponsorsEditPage() {
         defaultValues: {
             name: '',
             tier: '',
-            logo_url: '',
+            logo: undefined,
             website_url: '',
         },
         mode: 'onTouched',
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const logoUrl = watch('logo_url');
+    // Watch the logo field (which is now a FileList)
+    const logoFile = watch('logo');
+
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        if (logoFile instanceof FileList && logoFile.length > 0) {
+            return URL.createObjectURL(logoFile[0]);
+        }
+        // If it's a string (initial load from DB), return it directly
+        if (typeof logoFile === 'string') return logoFile;
+        return null;
+    }, [logoFile]);
 
     // 1. Fetch data if in Edit Mode
     const { data: sponsor, isLoading } = useQuery({
@@ -53,7 +64,7 @@ export function SponsorsEditPage() {
             reset({
                 name: sponsor.name,
                 tier: sponsor.tier,
-                logo_url: sponsor.logo_url,
+                logo: sponsor.logo_url,
                 website_url: sponsor.website_url,
             });
         }
@@ -153,9 +164,9 @@ export function SponsorsEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {logoUrl ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={logoUrl}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-contain p-4"
                                                     onError={(e) => {
