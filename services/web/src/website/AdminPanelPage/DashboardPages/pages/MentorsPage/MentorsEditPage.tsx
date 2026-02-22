@@ -6,7 +6,7 @@ import { apiClient } from '@/services/apiClient.ts';
 import { Mentor } from '@/types/mentor.ts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
@@ -14,7 +14,8 @@ import { Fragment } from 'react/jsx-runtime';
 import { Styles } from '../../../AdminStyle.ts';
 import { MentorFormFields } from './components/MentorFormFields.tsx';
 import { MentorsAddMessages, MentorsEditMessages } from './messages.tsx';
-import { mentorSchema, type MentorFormData } from './validation';
+import { mentorSchema, type MentorFormData } from './validation/validation.tsx';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function MentorsEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -28,15 +29,12 @@ export function MentorsEditPage() {
         defaultValues: {
             name: '',
             company: '',
-            avatar_url: '',
+            avatar: undefined,
             job_title: '',
             linkedin_url: '',
         },
         mode: 'onTouched',
     });
-
-    const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('avatar_url');
 
     // Fetch if in Edit mode
     const { data: mentor, isLoading } = useQuery({
@@ -46,13 +44,32 @@ export function MentorsEditPage() {
         select: (res) => res.mentor,
     });
 
+    const { control, handleSubmit, reset, watch } = form;
+
+    const avatarFile = watch('avatar');
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (avatarFile instanceof FileList && avatarFile.length > 0) {
+            return URL.createObjectURL(avatarFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && mentor?.avatar_url) {
+            return mentor.avatar_url;
+        }
+
+        return null;
+    }, [avatarFile, mentor, isEditMode]);
+
     // Load defaults in edit
     useEffect(() => {
         if (mentor) {
             reset({
                 name: mentor.name,
                 company: mentor.company,
-                avatar_url: mentor.avatar_url,
+                //set avatar to undefined as we get url from db but input is file
+                avatar: undefined,
                 job_title: mentor.job_title || '',
                 linkedin_url: mentor.linkedin_url || '',
             });
@@ -60,10 +77,10 @@ export function MentorsEditPage() {
     }, [mentor, reset]);
 
     const mutation = useMutation({
-        mutationFn: (formData: MentorFormData) => {
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<Mentor, MentorFormData>(`/admin/mentors/${id}`, formData)
-                : apiClient.post<Mentor, MentorFormData>('/admin/mentors', formData);
+                ? apiClient.patchForm<Mentor>(`/admin/mentors/${id}`, formData)
+                : apiClient.postForm<Mentor>('/admin/mentors', formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['mentors'] });
@@ -73,8 +90,10 @@ export function MentorsEditPage() {
             alert(error.message);
         },
     });
+
     const onSubmit = (data: MentorFormData) => {
-        mutation.mutate(data);
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
 
     const goBack = () => {
@@ -151,9 +170,9 @@ export function MentorsEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageUrl ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {

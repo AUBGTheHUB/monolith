@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 
 const RULES = {
     TITLE: { MIN: 3, MAX: 100 },
@@ -13,9 +14,13 @@ export const pastEventSchema = z.object({
         .max(RULES.TITLE.MAX, { message: `Event name must be less than ${RULES.TITLE.MAX} characters` }),
 
     cover_picture: z
-        .string()
-        .min(1, { message: 'Image URL is required' })
-        .url({ message: 'Please enter a valid URL (e.g., https://example.com/image.png)' }),
+        .any()
+        .refine((files) => files?.length > 0, 'Cover picture file is required')
+        .refine((files) => files?.[0]?.size <= FILE_RULES.MAX_SIZE, `Max file size is 5MB.`)
+        .refine(
+            (files) => FILE_RULES.ACCEPTED_TYPES.includes(files?.[0]?.type),
+            '.jpg, .jpeg, .png, .webp files are accepted.',
+        ),
 
     tags: z
         .array(

@@ -12,7 +12,7 @@ import { Form } from '@/components/ui/form.tsx';
 import {
     sponsorSchema,
     SponsorFormData,
-} from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
+} from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/validation.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -38,40 +38,45 @@ export function SponsorsEditPage() {
         mode: 'onTouched',
     });
 
-    const { control, handleSubmit, reset, watch } = form;
-    // Watch the logo field (which is now a FileList)
-    const logoFile = watch('logo');
-
-    // Create a local preview URL
-    const previewUrl = useMemo(() => {
-        if (logoFile instanceof FileList && logoFile.length > 0) {
-            return URL.createObjectURL(logoFile[0]);
-        }
-        // If it's a string (initial load from DB), return it directly
-        if (typeof logoFile === 'string') return logoFile;
-        return null;
-    }, [logoFile]);
-
-    // 1. Fetch data if in Edit Mode
+    //Fetch data if in Edit Mode
     const { data: sponsor, isLoading } = useQuery({
         queryKey: ['sponsor', id],
         queryFn: () => apiClient.get<{ sponsor: Sponsor }>(`/admin/sponsors/${id}`),
         enabled: isEditMode, // Only run query if id exists
         select: (res) => res.sponsor,
     });
-    // 2. Fill form when data is received
+    const { control, handleSubmit, reset, watch } = form;
+    // Watch the logo field (which is now a FileList)
+    const logoFile = watch('logo');
+
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (logoFile instanceof FileList && logoFile.length > 0) {
+            return URL.createObjectURL(logoFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && sponsor?.logo_url) {
+            return sponsor.logo_url;
+        }
+
+        return null;
+    }, [logoFile, sponsor, isEditMode]);
+
+    //Fill form when data is received
     useEffect(() => {
         if (sponsor) {
             reset({
                 name: sponsor.name,
                 tier: sponsor.tier,
-                //exclude image here
+                logo: undefined,
                 website_url: sponsor.website_url,
             });
         }
     }, [sponsor, reset]);
 
-    // 3. Mutation for Save (Create or Update)
+    // Mutation for Save (Create or Update)
     const mutation = useMutation({
         mutationFn: (formData: FormData) => {
             return isEditMode
@@ -87,14 +92,10 @@ export function SponsorsEditPage() {
         },
     });
     const onSubmit = (data: SponsorFormData) => {
-        // Just wrap your data!
+        // Wrap data as FormData object using our custom helper
         const formData = toFormData(data);
         mutation.mutate(formData);
     };
-
-    // const onSubmit = (data: SponsorFormData) => {
-    //     mutation.mutate(data);
-    // };
 
     const goBack = () => {
         navigate('/admin/dashboard/sponsors');

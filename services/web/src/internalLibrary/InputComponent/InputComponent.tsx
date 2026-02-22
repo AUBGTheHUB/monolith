@@ -2,6 +2,7 @@ import { Control, FieldValues, Path } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 export type InputTypes = 'text' | 'email' | 'password' | 'number' | 'url' | 'file';
 type InputValue = string | number | FileList | null;
@@ -18,7 +19,6 @@ type InputProps<T extends FieldValues> = {
     accept?: string;
 };
 
-// 2. Updated helper to handle FileList
 function handleFieldChange(
     onChange: (value: InputValue) => void,
     type: InputTypes,
@@ -58,7 +58,7 @@ export const InputComponent = <T extends FieldValues>({
                             placeholder={placeholder}
                             className={cn(inputClassName)}
                             onChange={handleFieldChange(field.onChange, type)}
-                            // 3. File inputs must NOT have a value prop (it throws a DOM exception)
+                            // File inputs must NOT have a value prop (it throws a DOM exception)
                             value={type === 'file' ? undefined : type === 'number' ? field.value || '' : field.value}
                         />
                     </FormControl>

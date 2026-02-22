@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils.ts';
 import { toast } from 'react-toastify';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function MeetTheTeamEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -30,7 +31,7 @@ export function MeetTheTeamEditPage() {
             name: '',
             position: '',
             departments: [],
-            avatar_url: '',
+            avatar: undefined,
             social_links: {
                 linkedin: '',
                 github: '',
@@ -40,9 +41,6 @@ export function MeetTheTeamEditPage() {
         mode: 'onTouched',
     });
 
-    const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('avatar_url');
-
     // 1. Fetch data if in Edit Mode
     const { data: member, isLoading } = useQuery({
         queryKey: ['hub-member', id],
@@ -50,6 +48,24 @@ export function MeetTheTeamEditPage() {
         enabled: isEditMode,
         select: (res) => res.hub_member,
     });
+    const { control, handleSubmit, reset, watch } = form;
+    // Watch the logo field (which is now a FileList)
+    const avatarFile = watch('avatar');
+
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (avatarFile instanceof FileList && avatarFile.length > 0) {
+            return URL.createObjectURL(avatarFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && member?.avatar_url) {
+            return member.avatar_url;
+        }
+
+        return null;
+    }, [avatarFile, member, isEditMode]);
 
     // 2. Fill form when data is received
     useEffect(() => {
@@ -58,7 +74,7 @@ export function MeetTheTeamEditPage() {
                 name: member.name,
                 position: member.position,
                 departments: member.departments as ('Development' | 'Marketing' | 'Logistics' | 'PR' | 'Design')[],
-                avatar_url: member.avatar_url,
+                avatar: undefined,
                 social_links: {
                     linkedin: member.social_links?.linkedin || '',
                     github: member.social_links?.github || '',
@@ -70,29 +86,10 @@ export function MeetTheTeamEditPage() {
 
     // 3. Mutation for Save (Create or Update)
     const mutation = useMutation({
-        mutationFn: (formData: TeamMemberFormData) => {
-            // Clean up empty strings from social_links to avoid sending them
-            const cleanedSocialLinks = Object.entries(formData.social_links).reduce(
-                (acc, [key, value]) => {
-                    if (value) {
-                        acc[key] = value;
-                    }
-                    return acc;
-                },
-                {} as Record<string, string>,
-            );
-
-            const payload = {
-                name: formData.name,
-                position: formData.position,
-                departments: formData.departments,
-                avatar_url: formData.avatar_url,
-                social_links: cleanedSocialLinks,
-            };
-
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<HubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
-                : apiClient.post<HubMember, typeof payload>(`/admin/hub-members`, payload);
+                ? apiClient.patchForm<HubMember>(`/admin/hub-members/${id}`, formData)
+                : apiClient.postForm<HubMember>(`/admin/hub-members`, formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['hub-members'] });
@@ -105,7 +102,11 @@ export function MeetTheTeamEditPage() {
     });
 
     const onSubmit = (data: TeamMemberFormData) => {
-        mutation.mutate(data);
+        //Remove empty social links because API will otherwise replace them with empty strings
+        data.social_links = Object.fromEntries(Object.entries(data.social_links).filter(([, value]) => !!value));
+
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
 
     const goBack = () => {
@@ -185,9 +186,9 @@ export function MeetTheTeamEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageUrl ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {

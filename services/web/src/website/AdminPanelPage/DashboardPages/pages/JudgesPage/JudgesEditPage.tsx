@@ -1,5 +1,5 @@
 import { Fragment } from 'react/jsx-runtime';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +15,7 @@ import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function JudgesEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -28,7 +29,7 @@ export function JudgesEditPage() {
         defaultValues: {
             name: '',
             company: '',
-            avatar_url: '',
+            avatar: undefined,
             job_title: '',
             linkedin_url: '',
         },
@@ -36,7 +37,6 @@ export function JudgesEditPage() {
     });
 
     const { control, handleSubmit, reset, watch } = form;
-    const imageUrl = watch('avatar_url');
 
     // Fetch if in Edit mode
     const { data: judge, isLoading } = useQuery({
@@ -45,13 +45,29 @@ export function JudgesEditPage() {
         enabled: isEditMode,
         select: (res) => res.judge,
     });
+
+    const avatarFile = watch('avatar');
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (avatarFile instanceof FileList && avatarFile.length > 0) {
+            return URL.createObjectURL(avatarFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && judge?.avatar_url) {
+            return judge.avatar_url;
+        }
+
+        return null;
+    }, [avatarFile, judge, isEditMode]);
     // Load defaults in edit
     useEffect(() => {
         if (judge) {
             reset({
                 name: judge.name,
                 company: judge.company,
-                avatar_url: judge.avatar_url,
+                avatar: undefined,
                 job_title: judge.job_title || '',
                 linkedin_url: judge.linkedin_url || '',
             });
@@ -59,10 +75,10 @@ export function JudgesEditPage() {
     }, [judge, reset]);
 
     const mutation = useMutation({
-        mutationFn: (formData: JudgeFormData) => {
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<Judge, JudgeFormData>(`/admin/judges/${id}`, formData)
-                : apiClient.post<Judge, JudgeFormData>('/admin/judges', formData);
+                ? apiClient.patchForm<Judge>(`/admin/judges/${id}`, formData)
+                : apiClient.postForm<Judge>('/admin/judges', formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['judges'] });
@@ -73,7 +89,9 @@ export function JudgesEditPage() {
         },
     });
     const onSubmit = (data: JudgeFormData) => {
-        mutation.mutate(data);
+        // Wrap data as FormData object using our custom helper
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
 
     const goBack = () => {
@@ -148,9 +166,9 @@ export function JudgesEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageUrl ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={imageUrl}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {
