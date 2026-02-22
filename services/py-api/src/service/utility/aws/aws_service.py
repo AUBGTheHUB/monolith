@@ -4,7 +4,7 @@ from io import BytesIO
 from mypy_boto3_s3.client import S3Client
 from pydantic import HttpUrl
 from src.exception import FileUploadError, FileDeleteError
-from src.service.utility.aws.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
 from structlog.stdlib import get_logger
 from botocore.exceptions import ClientError
 
