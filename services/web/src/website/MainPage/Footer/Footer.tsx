@@ -80,7 +80,7 @@ export const Footer = () => {
                 </div>
                 <span className="mt-2 w-full mx-8 sm:mx-0 sm:w-[60%] h-[1px] bg-[#4D4D4D]" />
                 <div className="w-full mx-8 sm:mx-0 sm:w-[60%]">
-                    <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2025</p>
+                    <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2026</p>
                 </div>
             </div>
         </div>
