@@ -67,7 +67,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="Confirm Your Participation in HackAUBG 7.0",
+            subject="Confirm Your Participation in HackAUBG 8.0",
             body_content=body_html,
             content_type="html",
         )
@@ -118,7 +118,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="Welcome Aboard! See You at HackAUBG 7.0",
+            subject="Welcome Aboard! See You at HackAUBG 8.0",
             body_content=body_html,
             content_type="html",
         )

@@ -11,7 +11,7 @@ class HubMemberPostReqData(BaseModel):
 
     name: NonEmptyStr
     position: NonEmptyStr
-    departments: list[DEPARTMENTS_LIST]
+    departments: list[DEPARTMENTS_LIST] = []
     avatar_url: HttpUrl
     social_links: SocialLinks
 
