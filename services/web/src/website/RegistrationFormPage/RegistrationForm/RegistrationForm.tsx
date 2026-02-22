@@ -9,7 +9,7 @@ import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent'
 import { registrationSchema } from './schema';
 import { TRAIT_OPTIONS, ROLE_OPTIONS, RegistrationInfo, ResendEmailType } from './constants';
 import { API_URL } from '@/constants';
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 //import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
@@ -24,7 +24,16 @@ import { Loader2 } from 'lucide-react';
 // }
 
 const RESEND_COOLDOWN_SECONDS = 90;
-const REGISTRATION_CUTOFF_DATE = new Date('2025-03-14T00:00:00');
+const REGISTRATION_CUTOFF_DATE = new Date('2026-03-14T00:00:00'); //??? This is from last year. I did update it, but don't know the dates
+
+const currentDate = new Date();
+const registrationMessage =
+    currentDate < REGISTRATION_CUTOFF_DATE ? 'Registration is coming soon...' : 'Registration is closed';
+
+const labelStyles = 'text-gray-700 font-medium text-sm mb-1';
+const inputStyles =
+    'bg-white text-gray-800 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-400 transition-shadow';
+const radioGroupStyles = 'flex flex-wrap gap-4 text-gray-600 text-sm';
 
 async function registerParticipant(data: RegistrationInfo, token?: string): Promise<string> {
     const params = token ? new URLSearchParams({ jwt_token: token }) : undefined;
@@ -169,7 +178,26 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
         mutate(payload);
     };
 
-    const onResendEmail = async () => {
+    const resendMutation = useMutation({
+        mutationFn: () => resendEmail({ participant_id: participantId! }),
+        onSuccess: () => {
+            cooldown.start();
+            toast.success('Verification email resent.', {
+                position: 'top-right',
+                autoClose: 5000,
+                className: 'bg-white text-black',
+            });
+        },
+        onError: (err) => {
+            toast.error(err instanceof Error ? err.message : 'Failed to resend email.', {
+                position: 'top-right',
+                autoClose: 5000,
+                className: 'bg-white text-black',
+            });
+        },
+    });
+
+    const onResendEmail = () => {
         if (cooldown.isCoolingDown) {
             toast.info(`Please wait ${cooldown.secondsLeft} seconds before resending.`, {
                 position: 'top-right',
@@ -178,32 +206,10 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
             });
             return;
         }
-
-        try {
-            await resendEmail({ participant_id: participantId! });
-            cooldown.start();
-            toast.success('Verification email resent.', {
-                position: 'top-right',
-                autoClose: 5000,
-                className: 'bg-white text-black',
-            });
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Failed to resend email.', {
-                position: 'top-right',
-                autoClose: 5000,
-                className: 'bg-white text-black',
-            });
-        }
+        resendMutation.mutate();
     };
 
-    const currentDate = new Date();
-    const registrationMessage =
-        currentDate < REGISTRATION_CUTOFF_DATE ? 'Registration is coming soon...' : 'Registration is closed';
-
-    const labelStyles = 'text-gray-700 font-medium text-sm mb-1';
-    const inputStyles =
-        'bg-white text-gray-800 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-400 transition-shadow';
-    const radioGroupStyles = 'flex flex-wrap gap-4 text-gray-600 text-sm';
+    const isFormDisabled = isPending || isSubmitted;
 
     if (!RegSwitch || isRegTeamsFull) {
         return (
@@ -304,7 +310,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             </div>
                         </div>
 
-                        {/* Participation Section */}
                         <div>
                             <p className="text-gray-800 text-base mt-12 mb-2 font-normal">Participation</p>
                             <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
@@ -386,17 +391,17 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
                         <div className="flex justify-start mt-8">
                             <Button
-                                disabled={isPending || isSubmitted}
+                                disabled={isFormDisabled}
                                 type="submit"
                                 className={`mt-4 px-8 py-2 text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-400 transition-all duration-300 hover:text-white ${
-                                    isPending || isSubmitted ? 'opacity-50 cursor-not-allowed' : ''
+                                    isFormDisabled ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                             >
                                 {isPending ? (
-                                    <Fragment>
+                                    <>
                                         <Loader2 className="animate-spin mr-2" size={16} />
                                         Please wait
-                                    </Fragment>
+                                    </>
                                 ) : (
                                     'Participate now'
                                 )}
