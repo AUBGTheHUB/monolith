@@ -81,7 +81,7 @@ export default function SponsorsSectionNew({ sponsorsSwitch }: { sponsorsSwitch:
                  scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
                 draggable={false}
             />
-            <div className="relative text-[#233340] sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
+            <div className="relative text-[#233340] sm:w-[75%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="flex flex-col gap-2 sm:gap-3">
                     <div className="flex items-center gap-4">
                         <img

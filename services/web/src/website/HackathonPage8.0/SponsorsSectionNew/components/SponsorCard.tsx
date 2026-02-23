@@ -15,7 +15,7 @@ export function SponsorCard({ sponsor, rank }: { sponsor: Sponsor; rank: Sponsor
                 'transition-all duration-300',
                 'hover:-translate-y-[1px] hover:shadow-lg',
                 hover,
-                'w-full max-w-[16rem] mx-auto',
+                'w-full max-w-[12rem] sm:max-w-[18rem] mx-auto',
                 'sm:max-w-none sm:mx-0',
                 'aspect-square p-3 sm:p-5',
             ].join(' ')}
