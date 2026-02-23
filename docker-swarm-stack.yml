@@ -147,7 +147,8 @@ services:
       - source: db-url_v2
         target: db-url
       - secret-key
-      - secret-auth-key
+      - source: secret-auth-key_v2
+        target: secret-auth-key
       - resend-api-key
       - aws-access-key-id
       - aws-secret-access-key
@@ -181,7 +182,7 @@ secrets:
     external: true
   secret-key:
     external: true
-  secret-auth-key:
+  secret-auth-key_v2:
     external: true
   resend-api-key:
     external: true

@@ -1,14 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
-import {
-    SPONSOR_RANKS,
-    type Sponsor,
-    type SponsorRank,
-    type BackendSponsor,
-    type FeatureSwitch,
-    SPONSORS_SWITCH_NAME,
-} from './types/constatns';
+import { SPONSOR_RANKS, type Sponsor, type SponsorRank, type BackendSponsor } from './types/constatns';
 import { SponsorRankSection } from './components/SponsorRank';
 
 const RANK_SET = new Set<string>(SPONSOR_RANKS);
@@ -57,27 +50,17 @@ function SponsorsComingSoon() {
         </section>
     );
 }
-
-export function SponsorsSection() {
-    const {
-        data: sponsorsSwitch = false,
-        isLoading: isSwitchLoading,
-        isError: isSwitchError,
-    } = useQuery({
-        queryKey: ['feature-switches', SPONSORS_SWITCH_NAME],
-        queryFn: () => apiClient.get<{ features: FeatureSwitch[] }>('/feature-switches'),
-        select: (res) => res.features.find((f) => f.name === SPONSORS_SWITCH_NAME)?.state ?? false,
-        staleTime: 0,
-        refetchOnWindowFocus: true,
-    });
-
+interface SponsorProps {
+    sponsorsSwitch: boolean;
+}
+export function SponsorsSection({ sponsorsSwitch }: SponsorProps) {
     const {
         data: sponsors = [],
         isLoading: isSponsorsLoading,
         isError: isSponsorsError,
     } = useQuery({
         queryKey: ['hackathon', 'sponsors'],
-        enabled: sponsorsSwitch === true,
+        enabled: sponsorsSwitch,
         queryFn: () => apiClient.get<{ sponsors: BackendSponsor[] }>('/admin/sponsors'),
         select: (res): Sponsor[] =>
             res.sponsors.map((s) => ({
@@ -91,7 +74,7 @@ export function SponsorsSection() {
 
     const grouped = useMemo(() => groupAndSortSponsors(sponsors), [sponsors]);
 
-    if (isSwitchLoading || isSwitchError || !sponsorsSwitch) {
+    if (!sponsorsSwitch) {
         return <SponsorsComingSoon />;
     }
 
