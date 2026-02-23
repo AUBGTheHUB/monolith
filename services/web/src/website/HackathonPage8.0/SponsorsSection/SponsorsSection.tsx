@@ -43,7 +43,6 @@ function SponsorsComingSoon() {
                     scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
                 draggable={false}
             />
-
             <div className="relative text-[#233340] sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="text-3xl sm:text-4xl flex items-center gap-4">
                     <img
@@ -68,16 +67,17 @@ export function SponsorsSection() {
         queryKey: ['feature-switches', SPONSORS_SWITCH_NAME],
         queryFn: () => apiClient.get<{ features: FeatureSwitch[] }>('/feature-switches'),
         select: (res) => res.features.find((f) => f.name === SPONSORS_SWITCH_NAME)?.state ?? false,
-        staleTime: 30_000,
+        staleTime: 0,
+        refetchOnWindowFocus: true,
     });
 
-    if (isSwitchLoading || isSwitchError || !sponsorsSwitch) {
-        return <SponsorsComingSoon />;
-    }
-
-    const { data: sponsors = [], isLoading } = useQuery({
+    const {
+        data: sponsors = [],
+        isLoading: isSponsorsLoading,
+        isError: isSponsorsError,
+    } = useQuery({
         queryKey: ['hackathon', 'sponsors'],
-        enabled: sponsorsSwitch,
+        enabled: sponsorsSwitch === true,
         queryFn: () => apiClient.get<{ sponsors: BackendSponsor[] }>('/admin/sponsors'),
         select: (res): Sponsor[] =>
             res.sponsors.map((s) => ({
@@ -91,6 +91,10 @@ export function SponsorsSection() {
 
     const grouped = useMemo(() => groupAndSortSponsors(sponsors), [sponsors]);
 
+    if (isSwitchLoading || isSwitchError || !sponsorsSwitch) {
+        return <SponsorsComingSoon />;
+    }
+
     return (
         <section className="relative w-full overflow-hidden bg-[rgba(255,253,245,1)]">
             <img
@@ -100,6 +104,7 @@ export function SponsorsSection() {
                  scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
                 draggable={false}
             />
+
             <div className="relative text-[#233340] sm:w-[75%] mx-6 sm:mx-auto py-10 sm:py-20">
                 <div className="flex flex-col gap-2 sm:gap-3">
                     <div className="flex items-center gap-4">
@@ -114,12 +119,18 @@ export function SponsorsSection() {
                         </h2>
                     </div>
 
-                    {isLoading ? (
+                    {isSponsorsLoading ? (
                         <div className="flex items-center gap-3 pl-[3.25rem] sm:pl-[3.75rem]">
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#233340]/30 border-t-[#233340]" />
                             <span className="text-base sm:text-xl text-[#233340]/70 tracking-wide">
                                 Loading sponsors…
                             </span>
+                        </div>
+                    ) : null}
+
+                    {isSponsorsError ? (
+                        <div className="pl-[3.25rem] sm:pl-[3.75rem] text-base sm:text-xl text-[#233340]/70 tracking-wide">
+                            Failed to load sponsors.
                         </div>
                     ) : null}
                 </div>
