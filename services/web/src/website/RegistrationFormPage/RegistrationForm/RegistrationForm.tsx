@@ -1,30 +1,42 @@
 import flameTL from './flame_TL.png';
 import flameBR from './flame_BR.png';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent';
 import { Button } from '@/components/ui/button';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
+import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent';
 import { registrationSchema } from './schema';
-import { TRAIT_OPTIONS, ROLE_OPTIONS, RegistrationInfo, ResendEmailType } from './constants';
+import {
+    LEVEL_OPTIONS,
+    PROGRAMMING_LANGUAGE_OPTIONS,
+    RADIO_OPTIONS,
+    REFERRAL_OPTIONS,
+    REGISTRATION_TYPE_OPTIONS_INV,
+    REGISTRATION_TYPE_OPTIONS_NO_INV,
+    RegistrationInfo,
+    ResendEmailType,
+    TSHIRT_OPTIONS,
+    UNIVERSITY_OPTIONS,
+} from './constants';
 import { API_URL } from '@/constants';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-//import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Loader2 } from 'lucide-react';
 
-// interface DecodedToken {
-//     sub: string;
-//     team_id: string;
-//     team_name: string;
-//     exp: number;
-// }
+interface DecodedToken {
+    sub: string;
+    team_id: string;
+    team_name: string;
+    exp: number;
+}
 
 const RESEND_COOLDOWN_SECONDS = 90;
-const REGISTRATION_CUTOFF_DATE = new Date('2026-03-14T00:00:00'); //??? This is from last year. I did update it, but don't know the dates
+const REGISTRATION_CUTOFF_DATE = new Date('2026-03-14T00:00:00');
 
 const currentDate = new Date();
 const registrationMessage =
@@ -34,6 +46,9 @@ const labelStyles = 'text-gray-700 font-medium text-sm mb-1';
 const inputStyles =
     'bg-white text-gray-800 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-400 transition-shadow';
 const radioGroupStyles = 'flex flex-wrap gap-4 text-gray-600 text-sm';
+const dropdownLabelStyles = 'text-gray-700 font-medium text-sm mb-1';
+const selectContentStyles = 'bg-white text-gray-800 border border-gray-400';
+const formControlStyles = 'bg-white border border-gray-400';
 
 async function registerParticipant(data: RegistrationInfo, token?: string): Promise<string> {
     const params = token ? new URLSearchParams({ jwt_token: token }) : undefined;
@@ -118,7 +133,7 @@ interface RegistrationFormProps {
 export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormProps) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('jwt_token') ?? undefined;
-    //const _decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
+    const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [fadeIn, setFadeIn] = useState(false);
@@ -156,25 +171,43 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
     const form = useForm<z.infer<typeof registrationSchema>>({
         resolver: zodResolver(registrationSchema),
         defaultValues: {
-            first_name: '',
-            last_name: '',
+            name: '',
             email: '',
-            country: '',
-            address: '',
-            has_team: undefined,
-            role: undefined,
+            tshirt_size: '',
+            university: '',
+            location: '',
+            age: 0,
+            source_of_referral: '',
+            programming_language: '',
+            programming_level: undefined,
+            has_participated_in_hackaubg: undefined,
+            has_internship_interest: undefined,
             has_participated_in_hackathons: undefined,
-            idea: '',
-            challenge: '',
-            motivation: '',
-            best_describes: undefined,
+            has_previous_coding_experience: undefined,
+            share_info_with_sponsors: undefined,
+            registration_type: decodedToken?.team_name ? 'invite_link' : undefined,
+            team_name: decodedToken?.team_name ?? '',
         },
     });
 
+    const registrationType = useWatch({
+        control: form.control,
+        name: 'registration_type',
+    });
+
     const onSubmit = (data: z.infer<typeof registrationSchema>) => {
+        if (data.registration_type === 'random') {
+            delete data.team_name;
+        }
+
         const payload: RegistrationInfo = {
-            registration_info: { ...data },
+            registration_info: {
+                ...data,
+                ...((data.registration_type === 'admin' && { is_admin: true }) ||
+                    (data.registration_type === 'invite_link' && { is_admin: false })),
+            },
         };
+
         mutate(payload);
     };
 
@@ -209,9 +242,16 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
         resendMutation.mutate();
     };
 
+    useEffect(() => {
+        if (registrationType === 'random') {
+            form.clearErrors('team_name');
+            form.setValue('team_name', '');
+        }
+    }, [registrationType]);
+
     const isFormDisabled = isPending || isSubmitted;
 
-    if (!RegSwitch || isRegTeamsFull) {
+    if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
         return (
             <div
                 className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
@@ -258,131 +298,197 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <p className="text-gray-800 text-base mb-2 mt-4 font-normal">Personal Info</p>
                             <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <InputComponent
                                     control={form.control}
-                                    name="first_name"
-                                    label="First Name"
+                                    name="name"
+                                    label="Name"
                                     type="text"
-                                    placeholder="John"
+                                    placeholder="Enter your name"
                                     labelClassName={labelStyles}
                                     inputClassName={inputStyles}
                                 />
                                 <InputComponent
                                     control={form.control}
-                                    name="last_name"
-                                    label="Last Name"
-                                    type="text"
-                                    placeholder="Doe"
+                                    name="age"
+                                    label="Age"
+                                    type="number"
+                                    placeholder="Enter your age"
                                     labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
+                                    inputClassName={`${inputStyles} appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
                                 />
                                 <InputComponent
                                     control={form.control}
                                     name="email"
                                     label="Email"
                                     type="email"
-                                    placeholder="john@doe.com"
-                                    labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                                <InputComponent
-                                    control={form.control}
-                                    name="country"
-                                    label="Country"
-                                    type="text"
-                                    placeholder="Enter your country"
+                                    placeholder="Enter your email"
                                     labelClassName={labelStyles}
                                     inputClassName={inputStyles}
                                 />
                                 <InputComponent
                                     control={form.control}
-                                    name="address"
-                                    label="Address"
+                                    name="location"
+                                    label="Location"
                                     type="text"
-                                    placeholder="123 Main Street"
+                                    placeholder="Enter your location"
                                     labelClassName={labelStyles}
                                     inputClassName={inputStyles}
+                                />
+                                <DropdownComponent
+                                    control={form.control}
+                                    name="university"
+                                    label="University"
+                                    placeholder="Select your university"
+                                    dropdownLabelClassName={dropdownLabelStyles}
+                                    selectContentClassName={selectContentStyles}
+                                    formControlClassName={formControlStyles}
+                                    items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
                                 />
                             </div>
                         </div>
 
+                        {/* Participation Section */}
                         <div>
                             <p className="text-gray-800 text-base mt-12 mb-2 font-normal">Participation</p>
                             <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
 
-                            <div className="flex flex-col gap-8">
+                            {/* Row 1: T-Shirt Size | Source of Referral */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <DropdownComponent
+                                    control={form.control}
+                                    name="tshirt_size"
+                                    label="T-Shirt Size"
+                                    placeholder="Select your size"
+                                    dropdownLabelClassName={dropdownLabelStyles}
+                                    selectContentClassName={selectContentStyles}
+                                    formControlClassName={formControlStyles}
+                                    items={TSHIRT_OPTIONS.map(({ label, value }) => ({
+                                        name: label,
+                                        value,
+                                    }))}
+                                />
+                                <DropdownComponent
+                                    control={form.control}
+                                    name="source_of_referral"
+                                    label="Source of Referral"
+                                    placeholder="How did you hear about us?"
+                                    dropdownLabelClassName={dropdownLabelStyles}
+                                    selectContentClassName={selectContentStyles}
+                                    formControlClassName={formControlStyles}
+                                    items={REFERRAL_OPTIONS.map(({ label, value }) => ({
+                                        name: label,
+                                        value,
+                                    }))}
+                                />
+                            </div>
+
+                            {/* Row 2: Programming Language (left half only) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <DropdownComponent
+                                    control={form.control}
+                                    name="programming_language"
+                                    label="Programming Language"
+                                    placeholder="Select your preferred language"
+                                    dropdownLabelClassName={dropdownLabelStyles}
+                                    selectContentClassName={selectContentStyles}
+                                    formControlClassName={formControlStyles}
+                                    items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({
+                                        name: label,
+                                        value,
+                                    }))}
+                                />
+                            </div>
+
+                            {/* Row 3: Programming Level | Have you participated in HackAUBG before? */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
-                                    name="has_team"
-                                    options={[
-                                        { label: 'Yes', value: true },
-                                        { label: 'No', value: false },
-                                    ]}
-                                    groupLabel="Do you have a team?"
+                                    name="programming_level"
+                                    options={LEVEL_OPTIONS}
+                                    groupLabel="Programming Level"
                                     groupClassName={labelStyles}
                                     radioGroupClassName={radioGroupStyles}
                                 />
-
                                 <RadioComponent
                                     control={form.control}
-                                    name="role"
-                                    options={ROLE_OPTIONS}
-                                    groupLabel="Which role will you take?"
+                                    name="has_participated_in_hackaubg"
+                                    options={RADIO_OPTIONS}
+                                    groupLabel="Have you participated in HackAUBG before?"
                                     groupClassName={labelStyles}
                                     radioGroupClassName={radioGroupStyles}
                                 />
+                            </div>
 
+                            {/* Row 4: Are you interested in internships? | Have you participated in hackathons before? */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <RadioComponent
+                                    control={form.control}
+                                    name="has_internship_interest"
+                                    options={RADIO_OPTIONS}
+                                    groupLabel="Are you interested in internships?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
                                 <RadioComponent
                                     control={form.control}
                                     name="has_participated_in_hackathons"
+                                    options={RADIO_OPTIONS}
+                                    groupLabel="Have you participated in hackathons before?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+                            </div>
+
+                            {/* Row 5: Do you have previous coding experience? (left only) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <RadioComponent
+                                    control={form.control}
+                                    name="has_previous_coding_experience"
+                                    options={RADIO_OPTIONS}
+                                    groupLabel="Do you have previous coding experience?"
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+                            </div>
+
+                            {/* Row 6: Enter registration type | Team Name */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <RadioComponent
+                                    control={form.control}
+                                    name="registration_type"
+                                    options={
+                                        decodedToken
+                                            ? REGISTRATION_TYPE_OPTIONS_INV
+                                            : REGISTRATION_TYPE_OPTIONS_NO_INV
+                                    }
+                                    groupLabel="Enter registration type"
+                                    disabled={decodedToken?.team_name ? true : false}
+                                    groupClassName={labelStyles}
+                                    radioGroupClassName={radioGroupStyles}
+                                />
+                                <InputComponent
+                                    control={form.control}
+                                    name="team_name"
+                                    label="Team Name"
+                                    type="text"
+                                    placeholder="Enter your team name"
+                                    disabled={registrationType !== 'admin'}
+                                    labelClassName={labelStyles}
+                                    inputClassName={inputStyles}
+                                />
+                            </div>
+
+                            {/* Row 7: Do you agree to share your info with sponsors? (left only) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                                <RadioComponent
+                                    control={form.control}
+                                    name="share_info_with_sponsors"
                                     options={[
                                         { label: 'Yes', value: true },
                                         { label: 'No', value: false },
                                     ]}
-                                    groupLabel="Have you participated in a hackathon before?"
-                                    groupClassName={labelStyles}
-                                    radioGroupClassName={radioGroupStyles}
-                                />
-
-                                <InputComponent
-                                    control={form.control}
-                                    name="idea"
-                                    label="What is your idea?"
-                                    type="text"
-                                    placeholder="Type here..."
-                                    labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
-                                />
-
-                                <InputComponent
-                                    control={form.control}
-                                    name="challenge"
-                                    label="What challenge/problem does it address?"
-                                    type="text"
-                                    placeholder="Type here..."
-                                    labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
-                                />
-
-                                <InputComponent
-                                    control={form.control}
-                                    name="motivation"
-                                    label="Why do you want to take part in the hackathon?"
-                                    type="text"
-                                    placeholder="Type here..."
-                                    labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
-                                />
-
-                                <RadioComponent
-                                    control={form.control}
-                                    name="best_describes"
-                                    options={TRAIT_OPTIONS}
-                                    groupLabel="Which describes you best?"
+                                    groupLabel="Do you agree to share your info with sponsors?"
                                     groupClassName={labelStyles}
                                     radioGroupClassName={radioGroupStyles}
                                 />
@@ -412,7 +518,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <p className="text-sm text-red-600 mt-4">{error.message}</p>
                         )}
 
-                        {isSubmitted && (
+                        {isSubmitted && registrationType !== 'invite_link' && (
                             <div className="mt-4">
                                 <Button
                                     type="button"
