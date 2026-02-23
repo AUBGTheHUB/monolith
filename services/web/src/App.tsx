@@ -22,6 +22,7 @@ import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
 import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
+import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -34,7 +35,6 @@ function App() {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
-
                 {/* Hackathon Group */}
                 <Route path="/hackathon">
                     <Route index element={<HackathonPage />} />
@@ -77,6 +77,9 @@ function App() {
                             <Route index element={<SponsorsListPage />} />
                             <Route path="add" element={<SponsorsEditPage />} />
                             <Route path=":id" element={<SponsorsEditPage />} />
+                        </Route>
+                        <Route path="feature-switches">
+                            <Route index element={<FeatureSwitchesPage />} />
                         </Route>
 
                         {/* Past events Sub-group */}
