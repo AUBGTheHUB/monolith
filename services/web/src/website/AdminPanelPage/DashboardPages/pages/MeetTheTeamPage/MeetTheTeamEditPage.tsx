@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet';
 import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import { teamMemberFormSchema, TeamMemberFormData } from './validation/validation.tsx';
-import { HubMember } from '@/types/hub-member.ts';
+import { BaseHubMember } from '@/types/hub-member.ts';
 import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
@@ -46,7 +46,7 @@ export function MeetTheTeamEditPage() {
     // 1. Fetch data if in Edit Mode
     const { data: member, isLoading } = useQuery({
         queryKey: ['hub-member', id],
-        queryFn: () => apiClient.get<{ hub_member: HubMember }>(`/admin/hub-members/${id}`),
+        queryFn: () => apiClient.get<{ hub_member: BaseHubMember }>(`/admin/hub-members/${id}`),
         enabled: isEditMode,
         select: (res) => res.hub_member,
     });
@@ -91,8 +91,8 @@ export function MeetTheTeamEditPage() {
             };
 
             return isEditMode
-                ? apiClient.patch<HubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
-                : apiClient.post<HubMember, typeof payload>(`/admin/hub-members`, payload);
+                ? apiClient.patch<BaseHubMember, typeof payload>(`/admin/hub-members/${id}`, payload)
+                : apiClient.post<BaseHubMember, typeof payload>(`/admin/hub-members`, payload);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['hub-members'] });

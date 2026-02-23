@@ -1,19 +1,19 @@
 import HubberModule from './HubberModule';
-import hubbers from '../StaticContent/hubbers.json';
+// import hubbers from '../StaticContent/hubbers.json';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/base.css';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-team.css';
 import EmblaCarousel from '@/components/EmblaCarousel/SlidesPerViewCarousel/js/EmblaCarousel.tsx';
 import { EmblaOptionsType } from 'embla-carousel';
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient';
+import { Departments, type BaseHubMember } from '@/types/hub-member';
 
 // Because the grid for the meet the team secion is 2x4
 // each slide of the carousel is going to be of 2 elements above each other
 // chunkArray splits the array of members into an array where each element consists of another array of 2 members
 // which is then passed in order for the 2x4 grid carousel logic to work
-
-// TO-DO: make api call for the actual pictures and hubbers information
-
 function chunkArray(array: React.ReactElement[], chunkSize: number): React.ReactElement[][] {
     return array.reduce((resultArray, item, index) => {
         const chunkIndex = Math.floor(index / chunkSize);
@@ -31,17 +31,28 @@ const OPTIONS: EmblaOptionsType = {
 };
 
 export default function MeetTheTeamSection() {
-    const [selected, setSelected] = useState('All');
+    const [selected, setSelected] = useState<Departments>(Departments.All);
     const [carouselKey, setCarouselKey] = useState(0);
 
-    const handleSelect = (value: string) => {
+    const { data: hubbers } = useQuery({
+        queryKey: ['meet-the-team', 'get', 'hub-members'],
+        queryFn: () => apiClient.get<{ members: BaseHubMember[] }>('/admin/hub-members'),
+        select: (data) => data.members,
+    });
+
+    const handleSelect = (value: Departments) => {
         setSelected(value);
         setCarouselKey((prevKey) => prevKey + 1);
     };
 
     const initialSlides: React.ReactElement[] = hubbers
-        .filter((hubbers) => hubbers.departments.includes(selected))
-        .map((hubber, index) => <HubberModule imgSrc={hubber.picture} name={hubber.name} key={index} />);
+        ? hubbers
+              .filter((hubbers) => {
+                  if (selected === Departments.All) return true;
+                  return hubbers.departments.includes(selected);
+              })
+              .map((hubber, index) => <HubberModule imgSrc={hubber.avatar_url} name={hubber.name} key={index} />)
+        : [];
 
     const SLIDES = chunkArray(initialSlides, 2);
 
@@ -55,7 +66,7 @@ export default function MeetTheTeamSection() {
             <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative">
                 <h2 className="font-semibold text-3xl text-[#9cbeff] mb-10">Meet the team</h2>
                 <div className="flex flex-wrap gap-3">
-                    {['All', 'Board', 'PR', 'Design', 'Development', 'Marketing', 'Logistics'].map((label) =>
+                    {Object.values(Departments).map((label) =>
                         selected === label ? (
                             <Button
                                 variant="team_selected"
