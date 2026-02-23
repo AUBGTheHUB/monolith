@@ -18,7 +18,12 @@ export const toFormData = <T extends Record<string, unknown>>(data: T): FormData
         else if (Array.isArray(value)) {
             value.forEach((v) => formData.append(key, v));
         }
-        // 4. Handle standard primitives (strings, numbers, booleans)
+        // 4. Handle nested objects
+        else if (typeof value === 'object' && value !== null && !(value instanceof File)) {
+            // Instead of flattening, send the whole object as a JSON string
+            formData.append(key, JSON.stringify(value));
+        }
+        // 5. Handle standard primitives (strings, numbers, booleans)
         else if (value !== null && value !== undefined) {
             // Convert numbers/booleans to string for FormData
             formData.append(key, value.toString());
