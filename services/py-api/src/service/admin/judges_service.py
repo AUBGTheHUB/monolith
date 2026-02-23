@@ -39,7 +39,7 @@ class JudgesService:
         avatar: UploadFile | None = None,
         linkedin_url: Optional[HttpUrl] = None,
     ) -> Result[Judge, Exception]:
-        params = UpdateJudgeParams(name=name, company=company, job_title=job_title, linkedin_url=linkedin_url)
+        params = UpdateJudgeParams(name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url))
 
         if avatar is not None:
             await self._image_storing_service.upload_image(file=avatar, file_name=f"judges/{str(judge_id)}")

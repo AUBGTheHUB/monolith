@@ -11,7 +11,7 @@ class HubMemberPostReqData(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: NonEmptyStr
-    position: NonEmptyStr
+    position: Optional[NonEmptyStr] = None
     departments: list[DEPARTMENTS_LIST]
     avatar: UploadFile
     social_links: SocialLinks

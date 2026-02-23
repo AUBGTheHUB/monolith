@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Literal, NotRequired, Self, TypedDict, cast
+from typing import Any, Literal, NotRequired, Self, TypedDict, cast, Optional
 
 from pydantic import HttpUrl
 
@@ -23,7 +23,7 @@ class HubMember(BaseDbModel):
 
     name: str
     member_type: MEMBER_TYPE = "member"
-    position: str
+    position: Optional[str]
     departments: list[DEPARTMENTS_LIST]
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
@@ -89,5 +89,4 @@ class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
     position: str | None = None
     departments: list[DEPARTMENTS_LIST] | None = None
-    avatar_url: str | None = None
     social_links: SocialLinks | None = None

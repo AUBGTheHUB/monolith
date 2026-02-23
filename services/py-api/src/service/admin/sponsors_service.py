@@ -41,13 +41,9 @@ class SponsorsService:
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
 
         if logo is not None:
-            logo_url = await self._image_storing_service.upload_image(
-                file=logo, file_name=f"sponsors/{str(sponsor_id)}"
-            )
-        else:
-            logo_url = None
+            await self._image_storing_service.upload_image(file=logo, file_name=f"sponsors/{str(sponsor_id)}")
 
-        params = UpdateSponsorParams(name=name, tier=tier, logo_url=logo_url, website_url=website_url)
+        params = UpdateSponsorParams(name=name, tier=tier, website_url=website_url)
         return await self._repo.update(sponsor_id, params)
 
     async def delete(self, sponsor_id: str) -> Result[Sponsor, SponsorNotFoundError | Exception]:

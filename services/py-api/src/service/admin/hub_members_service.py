@@ -49,13 +49,9 @@ class HubMembersService:
     ) -> Result[HubMember, Exception]:
 
         if avatar is not None:
-            avatar_url = await self._image_storing_service.upload_image(
-                file=avatar, file_name=f"hub-members/{str(member_id)}"
-            )
-        else:
-            avatar_url = None
+            await self._image_storing_service.upload_image(file=avatar, file_name=f"hub-members/{str(member_id)}")
         update_params = UpdateHubMemberParams(
-            name=name, position=position, departments=departments, avatar_url=str(avatar_url), social_links=social_links
+            name=name, position=position, departments=departments, social_links=social_links
         )
         return await self._repo.update(member_id, update_params)
 

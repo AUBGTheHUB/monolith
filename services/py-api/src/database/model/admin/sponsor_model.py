@@ -42,5 +42,4 @@ class Sponsor(BaseDbModel):
 class UpdateSponsorParams(UpdateParams):
     name: str | None = None
     tier: ALLOWED_SPONSOR_TIERS | None = None
-    logo_url: HttpUrl | None = None
     website_url: HttpUrl | None = None
