@@ -1,5 +1,4 @@
 import HubberModule from './HubberModule';
-// import hubbers from '../StaticContent/hubbers.json';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/base.css';
 import '@/components/EmblaCarousel/SlidesPerViewCarousel/css/embla-team.css';
 import EmblaCarousel from '@/components/EmblaCarousel/SlidesPerViewCarousel/js/EmblaCarousel.tsx';
