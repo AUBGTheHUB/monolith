@@ -10,8 +10,7 @@ import { MissionSection } from './MissionSection/MissionSection';
 import { NavigationSection } from './NavigationSection/NavigationSection';
 import { RecapSection } from './RecapSection/RecapSection';
 import { ScheduleSection } from './ScheduleSection/ScheduleSection';
-import { SponsorsSection } from './SponsorsSection/SponsorsSection';
-import SponsorsSectionNew from './SponsorsSectionNew/SponsorsSection';
+import SponsorsSection from './SponsorsSection/SponsorsSection';
 
 export const HackathonPage = () => {
     return (
@@ -31,8 +30,7 @@ export const HackathonPage = () => {
             <GradingSection />
             <AwardsSection />
             <FAQSection />
-            <SponsorsSection />
-            <SponsorsSectionNew sponsorsSwitch={true} />
+            <SponsorsSection sponsorsSwitch={true} />
             <FooterSection />
         </div>
     );
