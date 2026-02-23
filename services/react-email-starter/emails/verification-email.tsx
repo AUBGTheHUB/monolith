@@ -4,7 +4,7 @@ import * as React from 'react';
 export const VerificationEmail = () => (
     <Html>
         <Head />
-        <Preview>Secure your spot at HackAUBG 7.0</Preview>
+        <Preview>Secure your spot at HackAUBG 8.0</Preview>
         <Body style={main}>
             <Container style={container}>
                 <Section style={box}>
@@ -18,11 +18,11 @@ export const VerificationEmail = () => (
                     </Section>
                     <Hr style={hr} />
                     <Text style={title}>
-                        Welcome to HackAUBG 7.0, <br />
+                        Welcome to HackAUBG 8.0, <br />
                         {`{participant_greeting}`}!<br />
                     </Text>
                     <Text style={paragraph}>
-                        Thank you for registering for our seventh <Link style={anchor}>annual hackathon!</Link>
+                        Thank you for registering for our eighth <Link style={anchor}>annual hackathon!</Link>
                     </Text>
                     <Text style={paragraph}>
                         We are extremely excited to have you on board and can&apos;t wait to see what{' '}
@@ -37,7 +37,7 @@ export const VerificationEmail = () => (
                     <Hr style={hr} />
                     <Text style={footer}>
                         <Link style={anchor} href="https://thehub-aubg.com/hackathon">
-                            HackAUBG 7.0
+                            HackAUBG 8.0
                         </Link>
                     </Text>
                 </Section>
