@@ -35,7 +35,7 @@ export const HackathonPage = () => {
             <GradingSection />
             <AwardsSection />
             <FAQSection />
-            <SponsorsSection />
+            <SponsorsSection sponsorsSwitch={featureSwitches.SponsorsSwitch} />
             <FooterSection />
         </div>
     );
