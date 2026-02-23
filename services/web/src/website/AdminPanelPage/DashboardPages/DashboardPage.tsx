@@ -203,36 +203,6 @@ export function DashboardPage() {
                                 </Link>
                             </CardContent>
                         </Card>
-
-                        {/* AWS Access page Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
-                                    className={cn(
-                                        'text-3xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
-                                    )}
-                                >
-                                    AWS Access - S3 Bucket
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/s3-bucket">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
                     </div>
                 </div>
             </div>
