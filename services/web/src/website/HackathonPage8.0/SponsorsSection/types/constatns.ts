@@ -17,6 +17,14 @@ export type BackendSponsor = {
     website_url: string;
 };
 
+export const SPONSORS_SWITCH_NAME = 'SponsorsSwitch';
+
+export type FeatureSwitch = {
+    id: string;
+    name: string;
+    state: boolean;
+};
+
 export const SPONSOR_RANK_META: Record<SponsorRank, { label: string; color: string; hoverShadowClass: string }> = {
     PLATINUM: { label: 'PLATINUM', color: '#19A0F0', hoverShadowClass: 'hover:shadow-[#19A0F0]' },
     GOLD: { label: 'GOLD', color: '#FFDE06', hoverShadowClass: 'hover:shadow-[#FFDE06]' },

@@ -1,7 +1,14 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
-import { SPONSOR_RANKS, type Sponsor, type SponsorRank, type BackendSponsor } from './types/constatns';
+import {
+    SPONSOR_RANKS,
+    type Sponsor,
+    type SponsorRank,
+    type BackendSponsor,
+    type FeatureSwitch,
+    SPONSORS_SWITCH_NAME,
+} from './types/constatns';
 import { SponsorRankSection } from './components/SponsorRank';
 
 const RANK_SET = new Set<string>(SPONSOR_RANKS);
@@ -21,15 +28,53 @@ function groupAndSortSponsors(sponsors: Sponsor[]): Record<SponsorRank, Sponsor[
     );
 
     for (const s of sponsors) grouped[s.rank].push(s);
-
-    for (const rank of SPONSOR_RANKS) {
-        grouped[rank].sort((a, b) => a.name.localeCompare(b.name));
-    }
+    for (const rank of SPONSOR_RANKS) grouped[rank].sort((a, b) => a.name.localeCompare(b.name));
 
     return grouped;
 }
 
-export default function SponsorsSectionNew({ sponsorsSwitch }: { sponsorsSwitch: boolean }) {
+function SponsorsComingSoon() {
+    return (
+        <section className="relative border w-full overflow-hidden bg-[rgba(255,253,245,1)]">
+            <img
+                src="/flames.png"
+                alt="Flame Background"
+                className="absolute inset-0 w-full h-full pointer-events-none select-none object-cover object-[50%_70%] transform-gpu
+                    scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
+                draggable={false}
+            />
+
+            <div className="relative text-[#233340] sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
+                <div className="text-3xl sm:text-4xl flex items-center gap-4">
+                    <img
+                        src="/mockingjay-red.svg"
+                        alt="Sponsors-Icon"
+                        className="w-[44px] h-[36px] sm:w-[52px] sm:h-[42px] select-none"
+                        draggable={false}
+                    />
+                    <h2 className="tracking-[0.2em]">SPONSORS COMING SOON . . .</h2>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export function SponsorsSection() {
+    const {
+        data: sponsorsSwitch = false,
+        isLoading: isSwitchLoading,
+        isError: isSwitchError,
+    } = useQuery({
+        queryKey: ['feature-switches', SPONSORS_SWITCH_NAME],
+        queryFn: () => apiClient.get<{ features: FeatureSwitch[] }>('/feature-switches'),
+        select: (res) => res.features.find((f) => f.name === SPONSORS_SWITCH_NAME)?.state ?? false,
+        staleTime: 30_000,
+    });
+
+    if (isSwitchLoading || isSwitchError || !sponsorsSwitch) {
+        return <SponsorsComingSoon />;
+    }
+
     const { data: sponsors = [], isLoading } = useQuery({
         queryKey: ['hackathon', 'sponsors'],
         enabled: sponsorsSwitch,
@@ -45,32 +90,6 @@ export default function SponsorsSectionNew({ sponsorsSwitch }: { sponsorsSwitch:
     });
 
     const grouped = useMemo(() => groupAndSortSponsors(sponsors), [sponsors]);
-
-    if (!sponsorsSwitch) {
-        return (
-            <section className="relative border w-full overflow-hidden bg-[rgba(255,253,245,1)]">
-                <img
-                    src="/flames.png"
-                    alt="Flame Background"
-                    className="absolute inset-0 w-full h-full pointer-events-none select-none object-cover object-[50%_70%] transform-gpu
-                        scale-[1.45] sm:scale-[1.25] lg:scale-[1.18] xl:scale-100"
-                    draggable={false}
-                />
-
-                <div className="relative text-[#233340] sm:w-[80%] mx-6 sm:mx-auto py-10 sm:py-20">
-                    <div className="text-3xl sm:text-4xl flex items-center gap-4">
-                        <img
-                            src="/mockingjay-red.svg"
-                            alt="Sponsors-Icon"
-                            className="w-[44px] h-[36px] sm:w-[52px] sm:h-[42px] select-none"
-                            draggable={false}
-                        />
-                        <h2 className="tracking-[0.2em]">SPONSORS COMING SOON . . .</h2>
-                    </div>
-                </div>
-            </section>
-        );
-    }
 
     return (
         <section className="relative w-full overflow-hidden bg-[rgba(255,253,245,1)]">
@@ -94,6 +113,7 @@ export default function SponsorsSectionNew({ sponsorsSwitch }: { sponsorsSwitch:
                             SPONSORS
                         </h2>
                     </div>
+
                     {isLoading ? (
                         <div className="flex items-center gap-3 pl-[3.25rem] sm:pl-[3.75rem]">
                             <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#233340]/30 border-t-[#233340]" />
