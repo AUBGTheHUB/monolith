@@ -8,12 +8,18 @@ export const teamMemberFormSchema = z.object({
     departments: z.array(z.enum(['Development', 'Marketing', 'Logistics', 'PR', 'Design'])).default([]),
     avatar: z
         .any()
-        .refine((files) => files?.length > 0, 'Avatar file is required')
-        .refine((files) => files?.[0]?.size <= FILE_RULES.MAX_SIZE, `Max file size is 5MB.`)
-        .refine(
-            (files) => FILE_RULES.ACCEPTED_TYPES.includes(files?.[0]?.type),
-            '.jpg, .jpeg, .png, .webp files are accepted.',
-        ),
+        .refine((files) => {
+            // If no file is selected (e.g., in Edit Mode), skip validation
+            if (!files || files.length === 0) return true;
+            // Only check size if a file exists
+            return files[0].size <= FILE_RULES.MAX_SIZE;
+        }, `Max file size is 5MB.`)
+        .refine((files) => {
+            // If no file is selected, skip validation
+            if (!files || files.length === 0) return true;
+            // Only check type if a file exists
+            return FILE_RULES.ACCEPTED_TYPES.includes(files[0].type);
+        }, '.jpg, .jpeg, .png, .webp files are accepted.'),
     social_links: z.object({
         linkedin: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
         github: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
