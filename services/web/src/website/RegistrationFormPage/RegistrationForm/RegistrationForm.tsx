@@ -19,7 +19,7 @@ import {
     UNIVERSITY_OPTIONS,
 } from './constants';
 import type { RegistrationInfo } from './constants';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
@@ -46,7 +46,10 @@ interface RegistrationFormProps {
 export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormProps) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('jwt_token') ?? undefined;
-    const decodedToken: DecodedToken | null = token ? jwtDecode<DecodedToken>(token) : null;
+    const decodedToken = useMemo<DecodedToken | null>(
+        () => (token ? jwtDecode<DecodedToken>(token) : null),
+        [token],
+    );
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [fadeIn, setFadeIn] = useState(false);
