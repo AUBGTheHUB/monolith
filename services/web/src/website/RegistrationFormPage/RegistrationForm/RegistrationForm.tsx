@@ -38,6 +38,9 @@ import {
     formControlStyles,
 } from './styles';
 
+const toDropdownItems = (options: { label: string; value: string }[]) =>
+    options.map(({ label, value }) => ({ name: label, value }));
+
 interface RegistrationFormProps {
     RegSwitch: boolean;
     isRegTeamsFull: boolean;
@@ -209,7 +212,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                         onSubmit={form.handleSubmit(onSubmit)}
                         className="bg-white/10 backdrop-blur-lg w-full max-w-[90%] sm:max-w-[75%] px-6 sm:px-14 py-12 border border-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] mb-16"
                     >
-                        {/* Personal Info Section */}
                         <div>
                             <p className="text-gray-800 text-base mb-2 mt-4 font-normal">Personal Info</p>
                             <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
@@ -259,17 +261,15 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     dropdownLabelClassName={dropdownLabelStyles}
                                     selectContentClassName={selectContentStyles}
                                     formControlClassName={formControlStyles}
-                                    items={UNIVERSITY_OPTIONS.map(({ label, value }) => ({ name: label, value }))}
+                                    items={toDropdownItems(UNIVERSITY_OPTIONS)}
                                 />
                             </div>
                         </div>
 
-                        {/* Participation Section */}
                         <div>
                             <p className="text-gray-800 text-base mt-12 mb-2 font-normal">Participation</p>
                             <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
 
-                            {/* Row 1: T-Shirt Size | Source of Referral */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <DropdownComponent
                                     control={form.control}
@@ -279,10 +279,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     dropdownLabelClassName={dropdownLabelStyles}
                                     selectContentClassName={selectContentStyles}
                                     formControlClassName={formControlStyles}
-                                    items={TSHIRT_OPTIONS.map(({ label, value }) => ({
-                                        name: label,
-                                        value,
-                                    }))}
+                                    items={toDropdownItems(TSHIRT_OPTIONS)}
                                 />
                                 <DropdownComponent
                                     control={form.control}
@@ -292,14 +289,10 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     dropdownLabelClassName={dropdownLabelStyles}
                                     selectContentClassName={selectContentStyles}
                                     formControlClassName={formControlStyles}
-                                    items={REFERRAL_OPTIONS.map(({ label, value }) => ({
-                                        name: label,
-                                        value,
-                                    }))}
+                                    items={toDropdownItems(REFERRAL_OPTIONS)}
                                 />
                             </div>
 
-                            {/* Row 2: Programming Language (left half only) */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <DropdownComponent
                                     control={form.control}
@@ -309,14 +302,10 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     dropdownLabelClassName={dropdownLabelStyles}
                                     selectContentClassName={selectContentStyles}
                                     formControlClassName={formControlStyles}
-                                    items={PROGRAMMING_LANGUAGE_OPTIONS.map(({ label, value }) => ({
-                                        name: label,
-                                        value,
-                                    }))}
+                                    items={toDropdownItems(PROGRAMMING_LANGUAGE_OPTIONS)}
                                 />
                             </div>
 
-                            {/* Row 3: Programming Level | Have you participated in HackAUBG before? */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
@@ -336,7 +325,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            {/* Row 4: Are you interested in internships? | Have you participated in hackathons before? */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
@@ -356,7 +344,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            {/* Row 5: Do you have previous coding experience? (left only) */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
@@ -368,7 +355,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            {/* Row 6: Enter registration type | Team Name */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
@@ -395,7 +381,6 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            {/* Row 7: Do you agree to share your info with sponsors? (left only) */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                                 <RadioComponent
                                     control={form.control}
