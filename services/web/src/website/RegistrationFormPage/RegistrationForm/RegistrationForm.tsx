@@ -214,17 +214,17 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                     >
                         <div>
                             <p className="text-gray-800 text-base mb-2 mt-4 font-normal">Personal Info</p>
-                            <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
+                            <hr className="mb-4 sm:mb-8 h-[2px] bg-red-300/60 border-0" />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 <InputComponent
                                     control={form.control}
-                                    name="name"
+                                    name='name'
                                     label="Name"
                                     type="text"
                                     placeholder="Enter your name"
                                     labelClassName={labelStyles}
-                                    inputClassName={inputStyles}
+                                    inputClassName={inputStyles} 
                                 />
                                 <InputComponent
                                     control={form.control}
@@ -267,10 +267,10 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                         </div>
 
                         <div>
-                            <p className="text-gray-800 text-base mt-12 mb-2 font-normal">Participation</p>
-                            <hr className="mb-8 h-[2px] bg-red-300/60 border-0" />
+                            <p className="text-gray-800 text-base mt-8 sm:mt-12 mb-2 font-normal">Participation</p>
+                            <hr className="mb-4 sm:mb-8 h-[2px] bg-red-300/60 border-0" />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 <DropdownComponent
                                     control={form.control}
                                     name="tshirt_size"
@@ -293,7 +293,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <DropdownComponent
                                     control={form.control}
                                     name="programming_language"
@@ -306,7 +306,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <RadioComponent
                                     control={form.control}
                                     name="programming_level"
@@ -325,7 +325,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <RadioComponent
                                     control={form.control}
                                     name="has_internship_interest"
@@ -344,7 +344,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <RadioComponent
                                     control={form.control}
                                     name="has_previous_coding_experience"
@@ -355,7 +355,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <RadioComponent
                                     control={form.control}
                                     name="registration_type"
@@ -381,7 +381,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
                                 <RadioComponent
                                     control={form.control}
                                     name="share_info_with_sponsors"
@@ -400,7 +400,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <Button
                                 disabled={isFormDisabled}
                                 type="submit"
-                                className={`mt-4 px-8 py-2 text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-400 transition-all duration-300 hover:text-white ${
+                                className={`mt-4 px-10 py-3 sm:px-8 sm:py-2 text-base sm:text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-600 transition-all duration-300 hover:text-white ${
                                     isFormDisabled ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                             >
@@ -425,7 +425,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     type="button"
                                     onClick={onResendEmail}
                                     disabled={cooldown.isCoolingDown}
-                                    className="px-6 py-2 text-sm text-gray-800 border border-gray-400 rounded-full bg-transparent hover:bg-gray-100 transition-all duration-300"
+                                    className="px-8 py-3 sm:px-6 sm:py-2 text-base sm:text-sm text-gray-800 border border-gray-400 rounded-full bg-transparent hover:bg-gray-100 transition-all duration-300"
                                 >
                                     {cooldown.isCoolingDown
                                         ? `Resend email (${cooldown.secondsLeft}s)`
