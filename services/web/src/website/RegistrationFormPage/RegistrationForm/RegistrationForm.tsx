@@ -15,115 +15,28 @@ import {
     REFERRAL_OPTIONS,
     REGISTRATION_TYPE_OPTIONS_INV,
     REGISTRATION_TYPE_OPTIONS_NO_INV,
-    RegistrationInfo,
-    ResendEmailType,
     TSHIRT_OPTIONS,
     UNIVERSITY_OPTIONS,
 } from './constants';
-import { API_URL } from '@/constants';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import type { RegistrationInfo } from './constants';
+import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Loader2 } from 'lucide-react';
 
-interface DecodedToken {
-    sub: string;
-    team_id: string;
-    team_name: string;
-    exp: number;
-}
-
-const RESEND_COOLDOWN_SECONDS = 90;
-const REGISTRATION_CUTOFF_DATE = new Date('2026-03-14T00:00:00');
-
-const currentDate = new Date();
-const registrationMessage =
-    currentDate < REGISTRATION_CUTOFF_DATE ? 'Registration is coming soon...' : 'Registration is closed';
-
-const labelStyles = 'text-gray-700 font-medium text-sm mb-1';
-const inputStyles =
-    'bg-white text-gray-800 border border-gray-400 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-red-400 transition-shadow';
-const radioGroupStyles = 'flex flex-wrap gap-4 text-gray-600 text-sm';
-const dropdownLabelStyles = 'text-gray-700 font-medium text-sm mb-1';
-const selectContentStyles = 'bg-white text-gray-800 border border-gray-400';
-const formControlStyles = 'bg-white border border-gray-400';
-
-async function registerParticipant(data: RegistrationInfo, token?: string): Promise<string> {
-    const params = token ? new URLSearchParams({ jwt_token: token }) : undefined;
-
-    let response: Response;
-    try {
-        response = await fetch(`${API_URL}/hackathon/participants?${params?.toString() ?? ''}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-    } catch {
-        throw new Error('Registration failed, try refreshing the page or contact us.');
-    }
-
-    const responseData = await response.json();
-    if (!response.ok) {
-        throw new Error(responseData?.error || 'Registration failed, try refreshing the page or contact us.');
-    }
-
-    return responseData.participant?.id;
-}
-
-async function resendEmail(data: ResendEmailType): Promise<void> {
-    let response: Response;
-    try {
-        response = await fetch(`${API_URL}/hackathon/participants/verify/send-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-    } catch {
-        throw new Error('Failed to resend verification email. Please try again.');
-    }
-
-    if (!response.ok) {
-        throw new Error('Failed to resend verification email.');
-    }
-}
-
-function useCooldownTimer(durationSeconds: number) {
-    const [secondsLeft, setSecondsLeft] = useState(0);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-    const start = useCallback(() => {
-        setSecondsLeft(durationSeconds);
-
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-
-        intervalRef.current = setInterval(() => {
-            setSecondsLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(intervalRef.current!);
-                    intervalRef.current = null;
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-    }, [durationSeconds]);
-
-    useEffect(() => {
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, []);
-
-    const isCoolingDown = secondsLeft > 0;
-
-    return { secondsLeft, isCoolingDown, start };
-}
+import { registerParticipant, resendEmail } from './api';
+import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage } from './config';
+import { useCooldownTimer } from './useCooldownTimer';
+import {
+    labelStyles,
+    inputStyles,
+    radioGroupStyles,
+    dropdownLabelStyles,
+    selectContentStyles,
+    formControlStyles,
+} from './styles';
 
 interface RegistrationFormProps {
     RegSwitch: boolean;
