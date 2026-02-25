@@ -198,7 +198,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
     return (
         <div
-            className={`w-full flex flex-col items-center overflow-x-hidden font-mont bg-[#fafafa] relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full flex flex-col items-center overflow-x-hidden font-mont bg-[#fafafa] relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-14 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
         >
             <img
                 src={flameTL}

@@ -2,6 +2,7 @@ import hamburgerMenuIcon from '../../MainPage/Navigation/images/hamburger_menu.s
 import logo from '../../MainPage/Navigation/images/hublogo.webp';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useEffect, useState } from 'react';
+import { CornerUpLeft } from 'lucide-react';
 
 export const MobileNavComponent = () => {
     const NAV_ITEM_A = 'text-black hover:text-black font-orbitron';
@@ -37,36 +38,10 @@ export const MobileNavComponent = () => {
                             className="bg-[rgba(255,253,245,1)]"
                             onCloseAutoFocus={(event) => event.preventDefault()}
                         >
-                            <div className={NAV_ITEM}>
-                                <a href="/hackathon/#about" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
-                                    ABOUT
-                                </a>
-                            </div>
-                            <div className={NAV_ITEM}>
-                                <a href="/hackathon/#schedule" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
-                                    SCHEDULE
-                                </a>
-                            </div>
-                            <div className={NAV_ITEM}>
-                                <a
-                                    href="/hackathon/#grading-criteria"
-                                    className={NAV_ITEM_A}
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    GRADING CRITERIA
-                                </a>
-                            </div>
-                            <div className={NAV_ITEM}>
-                                <a href="/hackathon/#faq" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
-                                    FAQ
-                                </a>
-                            </div>
-                            <div className={`${NAV_ITEM}`}>
-                                <a
-                                    className="text-[rgb(170,22,22)] font-orbitron hover:text-[rgb(170,22,22)]"
-                                    href="/hackathon/registration"
-                                >
-                                    PARTICIPATE NOW
+                             <div className={NAV_ITEM}>
+                                <a href="/hackathon" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                                    <CornerUpLeft className="pb-[2px] mr-[5px]" />
+                                    Go back
                                 </a>
                             </div>
                         </SheetContent>

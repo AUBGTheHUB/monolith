@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
+import { CornerUpLeft } from 'lucide-react';
 
 export const DesktopNavComponent = () => {
-    const NAV_ITEM_A = 'text-[rgba(255,253,245,1)] text-xs font-thin font-orbitron';
-    const NAV_ITEM_A_EFFECT =
-        'hover:text-[rgba(255,253,245,1)] relative after:content-[""] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-[rgba(255,253,245,1)] after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left';
     const [fadeIn, setFadeIn] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -14,35 +12,14 @@ export const DesktopNavComponent = () => {
     }, []);
 
     return (
-        <div className="p-4 bg-transparent fixed top-0 left-0 w-full z-[100]">
-            <div
-                className={`rounded-2xl px-6 bg-[rgba(28,26,25,0.9)] border-gray-600 py-2 transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+        <div className="p-4 fixed top-3 right-3 z-[100]">
+            <a
+                href="/hackathon"
+                className={`inline-flex items-center gap-2 rounded-full px-6 py-3 bg-[rgba(0,0,0,0.5)] border border-gray-600 text-white text-sm font-light font-mont tracking-wider hover:text-white hover:bg-[rgba(0,0,0,0.7)] hover:border-gray-400 transition-all duration-300 transform relative after:content-[""] after:absolute after:w-[calc(100%-3rem)] after:scale-x-0 after:h-[1px] after:bottom-2.5 after:left-6 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
             >
-                <div className="w-full flex flex-row justify-center items-center py-3">
-                    <div className="flex flex-row w-[85%] gap-8">
-                        <a href="/hackathon/#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                            ABOUT
-                        </a>
-                        <a href="/hackathon/#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                            SCHEDULE
-                        </a>
-                        <a href="/hackathon/#journey" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                            JOURNEY
-                        </a>
-                        <a href="/hackathon/#grading-criteria" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                            GRADING CRITERIA
-                        </a>
-                        <a href="/hackathon/#faq" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                            FAQ
-                        </a>
-                    </div>
-                    <div>
-                        <a href="/hackathon/registration" className={`${NAV_ITEM_A} text-center  hover:text-white`}>
-                            PARTICIPATE NOW
-                        </a>
-                    </div>
-                </div>
-            </div>
+                <CornerUpLeft size={16} strokeWidth={1.5} />
+                Go back
+            </a>
         </div>
     );
 };
