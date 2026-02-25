@@ -1,5 +1,5 @@
-import flameTL from './flame_TL.png';
-import flameBR from './flame_BR.png';
+import flameTL from './images/flame_TL.png';
+import flameBR from './images/flame_BR.png';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -331,7 +331,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     name="location"
                                     label="Location"
                                     type="text"
-                                    placeholder="Enter your location"
+                                    placeholder="Enter your city and country"
                                     labelClassName={labelStyles}
                                     inputClassName={inputStyles}
                                 />
