@@ -32,10 +32,19 @@ import { useCooldownTimer } from './useCooldownTimer';
 import {
     labelStyles,
     inputStyles,
+    numberInputOverrides,
     radioGroupStyles,
     dropdownLabelStyles,
     selectContentStyles,
     formControlStyles,
+    sectionHeadingStyles,
+    sectionDividerStyles,
+    fieldGridStyles,
+    fieldGridWithMarginStyles,
+    formCardStyles,
+    submitButtonStyles,
+    resendButtonStyles,
+    errorTextStyles,
 } from './styles';
 
 const toDropdownItems = (options: { label: string; value: string }[]) =>
@@ -210,13 +219,13 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                 <FormProvider {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="bg-white/10 backdrop-blur-lg w-full max-w-[90%] sm:max-w-[75%] px-6 sm:px-14 py-12 border border-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] mb-16"
+                        className={formCardStyles}
                     >
                         <div>
-                            <p className="text-gray-800 text-base mb-2 mt-4 font-normal">Personal Info</p>
-                            <hr className="mb-4 sm:mb-8 h-[2px] bg-red-300/60 border-0" />
+                            <p className={`${sectionHeadingStyles} mt-4`}>Personal Info</p>
+                            <hr className={sectionDividerStyles} />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                            <div className={fieldGridStyles}>
                                 <InputComponent
                                     control={form.control}
                                     name='name'
@@ -233,7 +242,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     type="number"
                                     placeholder="Enter your age"
                                     labelClassName={labelStyles}
-                                    inputClassName={`${inputStyles} appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+                                    inputClassName={`${inputStyles} ${numberInputOverrides}`}
                                 />
                                 <InputComponent
                                     control={form.control}
@@ -267,10 +276,10 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                         </div>
 
                         <div>
-                            <p className="text-gray-800 text-base mt-8 sm:mt-12 mb-2 font-normal">Participation</p>
-                            <hr className="mb-4 sm:mb-8 h-[2px] bg-red-300/60 border-0" />
+                            <p className={`${sectionHeadingStyles} mt-8 sm:mt-12`}>Participation</p>
+                            <hr className={sectionDividerStyles} />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                            <div className={fieldGridStyles}>
                                 <DropdownComponent
                                     control={form.control}
                                     name="tshirt_size"
@@ -293,7 +302,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <DropdownComponent
                                     control={form.control}
                                     name="programming_language"
@@ -306,7 +315,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <RadioComponent
                                     control={form.control}
                                     name="programming_level"
@@ -325,7 +334,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <RadioComponent
                                     control={form.control}
                                     name="has_internship_interest"
@@ -344,7 +353,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <RadioComponent
                                     control={form.control}
                                     name="has_previous_coding_experience"
@@ -355,7 +364,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <RadioComponent
                                     control={form.control}
                                     name="registration_type"
@@ -381,7 +390,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8">
+                            <div className={fieldGridWithMarginStyles}>
                                 <RadioComponent
                                     control={form.control}
                                     name="share_info_with_sponsors"
@@ -400,7 +409,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <Button
                                 disabled={isFormDisabled}
                                 type="submit"
-                                className={`mt-4 px-10 py-3 sm:px-8 sm:py-2 text-base sm:text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-600 transition-all duration-300 hover:text-white ${
+                                className={`${submitButtonStyles} ${
                                     isFormDisabled ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
                             >
@@ -416,7 +425,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                         </div>
 
                         {isError && error instanceof Error && (
-                            <p className="text-sm text-red-600 mt-4">{error.message}</p>
+                            <p className={errorTextStyles}>{error.message}</p>
                         )}
 
                         {isSubmitted && registrationType !== 'invite_link' && (
@@ -425,7 +434,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     type="button"
                                     onClick={onResendEmail}
                                     disabled={cooldown.isCoolingDown}
-                                    className="px-8 py-3 sm:px-6 sm:py-2 text-base sm:text-sm text-gray-800 border border-gray-400 rounded-full bg-transparent hover:bg-gray-100 transition-all duration-300"
+                                    className={resendButtonStyles}
                                 >
                                     {cooldown.isCoolingDown
                                         ? `Resend email (${cooldown.secondsLeft}s)`
