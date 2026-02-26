@@ -12,7 +12,6 @@ import { HubMember } from '@/types/hub-member.ts';
 import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
-import { toast } from 'react-toastify';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
 import { toFormData } from '@/helpers/formHelpers.ts';
@@ -93,11 +92,10 @@ export function MeetTheTeamEditPage() {
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['hub-members'] });
-            toast.success(MESSAGES.SUCCESS_MESSAGE);
             navigate('/admin/dashboard/meet-the-team');
         },
         onError: (error: Error) => {
-            toast.error(error.message);
+            alert(error.message);
         },
     });
 

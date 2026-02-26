@@ -4,7 +4,7 @@ import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 // 1. Shared fields used in both Add and Edit modes
 const baseSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters.').max(50, 'Name must be less than 50 characters.'),
-    position: z.string().min(2, 'Position is required.'),
+    position: z.string().min(2, 'Position must be at least 2 characters.').optional().or(z.literal('')),
     departments: z.array(z.enum(['Development', 'Marketing', 'Logistics', 'PR', 'Design'])).default([]),
     social_links: z.object({
         linkedin: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
