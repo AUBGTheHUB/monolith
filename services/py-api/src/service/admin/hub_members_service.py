@@ -22,7 +22,7 @@ class HubMembersService:
     async def create(
         self,
         name: NonEmptyStr,
-        position: NonEmptyStr,
+        position: NonEmptyStr | None,
         departments: list[DEPARTMENTS_LIST],
         avatar: UploadFile,
         social_links: SocialLinks,
