@@ -42,7 +42,7 @@ export function DropdownComponent<T extends FieldValues = FieldValues>({
             render={({ field }) => (
                 <FormItem>
                     <FormLabel className={dropdownLabelClassName}>{label}</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value || ' '}>
                         <FormControl className={formControlClassName}>
                             <SelectTrigger
                                 data-testid="trigger"
