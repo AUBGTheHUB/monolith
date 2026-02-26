@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { Helmet } from 'react-helmet';
 import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
-import { teamMemberFormSchema, TeamMemberFormData } from './validation/validation.tsx';
+import { createTeamMemberSchema, TeamMemberFormData, updateTeamMemberSchema } from './validation/validation.tsx';
 import { HubMember } from '@/types/hub-member.ts';
 import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
@@ -24,9 +24,9 @@ export function MeetTheTeamEditPage() {
 
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? TeamMemberEditMessages : TeamMemberAddMessages;
-
+    const schema = isEditMode ? updateTeamMemberSchema : createTeamMemberSchema;
     const form = useForm<TeamMemberFormData>({
-        resolver: zodResolver(teamMemberFormSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             name: '',
             position: '',

@@ -10,7 +10,7 @@ import { JudgeFormFields } from './components/JudgeFormFields.tsx';
 import { JudgesEditMessages, JudgesAddMessages } from './messages.tsx';
 import { Judge } from '@/types/judge.ts';
 import { Form } from '@/components/ui/form.tsx';
-import { judgeSchema, JudgeFormData } from './validation/validation.tsx';
+import { createJudgeSchema, JudgeFormData, updateJudgeSchema } from './validation/validation.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
@@ -23,9 +23,9 @@ export function JudgesEditPage() {
     const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? JudgesEditMessages : JudgesAddMessages;
-
+    const currentSchema = isEditMode ? updateJudgeSchema : createJudgeSchema;
     const form = useForm<JudgeFormData>({
-        resolver: zodResolver(judgeSchema),
+        resolver: zodResolver(currentSchema),
         defaultValues: {
             name: '',
             company: '',

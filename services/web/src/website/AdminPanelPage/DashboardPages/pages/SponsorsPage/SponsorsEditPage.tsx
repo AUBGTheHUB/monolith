@@ -10,8 +10,9 @@ import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPages/pages
 import { SponsorsEditMessages, SponsorsAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import {
-    sponsorSchema,
+    createSponsorSchema,
     SponsorFormData,
+    updateSponsorSchema,
 } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/validation.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
@@ -27,8 +28,9 @@ export function SponsorsEditPage() {
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
 
+    const schema = isEditMode ? updateSponsorSchema : createSponsorSchema;
     const form = useForm<SponsorFormData>({
-        resolver: zodResolver(sponsorSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             name: '',
             tier: '',

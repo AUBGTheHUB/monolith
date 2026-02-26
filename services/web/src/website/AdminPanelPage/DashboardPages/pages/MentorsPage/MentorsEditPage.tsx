@@ -14,7 +14,7 @@ import { Fragment } from 'react/jsx-runtime';
 import { Styles } from '../../../AdminStyle.ts';
 import { MentorFormFields } from './components/MentorFormFields.tsx';
 import { MentorsAddMessages, MentorsEditMessages } from './messages.tsx';
-import { mentorSchema, type MentorFormData } from './validation/validation.tsx';
+import { type MentorFormData, updateMentorSchema, createMentorSchema } from './validation/validation.tsx';
 import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function MentorsEditPage() {
@@ -24,8 +24,9 @@ export function MentorsEditPage() {
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? MentorsEditMessages : MentorsAddMessages;
 
+    const schema = isEditMode ? updateMentorSchema : createMentorSchema;
     const form = useForm<MentorFormData>({
-        resolver: zodResolver(mentorSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             name: '',
             company: '',

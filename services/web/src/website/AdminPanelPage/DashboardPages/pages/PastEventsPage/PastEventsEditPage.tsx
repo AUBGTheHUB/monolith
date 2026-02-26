@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet';
 import { PastEventFields } from './components/PastEventFormFields';
 import { Form } from '@/components/ui/form';
 import { PastEventsEditMessages, PastEventsAddMessages } from './messages';
-import { pastEventSchema, PastEventFormData } from './validation/validation';
+import { createPastEventSchema, PastEventFormData, updatePastEventSchema } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -23,9 +23,9 @@ export const PastEventsEditPage = () => {
     const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? PastEventsEditMessages : PastEventsAddMessages;
-
+    const schema = isEditMode ? updatePastEventSchema : createPastEventSchema;
     const form = useForm<PastEventFormData>({
-        resolver: zodResolver(pastEventSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             title: '',
             cover_picture: undefined,
@@ -62,7 +62,7 @@ export const PastEventsEditPage = () => {
         if (event) {
             reset({
                 title: event.title,
-                cover_picture: event.cover_picture,
+                cover_picture: undefined,
                 tags: event.tags || [],
             });
         }
