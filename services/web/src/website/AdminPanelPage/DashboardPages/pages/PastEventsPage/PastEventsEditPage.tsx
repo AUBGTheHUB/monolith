@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,11 +10,12 @@ import { Helmet } from 'react-helmet';
 import { PastEventFields } from './components/PastEventFormFields';
 import { Form } from '@/components/ui/form';
 import { PastEventsEditMessages, PastEventsAddMessages } from './messages';
-import { pastEventSchema, PastEventFormData } from './validation/validation';
+import { createPastEventSchema, PastEventFormData, updatePastEventSchema } from './validation/validation';
 import { Styles } from '../../../AdminStyle';
 import { cn } from '@/lib/utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export const PastEventsEditPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,19 +23,16 @@ export const PastEventsEditPage = () => {
     const queryClient = useQueryClient();
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? PastEventsEditMessages : PastEventsAddMessages;
-
+    const schema = isEditMode ? updatePastEventSchema : createPastEventSchema;
     const form = useForm<PastEventFormData>({
-        resolver: zodResolver(pastEventSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             title: '',
-            cover_picture: '',
+            cover_picture: undefined,
             tags: [],
         },
         mode: 'onTouched',
     });
-
-    const { control, handleSubmit, reset, watch } = form;
-    const imageValue = watch('cover_picture');
 
     // Fetch if in Edit mode
     const { data: event, isLoading } = useQuery({
@@ -43,12 +41,28 @@ export const PastEventsEditPage = () => {
         enabled: isEditMode, // Only run if id exists
         select: (res) => res.past_event,
     });
+    const { control, handleSubmit, reset, watch } = form;
+    const coverImageFile = watch('cover_picture');
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (coverImageFile instanceof FileList && coverImageFile.length > 0) {
+            return URL.createObjectURL(coverImageFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && event?.cover_picture) {
+            return event.cover_picture;
+        }
+
+        return null;
+    }, [coverImageFile, event, isEditMode]);
     // Load default values in edit mode
     useEffect(() => {
         if (event) {
             reset({
                 title: event.title,
-                cover_picture: event.cover_picture,
+                cover_picture: undefined,
                 tags: event.tags || [],
             });
         }
@@ -56,10 +70,10 @@ export const PastEventsEditPage = () => {
 
     // Mutation for save
     const mutation = useMutation({
-        mutationFn: (formData: PastEventFormData) => {
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<PastEvent, PastEventFormData>(`/admin/events/${id}`, formData)
-                : apiClient.post<PastEvent, PastEventFormData>(`/admin/events`, formData);
+                ? apiClient.patchForm<PastEvent>(`/admin/events/${id}`, formData)
+                : apiClient.postForm<PastEvent>(`/admin/events`, formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -71,7 +85,8 @@ export const PastEventsEditPage = () => {
     });
 
     const onSubmit = (data: PastEventFormData) => {
-        mutation.mutate(data);
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
 
     const goBack = () => navigate('/admin/dashboard/past-events');
@@ -148,9 +163,9 @@ export const PastEventsEditPage = () => {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {imageValue ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={imageValue}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-contain"
                                                     onError={(e) => {

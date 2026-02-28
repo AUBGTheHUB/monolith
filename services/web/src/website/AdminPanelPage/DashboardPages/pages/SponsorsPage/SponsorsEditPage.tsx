@@ -1,5 +1,5 @@
 import { Fragment } from 'react/jsx-runtime';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,14 +10,16 @@ import { SponsorFormFields } from '@/website/AdminPanelPage/DashboardPages/pages
 import { SponsorsEditMessages, SponsorsAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import {
-    sponsorSchema,
+    createSponsorSchema,
     SponsorFormData,
-    Sponsor,
-} from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
+    updateSponsorSchema,
+} from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/validation.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
+import { Sponsor } from '@/types/sponsor.ts';
+import { toFormData } from '@/helpers/formHelpers.ts';
 
 export function SponsorsEditPage() {
     const { id } = useParams<{ id: string }>();
@@ -26,45 +28,62 @@ export function SponsorsEditPage() {
     const isEditMode = Boolean(id);
     const MESSAGES = isEditMode ? SponsorsEditMessages : SponsorsAddMessages;
 
+    const schema = isEditMode ? updateSponsorSchema : createSponsorSchema;
     const form = useForm<SponsorFormData>({
-        resolver: zodResolver(sponsorSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             name: '',
             tier: '',
-            logo_url: '',
+            logo: undefined,
             website_url: '',
         },
         mode: 'onTouched',
     });
 
-    const { control, handleSubmit, reset, watch } = form;
-    const logoUrl = watch('logo_url');
-
-    // 1. Fetch data if in Edit Mode
+    //Fetch data if in Edit Mode
     const { data: sponsor, isLoading } = useQuery({
         queryKey: ['sponsor', id],
         queryFn: () => apiClient.get<{ sponsor: Sponsor }>(`/admin/sponsors/${id}`),
         enabled: isEditMode, // Only run query if id exists
         select: (res) => res.sponsor,
     });
-    // 2. Fill form when data is received
+    const { control, handleSubmit, reset, watch } = form;
+    // Watch the logo field (which is now a FileList)
+    const logoFile = watch('logo');
+
+    // Create a local preview URL
+    const previewUrl = useMemo(() => {
+        // 1. If user just selected a NEW file, show that preview
+        if (logoFile instanceof FileList && logoFile.length > 0) {
+            return URL.createObjectURL(logoFile[0]);
+        }
+
+        // 2. Fallback to the existing sponsor logo from the database
+        if (isEditMode && sponsor?.logo_url) {
+            return sponsor.logo_url;
+        }
+
+        return null;
+    }, [logoFile, sponsor, isEditMode]);
+
+    //Fill form when data is received
     useEffect(() => {
         if (sponsor) {
             reset({
                 name: sponsor.name,
                 tier: sponsor.tier,
-                logo_url: sponsor.logo_url,
+                logo: undefined,
                 website_url: sponsor.website_url,
             });
         }
     }, [sponsor, reset]);
 
-    // 3. Mutation for Save (Create or Update)
+    // Mutation for Save (Create or Update)
     const mutation = useMutation({
-        mutationFn: (formData: SponsorFormData) => {
+        mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patch<Sponsor, SponsorFormData>(`/admin/sponsors/${id}`, formData)
-                : apiClient.post<Sponsor, SponsorFormData>(`/admin/sponsors`, formData);
+                ? apiClient.patchForm<Sponsor>(`/admin/sponsors/${id}`, formData)
+                : apiClient.postForm<Sponsor>(`/admin/sponsors`, formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['sponsors'] });
@@ -74,9 +93,10 @@ export function SponsorsEditPage() {
             alert(error.message);
         },
     });
-
     const onSubmit = (data: SponsorFormData) => {
-        mutation.mutate(data);
+        // Wrap data as FormData object using our custom helper
+        const formData = toFormData(data);
+        mutation.mutate(formData);
     };
 
     const goBack = () => {
@@ -153,9 +173,9 @@ export function SponsorsEditPage() {
                                                 Styles.backgrounds.previewBox,
                                             )}
                                         >
-                                            {logoUrl ? (
+                                            {previewUrl ? (
                                                 <img
-                                                    src={logoUrl}
+                                                    src={previewUrl}
                                                     alt="Preview"
                                                     className="w-full h-full object-contain p-4"
                                                     onError={(e) => {
