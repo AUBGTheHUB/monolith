@@ -4,7 +4,6 @@ from result import Err, Ok, Result, is_err
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from uuid import uuid4
 
-from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTokenParams
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -16,6 +15,7 @@ from src.exception import (
     RefreshTokenIsInvalid,
     RefreshTokenNotFound,
 )
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
@@ -64,7 +64,7 @@ class AuthService:
 
     async def login_admin(
         self, credentials: LoginHubAdminData
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
+    ) -> Result[AdminTokens, HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
         result = await self._hub_members_repo.fetch_admin_by_username(username=credentials.username)
 
@@ -83,6 +83,9 @@ class AuthService:
 
         # Build the auth token
         jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
+
+        # Build the id token
+        jwt_id_token = self._auth_token_service.generate_id_token_for(hub_admin=hub_admin)
 
         # Save the refresh token in db
         family_id = str(uuid4())
@@ -104,12 +107,12 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
             refresh_expiration=int(refresh_expiration.timestamp()),
         )
-
-        return Ok((jwt_auth_token, jwt_refresh_token))
+        tokens = AdminTokens(access_token=jwt_auth_token, id_token=jwt_id_token, refresh_token=jwt_refresh_token)
+        return Ok(tokens)
 
     async def register_admin(
         self, credentials: RegisterHubAdminData
-    ) -> Result[HubAdmin, DuplicateHubMemberUsernameError | Exception]:
+    ) -> Result[None, DuplicateHubMemberUsernameError | Exception]:
 
         password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
 
@@ -120,11 +123,11 @@ class AuthService:
         if is_err(result):
             return result
 
-        return Ok(result.ok_value)
+        return Ok(None)
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | Exception]:
+    ) -> Result[AuthTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -144,7 +147,7 @@ class AuthService:
         if is_err(refresh_token_result):
             return refresh_token_result
 
-        if refresh_token_result.ok_value.is_valid is False:
+        if not refresh_token_result.ok_value.is_valid:
             invalidate_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(family_id=family_id)
             if is_err(invalidate_result):
                 return invalidate_result
@@ -185,4 +188,5 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
         )
 
-        return Ok((jwt_auth_token, jwt_refresh_token))
+        tokens = AuthTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token)
+        return Ok(tokens)

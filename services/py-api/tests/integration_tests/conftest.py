@@ -1,15 +1,20 @@
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from unittest.mock import patch
+import boto3
 import pytest
 import pytest_asyncio
+from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
 from src.database.model.admin.hub_admin_model import Role
+from moto import mock_aws
+from mypy_boto3_s3.client import S3Client
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
-from typing import AsyncGenerator, Any, Literal, Protocol, Union
+from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app
 from os import environ
 from src.database.model.hackathon.participant_model import (
@@ -20,6 +25,7 @@ from src.database.model.hackathon.participant_model import (
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
 )
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
 
 LOG = get_logger()
 
@@ -110,6 +116,30 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     await client.aclose()
 
 
+@pytest.fixture(scope="session", autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
+
+
+@pytest.fixture
+def aws_mock() -> Generator[None, Any, None]:
+    with mock_aws():
+        s3_client: S3Client = boto3.client("s3", region_name=AWS_DEFAULT_REGION)
+
+        s3_client.create_bucket(
+            Bucket=AWS_S3_DEFAULT_BUCKET,
+            CreateBucketConfiguration={
+                "LocationConstraint": "eu-central-1",
+            },
+        )
+
+        yield
+
+
 class CreateTestParticipantCallable(Protocol):
     """
     A callable protocol that represents an asynchronous function to create a test participant.
@@ -189,7 +219,7 @@ async def revert_the_finalization_step(async_client: AsyncClient, super_auth_tok
     LOG.debug("Cleanup finished successfully")
 
 
-# The following is an exapmle of factories as fixtures in pytest
+# The following is an example of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
 # It uses the same philosophy for the teardown as it is suggested on the example of the docs above.
@@ -323,6 +353,15 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
         return {"registration_info": cln_reg_info}
 
     return participant_request_body_generator
+
+
+@pytest.fixture
+def image_mock() -> BytesIO:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return output
 
 
 @pytest.fixture

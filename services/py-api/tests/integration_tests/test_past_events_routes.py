@@ -1,15 +1,19 @@
 from typing import Any
+from io import BytesIO
+from typing import Any, Generator
 
 import pytest
 from httpx import AsyncClient
 
+from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
+
 PAST_EVENTS_ENDPOINT_URL = "/api/v3/admin/events"
+TEST_PAST_EVENT_COVER_PICTURE_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/past_events"
 
 
 def _valid_past_event_payload() -> dict[str, Any]:
     return {
         "title": "HubConf 2024",
-        "cover_picture": "https://example.com/hubconf.jpg",
         "tags": ["conference", "hub"],
     }
 
@@ -23,12 +27,15 @@ async def _delete_past_event(async_client: AsyncClient, past_event_id: str, supe
 
 
 @pytest.mark.asyncio
-async def test_create_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
+async def test_create_past_event_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
     # When
     result = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
 
@@ -38,7 +45,7 @@ async def test_create_past_event_success(async_client: AsyncClient, super_auth_t
 
     assert "past_event" in body
     assert body["past_event"]["title"] == "HubConf 2024"
-    assert body["past_event"]["cover_picture"] == "https://example.com/hubconf.jpg"
+    assert body["past_event"]["cover_picture"] == f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}.webp"
     assert body["past_event"]["tags"] == ["conference", "hub"]
     assert "id" in body["past_event"]
 
@@ -49,11 +56,14 @@ async def test_create_past_event_success(async_client: AsyncClient, super_auth_t
 
 
 @pytest.mark.asyncio
-async def test_create_past_event_unauthorized(async_client: AsyncClient) -> None:
+async def test_create_past_event_unauthorized(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+) -> None:
     result = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": "Bearer WRONG_TOKEN"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
 
@@ -62,12 +72,15 @@ async def test_create_past_event_unauthorized(async_client: AsyncClient) -> None
 
 
 @pytest.mark.asyncio
-async def test_get_all_past_events_success(async_client: AsyncClient, super_auth_token: str) -> None:
+async def test_get_all_past_events_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
     # Arrange: create one event so the list has a stable target
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -93,12 +106,15 @@ async def test_get_all_past_events_success(async_client: AsyncClient, super_auth
 
 
 @pytest.mark.asyncio
-async def test_get_past_event_by_id_success(async_client: AsyncClient, super_auth_token: str) -> None:
+async def test_get_past_event_by_id_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
     # Arrange: create an event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -118,7 +134,7 @@ async def test_get_past_event_by_id_success(async_client: AsyncClient, super_aut
     assert "past_event" in body
     assert body["past_event"]["id"] == created_id
     assert body["past_event"]["title"] == created_event["title"]
-    assert body["past_event"]["cover_picture"] == created_event["cover_picture"]
+    assert body["past_event"]["cover_picture"] == f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}.webp"
     assert body["past_event"]["tags"] == created_event["tags"]
 
     # Cleanup
@@ -152,12 +168,15 @@ async def test_get_past_event_by_id_not_found(async_client: AsyncClient, super_a
 
 
 @pytest.mark.asyncio
-async def test_update_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
+async def test_update_past_event_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
     # Arrange: create one event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201
@@ -165,7 +184,6 @@ async def test_update_past_event_success(async_client: AsyncClient, super_auth_t
 
     update_payload = {
         "title": "HubConf 2024 Updated",
-        "cover_picture": "https://example.com/hubconf-updated.jpg",
         "tags": ["conference", "updated"],
     }
 
@@ -173,7 +191,7 @@ async def test_update_past_event_success(async_client: AsyncClient, super_auth_t
     result = await async_client.patch(
         url=f"{PAST_EVENTS_ENDPOINT_URL}/{created_id}",
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=update_payload,
+        data=update_payload,
         follow_redirects=True,
     )
 
@@ -183,7 +201,6 @@ async def test_update_past_event_success(async_client: AsyncClient, super_auth_t
     assert "past_event" in body
     assert body["past_event"]["id"] == created_id
     assert body["past_event"]["title"] == "HubConf 2024 Updated"
-    assert body["past_event"]["cover_picture"] == "https://example.com/hubconf-updated.jpg"
     assert body["past_event"]["tags"] == ["conference", "updated"]
 
     # Cleanup
@@ -191,12 +208,15 @@ async def test_update_past_event_success(async_client: AsyncClient, super_auth_t
 
 
 @pytest.mark.asyncio
-async def test_delete_past_event_success(async_client: AsyncClient, super_auth_token: str) -> None:
+async def test_delete_past_event_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
     # Arrange: create one event
     created = await async_client.post(
         url=PAST_EVENTS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_past_event_payload(),
+        data=_valid_past_event_payload(),
+        files={"cover_picture": image_mock},
         follow_redirects=True,
     )
     assert created.status_code == 201

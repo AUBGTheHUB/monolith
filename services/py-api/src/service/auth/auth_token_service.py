@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from result import Result
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.service.utility.jwt_utils.codec import JwtUtility
-from src.service.utility.jwt_utils.schemas import JwtAdminToken, JwtRefreshToken
+from src.service.utility.jwt_utils.schemas import JwtAdminToken, JwtRefreshToken, JwtIdToken
 
 
 class AuthTokenService:
@@ -12,14 +12,26 @@ class AuthTokenService:
     def generate_access_token_for(self, hub_admin: HubAdmin) -> str:
         expiration = int((datetime.now(timezone.utc) + timedelta(minutes=7)).timestamp())
         payload = JwtAdminToken(
-            sub=str(hub_admin.id), exp=expiration, site_role=hub_admin.site_role, member_type=hub_admin.member_type
+            sub=str(hub_admin.id), exp=expiration, member_type=hub_admin.member_type, site_role=hub_admin.site_role
         )
+        return self._jwt_utility.encode_data(data=payload)
+
+    def generate_id_token_for(self, hub_admin: HubAdmin) -> str:
+        expiration = int((datetime.now(timezone.utc) + timedelta(hours=10)).timestamp())
+        payload = JwtIdToken(
+            sub=str(hub_admin.id),
+            exp=expiration,
+            name=hub_admin.name,
+            avatar_url=hub_admin.avatar_url,
+            username=hub_admin.username,
+            site_role=hub_admin.site_role,
+        )
+
         return self._jwt_utility.encode_data(data=payload)
 
     def generate_refresh_token(
         self, hub_member_id: str, refresh_token_id: str, family_id: str, refresh_expiration: int
     ) -> str:
-
         refresh_payload = JwtRefreshToken(
             sub=hub_member_id, exp=refresh_expiration, family_id=family_id, jti=refresh_token_id
         )

@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.mentor_model import Mentor
 from src.exception import MentorNotFoundError
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
 from src.server.schemas.request_schemas.admin.mentor_schemas import (
-    MentorPostReqData,
     MentorPatchReqData,
 )
 from src.server.schemas.response_schemas.schemas import Response
@@ -44,22 +44,24 @@ async def test_create_mentor_returns_201(
     mentors_handlers: MentorsHandlers,
     mentors_service_mock: MentorsServiceMock,
     mentor_mock: Mentor,
+    image_mock: UploadFile,
 ) -> None:
-    req = MentorPostReqData(
-        name=mentor_mock.name,
-        company=mentor_mock.company,
-        job_title=mentor_mock.job_title,
-        avatar_url=mentor_mock.avatar_url,
-        linkedin_url=mentor_mock.linkedin_url,
-    )
 
     mentors_service_mock.create.return_value = Ok(mentor_mock)
 
-    resp = await mentors_handlers.create_mentor(req)
+    resp = await mentors_handlers.create_mentor(
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
-    mentors_service_mock.create.assert_awaited_once_with(req)
+    mentors_service_mock.create.assert_awaited_once_with(
+        mentor_mock.name, mentor_mock.company, mentor_mock.job_title, image_mock, mentor_mock.linkedin_url
+    )
 
 
 @pytest.mark.asyncio
@@ -95,21 +97,36 @@ async def test_update_mentor_returns_200(
     mentors_handlers: MentorsHandlers,
     mentors_service_mock: MentorsServiceMock,
     mentor_mock: Mentor,
+    image_mock: UploadFile,
 ) -> None:
     req = MentorPatchReqData(
         name=mentor_mock.name,
         company=mentor_mock.company,
         job_title=mentor_mock.job_title,
-        avatar_url=mentor_mock.avatar_url,
+        avatar=image_mock,
         linkedin_url=mentor_mock.linkedin_url,
     )
 
     mentors_service_mock.update.return_value = Ok(mentor_mock)
 
-    resp = await mentors_handlers.update_mentor(str(mentor_mock.id), req)
+    resp = await mentors_handlers.update_mentor(
+        object_id=str(mentor_mock.id),
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
 
     assert resp.status_code == 200
-    mentors_service_mock.update.assert_awaited_once_with(str(mentor_mock.id), req)
+    mentors_service_mock.update.assert_awaited_once_with(
+        str(mentor_mock.id),
+        mentor_mock.name,
+        mentor_mock.company,
+        mentor_mock.job_title,
+        image_mock,
+        mentor_mock.linkedin_url,
+    )
 
 
 @pytest.mark.asyncio
@@ -142,13 +159,12 @@ async def test_get_mentor_returns_404_when_missing(
 async def test_update_mentor_returns_404_when_not_found(
     mentors_handlers: MentorsHandlers, mentors_service_mock: MentorsServiceMock
 ) -> None:
-    req = MentorPatchReqData(name="Jane Updated")
     mentors_service_mock.update.return_value = Err(MentorNotFoundError())
 
-    resp = await mentors_handlers.update_mentor("missing mentor", req)
+    resp = await mentors_handlers.update_mentor(object_id="missing mentor", name="Jane Updated")
 
     assert resp.status_code == 404
-    mentors_service_mock.update.assert_awaited_once_with("missing mentor", req)
+    mentors_service_mock.update.assert_awaited_once_with("missing mentor", "Jane Updated", None, None, None, None)
 
 
 @pytest.mark.asyncio

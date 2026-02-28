@@ -1,11 +1,10 @@
-from fastapi import Cookie, status
 from result import is_err
+from starlette.responses import Response as StarletteResponse
+from fastapi import Cookie, HTTPException, status
+
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import (
-    AccessTokenSuccessfullyIssued,
-    HubMemberSuccessfullyRegistered,
-)
+from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued, AuthTokensSuccessfullyIssued
 from src.service.auth.auth_service import AuthService
 from src.server.schemas.response_schemas.schemas import Response
 
@@ -23,23 +22,28 @@ class AuthHandlers(BaseHandler):
 
         tokens = result.ok_value
         response = Response(
-            AccessTokenSuccessfullyIssued(
-                access_token=tokens[0],
-            ),
+            AuthTokensSuccessfullyIssued(access_token=tokens.access_token, id_token=tokens.id_token),
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
+        response.set_cookie(
+            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
+        )
 
         return response
 
-    async def register(self, credentials: RegisterHubAdminData) -> Response:
+    async def register(self, credentials: RegisterHubAdminData) -> StarletteResponse:
         result = await self._service.register_admin(credentials=credentials)
 
         if is_err(result):
-            return self.handle_error(result.err_value)
+            error_response = self.handle_error(result.err_value)
+            raise HTTPException(
+                status_code=error_response.status_code,
+                detail=error_response.response_model.error,
+                headers=dict(error_response.headers),
+            )
 
-        return Response(HubMemberSuccessfullyRegistered(hub_admin=result.ok_value), status_code=status.HTTP_201_CREATED)
+        return StarletteResponse(status_code=status.HTTP_204_NO_CONTENT)
 
     async def refresh_token_pair(self, refresh_token: str | None = Cookie(default=None)) -> Response:
         result = await self._service.refresh_token(refresh_token=refresh_token)
@@ -51,11 +55,13 @@ class AuthHandlers(BaseHandler):
 
         response = Response(
             AccessTokenSuccessfullyIssued(
-                access_token=tokens[0],
+                access_token=tokens.access_token,
             ),
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(key="refresh_token", value=tokens[1], httponly=True, secure=True, samesite="strict")
+        response.set_cookie(
+            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
+        )
 
         return response

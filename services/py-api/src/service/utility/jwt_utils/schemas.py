@@ -47,7 +47,17 @@ class _DecodedJwtAdminToken(DecodedJwtTokenBase):
     site_role: Role
 
 
-class _RefreshJwtToken(DecodedJwtTokenBase):
+class _DecodedJwtAdminIdToken(DecodedJwtTokenBase):
+    """A Type representing a decoded JWT token used for personal data of the hub admin"""
+
+    avatar_url: str
+    site_role: Role
+    username: str
+    name: str
+    site_role: Role
+
+
+class _DecodedRefreshJwtToken(DecodedJwtTokenBase):
     """A Type representing a decoded JWT token used for refreshing"""
 
     family_id: str
@@ -152,15 +162,44 @@ class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
 
 
 @dataclass(kw_only=True)
-class JwtRefreshToken(JwtBase[_RefreshJwtToken]):
+class JwtIdToken(JwtBase[_DecodedJwtAdminIdToken]):
+    avatar_url: str
+    site_role: Role
+    username: str
+    name: str
+
+    def serialize(self) -> _DecodedJwtAdminIdToken:
+        return _DecodedJwtAdminIdToken(
+            sub=self.sub,
+            exp=self.exp,
+            name=self.name,
+            avatar_url=self.avatar_url,
+            site_role=self.site_role,
+            username=self.username,
+        )
+
+    @classmethod
+    def deserialize(cls, decoded_token: _DecodedJwtAdminIdToken) -> Self:
+        return cls(
+            sub=decoded_token["sub"],
+            avatar_url=decoded_token["avatar_url"],
+            exp=decoded_token["exp"],
+            name=decoded_token["name"],
+            site_role=decoded_token["site_role"],
+            username=decoded_token["username"],
+        )
+
+
+@dataclass(kw_only=True)
+class JwtRefreshToken(JwtBase[_DecodedRefreshJwtToken]):
     family_id: str
     jti: str
 
-    def serialize(self) -> _RefreshJwtToken:
-        return _RefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
+    def serialize(self) -> _DecodedRefreshJwtToken:
+        return _DecodedRefreshJwtToken(sub=self.sub, exp=self.exp, family_id=self.family_id, jti=self.jti)
 
     @classmethod
-    def deserialize(cls, decoded_token: _RefreshJwtToken) -> Self:
+    def deserialize(cls, decoded_token: _DecodedRefreshJwtToken) -> Self:
         return cls(
             sub=decoded_token["sub"],
             exp=decoded_token["exp"],

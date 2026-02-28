@@ -25,14 +25,7 @@ async def test_register_admin_success(
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # Then
-    assert resp.status_code == 201
-
-    data = resp.json()
-    assert data["hub_admin"]["username"] == unique_name
-
-    # cleanup:
-    id = data["hub_admin"]["id"]
-    await delete_hub_member(async_client=async_client, member_id=id, super_auth_token=super_auth_token)
+    assert resp.status_code == 204
 
 
 @pytest.mark.asyncio
@@ -107,9 +100,6 @@ async def test_login_admin_fails_when_hub_admin_is_not_found(
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
 ) -> None:
-    # # Register the user
-    # register_hub_admin_body = generate_register_hub_admin_request_body()
-    # await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
 
     # When
     login_hub_admin_data = LoginHubAdminData(username="Wrong username", password=TEST_HUB_ADMIN_PASSWORD_HASH)
