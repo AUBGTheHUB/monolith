@@ -12,7 +12,6 @@ from src.database.model.admin.hub_admin_model import Role
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
-from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
@@ -407,40 +406,35 @@ class RegisterHubAdminBodyCallable(Protocol):
         username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
-        avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
         member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
-        social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
         password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         **kwargs: Any,
-    ) -> RegisterHubAdminData: ...
+    ) -> dict[str, Any]: ...
 
 
 @pytest.fixture
 def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
     def register_hub_admin_request_body_generator(
         name: str = TEST_HUB_MEMBER_NAME,
-        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
+        username: str = f"{TEST_HUB_MEMBER_USERNAME}_{uuid.uuid4()}",
+        # Changed space to underscore for safer form keys
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
-        avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
         member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
-        social_links: SocialLinks = TEST_HUB_MEMBER_SOCIAL_LINKS,
         password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         **kwargs: Any,
-    ) -> RegisterHubAdminData:
-        return RegisterHubAdminData(
-            name=name,
-            username=username,
-            position=position,
-            departments=departments,
-            avatar_url=avatar_url,
-            member_type=member_type,
-            social_links=social_links,
-            password=password,
-            repeat_password=repeat_password,
+    ) -> dict[str, Any]:
+        return {
+            "name": name,
+            "username": username,
+            "position": position,
+            "departments": departments,  # HTTPX handles list values by repeating keys
+            "member_type": member_type,
+            "password": password,
+            "repeat_password": repeat_password,
             **kwargs,
-        )
+        }
 
     return register_hub_admin_request_body_generator
