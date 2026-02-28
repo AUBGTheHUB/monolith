@@ -37,7 +37,7 @@ export const DesktopNavigationComponent = () => {
                         </a>
                     </div>
                     <div>
-                        <a href="/hackathon/registration" className={`${NAV_ITEM_A} text-center  hover:text-white`}>
+                        <a href="/hackathon/registration" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT} text-center`}>
                             PARTICIPATE NOW
                         </a>
                     </div>
