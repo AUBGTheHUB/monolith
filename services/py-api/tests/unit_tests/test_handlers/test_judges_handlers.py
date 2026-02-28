@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
-from pydantic import HttpUrl
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.judge_model import Judge
@@ -28,22 +28,35 @@ async def test_create_judge_returns_201(
     judges_handlers: JudgesHandlers,
     judges_service_mock: JudgesServiceMock,
     judge_mock: Judge,
+    image_mock: UploadFile,
 ) -> None:
     req = JudgePostReqData(
         name=judge_mock.name,
         company=judge_mock.company,
         job_title=judge_mock.job_title,
         linkedin_url=judge_mock.linkedin_url,
-        avatar_url=HttpUrl(judge_mock.avatar_url),
+        avatar=image_mock,
     )
 
     judges_service_mock.create.return_value = Ok(judge_mock)
 
-    resp = await judges_handlers.create_judge(req)
+    resp = await judges_handlers.create_judge(
+        name=judge_mock.name,
+        company=judge_mock.company,
+        job_title=judge_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=judge_mock.linkedin_url,
+    )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
-    judges_service_mock.create.assert_awaited_once_with(req)
+    judges_service_mock.create.assert_awaited_once_with(
+        judge_mock.name,
+        judge_mock.company,
+        judge_mock.job_title,
+        image_mock,
+        judge_mock.linkedin_url,
+    )
 
 
 @pytest.mark.asyncio
@@ -79,21 +92,36 @@ async def test_update_judge_returns_200(
     judges_handlers: JudgesHandlers,
     judges_service_mock: JudgesServiceMock,
     judge_mock: Judge,
+    image_mock: UploadFile,
 ) -> None:
     req = JudgePatchReqData(
         name=judge_mock.name,
         company=judge_mock.company,
         job_title=judge_mock.job_title,
         linkedin_url=judge_mock.linkedin_url,
-        avatar_url=HttpUrl(judge_mock.avatar_url),
+        avatar=image_mock,
     )
 
     judges_service_mock.update.return_value = Ok(judge_mock)
 
-    resp = await judges_handlers.update_judge(str(judge_mock.id), req)
+    resp = await judges_handlers.update_judge(
+        object_id=str(judge_mock.id),
+        name=judge_mock.name,
+        company=judge_mock.company,
+        job_title=judge_mock.job_title,
+        linkedin_url=judge_mock.linkedin_url,
+        avatar=image_mock,
+    )
 
     assert resp.status_code == 200
-    judges_service_mock.update.assert_awaited_once_with(str(judge_mock.id), req)
+    judges_service_mock.update.assert_awaited_once_with(
+        judge_id=str(judge_mock.id),
+        name=judge_mock.name,
+        company=judge_mock.company,
+        job_title=judge_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=judge_mock.linkedin_url,
+    )
 
 
 @pytest.mark.asyncio
