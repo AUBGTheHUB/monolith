@@ -16,7 +16,7 @@ export const pastEventSchema = z.object({
         .string()
         .min(1, { message: 'Image URL is required' })
         .url({ message: 'Please enter a valid URL (e.g., https://example.com/image.png)' }),
-
+    description: z.string().optional(),
     tags: z
         .array(
             z

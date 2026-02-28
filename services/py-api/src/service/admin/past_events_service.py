@@ -24,6 +24,7 @@ class PastEventsService:
             title=data.title,
             cover_picture=str(data.cover_picture),
             tags=data.tags,
+            description=data.description,
         )
         return await self._repo.create(past_event)
 
@@ -36,6 +37,7 @@ class PastEventsService:
             title=data.title,
             cover_picture=str(data.cover_picture) if data.cover_picture is not None else None,
             tags=data.tags,
+            description=data.description,
         )
         return await self._repo.update(event_id, update_params)
 
