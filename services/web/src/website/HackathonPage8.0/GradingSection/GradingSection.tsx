@@ -1,6 +1,6 @@
 import { GradingCard } from './GradingCard';
 import { bottomRowData, topRowData } from './data.ts';
-import { VerticalBar } from '@/components/ui/verticalBar';
+import { SectionTitle } from '../shared/SectionTitle';
 
 export const GradingSection = () => {
     return (
@@ -16,24 +16,17 @@ export const GradingSection = () => {
                 className="absolute bottom-0 right-0 w-[300px] lg:w-[35vw] opacity-90 z-0 pointer-events-none mix-blend-multiply"
             />
 
-            <VerticalBar isRight={false} isBlack={true} />
-            <VerticalBar isRight={true} isBlack={true} />
-
             <div
-                className="relative z-10 w-full flex flex-col items-center gap-[4vh] px-6"
-                style={{
-                    maxWidth: 'clamp(40rem, 82vw, 80rem)',
-                }}
+                className="relative z-10 w-full mx-auto flex flex-col items-center gap-[4vh] px-8 md:px-0"
+                style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}
             >
-                <div className="w-full flex items-center justify-start gap-4 lg:gap-6">
-                    <img
-                        src="/gradingLogoicon.png"
-                        alt="Logo Icon"
-                        className="w-10 h-10 lg:w-[6vh] lg:h-[6vh] object-contain"
+                <div className="w-full">
+                    <SectionTitle
+                        title="GRADING CRITERIA"
+                        iconSrc="/gradingLogoicon.png"
+                        iconAlt="Grading icon"
+                        dark={false}
                     />
-                    <h2 className="text-black text-3xl lg:text-[4.5vh] font-orbitron font-bold tracking-[0.1em] uppercase">
-                        Grading Criteria
-                    </h2>
                 </div>
 
                 <div className="w-full flex flex-col gap-[4vh]">
@@ -41,13 +34,6 @@ export const GradingSection = () => {
 
                     <GradingCard left={bottomRowData.left} right={bottomRowData.right} isDarkTop={false} />
                 </div>
-
-                <a
-                    href="#" // add actual PDF link here
-                    className="mt-4 text-black/70 font-oxanium underline text-sm lg:text-[2vh] hover:text-black transition-colors"
-                >
-                    Download PDF Version Here
-                </a>
             </div>
         </section>
     );

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import './JourneySection.css';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import journeyTabsRaw from './StaticContent/journeyTabs.json';
@@ -25,40 +26,12 @@ export const JourneySection = () => {
                     {/* Key fix: constrain visuals to a LEFT container so they can't spill into content on iPad */}
                     <div
                         className="hidden sm:block absolute inset-y-0 left-0 pointer-events-none select-none overflow-hidden
-                          w-[62%] md:w-[58%] lg:w-[52%] xl:w-[50%]"
+                          w-[55%] md:w-[50%] lg:w-[45%] xl:w-[42%]"
                     >
-                        {/* Flames: reduced size and shifted slightly RIGHT (not covering entire page) */}
                         <img
-                            src="/flames.png"
-                            alt=""
-                            className={[
-                                'absolute object-contain w-auto',
-
-                                // base (sm/md): slightly smaller than before, looks like the design on normal screens
-                                'bottom-[-6%] left-[6%] h-[110%]',
-
-                                // iPad Pro (lg = 1024px): fill height (actually a bit taller) + move LEFT (allow slight crop)
-                                'lg:bottom-[-10%] lg:left-[-6%] lg:h-[125%]',
-
-                                // usual laptop (often xl = 1280px+): enlarge a LITTLE compared to now
-                                'xl:bottom-[-8%] xl:left-[4%] xl:h-[118%]',
-                            ].join(' ')}
-                            draggable={false}
-                        />
-
-                        {/* Katniss: on iPad reduce height a bit + push further left to avoid overlap */}
-                        <img
-                            src="/Katniss.png"
-                            alt="Katniss Silhouette"
-                            className={[
-                                'absolute bottom-0 w-auto object-contain',
-                                // default (sm/md): fill section height
-                                'h-full left-0',
-                                // iPad (lg): slightly shorter + more left
-                                'lg:h-[92%] lg:left-[-10%]',
-                                // desktop (xl): full height again (matches the “fills height” feel)
-                                'xl:h-full xl:left-[-4%]',
-                            ].join(' ')}
+                            src="/journeyShooter.png"
+                            alt="Journey visual"
+                            className="absolute inset-0 w-full h-full object-cover object-center"
                             draggable={false}
                         />
                     </div>
@@ -67,7 +40,7 @@ export const JourneySection = () => {
                     <div className="relative z-10 mx-auto h-full w-full max-w-[1440px]">
                         <div className="h-full w-full px-4 py-10 sm:py-0 sm:px-6 md:px-4 lg:px-4 xl:px-6 flex flex-col justify-center">
                             {/* iPad fix: make content block slightly smaller on lg so it won't collide */}
-                            <div className="w-full ml-auto max-w-[606px] lg:max-w-[520px] xl:max-w-[606px]">
+                            <div className="w-full ml-auto max-w-[680px] lg:max-w-[620px] xl:max-w-[700px]">
                                 {/* Header:
                     MOBILE centered (unchanged), SM+ right (unchanged) */}
                                 <div className="mb-6 sm:mb-8 flex items-center gap-4 justify-center sm:justify-end">
@@ -100,7 +73,11 @@ export const JourneySection = () => {
                                     </div>
 
                                     {tabs.map((t) => (
-                                        <TabsContent key={t.value} value={t.value} className="m-0 p-0">
+                                        <TabsContent
+                                            key={t.value}
+                                            value={t.value}
+                                            className="m-0 p-0 journey-tab-content"
+                                        >
                                             <Card
                                                 className="relative overflow-hidden border-0 w-full"
                                                 style={{
@@ -124,8 +101,8 @@ export const JourneySection = () => {
                                                     <CardTitle
                                                         style={{
                                                             fontFamily: 'Orbitron, ui-sans-serif, system-ui',
-                                                            fontSize: 24,
-                                                            lineHeight: '28px',
+                                                            fontSize: 28,
+                                                            lineHeight: '34px',
                                                             letterSpacing: '0.10em',
                                                             color: '#FFFDF5',
                                                             textTransform: 'uppercase',
@@ -149,8 +126,8 @@ export const JourneySection = () => {
                                                         style={{
                                                             whiteSpace: 'pre-line',
                                                             fontFamily: 'oxanium, ui-sans-serif, system-ui',
-                                                            fontSize: 14,
-                                                            lineHeight: '19px',
+                                                            fontSize: 16,
+                                                            lineHeight: '24px',
                                                             color: '#FFFDF5',
                                                         }}
                                                     >

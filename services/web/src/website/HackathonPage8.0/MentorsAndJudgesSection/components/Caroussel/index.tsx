@@ -66,13 +66,16 @@ export function Carousel<T extends Mentor | Judge>({ className, title, imgSrc, d
     }, [emblaApi]);
 
     return (
-        <div className={cn('embla flex justify-center flex-col gap-8 w-[80%]', className)}>
+        <div
+            className={cn('embla flex justify-center flex-col gap-8 w-full mx-auto px-8 md:px-0', className)}
+            style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}
+        >
             {/* HEADER */}
 
             <div className="flex flex-col sm:flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-[18px]">
+                <div className="flex items-center gap-[5px]">
                     <img src={imgSrc} alt="Hunger Games Pin" className="h-[42px] w-auto" />
-                    <span className="text-[40px] font-orbitron tracking-[0.3em]">{title}</span>
+                    <h2 className="font-orbitron text-[40px] leading-[1] tracking-[0.3em] text-[#FFFDF5]">{title}</h2>
                 </div>
 
                 <div className="hidden sm:flex justify-center gap-3">
