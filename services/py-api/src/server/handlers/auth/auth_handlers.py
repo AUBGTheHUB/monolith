@@ -1,6 +1,6 @@
 from result import is_err
 from starlette.responses import Response as StarletteResponse
-from fastapi import Cookie, HTTPException, status
+from fastapi import Cookie, HTTPException, status, Depends, UploadFile, File
 
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
@@ -32,8 +32,10 @@ class AuthHandlers(BaseHandler):
 
         return response
 
-    async def register(self, credentials: RegisterHubAdminData) -> StarletteResponse:
-        result = await self._service.register_admin(credentials=credentials)
+    async def register(
+        self, credentials: RegisterHubAdminData = Depends(RegisterHubAdminData.as_form), avatar: UploadFile = File(...)
+    ) -> StarletteResponse:
+        result = await self._service.register_admin(credentials=credentials, avatar=avatar)
 
         if is_err(result):
             error_response = self.handle_error(result.err_value)

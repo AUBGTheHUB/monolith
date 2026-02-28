@@ -1479,7 +1479,6 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         name=TEST_HUB_MEMBER_NAME,
         username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
-        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
         departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
