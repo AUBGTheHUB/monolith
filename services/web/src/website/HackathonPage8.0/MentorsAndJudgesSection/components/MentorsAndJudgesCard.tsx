@@ -32,7 +32,7 @@ export function MentorsAndJudgesCard({
                 </Link>
             )}
 
-            <img src={avatar_url} className="object-fill" />
+            <img src={avatar_url} className="absolute inset-0 w-full h-full object-cover object-top" />
 
             <div className="absolute right-0 bottom-[42px] pl-[16px] bg-[#1B1919] opacity-91 w-[230px] h-[80px] flex items-center justify-between pr-4">
                 <div className="flex flex-col items-start justify-center">
