@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils.ts';
 import { apiClient } from '@/services/apiClient.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { HubMember } from '@/types/hub-member.ts';
+import { BaseHubMember } from '@/types/hub-member.ts';
 
 export function MeetTheTeamPage() {
     const queryClient = useQueryClient();
@@ -18,7 +18,7 @@ export function MeetTheTeamPage() {
     // 1. Fetching Logic
     const { data, isLoading, error, isError } = useQuery({
         queryKey: ['hub-members'],
-        queryFn: () => apiClient.get<{ members: HubMember[] }>('/admin/hub-members'),
+        queryFn: () => apiClient.get<{ members: BaseHubMember[] }>('/admin/hub-members'),
         select: (res) => res.members,
     });
 
