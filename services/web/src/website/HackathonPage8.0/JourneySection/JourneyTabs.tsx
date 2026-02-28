@@ -40,11 +40,9 @@ export const JourneyTabs: React.FC<Props> = ({ activeTab, entries }) => {
     return (
         <TabsList
             className={[
-                // MOBILE: keep perfect 2x2 layout
-                'grid grid-cols-2 gap-3 w-full bg-transparent p-0',
-                // SM+: single row aligned right
-                'sm:flex sm:flex-nowrap sm:justify-end sm:gap-[0.75rem]',
-                'md:gap-[1rem] lg:gap-[1rem] xl:gap-[1.625rem]',
+                // MOBILE: 2x2, SM+: 4-column — always fills the full container width
+                'grid grid-cols-2 sm:grid-cols-4 gap-3 w-full bg-transparent p-0',
+                'md:gap-[1rem] xl:gap-[1.625rem]',
             ].join(' ')}
         >
             {entries.map((entry) => {
@@ -54,7 +52,7 @@ export const JourneyTabs: React.FC<Props> = ({ activeTab, entries }) => {
                 return (
                     <div
                         key={entry.value}
-                        className="relative w-full sm:w-auto p-[3px] md:p-[3.5px] xl:p-[4px] rounded-[0.75rem]"
+                        className="relative w-full p-[3px] md:p-[3.5px] xl:p-[4px] rounded-[0.75rem]"
                         style={{ background: s.wrapperBg }}
                     >
                         <TabsTrigger
@@ -62,14 +60,7 @@ export const JourneyTabs: React.FC<Props> = ({ activeTab, entries }) => {
                             className={[
                                 'rounded-[calc(0.75rem-3px)] md:rounded-[calc(0.75rem-3.5px)] xl:rounded-[calc(0.75rem-4px)]',
                                 'font-oxanium font-semibold border-0 relative',
-                                // MOBILE: keep bigger buttons
-                                'w-full h-[2.25rem]',
-                                // SM/MD sizing like Schedule
-                                'sm:w-[5rem] sm:h-[2rem]',
-                                'md:w-[7rem] md:h-[2.5rem]',
-                                // IMPORTANT: iPad Pro is typically lg (1024) → keep it at MD sizing
-                                // Desktop bigger moved to XL
-                                'xl:w-[8rem] xl:h-[3rem]',
+                                'w-full h-[2.25rem] sm:h-[2rem] md:h-[2.5rem] xl:h-[3rem]',
                                 'flex items-center justify-center',
                                 'text-[clamp(16px,2.5vw,22px)]',
                             ].join(' ')}

@@ -14,6 +14,8 @@ from mypy_boto3_s3.client import S3Client
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app

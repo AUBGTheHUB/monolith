@@ -4,10 +4,8 @@ export const footerData: FooterColumn[] = [
     {
         id: 1,
         title: 'Address',
-        items: [
-            { label: 'AUBG' },
-            { label: 'Blagoevgrad, Bulgaria' },
-        ],
+        compact: true,
+        items: [{ label: 'AUBG' }, { label: 'Blagoevgrad, Bulgaria' }],
     },
     {
         id: 2,
@@ -16,7 +14,7 @@ export const footerData: FooterColumn[] = [
             { label: 'Home', href: '#' },
             { label: 'Mission', href: '#mission' },
             { label: 'Schedule', href: '#schedule' },
-            { label: 'Hackathon 7.0', href: '#hackathon7.0' },
+            { label: 'Hackathon 7.0', href: '#recap' },
             { label: 'Grading Criteria', href: '#grading-criteria' },
             { label: 'Awards', href: '#awards' },
             { label: 'FAQ', href: '#faq' },
@@ -34,8 +32,6 @@ export const footerData: FooterColumn[] = [
     {
         id: 4,
         title: 'Contact',
-        items: [
-            { label: 'thehub@aubg.edu', href: 'mailto:thehub@aubg.edu' },
-        ],
+        items: [{ label: 'thehub@gmail.com', href: 'mailto:thehub@gmail.com' }],
     },
 ];
