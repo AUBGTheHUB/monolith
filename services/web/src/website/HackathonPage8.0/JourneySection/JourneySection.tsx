@@ -43,25 +43,16 @@ export const JourneySection = () => {
                             <div className="w-full ml-auto max-w-[680px] lg:max-w-[620px] xl:max-w-[700px]">
                                 {/* Header:
                     MOBILE centered (unchanged), SM+ right (unchanged) */}
-                                <div className="mb-6 sm:mb-8 flex items-center gap-4 justify-center sm:justify-end">
-                                    <div
-                                        className="text-[#D01414] whitespace-nowrap"
-                                        style={{
-                                            fontFamily: 'Orbitron, ui-sans-serif, system-ui',
-                                            fontSize: 'clamp(26px, 3.0vw, 40px)',
-                                            letterSpacing: 'clamp(0.18em, 0.6vw, 0.32em)',
-                                            lineHeight: '1.1',
-                                            textTransform: 'uppercase',
-                                        }}
-                                    >
-                                        JOURNEY
-                                    </div>
+                                <div className="mb-6 sm:mb-8 flex items-center gap-[5px]">
                                     <img
                                         src="/mockingjay-red.svg"
                                         alt=""
-                                        className="h-[28px] sm:h-[34px] md:h-[40px] xl:h-[44px] w-auto"
+                                        className="h-[28px] md:h-[42px] w-auto flex-shrink-0"
                                         draggable={false}
                                     />
+                                    <div className="text-[#D01414] font-orbitron text-[24px] md:text-[40px] leading-[1] tracking-[0.12em] md:tracking-[0.3em] uppercase">
+                                        JOURNEY
+                                    </div>
                                 </div>
 
                                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">

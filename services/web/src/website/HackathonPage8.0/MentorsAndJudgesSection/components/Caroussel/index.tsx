@@ -72,10 +72,12 @@ export function Carousel<T extends Mentor | Judge>({ className, title, imgSrc, d
         >
             {/* HEADER */}
 
-            <div className="flex flex-col sm:flex-row items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
                 <div className="flex items-center gap-[5px]">
-                    <img src={imgSrc} alt="Hunger Games Pin" className="h-[42px] w-auto" />
-                    <h2 className="font-orbitron text-[40px] leading-[1] tracking-[0.3em] text-[#FFFDF5]">{title}</h2>
+                    <img src={imgSrc} alt="Hunger Games Pin" className="h-[28px] md:h-[42px] w-auto flex-shrink-0" />
+                    <h2 className="font-orbitron text-[24px] md:text-[40px] leading-[1] tracking-[0.12em] md:tracking-[0.3em] text-[#FFFDF5]">
+                        {title}
+                    </h2>
                 </div>
 
                 <div className="hidden sm:flex justify-center gap-3">

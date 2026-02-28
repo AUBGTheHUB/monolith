@@ -12,13 +12,10 @@ export const FooterSection = () => {
                     ))}
                 </div>
 
-                <div className="mt-16 mb-8 h-px w-full bg-[#521010]" />
+                <div className="mt-16 mb-5 h-px w-full bg-[#521010]" />
 
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row font-oxanium text-[16px] text-[#A9B4C3]">
-                    <span>Copyright The hub</span>
-                    <a href="#" className="text-[#A9B4C3] hover:text-white transition-colors duration-200">
-                        Privacy Policy
-                    </a>
+                    <span>Copyright &copy; {new Date().getFullYear()} The Hub</span>
                 </div>
             </div>
         </footer>

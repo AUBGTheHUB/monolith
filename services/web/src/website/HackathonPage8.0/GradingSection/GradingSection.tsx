@@ -4,7 +4,10 @@ import { SectionTitle } from '../shared/SectionTitle';
 
 export const GradingSection = () => {
     return (
-        <section className="relative w-full min-h-dvh flex flex-col items-center justify-center py-[5vh] bg-[#FFFDF5] overflow-hidden">
+        <section
+            id="grading-criteria"
+            className="relative w-full min-h-dvh flex flex-col items-center justify-center py-[5vh] bg-[#FFFDF5] overflow-hidden"
+        >
             <img
                 src="/GradingFireTL.png"
                 alt="Fire decoration"

@@ -36,6 +36,7 @@
 .embla__slide__inner {
   position: relative;
   margin-bottom: 1.5rem;
+  user-select: none;
 }
 
 .embla__controls {
