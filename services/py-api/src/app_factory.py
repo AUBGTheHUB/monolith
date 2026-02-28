@@ -199,6 +199,7 @@ def create_app() -> FastAPI:
         refresh_token_repo=refresh_tokens_repo,
         auth_token_service=auth_token_service,
         tx_manager=tx_manager,
+        image_storing_service=image_storing_service,
     )
 
     fs_service = FeatureSwitchService(repository=fs_repo)

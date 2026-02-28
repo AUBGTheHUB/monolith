@@ -1,4 +1,3 @@
-import { VerticalBar } from '@/components/ui/verticalBar';
 import redPin from './assets/red-pin.svg';
 import yellowPin from './assets/yellow-pin.svg';
 import { Carousel } from './components/Caroussel';
@@ -34,9 +33,6 @@ export const MentorsAndJudgesSection = ({ mentorsSwitch, jurySwitch }: MentorsAn
                 className="absolute pointer-events-none inset-0 bg-cover bg-center blur-[0.4px] opacity-[0.25]"
                 style={{ backgroundImage: "url('/rocksBG.png')" }}
             />
-
-            <VerticalBar isRight={true} isBlack={false} />
-            <VerticalBar isRight={false} isBlack={false} />
 
             <div className="flex flex-col items-center justify-center gap-[100px] relative z-10">
                 {/* MENTORS SECTION */}

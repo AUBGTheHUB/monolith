@@ -1,27 +1,25 @@
 import { useState } from 'react';
 import { FAQItem } from './FAQItem';
 import { faqs } from './data';
-import { VerticalBar } from '@/components/ui/verticalBar.tsx';
+import { SectionTitle } from '../shared/SectionTitle';
 
 export const FAQSection = () => {
     const [openFaqId, setOpenFaqId] = useState<number | null>(null);
 
     return (
-        <section id="faq" className="relative w-full py-28 rounded-[20px] overflow-hidden bg-[#151313]">
+        <section id="faq" className="relative w-full py-28 overflow-hidden bg-[#151313]">
             {/* Background image */}
             <div
                 className="absolute inset-0 bg-cover bg-center blur-[0.4px] opacity-[0.25]"
                 style={{ backgroundImage: "url('/rocksBG.png')" }}
             />
 
-            <VerticalBar isRight={false} isBlack={false} />
-            <VerticalBar isRight={true} isBlack={false} />
             {/* Content */}
-            <div className="relative z-10 mx-auto max-w-full px-8 md:px-44">
-                <div className="flex items-center gap-[5px]">
-                    <img src="/yellow_icon.svg" alt="FAQ icon" className="h-[42px] w-auto" />
-                    <h2 className="font-orbitron text-[40px] leading-[100%] text-[#FFFDF5]">FAQ</h2>
-                </div>
+            <div
+                className="relative z-10 w-full mx-auto px-8 md:px-0"
+                style={{ maxWidth: 'clamp(40rem, 82vw, 80rem)' }}
+            >
+                <SectionTitle title="FAQ" iconSrc="/yellow_icon.svg" iconAlt="FAQ icon" dark />
 
                 <div className="pt-20">
                     {faqs.map((faq) => (

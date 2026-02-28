@@ -40,6 +40,7 @@
 .jury .embla__slide__inner {
     position: relative;
     margin-bottom: 1.5rem;
+    user-select: none;
 }
 
 .jury .embla__controls {
