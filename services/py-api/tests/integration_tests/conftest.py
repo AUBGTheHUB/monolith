@@ -1,6 +1,8 @@
+import uuid
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from unittest.mock import patch
+
 import boto3
 import pytest
 import pytest_asyncio
@@ -402,7 +404,7 @@ class RegisterHubAdminBodyCallable(Protocol):
     def __call__(
         self,
         name: str = TEST_USER_NAME,
-        username: str = TEST_HUB_MEMBER_USERNAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
@@ -418,7 +420,7 @@ class RegisterHubAdminBodyCallable(Protocol):
 def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
     def register_hub_admin_request_body_generator(
         name: str = TEST_HUB_MEMBER_NAME,
-        username: str = TEST_HUB_MEMBER_USERNAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
