@@ -31,8 +31,8 @@ from src.service.hackathon.constants import (
     RATE_LIMIT_SECONDS,
 )
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
 LOG = get_logger()
 

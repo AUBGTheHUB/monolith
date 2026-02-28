@@ -1,6 +1,4 @@
 from io import BytesIO
-from os import environ
-from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 from typing import Any, Generator
@@ -24,24 +22,23 @@ valid_mentor_body: dict[str, Any] = {
 }
 
 
-async def _delete_mentor(async_client: AsyncClient, mentor_id: str) -> None:
+async def _delete_mentor(async_client: AsyncClient, mentor_id: str, super_auth_token: str) -> None:
     await async_client.delete(
         url=f"{MENTORS_ENDPOINT_URL}/{mentor_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_mentor_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
 
     # Act
     response = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_mentor_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -61,20 +58,18 @@ async def test_create_mentor_success(
 
     # Cleanup
     mentor_id = response_body["mentor"]["id"]
-    await _delete_mentor(async_client, mentor_id)
+    await _delete_mentor(async_client, mentor_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_mentor_missing_parameter(async_client: AsyncClient) -> None:
-
+async def test_create_mentor_missing_parameter(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange
     invalid_body = {k: v for k, v in valid_mentor_body.items() if k != "avatar_url"}
 
     # Act
     response = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=invalid_body,
         follow_redirects=True,
     )
@@ -87,7 +82,6 @@ async def test_create_mentor_missing_parameter(async_client: AsyncClient) -> Non
     assert "avatar" in response_body["detail"][0]["loc"]
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_mentor_unauthorized(
     async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
@@ -106,15 +100,14 @@ async def test_create_mentor_unauthorized(
     assert response.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_mentors_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_mentor_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -126,7 +119,7 @@ async def test_get_all_mentors_success(
     # Act
     response = await async_client.get(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -139,18 +132,17 @@ async def test_get_all_mentors_success(
     assert any(mentor["id"] == mentor_id for mentor in response_body["mentors"])
 
     # Cleanup
-    await _delete_mentor(async_client, mentor_id)
+    await _delete_mentor(async_client, mentor_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_mentor_by_id_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_mentor_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -163,7 +155,7 @@ async def test_get_mentor_by_id_success(
     # Act
     response = await async_client.get(
         url=f"{MENTORS_ENDPOINT_URL}/{mentor_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -179,15 +171,14 @@ async def test_get_mentor_by_id_success(
     assert response_body["mentor"]["job_title"] == mentor["job_title"]
 
     # Cleanup
-    await _delete_mentor(async_client, mentor_id)
+    await _delete_mentor(async_client, mentor_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_mentor_by_id_invalid_format(async_client: AsyncClient) -> None:
+async def test_get_mentor_by_id_invalid_format(async_client: AsyncClient, super_auth_token: str) -> None:
     response = await async_client.get(
         url=f"{MENTORS_ENDPOINT_URL}/invalid_object_id",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -195,16 +186,15 @@ async def test_get_mentor_by_id_invalid_format(async_client: AsyncClient) -> Non
     assert response.json()["error"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_mentor_by_id_not_found(async_client: AsyncClient) -> None:
+async def test_get_mentor_by_id_not_found(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange
     NON_EXISTING_ID = "6975472e436158f65093dbb5"
 
     # Act
     response = await async_client.get(
         url=f"{MENTORS_ENDPOINT_URL}/{NON_EXISTING_ID}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -213,15 +203,14 @@ async def test_get_mentor_by_id_not_found(async_client: AsyncClient) -> None:
     assert response.json()["error"] == "The specified mentor was not found"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_mentor_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_mentor_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -234,7 +223,7 @@ async def test_update_mentor_success(
     # Act
     response = await async_client.patch(
         url=f"{MENTORS_ENDPOINT_URL}/{mentor_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=update_data,
         follow_redirects=True,
     )
@@ -248,18 +237,17 @@ async def test_update_mentor_success(
     assert response_body["mentor"]["company"] == "ACME Ltd"
 
     # Cleanup
-    await _delete_mentor(async_client, mentor_id)
+    await _delete_mentor(async_client, mentor_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_mentor_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=MENTORS_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_mentor_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -270,7 +258,7 @@ async def test_delete_mentor_success(
     # Act
     response = await async_client.delete(
         url=f"{MENTORS_ENDPOINT_URL}/{mentor_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -282,7 +270,7 @@ async def test_delete_mentor_success(
     # Ensure deleted
     get_deleted = await async_client.get(
         url=f"{MENTORS_ENDPOINT_URL}/{mentor_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
     assert get_deleted.status_code == 404

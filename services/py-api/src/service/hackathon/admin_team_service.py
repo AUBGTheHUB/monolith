@@ -19,7 +19,7 @@ from src.exception import (
 from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
 )
-from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.utility.jwt_utils.schemas import JwtParticipantVerificationData
 
 LOG = get_logger()
 
