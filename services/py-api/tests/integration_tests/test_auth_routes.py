@@ -1,4 +1,6 @@
 from io import BytesIO
+from typing import Generator, Any
+
 import pytest
 import uuid
 from httpx import AsyncClient
@@ -13,6 +15,7 @@ AUTH_ENDPOINT_URL = "/api/v3/auth"
 
 @pytest.mark.asyncio
 async def test_register_admin_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
     image_mock: BytesIO,  # Use existing image fixture
@@ -31,6 +34,7 @@ async def test_register_admin_success(
 
 @pytest.mark.asyncio
 async def test_register_admin_fails_when_there_is_a_duplicate_name(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
     image_mock: BytesIO,
@@ -54,6 +58,7 @@ async def test_register_admin_fails_when_there_is_a_duplicate_name(
 
 @pytest.mark.asyncio
 async def test_login_admin_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
     image_mock: BytesIO,
@@ -74,6 +79,7 @@ async def test_login_admin_success(
 
 @pytest.mark.asyncio
 async def test_login_admin_fails_when_passwords_dont_match(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
     image_mock: BytesIO,
@@ -93,6 +99,7 @@ async def test_login_admin_fails_when_passwords_dont_match(
 
 @pytest.mark.asyncio
 async def test_login_admin_fails_when_hub_admin_is_not_found(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
 ) -> None:
@@ -107,6 +114,7 @@ async def test_login_admin_fails_when_hub_admin_is_not_found(
 
 @pytest.mark.asyncio
 async def test_refresh_token_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
     image_mock: BytesIO,
