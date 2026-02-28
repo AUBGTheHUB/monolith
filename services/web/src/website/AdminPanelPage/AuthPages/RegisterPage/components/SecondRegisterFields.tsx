@@ -1,9 +1,9 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
-import { RegisterFormFields } from '../validation/validation.tsx';
+import { RegisterFormData } from '../validation/validation.tsx';
 
 type RegisterFormFieldsProps = {
-    control: Control<RegisterFormFields>;
+    control: Control<RegisterFormData>;
 };
 
 export function SecondRegisterFields({ control }: RegisterFormFieldsProps) {
@@ -31,7 +31,7 @@ export function SecondRegisterFields({ control }: RegisterFormFieldsProps) {
 
             <InputComponent
                 control={control}
-                name="github"
+                name="social_links.github"
                 label="Github"
                 type="text"
                 formItemClassName="col-span-2"
@@ -42,7 +42,7 @@ export function SecondRegisterFields({ control }: RegisterFormFieldsProps) {
 
             <InputComponent
                 control={control}
-                name="linkedin"
+                name="social_links.linkedin"
                 label="LinkedIn"
                 type="text"
                 formItemClassName="col-span-2"
@@ -53,7 +53,7 @@ export function SecondRegisterFields({ control }: RegisterFormFieldsProps) {
 
             <InputComponent
                 control={control}
-                name="website"
+                name="social_links.website"
                 label="Website"
                 type="text"
                 formItemClassName="col-span-2"

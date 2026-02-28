@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { DEPARTMENT_OPTIONS } from '../../../../../constants.ts';
+import { DEPARTMENT_OPTIONS } from '@/constants.ts';
+import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 
 export const registerSchema = z
     .object({
@@ -7,29 +8,28 @@ export const registerSchema = z
         password: z.string().min(6, 'Password must be at least 6 characters'),
         repeat_password: z.string().min(6, 'Repeat password must be at least 6 characters'),
         name: z.string().nonempty('Name should not be empty'),
-        position: z.string().nonempty('Position should not be empty'),
-        avatar_url: z.string().url('Avatar url should be a valid url'),
-        departments: z.array(z.enum(DEPARTMENT_OPTIONS)).min(1, 'Choose at least one department').default([]),
-        github: z.string().url('Github should be a valid url').or(z.literal('')).optional(),
-        linkedin: z.string().url('LinkedIn should be a valid url').or(z.literal('')).optional(),
-        website: z.string().url('Website should be a valid url').or(z.literal('')).optional(),
+        position: z.string().min(2, 'Position must be at least 2 characters.').optional().or(z.literal('')),
+        avatar: z
+            .any()
+            .refine(
+                (files) => !files || files.length === 0 || files[0].size <= FILE_RULES.MAX_SIZE,
+                `Max file size is 5MB.`,
+            )
+            .refine(
+                (files) => !files || files.length === 0 || FILE_RULES.ACCEPTED_TYPES.includes(files[0].type),
+                '.jpg, .jpeg, .png, .webp files are accepted.',
+            )
+            .refine((files) => files?.length > 0, 'Profile image is required'),
+        departments: z.array(z.enum(DEPARTMENT_OPTIONS)).default([]),
+        social_links: z.object({
+            linkedin: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+            github: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
+            website: z.string().url('Invalid Website URL').optional().or(z.literal('')),
+        }),
     })
     .refine((data) => data.password === data.repeat_password, {
         message: 'Passwords do not match',
         path: ['repeat_password'],
-    })
-    .transform(({ github, linkedin, website, ...rest }) => {
-        const social_links: Record<string, string> = {};
-
-        if (github) social_links.github = github;
-        if (linkedin) social_links.linkedin = linkedin;
-        if (website) social_links.website = website;
-
-        return {
-            ...rest,
-            social_links,
-        };
     });
 
-export type RegisterFormFields = z.input<typeof registerSchema>;
-export type RegisterFormPayload = z.output<typeof registerSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>;
