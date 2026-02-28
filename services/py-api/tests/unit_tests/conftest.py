@@ -17,9 +17,7 @@ from motor.motor_asyncio import (
     AsyncIOMotorCursor,
     AsyncIOMotorDatabase,
 )
-from typing_extensions import Protocol
 
-from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.judge_model import Judge
@@ -31,7 +29,6 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -55,10 +52,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
-from src.service.utility.aws.aws_service import AwsService
-from src.service.utility.image_storing.image_storing_service import ImageStoringService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import (
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
     JwtParticipantVerificationData,
     JwtRefreshToken,

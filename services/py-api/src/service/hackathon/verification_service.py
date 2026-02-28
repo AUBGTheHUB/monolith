@@ -5,7 +5,7 @@ from src.database.model.hackathon.team_model import Team
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.team_service import TeamService
-from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.utility.jwt_utils.schemas import JwtParticipantVerificationData
 from src.service.hackathon.hackathon_utility_service import HackathonUtilityService
 from src.exception import (
     HackathonCapacityExceededError,

@@ -127,7 +127,7 @@ class AuthService:
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[AuthTokens, RefreshTokenNotFound | HubMemberNotFoundError | Exception]:
+    ) -> Result[AuthTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -147,7 +147,7 @@ class AuthService:
         if is_err(refresh_token_result):
             return refresh_token_result
 
-        if refresh_token_result.ok_value.is_valid is False:
+        if not refresh_token_result.ok_value.is_valid:
             invalidate_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(family_id=family_id)
             if is_err(invalidate_result):
                 return invalidate_result

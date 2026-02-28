@@ -3,8 +3,7 @@ from typing import cast, Self
 
 from pydantic import BaseModel, ConfigDict, model_validator
 from src.server.schemas.request_schemas.schemas import NonEmptyStr
-
-from src.database.model.admin.hub_admin_model import HubAdmin
+from src.database.model.admin.hub_admin_model import HubAdmin, Role
 from src.database.model.admin.hub_member_model import MEMBER_TYPE, DEPARTMENTS_LIST, SocialLinks
 
 
@@ -21,7 +20,6 @@ class BaseHubMemberData(BaseModel):
 
 
 class RegisterHubAdminData(BaseHubMemberData):
-
     username: str
     password: str
     repeat_password: str
@@ -42,8 +40,7 @@ class RegisterHubAdminData(BaseHubMemberData):
             social_links=self.social_links,
             departments=self.departments,
             password_hash=password_hash,
-            # TODO change site roles
-            site_role="dev",
+            site_role=Role.BOARD,
         )
 
 
