@@ -1,19 +1,15 @@
 import { refreshToken } from '@/services/refreshToken';
-import { ReactNode, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet } from 'react-router';
 
-interface RefreshProviderProps {
-    children: ReactNode;
-}
-export const RefreshProvider = ({ children }: RefreshProviderProps) => {
+export const RefreshGuard = () => {
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
     useEffect(() => {
         const initialRefresh = async () => {
             try {
                 await refreshToken();
             } catch {
-                navigate('/login');
+                return <Navigate to="/admin/login" replace />;
             } finally {
                 setLoading(false);
             }
@@ -26,5 +22,5 @@ export const RefreshProvider = ({ children }: RefreshProviderProps) => {
         return <div>Loading...</div>;
     }
 
-    return <>{children}</>;
+    return <Outlet />;
 };

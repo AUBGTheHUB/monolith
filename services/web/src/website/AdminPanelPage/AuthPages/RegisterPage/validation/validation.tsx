@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { DEPARTMENT_OPTIONS } from '../../../../../constants.ts';
 
 export const registerSchema = z
     .object({
@@ -8,7 +9,7 @@ export const registerSchema = z
         name: z.string().nonempty('Name should not be empty'),
         position: z.string().nonempty('Position should not be empty'),
         avatar_url: z.string().url('Avatar url should be a valid url'),
-        department: z.string(),
+        departments: z.array(z.enum(DEPARTMENT_OPTIONS)).min(1, 'Choose at least one department').default([]),
         github: z.string().url('Github should be a valid url').or(z.literal('')).optional(),
         linkedin: z.string().url('LinkedIn should be a valid url').or(z.literal('')).optional(),
         website: z.string().url('Website should be a valid url').or(z.literal('')).optional(),
@@ -30,4 +31,5 @@ export const registerSchema = z
         };
     });
 
-export type RegisterFormData = z.input<typeof registerSchema>;
+export type RegisterFormFields = z.input<typeof registerSchema>;
+export type RegisterFormPayload = z.output<typeof registerSchema>;

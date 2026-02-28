@@ -11,15 +11,14 @@ export const refreshToken = async (): Promise<void> => {
     refreshPromise = (async () => {
         try {
             const refreshResponse = await fetch(`${API_URL}/auth/refresh`, { method: 'POST', credentials: 'include' });
+            const refreshData = await refreshResponse.json();
+            useAuthStore.getState().setNewAuthToken(refreshData.access_token);
         } catch (err) {
             useAuthStore.getState().clearAuth();
             throw err;
         } finally {
             refreshPromise = null;
         }
-
-        const refreshData = await refreshResponse.json();
-        useAuthStore.getState().setAuth(refreshData.accessToken);
     })();
 
     return refreshPromise;

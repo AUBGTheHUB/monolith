@@ -1,9 +1,9 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
-import { RegisterFormData } from '../validation/validation.tsx';
+import { RegisterFormFields } from '../validation/validation.tsx';
 
 type RegisterFormFieldsProps = {
-    control: Control<RegisterFormData>;
+    control: Control<RegisterFormFields>;
 };
 
 export function SecondRegisterFields({ control }: RegisterFormFieldsProps) {

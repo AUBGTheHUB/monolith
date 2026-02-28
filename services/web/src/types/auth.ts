@@ -1,10 +1,17 @@
+export type User = {
+    name: string;
+    username: string;
+    avatarUrl: string;
+    siteRole: string;
+};
+
 export type HubAdmin = {
     id: string;
     name: string;
     member_type: string;
     position: string;
     avatar_url: string;
-    department: string;
+    departments: string[];
     social_links: {
         github?: string;
         website?: string;
@@ -16,6 +23,7 @@ export type HubAdmin = {
     username: string;
 };
 
-export type Authenticated = {
+export type AuthenticatedAdmin = {
     access_token: string;
+    id_token: string;
 };

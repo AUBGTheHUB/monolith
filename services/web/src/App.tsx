@@ -18,11 +18,15 @@ import { PastEventsPage } from './website/AdminPanelPage/DashboardPages/pages/Pa
 import { PastEventsEditPage } from './website/AdminPanelPage/DashboardPages/pages/PastEventsPage/PastEventsEditPage';
 
 import { Hackathon404Page } from '@/website/ErrorPages/Hackathon404Page/Hackathon404Page.tsx';
-import { Admin404Page } from '@/website/ErrorPages/Admin404Page/Admin404Page.tsx';
+import { Admin404Page } from './website/ErrorPages/AdminErrorPages/components/Admin404Page';
 import { Global404Page } from '@/website/ErrorPages/Global404Page/Global404Page.tsx';
 import { MentorsListPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsPage';
 import { MentorsEditPage } from './website/AdminPanelPage/DashboardPages/pages/MentorsPage/MentorsEditPage';
 import { RegisterPage } from './website/AdminPanelPage/AuthPages/RegisterPage/RegisterPage';
+import { RefreshGuard } from './guards/RefreshGuard';
+import { Admin403Page } from './website/ErrorPages/AdminErrorPages/components/Admin403Page';
+import { AuthenticatedGuard } from './guards/AuthenticatedGuard';
+import { RoleGuard } from './guards/RoleGuard';
 function App() {
     const queryClient = new QueryClient();
 
@@ -44,46 +48,55 @@ function App() {
 
                 {/* Admin Group */}
                 <Route path="/admin">
-                    <Route path="login" element={<LoginPage />} />
-                    <Route path="register" element={<RegisterPage />} />
+                    <Route element={<AuthenticatedGuard isAuth={false} />}>
+                        <Route path="login" element={<LoginPage />} />
+                        <Route path="register" element={<RegisterPage />} />
+                    </Route>
 
-                    <Route path="dashboard">
-                        <Route index element={<DashboardPage />} />
-                        {/* Meet the Team Sub-group */}
-                        <Route path="meet-the-team">
-                            <Route index element={<MeetTheTeamPage />} />
-                            <Route path="add" element={<MeetTheTeamEditPage />} />
-                            <Route path=":id" element={<MeetTheTeamEditPage />} />
-                        </Route>
+                    <Route element={<RefreshGuard />}>
+                        <Route element={<AuthenticatedGuard isAuth={true} />}>
+                            <Route path="dashboard">
+                                <Route index element={<DashboardPage />} />
+                                <Route element={<RoleGuard allowedRoles={['board', 'super-admin']} />}>
+                                    {/* Meet the Team Sub-group */}
+                                    <Route path="meet-the-team">
+                                        <Route index element={<MeetTheTeamPage />} />
+                                        <Route path="add" element={<MeetTheTeamEditPage />} />
+                                        <Route path=":id" element={<MeetTheTeamEditPage />} />
+                                    </Route>
 
-                        {/* Judges Sub-group */}
-                        <Route path="judges">
-                            <Route index element={<JudgesListPage />} />
-                            <Route path="add" element={<JudgesEditPage />} />
-                            <Route path=":id" element={<JudgesEditPage />} />
-                        </Route>
+                                    {/* Judges Sub-group */}
+                                    <Route path="judges">
+                                        <Route index element={<JudgesListPage />} />
+                                        <Route path="add" element={<JudgesEditPage />} />
+                                        <Route path=":id" element={<JudgesEditPage />} />
+                                    </Route>
 
-                        {/* Mentors Sub-group */}
-                        <Route path="mentors">
-                            <Route index element={<MentorsListPage />} />
-                            <Route path="add" element={<MentorsEditPage />} />
-                            <Route path=":id" element={<MentorsEditPage />} />
-                        </Route>
+                                    {/* Mentors Sub-group */}
+                                    <Route path="mentors">
+                                        <Route index element={<MentorsListPage />} />
+                                        <Route path="add" element={<MentorsEditPage />} />
+                                        <Route path=":id" element={<MentorsEditPage />} />
+                                    </Route>
 
-                        {/* Sponsors Sub-group */}
-                        <Route path="sponsors">
-                            <Route index element={<SponsorsListPage />} />
-                            <Route path="add" element={<SponsorsEditPage />} />
-                            <Route path=":id" element={<SponsorsEditPage />} />
-                        </Route>
+                                    {/* Sponsors Sub-group */}
+                                    <Route path="sponsors">
+                                        <Route index element={<SponsorsListPage />} />
+                                        <Route path="add" element={<SponsorsEditPage />} />
+                                        <Route path=":id" element={<SponsorsEditPage />} />
+                                    </Route>
 
-                        {/* Past events Sub-group */}
-                        <Route path="past-events">
-                            <Route index element={<PastEventsPage />} />
-                            <Route path="add" element={<PastEventsEditPage />} />
-                            <Route path=":id" element={<PastEventsEditPage />} />
+                                    {/* Past events Sub-group */}
+                                    <Route path="past-events">
+                                        <Route index element={<PastEventsPage />} />
+                                        <Route path="add" element={<PastEventsEditPage />} />
+                                        <Route path=":id" element={<PastEventsEditPage />} />
+                                    </Route>
+                                </Route>
+                            </Route>
                         </Route>
                     </Route>
+                    <Route path="forbidden" element={<Admin403Page />} />
                     {/* 404 Catch-all */}
                     <Route path="*" element={<Admin404Page />} />
                 </Route>

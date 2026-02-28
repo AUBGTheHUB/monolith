@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { jwtDecode } from 'jwt-decode';
 
 import { Button } from '@/components/ui/button';
 import { LoginFormData, loginSchema } from './validation/validation';
@@ -8,7 +9,7 @@ import LoginFields from './components/LoginFields';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { apiClient } from '@/services/apiClient';
-import { AuthenticatedAdmin } from '@/types/auth';
+import { AuthenticatedAdmin, User } from '@/types/auth';
 import { useAuthStore } from '@/hooks/useAuthStote';
 
 export function LoginForm() {
@@ -29,7 +30,9 @@ export function LoginForm() {
             return apiClient.post<AuthenticatedAdmin, LoginFormData>('/auth/login', formData);
         },
         onSuccess: async (authData) => {
-            setAuth(authData.access_token);
+            const user = jwtDecode<User>(authData.id_token);
+            setAuth(authData.access_token, authData.id_token, user);
+            console.log(user);
             navigate('/admin/dashboard');
         },
         onError: (error) => {

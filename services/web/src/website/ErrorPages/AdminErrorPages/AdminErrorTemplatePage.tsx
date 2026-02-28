@@ -4,12 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { Styles } from '../../AdminPanelPage/AdminStyle';
 import { cn } from '@/lib/utils';
+import { ErrorData } from './constants';
 
-export function Admin404Page() {
+export function AdminErrorTemplatePage({ code, message, title }: ErrorData) {
     return (
         <>
             <Helmet>
-                <title>404 - Not Found | Admin Panel</title>
+                <title>
+                    {`${code}`} - {title} | Admin Panel
+                </title>
             </Helmet>
             <div
                 className={cn(
@@ -22,30 +25,16 @@ export function Admin404Page() {
                         Admin <span style={{ color: Styles.colors.hubCyan }}>Panel</span>
                     </h1>
 
-                    <Card
-                        className={cn(
-                            'flex flex-col transition-all duration-500',
-                            Styles.glass.card,
-                        )}
-                    >
+                    <Card className={cn('flex flex-col transition-all duration-500', Styles.glass.card)}>
                         <CardHeader className="pt-10">
                             <div className="text-8xl font-bold mb-4" style={{ color: Styles.colors.hubCyan }}>
-                                404
+                                {code}
                             </div>
-                            <CardTitle
-                                className={cn(
-                                    'text-3xl opacity-90',
-                                    Styles.text.title,
-                                )}
-                            >
-                                Page Not Found
-                            </CardTitle>
+                            <CardTitle className={cn('text-3xl opacity-90', Styles.text.title)}>{title}</CardTitle>
                         </CardHeader>
                         <CardContent className="pb-10 px-10 space-y-6">
-                            <p className={cn(Styles.text.subtitle, 'text-lg')}>
-                                Searched Address Not Found. It seems like Hubzie took a wrong turn!
-                            </p>
-                            
+                            <p className={cn(Styles.text.subtitle, 'text-lg')}>{message}</p>
+
                             <Link to="/admin/dashboard" className="block">
                                 <Button
                                     className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}

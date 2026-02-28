@@ -3,7 +3,7 @@ import { X, ChevronDown, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MultiSelectProps {
-    options: string[];
+    options: readonly string[];
     selected: string[];
     onChange: (selected: string[]) => void;
     placeholder?: string;

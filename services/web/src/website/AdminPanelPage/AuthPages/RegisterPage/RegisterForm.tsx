@@ -5,18 +5,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FirstRegisterFields } from './components/FirstRegisterFields.tsx';
 import { SecondRegisterFields } from './components/SecondRegisterFields.tsx';
 import { useNavigate } from 'react-router';
-import { registerSchema, RegisterFormData } from './validation/validation.tsx';
+import { registerSchema, RegisterFormFields, RegisterFormPayload } from './validation/validation.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
-import { HubAdmin } from '@/types/hub-admin.ts';
+import { HubAdmin } from '@/types/auth.ts';
 
 export function RegisterForm() {
     const navigate = useNavigate();
     const [formError, setFormError] = React.useState<string | null>(null);
 
-    const form = useForm<RegisterFormData>({
+    const form = useForm<RegisterFormFields, unknown, RegisterFormPayload>({
         resolver: zodResolver(registerSchema),
         defaultValues: {
             username: '',
@@ -24,7 +24,7 @@ export function RegisterForm() {
             repeat_password: '',
             name: '',
             position: '',
-            department: '',
+            departments: [],
             avatar_url: '',
             linkedin: '',
             github: '',
@@ -36,8 +36,8 @@ export function RegisterForm() {
     const avatar_url = watch('avatar_url');
 
     const mutation = useMutation({
-        mutationFn: (formData: RegisterFormData) => {
-            return apiClient.post<HubAdmin, RegisterFormData>('/auth/register', formData);
+        mutationFn: (formData: RegisterFormPayload) => {
+            return apiClient.post<HubAdmin, RegisterFormPayload>('/auth/register', formData);
         },
         onSuccess: async () => {
             navigate('/admin/login');
@@ -47,9 +47,8 @@ export function RegisterForm() {
         },
     });
 
-    const onSubmit = (values: RegisterFormData) => {
+    const onSubmit = (values: RegisterFormPayload) => {
         setFormError(null);
-        console.log(values);
         mutation.mutate(values);
     };
 

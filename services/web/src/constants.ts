@@ -8,6 +8,8 @@ export const API_URLS = {
     PROD: 'https://thehub-aubg.com/api/v3',
 };
 
+export const DEPARTMENT_OPTIONS = ['Development', 'Marketing', 'Logistics', 'PR', 'Design'] as const;
+
 export const API_URL = API_URLS[ENV_MODE] || API_URLS['LOCAL'];
 
 export interface FeatureSwitchesType {
