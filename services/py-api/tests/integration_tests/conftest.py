@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from unittest.mock import patch
@@ -7,14 +8,13 @@ import pytest
 import pytest_asyncio
 from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
+from src.database.model.admin.hub_admin_model import Role
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
-
-from src.database.model.admin.hub_admin_model import ROLES
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app
@@ -57,7 +57,7 @@ TEST_HUB_MEMBER_AVATAR_URL = "https://www.bing.com"
 TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
 TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
 TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
-TEST_HUB_ADMIN_ROLE: ROLES = "super_admin"
+TEST_HUB_ADMIN_ROLE: Role = Role.SUPER
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -77,6 +77,36 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
 # The scope is set to session so that that Async Client is only initialized once throughout the testing session,
 # instead of initializing it on every test function invocation
 # Read More: https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def dev_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "dev", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def board_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "board", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def super_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "super", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -127,24 +157,26 @@ class CreateTestParticipantCallable(Protocol):
     async def __call__(self, participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def clean_up_test_participant(async_client: AsyncClient, result_json: dict[str, Any]) -> None:
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def clean_up_test_participant(
+    async_client: AsyncClient, result_json: dict[str, Any], super_auth_token: str
+) -> None:
     participant_id = result_json["participant"]["id"]
     await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     if result_json["team"] is not None:
         team_id = result_json["team"]["id"]
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team_id}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def revert_the_finalization_step(async_client: AsyncClient) -> None:
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def revert_the_finalization_step(async_client: AsyncClient, super_auth_token: str) -> None:
     """
     When the capacity for the registered teams is reached, there is a finalization step that runs creating possible
     random participant teams and flipping the feature switch that allows for the possible creation of new teams
@@ -156,7 +188,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     teams_result = await async_client.get(
         url=f"{TEAM_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -165,7 +197,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
     for team in teams_result.json()["teams"]:
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team["id"]}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
     LOG.debug(f"Recovering the state of the {TEAM_REGISTRATION_FEATURE} feature switch")
@@ -182,7 +214,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     await async_client.patch(
         f"{FEATURE_SWITCH_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=payload,
     )
 
@@ -198,7 +230,9 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest_asyncio.fixture
-async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[CreateTestParticipantCallable, None]:
+async def create_test_participant(
+    async_client: AsyncClient, super_auth_token: str
+) -> AsyncGenerator[CreateTestParticipantCallable, None]:
     """
     A pytest fixture for managing the lifecycle of test participants in asynchronous tests.
 
@@ -253,10 +287,12 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
     for result in request_results:
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
-            await clean_up_test_participant(async_client=async_client, result_json=result.json())
+            await clean_up_test_participant(
+                async_client=async_client, result_json=result.json(), super_auth_token=super_auth_token
+            )
 
     # Revert the finalization if any random teams were created while integration testing
-    await revert_the_finalization_step(async_client=async_client)
+    await revert_the_finalization_step(async_client=async_client, super_auth_token=super_auth_token)
 
 
 class ParticipantRequestBodyCallable(Protocol):
@@ -368,7 +404,7 @@ class RegisterHubAdminBodyCallable(Protocol):
     def __call__(
         self,
         name: str = TEST_USER_NAME,
-        username: str = TEST_HUB_MEMBER_USERNAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
@@ -384,7 +420,7 @@ class RegisterHubAdminBodyCallable(Protocol):
 def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
     def register_hub_admin_request_body_generator(
         name: str = TEST_HUB_MEMBER_NAME,
-        username: str = TEST_HUB_MEMBER_USERNAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
         position: str = TEST_HUB_MEMBER_POSITON,
         departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
         avatar_url: str = TEST_HUB_MEMBER_AVATAR_URL,
@@ -394,7 +430,6 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
         repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
         **kwargs: Any,
     ) -> RegisterHubAdminData:
-
         return RegisterHubAdminData(
             name=name,
             username=username,

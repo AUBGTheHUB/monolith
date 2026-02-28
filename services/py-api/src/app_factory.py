@@ -50,7 +50,7 @@ from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
 from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.auth.password_hash_service import PasswordHashService
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
@@ -147,6 +147,9 @@ def create_app() -> FastAPI:
 
     # Service layer wiring
     jwt_utility = JwtUtility()
+    # Store JwtUtility in app.state for access in route dependencies
+    app.state.jwt_utility = jwt_utility
+
     password_hash_service = PasswordHashService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)

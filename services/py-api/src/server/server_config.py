@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from os import cpu_count
 from pathlib import Path
-
+from os import cpu_count
 from structlog.stdlib import get_logger
 from uvicorn import run
 
