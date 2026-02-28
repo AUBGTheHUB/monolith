@@ -2,6 +2,17 @@ import { API_URL } from '../constants.ts';
 import { useAuthStore } from '@/hooks/useAuthStote.ts';
 import { refreshToken } from './refreshToken.ts';
 
+const getAuthHeader = () => {
+
+        const accessToken = useAuthStore.getState().accessToken;
+    return
+    {
+        //TEMP SOLUTION: Will change when auth is implemented
+        Authorization: 'Bearer a0e923d30b613ce5cf57d9af35a3d4d2e8efa660f579b9a547918bd1c83fdb7b'
+    };
+}
+const getHeaders = (contentType?: string) => {
+    const headers: HeadersInit = { ...getAuthHeader() };
 const getHeaders = (contentType?: string) => {
     const headers: HeadersInit = {};
 
@@ -87,5 +98,17 @@ export const apiClient = {
                 body: JSON.stringify(data),
             });
         return req().then((res) => handleResponse<R>(res, req));
-    },
+    },postForm: <R>(endpoint: string, formData: FormData) =>
+        fetch(`${API_URL}${endpoint}`, {
+            method: 'POST',
+            headers: getHeaders(), // DO NOT ADD multipart/formdata here to let the browser set the boundary automatically.
+            body: formData,
+        }).then((res) => handleResponse<R>(res)),
+
+    patchForm: <R>(endpoint: string, formData: FormData) =>
+        fetch(`${API_URL}${endpoint}`, {
+            method: 'PATCH',
+            headers: getHeaders(), // DO NOT ADD multipart/formdata here to let the browser set the boundary automatically.
+            body: formData,
+        }).then((res) => handleResponse<R>(res)),
 };

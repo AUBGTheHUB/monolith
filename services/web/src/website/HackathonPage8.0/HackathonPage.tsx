@@ -11,8 +11,10 @@ import { NavigationSection } from './NavigationSection/NavigationSection';
 import { RecapSection } from './RecapSection/RecapSection';
 import { ScheduleSection } from './ScheduleSection/ScheduleSection';
 import { SponsorsSection } from './SponsorsSection/SponsorsSection';
+import { useFeatureSwitches } from '@/config.ts';
 
 export const HackathonPage = () => {
+    const featureSwitches = useFeatureSwitches();
     return (
         <div className="bg-[rgba(255,253,245,1)]">
             <Helmet>
@@ -24,13 +26,16 @@ export const HackathonPage = () => {
             <LandingSection />
             <MissionSection />
             <JourneySection />
-            <MentorsAndJudgesSection />
+            <MentorsAndJudgesSection
+                mentorsSwitch={featureSwitches.MentorsSwitch}
+                jurySwitch={featureSwitches.JurySwitch}
+            />
             <ScheduleSection />
             <RecapSection />
             <GradingSection />
             <AwardsSection />
+            <SponsorsSection sponsorsSwitch={featureSwitches.SponsorsSwitch} />
             <FAQSection />
-            <SponsorsSection />
             <FooterSection />
         </div>
     );

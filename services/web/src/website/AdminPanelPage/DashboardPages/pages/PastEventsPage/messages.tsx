@@ -103,12 +103,11 @@ export const PastEventsAddMessages = {
 export const PastEventsFormFieldMessages = {
     LABELS: {
         TITLE: 'Event Name',
-        IMAGE: 'Event Image',
+        IMAGE: 'Event Cover Image',
         TAGS: 'Tags',
     },
     PLACEHOLDERS: {
         TITLE: 'Enter event name',
-        IMAGE: 'Upload or enter image URL',
         TAGS: 'Type a tag and press Enter',
     },
 };

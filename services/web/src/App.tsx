@@ -27,15 +27,19 @@ import { RefreshGuard } from './guards/RefreshGuard';
 import { Admin403Page } from './website/ErrorPages/AdminErrorPages/components/Admin403Page';
 import { AuthenticatedGuard } from './guards/AuthenticatedGuard';
 import { RoleGuard } from './guards/RoleGuard';
+import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 function App() {
     const queryClient = new QueryClient();
 
     return (
         <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false} />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<MainPage />} />
-
                 {/* Hackathon Group */}
                 <Route path="/hackathon">
                     <Route index element={<HackathonPage />} />
@@ -84,6 +88,9 @@ function App() {
                                         <Route index element={<SponsorsListPage />} />
                                         <Route path="add" element={<SponsorsEditPage />} />
                                         <Route path=":id" element={<SponsorsEditPage />} />
+                                    </Route>
+                                    <Route path="feature-switches">
+                                        <Route index element={<FeatureSwitchesPage />} />
                                     </Route>
 
                                     {/* Past events Sub-group */}
