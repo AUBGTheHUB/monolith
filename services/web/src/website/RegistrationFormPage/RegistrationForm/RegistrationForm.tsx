@@ -28,7 +28,7 @@ import { Loader2 } from 'lucide-react';
 
 import { registerParticipant, resendEmail } from './api';
 import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage } from './config';
-import { useCooldownTimer } from './useCooldownTimer';
+import { useCooldownTimer } from '../../../helpers/useCooldownTimer';
 import {
     labelStyles,
     inputStyles,
