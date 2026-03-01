@@ -20,7 +20,7 @@ export const DesktopNavigationComponent = () => {
             >
                 <div className="w-full flex flex-row justify-center items-center py-3">
                     <div className="flex flex-row w-[85%] gap-8">
-                        <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                        <a href="#mission" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                             ABOUT
                         </a>
                         <a href="#schedule" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
@@ -37,7 +37,7 @@ export const DesktopNavigationComponent = () => {
                         </a>
                     </div>
                     <div>
-                        <a href="/hackathon/registration" className={`${NAV_ITEM_A} text-center  hover:text-white`}>
+                        <a href="/hackathon/registration" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT} text-center`}>
                             PARTICIPATE NOW
                         </a>
                     </div>

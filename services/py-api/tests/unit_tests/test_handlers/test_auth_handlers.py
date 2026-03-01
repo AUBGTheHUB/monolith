@@ -1,5 +1,5 @@
 from typing import cast
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
 from starlette.responses import Response as StarletteResponse
 import pytest
@@ -35,12 +35,13 @@ async def test_register_hub_admin_success(
     auth_service_mock: AuthServiceMock,
     hub_admin_mock: HubAdmin,
     register_hub_admin_data_mock: RegisterHubAdminData,
+    image_mock: UploadFile,
 ) -> None:
     # Given
     auth_service_mock.register_admin.return_value = Ok(hub_admin_mock)
 
     # When
-    resp = await auth_handlers.register(credentials=register_hub_admin_data_mock)
+    resp = await auth_handlers.register(credentials=register_hub_admin_data_mock, avatar=image_mock)
 
     # Then
     assert isinstance(resp, StarletteResponse)
@@ -52,14 +53,14 @@ async def test_register_hub_admin_conflict(
     auth_handlers: AuthHandlers,
     auth_service_mock: AuthServiceMock,
     register_hub_admin_data_mock: RegisterHubAdminData,
+    image_mock: UploadFile,
 ) -> None:
     with pytest.raises(HTTPException) as exception:
-
         # Given
         auth_service_mock.register_admin.return_value = Err(DuplicateHubMemberUsernameError())
 
         # When
-        await auth_handlers.register(credentials=register_hub_admin_data_mock)
+        await auth_handlers.register(credentials=register_hub_admin_data_mock, avatar=image_mock)
 
         # Then
         assert exception.value.detail == "HUB member with this name already exists"

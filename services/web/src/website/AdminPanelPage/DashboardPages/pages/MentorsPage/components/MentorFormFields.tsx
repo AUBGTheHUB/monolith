@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
-import { MentorFormData } from '../validation';
+import { MentorFormData } from '../validation/validation.tsx';
 import { MentorsFormFieldMessages as MESSAGES } from '../messages.tsx';
 
 type MentorFormFieldProps = {
@@ -26,10 +26,11 @@ export function MentorFormFields({ control }: MentorFormFieldProps) {
             />
             <InputComponent
                 control={control}
-                name="avatar_url"
+                name="avatar"
                 label={MESSAGES.LABELS.IMAGE}
                 placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
-                type="url"
+                type="file"
+                accept="image/*"
             />
             <InputComponent
                 control={control}

@@ -38,13 +38,18 @@ export const MobileNavigationComponent = () => {
                             onCloseAutoFocus={(event) => event.preventDefault()}
                         >
                             <div className={NAV_ITEM}>
-                                <a href="#about" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                                <a href="#mission" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                                     ABOUT
                                 </a>
                             </div>
                             <div className={NAV_ITEM}>
                                 <a href="#schedule" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                                     SCHEDULE
+                                </a>
+                            </div>
+                            <div className={NAV_ITEM}>
+                                <a href="#journey" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                                    JOURNEY
                                 </a>
                             </div>
                             <div className={NAV_ITEM}>

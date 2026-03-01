@@ -72,15 +72,15 @@ export const Footer = () => {
                     <div className={SECTIONS_CLASS_NAME}>
                         <h3 className={SECTIONS_TITLE_CLASS_NAME}>Contact</h3>
                         <p className={OPTIONS_CLASS_NAME}>
-                            <a className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`} href="mailto:thehub@aubg.edu">
-                                thehub@aubg.edu
+                            <a className={`${OPTIONS_CLASS_NAME} ${LINKS_CLASS_NAME}`} href="mailto:thehub@gmail.com">
+                                thehub@gmail.com
                             </a>
                         </p>
                     </div>
                 </div>
                 <span className="mt-2 w-full mx-8 sm:mx-0 sm:w-[60%] h-[1px] bg-[#4D4D4D]" />
                 <div className="w-full mx-8 sm:mx-0 sm:w-[60%]">
-                    <p className="text-[#B4B4B4] text-sm mt-2">Copyright TheHub 2026</p>
+                    <p className="text-[#B4B4B4] text-sm mt-2">Copyright &copy; {new Date().getFullYear()} The Hub</p>
                 </div>
             </div>
         </div>

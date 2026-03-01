@@ -2,8 +2,8 @@ import os
 from unittest.mock import patch
 from result import Err, Ok
 from src.exception import JwtDecodeSchemaMismatch, JwtExpiredSignatureError, JwtInvalidSignatureError
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
 
 
 @patch.dict("os.environ", {"SECRET_KEY": "abcdefghijklmnopqrst"})

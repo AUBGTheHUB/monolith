@@ -104,14 +104,13 @@ export const JudgesFormFieldMessages = {
     LABELS: {
         NAME: 'Name',
         COMPANY: 'Company Name',
-        IMAGE: 'Image URL',
+        IMAGE: 'Avatar Image',
         POSITION: 'Position',
         LINKEDIN: 'LinkedIn URL',
     },
     PLACEHOLDERS: {
         NAME: "Enter judge's full name",
         COMPANY: 'Enter company name',
-        IMAGE: 'Enter image URL (e.g., /judge_photo.webp)',
         POSITION: 'Enter position (e.g., Software Engineer)',
         LINKEDIN: 'Enter LinkedIn profile URL',
     },

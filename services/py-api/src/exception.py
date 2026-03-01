@@ -173,13 +173,6 @@ class PastEventNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class MentorNotFoundError(CustomError):
-    """Exception raised when the mentor cannot be found in the database"""
-
-    message = "The specified mentor was not found"
-    status_code = status.HTTP_404_NOT_FOUND
-
-
 class ImageCompressionError(Exception):
     """Exception raised when the image compression fails"""
 
@@ -208,3 +201,10 @@ class FileDeleteError(Exception):
     """Exception raised when deleting a file in aws fails"""
 
     message = "There was an error when deleting the file"
+
+
+class MentorNotFoundError(CustomError):
+    """Exception raised when the mentor cannot be found in the database"""
+
+    message = "The specified mentor was not found"
+    status_code = status.HTTP_404_NOT_FOUND

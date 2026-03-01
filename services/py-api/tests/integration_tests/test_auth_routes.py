@@ -1,10 +1,12 @@
+from io import BytesIO
+from typing import Generator, Any
+
 import pytest
 import uuid
 from httpx import AsyncClient
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData
 from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_PASSWORD_HASH,
-    TEST_HUB_MEMBER_USERNAME,
     RegisterHubAdminBodyCallable,
 )
 
@@ -13,14 +15,18 @@ AUTH_ENDPOINT_URL = "/api/v3/auth"
 
 @pytest.mark.asyncio
 async def test_register_admin_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,  # Use existing image fixture
 ) -> None:
     # When
     unique_name = str(uuid.uuid4())
-    register_hub_admin_body = generate_register_hub_admin_request_body(username=unique_name, name=unique_name)
+    data = generate_register_hub_admin_request_body(username=unique_name, name=unique_name)
 
-    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
+    files = {"avatar": image_mock}
+
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=data, files=files)
 
     # Then
     assert resp.status_code == 204
@@ -28,16 +34,23 @@ async def test_register_admin_success(
 
 @pytest.mark.asyncio
 async def test_register_admin_fails_when_there_is_a_duplicate_name(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
 ) -> None:
     # When
-    register_hub_admin_body = generate_register_hub_admin_request_body()
+    data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    # First request
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=data, files=files)
+    assert resp.status_code == 204
 
-    # Fire the request twice so it fails the second time
-    await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
+    # Reset stream for second request
+    image_mock.seek(0)
 
-    resp2 = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
+    # Second request
+    resp2 = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=data, files=files)
 
     # Then
     assert resp2.status_code == 409
@@ -45,15 +58,18 @@ async def test_register_admin_fails_when_there_is_a_duplicate_name(
 
 @pytest.mark.asyncio
 async def test_login_admin_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
 ) -> None:
-    # Register the user
-    register_hub_admin_body = generate_register_hub_admin_request_body()
-    await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
-
+    # 1. Register the user using multipart/form-data
+    register_data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    register_resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=register_data, files=files)
+    assert register_resp.status_code == 204
     # When
-    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    login_hub_admin_data = LoginHubAdminData(username=register_data["username"], password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
 
@@ -63,15 +79,17 @@ async def test_login_admin_success(
 
 @pytest.mark.asyncio
 async def test_login_admin_fails_when_passwords_dont_match(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
 ) -> None:
-    # Register the user
-    register_hub_admin_body = generate_register_hub_admin_request_body()
-    await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
-
+    register_data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    register_resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=register_data, files=files)
+    assert register_resp.status_code == 204
     # When
-    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password="Another hash")
+    login_hub_admin_data = LoginHubAdminData(username=register_data["username"], password="Another hash")
 
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
 
@@ -81,13 +99,10 @@ async def test_login_admin_fails_when_passwords_dont_match(
 
 @pytest.mark.asyncio
 async def test_login_admin_fails_when_hub_admin_is_not_found(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
 ) -> None:
-    # Register the user
-    register_hub_admin_body = generate_register_hub_admin_request_body()
-    await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
-
     # When
     login_hub_admin_data = LoginHubAdminData(username="Wrong username", password=TEST_HUB_ADMIN_PASSWORD_HASH)
 
@@ -99,15 +114,17 @@ async def test_login_admin_fails_when_hub_admin_is_not_found(
 
 @pytest.mark.asyncio
 async def test_refresh_token_success(
+    aws_mock: Generator[None, Any, None],
     async_client: AsyncClient,
     generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
 ) -> None:
-    # Register the user
-    register_hub_admin_body = generate_register_hub_admin_request_body()
-    await async_client.post(f"{AUTH_ENDPOINT_URL}/register", json=register_hub_admin_body.model_dump())
-
+    register_data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    register_resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=register_data, files=files)
+    assert register_resp.status_code == 204
     # When
-    login_hub_admin_data = LoginHubAdminData(username=TEST_HUB_MEMBER_USERNAME, password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    login_hub_admin_data = LoginHubAdminData(username=register_data["username"], password=TEST_HUB_ADMIN_PASSWORD_HASH)
     tokens_result = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
     tokens_result.cookies.get("refresh_token")
 
@@ -124,7 +141,6 @@ async def test_refresh_token_success(
 async def test_refresh_token_fails_for_invalid_refresh_token(
     async_client: AsyncClient,
 ) -> None:
-
     resp = await async_client.post(
         f"{AUTH_ENDPOINT_URL}/refresh", cookies={"refresh_token": "Some invalid refresh token"}
     )

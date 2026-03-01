@@ -1,17 +1,15 @@
 from __future__ import annotations
 
+import json
 from typing import cast
 
 import pytest
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.hub_member_model import HubMember
 from src.exception import HubMemberNotFoundError
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
-from src.server.schemas.request_schemas.admin.hub_member_schemas import (
-    HubMemberPostReqData,
-    HubMemberPatchReqData,
-)
 from src.server.schemas.response_schemas.schemas import Response
 from src.service.admin.hub_members_service import HubMembersService
 from tests.unit_tests.conftest import HubMembersServiceMock
@@ -27,24 +25,28 @@ async def test_create_hub_member_returns_201(
     hub_members_handlers: HubMembersHandlers,
     hub_members_service_mock: HubMembersServiceMock,
     hub_member_mock: HubMember,
+    image_mock: UploadFile,
 ) -> None:
-    from pydantic import HttpUrl
-
-    req = HubMemberPostReqData(
-        name=hub_member_mock.name,
-        position=hub_member_mock.position,
-        departments=hub_member_mock.departments,
-        avatar_url=HttpUrl(hub_member_mock.avatar_url),
-        social_links=hub_member_mock.social_links,
-    )
 
     hub_members_service_mock.create.return_value = Ok(hub_member_mock)
 
-    resp = await hub_members_handlers.create_hub_member(req)
+    resp = await hub_members_handlers.create_hub_member(
+        name=hub_member_mock.name,
+        position=hub_member_mock.position,
+        departments=hub_member_mock.departments,
+        avatar=image_mock,
+        social_links=json.dumps(hub_member_mock.social_links),
+    )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
-    hub_members_service_mock.create.assert_awaited_once_with(req)
+    hub_members_service_mock.create.assert_awaited_once_with(
+        name=hub_member_mock.name,
+        position=hub_member_mock.position,
+        departments=hub_member_mock.departments,
+        avatar=image_mock,
+        social_links=hub_member_mock.social_links,
+    )
 
 
 @pytest.mark.asyncio
@@ -81,19 +83,22 @@ async def test_update_hub_member_returns_200(
     hub_members_service_mock: HubMembersServiceMock,
     hub_member_mock: HubMember,
 ) -> None:
-    pass
-
-    req = HubMemberPatchReqData(
-        name="Updated Name",
-        position="Updated Position",
-    )
 
     hub_members_service_mock.update.return_value = Ok(hub_member_mock)
 
-    resp = await hub_members_handlers.update_hub_member(str(hub_member_mock.id), req)
+    resp = await hub_members_handlers.update_hub_member(
+        str(hub_member_mock.id), name="Updated Name", position="Updated Position"
+    )
 
     assert resp.status_code == 200
-    hub_members_service_mock.update.assert_awaited_once_with(str(hub_member_mock.id), req)
+    hub_members_service_mock.update.assert_awaited_once_with(
+        str(hub_member_mock.id),
+        name="Updated Name",
+        position="Updated Position",
+        departments=None,
+        avatar=None,
+        social_links={},
+    )
 
 
 @pytest.mark.asyncio

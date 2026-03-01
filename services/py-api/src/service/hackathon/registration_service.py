@@ -13,8 +13,8 @@ from src.exception import (
 )
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.team_service import TeamService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     RandomParticipantInputData,

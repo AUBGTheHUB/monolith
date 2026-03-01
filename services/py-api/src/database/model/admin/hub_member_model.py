@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Literal, NotRequired, Self, TypedDict, cast
+from typing import Any, Literal, NotRequired, Self, TypedDict, cast, Optional
 
 from pydantic import HttpUrl
 
@@ -23,16 +23,18 @@ class HubMember(BaseDbModel):
 
     name: str
     member_type: MEMBER_TYPE = "member"
-    position: str
+    position: Optional[str]
     departments: list[DEPARTMENTS_LIST] = field(default_factory=list)
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
     def _serialize_social_links(self) -> dict[str, Any]:
         social_links_serialized = {}
-        for link_name, link_url in self.social_links.items():
-            if link_url is not None:
-                social_links_serialized[link_name] = str(link_url)
+
+        if self.social_links is not None:
+            for link_name, link_url in self.social_links.items():
+                if link_url is not None:
+                    social_links_serialized[link_name] = str(link_url)
 
         return social_links_serialized
 
@@ -87,5 +89,4 @@ class UpdateHubMemberParams(UpdateParams):
     name: str | None = None
     position: str | None = None
     departments: list[DEPARTMENTS_LIST] | None = None
-    avatar_url: str | None = None
     social_links: SocialLinks | None = None
