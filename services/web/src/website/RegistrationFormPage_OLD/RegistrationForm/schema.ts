@@ -10,13 +10,9 @@ const baseSchema = z.object({
             message: `Name can only contain letters, spaces and '-'.`,
         }),
 
-    email: z
-        .string()
-        .min(1, { message: 'Email is required' })
-        .email({ message: 'Invalid email format.' }),
+    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
 
     tshirt_size: z.string().min(1, { message: 'Please select an option.' }),
-
     university: z.string().min(1, { message: 'University is required.' }),
 
     location: z
