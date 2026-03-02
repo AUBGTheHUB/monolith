@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/hooks/useAuthStote';
+import { useAuthStore } from '@/hooks/useAuthStore';
 import { Outlet, Navigate } from 'react-router';
 
 interface RoleGuardProps {
@@ -6,7 +6,7 @@ interface RoleGuardProps {
 }
 
 export const RoleGuard = ({ allowedRoles }: RoleGuardProps) => {
-    const siteRole = useAuthStore.getState().user?.siteRole;
+    const siteRole = useAuthStore((state) => state.user?.site_role);
     if (!siteRole) {
         return <Navigate to="/admin/login" replace />;
     }

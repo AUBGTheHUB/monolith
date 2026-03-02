@@ -26,9 +26,7 @@ class AuthHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(
-            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
-        )
+        response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="lax")
 
         return response
 
@@ -62,8 +60,6 @@ class AuthHandlers(BaseHandler):
             status_code=status.HTTP_200_OK,
         )
 
-        response.set_cookie(
-            key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="strict"
-        )
+        response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=True, samesite="lax")
 
         return response

@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router';
 import { refreshToken } from '@/services/refreshToken.ts';
+import { useAuthStore } from '@/hooks/useAuthStore';
 
 export const RefreshGuard = () => {
     const [status, setStatus] = useState<'loading' | 'auth' | 'error'>('loading');
 
     useEffect(() => {
         const initialRefresh = async () => {
-            try {
-                await refreshToken();
+            if (useAuthStore.getState().accessToken) {
                 setStatus('auth');
-            } catch (err) {
-                console.error('Refresh failed', err);
-                setStatus('error');
+            } else {
+                try {
+                    await refreshToken();
+                    setStatus('auth');
+                } catch {
+                    setStatus('error');
+                }
             }
         };
 
         initialRefresh();
     }, []);
 
-    // 1. Handle the "Waiting" state
     if (status === 'loading') {
         return (
             <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -28,11 +31,9 @@ export const RefreshGuard = () => {
         );
     }
 
-    // 2. Handle the "Failed" state
     if (status === 'error') {
         return <Navigate to="/admin/login" replace />;
     }
 
-    // 3. Handle the "Success" state
     return <Outlet />;
 };

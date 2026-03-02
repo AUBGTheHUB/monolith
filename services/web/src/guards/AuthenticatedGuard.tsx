@@ -1,16 +1,16 @@
-import { useAuthStore } from '@/hooks/useAuthStote';
+import { useAuthStore } from '@/hooks/useAuthStore';
 import { Outlet, Navigate } from 'react-router';
 
 interface AuthGuardProps {
     isAuth: boolean;
 }
 export const AuthenticatedGuard = ({ isAuth }: AuthGuardProps) => {
-    const user = useAuthStore.getState().user;
+    const access_token = useAuthStore.getState().accessToken;
 
-    if (!user && isAuth) {
+    if (!access_token && isAuth) {
         return <Navigate to="/admin/login" replace />;
     }
-    if (user && !isAuth) {
+    if (access_token && !isAuth) {
         return <Navigate to="/admin/forbidden" replace />;
     }
     return <Outlet />;

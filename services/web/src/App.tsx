@@ -89,9 +89,6 @@ function App() {
                                         <Route path="add" element={<SponsorsEditPage />} />
                                         <Route path=":id" element={<SponsorsEditPage />} />
                                     </Route>
-                                    <Route path="feature-switches">
-                                        <Route index element={<FeatureSwitchesPage />} />
-                                    </Route>
 
                                     {/* Past events Sub-group */}
                                     <Route path="past-events">
@@ -100,12 +97,15 @@ function App() {
                                         <Route path=":id" element={<PastEventsEditPage />} />
                                     </Route>
                                 </Route>
+                                <Route element={<RoleGuard allowedRoles={['dev', 'super-admin']} />}>
+                                    <Route path="feature-switches" element={<FeatureSwitchesPage />} />
+                                </Route>
                             </Route>
+                            <Route path="forbidden" element={<Admin403Page />} />
+                            {/* 404 Catch-all */}
+                            <Route path="*" element={<Admin404Page />} />
                         </Route>
                     </Route>
-                    <Route path="forbidden" element={<Admin403Page />} />
-                    {/* 404 Catch-all */}
-                    <Route path="*" element={<Admin404Page />} />
                 </Route>
                 {/* 404 Catch-all */}
                 <Route path="*" element={<Global404Page />} />

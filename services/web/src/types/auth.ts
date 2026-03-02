@@ -1,8 +1,8 @@
 export type User = {
     name: string;
     username: string;
-    avatarUrl: string;
-    siteRole: string;
+    avatar_url: string;
+    site_role: string;
 };
 
 export type HubAdmin = {

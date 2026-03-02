@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { apiClient } from '@/services/apiClient';
 import { AuthenticatedAdmin, User } from '@/types/auth';
-import { useAuthStore } from '@/hooks/useAuthStote';
+import { useAuthStore } from '@/hooks/useAuthStore';
 
 export function LoginForm() {
     const navigate = useNavigate();
@@ -32,7 +32,6 @@ export function LoginForm() {
         onSuccess: async (authData) => {
             const user = jwtDecode<User>(authData.id_token);
             setAuth(authData.access_token, authData.id_token, user);
-            console.log(user);
             navigate('/admin/dashboard');
         },
         onError: (error) => {

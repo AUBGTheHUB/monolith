@@ -1,11 +1,11 @@
 import { API_URL } from '../constants.ts';
-import { useAuthStore } from '@/hooks/useAuthStote.ts';
+import { useAuthStore } from '@/hooks/useAuthStore';
 import { refreshToken } from './refreshToken.ts';
 
 const getHeaders = (contentType?: string) => {
     const headers: HeadersInit = {};
-
     const accessToken = useAuthStore.getState().accessToken;
+
     if (accessToken) {
         headers['Authorization'] = `Bearer ${accessToken}`;
     }
@@ -17,7 +17,11 @@ const getHeaders = (contentType?: string) => {
     return headers;
 };
 
-const handleResponse = async <R>(response: Response, originalRequest: () => Promise<Response>): Promise<R> => {
+const handleResponse = async <R>(
+    response: Response,
+    originalRequest: () => Promise<Response>,
+    hasTriedRefresh: boolean,
+): Promise<R> => {
     //Handle responses based on FastAPI's response schemas
     if (response.status == 204) {
         return {} as R;
@@ -37,11 +41,15 @@ const handleResponse = async <R>(response: Response, originalRequest: () => Prom
     //Unauthorized
     if (response.status == 401 && !response.url.includes('login')) {
         try {
+            if (hasTriedRefresh) {
+                throw new Error('Unauthorized after token refresh');
+            }
             await refreshToken();
             const retryResponse = await originalRequest();
-            return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'));
+            return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'), true);
         } catch (err) {
-            alert(err);
+            // TODO FIX
+            console.log(err);
         }
     }
     if (response.status == 400 || response.status == 404) {
@@ -59,12 +67,12 @@ export const apiClient = {
     // GET and DELETE don't need Content-Type headers
     get: <R>(endpoint: string) => {
         const req = () => fetch(`${API_URL}${endpoint}`, { method: 'GET', headers: getHeaders() });
-        return req().then((res) => handleResponse<R>(res, req));
+        return req().then((res) => handleResponse<R>(res, req, false));
     },
 
     delete: (endpoint: string) => {
         const req = () => fetch(`${API_URL}${endpoint}`, { method: 'DELETE', headers: getHeaders() });
-        return req().then((res) => handleResponse(res, req));
+        return req().then((res) => handleResponse(res, req, false));
     },
 
     // POST and PATCH require the JSON content-type
@@ -75,7 +83,7 @@ export const apiClient = {
                 headers: getHeaders('application/json'),
                 body: JSON.stringify(data),
             });
-        return req().then((res) => handleResponse<R>(res, req));
+        return req().then((res) => handleResponse<R>(res, req, false));
     },
 
     patch: <R, D>(endpoint: string, data: D) => {
@@ -85,7 +93,7 @@ export const apiClient = {
                 headers: getHeaders('application/json'),
                 body: JSON.stringify(data),
             });
-        return req().then((res) => handleResponse<R>(res, req));
+        return req().then((res) => handleResponse<R>(res, req, false));
     },
     postForm: <R>(endpoint: string, formData: FormData) => {
         const req = () =>
@@ -95,7 +103,7 @@ export const apiClient = {
                 body: formData,
             });
 
-        return req().then((res) => handleResponse<R>(res, req));
+        return req().then((res) => handleResponse<R>(res, req, false));
     },
     patchForm: async <R>(endpoint: string, formData: FormData) => {
         const req = () =>
@@ -105,6 +113,6 @@ export const apiClient = {
                 body: formData,
             });
         const res = await req();
-        return await handleResponse<R>(res, req);
+        return await handleResponse<R>(res, req, false);
     },
 };

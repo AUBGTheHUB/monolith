@@ -10,13 +10,15 @@ export default defineConfig(({ mode }) => {
             usePolling: true,
         },
     };
+    console.log('Vite mode is:', mode);
 
-    if (mode === 'local') {
+    if (mode === 'development') {
         serverConfig.proxy = {
             '/api/v3': {
                 target: 'https://localhost:8080',
                 changeOrigin: true,
                 secure: false,
+                cookieDomainRewrite: '',
             },
         };
     }

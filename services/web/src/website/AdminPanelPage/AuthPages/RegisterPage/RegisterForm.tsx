@@ -61,8 +61,6 @@ export function RegisterForm() {
     });
 
     const onSubmit = (values: RegisterFormData) => {
-        // setFormError(null);
-        console.log('Blet');
         const formData = toFormData(values);
         mutation.mutate(formData);
     };

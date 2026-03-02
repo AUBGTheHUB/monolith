@@ -5,8 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet';
 import { Styles } from '../AdminStyle';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/hooks/useAuthStore';
+import { ROLES } from '@/constants';
 
 export function DashboardPage() {
+    const siteRole = useAuthStore((state) => state.user?.site_role);
     return (
         <Fragment>
             <Helmet>
@@ -24,185 +27,210 @@ export function DashboardPage() {
                     </h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {/* Judges Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
-                                    className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
-                                    )}
-                                >
-                                    Judges
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/judges">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
+                        {siteRole == ROLES.dev || siteRole == ROLES.superAdmin ? (
+                            /* feature-switches Container */
+                            <Card
+                                className={cn(
+                                    'h-72 flex flex-col group transition-all duration-500',
+                                    Styles.glass.card,
+                                    Styles.glass.cardHover,
+                                )}
+                            >
+                                <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                    <CardTitle
+                                        className={cn(
+                                            'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                            Styles.text.title,
+                                        )}
                                     >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                        Feature Switches
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="pb-10 px-10">
+                                    <Link to="/admin/dashboard/feature-switches">
+                                        <Button
+                                            className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
+                                            style={{ backgroundColor: Styles.colors.hubCyan }}
+                                        >
+                                            View
+                                        </Button>
+                                    </Link>
+                                </CardContent>
+                            </Card>
+                        ) : (
+                            ''
+                        )}
 
-                        {/* feature-switches Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
+                        {siteRole == ROLES.board || siteRole == ROLES.superAdmin ? (
+                            <>
+                                {/* Judges Container */}
+                                <Card
                                     className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
+                                        'h-72 flex flex-col group transition-all duration-500',
+                                        Styles.glass.card,
+                                        Styles.glass.cardHover,
                                     )}
                                 >
-                                    Feature Switches
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/feature-switches">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                    <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                        <CardTitle
+                                            className={cn(
+                                                'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                                Styles.text.title,
+                                            )}
+                                        >
+                                            Judges
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pb-10 px-10">
+                                        <Link to="/admin/dashboard/judges">
+                                            <Button
+                                                className={cn(
+                                                    'w-full h-14 text-lg border-0',
+                                                    Styles.actions.primaryButton,
+                                                )}
+                                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                            >
+                                                View
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
 
-                        {/* Sponsors Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
+                                {/* Sponsors Container */}
+                                <Card
                                     className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
+                                        'h-72 flex flex-col group transition-all duration-500',
+                                        Styles.glass.card,
+                                        Styles.glass.cardHover,
                                     )}
                                 >
-                                    Sponsors
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/sponsors">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                    <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                        <CardTitle
+                                            className={cn(
+                                                'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                                Styles.text.title,
+                                            )}
+                                        >
+                                            Sponsors
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pb-10 px-10">
+                                        <Link to="/admin/dashboard/sponsors">
+                                            <Button
+                                                className={cn(
+                                                    'w-full h-14 text-lg border-0',
+                                                    Styles.actions.primaryButton,
+                                                )}
+                                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                            >
+                                                View
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
 
-                        {/* Meet The Team Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
+                                {/* Meet The Team Container */}
+                                <Card
                                     className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
+                                        'h-72 flex flex-col group transition-all duration-500',
+                                        Styles.glass.card,
+                                        Styles.glass.cardHover,
                                     )}
                                 >
-                                    Meet The Team
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/meet-the-team">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                    <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                        <CardTitle
+                                            className={cn(
+                                                'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                                Styles.text.title,
+                                            )}
+                                        >
+                                            Meet The Team
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pb-10 px-10">
+                                        <Link to="/admin/dashboard/meet-the-team">
+                                            <Button
+                                                className={cn(
+                                                    'w-full h-14 text-lg border-0',
+                                                    Styles.actions.primaryButton,
+                                                )}
+                                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                            >
+                                                View
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
 
-                        {/*Mentors Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
+                                {/*Mentors Container */}
+                                <Card
                                     className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
+                                        'h-72 flex flex-col group transition-all duration-500',
+                                        Styles.glass.card,
+                                        Styles.glass.cardHover,
                                     )}
                                 >
-                                    Mentors
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/mentors">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                    <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                        <CardTitle
+                                            className={cn(
+                                                'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                                Styles.text.title,
+                                            )}
+                                        >
+                                            Mentors
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pb-10 px-10">
+                                        <Link to="/admin/dashboard/mentors">
+                                            <Button
+                                                className={cn(
+                                                    'w-full h-14 text-lg border-0',
+                                                    Styles.actions.primaryButton,
+                                                )}
+                                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                            >
+                                                View
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
 
-                        {/* Past Events Container */}
-                        <Card
-                            className={cn(
-                                'h-72 flex flex-col group transition-all duration-500',
-                                Styles.glass.card,
-                                Styles.glass.cardHover,
-                            )}
-                        >
-                            <CardHeader className="flex-grow flex items-center justify-center pt-10">
-                                <CardTitle
+                                {/* Past Events Container */}
+                                <Card
                                     className={cn(
-                                        'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
-                                        Styles.text.title,
+                                        'h-72 flex flex-col group transition-all duration-500',
+                                        Styles.glass.card,
+                                        Styles.glass.cardHover,
                                     )}
                                 >
-                                    Past Events
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pb-10 px-10">
-                                <Link to="/admin/dashboard/past-events">
-                                    <Button
-                                        className={cn('w-full h-14 text-lg border-0', Styles.actions.primaryButton)}
-                                        style={{ backgroundColor: Styles.colors.hubCyan }}
-                                    >
-                                        View
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
+                                    <CardHeader className="flex-grow flex items-center justify-center pt-10">
+                                        <CardTitle
+                                            className={cn(
+                                                'text-4xl text-center opacity-90 transition-colors group-hover:text-white',
+                                                Styles.text.title,
+                                            )}
+                                        >
+                                            Past Events
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="pb-10 px-10">
+                                        <Link to="/admin/dashboard/past-events">
+                                            <Button
+                                                className={cn(
+                                                    'w-full h-14 text-lg border-0',
+                                                    Styles.actions.primaryButton,
+                                                )}
+                                                style={{ backgroundColor: Styles.colors.hubCyan }}
+                                            >
+                                                View
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </div>
             </div>
