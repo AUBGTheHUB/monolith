@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import Optional
+
+from fastapi import UploadFile, File
 from result import Err, Ok, Result, is_err
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from uuid import uuid4
@@ -19,6 +21,7 @@ from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTok
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 
 class AuthService:
@@ -29,7 +32,9 @@ class AuthService:
         password_hash_service: PasswordHashService,
         auth_token_service: AuthTokenService,
         tx_manager: MongoTransactionManager,
+        image_storing_service: ImageStoringService,
     ) -> None:
+        self._image_storing_service = image_storing_service
         self._hub_members_repo = hub_members_repo
         self._password_hash_service = password_hash_service
         self._auth_token_service = auth_token_service
@@ -111,13 +116,16 @@ class AuthService:
         return Ok(tokens)
 
     async def register_admin(
-        self, credentials: RegisterHubAdminData
+        self, credentials: RegisterHubAdminData, avatar: UploadFile = File(...)
     ) -> Result[None, DuplicateHubMemberUsernameError | Exception]:
 
         password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
+        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"), avatar_url="")
 
-        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"))
-
+        avatar_url = await self._image_storing_service.upload_image(
+            file=avatar, file_name=f"hub-members/{str(hub_admin.id)}"
+        )
+        hub_admin.avatar_url = str(avatar_url)
         result = await self._hub_members_repo.create(hub_member=hub_admin)
 
         if is_err(result):
@@ -127,7 +135,7 @@ class AuthService:
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[AuthTokens, RefreshTokenNotFound | HubMemberNotFoundError | Exception]:
+    ) -> Result[AuthTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -147,7 +155,7 @@ class AuthService:
         if is_err(refresh_token_result):
             return refresh_token_result
 
-        if refresh_token_result.ok_value.is_valid is False:
+        if not refresh_token_result.ok_value.is_valid:
             invalidate_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(family_id=family_id)
             if is_err(invalidate_result):
                 return invalidate_result

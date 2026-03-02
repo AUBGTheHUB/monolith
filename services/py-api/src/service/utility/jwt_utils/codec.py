@@ -6,7 +6,7 @@ from jwt import encode, decode, ExpiredSignatureError, InvalidSignatureError, De
 from result import Result, Err, Ok
 
 from src.exception import JwtDecodeSchemaMismatch, JwtExpiredSignatureError, JwtInvalidSignatureError, JwtDecodeError
-from src.service.jwt_utils.schemas import JwtBase, DecodedJwtTokenBase
+from src.service.utility.jwt_utils.schemas import JwtBase, DecodedJwtTokenBase
 
 
 class JwtUtility:

@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import UploadFile
 from pydantic import BaseModel, HttpUrl, ConfigDict
 
 from src.server.schemas.request_schemas.schemas import BasePatchReqData, NonEmptyStr
@@ -11,7 +12,7 @@ class MentorPostReqData(BaseModel):
     name: NonEmptyStr
     company: NonEmptyStr
     job_title: NonEmptyStr
-    avatar_url: HttpUrl
+    avatar: UploadFile
     linkedin_url: Optional[HttpUrl] = None
 
 
@@ -21,5 +22,5 @@ class MentorPatchReqData(BasePatchReqData):
     name: Optional[NonEmptyStr] = None
     company: Optional[NonEmptyStr] = None
     job_title: Optional[NonEmptyStr] = None
-    avatar_url: Optional[HttpUrl] = None
+    avatar: Optional[UploadFile] = None
     linkedin_url: Optional[HttpUrl] = None

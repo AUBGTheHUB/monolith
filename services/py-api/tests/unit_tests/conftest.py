@@ -2,12 +2,14 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
-from fastapi import BackgroundTasks
+from PIL import Image
+from fastapi import BackgroundTasks, UploadFile
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorClientSession,
@@ -15,9 +17,7 @@ from motor.motor_asyncio import (
     AsyncIOMotorCursor,
     AsyncIOMotorDatabase,
 )
-from typing_extensions import Protocol
 
-from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.judge_model import Judge
@@ -29,7 +29,6 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -53,8 +52,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import (
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
     JwtParticipantVerificationData,
     JwtRefreshToken,
@@ -736,6 +735,38 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     return cast(SponsorsServiceMock, service)
 
 
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    delete_image: Mock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service.delete_image = Mock()
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
+
+
 class JudgesServiceMock(Protocol):
     get_all: AsyncMock
     get: AsyncMock
@@ -755,36 +786,6 @@ def judges_service_mock() -> JudgesServiceMock:
     service.delete = AsyncMock()
 
     return cast(JudgesServiceMock, service)
-
-
-class AwsServiceMock(Protocol):
-    # get_s3_client: Mock
-    upload_file: Mock
-
-
-@pytest.fixture
-def aws_service_mock() -> AwsServiceMock:
-    service = _create_typed_mock(AwsService)
-
-    # service.get_s3_client = Mock()
-    service.upload_file = Mock()
-
-    return cast(AwsServiceMock, service)
-
-
-class ImageStoringServiceMock(Protocol):
-    upload_image: AsyncMock
-    _compress_image: Mock
-
-
-@pytest.fixture
-def image_storing_service_mock() -> ImageStoringServiceMock:
-    service = _create_typed_mock(ImageStoringService)
-
-    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
-    service._compress_image = Mock()
-
-    return cast(ImageStoringServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -1478,7 +1479,6 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         name=TEST_HUB_MEMBER_NAME,
         username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
-        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
         departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
@@ -1495,6 +1495,15 @@ def login_hub_admin_data_mock() -> LoginHubAdminData:
 @pytest.fixture
 def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def image_mock() -> UploadFile:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return UploadFile(filename="my_image.jpg", file=output)
 
 
 @pytest.fixture

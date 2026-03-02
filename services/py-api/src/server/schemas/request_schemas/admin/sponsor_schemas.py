@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import UploadFile
 from pydantic import BaseModel, HttpUrl, ConfigDict
 
 from src.database.model.admin.sponsor_model import ALLOWED_SPONSOR_TIERS
@@ -11,7 +12,7 @@ class SponsorPostReqData(BaseModel):
 
     name: NonEmptyStr
     tier: ALLOWED_SPONSOR_TIERS
-    logo_url: HttpUrl
+    logo: UploadFile
     website_url: Optional[HttpUrl] = None
 
 
@@ -20,5 +21,5 @@ class SponsorPatchReqData(BasePatchReqData):
 
     name: Optional[NonEmptyStr] = None
     tier: Optional[ALLOWED_SPONSOR_TIERS] = None
-    logo_url: Optional[HttpUrl] = None
+    logo: Optional[UploadFile] = None
     website_url: Optional[HttpUrl] = None

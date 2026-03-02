@@ -11,14 +11,14 @@ from tests.integration_tests.conftest import (
 )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_team_success(
     generate_participant_request_body: ParticipantRequestBodyCallable,
     create_test_participant: CreateTestParticipantCallable,
     async_client: AsyncClient,
+    super_auth_token: str,
 ) -> None:
-
     # The only way you can create a team currently is through the creation of an admin participant
     # Given
     admin_participant_body = generate_participant_request_body(
@@ -29,7 +29,7 @@ async def test_delete_team_success(
     # When
     result_2 = await async_client.delete(
         url=f"{TEAM_ENDPOINT_URL}/{result_1.json()["team"]["id"]}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     # Then
@@ -42,10 +42,9 @@ async def test_delete_team_success(
     assert result_2_json["team"]["is_verified"] == result_1_json["team"]["is_verified"]
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
 async def test_delete_team_unauthorized(async_client: AsyncClient, obj_id_mock: str) -> None:
-
     # When
     result = await async_client.delete(
         url=f"{TEAM_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": "Bearer FakeToken"}
@@ -56,13 +55,11 @@ async def test_delete_team_unauthorized(async_client: AsyncClient, obj_id_mock: 
     assert result.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN"})
 @pytest.mark.asyncio
-async def test_delete_team_wrong_obj_id_format(async_client: AsyncClient) -> None:
-
+async def test_delete_team_wrong_obj_id_format(async_client: AsyncClient, super_auth_token: str) -> None:
     # When
     result = await async_client.delete(
-        url=f"{TEAM_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
+        url=f"{TEAM_ENDPOINT_URL}/1", headers={"Authorization": f"Bearer {super_auth_token}"}
     )
 
     # Then
@@ -70,13 +67,14 @@ async def test_delete_team_wrong_obj_id_format(async_client: AsyncClient) -> Non
     assert result.json()["error"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest.mark.asyncio
-async def test_delete_team_obj_id_doesnt_exist(async_client: AsyncClient, obj_id_mock: str) -> None:
-
+async def test_delete_team_obj_id_doesnt_exist(
+    async_client: AsyncClient, obj_id_mock: str, super_auth_token: str
+) -> None:
     # When
     result = await async_client.delete(
-        url=f"{TEAM_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"}
+        url=f"{TEAM_ENDPOINT_URL}/{obj_id_mock}", headers={"Authorization": f"Bearer {super_auth_token}"}
     )
 
     # Then

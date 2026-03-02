@@ -1,6 +1,8 @@
 from typing import cast
 import pytest
 from datetime import datetime
+
+from fastapi import UploadFile
 from result import Err, Ok
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -17,13 +19,15 @@ from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken
-from src.service.jwt_utils.schemas import JwtRefreshToken
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+from src.service.utility.jwt_utils.schemas import JwtRefreshToken
 from tests.unit_tests.conftest import (
     AuthTokensServiceMock,
     HubMembersRepoMock,
     MongoTransactionManagerMock,
     PasswordHashServiceMock,
     RefreshTokenRepoMock,
+    ImageStoringServiceMock,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 
@@ -37,6 +41,7 @@ def auth_service(
     auth_tokens_service_mock: AuthTokensServiceMock,
     password_hash_service_mock: PasswordHashServiceMock,
     tx_manager_mock: MongoTransactionManagerMock,
+    image_storing_service_mock: ImageStoringServiceMock,
 ) -> AuthService:
     return AuthService(
         cast(HubMembersRepository, hub_members_repo_mock),
@@ -44,6 +49,7 @@ def auth_service(
         cast(PasswordHashService, password_hash_service_mock),
         cast(AuthTokenService, auth_tokens_service_mock),
         cast(MongoTransactionManager, tx_manager_mock),
+        cast(ImageStoringService, image_storing_service_mock),
     )
 
 
@@ -54,13 +60,14 @@ async def test_register_hub_admin_success(
     hub_members_repo_mock: HubMembersRepoMock,
     hub_admin_mock: HubAdmin,
     register_hub_admin_data_mock: RegisterHubAdminData,
+    image_mock: UploadFile,
 ) -> None:
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
     hub_members_repo_mock.create.return_value = Ok(hub_admin_mock)
 
     # When
-    result = await auth_service.register_admin(register_hub_admin_data_mock)
+    result = await auth_service.register_admin(register_hub_admin_data_mock, avatar=image_mock)
 
     # Then
     assert isinstance(result, Ok)

@@ -20,8 +20,8 @@ from src.server.schemas.response_schemas.hackathon.schemas import (
 )
 from src.server.schemas.response_schemas.schemas import Response, ErrResponse
 from src.service.hackathon.verification_service import VerificationService
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
 from starlette import status
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
 from tests.unit_tests.conftest import ParticipantVerificationServiceMock, BackgroundTasksMock

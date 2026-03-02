@@ -20,7 +20,7 @@ from src.exception import (
     DuplicateTeamNameError,
     TeamNotFoundError,
 )
-from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.utility.jwt_utils.schemas import JwtParticipantVerificationData
 
 
 @pytest.fixture

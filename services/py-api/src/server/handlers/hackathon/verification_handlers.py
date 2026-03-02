@@ -10,8 +10,8 @@ from src.server.schemas.response_schemas.hackathon.schemas import (
 )
 from src.server.schemas.response_schemas.schemas import Response
 from src.service.hackathon.verification_service import VerificationService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantVerificationData
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantVerificationData
 
 
 class VerificationHandlers(BaseHandler):

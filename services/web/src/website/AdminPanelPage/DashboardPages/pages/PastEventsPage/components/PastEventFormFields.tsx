@@ -29,8 +29,8 @@ export function PastEventFields({ control }: PastEventFormFieldsProps) {
                 control={control}
                 name="cover_picture"
                 label={MESSAGES.LABELS.IMAGE}
-                placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
-                type="url"
+                type="file"
+                accept="image/*"
             />
 
             <Controller
