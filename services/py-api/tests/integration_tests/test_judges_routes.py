@@ -1,7 +1,5 @@
 from io import BytesIO
 from typing import Any, Generator
-from os import environ
-from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
@@ -24,23 +22,22 @@ valid_judge_body: dict[str, Any] = {
 }
 
 
-async def _delete_judge(async_client: AsyncClient, judge_id: str) -> None:
+async def _delete_judge(async_client: AsyncClient, judge_id: str, super_auth_token: str) -> None:
     await async_client.delete(
         url=f"{JUDGES_ENDPOINT_URL}/{judge_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_judge_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Act
     response = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_judge_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -59,12 +56,11 @@ async def test_create_judge_success(
 
     # Cleanup
     judge_id = response_body["judge"]["id"]
-    await _delete_judge(async_client, judge_id)
+    await _delete_judge(async_client, judge_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_create_judge_missing_parameter(async_client: AsyncClient) -> None:
+async def test_create_judge_missing_parameter(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange - Missing avatar_url
     invalid_judge_body: dict[str, Any] = {
         "name": TEST_JUDGE_NAME,
@@ -75,7 +71,7 @@ async def test_create_judge_missing_parameter(async_client: AsyncClient) -> None
     # Act
     response = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=invalid_judge_body,
         follow_redirects=True,
     )
@@ -87,7 +83,6 @@ async def test_create_judge_missing_parameter(async_client: AsyncClient) -> None
     assert "avatar" in response_body["detail"][0]["loc"]
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_create_judge_unauthorized(
     async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
@@ -106,15 +101,14 @@ async def test_create_judge_unauthorized(
     assert response.json()["error"] == "Unauthorized"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_all_judges_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_judge_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -124,7 +118,7 @@ async def test_get_all_judges_success(
     # Act
     response = await async_client.get(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -136,18 +130,17 @@ async def test_get_all_judges_success(
     assert any(j["id"] == judge_id for j in response_body["judges"])
 
     # Cleanup
-    await _delete_judge(async_client, judge_id)
+    await _delete_judge(async_client, judge_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_get_judge_by_id_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_judge_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -158,7 +151,7 @@ async def test_get_judge_by_id_success(
     # Act
     response = await async_client.get(
         url=f"{JUDGES_ENDPOINT_URL}/{judge_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -170,15 +163,14 @@ async def test_get_judge_by_id_success(
     assert response_body["judge"]["company"] == judge["company"]
 
     # Cleanup
-    await _delete_judge(async_client, judge_id)
+    await _delete_judge(async_client, judge_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_judge_by_id_invalid_format(async_client: AsyncClient) -> None:
+async def test_get_judge_by_id_invalid_format(async_client: AsyncClient, super_auth_token: str) -> None:
     response = await async_client.get(
         url=f"{JUDGES_ENDPOINT_URL}/invalid_object_id",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -186,16 +178,15 @@ async def test_get_judge_by_id_invalid_format(async_client: AsyncClient) -> None
     assert response.json()["error"] == "Wrong Object ID format"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
-async def test_get_judge_by_id_not_found(async_client: AsyncClient) -> None:
+async def test_get_judge_by_id_not_found(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange
     NON_EXISTING_ID = "6975472e436158f65093dbb5"
 
     # Act
     response = await async_client.get(
         url=f"{JUDGES_ENDPOINT_URL}/{NON_EXISTING_ID}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -204,15 +195,14 @@ async def test_get_judge_by_id_not_found(async_client: AsyncClient) -> None:
     assert response.json()["error"] == "The specified judge was not found"
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_update_judge_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_judge_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -227,7 +217,7 @@ async def test_update_judge_success(
     # Act
     response = await async_client.patch(
         url=f"{JUDGES_ENDPOINT_URL}/{judge_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=update_data,
         follow_redirects=True,
     )
@@ -239,18 +229,17 @@ async def test_update_judge_success(
     assert response_body["judge"]["job_title"] == "Senior Coder"
 
     # Cleanup
-    await _delete_judge(async_client, judge_id)
+    await _delete_judge(async_client, judge_id, super_auth_token)
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "TEST_TOKEN"})
 @pytest.mark.asyncio
 async def test_delete_judge_success(
-    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
 ) -> None:
     # Arrange
     created = await async_client.post(
         url=JUDGES_ENDPOINT_URL,
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         data=valid_judge_body,
         files={"avatar": image_mock},
         follow_redirects=True,
@@ -260,7 +249,7 @@ async def test_delete_judge_success(
     # Act
     response = await async_client.delete(
         url=f"{JUDGES_ENDPOINT_URL}/{judge_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -271,6 +260,6 @@ async def test_delete_judge_success(
     # Verify 404
     get_deleted = await async_client.get(
         url=f"{JUDGES_ENDPOINT_URL}/{judge_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
     assert get_deleted.status_code == 404
