@@ -38,4 +38,15 @@ def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
         },
     )
 
+    auth_router.add_api_route(
+        path="/logout",
+        methods=["GET"],
+        endpoint=http_handler.logout,
+        responses={
+            204: {"description": "Logout successful"},
+            400: {"model": ErrResponse},
+            401: {"model": ErrResponse},
+        },
+    )
+
     return auth_router

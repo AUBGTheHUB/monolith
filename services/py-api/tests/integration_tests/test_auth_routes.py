@@ -147,3 +147,52 @@ async def test_refresh_token_fails_for_invalid_refresh_token(
 
     # Then
     assert resp.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    aws_mock: Generator[None, Any, None],
+    async_client: AsyncClient,
+    generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
+) -> None:
+    # Given
+    register_data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    register_resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=register_data, files=files)
+    assert register_resp.status_code == 204
+    # When
+    login_hub_admin_data = LoginHubAdminData(username=register_data["username"], password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    tokens_result = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
+    tokens_result.cookies.get("refresh_token")
+
+    resp = await async_client.get(
+        f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": tokens_result.cookies.get("refresh_token")}
+    )
+    set_cookie = resp.headers.get("set-cookie")
+
+    # Then
+    assert resp.status_code == 204
+    assert set_cookie is not None
+    assert "refresh_token=" in set_cookie
+    assert "Max-Age=0" in set_cookie
+
+
+@pytest.mark.asyncio
+async def test_login_token_fails_for_invalid_refresh_token(
+    async_client: AsyncClient,
+) -> None:
+    resp = await async_client.get(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": "Invalid refresh token"})
+
+    # Then
+    assert resp.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_refresh_token_fails_for_empty_refresh_token(
+    async_client: AsyncClient,
+) -> None:
+    resp = await async_client.get(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": ""})
+
+    # Then
+    assert resp.status_code == 400
