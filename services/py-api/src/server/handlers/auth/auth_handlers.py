@@ -4,7 +4,7 @@ from fastapi import Cookie, HTTPException, status, Depends, UploadFile, File
 
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import AccessTokenSuccessfullyIssued, AuthTokensSuccessfullyIssued
+from src.server.schemas.response_schemas.auth.schemas import AuthTokensSuccessfullyIssued
 from src.service.auth.auth_service import AuthService
 from src.server.schemas.response_schemas.schemas import Response
 
@@ -56,7 +56,8 @@ class AuthHandlers(BaseHandler):
         tokens = result.ok_value
 
         response = Response(
-            AccessTokenSuccessfullyIssued(
+            AuthTokensSuccessfullyIssued(
+                id_token=tokens.id_token,
                 access_token=tokens.access_token,
             ),
             status_code=status.HTTP_200_OK,
