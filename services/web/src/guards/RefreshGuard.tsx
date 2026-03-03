@@ -32,7 +32,7 @@ export const RefreshGuard = () => {
     }
 
     if (status === 'error') {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/auth/login" replace />;
     }
 
     return <Outlet />;

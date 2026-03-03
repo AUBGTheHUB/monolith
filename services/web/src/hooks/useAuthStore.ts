@@ -6,7 +6,6 @@ type AuthState = {
     idToken: string | null;
     user: User | null;
     setAuth: (accessToken: string, idToken: string, user: User) => void;
-    setNewAuthToken: (accessToken: string) => void;
     clearAuth: () => void;
 };
 
@@ -16,6 +15,5 @@ export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     setAuth: (accessToken: string, idToken: string, user: User) =>
         set({ accessToken: accessToken, idToken: idToken, user: user }),
-    setNewAuthToken: (accessToken: string) => set({ accessToken: accessToken }),
     clearAuth: () => set({ accessToken: null, idToken: null, user: null }),
 }));

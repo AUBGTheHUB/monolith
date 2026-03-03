@@ -8,7 +8,7 @@ interface RoleGuardProps {
 export const RoleGuard = ({ allowedRoles }: RoleGuardProps) => {
     const siteRole = useAuthStore((state) => state.user?.site_role);
     if (!siteRole) {
-        return <Navigate to="/admin/login" replace />;
+        return <Navigate to="/auth/login" replace />;
     }
     if (!allowedRoles.includes(siteRole)) {
         return <Navigate to="/admin/forbidden" replace />;

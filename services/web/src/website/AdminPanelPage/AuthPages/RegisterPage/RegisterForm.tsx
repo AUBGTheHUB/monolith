@@ -53,7 +53,7 @@ export function RegisterForm() {
             return apiClient.postForm<HubAdmin>('/auth/register', formData);
         },
         onSuccess: async () => {
-            navigate('/admin/login');
+            navigate('/auth/login');
         },
         onError: (error) => {
             alert(error.message);

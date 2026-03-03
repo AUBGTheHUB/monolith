@@ -1,5 +1,7 @@
 import { API_URL } from '@/constants';
 import { useAuthStore } from '@/hooks/useAuthStore';
+import { User } from '@/types/auth';
+import { jwtDecode } from 'jwt-decode';
 
 let refreshPromise: Promise<void> | null = null;
 
@@ -13,8 +15,8 @@ export const refreshToken = async (): Promise<void> => {
         try {
             const refreshResponse = await fetch(`${API_URL}/auth/refresh`, { method: 'POST', credentials: 'include' });
             const refreshData = await refreshResponse.json();
-            console.log(refreshData.access_token);
-            useAuthStore.getState().setNewAuthToken(refreshData.access_token);
+            const user = jwtDecode<User>(refreshData.id_token);
+            useAuthStore.getState().setAuth(refreshData.access_token, refreshData.id_token, user);
         } catch (err) {
             useAuthStore.getState().clearAuth();
             throw err;

@@ -40,17 +40,12 @@ const handleResponse = async <R>(
     }
     //Unauthorized
     if (response.status == 401 && !response.url.includes('login')) {
-        try {
-            if (hasTriedRefresh) {
-                throw new Error('Unauthorized after token refresh');
-            }
-            await refreshToken();
-            const retryResponse = await originalRequest();
-            return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'), true);
-        } catch (err) {
-            // TODO FIX
-            console.log(err);
+        if (hasTriedRefresh) {
+            throw new Error('Unauthorized after token refresh');
         }
+        await refreshToken();
+        const retryResponse = await originalRequest();
+        return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'), true);
     }
     if (response.status == 400 || response.status == 404) {
         const errorData = await response.json();

@@ -50,13 +50,15 @@ function App() {
                     <Route path="*" element={<Hackathon404Page />} />
                 </Route>
 
-                {/* Admin Group */}
-                <Route path="/admin">
-                    <Route element={<AuthenticatedGuard isAuth={false} />}>
+                <Route element={<AuthenticatedGuard isAuth={false} />}>
+                    <Route path="/auth">
                         <Route path="login" element={<LoginPage />} />
                         <Route path="register" element={<RegisterPage />} />
                     </Route>
+                </Route>
 
+                {/* Admin Group */}
+                <Route path="/admin">
                     <Route element={<RefreshGuard />}>
                         <Route element={<AuthenticatedGuard isAuth={true} />}>
                             <Route path="dashboard">
