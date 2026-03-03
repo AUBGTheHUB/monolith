@@ -71,7 +71,7 @@ export function MeetTheTeamEditPage() {
         if (member) {
             reset({
                 name: member.name,
-                position: member.position,
+                position: member.position || '',
                 departments: member.departments as ('Development' | 'Marketing' | 'Logistics' | 'PR' | 'Design')[],
                 avatar: undefined,
                 social_links: {
@@ -100,9 +100,6 @@ export function MeetTheTeamEditPage() {
     });
 
     const onSubmit = (data: TeamMemberFormData) => {
-        //Remove empty social links because API will otherwise replace them with empty strings
-        data.social_links = Object.fromEntries(Object.entries(data.social_links).filter(([, value]) => !!value));
-
         const formData = toFormData(data);
         mutation.mutate(formData);
     };
