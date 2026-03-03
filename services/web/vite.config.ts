@@ -1,5 +1,6 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import { defineConfig, ServerOptions } from 'vite';
 
 export default defineConfig(({ mode }) => {
@@ -24,7 +25,7 @@ export default defineConfig(({ mode }) => {
     }
 
     return {
-        plugins: [react()],
+        plugins: [react(), basicSsl()],
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, './src'),
