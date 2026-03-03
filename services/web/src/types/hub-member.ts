@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { zDateTime } from './utils';
 
 export enum Departments {
     All = 'All',
@@ -25,15 +24,3 @@ export const zBaseHubMember = z.strictObject({
 });
 
 export type BaseHubMember = z.infer<typeof zBaseHubMember>;
-
-export const zHubMember = zBaseHubMember.extend({
-    id: z.string(),
-    username: z.string(),
-    member_type: z.string(), // todo add enum once known
-    position: z.string(), // todo add enum once known
-    site_role: z.string(), // todo add enum once known
-    created_at: zDateTime,
-    updated_at: zDateTime,
-})
-
-export type HubMember = z.infer<typeof zHubMember>;
