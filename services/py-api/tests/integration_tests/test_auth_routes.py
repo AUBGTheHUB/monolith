@@ -179,7 +179,7 @@ async def test_logout_success(
 
 
 @pytest.mark.asyncio
-async def test_login_token_fails_for_invalid_refresh_token(
+async def test_logout_token_fails_for_invalid_refresh_token(
     async_client: AsyncClient,
 ) -> None:
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": "Invalid refresh token"})
@@ -189,7 +189,7 @@ async def test_login_token_fails_for_invalid_refresh_token(
 
 
 @pytest.mark.asyncio
-async def test_refresh_token_fails_for_empty_refresh_token(
+async def test_logout_token_fails_for_empty_refresh_token(
     async_client: AsyncClient,
 ) -> None:
     resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": ""})
