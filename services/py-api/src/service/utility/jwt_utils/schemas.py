@@ -157,7 +157,7 @@ class JwtAdminToken(JwtBase[_DecodedJwtAdminToken]):
             sub=decoded_token["sub"],
             member_type=decoded_token["member_type"],
             exp=decoded_token["exp"],
-            site_role=decoded_token["site_role"],
+            site_role=Role(decoded_token["site_role"]),
         )
 
 
