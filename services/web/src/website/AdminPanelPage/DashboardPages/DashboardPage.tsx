@@ -7,11 +7,13 @@ import { Styles } from '../AdminStyle';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/hooks/useAuthStore';
 import { ROLES } from '@/constants';
+import { AdminNavigation } from './components/AdminNavigation';
 
 export function DashboardPage() {
     const siteRole = useAuthStore((state) => state.user?.site_role);
     return (
         <Fragment>
+            <AdminNavigation />
             <Helmet>
                 <title>Admin Panel - The Hub AUBG</title>
             </Helmet>
