@@ -17,7 +17,7 @@ from src.exception import (
     RefreshTokenIsInvalid,
     RefreshTokenNotFound,
 )
-from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
@@ -135,7 +135,7 @@ class AuthService:
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[AuthTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
+    ) -> Result[AdminTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -175,6 +175,9 @@ class AuthService:
         # Generate new access token for hub admin
         jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
 
+        # Generate new id token for hub admin
+        jwt_id_token = self._auth_token_service.generate_id_token_for(hub_admin=hub_admin)
+
         refresh_expiration = self._auth_token_service.generate_refresh_expiration()
         # Invalidate the old refresh token in db and create a new one in transaction
         result = await self._tx_manager.with_transaction(
@@ -196,5 +199,5 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
         )
 
-        tokens = AuthTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token)
+        tokens = AdminTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token, id_token=jwt_id_token)
         return Ok(tokens)

@@ -13,7 +13,7 @@ from src.exception import (
     PasswordsMismatchError,
     RefreshTokenNotFound,
 )
-from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens
 from src.service.auth.auth_service import AuthService
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
@@ -219,6 +219,7 @@ async def test_refresh_token_success(
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
     auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "token_3"
     tx_manager_mock.with_transaction.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
 
@@ -227,7 +228,7 @@ async def test_refresh_token_success(
 
     # Then
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, AuthTokens)
+    assert isinstance(result.ok_value, AdminTokens)
     assert result.ok_value.access_token == "token_1"
     assert result.ok_value.refresh_token == "token_2"
 
