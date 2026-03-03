@@ -78,7 +78,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         try:
             LOG.info("Fetching all HUB members...")
 
-            hub_members_info = await self._collection.find({self._base_filter}).to_list(length=None)
+            hub_members_info = await self._collection.find(self._base_filter).to_list(length=None)
 
             hub_members = []
             for hub_member in hub_members_info:
