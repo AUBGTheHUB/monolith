@@ -166,7 +166,7 @@ async def test_logout_success(
     tokens_result = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
     tokens_result.cookies.get("refresh_token")
 
-    resp = await async_client.get(
+    resp = await async_client.post(
         f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": tokens_result.cookies.get("refresh_token")}
     )
     set_cookie = resp.headers.get("set-cookie")
@@ -182,7 +182,7 @@ async def test_logout_success(
 async def test_login_token_fails_for_invalid_refresh_token(
     async_client: AsyncClient,
 ) -> None:
-    resp = await async_client.get(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": "Invalid refresh token"})
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": "Invalid refresh token"})
 
     # Then
     assert resp.status_code == 400
@@ -192,7 +192,7 @@ async def test_login_token_fails_for_invalid_refresh_token(
 async def test_refresh_token_fails_for_empty_refresh_token(
     async_client: AsyncClient,
 ) -> None:
-    resp = await async_client.get(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": ""})
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": ""})
 
     # Then
     assert resp.status_code == 400

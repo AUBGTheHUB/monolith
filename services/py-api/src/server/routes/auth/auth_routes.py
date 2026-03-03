@@ -40,7 +40,7 @@ def register_auth_routes(http_handler: AuthHandlers) -> APIRouter:
 
     auth_router.add_api_route(
         path="/logout",
-        methods=["GET"],
+        methods=["POST"],
         endpoint=http_handler.logout,
         responses={
             204: {"description": "Logout successful"},
