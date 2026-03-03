@@ -57,57 +57,60 @@ const handleResponse = async <R>(
     }
     return response.json();
 };
-
 export const apiClient = {
-    // GET and DELETE don't need Content-Type headers
-    get: <R>(endpoint: string) => {
+    get: async <R>(endpoint: string): Promise<R> => {
         const req = () => fetch(`${API_URL}${endpoint}`, { method: 'GET', headers: getHeaders() });
-        return req().then((res) => handleResponse<R>(res, req, false));
+        const res = await req();
+        return handleResponse<R>(res, req, false);
     },
 
-    delete: (endpoint: string) => {
+    delete: async <R>(endpoint: string): Promise<R> => {
         const req = () => fetch(`${API_URL}${endpoint}`, { method: 'DELETE', headers: getHeaders() });
-        return req().then((res) => handleResponse(res, req, false));
+        const res = await req();
+        return handleResponse<R>(res, req, false);
     },
 
-    // POST and PATCH require the JSON content-type
-    post: <R, D>(endpoint: string, data: D) => {
+    post: async <R, D>(endpoint: string, data: D): Promise<R> => {
         const req = () =>
             fetch(`${API_URL}${endpoint}`, {
                 method: 'POST',
                 headers: getHeaders('application/json'),
                 body: JSON.stringify(data),
             });
-        return req().then((res) => handleResponse<R>(res, req, false));
+        const res = await req();
+        return handleResponse<R>(res, req, false);
     },
 
-    patch: <R, D>(endpoint: string, data: D) => {
+    patch: async <R, D>(endpoint: string, data: D): Promise<R> => {
         const req = () =>
             fetch(`${API_URL}${endpoint}`, {
                 method: 'PATCH',
                 headers: getHeaders('application/json'),
                 body: JSON.stringify(data),
             });
-        return req().then((res) => handleResponse<R>(res, req, false));
+        const res = await req();
+        return handleResponse<R>(res, req, false);
     },
-    postForm: <R>(endpoint: string, formData: FormData) => {
+
+    postForm: async <R>(endpoint: string, formData: FormData): Promise<R> => {
         const req = () =>
             fetch(`${API_URL}${endpoint}`, {
                 method: 'POST',
-                headers: getHeaders(), // DO NOT ADD multipart/formdata here to let the browser set the boundary automatically.
-                body: formData,
-            });
-
-        return req().then((res) => handleResponse<R>(res, req, false));
-    },
-    patchForm: async <R>(endpoint: string, formData: FormData) => {
-        const req = () =>
-            fetch(`${API_URL}${endpoint}`, {
-                method: 'PATCH',
-                headers: getHeaders(), // DO NOT ADD multipart/formdata here to let the browser set the boundary automatically.
+                headers: getHeaders(),
                 body: formData,
             });
         const res = await req();
-        return await handleResponse<R>(res, req, false);
+        return handleResponse<R>(res, req, false);
+    },
+
+    patchForm: async <R>(endpoint: string, formData: FormData): Promise<R> => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'PATCH',
+                headers: getHeaders(),
+                body: formData,
+            });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
     },
 };
