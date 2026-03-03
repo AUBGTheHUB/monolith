@@ -4,9 +4,13 @@ export const ENV_MODE: envType = import.meta.env.VITE_ENV || 'LOCAL';
 
 export const API_URLS = {
     DEV: 'https://dev.thehub-aubg.com/api/v3',
-    LOCAL: 'https://localhost:8080/api/v3',
+    LOCAL: '/api/v3',
     PROD: 'https://thehub-aubg.com/api/v3',
 };
+
+export const DEPARTMENT_OPTIONS = ['Development', 'Marketing', 'Logistics', 'PR', 'Design'] as const;
+
+export const ROLES = { dev: 'dev', board: 'board', superAdmin: 'super_admin' };
 
 export const API_URL = API_URLS[ENV_MODE] || API_URLS['LOCAL'];
 

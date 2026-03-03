@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button.tsx';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
-import { Departments, type BaseHubMember } from '@/types/hub-member';
+import { Departments, BaseHubMember } from '@/types/hub-member';
 
 // Because the grid for the meet the team secion is 2x4
 // each slide of the carousel is going to be of 2 elements above each other
