@@ -5,13 +5,12 @@ interface AuthGuardProps {
     isAuth: boolean;
 }
 export const AuthenticatedGuard = ({ isAuth }: AuthGuardProps) => {
-    const access_token = useAuthStore.getState().accessToken;
-
-    if (!access_token && isAuth) {
+    const accessToken = useAuthStore((state) => state.accessToken);
+    if (!accessToken && isAuth) {
         return <Navigate to="/auth/login" replace />;
     }
-    if (access_token && !isAuth) {
-        return <Navigate to="/admin/forbidden" replace />;
+    if (accessToken && !isAuth) {
+        return <Navigate to="/admin/dashboard" replace />;
     }
     return <Outlet />;
 };

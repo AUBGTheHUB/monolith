@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
@@ -50,15 +50,18 @@ function App() {
                     <Route path="*" element={<Hackathon404Page />} />
                 </Route>
 
-                <Route element={<AuthenticatedGuard isAuth={false} />}>
-                    <Route path="/auth">
-                        <Route path="login" element={<LoginPage />} />
-                        <Route path="register" element={<RegisterPage />} />
+                <Route path="/auth">
+                    <Route element={<RefreshGuard />}>
+                        <Route element={<AuthenticatedGuard isAuth={false} />}>
+                            <Route path="login" element={<LoginPage />} />
+                            <Route path="register" element={<RegisterPage />} />
+                        </Route>
                     </Route>
                 </Route>
 
                 {/* Admin Group */}
                 <Route path="/admin">
+                    <Route index element={<Navigate to="dashboard" replace />} />
                     <Route element={<RefreshGuard />}>
                         <Route element={<AuthenticatedGuard isAuth={true} />}>
                             <Route path="dashboard">

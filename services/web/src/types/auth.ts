@@ -1,3 +1,5 @@
+import { HubMember } from '@/types/hub-member.ts';
+
 export type User = {
     name: string;
     username: string;
@@ -5,20 +7,7 @@ export type User = {
     site_role: string;
 };
 
-export type HubAdmin = {
-    id: string;
-    name: string;
-    member_type: string;
-    position: string;
-    avatar_url: string;
-    departments: string[];
-    social_links: {
-        github?: string;
-        website?: string;
-        linkedin?: string;
-    };
-    created_at: string;
-    updated_at: string;
+export type HubAdmin = HubMember & {
     site_role: string;
     username: string;
 };
