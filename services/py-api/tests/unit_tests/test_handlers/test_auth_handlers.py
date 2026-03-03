@@ -193,3 +193,70 @@ async def test_expired_refresh_token(
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.response_model.error == "The JWT token has expired."
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    # Given
+    auth_service_mock.logout.return_value = Ok(None)
+
+    # When
+    resp = await auth_handlers.logout(refresh_token="token")
+    cookies = resp.headers.getlist("Set-Cookie")
+
+    # Then
+    assert isinstance(resp, StarletteResponse)
+    assert resp.status_code == status.HTTP_204_NO_CONTENT
+    assert any("refresh_token" in c for c in cookies)
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token_is_none(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(RefreshTokenNotFound())
+
+        # When
+        await auth_handlers.logout(refresh_token="token_2")
+        # Then
+        assert exception.value.detail == "The refresh token was not found."
+        assert exception.value.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.asyncio
+async def test_logout_with_expired_refresh_token(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(JwtExpiredSignatureError())
+
+        # When
+        await auth_handlers.logout(refresh_token="token")
+        # Then
+        assert exception.value.detail == "The JWT token has expired."
+        assert exception.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_logout_general_exception(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(Exception("General expection"))
+
+        # When
+        await auth_handlers.logout("refresh")
+
+        # Then
+        assert exception.value.detail == "General expection"
+        assert exception.value.status_code == status.HTTP_401_UNAUTHORIZED

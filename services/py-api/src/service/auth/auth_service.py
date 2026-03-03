@@ -201,3 +201,25 @@ class AuthService:
 
         tokens = AdminTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token, id_token=jwt_id_token)
         return Ok(tokens)
+
+    async def logout(
+        self, refresh_token: str | None
+    ) -> Result[None, RefreshTokenNotFound | RefreshTokenIsInvalid | Exception]:
+        if refresh_token is None:
+            return Err(RefreshTokenNotFound(()))
+
+        # Decode the refresh token
+        decoded_token_result = self._auth_token_service.decode_refresh_token(refresh_token=refresh_token)
+
+        if is_err(decoded_token_result):
+            return decoded_token_result
+
+        # Blacklist all of the refresh tokens from that family id
+        blacklist_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(
+            decoded_token_result.ok_value.family_id
+        )
+
+        if is_err(blacklist_result):
+            return blacklist_result
+
+        return Ok(None)

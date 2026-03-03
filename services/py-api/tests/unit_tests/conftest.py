@@ -607,11 +607,11 @@ class RefreshTokenRepoMock(Protocol):
     """
 
     fetch_by_id: AsyncMock
-    fetch_by_team_name: AsyncMock
     fetch_all: AsyncMock
     update: AsyncMock
     create: AsyncMock
     delete: AsyncMock
+    invalidate_all_tokens_by_family_id: AsyncMock
 
 
 @pytest.fixture
@@ -626,6 +626,7 @@ def refresh_token_repo_mock() -> RefreshTokenRepoMock:
     refresh_token_repo.fetch_all = AsyncMock()
     refresh_token_repo.fetch_by_id = AsyncMock()
     refresh_token_repo.update = AsyncMock()
+    refresh_token_repo.invalidate_all_tokens_by_family_id = AsyncMock()
 
     return cast(RefreshTokenRepoMock, refresh_token_repo)
 
@@ -998,6 +999,7 @@ class AuthServiceMock(Protocol):
     refresh_token = AsyncMock
     login_admin = AsyncMock
     register_admin = AsyncMock
+    logout = AsyncMock
 
 
 @pytest.fixture
@@ -1010,6 +1012,7 @@ def auth_service_mock() -> AuthServiceMock:
     auth_service_mock.refresh_token = AsyncMock()
     auth_service_mock.login_admin = AsyncMock()
     auth_service_mock.register_admin = AsyncMock()
+    auth_service_mock.logout = AsyncMock()
 
     return cast(AuthServiceMock, auth_service_mock)
 

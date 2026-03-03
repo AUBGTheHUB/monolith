@@ -68,3 +68,20 @@ class AuthHandlers(BaseHandler):
         )
 
         return response
+
+    async def logout(self, refresh_token: str | None = Cookie(default=None)) -> StarletteResponse:
+        result = await self._service.logout(refresh_token=refresh_token)
+
+        if is_err(result):
+            error_response = self.handle_error(result.err_value)
+            raise HTTPException(
+                status_code=error_response.status_code,
+                detail=error_response.response_model.error,
+                headers=dict(error_response.headers),
+            )
+
+        response = StarletteResponse(status_code=status.HTTP_204_NO_CONTENT)
+
+        response.set_cookie(key="refresh_token", max_age=0, httponly=True, secure=True, samesite="strict")
+
+        return response

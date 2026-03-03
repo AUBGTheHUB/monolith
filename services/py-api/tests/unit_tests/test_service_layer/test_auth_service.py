@@ -315,3 +315,50 @@ async def test_refresh_token_transaction_failed(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    auth_service: AuthService,
+    refresh_token_repo_mock: RefreshTokenRepoMock,
+    auth_tokens_service_mock: AuthTokensServiceMock,
+    jwt_refresh_token_mock: JwtRefreshToken,
+) -> None:
+    # Given
+    auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
+    refresh_token_repo_mock.invalidate_all_tokens_by_family_id.return_value = Ok(None)
+
+    # When
+    result = await auth_service.logout("refresh")
+
+    # Then
+    assert isinstance(result, Ok)
+    assert result.ok_value is None
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token__has_decode_error(
+    auth_service: AuthService,
+    auth_tokens_service_mock: AuthTokensServiceMock,
+) -> None:
+    # Given
+    auth_tokens_service_mock.decode_refresh_token.return_value = Err(Exception())
+
+    # When
+    result = await auth_service.logout("refresh")
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token_is_none(
+    auth_service: AuthService,
+) -> None:
+    # When
+    result = await auth_service.logout(None)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, RefreshTokenNotFound)
