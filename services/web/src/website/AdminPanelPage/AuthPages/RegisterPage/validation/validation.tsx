@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { DEPARTMENT_OPTIONS } from '@/constants.ts';
 import { FILE_RULES } from '@/globalValidation/fileRules.ts';
+import { cleanHubMember } from '@/helpers/formHelpers.ts';
 
 export const registerSchema = z
     .object({
@@ -30,6 +31,7 @@ export const registerSchema = z
     .refine((data) => data.password === data.repeat_password, {
         message: 'Passwords do not match',
         path: ['repeat_password'],
-    });
+    })
+    .transform(cleanHubMember);
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
