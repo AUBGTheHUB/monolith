@@ -5,18 +5,31 @@ import { Helmet } from 'react-helmet';
 import { Styles } from '../AdminStyle';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/hooks/useAuthStore';
-import { ROLES } from '@/constants';
+import { API_URL, ROLES } from '@/constants';
 import { Home, LogOut } from 'lucide-react';
 import AdminPageCard from '@/website/AdminPanelPage/DashboardPages/components/AdminPageCard.tsx';
+import { useMutation } from '@tanstack/react-query';
 
 export function DashboardPage() {
     const user = useAuthStore((state) => state.user);
     const siteRole = user?.site_role;
     const navigate = useNavigate();
 
+    const mutation = useMutation({
+        mutationFn: () => {
+            return fetch(`${API_URL}/auth/logout`, { method: 'POST' });
+        },
+        onSuccess: async () => {
+            navigate('/');
+        },
+        onError: (error: Error) => {
+            alert(error.message);
+        },
+    });
+
     const handleLogout = () => {
         useAuthStore.getState().clearAuth();
-        navigate('/');
+        mutation.mutate();
     };
 
     return (
