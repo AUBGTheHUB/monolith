@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export enum Departments {
     All = 'All',
-    Board = 'Board',
     PR = 'PR',
     Design = 'Design',
     Development = 'Development',
