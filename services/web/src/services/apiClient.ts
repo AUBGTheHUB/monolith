@@ -41,7 +41,7 @@ const handleResponse = async <R>(
     //Unauthorized
     if (response.status == 401 && !response.url.includes('login')) {
         if (hasTriedRefresh) {
-            throw new Error('Unauthorized after token refresh');
+            throw new Error('Expired session. Log in again.');
         }
         await refreshToken();
         const retryResponse = await originalRequest();
