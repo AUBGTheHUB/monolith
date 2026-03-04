@@ -24,9 +24,11 @@ const imageValidation = z
     );
 
 // 3. Creation Schema (POST) - Image is REQUIRED
-export const createTeamMemberSchema = baseSchema.extend({
-    avatar: imageValidation.refine((files) => files?.length > 0, 'Profile image is required').transform(cleanHubMember),
-});
+export const createTeamMemberSchema = baseSchema
+    .extend({
+        avatar: imageValidation.refine((files) => files?.length > 0, 'Profile image is required'),
+    })
+    .transform(cleanHubMember);
 
 // 4. Update Schema (PATCH) - Image is OPTIONAL
 export const updateTeamMemberSchema = baseSchema
