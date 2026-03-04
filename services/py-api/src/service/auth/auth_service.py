@@ -165,7 +165,7 @@ class AuthService:
         hub_admin_id = refresh_token_result.ok_value.hub_member_id
 
         # Find hub admin in db
-        hub_admin_result = await self._hub_members_repo.fetch_by_id(obj_id=hub_admin_id)
+        hub_admin_result = await self._hub_members_repo.fetch_by_id(obj_id=str(hub_admin_id))
 
         if is_err(hub_admin_result):
             return hub_admin_result

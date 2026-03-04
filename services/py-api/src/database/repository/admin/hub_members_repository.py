@@ -62,7 +62,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     async def fetch_by_id(self, obj_id: str) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info("Fetching hub_member by ObjectID...", hub_member_id=obj_id)
-            query = {"_id": ObjectId(obj_id), **self._base_filter}
+            query = {"_id": ObjectId(obj_id)}
             hub_member = await self._collection.find_one(filter=query)
 
             if hub_member is None:

@@ -66,7 +66,7 @@ function App() {
                         <Route element={<AuthenticatedGuard isAuth={true} />}>
                             <Route path="dashboard">
                                 <Route index element={<DashboardPage />} />
-                                <Route element={<RoleGuard allowedRoles={['board', 'super-admin']} />}>
+                                <Route element={<RoleGuard allowedRoles={['board', 'super_admin']} />}>
                                     {/* Meet the Team Sub-group */}
                                     <Route path="meet-the-team">
                                         <Route index element={<MeetTheTeamPage />} />
@@ -102,7 +102,7 @@ function App() {
                                         <Route path=":id" element={<PastEventsEditPage />} />
                                     </Route>
                                 </Route>
-                                <Route element={<RoleGuard allowedRoles={['dev', 'super-admin']} />}>
+                                <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
                                     <Route path="feature-switches" element={<FeatureSwitchesPage />} />
                                 </Route>
                             </Route>
