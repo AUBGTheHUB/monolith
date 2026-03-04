@@ -1,6 +1,6 @@
 import { Control } from 'react-hook-form';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent.tsx';
-import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
+import { SponsorFormData } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/validation.tsx';
 import { SponsorsFormFieldMessages as MESSAGES } from '../messages.tsx';
 import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent.tsx';
 const TIERS = ['Platinum', 'Gold', 'Silver', 'Bronze', 'Custom'];
@@ -26,13 +26,7 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.TIER}
                 items={TIERS.map((tier) => ({ label: tier, value: tier.toUpperCase(), name: tier }))}
             />
-            <InputComponent
-                control={control}
-                name="logo_url"
-                label={MESSAGES.LABELS.LOGO}
-                placeholder={MESSAGES.PLACEHOLDERS.LOGO}
-                type="url"
-            />
+            <InputComponent control={control} name="logo" label={MESSAGES.LABELS.LOGO} type="file" accept="image/*" />
             <InputComponent
                 control={control}
                 name="website_url"
@@ -40,14 +34,6 @@ export function SponsorFormFields({ control }: SponsorFormFieldsProps) {
                 placeholder={MESSAGES.PLACEHOLDERS.WEBSITE}
                 type="url"
             />
-            {/*TODO Add in BE*/}
-            {/*<InputComponent*/}
-            {/*    control={control}*/}
-            {/*    name="careersUrl"*/}
-            {/*    label={MESSAGES.LABELS.CAREERS}*/}
-            {/*    placeholder={MESSAGES.PLACEHOLDERS.CAREERS}*/}
-            {/*    type="url"*/}
-            {/*/>*/}
         </>
     );
 }

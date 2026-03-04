@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends
 
+from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
-from src.server.routes.route_dependencies import is_authorized, validate_obj_id
+from src.server.routes.route_dependencies import validate_obj_id
 from src.server.schemas.response_schemas.admin.judge_schemas import JudgesResponse, JudgeResponse
 from src.server.schemas.response_schemas.schemas import ErrResponse
+from src.server.utility.role_checker import RoleChecker
 
 
 def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
@@ -31,7 +33,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized)],
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
 
     judges_router.add_api_route(
@@ -44,7 +46,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
 
     judges_router.add_api_route(
@@ -57,7 +59,7 @@ def register_judges_routes(http_handler: JudgesHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
 
     return judges_router

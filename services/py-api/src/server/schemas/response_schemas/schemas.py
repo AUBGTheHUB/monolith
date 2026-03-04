@@ -1,5 +1,4 @@
 from typing import Mapping, Any
-
 from pydantic import BaseModel, ConfigDict, field_serializer
 from starlette.background import BackgroundTask
 from starlette.responses import JSONResponse
@@ -58,4 +57,3 @@ class AllFeatureSwitchesResponse(BaseModel):
     @field_serializer("features")
     def serialize_features(self, features: list[FeatureSwitch]) -> list[dict[str, Any]]:
         return [feature.dump_as_json() for feature in features]
-

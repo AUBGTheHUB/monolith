@@ -3,15 +3,12 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
+from fastapi import UploadFile
 from result import Err, Ok
 
 from src.database.model.admin.past_event_model import PastEvent
 from src.exception import PastEventNotFoundError
 from src.server.handlers.admin.past_events_handlers import PastEventsHandlers
-from src.server.schemas.request_schemas.admin.past_event_schemas import (
-    PastEventPostReqData,
-    PastEventPatchReqData,
-)
 from src.server.schemas.response_schemas.schemas import Response
 from src.service.admin.past_events_service import PastEventsService
 from tests.unit_tests.conftest import PastEventsServiceMock
@@ -27,18 +24,18 @@ async def test_create_past_event_returns_201(
     past_events_handlers: PastEventsHandlers,
     past_events_service_mock: PastEventsServiceMock,
     past_event_mock: PastEvent,
+    image_mock: UploadFile,
 ) -> None:
-    req = PastEventPostReqData(
-        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
-    )
 
     past_events_service_mock.create.return_value = Ok(past_event_mock)
 
-    resp = await past_events_handlers.create_past_event(req)
+    resp = await past_events_handlers.create_past_event(
+        title=past_event_mock.title, cover_picture=image_mock, tags=past_event_mock.tags
+    )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
-    past_events_service_mock.create.assert_awaited_once_with(req)
+    past_events_service_mock.create.assert_awaited_once_with(past_event_mock.title, image_mock, past_event_mock.tags)
 
 
 @pytest.mark.asyncio
@@ -74,17 +71,22 @@ async def test_update_past_event_returns_200(
     past_events_handlers: PastEventsHandlers,
     past_events_service_mock: PastEventsServiceMock,
     past_event_mock: PastEvent,
+    image_mock: UploadFile,
 ) -> None:
-    req = PastEventPatchReqData(
-        title=past_event_mock.title, cover_picture=past_event_mock.cover_picture, tags=past_event_mock.tags
-    )
 
     past_events_service_mock.update.return_value = Ok(past_event_mock)
 
-    resp = await past_events_handlers.update_past_event(str(past_event_mock.id), req)
+    resp = await past_events_handlers.update_past_event(
+        object_id=str(past_event_mock.id),
+        title=past_event_mock.title,
+        cover_picture=image_mock,
+        tags=past_event_mock.tags,
+    )
 
     assert resp.status_code == 200
-    past_events_service_mock.update.assert_awaited_once_with(str(past_event_mock.id), req)
+    past_events_service_mock.update.assert_awaited_once_with(
+        str(past_event_mock.id), past_event_mock.title, image_mock, past_event_mock.tags
+    )
 
 
 @pytest.mark.asyncio

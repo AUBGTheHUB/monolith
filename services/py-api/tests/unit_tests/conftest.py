@@ -2,12 +2,14 @@
 # This is because we have TypedMocks which mypy thinks are the actual classes
 
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
-from fastapi import BackgroundTasks
+from PIL import Image
+from fastapi import BackgroundTasks, UploadFile
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorClientSession,
@@ -605,11 +607,11 @@ class RefreshTokenRepoMock(Protocol):
     """
 
     fetch_by_id: AsyncMock
-    fetch_by_team_name: AsyncMock
     fetch_all: AsyncMock
     update: AsyncMock
     create: AsyncMock
     delete: AsyncMock
+    invalidate_all_tokens_by_family_id: AsyncMock
 
 
 @pytest.fixture
@@ -624,6 +626,7 @@ def refresh_token_repo_mock() -> RefreshTokenRepoMock:
     refresh_token_repo.fetch_all = AsyncMock()
     refresh_token_repo.fetch_by_id = AsyncMock()
     refresh_token_repo.update = AsyncMock()
+    refresh_token_repo.invalidate_all_tokens_by_family_id = AsyncMock()
 
     return cast(RefreshTokenRepoMock, refresh_token_repo)
 
@@ -733,6 +736,38 @@ def sponsors_service_mock() -> SponsorsServiceMock:
     return cast(SponsorsServiceMock, service)
 
 
+class AwsServiceMock(Protocol):
+    # get_s3_client: Mock
+    upload_file: Mock
+
+
+@pytest.fixture
+def aws_service_mock() -> AwsServiceMock:
+    service = _create_typed_mock(AwsService)
+
+    # service.get_s3_client = Mock()
+    service.upload_file = Mock()
+
+    return cast(AwsServiceMock, service)
+
+
+class ImageStoringServiceMock(Protocol):
+    upload_image: AsyncMock
+    delete_image: Mock
+    _compress_image: Mock
+
+
+@pytest.fixture
+def image_storing_service_mock() -> ImageStoringServiceMock:
+    service = _create_typed_mock(ImageStoringService)
+
+    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
+    service.delete_image = Mock()
+    service._compress_image = Mock()
+
+    return cast(ImageStoringServiceMock, service)
+
+
 class JudgesServiceMock(Protocol):
     get_all: AsyncMock
     get: AsyncMock
@@ -752,36 +787,6 @@ def judges_service_mock() -> JudgesServiceMock:
     service.delete = AsyncMock()
 
     return cast(JudgesServiceMock, service)
-
-
-class AwsServiceMock(Protocol):
-    # get_s3_client: Mock
-    upload_file: Mock
-
-
-@pytest.fixture
-def aws_service_mock() -> AwsServiceMock:
-    service = _create_typed_mock(AwsService)
-
-    # service.get_s3_client = Mock()
-    service.upload_file = Mock()
-
-    return cast(AwsServiceMock, service)
-
-
-class ImageStoringServiceMock(Protocol):
-    upload_image: AsyncMock
-    _compress_image: Mock
-
-
-@pytest.fixture
-def image_storing_service_mock() -> ImageStoringServiceMock:
-    service = _create_typed_mock(ImageStoringService)
-
-    service.upload_image = _create_typed_async_mock(ImageStoringService.upload_image)
-    service._compress_image = Mock()
-
-    return cast(ImageStoringServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -994,6 +999,7 @@ class AuthServiceMock(Protocol):
     refresh_token = AsyncMock
     login_admin = AsyncMock
     register_admin = AsyncMock
+    logout = AsyncMock
 
 
 @pytest.fixture
@@ -1006,6 +1012,7 @@ def auth_service_mock() -> AuthServiceMock:
     auth_service_mock.refresh_token = AsyncMock()
     auth_service_mock.login_admin = AsyncMock()
     auth_service_mock.register_admin = AsyncMock()
+    auth_service_mock.logout = AsyncMock()
 
     return cast(AuthServiceMock, auth_service_mock)
 
@@ -1030,6 +1037,7 @@ def password_hash_service_mock() -> PasswordHashServiceMock:
 
 class AuthTokensServiceMock(Protocol):
     generate_access_token_for = Mock
+    generate_id_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
     generate_refresh_expiration = Mock
@@ -1043,6 +1051,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
 
     auth_tokens_service_mock.generate_access_token_for = Mock()
+    auth_tokens_service_mock.generate_id_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
@@ -1473,7 +1482,6 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         name=TEST_HUB_MEMBER_NAME,
         username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
-        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
         departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,
@@ -1490,6 +1498,15 @@ def login_hub_admin_data_mock() -> LoginHubAdminData:
 @pytest.fixture
 def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
+
+
+@pytest.fixture
+def image_mock() -> UploadFile:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return UploadFile(filename="my_image.jpg", file=output)
 
 
 @pytest.fixture

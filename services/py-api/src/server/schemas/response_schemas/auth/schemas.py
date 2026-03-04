@@ -8,8 +8,8 @@ from src.database.model.admin.hub_admin_model import HubAdmin
 class UserResponse(BaseModel):
     # We need this to skip validation during schema generation. Otherwise, we get  Unable to generate pydantic-core
     # schema for <class 'bson.objectid.ObjectId'>
-    model_config = ConfigDict(arbitrary_types_allowed=True)
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     hub_admin: HubAdmin
 
     @field_serializer("hub_admin")
@@ -17,9 +17,10 @@ class UserResponse(BaseModel):
         return hub_admin.dump_as_json()
 
 
-class AccessTokenSuccessfullyIssued(BaseModel):
+class AuthTokensSuccessfullyIssued(BaseModel):
     """
-    Responds upon either a successful login for a hub admin, or successfully refreshing their session
+    Responds upon a successful login for a hub admin, returning their access token and id token
     """
 
+    id_token: str
     access_token: str

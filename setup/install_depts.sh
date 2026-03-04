@@ -28,14 +28,16 @@ if [[ "$OS_TYPE" == "Linux" ]]; then
     elif [[ "$DISTRO" == "fedora" ]]; then
         echo "🎩 Detected Fedora. Bundling system installations..."
         # Add Gum repo for Fedora
+        # If there is any indentation in this echo, it is reflected in the file
+        # and triggers indentation error when trying to install
         echo '[charm]
-        name=Charm
-        baseurl=https://repo.charm.sh/yum/
-        enabled=1
-        gpgcheck=1
-        gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
+name=Charm
+baseurl=https://repo.charm.sh/yum/
+enabled=1
+gpgcheck=1
+gpgkey=https://repo.charm.sh/yum/gpg.key' | sudo tee /etc/yum.repos.d/charm.repo
 
-        sudo dnf groupinstall -y "Development Tools"
+        sudo dnf group install -y "Development Tools"
         sudo dnf install -y \
             zlib-devel bzip2-devel readline-devel sqlite-devel \
             openssl-devel xz-devel libffi-devel findutils \

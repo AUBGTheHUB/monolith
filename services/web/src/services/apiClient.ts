@@ -1,12 +1,14 @@
 import { API_URL } from '../constants.ts';
+import { useAuthStore } from '@/hooks/useAuthStore';
+import { refreshToken } from './refreshToken.ts';
 
 const getHeaders = (contentType?: string) => {
-    const headers: HeadersInit = {
-        // Shared headers
-        //TEMP SOLUTION: Will change when auth is implemented
-        Authorization: 'Bearer a0e923d30b613ce5cf57d9af35a3d4d2e8efa660f579b9a547918bd1c83fdb7b',
-    };
+    const headers: HeadersInit = {};
+    const accessToken = useAuthStore.getState().accessToken;
 
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`;
+    }
     // Only add Content-Type if we are actually sending data
     if (contentType) {
         headers['Content-Type'] = contentType;
@@ -15,7 +17,11 @@ const getHeaders = (contentType?: string) => {
     return headers;
 };
 
-const handleResponse = async <R>(response: Response): Promise<R> => {
+const handleResponse = async <R>(
+    response: Response,
+    originalRequest: () => Promise<Response>,
+    hasTriedRefresh: boolean,
+): Promise<R> => {
     //Handle responses based on FastAPI's response schemas
     if (response.status == 204) {
         return {} as R;
@@ -32,7 +38,16 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
 
         throw new Error(messages);
     }
-    if (response.status == 400 || response.status == 401 || response.status == 404) {
+    //Unauthorized
+    if (response.status == 401 && !response.url.includes('login')) {
+        if (hasTriedRefresh) {
+            throw new Error('Expired session. Log in again.');
+        }
+        await refreshToken();
+        const retryResponse = await originalRequest();
+        return handleResponse<R>(retryResponse, () => Promise.reject('Retry failed'), true);
+    }
+    if (response.status == 400 || response.status == 404) {
         const errorData = await response.json();
         const message = errorData.error || 'Unexpected error occurred!';
         throw new Error(message);
@@ -42,33 +57,60 @@ const handleResponse = async <R>(response: Response): Promise<R> => {
     }
     return response.json();
 };
-
 export const apiClient = {
-    // GET and DELETE don't need Content-Type headers
-    get: <R>(endpoint: string) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'GET',
-            headers: getHeaders(),
-        }).then((res) => handleResponse<R>(res)),
+    get: async <R>(endpoint: string): Promise<R> => {
+        const req = () => fetch(`${API_URL}${endpoint}`, { method: 'GET', headers: getHeaders() });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
 
-    delete: (endpoint: string) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'DELETE',
-            headers: getHeaders(),
-        }).then((res) => handleResponse(res)),
+    delete: async <R>(endpoint: string): Promise<R> => {
+        const req = () => fetch(`${API_URL}${endpoint}`, { method: 'DELETE', headers: getHeaders() });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
 
-    // POST and PATCH require the JSON content-type
-    post: <R, D>(endpoint: string, data: D) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'POST',
-            headers: getHeaders('application/json'),
-            body: JSON.stringify(data),
-        }).then((res) => handleResponse<R>(res)),
+    post: async <R, D>(endpoint: string, data: D): Promise<R> => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: getHeaders('application/json'),
+                body: JSON.stringify(data),
+            });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
 
-    patch: <R, D>(endpoint: string, data: D) =>
-        fetch(`${API_URL}${endpoint}`, {
-            method: 'PATCH',
-            headers: getHeaders('application/json'),
-            body: JSON.stringify(data),
-        }).then((res) => handleResponse<R>(res)),
+    patch: async <R, D>(endpoint: string, data: D): Promise<R> => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'PATCH',
+                headers: getHeaders('application/json'),
+                body: JSON.stringify(data),
+            });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
+
+    postForm: async <R>(endpoint: string, formData: FormData): Promise<R> => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: formData,
+            });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
+
+    patchForm: async <R>(endpoint: string, formData: FormData): Promise<R> => {
+        const req = () =>
+            fetch(`${API_URL}${endpoint}`, {
+                method: 'PATCH',
+                headers: getHeaders(),
+                body: formData,
+            });
+        const res = await req();
+        return handleResponse<R>(res, req, false);
+    },
 };

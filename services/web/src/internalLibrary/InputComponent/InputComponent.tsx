@@ -2,9 +2,10 @@ import { Control, FieldValues, Path } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
-export type InputTypes = 'text' | 'email' | 'password' | 'number' | 'url';
-
+export type InputTypes = 'text' | 'email' | 'password' | 'number' | 'url' | 'file';
+type InputValue = string | number | FileList | null;
 type InputProps<T extends FieldValues> = {
     control: Control<T>;
     name: Path<T>;
@@ -15,21 +16,22 @@ type InputProps<T extends FieldValues> = {
     labelClassName?: string;
     inputClassName?: string;
     disabled?: boolean;
+    accept?: string;
 };
 
-function handleInputChange(value: string, type: InputTypes): string | number {
-    return type === 'number' ? +value : value;
-}
-
 function handleFieldChange(
-    onChange: (value: string | number) => void,
+    onChange: (value: InputValue) => void,
     type: InputTypes,
 ): (e: React.ChangeEvent<HTMLInputElement>) => void {
     return (e) => {
-        onChange(handleInputChange(e.target.value, type));
+        if (type === 'file') {
+            onChange(e.target.files); // Pass the FileList object
+        } else {
+            const value = e.target.value;
+            onChange(type === 'number' ? +value : value);
+        }
     };
 }
-
 export const InputComponent = <T extends FieldValues>({
     control,
     name,
@@ -56,7 +58,8 @@ export const InputComponent = <T extends FieldValues>({
                             placeholder={placeholder}
                             className={cn(inputClassName)}
                             onChange={handleFieldChange(field.onChange, type)}
-                            value={type === 'number' ? field.value || '' : field.value}
+                            // File inputs must NOT have a value prop (it throws a DOM exception)
+                            value={type === 'file' ? undefined : type === 'number' ? field.value || '' : field.value}
                         />
                     </FormControl>
                     <div className="min-h-[24px] !mb-3">{error && <FormMessage>{error.message}</FormMessage>}</div>

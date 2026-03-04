@@ -3,6 +3,21 @@
     font-size: clamp(16px, 2.5vw, 22px);
 }
 
+@keyframes scheduleTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-state='active'].schedule-tab-content {
+    animation: scheduleTabIn 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
 .schedule-container {
     max-width: clamp(40rem, 82vw, 80rem);
 }

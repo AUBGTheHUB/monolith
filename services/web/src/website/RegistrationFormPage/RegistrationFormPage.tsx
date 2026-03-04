@@ -10,7 +10,7 @@ export const FormPage = () => {
     return (
         <Fragment>
             <Helmet>
-                <title>Hackathon 7.0</title>
+                <title>Hackathon 8.0</title>
                 <link rel="icon" href="/faviconHack.ico" />
             </Helmet>
             <Navigation />

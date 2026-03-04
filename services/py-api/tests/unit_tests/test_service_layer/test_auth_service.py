@@ -1,6 +1,8 @@
 from typing import cast
 import pytest
 from datetime import datetime
+
+from fastapi import UploadFile
 from result import Err, Ok
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -11,11 +13,13 @@ from src.exception import (
     PasswordsMismatchError,
     RefreshTokenNotFound,
 )
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens
 from src.service.auth.auth_service import AuthService
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.utility.jwt_utils.schemas import JwtRefreshToken
 from tests.unit_tests.conftest import (
     AuthTokensServiceMock,
@@ -23,6 +27,7 @@ from tests.unit_tests.conftest import (
     MongoTransactionManagerMock,
     PasswordHashServiceMock,
     RefreshTokenRepoMock,
+    ImageStoringServiceMock,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 
@@ -36,6 +41,7 @@ def auth_service(
     auth_tokens_service_mock: AuthTokensServiceMock,
     password_hash_service_mock: PasswordHashServiceMock,
     tx_manager_mock: MongoTransactionManagerMock,
+    image_storing_service_mock: ImageStoringServiceMock,
 ) -> AuthService:
     return AuthService(
         cast(HubMembersRepository, hub_members_repo_mock),
@@ -43,6 +49,7 @@ def auth_service(
         cast(PasswordHashService, password_hash_service_mock),
         cast(AuthTokenService, auth_tokens_service_mock),
         cast(MongoTransactionManager, tx_manager_mock),
+        cast(ImageStoringService, image_storing_service_mock),
     )
 
 
@@ -53,17 +60,17 @@ async def test_register_hub_admin_success(
     hub_members_repo_mock: HubMembersRepoMock,
     hub_admin_mock: HubAdmin,
     register_hub_admin_data_mock: RegisterHubAdminData,
+    image_mock: UploadFile,
 ) -> None:
     # Given
     password_hash_service_mock.hash_password.return_value = TEST_HUB_ADMIN_PASSWORD_HASH.encode("utf-8")
     hub_members_repo_mock.create.return_value = Ok(hub_admin_mock)
 
     # When
-    result = await auth_service.register_admin(register_hub_admin_data_mock)
+    result = await auth_service.register_admin(register_hub_admin_data_mock, avatar=image_mock)
 
     # Then
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, HubAdmin)
 
 
 @pytest.mark.asyncio
@@ -119,18 +126,20 @@ async def test_login_hub_admin_success(
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
     auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
-    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "token_auth"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "token_id"
     refresh_token_repo_mock.create.return_value = Ok(refresh_token_mock)
-    auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
+    auth_tokens_service_mock.generate_refresh_token.return_value = "token_refresh"
 
     # When
     result = await auth_service.login_admin(login_hub_admin_data_mock)
 
     # Then
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, tuple)
-    assert result.ok_value[0] == "token_1"
-    assert result.ok_value[1] == "token_2"
+    assert isinstance(result.ok_value, AdminTokens)
+    assert result.ok_value.access_token == "token_auth"
+    assert result.ok_value.id_token == "token_id"
+    assert result.ok_value.refresh_token == "token_refresh"
 
 
 @pytest.mark.asyncio
@@ -181,7 +190,8 @@ async def test_login_hub_admin_could_not_create_refresh_token(
     # Given
     hub_members_repo_mock.fetch_admin_by_username.return_value = Ok(hub_admin_mock)
     password_hash_service_mock.check_password.return_value = True
-    auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_access_token_for.return_value = "auth_token"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "refresh_token"
     refresh_token_repo_mock.create.return_value = Err(Exception())
 
     # When
@@ -209,6 +219,7 @@ async def test_refresh_token_success(
     hub_members_repo_mock.fetch_by_id.return_value = Ok(hub_admin_mock)
     auth_tokens_service_mock.generate_refresh_expiration.return_value = datetime.now()
     auth_tokens_service_mock.generate_access_token_for.return_value = "token_1"
+    auth_tokens_service_mock.generate_id_token_for.return_value = "token_3"
     tx_manager_mock.with_transaction.return_value = Ok(refresh_token_mock)
     auth_tokens_service_mock.generate_refresh_token.return_value = "token_2"
 
@@ -217,9 +228,9 @@ async def test_refresh_token_success(
 
     # Then
     assert isinstance(result, Ok)
-    assert isinstance(result.ok_value, tuple)
-    assert result.ok_value[0] == "token_1"
-    assert result.ok_value[1] == "token_2"
+    assert isinstance(result.ok_value, AdminTokens)
+    assert result.ok_value.access_token == "token_1"
+    assert result.ok_value.refresh_token == "token_2"
 
 
 @pytest.mark.asyncio
@@ -304,3 +315,50 @@ async def test_refresh_token_transaction_failed(
     # Then
     assert isinstance(result, Err)
     assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    auth_service: AuthService,
+    refresh_token_repo_mock: RefreshTokenRepoMock,
+    auth_tokens_service_mock: AuthTokensServiceMock,
+    jwt_refresh_token_mock: JwtRefreshToken,
+) -> None:
+    # Given
+    auth_tokens_service_mock.decode_refresh_token.return_value = Ok(jwt_refresh_token_mock)
+    refresh_token_repo_mock.invalidate_all_tokens_by_family_id.return_value = Ok(None)
+
+    # When
+    result = await auth_service.logout("refresh")
+
+    # Then
+    assert isinstance(result, Ok)
+    assert result.ok_value is None
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token__has_decode_error(
+    auth_service: AuthService,
+    auth_tokens_service_mock: AuthTokensServiceMock,
+) -> None:
+    # Given
+    auth_tokens_service_mock.decode_refresh_token.return_value = Err(Exception())
+
+    # When
+    result = await auth_service.logout("refresh")
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, Exception)
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token_is_none(
+    auth_service: AuthService,
+) -> None:
+    # When
+    result = await auth_service.logout(None)
+
+    # Then
+    assert isinstance(result, Err)
+    assert isinstance(result.err_value, RefreshTokenNotFound)

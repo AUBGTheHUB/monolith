@@ -201,14 +201,15 @@ def create_app() -> FastAPI:
         refresh_token_repo=refresh_tokens_repo,
         auth_token_service=auth_token_service,
         tx_manager=tx_manager,
+        image_storing_service=image_storing_service,
     )
     user_service = UserService(hub_members_repo=hub_members_repo, refresh_token_repo=refresh_tokens_repo)
     fs_service = FeatureSwitchService(repository=fs_repo)
-    sponsors_service = SponsorsService(repo=sponsors_repo)
-    mentors_service = MentorsService(repo=mentors_repo)
-    judges_service = JudgesService(repo=judges_repo)
-    hub_members_service = HubMembersService(repo=hub_members_repo)
-    past_events_service = PastEventsService(repo=past_events_repo)
+    sponsors_service = SponsorsService(repo=sponsors_repo, image_storing_service=image_storing_service)
+    mentors_service = MentorsService(repo=mentors_repo, image_storing_service=image_storing_service)
+    judges_service = JudgesService(repo=judges_repo, image_storing_service=image_storing_service)
+    hub_members_service = HubMembersService(repo=hub_members_repo, image_storing_service=image_storing_service)
+    past_events_service = PastEventsService(repo=past_events_repo, image_storing_service=image_storing_service)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(

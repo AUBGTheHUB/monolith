@@ -1,0 +1,26 @@
+[
+    {
+        "value": "start",
+        "label": "START",
+        "title": "KICK OFF",
+        "body": "Registration opens on Friday evening — check in, grab your badge, and meet your fellow hackers.\n\nThe Opening Ceremony will reveal the hackathon topic for this year. Teams are formed, ideas start flying, and the 52-hour countdown begins!\n\nMake sure you have your development environment ready and your team communication channels set up before the starting gun fires."
+    },
+    {
+        "value": "gather",
+        "label": "GATHER",
+        "title": "TEAM UP & BRAINSTORM",
+        "body": "This is your window to align as a team, research the topic, and lock in your project idea.\n\nDuring the Idea Pitching session you will present your concept to the mentors. Use their feedback early — they are here to help you succeed.\n\nExperienced mentors will be on the floor throughout the event to offer guidance, unblock you, and push your thinking further."
+    },
+    {
+        "value": "hack",
+        "label": "HACK",
+        "title": "BUILD IT",
+        "body": "This is the core of HackAUBG — heads down, keyboards out, and bring your idea to life.\n\nYou have 52 hours to prototype, iterate, and polish. Use the time wisely: split responsibilities, commit often, and don't forget to eat and sleep.\n\nMentors are available around the clock. Don't hesitate to ask for help — the best teams ask the most questions."
+    },
+    {
+        "value": "finish",
+        "label": "FINISH",
+        "title": "PRESENT AND WIN",
+        "body": "This is the home stretch! You have put in the work and now need to blow the judges away.\n\nYour task consists of creating a presentation for your product, as well as a live Software Demo.\n\nAfter your presentation there will be a Q&A session with the panel of judges — be ready to defend your decisions.\n\nThe grading criteria can be found in the section below. Make sure to check it, as it is extremely important!"
+    }
+]

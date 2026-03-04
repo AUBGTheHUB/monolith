@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-
 from structlog.stdlib import get_logger
 from uvicorn import run
 
