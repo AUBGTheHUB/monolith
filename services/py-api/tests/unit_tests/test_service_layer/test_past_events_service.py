@@ -75,12 +75,14 @@ async def test_create_calls_repo_with_built_model(
     past_event_mock: PastEvent,
     image_mock: UploadFile,
 ) -> None:
-
     past_events_repo_mock.create.return_value = Ok(past_event_mock)
     image_storing_service_mock.upload_image.return_value = past_event_mock.cover_picture
 
     result = await past_events_service.create(
-        title=past_event_mock.title, cover_picture=image_mock, tags=past_event_mock.tags
+        title=past_event_mock.title,
+        cover_picture=image_mock,
+        tags=past_event_mock.tags,
+        description=past_event_mock.description,
     )
 
     assert result.is_ok()

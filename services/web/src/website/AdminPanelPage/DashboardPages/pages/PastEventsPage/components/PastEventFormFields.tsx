@@ -32,7 +32,13 @@ export function PastEventFields({ control }: PastEventFormFieldsProps) {
                 type="file"
                 accept="image/*"
             />
-
+            <InputComponent
+                control={control}
+                name="description"
+                label={MESSAGES.LABELS.DESCRIPTION}
+                placeholder={MESSAGES.PLACEHOLDERS.DESCRIPTION}
+                type="text"
+            />
             <Controller
                 control={control}
                 name="tags"

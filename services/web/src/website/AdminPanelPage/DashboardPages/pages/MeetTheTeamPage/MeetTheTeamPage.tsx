@@ -151,9 +151,11 @@ export function MeetTheTeamPage() {
                                         imageUrl={member.avatar_url || ''}
                                         imageAlt={member.name}
                                         title={member.name}
-                                        subtitle={member.position}
+                                        subtitle={member.position || ''}
                                         position={
-                                            member.departments.length > 0 ? member.departments.join(', ') : undefined
+                                            member.departments && member.departments.length > 0
+                                                ? member.departments.join(', ')
+                                                : undefined
                                         }
                                         actions={renderMemberActions(member.id, member.name)}
                                         className={cn(
