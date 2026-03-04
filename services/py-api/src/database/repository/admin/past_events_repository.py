@@ -45,14 +45,23 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
             document = await self._collection.find_one(
                 filter={"_id": ObjectId(obj_id)},
-                projection={"_id": 0},
+                projection={
+                    "_id": 1,
+                    "created_at": 1,
+                    "updated_at": 1,
+                    "title": 1,
+                    "cover_picture": 1,
+                    "description": 1,
+                    "tags": 1,
+                },
                 session=session,
             )
 
             if document is None:
                 return Err(PastEventNotFoundError())
 
-            return Ok(PastEvent(id=ObjectId(obj_id), **document))
+            doc_id = document.pop("_id")
+            return Ok(PastEvent(id=doc_id, **document))
         except Exception as exc:
             LOG.exception("Failed to fetch past event due to error", past_event_id=obj_id, error=exc)
             return Err(exc)

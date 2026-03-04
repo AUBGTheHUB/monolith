@@ -7,7 +7,7 @@ import { PastEvent } from '@/types/past-events.ts';
 import { useQuery } from '@tanstack/react-query';
 
 export default function PastEventSection() {
-    const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<PastEvent | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const { isLoading, data: events } = useQuery({
@@ -60,12 +60,12 @@ export default function PastEventSection() {
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     {events.map((event) => (
-                        <div key={event.id} className="snap-start shrink-0">
+                        <div key={event.id} className="snap-start shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[360px]">
                             <EventTicket
                                 imgSrc={event.cover_picture}
                                 title={event.title}
                                 tags={event.tags}
-                                onClick={() => setSelectedEventId(event.id)}
+                                onClick={() => setSelectedEvent(event)}
                             />
                         </div>
                     ))}
@@ -74,7 +74,7 @@ export default function PastEventSection() {
                 <p className="text-gray-500">No past events found.</p>
             )}
 
-            {selectedEventId && <EventModal eventId={selectedEventId} onClose={() => setSelectedEventId(null)} />}
+            {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
         </div>
     );
 }
