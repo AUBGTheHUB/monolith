@@ -19,7 +19,7 @@ export const HackathonPage = () => {
         <div className="bg-[rgba(255,253,245,1)]">
             <Helmet>
                 <title>Hackathon 8.0</title>
-                <link rel="icon" href="/faviconHack.ico" />
+                <link rel="icon" href="/Favicon%20Hub4.ico" />
             </Helmet>
 
             <NavigationSection />
