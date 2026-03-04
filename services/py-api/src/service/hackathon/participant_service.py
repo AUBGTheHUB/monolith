@@ -180,7 +180,7 @@ class ParticipantService:
         # Append the Jwt to the endpoint
         if is_local_env():
             verification_link = (
-                f"http://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
+                f"https://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
             )
         else:
             verification_link = f"https://{DOMAIN}{PARTICIPANTS_VERIFICATION_ROUTE}?jwt_token={jwt_token}"
@@ -260,7 +260,7 @@ class ParticipantService:
 
         # Append the Jwt to the endpoint
         if is_local_env():
-            invite_link = f"http://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
+            invite_link = f"https://{DOMAIN}:{FRONTEND_PORT}{PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
         else:
             invite_link = f"https://{DOMAIN}{PARTICIPANTS_REGISTRATION_ROUTE}?jwt_token={jwt_token}"
 
