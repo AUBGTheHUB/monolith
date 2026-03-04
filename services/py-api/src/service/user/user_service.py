@@ -21,7 +21,6 @@ class UserService:
         self, user_id: str, new_role: AssignableRole
     ) -> Result[HubAdmin, HubMemberNotFoundError | Exception]:
         update_params = UpdateHubAdminParams(site_role=new_role)
-        # TODO: can't change own role
         result = await self._hub_members_repo.update(user_id, update_params)
         if is_err(result):
             return result
