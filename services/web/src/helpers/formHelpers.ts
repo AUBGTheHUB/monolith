@@ -32,3 +32,29 @@ export const toFormData = <T extends Record<string, unknown>>(data: T): FormData
 
     return formData;
 };
+
+export const cleanHubMember = <T extends { position?: string; social_links?: Record<string, string | undefined> }>(
+    data: T,
+): T => {
+    const processed = { ...data };
+
+    // Clean position
+    if (!processed.position || processed.position.trim() === '') {
+        delete processed.position;
+    }
+
+    // Clean social links
+    if (processed.social_links) {
+        // Create a copy to avoid mutating the original reference during iteration
+        const links = { ...processed.social_links };
+        (Object.keys(links) as Array<keyof typeof links>).forEach((key) => {
+            const val = links[key];
+            if (!val || val.trim() === '') {
+                delete links[key];
+            }
+        });
+        processed.social_links = links;
+    }
+
+    return processed;
+};

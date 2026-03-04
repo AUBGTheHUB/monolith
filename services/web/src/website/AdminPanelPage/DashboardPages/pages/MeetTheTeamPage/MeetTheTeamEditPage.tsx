@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet';
 import { TeamMemberEditMessages, TeamMemberAddMessages } from './messages.tsx';
 import { Form } from '@/components/ui/form.tsx';
 import { createTeamMemberSchema, TeamMemberFormData, updateTeamMemberSchema } from './validation/validation.tsx';
-import { HubMember } from '@/types/hub-member.ts';
+import { BaseHubMember } from '@/types/hub-member.ts';
 import { TeamMemberFormFields } from './components/TeamMemberFormFields.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
@@ -43,7 +43,7 @@ export function MeetTheTeamEditPage() {
     // 1. Fetch data if in Edit Mode
     const { data: member, isLoading } = useQuery({
         queryKey: ['hub-member', id],
-        queryFn: () => apiClient.get<{ hub_member: HubMember }>(`/admin/hub-members/${id}`),
+        queryFn: () => apiClient.get<{ hub_member: BaseHubMember }>(`/admin/hub-members/${id}`),
         enabled: isEditMode,
         select: (res) => res.hub_member,
     });
@@ -71,7 +71,7 @@ export function MeetTheTeamEditPage() {
         if (member) {
             reset({
                 name: member.name,
-                position: member.position,
+                position: member.position || '',
                 departments: member.departments as ('Development' | 'Marketing' | 'Logistics' | 'PR' | 'Design')[],
                 avatar: undefined,
                 social_links: {
@@ -87,8 +87,8 @@ export function MeetTheTeamEditPage() {
     const mutation = useMutation({
         mutationFn: (formData: FormData) => {
             return isEditMode
-                ? apiClient.patchForm<HubMember>(`/admin/hub-members/${id}`, formData)
-                : apiClient.postForm<HubMember>(`/admin/hub-members`, formData);
+                ? apiClient.patchForm<BaseHubMember>(`/admin/hub-members/${id}`, formData)
+                : apiClient.postForm<BaseHubMember>(`/admin/hub-members`, formData);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['hub-members'] });
@@ -100,9 +100,6 @@ export function MeetTheTeamEditPage() {
     });
 
     const onSubmit = (data: TeamMemberFormData) => {
-        //Remove empty social links because API will otherwise replace them with empty strings
-        data.social_links = Object.fromEntries(Object.entries(data.social_links).filter(([, value]) => !!value));
-
         const formData = toFormData(data);
         mutation.mutate(formData);
     };

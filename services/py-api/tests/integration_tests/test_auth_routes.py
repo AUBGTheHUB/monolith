@@ -1,9 +1,14 @@
 from io import BytesIO
-from typing import Generator, Any
+from typing import Generator, Any, AsyncGenerator
 
 import pytest
 import uuid
 from httpx import AsyncClient
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from src.database.db_clients import mongo_db_client_provider
+from src.database.mongo.collections.admin_collections import HUB_MEMBERS_COLLECTION
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData
 from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_PASSWORD_HASH,
@@ -11,6 +16,35 @@ from tests.integration_tests.conftest import (
 )
 
 AUTH_ENDPOINT_URL = "/api/v3/auth"
+
+
+@pytest.fixture(scope="session")
+def test_mongo_client() -> AsyncIOMotorClient:
+    """Uses the existing singleton provider logic."""
+    return mongo_db_client_provider()
+
+
+@pytest.fixture(scope="session")
+def db_manager(test_mongo_client: AsyncIOMotorClient) -> MongoDatabaseManager:
+    """
+    Provides the MongoDatabaseManager using the singleton client.
+    """
+    return MongoDatabaseManager(client=test_mongo_client)
+
+
+@pytest.fixture(autouse=True)
+async def cleanup_except_super_admin(db_manager: MongoDatabaseManager) -> AsyncGenerator[None, Any]:
+    """
+    Cleans up all members after each test,
+    preserving only the 'super_admin'.
+    """
+    yield  # The test runs here
+
+    # Teardown phase
+    collection = db_manager.get_collection(HUB_MEMBERS_COLLECTION)
+
+    # Delete everything where site_role is NOT super_admin
+    await collection.delete_many({"site_role": {"$ne": "super_admin"}})
 
 
 @pytest.mark.asyncio
@@ -144,6 +178,55 @@ async def test_refresh_token_fails_for_invalid_refresh_token(
     resp = await async_client.post(
         f"{AUTH_ENDPOINT_URL}/refresh", cookies={"refresh_token": "Some invalid refresh token"}
     )
+
+    # Then
+    assert resp.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    aws_mock: Generator[None, Any, None],
+    async_client: AsyncClient,
+    generate_register_hub_admin_request_body: RegisterHubAdminBodyCallable,
+    image_mock: BytesIO,
+) -> None:
+    # Given
+    register_data = generate_register_hub_admin_request_body()
+    files = {"avatar": image_mock}
+    register_resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/register", data=register_data, files=files)
+    assert register_resp.status_code == 204
+    # When
+    login_hub_admin_data = LoginHubAdminData(username=register_data["username"], password=TEST_HUB_ADMIN_PASSWORD_HASH)
+    tokens_result = await async_client.post(f"{AUTH_ENDPOINT_URL}/login", json=login_hub_admin_data.model_dump())
+    tokens_result.cookies.get("refresh_token")
+
+    resp = await async_client.post(
+        f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": tokens_result.cookies.get("refresh_token")}
+    )
+    set_cookie = resp.headers.get("set-cookie")
+
+    # Then
+    assert resp.status_code == 204
+    assert set_cookie is not None
+    assert "refresh_token=" in set_cookie
+    assert "Max-Age=0" in set_cookie
+
+
+@pytest.mark.asyncio
+async def test_logout_token_fails_for_invalid_refresh_token(
+    async_client: AsyncClient,
+) -> None:
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": "Invalid refresh token"})
+
+    # Then
+    assert resp.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_logout_token_fails_for_empty_refresh_token(
+    async_client: AsyncClient,
+) -> None:
+    resp = await async_client.post(f"{AUTH_ENDPOINT_URL}/logout", cookies={"refresh_token": ""})
 
     # Then
     assert resp.status_code == 400

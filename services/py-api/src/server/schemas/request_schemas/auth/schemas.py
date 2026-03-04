@@ -15,7 +15,7 @@ class BaseHubMemberData(BaseModel):
     name: NonEmptyStr
     member_type: MEMBER_TYPE = "admin"
     position: str
-    departments: list[DEPARTMENTS_LIST]
+    departments: list[DEPARTMENTS_LIST] = field(default_factory=list)
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
 
@@ -52,7 +52,7 @@ class RegisterHubAdminData(BaseHubMemberData):
         password: str = Form(...),
         repeat_password: str = Form(...),
         position: str = Form(...),
-        departments: list[DEPARTMENTS_LIST] = Form(...),
+        departments: list[DEPARTMENTS_LIST] = Form([]),
         member_type: MEMBER_TYPE = Form("admin"),
     ) -> "RegisterHubAdminData":
         return cls(

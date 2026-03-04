@@ -1,14 +1,5 @@
 import { z } from 'zod';
-
-const zDateTime = z.string().refine((val) => {
-    const date = val.split(' ')[0];
-    const time = val.split(' ')[1];
-
-    const zDate = z.string().date()
-    const zTime= z.string().time()
-
-    return zDate.safeParse(date) && zTime.safeParse(time)
-});
+import { zDateTime } from './utils';
 
 export const zMentor = z.strictObject({
     id: z.string(),

@@ -1,6 +1,6 @@
 from typing import cast
 from fastapi import HTTPException, UploadFile
-from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens, AuthTokens
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens
 from starlette.responses import Response as StarletteResponse
 import pytest
 from result import Err, Ok
@@ -16,7 +16,7 @@ from starlette import status
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.server.handlers.auth.auth_handlers import AuthHandlers
 from src.server.schemas.request_schemas.auth.schemas import RegisterHubAdminData, LoginHubAdminData
-from src.server.schemas.response_schemas.auth.schemas import AuthTokensSuccessfullyIssued, AccessTokenSuccessfullyIssued
+from src.server.schemas.response_schemas.auth.schemas import AuthTokensSuccessfullyIssued
 from src.server.schemas.response_schemas.schemas import ErrResponse, Response
 from src.service.auth.auth_service import AuthService
 from tests.unit_tests.conftest import AuthServiceMock
@@ -128,7 +128,9 @@ async def test_refresh_token_success(
     auth_service_mock: AuthServiceMock,
 ) -> None:
     # Given
-    auth_service_mock.refresh_token.return_value = Ok(AuthTokens(access_token="token_1", refresh_token="token_2"))
+    auth_service_mock.refresh_token.return_value = Ok(
+        AdminTokens(access_token="token_1", refresh_token="token_2", id_token="token_3")
+    )
 
     # When
     resp = await auth_handlers.refresh_token_pair(refresh_token="token_2")
@@ -136,7 +138,7 @@ async def test_refresh_token_success(
 
     # Then
     assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, AccessTokenSuccessfullyIssued)
+    assert isinstance(resp.response_model, AuthTokensSuccessfullyIssued)
     assert resp.response_model.access_token == "token_1"
     assert resp.status_code == status.HTTP_200_OK
     assert any("refresh_token=token_2" in c for c in cookies)
@@ -191,3 +193,70 @@ async def test_expired_refresh_token(
     assert isinstance(resp.response_model, ErrResponse)
     assert resp.response_model.error == "The JWT token has expired."
     assert resp.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_logout_success(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    # Given
+    auth_service_mock.logout.return_value = Ok(None)
+
+    # When
+    resp = await auth_handlers.logout(refresh_token="token")
+    cookies = resp.headers.getlist("Set-Cookie")
+
+    # Then
+    assert isinstance(resp, StarletteResponse)
+    assert resp.status_code == status.HTTP_204_NO_CONTENT
+    assert any("refresh_token" in c for c in cookies)
+
+
+@pytest.mark.asyncio
+async def test_logout_when_refresh_token_is_none(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(RefreshTokenNotFound())
+
+        # When
+        await auth_handlers.logout(refresh_token="token_2")
+        # Then
+        assert exception.value.detail == "The refresh token was not found."
+        assert exception.value.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.asyncio
+async def test_logout_with_expired_refresh_token(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(JwtExpiredSignatureError())
+
+        # When
+        await auth_handlers.logout(refresh_token="token")
+        # Then
+        assert exception.value.detail == "The JWT token has expired."
+        assert exception.value.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+async def test_logout_general_exception(
+    auth_handlers: AuthHandlers,
+    auth_service_mock: AuthServiceMock,
+) -> None:
+    with pytest.raises(HTTPException) as exception:
+        # Given
+        auth_service_mock.logout.return_value = Err(Exception("General expection"))
+
+        # When
+        await auth_handlers.logout("refresh")
+
+        # Then
+        assert exception.value.detail == "General expection"
+        assert exception.value.status_code == status.HTTP_401_UNAUTHORIZED

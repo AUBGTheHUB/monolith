@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FILE_RULES } from '@/globalValidation/fileRules.ts';
+import { cleanHubMember } from '@/helpers/formHelpers.ts';
 
 // 1. Shared fields used in both Add and Edit modes
 const baseSchema = z.object({
@@ -24,13 +25,15 @@ const imageValidation = z
 
 // 3. Creation Schema (POST) - Image is REQUIRED
 export const createTeamMemberSchema = baseSchema.extend({
-    avatar: imageValidation.refine((files) => files?.length > 0, 'Profile image is required'),
+    avatar: imageValidation.refine((files) => files?.length > 0, 'Profile image is required').transform(cleanHubMember),
 });
 
 // 4. Update Schema (PATCH) - Image is OPTIONAL
-export const updateTeamMemberSchema = baseSchema.extend({
-    avatar: imageValidation.optional(),
-});
+export const updateTeamMemberSchema = baseSchema
+    .extend({
+        avatar: imageValidation.optional(),
+    })
+    .transform(cleanHubMember);
 
 // Export types for use in your components
 export type TeamMemberFormData = z.infer<typeof createTeamMemberSchema> | z.infer<typeof updateTeamMemberSchema>;
