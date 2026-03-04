@@ -36,6 +36,5 @@ class PastEvent(BaseDbModel):
 
 class UpdatePastEventParams(UpdateParams):
     title: str | None = None
-    cover_picture: str | None = None
-    description: str | None = None
     tags: list[str] | None = None
+    description: str | None = None

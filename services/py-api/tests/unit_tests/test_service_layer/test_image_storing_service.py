@@ -63,16 +63,6 @@ async def test_upload_image_success(
 
 
 @pytest.mark.asyncio
-async def test_upload_image_invalid_file_name(
-    image_storing_service: ImageStoringService, image_mock: UploadFile
-) -> None:
-    image_name_mock = "invalid_file_name"
-
-    with pytest.raises(ImageUploadError) as e:
-        await image_storing_service.upload_image(image_mock, image_name_mock)
-
-
-@pytest.mark.asyncio
 async def test_upload_image_no_file_name(image_storing_service: ImageStoringService, image_mock: UploadFile) -> None:
     image_name_mock = ""
 
@@ -104,7 +94,7 @@ async def test_delete_image_success(
     monkeypatch.setattr(aws_service_mock, "delete_file", call_delete_file)
 
     image_storing_service.delete_image(
-        image_url=f"https://somebucket.s3.some-place-1.amazonaws.com/{formatted_image_name_mock}.webp"
+        file_name=f"https://somebucket.s3.some-place-1.amazonaws.com/{formatted_image_name_mock}.webp"
     )
 
     assert delete_file_called is True

@@ -24,8 +24,8 @@ from src.service.hackathon.hackathon_utility_service import HackathonUtilityServ
 from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData
+from src.service.utility.jwt_utils.codec import JwtUtility
 from tests.unit_tests.conftest import (
     HackathonUtilityServiceMock,
     TeamRepoMock,

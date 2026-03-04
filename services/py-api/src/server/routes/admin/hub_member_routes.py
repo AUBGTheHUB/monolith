@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from src.server.routes.route_dependencies import is_authorized, validate_obj_id
-
+from src.server.utility.role_checker import RoleChecker
+from src.server.routes.route_dependencies import validate_obj_id
+from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.schemas.response_schemas.admin.hub_member_schemas import AllHubMembersResponse, HubMemberResponse
 from src.server.schemas.response_schemas.schemas import ErrResponse
@@ -32,7 +33,7 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
         endpoint=http_handler.create_hub_member,
         methods=["POST"],
         responses={201: {"model": HubMemberResponse}, 401: {"model": ErrResponse}},
-        dependencies=[Depends(is_authorized)],
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
     hub_members_router.add_api_route(
         "/{object_id}",
@@ -44,7 +45,7 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
     hub_members_router.add_api_route(
         "/{object_id}",
@@ -56,7 +57,7 @@ def register_hub_members_routes(http_handler: HubMembersHandlers) -> APIRouter:
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(is_authorized), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
 
     return hub_members_router

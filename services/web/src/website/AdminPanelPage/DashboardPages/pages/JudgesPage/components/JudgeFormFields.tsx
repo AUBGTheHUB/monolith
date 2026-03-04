@@ -26,10 +26,10 @@ export function JudgeFormFields({ control }: JudgeFormFieldsProps) {
             />
             <InputComponent
                 control={control}
-                name="avatar_url"
+                name="avatar"
                 label={MESSAGES.LABELS.IMAGE}
-                placeholder={MESSAGES.PLACEHOLDERS.IMAGE}
-                type="url"
+                type="file"
+                accept="image/*"
             />
             <InputComponent
                 control={control}

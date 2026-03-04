@@ -1,5 +1,5 @@
 # URL SHORTENER
-A url shortener which utilizes the currently deployed mongo clusters for storing created endpoints. 
+A url shortener which utilizes the currently deployed mongo clusters for storing created endpoints.
 
 ## What are endpoints in this case?
 Endpoints are user chosen request endpoints which when accessed redirect the user to a specific url.
@@ -12,7 +12,7 @@ This specific url is chosen by the creator of the endpoint (probably in the ADMI
 }
 ```
 
-In the example above, if you access our domain with an appended `/s/example` endpoint,  
+In the example above, if you access our domain with an appended `/s/example` endpoint,
 you will be redirected to `https://somewhere.com` (full url - `https://thehub-aubg.com/s/example`)
 
 ## Payload for creating an endpoint

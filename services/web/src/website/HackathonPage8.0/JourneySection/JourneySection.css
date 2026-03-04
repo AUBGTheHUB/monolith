@@ -1,0 +1,14 @@
+@keyframes journeyTabIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-state='active'].journey-tab-content {
+    animation: journeyTabIn 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+}

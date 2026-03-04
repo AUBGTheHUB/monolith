@@ -10,7 +10,7 @@ from tests.unit_tests.conftest import (
     HackathonMailServiceMock,
     BackgroundTasksMock,
 )
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.hackathon.participant_service import ParticipantService
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
@@ -28,7 +28,7 @@ from src.exception import (
     TeamNameMissmatchError,
 )
 from src.database.model.hackathon.team_model import Team
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData
 from tests.integration_tests.conftest import TEST_TEAM_NAME, TEST_USER_NAME
 
 

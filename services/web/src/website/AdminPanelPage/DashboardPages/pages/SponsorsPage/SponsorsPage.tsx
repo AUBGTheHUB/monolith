@@ -7,9 +7,9 @@ import { Helmet } from 'react-helmet';
 import { SponsorsPageMessages as MESSAGES } from './messages.tsx';
 import { Styles } from '../../../AdminStyle.ts';
 import { cn } from '@/lib/utils.ts';
-import { Sponsor } from '@/website/AdminPanelPage/DashboardPages/pages/SponsorsPage/validation/sponsor.tsx';
 import { apiClient } from '@/services/apiClient.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Sponsor } from '@/types/sponsor.ts';
 
 export function SponsorsListPage() {
     const queryClient = useQueryClient();
