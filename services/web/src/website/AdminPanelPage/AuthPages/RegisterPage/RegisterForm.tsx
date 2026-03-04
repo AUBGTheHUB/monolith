@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { cn } from '@/lib/utils.ts';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient.ts';
-import { HubAdmin } from '@/types/auth.ts';
 import { useMemo } from 'react';
 
 export function RegisterForm() {
@@ -50,7 +49,7 @@ export function RegisterForm() {
 
     const mutation = useMutation({
         mutationFn: (formData: FormData) => {
-            return apiClient.postForm<HubAdmin>('/auth/register', formData);
+            return apiClient.postForm<undefined>('/auth/register', formData);
         },
         onSuccess: async () => {
             navigate('/auth/login');
@@ -114,9 +113,6 @@ export function RegisterForm() {
                             {mutation.isPending ? 'Please wait' : 'Register'}
                         </Button>
                     </div>
-                    {/*<div className="min-h-[1.5rem] mt-3 text-center">*/}
-                    {/*    {formError && <p className="text-sm text-red-600">{formError}</p>}*/}
-                    {/*</div>*/}
                 </form>
             </Form>
         </div>

@@ -3,6 +3,7 @@ import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 
 const RULES = {
     TITLE: { MIN: 3, MAX: 100 },
+    DESCRIPTION: { MIN: 5 },
     TAG: { MAX: 10, MIN_CHAR: 1, MAX_CHAR: 30 },
 };
 
@@ -13,7 +14,11 @@ const baseSchema = z.object({
         .min(1, { message: 'Event name is required' })
         .min(RULES.TITLE.MIN, { message: `Event name must be at least ${RULES.TITLE.MIN} characters` })
         .max(RULES.TITLE.MAX, { message: `Event name must be less than ${RULES.TITLE.MAX} characters` }),
-    description: z.string().optional(),
+    description: z
+        .string()
+        .min(RULES.DESCRIPTION.MIN, 'Description must be at least 5 characters.')
+        .optional()
+        .or(z.literal('')),
     tags: z
         .array(
             z
@@ -35,14 +40,24 @@ const coverPictureValidation = z
     );
 
 // 3. Schema for POST (Creation) - Cover Picture is REQUIRED
-export const createPastEventSchema = baseSchema.extend({
-    cover_picture: coverPictureValidation.refine((files) => files?.length > 0, 'Cover picture file is required'),
-});
+export const createPastEventSchema = baseSchema
+    .extend({
+        cover_picture: coverPictureValidation.refine((files) => files?.length > 0, 'Cover picture file is required'),
+    })
+    .transform((data) => {
+        if (data.description === '') delete data.description;
+        return data;
+    });
 
 // 4. Schema for PATCH (Update) - Cover Picture is OPTIONAL
-export const updatePastEventSchema = baseSchema.extend({
-    cover_picture: coverPictureValidation.optional(),
-});
+export const updatePastEventSchema = baseSchema
+    .extend({
+        cover_picture: coverPictureValidation.optional(),
+    })
+    .transform((data) => {
+        if (data.description === '') delete data.description;
+        return data;
+    });
 
 // Export a union type for the form components to use
 export type PastEventFormData = z.infer<typeof createPastEventSchema> | z.infer<typeof updatePastEventSchema>;

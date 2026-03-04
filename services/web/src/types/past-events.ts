@@ -2,6 +2,6 @@ export type PastEvent = {
     id: string;
     title: string;
     cover_picture: string;
-    description?: string | null;
+    description?: string;
     tags: string[];
 };
