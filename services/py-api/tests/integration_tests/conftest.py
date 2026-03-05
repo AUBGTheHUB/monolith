@@ -8,10 +8,14 @@ import pytest
 import pytest_asyncio
 from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
+from motor.motor_asyncio import AsyncIOMotorClient
+
+from src.database.db_clients import mongo_db_client_provider
 from src.database.model.admin.hub_admin_model import Role
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
+from src.database.mongo.db_manager import MongoDatabaseManager
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from src.service.utility.jwt_utils.codec import JwtUtility
@@ -58,7 +62,7 @@ TEST_HUB_MEMBER_AVATAR_URL = "https://www.bing.com"
 TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
 TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
 TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
-TEST_HUB_ADMIN_ROLE: Role = Role.SUPER
+TEST_HUB_ADMIN_ROLE: Role = Role.MEMBER
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
@@ -440,3 +444,17 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
         }
 
     return register_hub_admin_request_body_generator
+
+
+@pytest.fixture(scope="session")
+def test_mongo_client() -> AsyncIOMotorClient:
+    """Uses the existing singleton provider logic."""
+    return mongo_db_client_provider()
+
+
+@pytest.fixture(scope="session")
+def db_manager(test_mongo_client: AsyncIOMotorClient) -> MongoDatabaseManager:
+    """
+    Provides the MongoDatabaseManager using the singleton client.
+    """
+    return MongoDatabaseManager(client=test_mongo_client)

@@ -612,6 +612,7 @@ class RefreshTokenRepoMock(Protocol):
     create: AsyncMock
     delete: AsyncMock
     invalidate_all_tokens_by_family_id: AsyncMock
+    invalidate_all_tokens_by_hub_member_id: AsyncMock
 
 
 @pytest.fixture
@@ -627,6 +628,7 @@ def refresh_token_repo_mock() -> RefreshTokenRepoMock:
     refresh_token_repo.fetch_by_id = AsyncMock()
     refresh_token_repo.update = AsyncMock()
     refresh_token_repo.invalidate_all_tokens_by_family_id = AsyncMock()
+    refresh_token_repo.invalidate_all_tokens_by_hub_member_id = AsyncMock()
 
     return cast(RefreshTokenRepoMock, refresh_token_repo)
 
@@ -1015,6 +1017,17 @@ def auth_service_mock() -> AuthServiceMock:
     auth_service_mock.logout = AsyncMock()
 
     return cast(AuthServiceMock, auth_service_mock)
+
+
+class UserServiceMock(Protocol):
+    change_role = AsyncMock
+
+
+@pytest.fixture
+def user_service_mock() -> UserServiceMock:
+    user_service_mock = _create_typed_mock(UserServiceMock)
+    user_service_mock.change_role = AsyncMock()
+    return cast(UserServiceMock, user_service_mock)
 
 
 class PasswordHashServiceMock(Protocol):

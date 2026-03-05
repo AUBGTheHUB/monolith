@@ -4,9 +4,7 @@ from typing import Generator, Any, AsyncGenerator
 import pytest
 import uuid
 from httpx import AsyncClient
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from src.database.db_clients import mongo_db_client_provider
 from src.database.mongo.collections.admin_collections import HUB_MEMBERS_COLLECTION
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData
@@ -16,20 +14,6 @@ from tests.integration_tests.conftest import (
 )
 
 AUTH_ENDPOINT_URL = "/api/v3/auth"
-
-
-@pytest.fixture(scope="session")
-def test_mongo_client() -> AsyncIOMotorClient:
-    """Uses the existing singleton provider logic."""
-    return mongo_db_client_provider()
-
-
-@pytest.fixture(scope="session")
-def db_manager(test_mongo_client: AsyncIOMotorClient) -> MongoDatabaseManager:
-    """
-    Provides the MongoDatabaseManager using the singleton client.
-    """
-    return MongoDatabaseManager(client=test_mongo_client)
 
 
 @pytest.fixture(autouse=True)
