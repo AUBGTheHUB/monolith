@@ -23,8 +23,9 @@ class PastEventsHandlers(BaseHandler):
         title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
         cover_picture: Annotated[UploadFile, Form()],
         tags: Annotated[list[NonEmptyStr], Form()] = [],
+        description: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=5), Form(...)] = None,
     ) -> Response:
-        result = await self._service.create(title, cover_picture, tags)
+        result = await self._service.create(title, cover_picture, description, tags)
 
         if is_err(result):
             return self.handle_error(result.err_value)
@@ -60,10 +61,11 @@ class PastEventsHandlers(BaseHandler):
         self,
         object_id: str,
         title: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
+        description: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=5), Form(...)] = None,
         cover_picture: Annotated[UploadFile | None, Form()] = None,
         tags: Annotated[list[NonEmptyStr] | None, Form()] = None,
     ) -> Response:
-        result = await self._service.update(object_id, title, cover_picture, tags)
+        result = await self._service.update(object_id, title, description, cover_picture, tags)
 
         if is_err(result):
             return self.handle_error(result.err_value)

@@ -1216,7 +1216,7 @@ def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
 
 @pytest.fixture
 def past_event_mock(obj_id_mock: str) -> PastEvent:
-    return PastEvent(id=obj_id_mock, title="t", cover_picture="https://url.com")
+    return PastEvent(id=obj_id_mock, title="t", cover_picture="https://url.com", description="Blettt")
 
 
 @pytest.fixture

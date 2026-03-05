@@ -1,5 +1,5 @@
 from dataclasses import field
-from typing import cast, Self
+from typing import cast, Self, Optional
 
 from fastapi import Form
 from pydantic import BaseModel, ConfigDict, model_validator
@@ -14,7 +14,7 @@ class BaseHubMemberData(BaseModel):
 
     name: NonEmptyStr
     member_type: MEMBER_TYPE = "admin"
-    position: str
+    position: Optional[str] = None
     departments: list[DEPARTMENTS_LIST] = field(default_factory=list)
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
@@ -51,7 +51,7 @@ class RegisterHubAdminData(BaseHubMemberData):
         username: str = Form(...),
         password: str = Form(...),
         repeat_password: str = Form(...),
-        position: str = Form(...),
+        position: str = Form(None),
         departments: list[DEPARTMENTS_LIST] = Form([]),
         member_type: MEMBER_TYPE = Form("admin"),
     ) -> "RegisterHubAdminData":

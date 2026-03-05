@@ -105,9 +105,11 @@ export const PastEventsFormFieldMessages = {
         TITLE: 'Event Name',
         IMAGE: 'Event Cover Image',
         TAGS: 'Tags',
+        DESCRIPTION: 'Description',
     },
     PLACEHOLDERS: {
         TITLE: 'Enter event name',
+        DESCRIPTION: 'Enter event description if available',
         TAGS: 'Type a tag and press Enter',
     },
 };

@@ -1,11 +1,7 @@
-import { CornerUpLeft } from 'lucide-react';
-import logo from './images/hublogo.webp';
 import { useEffect, useState } from 'react';
+import { CornerUpLeft } from 'lucide-react';
 
 export const DesktopNavComponent = () => {
-    const NAV_ITEM_A = 'text-white font-light font-mont flex';
-    const NAV_ITEM_A_EFFECT =
-        'hover:text-white relative after:content-[""] after:absolute after:w-full after:scale-x-0 after:h-[2px] after:bottom-[-4px] after:left-0 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left';
     const [fadeIn, setFadeIn] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -16,23 +12,14 @@ export const DesktopNavComponent = () => {
     }, []);
 
     return (
-        <div
-            className={`w-full h-[10%] bg-[rgba(0,0,0,0.5)] border-gray-600 py-2 sticky top-0 z-[100]  transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
-        >
-            <div className="w-full flex flex-row justify-center items-center">
-                <div className="w-[8%] items-center z-10 flex justify-center">
-                    <a href="/" className="cursor-pointer ">
-                        <img src={logo} className="h-[50px] my-[15px]" />
-                    </a>
-                </div>
-                <div className="flex flex-row w-[70%] gap-7"></div>
-                <div>
-                    <a href="/hackathon" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                        <CornerUpLeft className="pb-[2px] mr-[5px]" />
-                        Go back
-                    </a>
-                </div>
-            </div>
+        <div className="p-4 fixed top-2 right-2 z-[100]">
+            <a
+                href="/hackathon"
+                className={`inline-flex items-center gap-2 rounded-full px-6 py-3 bg-[rgba(0,0,0,0.6)] border border-gray-600 text-white text-sm font-light font-thin font-orbitron tracking-wider hover:text-white hover:bg-[rgba(0,0,0,0.7)] hover:border-gray-400 transition-all duration-300 transform relative after:content-[""] after:absolute after:w-[calc(100%-3rem)] after:scale-x-0 after:h-[1px] after:bottom-2.5 after:left-6 after:bg-white after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left ${fadeIn ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}
+            >
+                <CornerUpLeft size={16} strokeWidth={1.5} font-thin font-orbitron/>
+                GO BACK
+            </a>
         </div>
     );
 };
