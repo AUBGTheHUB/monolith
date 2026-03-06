@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Literal, NotRequired, Self, TypedDict, cast, Optional
 
 from pydantic import HttpUrl
@@ -9,6 +10,12 @@ DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Desig
 MEMBER_TYPE = Literal["member", "admin"]
 """This is to distinguish between ordinary club members with NO access to the admin panel
     and admins with specific access based on their role defined in the hub_admin_model"""
+
+
+class MEMBER_TYPE_FILTER(str, Enum):
+    MEMBER = "member"
+    ADMIN = "admin"
+    ALL = "all"
 
 
 class SocialLinks(TypedDict):

@@ -3,6 +3,7 @@ from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from src.database.model.admin.hub_admin_model import HubAdmin, UpdateHubAdminParams, AssignableRole
+from src.database.model.admin.hub_member_model import MEMBER_TYPE_FILTER
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
@@ -49,3 +50,6 @@ class UserService:
             callback=self._change_role_callback, user_id=user_id, update_params=update_params
         )
         return result
+
+    async def get_all_admins(self) -> Result[list[HubAdmin], Exception]:
+        return await self._hub_members_repo.fetch_all_filtered(hub_member_type=MEMBER_TYPE_FILTER.ADMIN)

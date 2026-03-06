@@ -124,3 +124,47 @@ class TestUserService:
         # Act & Assert
         with pytest.raises(Exception, match="Atomic failure"):
             await user_service.change_role("123", AssignableRole.DEV)
+
+    async def test_fetch_all_admins_success(
+        self, user_service: UserService, hub_members_repo_mock: HubMembersRepoMock, hub_admin_dict_mock: dict[str, Any]
+    ) -> None:
+
+        # Given
+        hub_members_repo_mock.fetch_all_filtered.return_value = Ok(hub_admin_dict_mock)
+
+        # When
+        result = await user_service.get_all_admins()
+
+        # Then
+        assert isinstance(result, Ok)
+        assert result.unwrap() == hub_admin_dict_mock
+        hub_members_repo_mock.fetch_all_filtered.assert_awaited_once()
+
+    async def test_fetch_all_admins_success_with_no_admins(
+        self, user_service: UserService, hub_members_repo_mock: HubMembersRepoMock
+    ) -> None:
+
+        # Given
+        hub_members_repo_mock.fetch_all_filtered.return_value = Ok([])
+
+        # When
+        result = await user_service.get_all_admins()
+
+        # Then
+        assert isinstance(result, Ok)
+        assert result.unwrap() == []
+        hub_members_repo_mock.fetch_all_filtered.assert_awaited_once()
+
+    async def test_fetch_all_admins_general_exception(
+        self, user_service: UserService, hub_members_repo_mock: HubMembersRepoMock
+    ) -> None:
+
+        # Given
+        hub_members_repo_mock.fetch_all_filtered.return_value = Err(Exception("General Exceptiom"))
+
+        # When
+        result = await user_service.get_all_admins()
+
+        # Then
+        assert isinstance(result, Err)
+        hub_members_repo_mock.fetch_all_filtered.assert_awaited_once()

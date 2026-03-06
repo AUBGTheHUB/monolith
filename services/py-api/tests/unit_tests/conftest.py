@@ -646,6 +646,7 @@ class HubMembersRepoMock(Protocol):
     create: AsyncMock
     delete: AsyncMock
     fetch_admin_by_username: AsyncMock
+    fetch_all_filtered: AsyncMock
 
 
 @pytest.fixture
@@ -660,6 +661,7 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_all = AsyncMock()
     hub_members_repo.fetch_by_id = AsyncMock()
     hub_members_repo.update = AsyncMock()
+    hub_members_repo.fetch_all_filtered = AsyncMock()
     hub_members_repo.fetch_admin_by_username = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
@@ -1021,12 +1023,14 @@ def auth_service_mock() -> AuthServiceMock:
 
 class UserServiceMock(Protocol):
     change_role = AsyncMock
+    get_all_admins = AsyncMock
 
 
 @pytest.fixture
 def user_service_mock() -> UserServiceMock:
     user_service_mock = _create_typed_mock(UserServiceMock)
     user_service_mock.change_role = AsyncMock()
+    user_service_mock.get_all_admins = AsyncMock()
     return cast(UserServiceMock, user_service_mock)
 
 
@@ -1448,6 +1452,11 @@ def hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
 
 
 @pytest.fixture
+def hub_admin_dict_mock(hub_admin_mock: HubAdmin) -> dict[str, Any]:
+    return hub_admin_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
 def update_hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
     return {**hub_member_mock.dump_as_mongo_db_document(), "departments": TEST_HUB_MEMBER_DEPARTMENTS}
 
@@ -1466,11 +1475,6 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
         password_hash=TEST_HUB_ADMIN_PASSWORD_HASH,
         site_role=TEST_HUB_ADMIN_ROLE,
     )
-
-
-@pytest.fixture
-def hub_admin_dict_mock(hub_admin_mock: HubMember) -> dict[str, Any]:
-    return hub_admin_mock.dump_as_mongo_db_document()
 
 
 @pytest.fixture
