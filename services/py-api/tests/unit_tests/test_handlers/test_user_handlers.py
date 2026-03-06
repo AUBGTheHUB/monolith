@@ -8,8 +8,6 @@ from src.database.model.admin.hub_admin_model import HubAdmin, AssignableRole, R
 from src.exception import HubMemberNotFoundError
 from src.server.handlers.user_handlers import UserHandlers
 from src.server.schemas.request_schemas.user.schemas import UserRoleChangeRequest
-from src.server.schemas.response_schemas.auth.schemas import UserResponse
-from src.server.schemas.response_schemas.schemas import Response
 from src.service.user.user_service import UserService
 from tests.unit_tests.conftest import UserServiceMock
 
@@ -35,14 +33,10 @@ async def test_change_role_success(
     user_service_mock.change_role.return_value = Ok(hub_admin_mock)
 
     # When
-    resp = await user_handlers.change_role(user_id=user_id, data=request_data)
+    resp = await user_handlers.change_role(object_id=user_id, data=request_data)
 
     # Then
-    assert isinstance(resp, Response)
-    assert resp.status_code == status.HTTP_200_OK
-    assert isinstance(resp.response_model, UserResponse)
-    assert resp.response_model.hub_admin == hub_admin_mock
-    assert resp.response_model.hub_admin.site_role == Role.DEV
+    assert resp.status_code == status.HTTP_204_NO_CONTENT
 
 
 async def test_change_role_not_found(
@@ -58,7 +52,7 @@ async def test_change_role_not_found(
 
     # When
     # BaseHandler.handle_error typically converts Errors to standard responses
-    resp = await user_handlers.change_role(user_id=user_id, data=request_data)
+    resp = await user_handlers.change_role(object_id=user_id, data=request_data)
 
     # Then
     # In your architecture, handle_error returns the specific error Response
@@ -76,7 +70,7 @@ async def test_change_role_internal_error(
 
     user_service_mock.change_role.return_value = Err(generic_error)
     # When
-    resp = await user_handlers.change_role(user_id=user_id, data=request_data)
+    resp = await user_handlers.change_role(object_id=user_id, data=request_data)
 
     # Then
     assert resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR

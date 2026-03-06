@@ -203,7 +203,9 @@ def create_app() -> FastAPI:
         tx_manager=tx_manager,
         image_storing_service=image_storing_service,
     )
-    user_service = UserService(hub_members_repo=hub_members_repo, refresh_token_repo=refresh_tokens_repo)
+    user_service = UserService(
+        hub_members_repo=hub_members_repo, refresh_token_repo=refresh_tokens_repo, tx_manager=tx_manager
+    )
     fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo, image_storing_service=image_storing_service)
     mentors_service = MentorsService(repo=mentors_repo, image_storing_service=image_storing_service)
