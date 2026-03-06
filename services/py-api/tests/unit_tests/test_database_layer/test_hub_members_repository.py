@@ -10,7 +10,7 @@ from pymongo.errors import DuplicateKeyError
 from result import Ok, Err
 
 from src.database.model.admin.hub_admin_model import HubAdmin
-from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
+from src.database.model.admin.hub_member_model import MEMBER_TYPE_FILTER, HubMember, UpdateHubMemberParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.exception import HubMemberNotFoundError
@@ -371,6 +371,60 @@ async def test_fetch_all_success(
     for i, hub_member in enumerate(result.ok_value):
         assert hub_member.name == mock_hub_members_data[i]["name"]
         assert hub_member.member_type == mock_hub_members_data[i]["member_type"]
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_filtered_admins_only_success(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    db_cursor_mock: MotorDbCursorMock,
+    repo: HubMembersRepository,
+    hub_admin_dict_mock: dict[str, Any],
+) -> None:
+    # Given
+    # Prepare mock MongoDB documents
+    mock_hub_members_data = [hub_admin_dict_mock for _ in range(5)]
+    db_cursor_mock.to_list.return_value = mock_hub_members_data
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
+
+    # When
+    # Run the method
+    result = await repo.fetch_all_filtered(hub_member_type=MEMBER_TYPE_FILTER.ADMIN)
+
+    # Then
+    # Assertions
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 5
+
+    for i, hub_member in enumerate(result.ok_value):
+        assert hub_member.name == mock_hub_members_data[i]["name"]
+        assert hub_member.member_type == "admin"
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_filtered_members_only_success(
+    mongo_db_manager_mock: MongoDbManagerMock,
+    db_cursor_mock: MotorDbCursorMock,
+    repo: HubMembersRepository,
+    hub_member_dict_mock: dict[str, Any],
+) -> None:
+    # Given
+    # Prepare mock MongoDB documents
+    mock_hub_members_data = [hub_member_dict_mock for _ in range(5)]
+    db_cursor_mock.to_list.return_value = mock_hub_members_data
+    mongo_db_manager_mock.get_collection.return_value.find.return_value = db_cursor_mock
+
+    # When
+    # Run the method
+    result = await repo.fetch_all_filtered(MEMBER_TYPE_FILTER.MEMBER)
+
+    # Then
+    # Assertions
+    assert isinstance(result, Ok)
+    assert len(result.ok_value) == 5
+
+    for i, hub_member in enumerate(result.ok_value):
+        assert hub_member.name == mock_hub_members_data[i]["name"]
+        assert hub_member.member_type == "member"
 
 
 @pytest.mark.asyncio

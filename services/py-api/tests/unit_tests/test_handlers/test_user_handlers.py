@@ -2,6 +2,7 @@ from typing import cast
 
 import pytest
 from result import Err, Ok
+from src.server.schemas.response_schemas.user.schemas import HubAdminsListResponse
 from starlette import status
 
 from src.database.model.admin.hub_admin_model import HubAdmin, AssignableRole, Role
@@ -71,6 +72,55 @@ async def test_change_role_internal_error(
     user_service_mock.change_role.return_value = Err(generic_error)
     # When
     resp = await user_handlers.change_role(object_id=user_id, data=request_data)
+
+    # Then
+    assert resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+@pytest.mark.asyncio
+async def test_get_all_admins_success(
+    user_handlers: UserHandlers, user_service_mock: UserServiceMock, hub_admin_mock: HubAdmin
+) -> None:
+    # Given
+    user_service_mock.get_all_admins.return_value = Ok([hub_admin_mock])
+
+    # When
+    resp = await user_handlers.get_all_admins()
+
+    # Then
+    assert resp.status_code == status.HTTP_200_OK
+    assert isinstance(resp.response_model, HubAdminsListResponse)
+    assert len(resp.response_model.admins) == 1
+    assert resp.response_model.admins[0].id == hub_admin_mock.id
+
+
+@pytest.mark.asyncio
+async def test_get_all_admins_success_for_no_admins(
+    user_handlers: UserHandlers,
+    user_service_mock: UserServiceMock,
+) -> None:
+    # Given
+    user_service_mock.get_all_admins.return_value = Ok([])
+
+    # When
+    resp = await user_handlers.get_all_admins()
+
+    # Then
+    assert resp.status_code == status.HTTP_200_OK
+    assert isinstance(resp.response_model, HubAdminsListResponse)
+    assert len(resp.response_model.admins) == 0
+
+
+@pytest.mark.asyncio
+async def test_get_all_admins_general_exception(
+    user_handlers: UserHandlers,
+    user_service_mock: UserServiceMock,
+) -> None:
+    # Given
+    user_service_mock.get_all_admins.return_value = Err(Exception("General Error"))
+
+    # When
+    resp = await user_handlers.get_all_admins()
 
     # Then
     assert resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
