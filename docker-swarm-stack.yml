@@ -123,7 +123,6 @@ services:
       # https://docs.docker.com/engine/swarm/secrets/#use-secrets-in-compose
       DATABASE_URL: /run/secrets/db-url
       SECRET_KEY: /run/secrets/secret-key
-      SECRET_AUTH_TOKEN: /run/secrets/secret-auth-key
       RESEND_API_KEY: /run/secrets/resend-api-key
       AWS_ACCESS_KEY_ID: /run/secrets/aws-access-key-id
       AWS_SECRET_ACCESS_KEY: /run/secrets/aws-secret-access-key
@@ -147,8 +146,6 @@ services:
       - source: db-url_v2
         target: db-url
       - secret-key
-      - source: secret-auth-key_v2
-        target: secret-auth-key
       - resend-api-key
       - aws-access-key-id
       - aws-secret-access-key
@@ -181,8 +178,6 @@ secrets:
   db-url_v2:
     external: true
   secret-key:
-    external: true
-  secret-auth-key_v2:
     external: true
   resend-api-key:
     external: true
