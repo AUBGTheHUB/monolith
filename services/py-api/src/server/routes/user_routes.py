@@ -21,7 +21,6 @@ def register_user_routes(http_handler: UserHandlers) -> APIRouter:
             200: {"model": HubAdminsListResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
-            404: {"model": ErrResponse},
         },
         dependencies=[Depends(RoleChecker([Role.SUPER]))],
     )
