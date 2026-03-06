@@ -2,13 +2,20 @@ from typing import Any, Self
 from enum import Enum
 from dataclasses import dataclass
 
-from src.database.model.admin.hub_member_model import HubMember, MEMBER_TYPE
+from src.database.model.admin.hub_member_model import HubMember, MEMBER_TYPE, UpdateHubMemberParams
 
 
 class Role(str, Enum):
     BOARD = "board"
     DEV = "dev"
     SUPER = "super_admin"
+    MEMBER = "member"
+
+
+class AssignableRole(str, Enum):
+    BOARD = "board"
+    DEV = "dev"
+    MEMBER = "member"
 
 
 @dataclass(kw_only=True)
@@ -51,3 +58,8 @@ class HubAdmin(HubMember):
             password_hash=doc["password_hash"],
             site_role=Role(doc["site_role"]),
         )
+
+
+class UpdateHubAdminParams(UpdateHubMemberParams):
+    username: str | None = None
+    site_role: AssignableRole | None = None

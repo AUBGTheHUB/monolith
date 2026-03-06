@@ -1,4 +1,3 @@
-from typing import Any
 from io import BytesIO
 from typing import Any, Generator
 import pytest

@@ -1,7 +1,6 @@
 import json
 from io import BytesIO
 from typing import Any, Generator
-from typing import Any
 
 import pytest
 from httpx import AsyncClient
