@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toFormData } from '@/helpers/formHelpers.ts';
 import { FirstRegisterFields } from './components/FirstRegisterFields.tsx';
 import { SecondRegisterFields } from './components/SecondRegisterFields.tsx';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Form } from '@/components/ui/form.tsx';
 import { registerSchema, RegisterFormData } from './validation/validation.tsx';
 import { Button } from '@/components/ui/button.tsx';
@@ -102,6 +102,14 @@ export function RegisterForm() {
                     <div className="grid sm:grid-cols-2 gap-3">
                         <SecondRegisterFields control={control} />
                     </div>
+
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-1 m-0 pb-3">
+                        <p>Already have an account? </p>
+                        <Link className="text-white hover:text-sky-600" to="/auth/login">
+                            Login here!
+                        </Link>
+                    </div>
+
                     <div className="flex justify-center mt-3">
                         <Button
                             type="submit"

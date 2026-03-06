@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { LoginFormData, loginSchema } from './validation/validation';
 import LoginFields from './components/LoginFields';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { apiClient } from '@/services/apiClient';
 import { AuthenticatedAdmin, User } from '@/types/auth';
 import { useAuthStore } from '@/hooks/useAuthStore';
@@ -15,12 +15,12 @@ import { useAuthStore } from '@/hooks/useAuthStore';
 export function LoginForm() {
     const navigate = useNavigate();
     const setAuth = useAuthStore((state) => state.setAuth);
-    const [formError, setFormError] = React.useState<string | null>(null);
+    const [formError] = React.useState<string | null>(null);
 
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         defaultValues: { username: '', password: '' },
-        mode: 'onSubmit',
+        mode: 'onTouched',
     });
 
     const { control, handleSubmit } = form;
@@ -40,7 +40,6 @@ export function LoginForm() {
     });
 
     const onSubmit = async (values: LoginFormData) => {
-        setFormError(null);
         mutation.mutate(values);
     };
 
@@ -55,6 +54,13 @@ export function LoginForm() {
                 >
                     <div className="grid gap-1">
                         <LoginFields control={control} />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-1 m-0 pb-3">
+                        <p>Don&apos;t have an account? </p>
+                        <Link className="text-white hover:text-sky-600" to="/auth/register">
+                            Register here!
+                        </Link>
                     </div>
 
                     <div className="flex justify-center mt-3">
