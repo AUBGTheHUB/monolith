@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button.tsx';
 type EventTicketProps = {
     imgSrc: string;
     title: string;
-    tags: Array<string>;
+    tags?: Array<string>;
     onClick?: () => void;
 };
 
@@ -25,12 +25,15 @@ export default function EventTicket({ imgSrc, title, tags, onClick }: EventTicke
                     {title}
                 </h3>
                 <div className="flex h-16 flex-wrap content-start gap-2 overflow-hidden">
-                    {tags.slice(0, 3).map((tag, index) => (
-                        <Button variant="tag_xs" size="round_xs" className="font-semibold text-xs" key={index}>
-                            {tag.toUpperCase()}
-                        </Button>
-                    ))}
-                    {tags.length > 3 && <span className="text-xs text-gray-500 self-center">+{tags.length - 3}</span>}
+                    {tags &&
+                        tags.slice(0, 3).map((tag, index) => (
+                            <Button variant="tag_xs" size="round_xs" className="font-semibold text-xs" key={index}>
+                                {tag.toUpperCase()}
+                            </Button>
+                        ))}
+                    {tags && tags.length > 3 && (
+                        <span className="text-xs text-gray-500 self-center">+{tags.length - 3}</span>
+                    )}
                 </div>
             </div>
         </div>
