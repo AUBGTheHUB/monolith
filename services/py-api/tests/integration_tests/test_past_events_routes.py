@@ -47,7 +47,7 @@ async def test_create_past_event_success(
 
     assert "past_event" in body
     assert body["past_event"]["title"] == "HubConf 2024"
-    assert body["past_event"]["cover_picture"] == f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}.webp"
+    assert f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}" in body["past_event"]["cover_picture"]
     assert body["past_event"]["tags"] == ["conference", "hub"]
     assert "id" in body["past_event"]
 
@@ -137,7 +137,7 @@ async def test_get_past_event_by_id_success(
     assert "past_event" in body
     assert body["past_event"]["id"] == created_id
     assert body["past_event"]["title"] == created_event["title"]
-    assert body["past_event"]["cover_picture"] == f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}.webp"
+    assert f"{TEST_PAST_EVENT_COVER_PICTURE_URL}/{body["past_event"]["id"]}" in body["past_event"]["cover_picture"]
     assert body["past_event"]["tags"] == created_event["tags"]
 
     # Cleanup

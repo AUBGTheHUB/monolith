@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 
 from fastapi import UploadFile
@@ -25,7 +26,9 @@ class JudgesService:
         self, name: str, company: str, job_title: str, avatar: UploadFile, linkedin_url: Optional[HttpUrl] = None
     ) -> Result[Judge, Exception]:
         judge = Judge(name=name, company=company, job_title=job_title, avatar_url="", linkedin_url=str(linkedin_url))
-        avatar_url = await self._image_storing_service.upload_image(file=avatar, file_name=f"judges/{str(judge.id)}")
+        avatar_url = await self._image_storing_service.upload_image(
+            file=avatar, file_name=f"judges/{str(judge.id)}/{uuid.uuid4()}"
+        )
         judge.avatar_url = str(avatar_url)
 
         return await self._repo.create(judge)
@@ -39,11 +42,19 @@ class JudgesService:
         avatar: UploadFile | None = None,
         linkedin_url: Optional[HttpUrl] = None,
     ) -> Result[Judge, Exception]:
-        params = UpdateJudgeParams(name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url))
+
+        avatar_url: str | None = None
 
         if avatar is not None:
-            await self._image_storing_service.upload_image(file=avatar, file_name=f"judges/{str(judge_id)}")
+            avatar_url = str(
+                await self._image_storing_service.upload_image(
+                    file=avatar, file_name=f"judges/{str(judge_id)}/{uuid.uuid4()}"
+                )
+            )
 
+        params = UpdateJudgeParams(
+            name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url), avatar_url=avatar_url
+        )
         return await self._repo.update(judge_id, params)
 
     async def delete(self, judge_id: str) -> Result[Judge, Exception]:

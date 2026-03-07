@@ -42,3 +42,4 @@ class UpdateJudgeParams(UpdateParams):
     company: str | None = None
     job_title: str | None = None
     linkedin_url: str | None = None
+    avatar_url: str | None = None

@@ -26,14 +26,14 @@ class PastEventsService:
     ) -> Result[PastEvent, Exception]:
         past_event = PastEvent(
             title=title,
-            cover_picture="",
+            cover_picture_url="",
             tags=tags,
         )
 
         cover_picture_url = await self._image_storing_service.upload_image(
             cover_picture, file_name=f"past_events/{str(past_event.id)}"
         )
-        past_event.cover_picture = str(cover_picture_url)
+        past_event.cover_picture_url = str(cover_picture_url)
 
         return await self._repo.create(past_event)
 

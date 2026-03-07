@@ -57,7 +57,7 @@ async def test_create_hub_member_success(
     assert body["hub_member"]["name"] == "John Doe"
     assert body["hub_member"]["position"] == "Senior Developer"
     assert body["hub_member"]["departments"] == ["Development", "Marketing"]
-    assert body["hub_member"]["avatar_url"] == f"{TEST_MEMBER_AVATAR_URL}/{body['hub_member']['id']}.webp"
+    assert f"{TEST_MEMBER_AVATAR_URL}/{body['hub_member']['id']}" in body["hub_member"]["avatar_url"]
     assert "id" in body["hub_member"]
 
     # Cleanup

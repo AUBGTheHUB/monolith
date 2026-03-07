@@ -16,7 +16,7 @@ def _fields_are_correct(expected: PastEvent, result: PastEvent) -> bool:
     return (
         result.title == expected.title
         and str(result.id) == str(expected.id)
-        and result.cover_picture == expected.cover_picture
+        and result.cover_picture_url == expected.cover_picture_url
         and result.tags == expected.tags
     )
 
@@ -238,7 +238,7 @@ async def test_fetch_all_success(
         {
             "_id": past_event_mock.id,
             "title": past_event_mock.title,
-            "cover_picture": past_event_mock.cover_picture,
+            "cover_picture": past_event_mock.cover_picture_url,
             "created_at": past_event_mock.created_at,
             "updated_at": past_event_mock.updated_at,
         }
@@ -256,7 +256,7 @@ async def test_fetch_all_success(
 
     for i, past_event in enumerate(result.ok_value):
         assert past_event.title == mock_past_events_data[i]["title"]
-        assert past_event.cover_picture == mock_past_events_data[i]["cover_picture"]
+        assert past_event.cover_picture_url == mock_past_events_data[i]["cover_picture"]
         assert past_event.created_at == mock_past_events_data[i]["created_at"]
         assert past_event.updated_at == mock_past_events_data[i]["updated_at"]
 

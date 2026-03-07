@@ -52,7 +52,7 @@ async def test_create_sponsor_success(
     assert "sponsor" in response_body
     assert response_body["sponsor"]["name"] == TEST_SPONSOR_NAME
     assert response_body["sponsor"]["tier"] == TEST_SPONSOR_TIER
-    assert response_body["sponsor"]["logo_url"] == f"{TEST_SPONSOR_LOGO_URL}/{response_body['sponsor']['id']}.webp"
+    assert f"{TEST_SPONSOR_LOGO_URL}/{response_body['sponsor']['id']}" in response_body["sponsor"]["logo_url"]
     assert response_body["sponsor"]["website_url"] == TEST_SPONSOR_WEBSITE_URL
     assert "id" in response_body["sponsor"]
 
@@ -180,7 +180,7 @@ async def test_get_sponsor_by_id_success(
     assert response_body["sponsor"]["name"] == sponsor["name"]
     assert response_body["sponsor"]["tier"] == sponsor["tier"]
     assert response_body["sponsor"]["website_url"] == sponsor["website_url"]
-    assert response_body["sponsor"]["logo_url"] == f"{TEST_SPONSOR_LOGO_URL}/{sponsor_id}.webp"
+    assert f"{TEST_SPONSOR_LOGO_URL}/{sponsor_id}" in response_body["sponsor"]["logo_url"]
 
     # Cleanup
     await _delete_sponsor(async_client, sponsor_id)

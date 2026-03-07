@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import UploadFile
 from pydantic import HttpUrl
 from result import Result
@@ -27,7 +29,9 @@ class SponsorsService:
         website_url: HttpUrl | None = None,
     ) -> Result[Sponsor, Exception]:
         sponsor = Sponsor(name=name, tier=tier, logo_url="", website_url=str(website_url))
-        logo_url = await self._image_storing_service.upload_image(file=logo, file_name=f"sponsors/{str(sponsor.id)}")
+        logo_url = await self._image_storing_service.upload_image(
+            file=logo, file_name=f"sponsors/{str(sponsor.id)}/{uuid.uuid4()}"
+        )
         sponsor.logo_url = str(logo_url)
         return await self._repo.create(sponsor)
 
@@ -40,10 +44,15 @@ class SponsorsService:
         website_url: HttpUrl | None = None,
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
 
+        logo_url: str | None = None
         if logo is not None:
-            await self._image_storing_service.upload_image(file=logo, file_name=f"sponsors/{str(sponsor_id)}")
+            logo_url = str(
+                await self._image_storing_service.upload_image(
+                    file=logo, file_name=f"sponsors/{str(sponsor_id)}/{uuid.uuid4()}"
+                )
+            )
 
-        params = UpdateSponsorParams(name=name, tier=tier, website_url=website_url)
+        params = UpdateSponsorParams(name=name, tier=tier, website_url=website_url, logo_url=logo_url)
         return await self._repo.update(sponsor_id, params)
 
     async def delete(self, sponsor_id: str) -> Result[Sponsor, SponsorNotFoundError | Exception]:
