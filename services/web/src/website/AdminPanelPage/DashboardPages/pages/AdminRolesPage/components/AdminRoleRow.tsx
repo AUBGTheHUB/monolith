@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 const ROLE_OPTIONS = [
     { value: ROLES.board, label: 'Board' },
     { value: ROLES.dev, label: 'Developer' },
+    { value: ROLES.member, label: 'Member' },
 ] as const;
 
 export type AdminRole = (typeof ROLE_OPTIONS)[number]['value'];

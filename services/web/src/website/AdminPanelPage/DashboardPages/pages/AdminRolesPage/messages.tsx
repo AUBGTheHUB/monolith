@@ -17,10 +17,9 @@ export const AdminRolesMessages = {
         </span>
     ),
     HEADING: 'Admin Roles',
-    SUBTITLE: 'Manage access levels for admin users. Only super admins can view and change roles.',
+    SUBTITLE: 'Manage access levels for admin users.',
     EMPTY_STATE: 'No admins found.',
     LOADING_STATE: 'Loading admins...',
     ROLE_LABEL: 'Role',
-    SAVE_SUCCESS: (name: string) => `Updated role for ${name}.`,
     SAVE_ERROR: 'Failed to update role. Please try again.',
 };
