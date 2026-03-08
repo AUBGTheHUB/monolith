@@ -5,7 +5,7 @@ export const MissionSection = () => {
     return (
         <section
             id="mission"
-            className="relative w-full min-h-[80dvh] overflow-hidden bg-[#151313] flex items-center justify-center"
+            className="relative w-full min-h-[80dvh] overflow-hidden bg-[#151313] flex items-center justify-center py-10 md:py-16 lg:py-20"
         >
             <div
                 className="absolute inset-0 bg-cover bg-center blur-[0.4px] opacity-[0.25]"
