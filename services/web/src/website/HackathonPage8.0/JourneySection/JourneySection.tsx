@@ -15,7 +15,7 @@ type JourneyTabContent = JourneyTabEntry & {
 
 export const JourneySection = () => {
     const tabs = useMemo(() => journeyTabsRaw as JourneyTabContent[], []);
-    const [activeTab, setActiveTab] = useState<JourneyTab>('finish');
+    const [activeTab, setActiveTab] = useState<JourneyTab>(() => tabs[0]?.value ?? 'start');
     const handleTabChange = (value: string) => setActiveTab(value as JourneyTab);
 
     return (
