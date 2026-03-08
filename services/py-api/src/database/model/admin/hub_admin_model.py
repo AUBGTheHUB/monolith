@@ -50,7 +50,13 @@ class HubAdmin(HubMember):
         return data
 
     def dump_basic_information(self) -> dict[str, Any]:
-        return {"id": str(self.id), "name": self.name, "avatar_url": self.avatar_url, "site_role": self.site_role}
+        return {
+            "id": str(self.id),
+            "name": self.name,
+            "username": self.username,
+            "avatar_url": self.avatar_url,
+            "site_role": self.site_role,
+        }
 
     @classmethod
     def from_mongo_db_document(cls, doc: dict[str, Any]) -> Self:
