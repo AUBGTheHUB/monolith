@@ -1,10 +1,11 @@
 from datetime import datetime
 from typing import Optional
+
+from fastapi import UploadFile, File
 from result import Err, Ok, Result, is_err
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from uuid import uuid4
 
-from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTokenParams
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -16,9 +17,11 @@ from src.exception import (
     RefreshTokenIsInvalid,
     RefreshTokenNotFound,
 )
+from src.server.schemas.dto_schemas.auth_dto_schemas import AdminTokens
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.auth.password_hash_service import PasswordHashService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 
 class AuthService:
@@ -29,7 +32,9 @@ class AuthService:
         password_hash_service: PasswordHashService,
         auth_token_service: AuthTokenService,
         tx_manager: MongoTransactionManager,
+        image_storing_service: ImageStoringService,
     ) -> None:
+        self._image_storing_service = image_storing_service
         self._hub_members_repo = hub_members_repo
         self._password_hash_service = password_hash_service
         self._auth_token_service = auth_token_service
@@ -64,7 +69,7 @@ class AuthService:
 
     async def login_admin(
         self, credentials: LoginHubAdminData
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | PasswordsMismatchError | Exception]:
+    ) -> Result[AdminTokens, HubMemberNotFoundError | PasswordsMismatchError | Exception]:
         # Find admin from repo
         result = await self._hub_members_repo.fetch_admin_by_username(username=credentials.username)
 
@@ -83,6 +88,9 @@ class AuthService:
 
         # Build the auth token
         jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
+
+        # Build the id token
+        jwt_id_token = self._auth_token_service.generate_id_token_for(hub_admin=hub_admin)
 
         # Save the refresh token in db
         family_id = str(uuid4())
@@ -104,27 +112,30 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
             refresh_expiration=int(refresh_expiration.timestamp()),
         )
-
-        return Ok((jwt_auth_token, jwt_refresh_token))
+        tokens = AdminTokens(access_token=jwt_auth_token, id_token=jwt_id_token, refresh_token=jwt_refresh_token)
+        return Ok(tokens)
 
     async def register_admin(
-        self, credentials: RegisterHubAdminData
-    ) -> Result[HubAdmin, DuplicateHubMemberUsernameError | Exception]:
+        self, credentials: RegisterHubAdminData, avatar: UploadFile = File(...)
+    ) -> Result[None, DuplicateHubMemberUsernameError | Exception]:
 
         password_hash = await self._password_hash_service.hash_password(password_string=credentials.password)
+        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"), avatar_url="")
 
-        hub_admin = credentials.convert_to_hub_admin(password_hash=password_hash.decode("utf-8"))
-
+        avatar_url = await self._image_storing_service.upload_image(
+            file=avatar, file_name=f"hub-members/{str(hub_admin.id)}"
+        )
+        hub_admin.avatar_url = str(avatar_url)
         result = await self._hub_members_repo.create(hub_member=hub_admin)
 
         if is_err(result):
             return result
 
-        return Ok(result.ok_value)
+        return Ok(None)
 
     async def refresh_token(
         self, refresh_token: str | None
-    ) -> Result[tuple[str, str], HubMemberNotFoundError | Exception]:
+    ) -> Result[AdminTokens, RefreshTokenNotFound | RefreshTokenIsInvalid | HubMemberNotFoundError | Exception]:
 
         if refresh_token is None:
             return Err(RefreshTokenNotFound())
@@ -144,7 +155,7 @@ class AuthService:
         if is_err(refresh_token_result):
             return refresh_token_result
 
-        if refresh_token_result.ok_value.is_valid is False:
+        if not refresh_token_result.ok_value.is_valid:
             invalidate_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(family_id=family_id)
             if is_err(invalidate_result):
                 return invalidate_result
@@ -154,7 +165,7 @@ class AuthService:
         hub_admin_id = refresh_token_result.ok_value.hub_member_id
 
         # Find hub admin in db
-        hub_admin_result = await self._hub_members_repo.fetch_by_id(obj_id=hub_admin_id)
+        hub_admin_result = await self._hub_members_repo.fetch_by_id(obj_id=str(hub_admin_id))
 
         if is_err(hub_admin_result):
             return hub_admin_result
@@ -163,6 +174,9 @@ class AuthService:
 
         # Generate new access token for hub admin
         jwt_auth_token = self._auth_token_service.generate_access_token_for(hub_admin=hub_admin)
+
+        # Generate new id token for hub admin
+        jwt_id_token = self._auth_token_service.generate_id_token_for(hub_admin=hub_admin)
 
         refresh_expiration = self._auth_token_service.generate_refresh_expiration()
         # Invalidate the old refresh token in db and create a new one in transaction
@@ -185,4 +199,27 @@ class AuthService:
             hub_member_id=str(hub_admin.id),
         )
 
-        return Ok((jwt_auth_token, jwt_refresh_token))
+        tokens = AdminTokens(access_token=jwt_auth_token, refresh_token=jwt_refresh_token, id_token=jwt_id_token)
+        return Ok(tokens)
+
+    async def logout(
+        self, refresh_token: str | None
+    ) -> Result[None, RefreshTokenNotFound | RefreshTokenIsInvalid | Exception]:
+        if refresh_token is None:
+            return Err(RefreshTokenNotFound(()))
+
+        # Decode the refresh token
+        decoded_token_result = self._auth_token_service.decode_refresh_token(refresh_token=refresh_token)
+
+        if is_err(decoded_token_result):
+            return decoded_token_result
+
+        # Blacklist all of the refresh tokens from that family id
+        blacklist_result = await self._refresh_token_repo.invalidate_all_tokens_by_family_id(
+            decoded_token_result.ok_value.family_id
+        )
+
+        if is_err(blacklist_result):
+            return blacklist_result
+
+        return Ok(None)

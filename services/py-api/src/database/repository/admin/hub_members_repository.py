@@ -13,7 +13,7 @@ from pymongo.errors import DuplicateKeyError
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.admin_collections import HUB_MEMBERS_COLLECTION
-from src.database.model.admin.hub_member_model import HubMember, UpdateHubMemberParams
+from src.database.model.admin.hub_member_model import MEMBER_TYPE_FILTER, HubMember, UpdateHubMemberParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import HubMemberNotFoundError
 
@@ -23,6 +23,15 @@ LOG = get_logger()
 class HubMembersRepository(CRUDRepository[HubMember]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(HUB_MEMBERS_COLLECTION)
+
+    @property
+    def _base_filter(self) -> dict[str, Any]:
+        """Base filter to exclude super admins from all standard queries."""
+        return {"site_role": {"$ne": "super_admin"}}
+
+    def _filter_by_member_type(self, is_admin: bool) -> dict[str, Any]:
+        """Used to filter hub members based on their member type, does not include super admin"""
+        return {**self._base_filter, "member_type": "admin" if is_admin else "member"}
 
     def _hub_member_from_mongo(self, doc: dict[str, Any]) -> HubMember | HubAdmin:
         member_type = doc.get("member_type")
@@ -57,8 +66,8 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     async def fetch_by_id(self, obj_id: str) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info("Fetching hub_member by ObjectID...", hub_member_id=obj_id)
-
-            hub_member = await self._collection.find_one(filter={"_id": ObjectId(obj_id)})
+            query = {"_id": ObjectId(obj_id)}
+            hub_member = await self._collection.find_one(filter=query)
 
             if hub_member is None:
                 return Err(HubMemberNotFoundError())
@@ -69,11 +78,23 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             LOG.exception("Failed to fetch hub member due to error", hub_member_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[list[HubMember | HubAdmin], Exception]:
+    async def fetch_all_filtered(
+        self, hub_member_type: MEMBER_TYPE_FILTER
+    ) -> Result[list[HubMember | HubAdmin], Exception]:
         try:
             LOG.info("Fetching all HUB members...")
+            hub_members_info = []
 
-            hub_members_info = await self._collection.find({}).to_list(length=None)
+            if hub_member_type == MEMBER_TYPE_FILTER.ALL:
+                hub_members_info = await self._collection.find(self._base_filter).to_list(length=None)
+            elif hub_member_type == MEMBER_TYPE_FILTER.ADMIN:
+                hub_members_info = await self._collection.find(self._filter_by_member_type(is_admin=True)).to_list(
+                    length=None
+                )
+            else:
+                hub_members_info = await self._collection.find(self._filter_by_member_type(is_admin=False)).to_list(
+                    length=None
+                )
 
             hub_members = []
             for hub_member in hub_members_info:
@@ -86,13 +107,19 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             LOG.exception(f"Failed to fetch all HUB members due to err {e}")
             return Err(e)
 
+    async def fetch_all(self) -> Result[list[HubMember | HubAdmin], Exception]:
+        return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.ALL)
+
     async def update(
         self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncIOMotorClientSession] = None
     ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info(f"Updating HUB member...", hub_member_id=obj_id, updated_fields=obj_fields.model_dump())
+            # Ensure we aren't updating a super_admin by mistake
+            query = {"_id": ObjectId(obj_id), **self._base_filter}
+
             hub_member = await self._collection.find_one_and_update(
-                filter={"_id": ObjectId(obj_id)},
+                filter=query,
                 update={"$set": obj_fields.model_dump()},
                 return_document=ReturnDocument.AFTER,
                 session=session,
@@ -112,8 +139,9 @@ class HubMembersRepository(CRUDRepository[HubMember]):
     ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info("Deleting HUB member...", hub_member_id=obj_id)
-
-            hub_member = await self._collection.find_one_and_delete(filter={"_id": ObjectId(obj_id)}, session=session)
+            # Ensure we aren't deleting a super_admin
+            query = {"_id": ObjectId(obj_id), **self._base_filter}
+            hub_member = await self._collection.find_one_and_delete(filter=query, session=session)
 
             if hub_member is None:
                 return Err(HubMemberNotFoundError())

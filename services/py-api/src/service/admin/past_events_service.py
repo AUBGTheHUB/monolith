@@ -22,11 +22,16 @@ class PastEventsService:
         return await self._repo.fetch_by_id(event_id)
 
     async def create(
-        self, title: NonEmptyStr, cover_picture: UploadFile, tags: list[NonEmptyStr] = []
+        self,
+        title: NonEmptyStr,
+        cover_picture: UploadFile,
+        description: str | None = None,
+        tags: list[NonEmptyStr] = [],
     ) -> Result[PastEvent, Exception]:
         past_event = PastEvent(
             title=title,
             cover_picture_url="",
+            description=description,
             tags=tags,
         )
 
@@ -41,16 +46,22 @@ class PastEventsService:
         self,
         event_id: str,
         title: Optional[NonEmptyStr] = None,
+        description: Optional[str] = None,
         cover_picture: Optional[UploadFile] = None,
         tags: Optional[list[NonEmptyStr]] = None,
     ) -> Result[PastEvent, PastEventNotFoundError | Exception]:
 
+        cover_picture_url: str | None = None
         if cover_picture is not None:
-            await self._image_storing_service.upload_image(cover_picture, file_name=f"past_events/{str(event_id)}")
+            cover_picture_url = str(
+                await self._image_storing_service.upload_image(cover_picture, file_name=f"past_events/{str(event_id)}")
+            )
 
         update_params = UpdatePastEventParams(
             title=title,
+            description=description,
             tags=tags,
+            cover_picture_url=cover_picture_url,
         )
         return await self._repo.update(event_id, update_params)
 

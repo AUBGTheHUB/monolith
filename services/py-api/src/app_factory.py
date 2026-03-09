@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
+from src.server.handlers.user_handlers import UserHandlers
 from src.service.auth.auth_token_service import AuthTokenService
 from structlog.stdlib import get_logger
 
@@ -40,6 +41,7 @@ from src.service.admin.past_events_service import PastEventsService
 from src.server.middleware.middleware import Middlewares
 from src.server.routes.routes import Routes
 from src.service.auth.auth_service import AuthService
+from src.service.user.user_service import UserService
 from src.service.feature_switches.feature_switch_service import FeatureSwitchService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -50,7 +52,7 @@ from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
 from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
-from src.service.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.auth.password_hash_service import PasswordHashService
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
@@ -147,6 +149,9 @@ def create_app() -> FastAPI:
 
     # Service layer wiring
     jwt_utility = JwtUtility()
+    # Store JwtUtility in app.state for access in route dependencies
+    app.state.jwt_utility = jwt_utility
+
     password_hash_service = PasswordHashService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
@@ -196,8 +201,11 @@ def create_app() -> FastAPI:
         refresh_token_repo=refresh_tokens_repo,
         auth_token_service=auth_token_service,
         tx_manager=tx_manager,
+        image_storing_service=image_storing_service,
     )
-
+    user_service = UserService(
+        hub_members_repo=hub_members_repo, refresh_token_repo=refresh_tokens_repo, tx_manager=tx_manager
+    )
     fs_service = FeatureSwitchService(repository=fs_repo)
     sponsors_service = SponsorsService(repo=sponsors_repo, image_storing_service=image_storing_service)
     mentors_service = MentorsService(repo=mentors_repo, image_storing_service=image_storing_service)
@@ -226,6 +234,7 @@ def create_app() -> FastAPI:
             hub_members_handlers=HubMembersHandlers(service=hub_members_service),
         ),
         auth_handlers=AuthHandlers(service=auth_service),
+        user_handlers=UserHandlers(service=user_service),
     )
 
     Routes.register_routes(app.router, http_handlers)

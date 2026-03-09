@@ -7,7 +7,7 @@ import './style.css';
 export const ScheduleTable = () => (
     <>
         {(['Friday', 'Saturday', 'Sunday'] as Day[]).map((day) => (
-            <TabsContent key={day} value={day} className="w-full">
+            <TabsContent key={day} value={day} className="w-full schedule-tab-content">
                 <div className="rounded-[1rem] md:rounded-[1.25rem] w-full schedule-table">
                     <div className="px-[1.5rem] md:px-[2.25rem] py-[1rem] md:py-[1.313rem]">
                         {scheduleData[day].map((event, index) => (

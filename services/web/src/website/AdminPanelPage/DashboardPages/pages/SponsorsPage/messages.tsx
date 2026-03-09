@@ -104,14 +104,13 @@ export const SponsorsFormFieldMessages = {
     LABELS: {
         NAME: 'Sponsor Name',
         TIER: 'Badge/Tier',
-        LOGO: 'Logo URL',
+        LOGO: 'Logo',
         WEBSITE: 'Website URL',
         CAREERS: 'Careers Page URL',
     },
     PLACEHOLDERS: {
         NAME: "Enter sponsor's name",
         TIER: 'Choose a tier',
-        LOGO: 'Enter logo URL (e.g., /logos/sponsor.png)',
         WEBSITE: 'Enter main website URL',
         CAREERS: 'Enter careers page URL (optional)',
     },

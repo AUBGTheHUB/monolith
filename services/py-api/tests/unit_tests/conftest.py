@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 from PIL import Image
+from bson import ObjectId
 from fastapi import BackgroundTasks, UploadFile
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
@@ -17,9 +18,7 @@ from motor.motor_asyncio import (
     AsyncIOMotorCursor,
     AsyncIOMotorDatabase,
 )
-from typing_extensions import Protocol
 
-from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.judge_model import Judge
@@ -31,7 +30,6 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -612,11 +610,12 @@ class RefreshTokenRepoMock(Protocol):
     """
 
     fetch_by_id: AsyncMock
-    fetch_by_team_name: AsyncMock
     fetch_all: AsyncMock
     update: AsyncMock
     create: AsyncMock
     delete: AsyncMock
+    invalidate_all_tokens_by_family_id: AsyncMock
+    invalidate_all_tokens_by_hub_member_id: AsyncMock
 
 
 @pytest.fixture
@@ -631,6 +630,8 @@ def refresh_token_repo_mock() -> RefreshTokenRepoMock:
     refresh_token_repo.fetch_all = AsyncMock()
     refresh_token_repo.fetch_by_id = AsyncMock()
     refresh_token_repo.update = AsyncMock()
+    refresh_token_repo.invalidate_all_tokens_by_family_id = AsyncMock()
+    refresh_token_repo.invalidate_all_tokens_by_hub_member_id = AsyncMock()
 
     return cast(RefreshTokenRepoMock, refresh_token_repo)
 
@@ -648,6 +649,7 @@ class HubMembersRepoMock(Protocol):
     create: AsyncMock
     delete: AsyncMock
     fetch_admin_by_username: AsyncMock
+    fetch_all_filtered: AsyncMock
 
 
 @pytest.fixture
@@ -662,6 +664,7 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_all = AsyncMock()
     hub_members_repo.fetch_by_id = AsyncMock()
     hub_members_repo.update = AsyncMock()
+    hub_members_repo.fetch_all_filtered = AsyncMock()
     hub_members_repo.fetch_admin_by_username = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
@@ -1003,6 +1006,7 @@ class AuthServiceMock(Protocol):
     refresh_token = AsyncMock
     login_admin = AsyncMock
     register_admin = AsyncMock
+    logout = AsyncMock
 
 
 @pytest.fixture
@@ -1015,8 +1019,22 @@ def auth_service_mock() -> AuthServiceMock:
     auth_service_mock.refresh_token = AsyncMock()
     auth_service_mock.login_admin = AsyncMock()
     auth_service_mock.register_admin = AsyncMock()
+    auth_service_mock.logout = AsyncMock()
 
     return cast(AuthServiceMock, auth_service_mock)
+
+
+class UserServiceMock(Protocol):
+    change_role = AsyncMock
+    get_all_admins = AsyncMock
+
+
+@pytest.fixture
+def user_service_mock() -> UserServiceMock:
+    user_service_mock = _create_typed_mock(UserServiceMock)
+    user_service_mock.change_role = AsyncMock()
+    user_service_mock.get_all_admins = AsyncMock()
+    return cast(UserServiceMock, user_service_mock)
 
 
 class PasswordHashServiceMock(Protocol):
@@ -1039,6 +1057,7 @@ def password_hash_service_mock() -> PasswordHashServiceMock:
 
 class AuthTokensServiceMock(Protocol):
     generate_access_token_for = Mock
+    generate_id_token_for = Mock
     generate_refresh_token = Mock
     decode_refresh_token = Mock
     generate_refresh_expiration = Mock
@@ -1052,6 +1071,7 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock = _create_typed_mock(AuthTokensServiceMock)
 
     auth_tokens_service_mock.generate_access_token_for = Mock()
+    auth_tokens_service_mock.generate_id_token_for = Mock()
     auth_tokens_service_mock.generate_refresh_token = Mock()
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
@@ -1216,7 +1236,7 @@ def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
 
 @pytest.fixture
 def past_event_mock(obj_id_mock: str) -> PastEvent:
-    return PastEvent(id=obj_id_mock, title="t", cover_picture_url="https://url.com")
+    return PastEvent(id=ObjectId(obj_id_mock), title="t", cover_picture_url="https://url.com", description="Blettt")
 
 
 @pytest.fixture
@@ -1435,6 +1455,11 @@ def hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
 
 
 @pytest.fixture
+def hub_admin_dict_mock(hub_admin_mock: HubAdmin) -> dict[str, Any]:
+    return hub_admin_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
 def update_hub_member_dict_mock(hub_member_mock: HubMember) -> dict[str, Any]:
     return {**hub_member_mock.dump_as_mongo_db_document(), "departments": TEST_HUB_MEMBER_DEPARTMENTS}
 
@@ -1453,11 +1478,6 @@ def hub_admin_mock(obj_id_mock: str) -> HubAdmin:
         password_hash=TEST_HUB_ADMIN_PASSWORD_HASH,
         site_role=TEST_HUB_ADMIN_ROLE,
     )
-
-
-@pytest.fixture
-def hub_admin_dict_mock(hub_admin_mock: HubMember) -> dict[str, Any]:
-    return hub_admin_mock.dump_as_mongo_db_document()
 
 
 @pytest.fixture
@@ -1482,7 +1502,6 @@ def register_hub_admin_data_mock() -> RegisterHubAdminData:
         name=TEST_HUB_MEMBER_NAME,
         username=TEST_HUB_MEMBER_USERNAME,
         position=TEST_HUB_MEMBER_POSITON,
-        avatar_url=TEST_HUB_MEMBER_AVATAR_URL,
         member_type=TEST_HUB_ADMIN_MEMBER_TYPE,
         departments=TEST_HUB_MEMBER_DEPARTMENTS,
         social_links=TEST_HUB_MEMBER_SOCIAL_LINKS,

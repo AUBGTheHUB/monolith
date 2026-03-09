@@ -30,12 +30,17 @@ async def test_create_past_event_returns_201(
     past_events_service_mock.create.return_value = Ok(past_event_mock)
 
     resp = await past_events_handlers.create_past_event(
-        title=past_event_mock.title, cover_picture=image_mock, tags=past_event_mock.tags
+        title=past_event_mock.title,
+        cover_picture=image_mock,
+        tags=past_event_mock.tags,
+        description=past_event_mock.description,
     )
 
     assert isinstance(resp, Response)
     assert resp.status_code == 201
-    past_events_service_mock.create.assert_awaited_once_with(past_event_mock.title, image_mock, past_event_mock.tags)
+    past_events_service_mock.create.assert_awaited_once_with(
+        past_event_mock.title, image_mock, past_event_mock.description, past_event_mock.tags
+    )
 
 
 @pytest.mark.asyncio
@@ -79,13 +84,14 @@ async def test_update_past_event_returns_200(
     resp = await past_events_handlers.update_past_event(
         object_id=str(past_event_mock.id),
         title=past_event_mock.title,
+        description=past_event_mock.description,
         cover_picture=image_mock,
         tags=past_event_mock.tags,
     )
 
     assert resp.status_code == 200
     past_events_service_mock.update.assert_awaited_once_with(
-        str(past_event_mock.id), past_event_mock.title, image_mock, past_event_mock.tags
+        str(past_event_mock.id), past_event_mock.title, past_event_mock.description, image_mock, past_event_mock.tags
     )
 
 

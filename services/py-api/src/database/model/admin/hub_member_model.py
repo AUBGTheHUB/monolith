@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Literal, NotRequired, Self, TypedDict, cast, Optional
 
 from pydantic import HttpUrl
@@ -9,6 +10,12 @@ DEPARTMENTS_LIST = Literal["Development", "Marketing", "Logistics", "PR", "Desig
 MEMBER_TYPE = Literal["member", "admin"]
 """This is to distinguish between ordinary club members with NO access to the admin panel
     and admins with specific access based on their role defined in the hub_admin_model"""
+
+
+class MEMBER_TYPE_FILTER(str, Enum):
+    MEMBER = "member"
+    ADMIN = "admin"
+    ALL = "all"
 
 
 class SocialLinks(TypedDict):
@@ -24,7 +31,7 @@ class HubMember(BaseDbModel):
     name: str
     member_type: MEMBER_TYPE = "member"
     position: Optional[str]
-    departments: list[DEPARTMENTS_LIST]
+    departments: list[DEPARTMENTS_LIST] = field(default_factory=list)
     avatar_url: str
     social_links: SocialLinks = field(default_factory=lambda: cast(SocialLinks, cast(object, {})))
 
@@ -75,11 +82,11 @@ class HubMember(BaseDbModel):
         return {
             "id": doc["_id"],
             "name": doc["name"],
-            "member_type": doc["member_type"],
+            "member_type": doc.get("member_type", "member"),
             "position": doc["position"],
             "avatar_url": doc["avatar_url"],
-            "departments": doc["departments"],
-            "social_links": doc["social_links"],
+            "departments": doc.get("departments", []),
+            "social_links": doc.get("social_links", {}),
             "created_at": doc["created_at"],
             "updated_at": doc["updated_at"],
         }

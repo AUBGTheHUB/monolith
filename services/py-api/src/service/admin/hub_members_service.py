@@ -1,6 +1,7 @@
 import uuid
 
 from fastapi import UploadFile
+from fastapi import UploadFile
 from result import Result
 
 from src.database.model.admin.hub_member_model import HubMember, DEPARTMENTS_LIST, SocialLinks
@@ -24,7 +25,7 @@ class HubMembersService:
     async def create(
         self,
         name: NonEmptyStr,
-        position: NonEmptyStr,
+        position: NonEmptyStr | None,
         departments: list[DEPARTMENTS_LIST],
         avatar: UploadFile,
         social_links: SocialLinks,

@@ -104,14 +104,13 @@ export const MentorsFormFieldMessages = {
     LABELS: {
         NAME: 'Name',
         COMPANY: 'Company Name',
-        IMAGE: 'Image URL',
+        IMAGE: 'Avatar Image',
         POSITION: 'Position',
         LINKEDIN: 'LinkedIn URL',
     },
     PLACEHOLDERS: {
         NAME: "Enter mentor's full name",
         COMPANY: 'Enter company name',
-        IMAGE: 'Enter image URL (e.g., /mentor_photo.webp)',
         POSITION: 'Enter position (e.g., Software Engineer)',
         LINKEDIN: 'Enter LinkedIn profile URL',
     },

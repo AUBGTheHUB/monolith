@@ -8,13 +8,15 @@ from src.database.model.base_model import BaseDbModel, UpdateParams
 class PastEvent(BaseDbModel):
     title: str
     cover_picture_url: str
+    description: str | None = None
     tags: list[str] = field(default_factory=list)
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
             "_id": self.id,
             "title": self.title,
-            "cover_picture": self.cover_picture_url,
+            "cover_picture_url": self.cover_picture_url,
+            "description": self.description,
             "tags": self.tags,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
@@ -24,7 +26,8 @@ class PastEvent(BaseDbModel):
         return {
             "id": str(self.id),
             "title": self.title,
-            "cover_picture": self.cover_picture_url,
+            "cover_picture_url": self.cover_picture_url,
+            "description": self.description,
             "tags": self.tags,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -35,3 +38,4 @@ class UpdatePastEventParams(UpdateParams):
     title: str | None = None
     tags: list[str] | None = None
     cover_picture_url: str | None = None
+    description: str | None = None

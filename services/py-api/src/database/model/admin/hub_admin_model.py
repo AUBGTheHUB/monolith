@@ -1,9 +1,21 @@
-from typing import Literal, Any, Self
+from typing import Any, Self
+from enum import Enum
 from dataclasses import dataclass
 
-from src.database.model.admin.hub_member_model import HubMember, MEMBER_TYPE
+from src.database.model.admin.hub_member_model import HubMember, MEMBER_TYPE, UpdateHubMemberParams
 
-ROLES = Literal["board", "dev", "super_admin"]
+
+class Role(str, Enum):
+    BOARD = "board"
+    DEV = "dev"
+    SUPER = "super_admin"
+    MEMBER = "member"
+
+
+class AssignableRole(str, Enum):
+    BOARD = "board"
+    DEV = "dev"
+    MEMBER = "member"
 
 
 @dataclass(kw_only=True)
@@ -13,7 +25,7 @@ class HubAdmin(HubMember):
     username: str
     member_type: MEMBER_TYPE = "admin"
     password_hash: str
-    site_role: ROLES
+    site_role: Role
 
     def dump_as_mongo_db_document(self) -> dict[str, Any]:
         doc = super().dump_as_mongo_db_document()
@@ -21,7 +33,7 @@ class HubAdmin(HubMember):
             {
                 "username": self.username,
                 "password_hash": self.password_hash,
-                "site_role": self.site_role,
+                "site_role": self.site_role.value,
             }
         )
         return doc
@@ -30,12 +42,15 @@ class HubAdmin(HubMember):
         data = super().dump_as_json()
         data.update(
             {
-                "site_role": self.site_role,
+                "site_role": self.site_role.value,
                 "username": self.username,
                 # intentionally exclude password_hash
             }
         )
         return data
+
+    def dump_basic_information(self) -> dict[str, Any]:
+        return {"id": str(self.id), "name": self.name, "avatar_url": self.avatar_url, "site_role": self.site_role}
 
     @classmethod
     def from_mongo_db_document(cls, doc: dict[str, Any]) -> Self:
@@ -44,5 +59,10 @@ class HubAdmin(HubMember):
             **base_data,
             username=doc["username"],
             password_hash=doc["password_hash"],
-            site_role=doc["site_role"],
+            site_role=Role(doc["site_role"]),
         )
+
+
+class UpdateHubAdminParams(UpdateHubMemberParams):
+    username: str | None = None
+    site_role: AssignableRole | None = None
