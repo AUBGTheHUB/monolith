@@ -83,5 +83,7 @@
     },
     "[nginx]": {
         "editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
-    }
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:poetry",
+    "python-envs.defaultPackageManager": "ms-python.python:poetry"
 }

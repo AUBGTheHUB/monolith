@@ -46,6 +46,10 @@ class TeamResponse(BaseModel):
         return team.dump_as_json()
 
 
+class AllParticipantsResponse(BaseModel):
+    participants: list[dict[str, Any]]
+
+
 class AllTeamsResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 

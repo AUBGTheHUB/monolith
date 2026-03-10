@@ -4,6 +4,7 @@ from src.server.handlers.hackathon.hackathon_handlers import HackathonManagement
 from src.server.utility.role_checker import RoleChecker
 from src.server.routes.route_dependencies import validate_obj_id
 from src.server.schemas.response_schemas.hackathon.schemas import (
+    AllParticipantsResponse,
     TeamDeletedResponse,
     AllTeamsResponse,
     RegistrationClosedSuccessfullyResponse,
@@ -44,6 +45,14 @@ def register_hackathon_management_routes(http_handler: HackathonManagementHandle
         methods=["GET"],
         endpoint=http_handler.get_all_teams,
         responses={200: {"model": AllTeamsResponse}, 401: {"model": ErrResponse}},
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
+    )
+
+    hackathon_management_router.add_api_route(
+        path="/participants",
+        methods=["GET"],
+        endpoint=http_handler.get_all_participants,
+        responses={200: {"model": AllParticipantsResponse}, 401: {"model": ErrResponse}},
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
 
