@@ -52,7 +52,7 @@ def register_hackathon_management_routes(http_handler: HackathonManagementHandle
         path="/participants",
         methods=["GET"],
         endpoint=http_handler.get_all_participants,
-        responses={200: {"model": AllParticipantsResponse}, 401: {"model": ErrResponse}},
+        responses={200: {"model": AllParticipantsResponse}, 401: {"model": ErrResponse}, 403: {"model": ErrResponse}},
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
 

@@ -46,8 +46,35 @@ class TeamResponse(BaseModel):
         return team.dump_as_json()
 
 
+class ParticipantWithTeamName(BaseModel):
+    """Custom participant representation used on the admin participants page."""
+
+    id: str
+    name: str
+    email: str
+    is_admin: bool
+    email_verified: bool
+    team_id: Optional[str] = None
+    tshirt_size: Optional[str] = None
+    university: str
+    location: str
+    age: int
+    source_of_referral: Optional[str] = None
+    programming_language: Optional[str] = None
+    programming_level: Optional[str] = None
+    has_participated_in_hackaubg: bool
+    has_internship_interest: bool
+    has_participated_in_hackathons: bool
+    has_previous_coding_experience: bool
+    share_info_with_sponsors: bool
+    created_at: str
+    updated_at: str
+    last_sent_verification_email: Optional[str] = None
+    team_name: Optional[str] = None
+
+
 class AllParticipantsResponse(BaseModel):
-    participants: list[dict[str, Any]]
+    participants: list[ParticipantWithTeamName]
 
 
 class AllTeamsResponse(BaseModel):
