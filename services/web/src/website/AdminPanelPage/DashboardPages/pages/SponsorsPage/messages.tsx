@@ -45,6 +45,7 @@ export const SponsorsPageMessages = {
     DELETE_CONFIRM: (name: string) => `Are you sure you want to delete ${name}?`,
     EDIT_BUTTON: 'Edit',
     DELETE_BUTTON: 'Delete',
+    LOADING_STATE: 'Loading sponsors, please wait...',
 };
 
 export const SponsorsEditMessages = {
@@ -72,7 +73,6 @@ export const SponsorsEditMessages = {
     RETURN_BUTTON: 'Return to Sponsors List',
     CANCEL_BUTTON: 'Cancel',
     SUBMIT_BUTTON: 'Update Sponsor',
-    SUCCESS_MESSAGE: 'Sponsor updated successfully! (Mock)',
 };
 
 export const SponsorsAddMessages = {

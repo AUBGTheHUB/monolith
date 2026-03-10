@@ -1,6 +1,5 @@
 import { cn } from '@/lib/utils';
 import { Linkedin } from 'lucide-react';
-import { Link } from 'react-router';
 
 interface MentorsAndJudgesCardProps {
     name: string;
@@ -23,21 +22,26 @@ export function MentorsAndJudgesCard({
     return (
         <div className={cn('relative h-[295px] w-[255px] rounded-3xl border border-white overflow-hidden', className)}>
             {linkedin_url && (
-                <Link to={linkedin_url} target="_blank">
+                <a href={linkedin_url} target="_blank" rel="noreferrer" aria-label={`Open ${name}'s LinkedIn profile`}>
                     <Linkedin
                         strokeWidth={'2px'}
-                        className="h-6 w-auto absolute top-4 right-4 bg-[#FBAF45] rounded-sm p-[2px]"
+                        className="h-6 w-auto absolute top-4 right-4 bg-[#FBAF45] rounded-sm p-[2px] z-10"
                         color="#1B1919"
                     />
-                </Link>
+                </a>
             )}
 
             <img src={avatar_url} className="absolute inset-0 w-full h-full object-cover object-top" />
 
-            <div className="absolute right-0 bottom-[42px] pl-[16px] bg-[#1B1919] opacity-91 w-[230px] h-[80px] flex items-center justify-between pr-4">
+            <div
+                className="absolute right-0 bottom-[16px] pl-[14px] w-[220px] h-[70px] flex items-center justify-between pr-3"
+                style={{ backgroundColor: 'rgba(27, 25, 25, 0.85)' }}
+            >
                 <div className="flex flex-col items-start justify-center">
-                    <span className="font-orbitron text-[18px] tracking-widest font-semibold">{name}</span>
-                    <span className="font-oxanium text-[12px] text-[#FBAF45]">
+                    <span className="font-orbitron text-[16px] tracking-[0.18em] font-semibold leading-tight">
+                        {name}
+                    </span>
+                    <span className="font-oxanium text-[11px] text-[#FBAF45] leading-snug">
                         {job_title ? `${job_title} | ` : ''}
                         {company}
                     </span>

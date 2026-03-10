@@ -102,10 +102,10 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                         </div>
                         <div className="flex justify-center items-baseline">
                             <p className="font-mont lg:text-8xl text-7xl lg:mt-5 mt-8 font-bold bg-gradient-to-r from-blue-700 to-teal-400 bg-clip-text text-transparent">
-                                6000
+                                3000
                             </p>
                             <div className="font-mont text-base text-blue-950">
-                                <p>BGN</p>
+                                <p>EUR</p>
                             </div>
                         </div>
                     </div>

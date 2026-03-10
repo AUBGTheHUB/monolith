@@ -1,19 +1,61 @@
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideUpFade {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes letterDrop {
-    from { opacity: 0; transform: translateY(-60px) scale(1.15); }
-    to   { opacity: 1; transform: translateY(0)    scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(-60px) scale(1.15);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @keyframes flicker {
-    0%,  89%, 91%, 93%, 95%, 100% { opacity: 1; }
-    90%, 92%, 94% { opacity: 0.75; }
+    0%,
+    89%,
+    91%,
+    93%,
+    95%,
+    100% {
+        opacity: 1;
+    }
+    90%,
+    92%,
+    94% {
+        opacity: 0.75;
+    }
+}
+
+@keyframes dateReveal {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+        letter-spacing: 0.05em;
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        letter-spacing: 0.18em;
+        filter: blur(0);
+    }
 }

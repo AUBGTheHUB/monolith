@@ -4,7 +4,7 @@ import { ScheduleTabsProps } from './types';
 import './style.css';
 
 export const ScheduleTabs: React.FC<ScheduleTabsProps> = ({ activeTab }) => (
-    <TabsList className="mb-[1.5rem] h-auto p-0 gap-[0.75rem] md:gap-[1rem] lg:gap-[1.625rem] bg-transparent flex flex-wrap justify-start w-full">
+    <TabsList className="mb-[1rem] h-auto p-0 gap-[0.75rem] md:gap-[0.9rem] lg:gap-[1.25rem] bg-transparent flex flex-wrap justify-start w-full">
         <div
             className="relative p-[3px] md:p-[3.5px] lg:p-[4px] rounded-[0.75rem]"
             style={{

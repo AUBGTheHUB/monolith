@@ -94,6 +94,11 @@ export function DashboardPage() {
                                 <AdminPageCard title="Participants" link="/admin/dashboard/participants" />
                             </>
                         )}
+
+                        {/* SuperAdmin Only */}
+                        {siteRole === ROLES.superAdmin && (
+                            <AdminPageCard title="Admin Roles" link="/admin/dashboard/admin-roles" />
+                        )}
                     </div>
                 </div>
             </div>
