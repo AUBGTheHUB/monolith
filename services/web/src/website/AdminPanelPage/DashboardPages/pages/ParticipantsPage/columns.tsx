@@ -1,12 +1,47 @@
+import type { Row } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Participant } from '@/types/participant';
+import { apiClient } from '@/services/apiClient';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function renderCellValue(value: unknown): string {
     if (value === null || value === undefined) return '—';
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     return String(value);
+}
+
+function DeleteParticipantCell({ row }: { row: Row<Participant> }) {
+    const participant = row.original;
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: async () => {
+            await apiClient.delete(`/hackathon/participants/${participant.id}`);
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['participants'] });
+        },
+        onError: (err) => {
+            alert(err.message);
+        },
+    });
+
+    const handleDelete = () => {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete participant "${participant.name}"? This action cannot be undone.`,
+        );
+        if (!confirmed) return;
+
+        mutate();
+    };
+
+    return (
+        <Button variant="destructive" size="sm" onClick={handleDelete} disabled={isPending} className="ml-2">
+            {isPending ? 'Deleting...' : 'Delete'}
+        </Button>
+    );
 }
 
 export const columns: ColumnDef<Participant>[] = [
@@ -111,5 +146,10 @@ export const columns: ColumnDef<Participant>[] = [
         accessorKey: 'share_info_with_sponsors',
         header: 'Share Info with Sponsors',
         cell: ({ row }) => renderCellValue(row.getValue('share_info_with_sponsors')),
+    },
+    {
+        id: 'actions',
+        header: 'Actions',
+        cell: ({ row }) => <DeleteParticipantCell row={row} />,
     },
 ];
