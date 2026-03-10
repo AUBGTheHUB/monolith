@@ -61,11 +61,19 @@ export function AdminCard({
                                 ''
                             )}
 
-                            {position && (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                                    {position}
-                                </span>
-                            )}
+                            {position &&
+                                position
+                                    .split(',')
+                                    .map((pos) => pos.trim())
+                                    .filter(Boolean)
+                                    .map((pos) => (
+                                        <span
+                                            key={pos}
+                                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20"
+                                        >
+                                            {pos}
+                                        </span>
+                                    ))}
                         </div>
                     </div>
                 </div>

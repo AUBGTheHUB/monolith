@@ -3,10 +3,9 @@ import { Day, ScheduleEvent } from './types';
 export const scheduleData: Record<Day, ScheduleEvent[]> = {
     Friday: [
         { time: '16:00', event: 'Registration' },
-        { time: '18:00', event: 'Opening Ceremony' },
-        { time: '19:00', event: 'Dinner and Brainstorming' },
-        { time: '21:00', event: 'Idea Pitching' },
-        { time: '21:30', event: 'Start Coding' },
+        { time: '18:00', event: 'Dinner' },
+        { time: '19:30', event: 'Opening Ceremony' },
+        { time: '21:00', event: 'Start Coding' },
     ],
     Saturday: [
         { time: '09:00', event: 'Breakfast' },
@@ -15,14 +14,14 @@ export const scheduleData: Record<Day, ScheduleEvent[]> = {
         { time: '11:30', event: 'Mentorship and HR Booths' },
         { time: '13:00', event: 'Lunch' },
         { time: '14:00', event: 'Mentorship and Coding' },
-        { time: '17:00', event: 'Mentorship Ends' },
-        { time: '19:30', event: 'Dinner and Coding' },
+        { time: '17:30', event: 'Mentorship Ends' },
+        { time: '19:00', event: 'Dinner and Coding' },
     ],
     Sunday: [
         { time: '10:00', event: 'Breakfast and Coding' },
         { time: '12:00', event: 'Submission Deadline' },
         { time: '13:00', event: 'Presentations Begin' },
-        { time: '14:00', event: 'Lunch' },
+        { time: '14:10', event: 'Lunch' },
         { time: '19:30', event: 'Award Ceremony' },
     ],
 };
