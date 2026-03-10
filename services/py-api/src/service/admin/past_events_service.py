@@ -73,7 +73,6 @@ class PastEventsService:
 
         if result.is_ok():
             cover_picture_url = result.ok_value.cover_picture_url
-            # print(result.ok_value)
             self._image_storing_service.delete_image(
                 cover_picture_url[cover_picture_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
             )
