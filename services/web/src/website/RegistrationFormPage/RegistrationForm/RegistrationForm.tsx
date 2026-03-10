@@ -58,10 +58,7 @@ interface RegistrationFormProps {
 export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormProps) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('jwt_token') ?? undefined;
-    const decodedToken = useMemo<DecodedToken | null>(
-        () => (token ? jwtDecode<DecodedToken>(token) : null),
-        [token],
-    );
+    const decodedToken = useMemo<DecodedToken | null>(() => (token ? jwtDecode<DecodedToken>(token) : null), [token]);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [fadeIn, setFadeIn] = useState(false);
@@ -217,10 +214,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
             <div className="flex justify-center w-full z-10">
                 <FormProvider {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className={formCardStyles}
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className={formCardStyles}>
                         <div>
                             <p className={`${sectionHeadingStyles} mt-4`}>Personal Info</p>
                             <hr className={sectionDividerStyles} />
@@ -228,12 +222,12 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <div className={fieldGridStyles}>
                                 <InputComponent
                                     control={form.control}
-                                    name='name'
+                                    name="name"
                                     label="Name"
                                     type="text"
                                     placeholder="Enter your name"
                                     labelClassName={labelStyles}
-                                    inputClassName={inputStyles} 
+                                    inputClassName={inputStyles}
                                 />
                                 <InputComponent
                                     control={form.control}
@@ -369,9 +363,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     control={form.control}
                                     name="registration_type"
                                     options={
-                                        decodedToken
-                                            ? REGISTRATION_TYPE_OPTIONS_INV
-                                            : REGISTRATION_TYPE_OPTIONS_NO_INV
+                                        decodedToken ? REGISTRATION_TYPE_OPTIONS_INV : REGISTRATION_TYPE_OPTIONS_NO_INV
                                     }
                                     groupLabel="Enter registration type"
                                     disabled={decodedToken?.team_name ? true : false}
@@ -405,7 +397,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             </div>
                         </div>
 
-                        <div className="flex justify-start mt-8">
+                        <div className="flex justify-center md:justify-start mt-8">
                             <Button
                                 disabled={isFormDisabled}
                                 type="submit"
@@ -424,9 +416,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             </Button>
                         </div>
 
-                        {isError && error instanceof Error && (
-                            <p className={errorTextStyles}>{error.message}</p>
-                        )}
+                        {isError && error instanceof Error && <p className={errorTextStyles}>{error.message}</p>}
 
                         {isSubmitted && registrationType !== 'invite_link' && (
                             <div className="mt-4">
