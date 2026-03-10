@@ -28,6 +28,7 @@ import { Admin403Page } from './website/ErrorPages/AdminErrorPages/components/Ad
 import { AuthenticatedGuard } from './guards/AuthenticatedGuard';
 import { RoleGuard } from './guards/RoleGuard';
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -104,6 +105,10 @@ function App() {
                                 </Route>
                                 <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
                                     <Route path="feature-switches" element={<FeatureSwitchesPage />} />
+                                </Route>
+
+                                <Route element={<RoleGuard allowedRoles={['super_admin']} />}>
+                                    <Route path="admin-roles" element={<AdminRolesPage />} />
                                 </Route>
                             </Route>
                             <Route path="forbidden" element={<Admin403Page />} />

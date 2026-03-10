@@ -25,7 +25,7 @@ class UserHandlers(BaseHandler):
         )
 
     async def change_role(self, object_id: str, data: UserRoleChangeRequest) -> StarletteResponse:
-        result = await self._service.change_role(object_id, data.role)
+        result = await self._service.change_role(object_id, data.site_role)
 
         if is_err(result):
             return self.handle_error(result.err_value)
