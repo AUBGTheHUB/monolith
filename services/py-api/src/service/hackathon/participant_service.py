@@ -113,6 +113,9 @@ class ParticipantService:
         # Return the new participant
         return Ok((participant_result.ok_value, team_result.ok_value))
 
+    async def fetch_all_participants(self) -> Result[list[Participant], Exception]:
+        return await self._participant_repo.fetch_all()
+
     async def delete_participant(
         self, participant_id: str
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:

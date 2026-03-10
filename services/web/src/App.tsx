@@ -28,6 +28,7 @@ import { Admin403Page } from './website/ErrorPages/AdminErrorPages/components/Ad
 import { AuthenticatedGuard } from './guards/AuthenticatedGuard';
 import { RoleGuard } from './guards/RoleGuard';
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
+import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/ParticipantsPage/ParticipantsPage';
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -102,6 +103,9 @@ function App() {
                                         <Route path="add" element={<PastEventsEditPage />} />
                                         <Route path=":id" element={<PastEventsEditPage />} />
                                     </Route>
+
+                                    {/* Participants Sub-group */}
+                                    <Route path="participants" element={<ParticipantsPage />} />
                                 </Route>
                                 <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
                                     <Route path="feature-switches" element={<FeatureSwitchesPage />} />
