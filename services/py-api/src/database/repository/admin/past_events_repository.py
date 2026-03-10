@@ -147,8 +147,6 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                 session=session,
             )
 
-            print(document)
-
             if document is None:
                 return Err(PastEventNotFoundError())
 
