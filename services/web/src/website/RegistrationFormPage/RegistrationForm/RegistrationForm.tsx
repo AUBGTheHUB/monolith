@@ -397,7 +397,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             </div>
                         </div>
 
-                        <div className="flex justify-start mt-8">
+                        <div className="flex justify-center md:justify-start mt-8">
                             <Button
                                 disabled={isFormDisabled}
                                 type="submit"
