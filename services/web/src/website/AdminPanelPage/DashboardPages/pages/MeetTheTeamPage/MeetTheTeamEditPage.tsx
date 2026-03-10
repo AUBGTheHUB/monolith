@@ -185,7 +185,7 @@ export function MeetTheTeamEditPage() {
                                                 <img
                                                     src={previewUrl}
                                                     alt="Preview"
-                                                    className="w-full h-full object-cover"
+                                                    className="w-full h-full object-contain"
                                                     onError={(e) => {
                                                         (e.target as HTMLImageElement).src =
                                                             'https://placehold.co/400?text=Invalid+Image';
