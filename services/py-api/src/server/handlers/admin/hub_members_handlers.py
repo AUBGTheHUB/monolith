@@ -20,7 +20,7 @@ class HubMembersHandlers(BaseHandler):
     async def create_hub_member(
         self,
         name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
-        position: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1), Form(...)],
+        position: Annotated[str, StringConstraints(strip_whitespace=True, min_length=2), Form(...)],
         departments: Annotated[list[DEPARTMENTS_LIST], Form()],
         avatar: Annotated[UploadFile, Form()],
         social_links: Annotated[str, Form()],
@@ -64,7 +64,7 @@ class HubMembersHandlers(BaseHandler):
         self,
         object_id: str,
         name: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
-        position: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=1), Form(...)] = None,
+        position: Annotated[str | None, StringConstraints(strip_whitespace=True, min_length=2), Form(...)] = None,
         departments: Annotated[list[DEPARTMENTS_LIST] | None, Form()] = None,
         avatar: Annotated[UploadFile | None, Form()] = None,
         social_links: Annotated[str | None, Form()] = None,

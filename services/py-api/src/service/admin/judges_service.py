@@ -61,6 +61,9 @@ class JudgesService:
         result = await self._repo.delete(judge_id)
 
         if result.is_ok():
-            self._image_storing_service.delete_image(f"judges/{str(judge_id)}")
+            avatar_url = result.ok_value.avatar_url
+            self._image_storing_service.delete_image(
+                avatar_url[avatar_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
 
         return result

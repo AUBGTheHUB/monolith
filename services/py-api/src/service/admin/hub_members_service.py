@@ -1,12 +1,11 @@
 import uuid
 
 from fastapi import UploadFile
-from fastapi import UploadFile
 from result import Result
 
 from src.database.model.admin.hub_member_model import HubMember, DEPARTMENTS_LIST, SocialLinks
-from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.database.model.admin.hub_member_model import UpdateHubMemberParams
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
 from src.server.schemas.request_schemas.schemas import NonEmptyStr
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
@@ -69,6 +68,9 @@ class HubMembersService:
         result = await self._repo.delete(member_id)
 
         if result.is_ok():
-            self._image_storing_service.delete_image(f"hub-members/{str(member_id)}")
+            avatar_url = result.ok_value.avatar_url
+            self._image_storing_service.delete_image(
+                avatar_url[avatar_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
 
         return result

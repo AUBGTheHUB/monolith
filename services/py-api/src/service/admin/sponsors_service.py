@@ -59,6 +59,9 @@ class SponsorsService:
         result = await self._repo.delete(sponsor_id)
 
         if result.is_ok():
-            self._image_storing_service.delete_image(f"sponsors/{sponsor_id}")
+            logo_url = result.ok_value.logo_url
+            self._image_storing_service.delete_image(
+                logo_url[logo_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
 
         return result

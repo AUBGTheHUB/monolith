@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 
 from fastapi import UploadFile
@@ -36,7 +37,7 @@ class PastEventsService:
         )
 
         cover_picture_url = await self._image_storing_service.upload_image(
-            cover_picture, file_name=f"past_events/{str(past_event.id)}"
+            cover_picture, file_name=f"past_events/{str(past_event.id)}/{uuid.uuid4()}"
         )
         past_event.cover_picture_url = str(cover_picture_url)
 
@@ -54,7 +55,9 @@ class PastEventsService:
         cover_picture_url: str | None = None
         if cover_picture is not None:
             cover_picture_url = str(
-                await self._image_storing_service.upload_image(cover_picture, file_name=f"past_events/{str(event_id)}")
+                await self._image_storing_service.upload_image(
+                    cover_picture, file_name=f"past_events/{str(event_id)}/{uuid.uuid4()}"
+                )
             )
 
         update_params = UpdatePastEventParams(
@@ -69,6 +72,9 @@ class PastEventsService:
         result = await self._repo.delete(event_id)
 
         if result.is_ok():
-            self._image_storing_service.delete_image(f"past_events/{str(event_id)}")
+            cover_picture_url = result.ok_value.cover_picture_url
+            self._image_storing_service.delete_image(
+                cover_picture_url[cover_picture_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
 
         return result
