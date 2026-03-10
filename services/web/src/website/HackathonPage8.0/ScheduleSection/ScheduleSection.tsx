@@ -15,7 +15,7 @@ export const ScheduleSection = () => {
 
     return (
         <section
-            className="relative w-full min-h-[80vh] flex flex-col items-center overflow-x-hidden py-8 md:py-16 lg:py-24 bg-[#FFFDF5]"
+            className="relative w-full min-h-[80vh] flex flex-col items-center overflow-x-hidden py-8 md:py-12 lg:py-16 bg-[#FFFDF5]"
             id="schedule"
         >
             <img
@@ -31,11 +31,11 @@ export const ScheduleSection = () => {
 
             <div className="relative z-10 w-full grid place-items-center">
                 <div className="w-full flex flex-col md:px-0 px-8 schedule-container">
-                    <div className="mb-[2rem] md:mb-[3rem] lg:mb-[4.125rem]">
+                    <div className="mb-[1.5rem] md:mb-[2.25rem] lg:mb-[3rem]">
                         <ScheduleHeader />
                     </div>
                     <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <div className="mb-[2rem] md:mb-[2.5rem] lg:mb-[3.5rem]">
+                        <div className="mb-[1.5rem] md:mb-[2rem] lg:mb-[2.5rem]">
                             <ScheduleTabs activeTab={activeTab} />
                         </div>
                         <ScheduleTable />

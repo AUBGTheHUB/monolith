@@ -78,6 +78,47 @@ export function SponsorsListPage() {
             </Button>
         </div>
     );
+    if (isLoading) {
+        return (
+            <>
+                <Helmet>
+                    <title>{MESSAGES.PAGE_TITLE}</title>
+                </Helmet>
+
+                <div className={cn('min-h-screen p-8', Styles.backgrounds.primaryGradient)}>
+                    <div className="max-w-7xl mx-auto">
+                        {/* Back */}
+                        <Link to="/admin/dashboard">
+                            <Button variant="ghost" className={cn('mb-6', Styles.glass.ghostButton)}>
+                                {MESSAGES.BACK_BUTTON}
+                            </Button>
+                        </Link>
+
+                        {/* Header */}
+                        <div className="flex justify-between items-center mb-12">
+                            <div>
+                                <h1 className={cn('text-4xl', Styles.text.title)}>{MESSAGES.HEADING}</h1>
+                                <p className={Styles.text.subtitle}>{MESSAGES.SUBTITLE}</p>
+                            </div>
+
+                            <Link to="/admin/dashboard/sponsors/add">
+                                <Button
+                                    size="lg"
+                                    style={{ backgroundColor: Styles.colors.hubCyan }}
+                                    className={cn('px-8 py-6 text-lg', Styles.actions.primaryButton)}
+                                >
+                                    {MESSAGES.ADD_BUTTON}
+                                </Button>
+                            </Link>
+                        </div>
+                        <Card className={cn('p-20 text-center border-dashed', Styles.glass.card)}>
+                            <p className={cn('text-xl font-medium', Styles.text.subtitle)}>{MESSAGES.LOADING_STATE}</p>
+                        </Card>
+                    </div>
+                </div>
+            </>
+        );
+    }
     if (!isLoading) {
         return (
             <Fragment>

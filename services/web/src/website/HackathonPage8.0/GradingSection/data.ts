@@ -13,10 +13,10 @@ export const topRowData: {left: GradingCategory; right: GradingCategory} = {
     right: {
         title: 'PROJECT REALIZATION',
         items: [
-            { label: 'UI/UX Design', points: 8 },
-            { label: 'Scalability', points: 5 },
-            { label: 'Structured git repository with documentation', points: 2 },
-            { label: 'Project deployment', points: 2 },
+            { label: 'UI/UX Design', points: 10 },
+            { label: 'Scalability', points: 10 },
+            { label: 'Structured git repository with documentation', points: 5 },
+            { label: 'Project deployment', points: 5 },
         ],
     },
 };
@@ -26,19 +26,19 @@ export const bottomRowData: { left: GradingCategory; right: GradingCategory } = 
     left: {
         title: 'COMPLEXITY OF THE PROJECT',
         items: [
-            { label: 'Code originality', points: 8 },
-            { label: 'Suitable technology stack', points: 5 },
-            { label: 'Clear coding style', points: 2 },
-            { label: 'Security', points: 2 },
+            { label: 'Code originality', points: 15 },
+            { label: 'Suitable technology stack', points: 10 },
+            { label: 'Clear coding style', points: 10 },
+            { label: 'Security', points: 5 },
         ],
     },
     right: {
         title: 'PRESENTATION',
         items: [
-            { label: 'Coherency', points: 8 },
-            { label: 'Clear explanation and defense of project ideas', points: 5 },
-            { label: 'Demo', points: 2 },
-            { label: 'Demonstration and explanation of the most complex feature of the project', points: 2 },
+            { label: 'Coherency', points: 15 },
+            { label: 'Clear explanation and defense of project ideas', points: 10 },
+            { label: 'Demo', points: 10 },
+            { label: 'Demonstration and explanation of the most complex feature of the project', points: 5 },
         ],
     },
 };
