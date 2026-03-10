@@ -27,7 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Loader2 } from 'lucide-react';
 
 import { registerParticipant, resendEmail } from './api';
-import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage } from './config';
+import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage, teamsFullMessage } from './config';
 import { useCooldownTimer } from '../../../helpers/useCooldownTimer';
 import {
     labelStyles,
@@ -176,7 +176,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
     const isFormDisabled = isPending || isSubmitted;
 
-    if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
+    if (!RegSwitch) {
         return (
             <div
                 className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
@@ -187,6 +187,22 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                 <div className="h-[45vh] flex w-[80%] justify-center items-center z-10">
                     <div className="bg-white/80 backdrop-blur-md h-full rounded-3xl w-full border border-gray-200 shadow-xl flex justify-center items-center font-mont text-2xl">
                         <p className="text-center p-5 text-gray-800">{registrationMessage}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    if (isRegTeamsFull && registrationType !== 'invite_link') {
+        return (
+            <div
+                className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            >
+                <div className="w-11/12 sm:w-4/5 flex justify-center mb-10 mt-16 z-10">
+                    <p className="text-black tracking-[0.5em] text-4xl sm:text-5xl font-light">REGISTER</p>
+                </div>
+                <div className="h-[45vh] flex w-[80%] justify-center items-center z-10">
+                    <div className="bg-white/80 backdrop-blur-md h-full rounded-3xl w-full border border-gray-200 shadow-xl flex justify-center items-center font-mont text-2xl">
+                        <p className="text-center p-5 text-gray-800">{teamsFullMessage}</p>
                     </div>
                 </div>
             </div>
