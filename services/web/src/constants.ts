@@ -10,7 +10,7 @@ export const API_URLS = {
 
 export const DEPARTMENT_OPTIONS = ['Development', 'Marketing', 'Logistics', 'PR', 'Design'] as const;
 
-export const ROLES = { dev: 'dev', board: 'board', superAdmin: 'super_admin' };
+export const ROLES = { dev: 'dev', board: 'board', superAdmin: 'super_admin', member: 'member' };
 
 export const API_URL = API_URLS[ENV_MODE] || API_URLS['LOCAL'];
 

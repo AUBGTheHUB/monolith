@@ -27,7 +27,7 @@ async def test_change_role_success(
     # Given
     user_id = str(hub_admin_mock.id)
     new_role = AssignableRole.DEV
-    request_data = UserRoleChangeRequest(role=new_role)
+    request_data = UserRoleChangeRequest(site_role=new_role)
 
     # Destructure dataclass and change the role for the expected object
     hub_admin_mock.site_role = Role.DEV
@@ -46,7 +46,7 @@ async def test_change_role_not_found(
 ) -> None:
     # Given
     user_id = "non_existent_id"
-    request_data = UserRoleChangeRequest(role=AssignableRole.BOARD)
+    request_data = UserRoleChangeRequest(site_role=AssignableRole.BOARD)
     error = HubMemberNotFoundError(user_id)
 
     user_service_mock.change_role.return_value = Err(error)
@@ -66,7 +66,7 @@ async def test_change_role_internal_error(
 ) -> None:
     # Given
     user_id = "507f1f77bcf86cd799439011"
-    request_data = UserRoleChangeRequest(role=AssignableRole.DEV)
+    request_data = UserRoleChangeRequest(site_role=AssignableRole.DEV)
     generic_error = Exception("Database connection failed")
 
     user_service_mock.change_role.return_value = Err(generic_error)
