@@ -7,7 +7,7 @@ from src.database.model.base_model import BaseDbModel, UpdateParams
 @dataclass(kw_only=True)
 class PastEvent(BaseDbModel):
     title: str
-    cover_picture: str
+    cover_picture_url: str
     description: str | None = None
     tags: list[str] = field(default_factory=list)
 
@@ -15,7 +15,7 @@ class PastEvent(BaseDbModel):
         return {
             "_id": self.id,
             "title": self.title,
-            "cover_picture": self.cover_picture,
+            "cover_picture_url": self.cover_picture_url,
             "description": self.description,
             "tags": self.tags,
             "created_at": self.created_at,
@@ -26,7 +26,7 @@ class PastEvent(BaseDbModel):
         return {
             "id": str(self.id),
             "title": self.title,
-            "cover_picture": self.cover_picture,
+            "cover_picture_url": self.cover_picture_url,
             "description": self.description,
             "tags": self.tags,
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
@@ -37,4 +37,5 @@ class PastEvent(BaseDbModel):
 class UpdatePastEventParams(UpdateParams):
     title: str | None = None
     tags: list[str] | None = None
+    cover_picture_url: str | None = None
     description: str | None = None

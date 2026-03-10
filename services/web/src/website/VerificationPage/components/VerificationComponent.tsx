@@ -89,7 +89,9 @@ export const VerificationComponent = () => {
             <div className="w-full flex justify-center z-10 px-4 pb-16">
                 <div className="w-full max-w-3xl bg-white/75 backdrop-blur-md rounded-[2rem] border border-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] px-6 sm:px-12 py-10 sm:py-12">
                     <div className="flex flex-col sm:flex-row sm:items-start items-center gap-5 sm:gap-6">
-                        <div className={`h-16 w-16 rounded-full border flex items-center justify-center shrink-0 ${iconClass}`}>
+                        <div
+                            className={`h-16 w-16 rounded-full border flex items-center justify-center shrink-0 ${iconClass}`}
+                        >
                             {icon}
                         </div>
 
@@ -103,4 +105,3 @@ export const VerificationComponent = () => {
         </div>
     );
 };
-

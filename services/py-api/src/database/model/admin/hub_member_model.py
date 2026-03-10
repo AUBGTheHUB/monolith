@@ -97,3 +97,4 @@ class UpdateHubMemberParams(UpdateParams):
     position: str | None = None
     departments: list[DEPARTMENTS_LIST] | None = None
     social_links: SocialLinks | None = None
+    avatar_url: str | None = None

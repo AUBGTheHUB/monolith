@@ -71,7 +71,8 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
                     "created_at": 1,
                     "updated_at": 1,
                     "title": 1,
-                    "cover_picture": 1,
+                    "description": 1,
+                    "cover_picture_url": 1,
                     "tags": 1,
                 },
                 session=session,
@@ -100,7 +101,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         session: Optional[AsyncIOMotorClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
-            update_data = obj_fields.model_dump()
+            update_data = obj_fields.model_dump(exclude_none=True)
             LOG.info("Updating past event...", past_event_id=obj_id, updated_fields=update_data)
 
             # If no fields are provided, return the current document (single DB call).

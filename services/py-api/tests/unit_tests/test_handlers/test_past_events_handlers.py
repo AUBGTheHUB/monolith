@@ -26,6 +26,7 @@ async def test_create_past_event_returns_201(
     past_event_mock: PastEvent,
     image_mock: UploadFile,
 ) -> None:
+
     past_events_service_mock.create.return_value = Ok(past_event_mock)
 
     resp = await past_events_handlers.create_past_event(
@@ -77,6 +78,7 @@ async def test_update_past_event_returns_200(
     past_event_mock: PastEvent,
     image_mock: UploadFile,
 ) -> None:
+
     past_events_service_mock.update.return_value = Ok(past_event_mock)
 
     resp = await past_events_handlers.update_past_event(

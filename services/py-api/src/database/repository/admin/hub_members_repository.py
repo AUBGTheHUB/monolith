@@ -120,7 +120,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
 
             hub_member = await self._collection.find_one_and_update(
                 filter=query,
-                update={"$set": obj_fields.model_dump()},
+                update={"$set": obj_fields.model_dump(exclude_none=True)},
                 return_document=ReturnDocument.AFTER,
                 session=session,
             )

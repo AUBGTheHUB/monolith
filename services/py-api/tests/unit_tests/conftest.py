@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 from PIL import Image
+from bson import ObjectId
 from fastapi import BackgroundTasks, UploadFile
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
@@ -1233,7 +1234,12 @@ def verified_team_dump_no_id_mock(verified_team_mock: Team) -> dict[str, Any]:
 
 @pytest.fixture
 def past_event_mock(obj_id_mock: str) -> PastEvent:
-    return PastEvent(id=obj_id_mock, title="t", cover_picture="https://url.com", description="Blettt")
+    return PastEvent(
+        id=ObjectId(obj_id_mock),
+        title="t",
+        cover_picture_url="https://amazonaws.com/some-file.webp",
+        description="Blettt",
+    )
 
 
 @pytest.fixture
@@ -1257,7 +1263,7 @@ def sponsor_mock(obj_id_mock: str) -> Sponsor:
         name="Coca-Cola",
         tier="GOLD",
         website_url="https://coca-cola.com/",
-        logo_url="https://eu.aws.com/coca-cola.jpg",
+        logo_url="https://eu.amazonaws.com/coca-cola.webp",
     )
 
 
@@ -1275,7 +1281,7 @@ def mentor_mock(obj_id_mock: str) -> Mentor:
         name="Jane Doe",
         company="ACME",
         job_title="Engineer",
-        avatar_url="https://acme.com/avatar.jpg",
+        avatar_url="https://amazonaws.com/avatar.jpg",
         linkedin_url="https://linkedin.com/janedoe",
     )
 
@@ -1293,7 +1299,7 @@ def judge_mock(obj_id_mock: str) -> Judge:
         id=obj_id_mock,
         name="Sadiyata",
         company="The Hub",
-        avatar_url="https://eu.aws.com/coca-cola.jpg",
+        avatar_url="https://eu.amazonaws.com/the-hub.webp",
         job_title="Sadiya ma ooo",
         linkedin_url=None,
     )

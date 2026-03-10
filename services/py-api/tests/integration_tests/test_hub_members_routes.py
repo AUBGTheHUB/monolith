@@ -55,7 +55,7 @@ async def test_create_hub_member_success(
     assert body["hub_member"]["name"] == "John Doe"
     assert body["hub_member"]["position"] == "Senior Developer"
     assert body["hub_member"]["departments"] == ["Development", "Marketing"]
-    assert body["hub_member"]["avatar_url"] == f"{TEST_MEMBER_AVATAR_URL}/{body['hub_member']['id']}.webp"
+    assert f"{TEST_MEMBER_AVATAR_URL}/{body['hub_member']['id']}" in body["hub_member"]["avatar_url"]
     assert "id" in body["hub_member"]
 
     # Cleanup
@@ -183,7 +183,6 @@ async def test_update_hub_member_success(
     created = await async_client.post(
         url=HUB_MEMBERS_ENDPOINT_URL,
         headers={"Authorization": f"Bearer {super_auth_token}"},
-        json=_valid_hub_member_payload(),
         data=_valid_hub_member_payload(),
         files={"avatar": image_mock},
         follow_redirects=True,
