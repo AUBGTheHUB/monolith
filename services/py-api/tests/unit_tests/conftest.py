@@ -53,8 +53,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import (
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
     JwtParticipantVerificationData,
     JwtRefreshToken,

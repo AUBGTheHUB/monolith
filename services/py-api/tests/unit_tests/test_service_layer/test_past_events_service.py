@@ -120,7 +120,7 @@ async def test_update_calls_repo_with_update_params(
     past_events_repo_mock.update.assert_awaited_once()
 
     assert past_events_repo_mock.update.call_args is not None
-    assert past_events_repo_mock.update.call_args.args[0] == past_event_mock.id
+    assert past_events_repo_mock.update.call_args.args[0] == str(past_event_mock.id)
 
     body = result.ok_value
     assert body.title == updated.title
