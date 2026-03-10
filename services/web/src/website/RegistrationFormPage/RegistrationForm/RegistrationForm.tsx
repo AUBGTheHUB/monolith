@@ -27,7 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Loader2 } from 'lucide-react';
 
 import { registerParticipant, resendEmail } from './api';
-import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage } from './config';
+import { DecodedToken, RESEND_COOLDOWN_SECONDS, registrationMessage, teamsFullMessage } from './config';
 import { useCooldownTimer } from '../../../helpers/useCooldownTimer';
 import {
     labelStyles,
@@ -58,10 +58,7 @@ interface RegistrationFormProps {
 export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: RegistrationFormProps) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('jwt_token') ?? undefined;
-    const decodedToken = useMemo<DecodedToken | null>(
-        () => (token ? jwtDecode<DecodedToken>(token) : null),
-        [token],
-    );
+    const decodedToken = useMemo<DecodedToken | null>(() => (token ? jwtDecode<DecodedToken>(token) : null), [token]);
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [fadeIn, setFadeIn] = useState(false);
@@ -179,7 +176,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
     const isFormDisabled = isPending || isSubmitted;
 
-    if (!RegSwitch || (isRegTeamsFull && registrationType !== 'invite_link')) {
+    if (!RegSwitch) {
         return (
             <div
                 className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
@@ -190,6 +187,22 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                 <div className="h-[45vh] flex w-[80%] justify-center items-center z-10">
                     <div className="bg-white/80 backdrop-blur-md h-full rounded-3xl w-full border border-gray-200 shadow-xl flex justify-center items-center font-mont text-2xl">
                         <p className="text-center p-5 text-gray-800">{registrationMessage}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    if (isRegTeamsFull && registrationType !== 'invite_link') {
+        return (
+            <div
+                className={`w-full flex flex-col items-center overflow-hidden font-mont bg-white relative text-gray-800 min-h-screen transition-opacity duration-1000 pt-24 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+            >
+                <div className="w-11/12 sm:w-4/5 flex justify-center mb-10 mt-16 z-10">
+                    <p className="text-black tracking-[0.5em] text-4xl sm:text-5xl font-light">REGISTER</p>
+                </div>
+                <div className="h-[45vh] flex w-[80%] justify-center items-center z-10">
+                    <div className="bg-white/80 backdrop-blur-md h-full rounded-3xl w-full border border-gray-200 shadow-xl flex justify-center items-center font-mont text-2xl">
+                        <p className="text-center p-5 text-gray-800">{teamsFullMessage}</p>
                     </div>
                 </div>
             </div>
@@ -217,10 +230,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
 
             <div className="flex justify-center w-full z-10">
                 <FormProvider {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className={formCardStyles}
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className={formCardStyles}>
                         <div>
                             <p className={`${sectionHeadingStyles} mt-4`}>Personal Info</p>
                             <hr className={sectionDividerStyles} />
@@ -228,12 +238,12 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             <div className={fieldGridStyles}>
                                 <InputComponent
                                     control={form.control}
-                                    name='name'
+                                    name="name"
                                     label="Name"
                                     type="text"
                                     placeholder="Enter your name"
                                     labelClassName={labelStyles}
-                                    inputClassName={inputStyles} 
+                                    inputClassName={inputStyles}
                                 />
                                 <InputComponent
                                     control={form.control}
@@ -369,9 +379,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                                     control={form.control}
                                     name="registration_type"
                                     options={
-                                        decodedToken
-                                            ? REGISTRATION_TYPE_OPTIONS_INV
-                                            : REGISTRATION_TYPE_OPTIONS_NO_INV
+                                        decodedToken ? REGISTRATION_TYPE_OPTIONS_INV : REGISTRATION_TYPE_OPTIONS_NO_INV
                                     }
                                     groupLabel="Enter registration type"
                                     disabled={decodedToken?.team_name ? true : false}
@@ -424,9 +432,7 @@ export default function RegistrationForm({ RegSwitch, isRegTeamsFull }: Registra
                             </Button>
                         </div>
 
-                        {isError && error instanceof Error && (
-                            <p className={errorTextStyles}>{error.message}</p>
-                        )}
+                        {isError && error instanceof Error && <p className={errorTextStyles}>{error.message}</p>}
 
                         {isSubmitted && registrationType !== 'invite_link' && (
                             <div className="mt-4">
