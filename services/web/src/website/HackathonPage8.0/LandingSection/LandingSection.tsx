@@ -65,35 +65,52 @@ export default function LandingSection() {
                         </h1>
 
                         {/* AUBG + 8.0 */}
-                        <div className="flex flex-col sm:flex-row sm:gap-5 lg:gap-8">
-                            <h2 className="flex leading-none">
-                                {AUBG_LETTERS.map((letter, i) => (
-                                    <span
-                                        key={i}
-                                        style={
-                                            mounted
-                                                ? {
-                                                      animation: `letterDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.76 + i * 0.09}s both`,
-                                                  }
-                                                : { opacity: 0 }
-                                        }
-                                        className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] bg-clip-text text-transparent bg-[radial-gradient(circle_at_70%_0%,_#F6741C_0.1%,_#D91313_60%,_#AA1616_100%)] font-extrabold transform-gpu"
-                                    >
-                                        {letter}
-                                    </span>
-                                ))}
-                            </h2>
+                        <div className="flex flex-col items-center">
+                            <div className="flex items-end justify-center gap-2 sm:gap-5 lg:gap-8">
+                                <h2 className="flex leading-none">
+                                    {AUBG_LETTERS.map((letter, i) => (
+                                        <span
+                                            key={i}
+                                            style={
+                                                mounted
+                                                    ? {
+                                                          animation: `letterDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${0.76 + i * 0.09}s both`,
+                                                      }
+                                                    : { opacity: 0 }
+                                            }
+                                            className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] bg-clip-text text-transparent bg-[radial-gradient(circle_at_70%_0%,_#F6741C_0.1%,_#D91313_60%,_#AA1616_100%)] font-extrabold transform-gpu"
+                                        >
+                                            {letter}
+                                        </span>
+                                    ))}
+                                </h2>
 
-                            <h2
+                                <h2
+                                    style={
+                                        mounted
+                                            ? {
+                                                  animation: `letterDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.12s both`,
+                                              }
+                                            : { opacity: 0 }
+                                    }
+                                    className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] bg-clip-text text-transparent bg-[radial-gradient(circle_at_0%_0%,_#D91313_60%,_#AA1616_70%)] font-extrabold leading-none transform-gpu"
+                                >
+                                    8.0
+                                </h2>
+                            </div>
+
+                            <h3
                                 style={
                                     mounted
-                                        ? { animation: `letterDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 1.12s both` }
+                                        ? {
+                                              animation: 'dateReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.75s both',
+                                          }
                                         : { opacity: 0 }
                                 }
-                                className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] bg-clip-text text-transparent bg-[radial-gradient(circle_at_0%_0%,_#D91313_60%,_#AA1616_70%)] font-extrabold leading-none transform-gpu"
+                                className="mt-3 md:mt-6 text-sm md:text-2xl tracking-[0.18em] uppercase text-[rgb(49,46,46)] font-semibold drop-shadow-[0_2px_10px_rgba(217,19,19,0.15)]"
                             >
-                                8.0
-                            </h2>
+                                27–29 March
+                            </h3>
                         </div>
                     </div>
                 </div>
