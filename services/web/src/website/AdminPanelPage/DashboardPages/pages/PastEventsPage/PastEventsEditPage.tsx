@@ -52,8 +52,8 @@ export const PastEventsEditPage = () => {
         }
 
         // 2. Fallback to the existing sponsor logo from the database
-        if (isEditMode && event?.cover_picture) {
-            return event.cover_picture;
+        if (isEditMode && event?.cover_picture_url) {
+            return event.cover_picture_url;
         }
 
         return null;
