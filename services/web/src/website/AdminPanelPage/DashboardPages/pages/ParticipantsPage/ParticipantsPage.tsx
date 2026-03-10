@@ -37,7 +37,6 @@ export function ParticipantsPage() {
 
     useEffect(() => {
         if (isError) {
-            console.error(error);
             alert(error);
         }
     }, [isError, error]);

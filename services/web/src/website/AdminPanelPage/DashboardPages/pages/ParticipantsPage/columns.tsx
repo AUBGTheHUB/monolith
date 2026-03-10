@@ -22,7 +22,7 @@ export const columns: ColumnDef<Participant>[] = [
     },
     {
         accessorKey: 'is_admin',
-        header: 'Is Admin',
+        header: 'Is Team Admin',
         cell: ({ row }) => renderCellValue(row.getValue('is_admin')),
     },
     {
