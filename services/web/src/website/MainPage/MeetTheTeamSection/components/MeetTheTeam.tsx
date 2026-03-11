@@ -30,7 +30,10 @@ const OPTIONS: EmblaOptionsType = {
 };
 
 export default function MeetTheTeamSection() {
-    const [selected, setSelected] = useState<Departments>(Departments.All);
+    const FILTERS = [...Object.values(Departments), 'Board'] as const;
+    type TeamFilter = Departments | 'Board';
+
+    const [selected, setSelected] = useState<TeamFilter>(Departments.All);
     const [carouselKey, setCarouselKey] = useState(0);
 
     const { data: hubbers } = useQuery({
@@ -39,7 +42,7 @@ export default function MeetTheTeamSection() {
         select: (data) => data.members,
     });
 
-    const handleSelect = (value: Departments) => {
+    const handleSelect = (value: TeamFilter) => {
         setSelected(value);
         setCarouselKey((prevKey) => prevKey + 1);
     };
@@ -47,6 +50,7 @@ export default function MeetTheTeamSection() {
     const initialSlides: React.ReactElement[] = hubbers
         ? hubbers
               .filter((hubbers) => {
+                  if (selected === 'Board') return hubbers.position.trim().length > 0;
                   if (selected === Departments.All) return true;
                   return hubbers.departments.includes(selected);
               })
@@ -65,7 +69,7 @@ export default function MeetTheTeamSection() {
             <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative">
                 <h2 className="font-semibold text-3xl text-[#9cbeff] mb-10">Meet the team</h2>
                 <div className="flex flex-wrap gap-3">
-                    {Object.values(Departments).map((label) =>
+                    {FILTERS.map((label) =>
                         selected === label ? (
                             <Button
                                 variant="team_selected"

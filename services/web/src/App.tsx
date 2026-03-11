@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactLenis } from 'lenis/react';
 import { MainPage } from './website/MainPage/MainPage';
 import { HackathonPage as Hackathon7 } from './website/HackathonPage7.0/HackathonPage';
 import { VerificationPage } from './website/VerificationPage/VerificationPage';
@@ -35,96 +36,98 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
     const queryClient = new QueryClient();
-
     return (
-        <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
-            <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<MainPage />} />
-                {/* Hackathon Group */}
-                <Route path="/hackathon">
-                    <Route index element={<HackathonPage />} />
-                    <Route path="7.0" element={<Hackathon7 />} />
-                    <Route path="registration" element={<FormPage />} />
-                    <Route path="verification" element={<VerificationPage />} />
-                    {/* 404 Catch-all */}
-                    <Route path="*" element={<Hackathon404Page />} />
-                </Route>
-
-                <Route path="/auth">
-                    <Route element={<RefreshGuard />}>
-                        <Route element={<AuthenticatedGuard isAuth={false} />}>
-                            <Route path="login" element={<LoginPage />} />
-                            <Route path="register" element={<RegisterPage />} />
-                        </Route>
+        <>
+            <ReactLenis root />
+            <QueryClientProvider client={queryClient}>
+                <ReactQueryDevtools initialIsOpen={false} />
+                <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<MainPage />} />
+                    {/* Hackathon Group */}
+                    <Route path="/hackathon">
+                        <Route index element={<HackathonPage />} />
+                        <Route path="7.0" element={<Hackathon7 />} />
+                        <Route path="registration" element={<FormPage />} />
+                        <Route path="verification" element={<VerificationPage />} />
+                        {/* 404 Catch-all */}
+                        <Route path="*" element={<Hackathon404Page />} />
                     </Route>
-                </Route>
 
-                {/* Admin Group */}
-                <Route path="/admin">
-                    <Route index element={<Navigate to="dashboard" replace />} />
-                    <Route element={<RefreshGuard />}>
-                        <Route element={<AuthenticatedGuard isAuth={true} />}>
-                            <Route path="dashboard">
-                                <Route index element={<DashboardPage />} />
-                                <Route element={<RoleGuard allowedRoles={['board', 'super_admin']} />}>
-                                    {/* Meet the Team Sub-group */}
-                                    <Route path="meet-the-team">
-                                        <Route index element={<MeetTheTeamPage />} />
-                                        <Route path="add" element={<MeetTheTeamEditPage />} />
-                                        <Route path=":id" element={<MeetTheTeamEditPage />} />
-                                    </Route>
-
-                                    {/* Judges Sub-group */}
-                                    <Route path="judges">
-                                        <Route index element={<JudgesListPage />} />
-                                        <Route path="add" element={<JudgesEditPage />} />
-                                        <Route path=":id" element={<JudgesEditPage />} />
-                                    </Route>
-
-                                    {/* Mentors Sub-group */}
-                                    <Route path="mentors">
-                                        <Route index element={<MentorsListPage />} />
-                                        <Route path="add" element={<MentorsEditPage />} />
-                                        <Route path=":id" element={<MentorsEditPage />} />
-                                    </Route>
-
-                                    {/* Sponsors Sub-group */}
-                                    <Route path="sponsors">
-                                        <Route index element={<SponsorsListPage />} />
-                                        <Route path="add" element={<SponsorsEditPage />} />
-                                        <Route path=":id" element={<SponsorsEditPage />} />
-                                    </Route>
-
-                                    {/* Past events Sub-group */}
-                                    <Route path="past-events">
-                                        <Route index element={<PastEventsPage />} />
-                                        <Route path="add" element={<PastEventsEditPage />} />
-                                        <Route path=":id" element={<PastEventsEditPage />} />
-                                    </Route>
-
-                                    {/* Participants Sub-group */}
-                                    <Route path="participants" element={<ParticipantsPage />} />
-                                </Route>
-                                <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
-                                    <Route path="feature-switches" element={<FeatureSwitchesPage />} />
-                                </Route>
-
-                                <Route element={<RoleGuard allowedRoles={['super_admin']} />}>
-                                    <Route path="admin-roles" element={<AdminRolesPage />} />
-                                </Route>
+                    <Route path="/auth">
+                        <Route element={<RefreshGuard />}>
+                            <Route element={<AuthenticatedGuard isAuth={false} />}>
+                                <Route path="login" element={<LoginPage />} />
+                                <Route path="register" element={<RegisterPage />} />
                             </Route>
-                            <Route path="forbidden" element={<Admin403Page />} />
-                            {/* 404 Catch-all */}
-                            <Route path="*" element={<Admin404Page />} />
                         </Route>
                     </Route>
-                </Route>
-                {/* 404 Catch-all */}
-                <Route path="*" element={<Global404Page />} />
-            </Routes>
-        </QueryClientProvider>
+
+                    {/* Admin Group */}
+                    <Route path="/admin">
+                        <Route index element={<Navigate to="dashboard" replace />} />
+                        <Route element={<RefreshGuard />}>
+                            <Route element={<AuthenticatedGuard isAuth={true} />}>
+                                <Route path="dashboard">
+                                    <Route index element={<DashboardPage />} />
+                                    <Route element={<RoleGuard allowedRoles={['board', 'super_admin']} />}>
+                                        {/* Meet the Team Sub-group */}
+                                        <Route path="meet-the-team">
+                                            <Route index element={<MeetTheTeamPage />} />
+                                            <Route path="add" element={<MeetTheTeamEditPage />} />
+                                            <Route path=":id" element={<MeetTheTeamEditPage />} />
+                                        </Route>
+
+                                        {/* Judges Sub-group */}
+                                        <Route path="judges">
+                                            <Route index element={<JudgesListPage />} />
+                                            <Route path="add" element={<JudgesEditPage />} />
+                                            <Route path=":id" element={<JudgesEditPage />} />
+                                        </Route>
+
+                                        {/* Mentors Sub-group */}
+                                        <Route path="mentors">
+                                            <Route index element={<MentorsListPage />} />
+                                            <Route path="add" element={<MentorsEditPage />} />
+                                            <Route path=":id" element={<MentorsEditPage />} />
+                                        </Route>
+
+                                        {/* Sponsors Sub-group */}
+                                        <Route path="sponsors">
+                                            <Route index element={<SponsorsListPage />} />
+                                            <Route path="add" element={<SponsorsEditPage />} />
+                                            <Route path=":id" element={<SponsorsEditPage />} />
+                                        </Route>
+
+                                        {/* Past events Sub-group */}
+                                        <Route path="past-events">
+                                            <Route index element={<PastEventsPage />} />
+                                            <Route path="add" element={<PastEventsEditPage />} />
+                                            <Route path=":id" element={<PastEventsEditPage />} />
+                                        </Route>
+
+                                        {/* Participants Sub-group */}
+                                        <Route path="participants" element={<ParticipantsPage />} />
+                                    </Route>
+                                    <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
+                                        <Route path="feature-switches" element={<FeatureSwitchesPage />} />
+                                    </Route>
+
+                                    <Route element={<RoleGuard allowedRoles={['super_admin']} />}>
+                                        <Route path="admin-roles" element={<AdminRolesPage />} />
+                                    </Route>
+                                </Route>
+                                <Route path="forbidden" element={<Admin403Page />} />
+                                {/* 404 Catch-all */}
+                                <Route path="*" element={<Admin404Page />} />
+                            </Route>
+                        </Route>
+                    </Route>
+                    {/* 404 Catch-all */}
+                    <Route path="*" element={<Global404Page />} />
+                </Routes>
+            </QueryClientProvider>
+        </>
     );
 }
 
