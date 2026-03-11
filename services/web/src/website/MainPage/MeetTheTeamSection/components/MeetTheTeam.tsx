@@ -47,14 +47,24 @@ export default function MeetTheTeamSection() {
         setCarouselKey((prevKey) => prevKey + 1);
     };
 
+    const hasPosition = (member: BaseHubMember) => Boolean(member.position?.trim());
+
     const initialSlides: React.ReactElement[] = hubbers
         ? hubbers
-              .filter((hubbers) => {
-                  if (selected === 'Board') return hubbers.position.trim().length > 0;
+              .filter((hubber) => {
+                  if (selected === 'Board') return hasPosition(hubber);
                   if (selected === Departments.All) return true;
-                  return hubbers.departments.includes(selected);
+                  return hubber.departments.includes(selected);
               })
-              .map((hubber, index) => <HubberModule imgSrc={hubber.avatar_url} name={hubber.name} key={index} />)
+              .sort((a, b) => {
+                  const aHasPos = hasPosition(a);
+                  const bHasPos = hasPosition(b);
+                  if (aHasPos !== bHasPos) return aHasPos ? -1 : 1;
+                  return (a.name ?? '').localeCompare(b.name ?? '');
+              })
+              .map((hubber, index) => (
+                  <HubberModule imgSrc={hubber.avatar_url} name={hubber.name} key={hubber.id ?? index} />
+              ))
         : [];
 
     const SLIDES = chunkArray(initialSlides, 2);
