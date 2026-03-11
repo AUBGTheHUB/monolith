@@ -20,6 +20,9 @@ export const DesktopNavigationComponent = () => {
             >
                 <div className="w-full flex flex-row justify-center items-center py-3 ">
                     <div className="flex flex-row w-[85%] gap-8">
+                        <a href="/" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
+                            HOME
+                        </a>
                         <a href="#mission" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                             ABOUT
                         </a>
