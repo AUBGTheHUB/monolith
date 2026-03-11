@@ -46,31 +46,17 @@ export default function HackAUBGSection({ mentorsSwitch }: { mentorsSwitch: bool
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="flex flex-row w-[70%] lg:space-x--12 space-x-[-25px]">
-                                {mentorsSwitch ? (
-                                    <Fragment>
-                                        <div className="h-[45%] w-[45%] border rounded-full">
-                                            <img src="/anton_polimenov_round.webp" alt="Anton Polimenov" />
-                                        </div>
-                                        <div className="h-[45%] w-[45%] border rounded-full">
-                                            <img src="/carmen_struck_round.webp" alt="Carmen Struck" />
-                                        </div>
-                                        <div className="h-[45%] w-[45%] border rounded-full">
-                                            <img src="/daniel_lydianov_round.webp" alt="Daniel Lydianov" />
-                                        </div>
-                                    </Fragment>
-                                ) : (
-                                    <Fragment>
-                                        <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="/question-mark.webp" alt="Question mark" />
-                                        </div>
-                                        <div className="h-[45%] w-[45%] border rounded-full bg-white">
-                                            <img src="/question-mark.webp" alt="Question mark" />
-                                        </div>
-                                        <div className="h-[45%] w-[45%] border  rounded-full bg-white">
-                                            <img src="/question-mark.webp" alt="Question mark" />
-                                        </div>
-                                    </Fragment>
-                                )}
+                                <Fragment>
+                                    <div className="h-[45%] w-[45%] border rounded-full bg-white">
+                                        <img src="/question-mark.webp" alt="Question mark" />
+                                    </div>
+                                    <div className="h-[45%] w-[45%] border rounded-full bg-white">
+                                        <img src="/question-mark.webp" alt="Question mark" />
+                                    </div>
+                                    <div className="h-[45%] w-[45%] border  rounded-full bg-white">
+                                        <img src="/question-mark.webp" alt="Question mark" />
+                                    </div>
+                                </Fragment>
                             </div>
                             <div className="w-3/5 h-full flex items-end justify-center select-none">
                                 {mentorsSwitch ? (
