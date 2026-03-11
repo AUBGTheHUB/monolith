@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Callable
+from typing import Callable
 
 from src.service.mail_service.mail_clients.base_mail_client import MailClient
 from src.service.mail_service.mail_clients.resend_mail_client import resend_mail_client_provider
@@ -9,7 +9,7 @@ class MailClients(Enum):
     RESEND = 0
 
 
-_mail_client_providers_map: Dict[MailClients, Callable[[], MailClient]] = {
+_mail_client_providers_map: dict[MailClients, Callable[[], MailClient]] = {
     MailClients.RESEND: resend_mail_client_provider
 }
 

@@ -1,12 +1,29 @@
+import uuid
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
+from os import environ
+from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from unittest.mock import patch
+
+import boto3
 import pytest
 import pytest_asyncio
+from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
-from src.service.jwt_utils.codec import JwtUtility
-from src.service.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from moto import mock_aws
+from motor.motor_asyncio import AsyncIOMotorClient
+from mypy_boto3_s3.client import S3Client
 from structlog.stdlib import get_logger
-from typing import AsyncGenerator, Dict, Any, List, Literal, Protocol, Union
+
+from src.app_entrypoint import app
+from src.database.db_clients import mongo_db_client_provider
+from src.database.model.admin.hub_admin_model import Role
+from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
+from src.database.mongo.db_manager import MongoDatabaseManager
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
+from structlog.stdlib import get_logger
+from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app
 from os import environ
 from src.database.model.hackathon.participant_model import (
@@ -17,6 +34,10 @@ from src.database.model.hackathon.participant_model import (
     PROGRAMMING_LANGUAGES_LIST,
     PROGRAMMING_LEVELS_LIST,
 )
+from src.database.mongo.db_manager import MongoDatabaseManager
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
+from src.service.utility.jwt_utils.codec import JwtUtility
+from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 
 LOG = get_logger()
 
@@ -36,6 +57,18 @@ TEST_REFERRAL_SOURCE: REFERRAL_SOURCES_LIST = "Friends"
 TEST_PROGRAMMING_LANGUAGE: PROGRAMMING_LANGUAGES_LIST = "Programming in Python"
 TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 
+TEST_HUB_MEMBER_NAME = "Test member"
+TEST_HUB_MEMBER_USERNAME = "Test member_123"
+TEST_HUB_MEMBER_MEMBER_TYPE: MEMBER_TYPE = "member"
+TEST_HUB_MEMBER_ADMIN: MEMBER_TYPE = "admin"
+TEST_HUB_MEMBER_POSITON = "none"
+TEST_HUB_MEMBER_DEPARTMENTS: list[DEPARTMENTS_LIST] = ["Development", "Marketing"]
+TEST_HUB_MEMBER_AVATAR_URL = "https://www.amazonaws.com/some-file.webp"
+TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.com/in/jane-doe"}
+TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
+TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
+TEST_HUB_ADMIN_ROLE: Role = Role.MEMBER
+
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
 # running in the same event loop, otherwise we get `Event loop is closed`. This is because by default, each test runs
@@ -44,7 +77,7 @@ TEST_PROGRAMMING_LEVEL: PROGRAMMING_LEVELS_LIST = "Advanced"
 # https://pytest-asyncio.readthedocs.io/en/latest/concepts.html
 # https://pytest-asyncio.readthedocs.io/en/latest/how-to-guides/run_session_tests_in_same_loop.html
 # https://docs.pytest.org/en/stable/how-to/writing_hook_functions.html
-def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
+def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
     pytest_asyncio_tests = (item for item in items if pytest_asyncio.is_async_test(item))
     session_scope_marker = pytest.mark.asyncio(loop_scope="session")
     for async_test in pytest_asyncio_tests:
@@ -56,6 +89,36 @@ def pytest_collection_modifyitems(items: List[pytest.Item]) -> None:
 # Read More: https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 
 
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def dev_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "dev", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def board_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "board", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
+@pytest.fixture(scope="session")  # session scope means login happens once for the whole run
+async def super_auth_token(async_client: AsyncClient) -> str:
+    login_data = {"username": "super", "password": "secure_password"}  # Use test credentials
+    response = await async_client.post("/api/v3/auth/login", json=login_data)
+    assert response.status_code == 200
+
+    # Adjust based on your actual login response structure
+    return str(response.json()["access_token"])
+
+
 @pytest_asyncio.fixture(scope="session")
 async def async_client() -> AsyncGenerator[AsyncClient, None]:
     LOG.debug("Opening Async Client")
@@ -65,40 +128,65 @@ async def async_client() -> AsyncGenerator[AsyncClient, None]:
     await client.aclose()
 
 
+@pytest.fixture(scope="session", autouse=True)
+def generate_aws_data() -> None:
+    """Mock AWS Credentials for testing moto."""
+    environ["AWS_ACCESS_KEY_ID"] = "test-key"
+    environ["AWS_SECRET_ACCESS_KEY"] = "test-key"
+    environ["AWS_DEFAULT_REGION"] = "eu-central-1"
+    environ["AWS_BUCKET"] = "dabucket"
+
+
+@pytest.fixture
+def aws_mock() -> Generator[None, Any, None]:
+    with mock_aws():
+        s3_client: S3Client = boto3.client("s3", region_name=AWS_DEFAULT_REGION)
+
+        s3_client.create_bucket(
+            Bucket=AWS_S3_DEFAULT_BUCKET,
+            CreateBucketConfiguration={
+                "LocationConstraint": "eu-central-1",
+            },
+        )
+
+        yield
+
+
 class CreateTestParticipantCallable(Protocol):
     """
     A callable protocol that represents an asynchronous function to create a test participant.
 
     This callable takes the following parameters:
     - participant_body: A dictionary containing participant data.
-    - jwt_token: An optional JWT token as a string for authentication.
+    - jwt_token: An optional JWT token as a string for auth.
 
     Returns:
     - An awaitable dictionary containing the participant creation response.
     """
 
-    async def __call__(self, participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
+    async def __call__(self, participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response: ...
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def clean_up_test_participant(async_client: AsyncClient, result_json: Dict[str, Any]) -> None:
-
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def clean_up_test_participant(
+    async_client: AsyncClient, result_json: dict[str, Any], super_auth_token: str
+) -> None:
     participant_id = result_json["participant"]["id"]
     await async_client.delete(
         url=f"{PARTICIPANT_ENDPOINT_URL}/{participant_id}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
     )
 
     if result_json["team"] is not None:
         team_id = result_json["team"]["id"]
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team_id}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
 
-@patch.dict(environ, {"SECRET_AUTH_TOKEN": "OFFLINE_TOKEN", "RESEND_API_KEY": "res_some_api_key"})
-async def revert_the_finalization_step(async_client: AsyncClient) -> None:
+@patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
+async def revert_the_finalization_step(async_client: AsyncClient, super_auth_token: str) -> None:
     """
     When the capacity for the registered teams is reached, there is a finalization step that runs creating possible
     random participant teams and flipping the feature switch that allows for the possible creation of new teams
@@ -110,7 +198,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     teams_result = await async_client.get(
         url=f"{TEAM_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         follow_redirects=True,
     )
 
@@ -119,7 +207,7 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
     for team in teams_result.json()["teams"]:
         await async_client.delete(
             url=f"{TEAM_ENDPOINT_URL}/{team["id"]}",
-            headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+            headers={"Authorization": f"Bearer {super_auth_token}"},
         )
 
     LOG.debug(f"Recovering the state of the {TEAM_REGISTRATION_FEATURE} feature switch")
@@ -136,14 +224,14 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
     await async_client.patch(
         f"{FEATURE_SWITCH_ENDPOINT_URL}",
-        headers={"Authorization": f"Bearer {environ['SECRET_AUTH_TOKEN']}"},
+        headers={"Authorization": f"Bearer {super_auth_token}"},
         json=payload,
     )
 
     LOG.debug("Cleanup finished successfully")
 
 
-# The following is an exapmle of factories as fixtures in pytest
+# The following is an example of factories as fixtures in pytest
 # It manages the creation of participants and ensures the cleanup process after every test function
 # You can read more about that: https://docs.pytest.org/en/stable/how-to/fixtures.html#factories-as-fixtures
 # It uses the same philosophy for the teardown as it is suggested on the example of the docs above.
@@ -152,7 +240,9 @@ async def revert_the_finalization_step(async_client: AsyncClient) -> None:
 
 @patch.dict(environ, {"RESEND_API_KEY": "res_some_api_key"})
 @pytest_asyncio.fixture
-async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[CreateTestParticipantCallable, None]:
+async def create_test_participant(
+    async_client: AsyncClient, super_auth_token: str
+) -> AsyncGenerator[CreateTestParticipantCallable, None]:
     """
     A pytest fixture for managing the lifecycle of test participants in asynchronous tests.
 
@@ -164,7 +254,7 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
 
     Yields:
     - CreateTestParticipantCallable: A callable to create participants. The callable signature is:
-      async def(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Dict[str, Any]
+      async def(participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> dict[str, Any]
 
       - participant_body: A dictionary containing the participant's details, such as email and registration type.
       - jwt_token: An optional JWT token as a string to authenticate the request.
@@ -191,7 +281,7 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
     """
     request_results = []
 
-    async def _create(participant_body: Dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
+    async def _create(participant_body: dict[str, Any], jwt_token: Union[str, None] = None) -> Response:
         LOG.debug("Creating a test participant")
         if jwt_token is None:
             participant_result = await async_client.post(PARTICIPANT_ENDPOINT_URL, json=participant_body)
@@ -207,10 +297,12 @@ async def create_test_participant(async_client: AsyncClient) -> AsyncGenerator[C
     for result in request_results:
         if result.status_code == 201:
             LOG.debug("Cleaning up test participant")
-            await clean_up_test_participant(async_client=async_client, result_json=result.json())
+            await clean_up_test_participant(
+                async_client=async_client, result_json=result.json(), super_auth_token=super_auth_token
+            )
 
     # Revert the finalization if any random teams were created while integration testing
-    await revert_the_finalization_step(async_client=async_client)
+    await revert_the_finalization_step(async_client=async_client, super_auth_token=super_auth_token)
 
 
 class ParticipantRequestBodyCallable(Protocol):
@@ -221,7 +313,7 @@ class ParticipantRequestBodyCallable(Protocol):
         email: Union[str, None] = TEST_USER_EMAIL,
         is_admin: Union[bool, None] = False,
         **kwargs: Any,
-    ) -> Dict[str, Any]: ...
+    ) -> dict[str, Any]: ...
 
 
 @pytest_asyncio.fixture
@@ -244,7 +336,7 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
         has_previous_coding_experience: Union[bool | None] = True,
         share_info_with_sponsors: Union[bool | None] = True,
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """This method is flexible with generating participant request bodies. To disable a property just call it with
         generate_participant_request_body(email=None) i.e.
         """
@@ -276,29 +368,36 @@ def generate_participant_request_body() -> ParticipantRequestBodyCallable:
 
 
 @pytest.fixture
+def image_mock() -> BytesIO:
+    image = Image.new("RGB", (2000, 1600), color="red")
+    output = BytesIO()
+    image.save(fp=output, format="JPEG")
+    output.seek(0)
+    return output
+
+
+@pytest.fixture
 def obj_id_mock() -> str:
     return "507f1f77bcf86cd799439011"
 
 
 @pytest.fixture
-def thirty_sec_jwt_exp_limit() -> int:
-    return int((datetime.now(tz=timezone.utc) + timedelta(seconds=30)).timestamp())
+def one_minute_jwt_exp() -> int:
+    return int((datetime.now(tz=timezone.utc) + timedelta(minutes=1)).timestamp())
 
 
 @pytest.fixture
-def invite_link_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
-) -> JwtParticipantInviteRegistrationData:
+def invite_link_jwt_payload_mock(one_minute_jwt_exp: int, obj_id_mock: str) -> JwtParticipantInviteRegistrationData:
     return JwtParticipantInviteRegistrationData(
-        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=thirty_sec_jwt_exp_limit
+        sub=obj_id_mock, team_name=TEST_TEAM_NAME, team_id=obj_id_mock, exp=one_minute_jwt_exp
     )
 
 
 @pytest.fixture
 def participant_verification_jwt_payload_mock(
-    thirty_sec_jwt_exp_limit: int, obj_id_mock: str
+    one_minute_jwt_exp: int, obj_id_mock: str
 ) -> JwtParticipantVerificationData:
-    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=thirty_sec_jwt_exp_limit)
+    return JwtParticipantVerificationData(sub=obj_id_mock, is_admin=True, exp=one_minute_jwt_exp)
 
 
 @pytest.fixture
@@ -309,3 +408,58 @@ def expired_jwt_payload_mock(obj_id_mock: str) -> JwtParticipantInviteRegistrati
 @pytest.fixture
 def jwt_utility_mock() -> JwtUtility:
     return JwtUtility()
+
+
+class RegisterHubAdminBodyCallable(Protocol):
+    def __call__(
+        self,
+        name: str = TEST_USER_NAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME} {uuid.uuid4()}",
+        position: str = TEST_HUB_MEMBER_POSITON,
+        departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
+        member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
+        password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        **kwargs: Any,
+    ) -> dict[str, Any]: ...
+
+
+@pytest.fixture
+def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
+    def register_hub_admin_request_body_generator(
+        name: str = TEST_HUB_MEMBER_NAME,
+        username: str = f"{TEST_HUB_MEMBER_USERNAME}_{uuid.uuid4()}",
+        # Changed space to underscore for safer form keys
+        position: str = TEST_HUB_MEMBER_POSITON,
+        departments: list[DEPARTMENTS_LIST] = TEST_HUB_MEMBER_DEPARTMENTS,
+        member_type: MEMBER_TYPE = TEST_HUB_ADMIN_MEMBER_TYPE,
+        password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        repeat_password: str = TEST_HUB_ADMIN_PASSWORD_HASH,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
+        return {
+            "name": name,
+            "username": username,
+            "position": position,
+            "departments": departments,  # HTTPX handles list values by repeating keys
+            "member_type": member_type,
+            "password": password,
+            "repeat_password": repeat_password,
+            **kwargs,
+        }
+
+    return register_hub_admin_request_body_generator
+
+
+@pytest.fixture(scope="session")
+def test_mongo_client() -> AsyncIOMotorClient:
+    """Uses the existing singleton provider logic."""
+    return mongo_db_client_provider()
+
+
+@pytest.fixture(scope="session")
+def db_manager(test_mongo_client: AsyncIOMotorClient) -> MongoDatabaseManager:
+    """
+    Provides the MongoDatabaseManager using the singleton client.
+    """
+    return MongoDatabaseManager(client=test_mongo_client)

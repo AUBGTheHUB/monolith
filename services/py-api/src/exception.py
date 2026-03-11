@@ -1,9 +1,9 @@
 from abc import ABC
-from typing import Any, Dict, Tuple, Type
+from typing import Any
 from starlette import status
 from pymongo.errors import DuplicateKeyError
 
-ERROR_MAPPING: Dict[Type[BaseException], Tuple[str, int]] = {}
+ERROR_MAPPING: dict[type[BaseException], tuple[str, int]] = {}
 """Maps custom errors to their representation (message, status_code), dynamically populated once a subclass of
 CustomError is created (not instantiated)"""
 
@@ -94,6 +94,20 @@ class TeamNameMissmatchError(CustomError):
     status_code = status.HTTP_400_BAD_REQUEST
 
 
+class SponsorNotFoundError(CustomError):
+    """Exception raised when the sponsor cannot be found in the database"""
+
+    message = "The specified sponsor was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class JudgeNotFoundError(CustomError):
+    """Exception raised when the judge cannot be found in the database"""
+
+    message = "The specified judge was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
 class JwtDecodeSchemaMismatch(CustomError):
     """Exception raised when the decoded token does not match the structure of the defined JWT schema"""
 
@@ -124,4 +138,73 @@ class JwtDecodeError(CustomError):
 
 class FeatureSwitchNotFoundError(CustomError):
     message = "The feature switch was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class HubMemberNotFoundError(CustomError):
+    message = "The hub member was not found."
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class DuplicateHubMemberUsernameError(CustomError):
+    message = "HUB member with this name already exists"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class PasswordsMismatchError(CustomError):
+    message = "The name and password do not match!"
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenNotFound(CustomError):
+    message = "The refresh token was not found."
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class RefreshTokenIsInvalid(CustomError):
+    message = "The refresh token is invalid."
+    status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class PastEventNotFoundError(CustomError):
+    """Exception raised when a past event with the given id does not exist"""
+
+    message = "The specified past event was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class ImageCompressionError(Exception):
+    """Exception raised when the image compression fails"""
+
+    message = "There was an error when compressing the image"
+
+
+class ImageUploadError(Exception):
+    """Exception raised when the image upload fails"""
+
+    message = "There was an error when uploading the image"
+
+
+class ImageDeleteError(Exception):
+    """Exception raised when the image delete fails"""
+
+    message = "There was an error when deleteing the image"
+
+
+class FileUploadError(Exception):
+    """Exception raised when uploading a file to aws fails"""
+
+    message = "There was an error when uploading the file"
+
+
+class FileDeleteError(Exception):
+    """Exception raised when deleting a file in aws fails"""
+
+    message = "There was an error when deleting the file"
+
+
+class MentorNotFoundError(CustomError):
+    """Exception raised when the mentor cannot be found in the database"""
+
+    message = "The specified mentor was not found"
     status_code = status.HTTP_404_NOT_FOUND

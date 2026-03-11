@@ -1,18 +1,18 @@
 from fastapi import APIRouter
 
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
-from src.server.schemas.response_schemas.schemas import (
-    ErrResponse,
+from src.server.schemas.response_schemas.hackathon.schemas import (
     ParticipantVerifiedResponse,
     VerificationEmailSentSuccessfullyResponse,
 )
+from src.server.schemas.response_schemas.schemas import ErrResponse
 
 
 def register_verification_routes(http_handler: VerificationHandlers) -> APIRouter:
     """Registers all verification routes under a separate router, along with their respective handler funcs, and
     returns the router"""
 
-    verification_router = APIRouter(prefix="/hackathon/participants/verify")
+    verification_router = APIRouter(prefix="/hackathon/participants/verify", tags=["hackathon"])
 
     verification_router.add_api_route(
         path="",

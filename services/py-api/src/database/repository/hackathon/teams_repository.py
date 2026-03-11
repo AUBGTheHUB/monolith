@@ -1,4 +1,4 @@
-from typing import Optional, List, cast, Dict, Any
+from typing import Optional, cast, Any
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -8,6 +8,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
+from src.database.mongo.collections.hackathon_collections import TEAMS_COLLECTION
 from src.database.model.hackathon.team_model import Team, UpdateTeamParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import DuplicateTeamNameError, TeamNotFoundError
@@ -17,8 +18,8 @@ LOG = get_logger()
 
 class TeamsRepository(CRUDRepository[Team]):
 
-    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str) -> None:
-        self._collection = db_manager.get_collection(collection_name)
+    def __init__(self, db_manager: MongoDatabaseManager) -> None:
+        self._collection = db_manager.get_collection(TEAMS_COLLECTION)
 
     async def create(
         self,
@@ -58,7 +59,7 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.exception("Failed to fetch team due to error", team_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self) -> Result[List[Team], Exception]:
+    async def fetch_all(self) -> Result[list[Team], Exception]:
         try:
             LOG.debug("Fetching all teams...")
 
@@ -148,7 +149,7 @@ class TeamsRepository(CRUDRepository[Team]):
             LOG.debug("Fetching team by name...", team_name=team_name)
 
             # Query the database for the team with the given name
-            team = cast(Dict[str, Any], await self._collection.find_one({"name": team_name}))
+            team = cast(dict[str, Any], await self._collection.find_one({"name": team_name}))
 
             if team is None:  # If no team is found, return an Err
                 return Err(TeamNotFoundError())

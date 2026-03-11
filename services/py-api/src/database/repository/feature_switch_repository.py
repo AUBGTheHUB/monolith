@@ -1,4 +1,4 @@
-from typing import Optional, List, cast, Any, Dict
+from typing import Optional, cast, Any
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
@@ -7,6 +7,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.model.feature_switch_model import FeatureSwitch, UpdateFeatureSwitchParams
+from src.database.mongo.collections.admin_collections import FEATURE_SWITCH_COLLECTION
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import FeatureSwitchNotFoundError
@@ -15,13 +16,13 @@ LOG = get_logger()
 
 
 class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
-    def __init__(self, db_manager: MongoDatabaseManager, collection_name: str):
-        self._collection = db_manager.get_collection(collection_name)
+    def __init__(self, db_manager: MongoDatabaseManager):
+        self._collection = db_manager.get_collection(FEATURE_SWITCH_COLLECTION)
 
     async def get_feature_switch(self, feature: str) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
             LOG.debug("Fetching feature switch by name...", feature=feature)
-            feature_switch = cast(Dict[str, Any], await self._collection.find_one({"name": feature}))
+            feature_switch = cast(dict[str, Any], await self._collection.find_one({"name": feature}))
 
             if feature_switch is None:
                 return Err(FeatureSwitchNotFoundError())
@@ -44,7 +45,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
     ) -> Result[FeatureSwitch, Exception]:
         return Err(NotImplementedError())
 
-    async def fetch_all(self) -> Result[List[FeatureSwitch], Exception]:
+    async def fetch_all(self) -> Result[list[FeatureSwitch], Exception]:
 
         try:
             LOG.info("Fetching all feature switches...")
@@ -128,7 +129,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             if result is None:
                 return Err(FeatureSwitchNotFoundError())
 
-            result_dict = cast(Dict[str, Any], result)
+            result_dict = cast(dict[str, Any], result)
 
             result_dict["id"] = result_dict.pop("_id")
 

@@ -1,23 +1,23 @@
-.github/workflows @Isak-Bego @IvanObreshkov
+.github/workflows @georginikolov7
 
-.vscode @Isak-Bego @Aleks1908
+.vscode @Aleks1908 @MagdalenaZh
 
-.devcontainer @Isak-Bego
+.devcontainer @georginikolov7
 
-services/web @Aleks1908 @Isak-Bego
+services/web @Aleks1908 @MagdalenaZh
 
-**/Dockerfile @Isak-Bego @IvanObreshkov
+**/Dockerfile @georginikolov7
 
-**/*.yml @Isak-Bego @IvanObreshkov
+**/*.yml @georginikolov7
 
-**/*.sh @IvanObreshkov @Isak-Bego
+**/*.sh @georginikolov7
 
-Makefile @Isak-Bego @IvanObreshkov
+Makefile @georginikolov7
 
-**/*.conf @Isak-Bego @IvanObreshkov
+**/*.conf @georginikolov7
 
 services/questionnaire @Aleks1908
 
-services/py-api @IvanObreshkov @Isak-Bego
+services/py-api @georginikolov7
 
-README.md @Isak-Bego @IvanObreshkov @Aleks1908
+README.md @Aleks1908 @georginikolov7 @MagdalenaZh

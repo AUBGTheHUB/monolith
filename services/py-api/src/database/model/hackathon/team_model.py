@@ -1,5 +1,5 @@
 from dataclasses import field, dataclass
-from typing import Dict, Any, Union
+from typing import Any, Union
 
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
@@ -12,7 +12,7 @@ class Team(BaseDbModel):
     name: str  # unique
     is_verified: bool = field(default=False)
 
-    def dump_as_json(self) -> Dict[str, Any]:
+    def dump_as_json(self) -> dict[str, Any]:
         return {
             "id": str(self.id),
             "name": self.name,
@@ -21,7 +21,7 @@ class Team(BaseDbModel):
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
-    def dump_as_mongo_db_document(self) -> Dict[str, Any]:
+    def dump_as_mongo_db_document(self) -> dict[str, Any]:
         return {
             "_id": self.id,
             "name": self.name,

@@ -18,7 +18,6 @@ EMAIL_TEMPLATE="Email Template"
 ACTIONS=$(gum choose --limit 1 "$WEB_CLIENT" "$LOCAL_PY_API" "$LOCAL_RUST_API" "$LOCAL_QUESTIONNAIRE" "$EMAIL_TEMPLATE")
 
 ACTIONS_EXIT_STATUS=$?
-clear
 
 if [ $ACTIONS_EXIT_STATUS -eq 0 ]; then
     gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "You might need to pull the latest dependencies if the service is unable to start."

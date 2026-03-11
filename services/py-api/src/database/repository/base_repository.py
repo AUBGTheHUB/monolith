@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Optional, List
+from typing import Optional
 
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
@@ -42,7 +42,7 @@ class CRUDRepository[T: BaseDbModel](ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    async def fetch_all(self) -> Result[List[T], Exception]:
+    async def fetch_all(self) -> Result[list[T], Exception]:
         raise NotImplementedError()
 
     @abstractmethod

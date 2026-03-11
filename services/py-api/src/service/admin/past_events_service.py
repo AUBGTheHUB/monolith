@@ -1,0 +1,80 @@
+import uuid
+from typing import Optional
+
+from fastapi import UploadFile
+from result import Result
+
+from src.database.model.admin.past_event_model import PastEvent, UpdatePastEventParams
+from src.database.repository.admin.past_events_repository import PastEventsRepository
+from src.exception import PastEventNotFoundError
+from src.server.schemas.request_schemas.schemas import NonEmptyStr
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+
+
+class PastEventsService:
+    def __init__(self, repo: PastEventsRepository, image_storing_service: ImageStoringService) -> None:
+        self._repo = repo
+        self._image_storing_service = image_storing_service
+
+    async def get_all(self) -> Result[list[PastEvent], Exception]:
+        return await self._repo.fetch_all()
+
+    async def get(self, event_id: str) -> Result[PastEvent, PastEventNotFoundError | Exception]:
+        return await self._repo.fetch_by_id(event_id)
+
+    async def create(
+        self,
+        title: NonEmptyStr,
+        cover_picture: UploadFile,
+        description: str | None = None,
+        tags: list[NonEmptyStr] = [],
+    ) -> Result[PastEvent, Exception]:
+        past_event = PastEvent(
+            title=title,
+            cover_picture_url="",
+            description=description,
+            tags=tags,
+        )
+
+        cover_picture_url = await self._image_storing_service.upload_image(
+            cover_picture, file_name=f"past_events/{str(past_event.id)}/{uuid.uuid4()}"
+        )
+        past_event.cover_picture_url = str(cover_picture_url)
+
+        return await self._repo.create(past_event)
+
+    async def update(
+        self,
+        event_id: str,
+        title: Optional[NonEmptyStr] = None,
+        description: Optional[str] = None,
+        cover_picture: Optional[UploadFile] = None,
+        tags: Optional[list[NonEmptyStr]] = None,
+    ) -> Result[PastEvent, PastEventNotFoundError | Exception]:
+
+        cover_picture_url: str | None = None
+        if cover_picture is not None:
+            cover_picture_url = str(
+                await self._image_storing_service.upload_image(
+                    cover_picture, file_name=f"past_events/{str(event_id)}/{uuid.uuid4()}"
+                )
+            )
+
+        update_params = UpdatePastEventParams(
+            title=title,
+            description=description,
+            tags=tags,
+            cover_picture_url=cover_picture_url,
+        )
+        return await self._repo.update(event_id, update_params)
+
+    async def delete(self, event_id: str) -> Result[PastEvent, PastEventNotFoundError | Exception]:
+        result = await self._repo.delete(event_id)
+
+        if result.is_ok():
+            cover_picture_url = result.ok_value.cover_picture_url
+            self._image_storing_service.delete_image(
+                cover_picture_url[cover_picture_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
+
+        return result

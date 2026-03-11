@@ -10,9 +10,13 @@ const baseSchema = z.object({
             message: `Name can only contain letters, spaces and '-'.`,
         }),
 
-    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
+    email: z
+        .string()
+        .min(1, { message: 'Email is required' })
+        .email({ message: 'Invalid email format.' }),
 
     tshirt_size: z.string().min(1, { message: 'Please select an option.' }),
+
     university: z.string().min(1, { message: 'University is required.' }),
 
     location: z
@@ -38,7 +42,7 @@ const baseSchema = z.object({
     has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
     has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
     share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }).refine((value) => value === true, {
-        message: 'You must agree to share your information with sponsors.',
+        message: 'Cannot participate unless you agree.',
     }),
 });
 

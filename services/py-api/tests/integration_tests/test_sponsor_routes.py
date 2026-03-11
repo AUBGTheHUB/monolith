@@ -1,0 +1,291 @@
+from io import BytesIO
+from typing import Any, Generator
+
+import pytest
+from httpx import AsyncClient
+
+from src.environment import AWS_DEFAULT_REGION, AWS_S3_DEFAULT_BUCKET
+
+SPONSORS_ENDPOINT_URL = "/api/v3/admin/sponsors"
+
+TEST_SPONSOR_NAME = "Coca-Cola"
+TEST_SPONSOR_TIER = "GOLD"
+TEST_SPONSOR_LOGO_URL = f"https://{AWS_S3_DEFAULT_BUCKET}.s3.{AWS_DEFAULT_REGION}.amazonaws.com/sponsors"
+TEST_SPONSOR_WEBSITE_URL = "https://coca-cola.com/"
+
+valid_sponsor_input: dict[str, Any] = {
+    "name": TEST_SPONSOR_NAME,
+    "tier": TEST_SPONSOR_TIER,
+    "website_url": TEST_SPONSOR_WEBSITE_URL,
+}
+
+
+async def _delete_sponsor(async_client: AsyncClient, sponsor_id: str, super_auth_token: str) -> None:
+    await async_client.delete(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+
+@pytest.mark.asyncio
+async def test_create_sponsor_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange - No new object needed
+
+    # Act
+    response = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 201
+    response_body = response.json()
+
+    assert "sponsor" in response_body
+    assert response_body["sponsor"]["name"] == TEST_SPONSOR_NAME
+    assert response_body["sponsor"]["tier"] == TEST_SPONSOR_TIER
+    assert f"{TEST_SPONSOR_LOGO_URL}/{response_body['sponsor']['id']}" in response_body["sponsor"]["logo_url"]
+    assert response_body["sponsor"]["website_url"] == TEST_SPONSOR_WEBSITE_URL
+    assert "id" in response_body["sponsor"]
+
+    # Cleanup
+    sponsor_id = response_body["sponsor"]["id"]
+    await _delete_sponsor(async_client, sponsor_id, super_auth_token)
+
+
+@pytest.mark.asyncio
+async def test_create_sponsor_missing_parameter(
+    async_client: AsyncClient, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+    invalid_sponsor_body: dict[str, Any] = {
+        "name": TEST_SPONSOR_NAME,
+        "tier": TEST_SPONSOR_TIER,
+        "website_url": TEST_SPONSOR_WEBSITE_URL,
+    }
+
+    # Act
+    response = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=invalid_sponsor_body,
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 422
+    response_body = response.json()
+
+    assert response_body["detail"][0]["type"] == "missing"
+    assert "logo" in response_body["detail"][0]["loc"]
+
+
+@pytest.mark.asyncio
+async def test_create_sponsor_unauthorized(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None]
+) -> None:
+    # Arrange - No new object needed
+
+    # Act
+    response = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer INVALID_TOKEN"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 401
+    assert response.json()["error"] == "Unauthorized"
+
+
+@pytest.mark.asyncio
+async def test_get_all_sponsors_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+
+    created = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+
+    assert created.status_code == 201
+    sponsor_id = created.json()["sponsor"]["id"]
+
+    # Act
+    response = await async_client.get(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 200
+    response_body = response.json()
+
+    assert "sponsors" in response_body
+    assert isinstance(response_body["sponsors"], list)
+    assert any(sponsor["id"] == sponsor_id for sponsor in response_body["sponsors"])
+
+    # Cleanup
+    await _delete_sponsor(async_client, sponsor_id, super_auth_token)
+
+
+@pytest.mark.asyncio
+async def test_get_sponsor_by_id_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+    created = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+    assert created.status_code == 201
+    sponsor = created.json()["sponsor"]
+    sponsor_id = sponsor["id"]
+
+    # Act
+    response = await async_client.get(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 200
+    response_body = response.json()
+
+    assert "sponsor" in response_body
+    assert response_body["sponsor"]["id"] == sponsor_id
+    assert response_body["sponsor"]["name"] == sponsor["name"]
+    assert response_body["sponsor"]["tier"] == sponsor["tier"]
+    assert response_body["sponsor"]["website_url"] == sponsor["website_url"]
+    assert f"{TEST_SPONSOR_LOGO_URL}/{sponsor_id}" in response_body["sponsor"]["logo_url"]
+
+    # Cleanup
+    await _delete_sponsor(async_client, sponsor_id, super_auth_token)
+
+
+# Error handling is incorrect in impl - error isn't an instance of anything and it goes to default error
+@pytest.mark.asyncio
+async def test_get_sponsor_by_id_invalid_format(
+    async_client: AsyncClient, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    response = await async_client.get(
+        url=f"{SPONSORS_ENDPOINT_URL}/invalid_object_id",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    assert response.status_code == 400
+    assert response.json()["error"] == "Wrong Object ID format"
+
+
+@pytest.mark.asyncio
+async def test_get_sponsor_by_id_not_found(
+    async_client: AsyncClient, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+    NON_EXISTING_ID = "6975472e436158f65093dbb5"  # Valid ObjectId, but does belong to an object in the DB
+
+    # Act
+    response = await async_client.get(
+        url=f"{SPONSORS_ENDPOINT_URL}/{NON_EXISTING_ID}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 404
+    assert response.json()["error"] == "The specified sponsor was not found"
+
+
+@pytest.mark.asyncio
+async def test_update_sponsor_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+    created = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+    assert created.status_code == 201
+    sponsor_id = created.json()["sponsor"]["id"]
+
+    update_data: dict[str, Any] = {
+        "name": "Coca-Cola HBC",
+        "website_url": "https://coca-cola.bg/",
+    }
+
+    # Act
+    response = await async_client.patch(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=update_data,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 200
+    response_body = response.json()
+    assert "sponsor" in response_body
+    assert response_body["sponsor"]["id"] == sponsor_id
+    assert response_body["sponsor"]["name"] == "Coca-Cola HBC"
+    assert response_body["sponsor"]["website_url"] == "https://coca-cola.bg/"
+
+    # Cleanup
+    await _delete_sponsor(async_client, sponsor_id, super_auth_token)
+
+
+@pytest.mark.asyncio
+async def test_delete_sponsor_success(
+    async_client: AsyncClient, image_mock: BytesIO, aws_mock: Generator[None, Any, None], super_auth_token: str
+) -> None:
+    # Arrange
+    created = await async_client.post(
+        url=SPONSORS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        data=valid_sponsor_input,
+        files={"logo": image_mock},
+        follow_redirects=True,
+    )
+    assert created.status_code == 201
+    sponsor_id = created.json()["sponsor"]["id"]
+
+    # Act
+    response = await async_client.delete(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    # Assert - Make sure the correct event is deleted
+    assert response.status_code == 200
+    response_body = response.json()
+    assert response_body["sponsor"]["id"] == sponsor_id
+
+    # Assert - Make sure that the event no longer exists
+    get_deleted_sponsor = await async_client.get(
+        url=f"{SPONSORS_ENDPOINT_URL}/{sponsor_id}",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+    assert get_deleted_sponsor.status_code == 404

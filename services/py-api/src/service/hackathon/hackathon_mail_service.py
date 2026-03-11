@@ -1,8 +1,9 @@
 from fastapi import BackgroundTasks
-from result import Err
 from structlog.stdlib import get_logger
 
+from result import Err
 from src.database.model.hackathon.participant_model import Participant
+
 from src.service.mail_service.mail_clients.base_mail_client import MailClient
 from src.service.mail_service.utils import (
     load_email_registration_confirmation_html_template,
@@ -14,12 +15,15 @@ LOG = get_logger()
 
 class HackathonMailService:
     """
-    Service layer responsible for sending verification and successful registration emails to hackathon participants
+    Low-Level service layer responsible for sending verification and successful registration emails to hackathon participants
     """
 
     _SENDER_EMAIL = "no-reply@thehub-aubg.com"
 
-    def __init__(self, client: MailClient) -> None:
+    def __init__(
+        self,
+        client: MailClient,
+    ) -> None:
         self._client = client
 
     def send_participant_verification_email(
@@ -63,7 +67,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="Confirm Your Participation in HackAUBG 7.0",
+            subject="Confirm Your Participation in HackAUBG 8.0",
             body_content=body_html,
             content_type="html",
         )
@@ -114,7 +118,7 @@ class HackathonMailService:
             self._client.send_email,
             sender=self._SENDER_EMAIL,
             receiver=participant.email,
-            subject="Welcome Aboard! See You at HackAUBG 7.0",
+            subject="Welcome Aboard! See You at HackAUBG 8.0",
             body_content=body_html,
             content_type="html",
         )

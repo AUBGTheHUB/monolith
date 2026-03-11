@@ -1,0 +1,21 @@
+.mission-item-container {
+    position: relative;
+    overflow: hidden;
+    font-size: clamp(16px, 2.5vw, 22px);
+    background-image: linear-gradient(225deg, #fbb32d 2%, #f6741c 26%, #d91313 67%, #aa1616 100%);
+    background-size: 200% 200%;
+    animation: moveGradient 10s ease infinite;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

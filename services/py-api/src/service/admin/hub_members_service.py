@@ -1,0 +1,76 @@
+import uuid
+
+from fastapi import UploadFile
+from result import Result
+
+from src.database.model.admin.hub_member_model import HubMember, DEPARTMENTS_LIST, SocialLinks
+from src.database.model.admin.hub_member_model import UpdateHubMemberParams
+from src.database.repository.admin.hub_members_repository import HubMembersRepository
+from src.server.schemas.request_schemas.schemas import NonEmptyStr
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+
+
+class HubMembersService:
+    def __init__(self, repo: HubMembersRepository, image_storing_service: ImageStoringService) -> None:
+        self._repo = repo
+        self._image_storing_service = image_storing_service
+
+    async def get_all(self) -> Result[list[HubMember], Exception]:
+        return await self._repo.fetch_all()
+
+    async def get(self, member_id: str) -> Result[HubMember, Exception]:
+        return await self._repo.fetch_by_id(member_id)
+
+    async def create(
+        self,
+        name: NonEmptyStr,
+        position: NonEmptyStr | None,
+        departments: list[DEPARTMENTS_LIST],
+        avatar: UploadFile,
+        social_links: SocialLinks,
+    ) -> Result[HubMember, Exception]:
+        member = HubMember(
+            name=name,
+            position=position,
+            departments=departments,
+            avatar_url="",
+            social_links=social_links,
+        )
+        avatar_url = await self._image_storing_service.upload_image(
+            avatar, f"hub-members/{str(member.id)}/{uuid.uuid4()}"
+        )
+        member.avatar_url = str(avatar_url)
+        return await self._repo.create(member)
+
+    async def update(
+        self,
+        member_id: str,
+        name: NonEmptyStr | None = None,
+        position: NonEmptyStr | None = None,
+        departments: list[DEPARTMENTS_LIST] | None = None,
+        avatar: UploadFile | None = None,
+        social_links: SocialLinks | None = None,
+    ) -> Result[HubMember, Exception]:
+
+        avatar_url: str | None = None
+        if avatar is not None:
+            avatar_url = str(
+                await self._image_storing_service.upload_image(
+                    file=avatar, file_name=f"hub-members/{str(member_id)}/{uuid.uuid4()}"
+                )
+            )
+        update_params = UpdateHubMemberParams(
+            name=name, position=position, departments=departments, social_links=social_links, avatar_url=avatar_url
+        )
+        return await self._repo.update(member_id, update_params)
+
+    async def delete(self, member_id: str) -> Result[HubMember, Exception]:
+        result = await self._repo.delete(member_id)
+
+        if result.is_ok():
+            avatar_url = result.ok_value.avatar_url
+            self._image_storing_service.delete_image(
+                avatar_url[avatar_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
+
+        return result

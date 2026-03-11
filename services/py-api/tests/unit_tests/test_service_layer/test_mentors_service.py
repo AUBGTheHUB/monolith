@@ -1,0 +1,170 @@
+from __future__ import annotations
+
+from typing import cast
+
+import pytest
+from fastapi import UploadFile
+from result import Err, Ok
+
+from src.database.model.admin.mentor_model import Mentor
+from src.database.repository.admin.mentors_repository import MentorsRepository
+from src.exception import MentorNotFoundError
+from src.server.schemas.request_schemas.admin.mentor_schemas import (
+    MentorPostReqData,
+    MentorPatchReqData,
+)
+from src.service.admin.mentors_service import MentorsService
+from src.service.utility.image_storing.image_storing_service import ImageStoringService
+from tests.unit_tests.conftest import MentorsRepoMock, ImageStoringServiceMock
+
+
+@pytest.fixture
+def mentors_service(
+    mentors_repo_mock: MentorsRepoMock, image_storing_service_mock: ImageStoringServiceMock
+) -> MentorsService:
+    return MentorsService(
+        cast(MentorsRepository, mentors_repo_mock), cast(ImageStoringService, image_storing_service_mock)
+    )
+
+
+@pytest.mark.asyncio
+async def test_get_all_returns_ok(
+    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock, mentor_mock: Mentor
+) -> None:
+    mentors = [mentor_mock]
+    mentors_repo_mock.fetch_all.return_value = Ok(mentors)
+
+    result = await mentors_service.get_all()
+
+    assert result.is_ok()
+    assert result.unwrap() == mentors
+    mentors_repo_mock.fetch_all.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_get_returns_ok(
+    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock, mentor_mock: Mentor
+) -> None:
+    mentors_repo_mock.fetch_by_id.return_value = Ok(mentor_mock)
+
+    result = await mentors_service.get(str(mentor_mock.id))
+
+    assert result.is_ok()
+    assert result.unwrap() == mentor_mock
+    mentors_repo_mock.fetch_by_id.assert_awaited_once_with(str(mentor_mock.id))
+
+
+@pytest.mark.asyncio
+async def test_get_returns_err_when_not_found(
+    mentors_service: MentorsService, mentors_repo_mock: MentorsRepoMock
+) -> None:
+    mentors_repo_mock.fetch_by_id.return_value = Err(MentorNotFoundError())
+
+    result = await mentors_service.get("missing mentor")
+
+    assert result.is_err()
+    assert isinstance(result.unwrap_err(), MentorNotFoundError)
+    mentors_repo_mock.fetch_by_id.assert_awaited_once_with("missing mentor")
+
+
+@pytest.mark.asyncio
+async def test_create_calls_repo_with_built_model(
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
+    image_mock: UploadFile,
+) -> None:
+    req = MentorPostReqData(
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
+
+    mentors_repo_mock.create.return_value = Ok(mentor_mock)
+    image_storing_service_mock.upload_image.return_value = mentor_mock.avatar_url
+
+    result = await mentors_service.create(
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
+
+    assert result.is_ok()
+    mentors_repo_mock.create.assert_awaited_once()
+
+    assert mentors_repo_mock.create.call_args is not None
+    mentor = mentors_repo_mock.create.call_args.args[0]
+    assert isinstance(mentor, Mentor)
+    assert mentor.name == req.name
+    assert mentor.company == req.company
+    assert mentor.job_title == req.job_title
+    assert mentor.avatar_url == mentor_mock.avatar_url
+
+
+@pytest.mark.asyncio
+async def test_update_calls_repo_with_update_params(
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
+    image_mock: UploadFile,
+) -> None:
+    MentorPatchReqData(
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
+    updated = Mentor(
+        name="New name",
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar_url=mentor_mock.avatar_url,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
+
+    mentors_repo_mock.update.return_value = Ok(updated)
+    image_storing_service_mock.upload_image.return_value = mentor_mock.avatar_url
+
+    result = await mentors_service.update(
+        mentor_id=str(mentor_mock.id),
+        name=mentor_mock.name,
+        company=mentor_mock.company,
+        job_title=mentor_mock.job_title,
+        avatar=image_mock,
+        linkedin_url=mentor_mock.linkedin_url,
+    )
+
+    assert result.is_ok()
+    mentors_repo_mock.update.assert_awaited_once()
+
+    assert mentors_repo_mock.update.call_args is not None
+    assert mentors_repo_mock.update.call_args.args[0] == mentor_mock.id
+
+    body = result.ok_value
+    assert body.name == updated.name
+    assert body.company == updated.company
+    assert body.job_title == updated.job_title
+    assert body.avatar_url == updated.avatar_url
+
+
+@pytest.mark.asyncio
+async def test_delete_calls_repo(
+    mentors_service: MentorsService,
+    mentors_repo_mock: MentorsRepoMock,
+    image_storing_service_mock: ImageStoringServiceMock,
+    mentor_mock: Mentor,
+) -> None:
+    mentors_repo_mock.delete.return_value = Ok(mentor_mock)
+
+    result = await mentors_service.delete(str(mentor_mock.id))
+
+    assert result.is_ok()
+    mentors_repo_mock.delete.assert_awaited_once_with(str(mentor_mock.id))
+    image_storing_service_mock.delete_image.assert_called_once_with("avatar.jpg")
