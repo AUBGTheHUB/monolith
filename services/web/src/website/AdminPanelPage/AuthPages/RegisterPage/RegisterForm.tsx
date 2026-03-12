@@ -92,7 +92,7 @@ export function RegisterForm() {
                         </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-3">
+                    <div className="grid sm:grid-cols-1 gap-3">
                         <SecondRegisterFields control={control} />
                     </div>
 
