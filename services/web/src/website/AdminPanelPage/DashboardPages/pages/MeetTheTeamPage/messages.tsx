@@ -105,7 +105,7 @@ export const TeamMemberAddMessages = {
 export const TeamMemberFormFieldMessages = {
     LABELS: {
         NAME: 'Name',
-        POSITION: 'Position',
+        POSITION: 'Board Position',
         DEPARTMENT: 'Department',
         IMAGE: 'Avatar Image',
         SOCIAL_LINKEDIN: 'LinkedIn Profile',
