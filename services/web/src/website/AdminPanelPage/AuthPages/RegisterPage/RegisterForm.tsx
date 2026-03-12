@@ -22,14 +22,7 @@ export function RegisterForm() {
             password: '',
             repeat_password: '',
             name: '',
-            position: '',
-            departments: [],
             avatar: undefined,
-            social_links: {
-                linkedin: '',
-                github: '',
-                website: '',
-            },
         },
         mode: 'onTouched',
     });

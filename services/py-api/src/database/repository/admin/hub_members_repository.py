@@ -3,7 +3,6 @@ from typing import Any, Optional
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
-from result import Ok, Result, Err
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from pymongo.asynchronous.collection import ReturnDocument
@@ -108,7 +107,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             return Err(e)
 
     async def fetch_all(self) -> Result[list[HubMember | HubAdmin], Exception]:
-        return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.ALL)
+        return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.MEMBER)
 
     async def update(
         self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncIOMotorClientSession] = None
