@@ -57,9 +57,33 @@ export default function MeetTheTeamSection() {
                   return hubber.departments.includes(selected);
               })
               .sort((a, b) => {
-                  const aHasPos = hasPosition(a);
-                  const bHasPos = hasPosition(b);
-                  if (aHasPos !== bHasPos) return aHasPos ? -1 : 1;
+                  const posA = a.position?.toLowerCase() || '';
+                  const posB = b.position?.toLowerCase() || '';
+
+                  // 1. Department Head Logic (Matches department name in position)
+                  const deptName = selected.toLowerCase();
+                  const aIsHead = posA.includes(deptName);
+                  const bIsHead = posB.includes(deptName);
+
+                  if (aIsHead && !bIsHead) return -1;
+                  if (!aIsHead && bIsHead) return 1;
+
+                  //2. Priority list:
+                  if (selected === 'All' || selected === 'Board') {
+                      const getBoardPriority = (pos: string) => {
+                          if (pos.includes('president') && !pos.includes('vice')) return 1;
+                          if (pos.includes('vice')) return 2;
+                          if (pos.includes('treasurer')) return 3;
+                          if (pos) return 4;
+                          return 5; // Everyone else on the board
+                      };
+                      const priorityA = getBoardPriority(posA);
+                      const priorityB = getBoardPriority(posB);
+
+                      if (priorityA !== priorityB) return priorityA - priorityB;
+                  }
+
+                  // 3. Alphabetical by Name
                   return (a.name ?? '').localeCompare(b.name ?? '');
               })
               .map((hubber, index) => (
