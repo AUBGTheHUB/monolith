@@ -17,7 +17,7 @@ pymongo = "^4.8.0"
 motor = "^3.6.0"
 resend = "^2.4.0"
 pydantic = { extras = ["email"], version = "^2.9.2" }
-pyjwt = "^2.10.1"
+pyjwt = "^2.12.0"
 bcrypt = "^5.0.0"
 boto3 = "^1.42.34"
 pillow = "^12.1.0"
