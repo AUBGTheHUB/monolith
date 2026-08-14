@@ -1379,31 +1379,6 @@ stepfunctions = ["antlr4-python3-runtime", "jsonpath_ng"]
 xray = ["aws-xray-sdk (>=0.93,!=0.96)", "setuptools"]
 
 [[package]]
-name = "motor"
-version = "3.6.1"
-description = "Non-blocking MongoDB driver for Tornado or asyncio"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "motor-3.6.1-py3-none-any.whl", hash = "sha256:7fe552353aded4fa9f05ae515a179df5b1d192b1da56726f422dbb2d8c3b5962"},
-    {file = "motor-3.6.1.tar.gz", hash = "sha256:ee2b18386292f9ceb3cc8279a4cd34e4c641c5ac8de3500c30374081c76a9d03"},
-]
-
-[package.dependencies]
-pymongo = ">=4.9,<4.10"
-
-[package.extras]
-aws = ["pymongo[aws] (>=4.5,<5)"]
-docs = ["aiohttp", "furo (==2024.8.6)", "readthedocs-sphinx-search (>=0.3,<1.0)", "sphinx (>=5.3,<8)", "sphinx-rtd-theme (>=2,<3)", "tornado"]
-encryption = ["pymongo[encryption] (>=4.5,<5)"]
-gssapi = ["pymongo[gssapi] (>=4.5,<5)"]
-ocsp = ["pymongo[ocsp] (>=4.5,<5)"]
-snappy = ["pymongo[snappy] (>=4.5,<5)"]
-test = ["aiohttp (>=3.8.7)", "cffi (>=1.17.0rc1) ; python_version == \"3.13\"", "mockupdb", "pymongo[encryption] (>=4.5,<5)", "pytest (>=7)", "pytest-asyncio", "tornado (>=5)"]
-zstd = ["pymongo[zstd] (>=4.5,<5)"]
-
-[[package]]
 name = "msgpack"
 version = "1.1.0"
 description = "MessagePack serializer"
@@ -2632,4 +2607,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12.9"
-content-hash = "032435d85a1dcd8da55245775bfa0a834abc6ee36bb1e1673c9d3acdf2b5fb3f"
+content-hash = "c576717908f7bbf87e6a98fe6e4b6ddcceb40063b2edbfafe8783ddd13f7fbf6"

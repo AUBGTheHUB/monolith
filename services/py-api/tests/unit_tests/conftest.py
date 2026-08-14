@@ -10,13 +10,11 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 import pytest
 from PIL import Image
 from fastapi import BackgroundTasks, UploadFile
-from motor.motor_asyncio import (
-    AsyncIOMotorClient,
-    AsyncIOMotorClientSession,
-    AsyncIOMotorCollection,
-    AsyncIOMotorCursor,
-    AsyncIOMotorDatabase,
-)
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.client_session import AsyncClientSession
+from pymongo.asynchronous.collection import AsyncCollection
+from pymongo.asynchronous.cursor import AsyncCursor
+from pymongo.asynchronous.database import AsyncDatabase
 
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
@@ -162,7 +160,7 @@ def background_tasks_mock() -> BackgroundTasksMock:
 
 
 class MotorCollectionMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorCollection
+    """A Static Duck Type, modeling a Mocked AsyncCollection
 
     Should not be initialized directly by application developers to create a MotorCollectionMock instance. It is
     used just for type hinting purposes.
@@ -178,7 +176,7 @@ class MotorCollectionMock(Protocol):
 
 @pytest.fixture
 def motor_collection_mock() -> MotorCollectionMock:
-    """Mock object for AsyncIOMotorCollection.
+    """Mock object for AsyncCollection.
 
     For mocking purposes, you can modify the return values of its methods::
 
@@ -189,10 +187,10 @@ def motor_collection_mock() -> MotorCollectionMock:
         motor_collection_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorCollection
+        A mocked AsyncCollection
     """
 
-    mock_collection = _create_typed_mock(AsyncIOMotorCollection)
+    mock_collection = _create_typed_mock(AsyncCollection)
 
     mock_collection.insert_one = AsyncMock()
     mock_collection.find_one_and_update = AsyncMock()
@@ -204,7 +202,7 @@ def motor_collection_mock() -> MotorCollectionMock:
 
 
 class MotorDatabaseMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
+    """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
     Should not be initialized directly by application developers to create a MotorDatabaseMock instance. It is
     used just for type hinting purposes.
@@ -217,7 +215,7 @@ class MotorDatabaseMock(Protocol):
 
 @pytest.fixture
 def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorDatabaseMock:
-    """Mock object for AsyncIOMotorClient.
+    """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
@@ -228,9 +226,9 @@ def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorData
         motor_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorDatabase
+        A mocked AsyncDatabase
     """
-    mock_db = _create_typed_mock(AsyncIOMotorDatabase)
+    mock_db = _create_typed_mock(AsyncDatabase)
 
     mock_db.command = AsyncMock()
     # make get_collection return a motor_database_mock
@@ -241,7 +239,7 @@ def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorData
 
 
 class MotorDbClientSessionMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClientSession
+    """A Static Duck Type, modeling a Mocked AsyncClientSession
 
     Should not be initialized directly by application developers to create a MotorDbClientSessionMock instance. It is
     used just for type hinting purposes.
@@ -255,7 +253,7 @@ class MotorDbClientSessionMock(Protocol):
 
 @pytest.fixture
 def motor_db_session_mock() -> MotorDbClientSessionMock:
-    """Mock object for AsyncIOMotorClientSession.
+    """Mock object for AsyncClientSession.
 
     For mocking purposes, you can modify the return values of its methods::
 
@@ -266,10 +264,10 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
         motor_db_session_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorClientSession
+        A mocked AsyncClientSession
     """
 
-    mock_session = _create_typed_mock(AsyncIOMotorClientSession)
+    mock_session = _create_typed_mock(AsyncClientSession)
 
     mock_session.start_transaction = MagicMock()
     mock_session.commit_transaction = AsyncMock()
@@ -280,7 +278,7 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
 
 
 class MotorDbClientMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
+    """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
     Should not be initialized directly by application developers to create a MotorDbClientMock instance. It is
     used just for type hinting purposes.
@@ -295,7 +293,7 @@ class MotorDbClientMock(Protocol):
 def motor_db_client_mock(
     motor_database_mock: MotorDatabaseMock, motor_db_session_mock: MotorDbClientSessionMock
 ) -> MotorDbClientMock:
-    """Mock object for AsyncIOMotorClient.
+    """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
@@ -306,9 +304,9 @@ def motor_db_client_mock(
         motor_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorClient
+        A mocked AsyncMongoClient
     """
-    mock_client = _create_typed_mock(AsyncIOMotorClient)
+    mock_client = _create_typed_mock(AsyncMongoClient)
 
     mock_client.start_session = AsyncMock(return_value=motor_db_session_mock)
     # make get_database return a motor_database_mock
@@ -324,7 +322,7 @@ class MotorDbCursorMock(Protocol):
 
 @pytest.fixture
 def db_cursor_mock() -> MotorDbCursorMock:
-    db_cursor_mock = _create_typed_mock(AsyncIOMotorCursor)
+    db_cursor_mock = _create_typed_mock(AsyncCursor)
     db_cursor_mock.to_list = AsyncMock()
 
     return cast(MotorDbCursorMock, db_cursor_mock)

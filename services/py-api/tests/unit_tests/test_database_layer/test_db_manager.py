@@ -1,7 +1,7 @@
 from typing import cast
 
 import pytest
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure
 
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -10,7 +10,7 @@ from tests.unit_tests.conftest import MotorDbClientMock, MotorDatabaseMock
 
 @pytest.fixture
 def db_manager(motor_db_client_mock: MotorDbClientMock) -> MongoDatabaseManager:
-    return MongoDatabaseManager(client=cast(AsyncIOMotorClient, motor_db_client_mock))
+    return MongoDatabaseManager(client=cast(AsyncMongoClient, motor_db_client_mock))
 
 
 @pytest.fixture

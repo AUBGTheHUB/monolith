@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 import boto3
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.server.handlers.user_handlers import UserHandlers
@@ -59,7 +59,7 @@ from src.service.mail_service.mail_clients.mail_client_factory import mail_clien
 LOG = get_logger()
 
 
-def _ping_db(mongo_client: AsyncIOMotorClient) -> None:
+def _ping_db(mongo_client: AsyncMongoClient) -> None:
     """
     This method is used only on application startup.
     Raises:

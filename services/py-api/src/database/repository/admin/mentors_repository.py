@@ -1,6 +1,6 @@
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 from bson import ObjectId
@@ -20,7 +20,7 @@ class MentorsRepository(CRUDRepository[Mentor]):
         self._collection = db_manager.get_collection(MENTORS_COLLECTION)
 
     async def fetch_by_id(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Mentor, MentorNotFoundError | Exception]:
         try:
             LOG.info("Fetching mentor by ObjectId", mentor_id=obj_id)
@@ -58,7 +58,7 @@ class MentorsRepository(CRUDRepository[Mentor]):
             return Err(e)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateMentorParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateMentorParams, session: Optional[AsyncClientSession] = None
     ) -> Result[Mentor, MentorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
@@ -83,7 +83,7 @@ class MentorsRepository(CRUDRepository[Mentor]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Mentor, MentorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
@@ -100,7 +100,7 @@ class MentorsRepository(CRUDRepository[Mentor]):
             return Err(e)
 
     async def create(
-        self, mentor: Mentor, session: Optional[AsyncIOMotorClientSession] = None
+        self, mentor: Mentor, session: Optional[AsyncClientSession] = None
     ) -> Result[Mentor, MentorNotFoundError | Exception]:
         try:
             LOG.info("Inserting mentor...", mentor=mentor.dump_as_json())
