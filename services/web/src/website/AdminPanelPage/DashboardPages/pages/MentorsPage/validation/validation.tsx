@@ -4,6 +4,7 @@ import { FILE_RULES } from '@/globalValidation/fileRules.ts';
 const RULES = {
     NAME: { MIN: 2, MAX: 100 },
     COMPANY: { MIN: 2, MAX: 100 },
+    POSITION: { MIN: 2, MAX: 100 },
 };
 
 // 1. Shared fields for both Add and Edit modes
@@ -20,7 +21,10 @@ const baseSchema = z.object({
         .min(RULES.COMPANY.MIN, { message: `Company name must be at least ${RULES.COMPANY.MIN} characters` })
         .max(RULES.COMPANY.MAX, { message: `Company name must be less than ${RULES.COMPANY.MAX} characters` }),
 
-    job_title: z.string().optional(),
+    job_title: z
+        .string()
+        .min(RULES.POSITION.MIN, { message: `Position must be at least ${RULES.POSITION.MIN} characters` })
+        .max(RULES.POSITION.MAX, { message: `Position must be less than ${RULES.POSITION.MAX} characters` }),
 
     linkedin_url: z
         .string()

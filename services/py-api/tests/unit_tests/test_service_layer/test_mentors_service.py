@@ -167,4 +167,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     mentors_repo_mock.delete.assert_awaited_once_with(str(mentor_mock.id))
-    image_storing_service_mock.delete_image.assert_called_once_with(f"mentors/{str(mentor_mock.id)}")
+    image_storing_service_mock.delete_image.assert_called_once_with("avatar.jpg")

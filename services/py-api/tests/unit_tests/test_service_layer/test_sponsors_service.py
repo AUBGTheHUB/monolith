@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from typing import cast
 
 import pytest
@@ -144,10 +145,11 @@ async def test_delete_calls_repo(
     sponsor_mock: Sponsor,
 ) -> None:
     sponsors_repo_mock.delete.return_value = Ok(sponsor_mock)
-    image_storing_service_mock.delete_image.return_value = f"sponsors/{str(sponsor_mock.id)}"
+    image_storing_service_mock.delete_image.return_value = f"sponsors/{str(sponsor_mock.id)}/{uuid.uuid4()}"
 
     result = await sponsors_service.delete(str(sponsor_mock.id))
 
     assert result.is_ok()
+
     sponsors_repo_mock.delete.assert_awaited_once_with(str(sponsor_mock.id))
-    image_storing_service_mock.delete_image.assert_called_once_with(f"sponsors/{str(sponsor_mock.id)}")
+    image_storing_service_mock.delete_image.assert_called_once()

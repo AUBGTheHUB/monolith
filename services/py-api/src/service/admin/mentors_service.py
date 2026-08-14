@@ -1,3 +1,4 @@
+import uuid
 from typing import Optional
 
 from fastapi import UploadFile
@@ -29,7 +30,9 @@ class MentorsService:
         linkedin_url: Optional[HttpUrl] = None,
     ) -> Result[Mentor, Exception]:
         mentor = Mentor(name=name, company=company, job_title=job_title, avatar_url="", linkedin_url=str(linkedin_url))
-        avatar_url = await self._image_storing_service.upload_image(file=avatar, file_name=f"mentors/{str(mentor.id)}")
+        avatar_url = await self._image_storing_service.upload_image(
+            file=avatar, file_name=f"mentors/{str(mentor.id)}/{uuid.uuid4()}"
+        )
         mentor.avatar_url = str(avatar_url)
 
         return await self._repo.create(mentor)
@@ -44,16 +47,26 @@ class MentorsService:
         linkedin_url: Optional[HttpUrl] = None,
     ) -> Result[Mentor, Exception]:
 
+        avatar_url: str | None = None
         if avatar is not None:
-            await self._image_storing_service.upload_image(file=avatar, file_name=f"mentors/{str(mentor_id)}")
+            avatar_url = str(
+                await self._image_storing_service.upload_image(
+                    file=avatar, file_name=f"mentors/{str(mentor_id)}/{uuid.uuid4()}"
+                )
+            )
 
-        params = UpdateMentorParams(name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url))
+        params = UpdateMentorParams(
+            name=name, company=company, job_title=job_title, linkedin_url=str(linkedin_url), avatar_url=avatar_url
+        )
         return await self._repo.update(mentor_id, params)
 
     async def delete(self, mentor_id: str) -> Result[Mentor, Exception]:
         result = await self._repo.delete(mentor_id)
 
         if result.is_ok():
-            self._image_storing_service.delete_image(f"mentors/{str(mentor_id)}")
+            avatar_url = result.ok_value.avatar_url
+            self._image_storing_service.delete_image(
+                avatar_url[avatar_url.rindex("amazonaws.com/") + len("amazonaws.com/") :]
+            )
 
         return result

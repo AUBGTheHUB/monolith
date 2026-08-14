@@ -75,8 +75,9 @@ async def test_create_calls_repo_with_built_model(
     past_event_mock: PastEvent,
     image_mock: UploadFile,
 ) -> None:
+
     past_events_repo_mock.create.return_value = Ok(past_event_mock)
-    image_storing_service_mock.upload_image.return_value = past_event_mock.cover_picture
+    image_storing_service_mock.upload_image.return_value = past_event_mock.cover_picture_url
 
     result = await past_events_service.create(
         title=past_event_mock.title,
@@ -92,7 +93,7 @@ async def test_create_calls_repo_with_built_model(
     passed_event = past_events_repo_mock.create.call_args.args[0]
     assert isinstance(passed_event, PastEvent)
     assert passed_event.title == past_event_mock.title
-    assert passed_event.cover_picture == past_event_mock.cover_picture
+    assert passed_event.cover_picture_url == past_event_mock.cover_picture_url
     assert passed_event.tags == past_event_mock.tags
 
 
@@ -104,10 +105,12 @@ async def test_update_calls_repo_with_update_params(
     past_event_mock: PastEvent,
     image_mock: UploadFile,
 ) -> None:
-    updated = PastEvent(title="new", cover_picture=str(past_event_mock.cover_picture), tags=past_event_mock.tags)
+    updated = PastEvent(
+        title="new", cover_picture_url=str(past_event_mock.cover_picture_url), tags=past_event_mock.tags
+    )
 
     past_events_repo_mock.update.return_value = Ok(updated)
-    image_storing_service_mock.upload_image.return_value = past_event_mock.cover_picture
+    image_storing_service_mock.upload_image.return_value = past_event_mock.cover_picture_url
 
     result = await past_events_service.update(
         event_id=str(past_event_mock.id), title=updated.title, cover_picture=image_mock, tags=updated.tags
@@ -117,11 +120,11 @@ async def test_update_calls_repo_with_update_params(
     past_events_repo_mock.update.assert_awaited_once()
 
     assert past_events_repo_mock.update.call_args is not None
-    assert past_events_repo_mock.update.call_args.args[0] == past_event_mock.id
+    assert past_events_repo_mock.update.call_args.args[0] == str(past_event_mock.id)
 
     body = result.ok_value
     assert body.title == updated.title
-    assert body.cover_picture == updated.cover_picture
+    assert body.cover_picture_url == updated.cover_picture_url
     assert body.tags == updated.tags
 
 
@@ -138,4 +141,4 @@ async def test_delete_calls_repo(
 
     assert result.is_ok()
     past_events_repo_mock.delete.assert_awaited_once_with(str(past_event_mock.id))
-    image_storing_service_mock.delete_image.assert_called_once_with(f"past_events/{str(past_event_mock.id)}")
+    image_storing_service_mock.delete_image.assert_called_once_with("some-file.webp")

@@ -1,4 +1,5 @@
 import { Fragment } from 'react/jsx-runtime';
+import { Helmet } from 'react-helmet';
 import IdentitySection from './AboutSection/components/IdentitySection.tsx';
 import PastEventSection from './AboutSection/components/PastEventSection.tsx';
 import HackAUBGSection from './HackAUBGSection/HackAUBGSection.tsx';
@@ -12,6 +13,13 @@ export const MainPage = () => {
 
     return (
         <Fragment>
+            <Helmet>
+                <title>The Hub AUBG | Student Tech Community & Hackathon</title>
+                <meta
+                    name="description"
+                    content="The Hub AUBG is a student tech community organizing the HackAUBG hackathon and events for innovators at the American University in Bulgaria."
+                />
+            </Helmet>
             <LandingSection />
             <div className="relative overflow-hidden">
                 <div className="about-section bg-white rounded-2xl py-8 z-10 relative">

@@ -108,7 +108,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             return Err(e)
 
     async def fetch_all(self) -> Result[list[HubMember | HubAdmin], Exception]:
-        return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.ALL)
+        return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.MEMBER)
 
     async def update(
         self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncClientSession] = None
@@ -120,7 +120,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
 
             hub_member = await self._collection.find_one_and_update(
                 filter=query,
-                update={"$set": obj_fields.model_dump()},
+                update={"$set": obj_fields.model_dump(exclude_none=True)},
                 return_document=ReturnDocument.AFTER,
                 session=session,
             )

@@ -147,7 +147,7 @@ export function PastEventsPage() {
                                 {data.map((event) => (
                                     <AdminCard
                                         key={event.id}
-                                        imageUrl={event.cover_picture}
+                                        imageUrl={event.cover_picture_url}
                                         imageAlt="No Event Image"
                                         title={event.title}
                                         {...(event.tags?.length ? { subtitle: event.tags.join(', ') } : {})}

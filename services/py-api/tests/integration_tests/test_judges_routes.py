@@ -1,5 +1,6 @@
 from io import BytesIO
 from typing import Any, Generator
+
 import pytest
 from httpx import AsyncClient
 
@@ -51,7 +52,7 @@ async def test_create_judge_success(
     assert response_body["judge"]["name"] == TEST_JUDGE_NAME
     assert response_body["judge"]["company"] == TEST_JUDGE_COMPANY
     assert response_body["judge"]["job_title"] == TEST_JUDGE_JOB_TITLE
-    assert response_body["judge"]["avatar_url"] == f"{TEST_JUDGE_AVATAR_URL}/{response_body['judge']['id']}.webp"
+    assert f"{TEST_JUDGE_AVATAR_URL}/{response_body['judge']['id']}" in response_body["judge"]["avatar_url"]
     assert "id" in response_body["judge"]
 
     # Cleanup

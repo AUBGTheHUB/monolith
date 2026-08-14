@@ -43,3 +43,4 @@ class UpdateSponsorParams(UpdateParams):
     name: str | None = None
     tier: ALLOWED_SPONSOR_TIERS | None = None
     website_url: HttpUrl | None = None
+    logo_url: str | None = None

@@ -42,7 +42,7 @@ const baseSchema = z.object({
     has_participated_in_hackathons: z.boolean({ message: 'Please select an option.' }),
     has_previous_coding_experience: z.boolean({ message: 'Please select an option.' }),
     share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }).refine((value) => value === true, {
-        message: 'You must agree to share your information with sponsors.',
+        message: 'Cannot participate unless you agree.',
     }),
 });
 

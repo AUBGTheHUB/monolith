@@ -36,8 +36,6 @@ class RegisterHubAdminData(BaseHubMemberData):
             username=self.username,
             member_type=self.member_type,
             position=self.position,
-            social_links=self.social_links,
-            departments=self.departments,
             password_hash=password_hash,
             site_role=Role.MEMBER,
             avatar_url=avatar_url,
@@ -51,8 +49,8 @@ class RegisterHubAdminData(BaseHubMemberData):
         username: str = Form(...),
         password: str = Form(...),
         repeat_password: str = Form(...),
-        position: str = Form(None),
-        departments: list[DEPARTMENTS_LIST] = Form([]),
+        # position: str = Form(None),
+        # departments: list[DEPARTMENTS_LIST] = Form([]),
         member_type: MEMBER_TYPE = Form("admin"),
     ) -> "RegisterHubAdminData":
         return cls(
@@ -60,8 +58,6 @@ class RegisterHubAdminData(BaseHubMemberData):
             username=username,
             password=password,
             repeat_password=repeat_password,
-            position=position,
-            departments=departments,
             member_type=member_type,
         )
 

@@ -1,7 +1,8 @@
 from io import BytesIO
+from typing import Any, Generator
+
 import pytest
 from httpx import AsyncClient
-from typing import Any, Generator
 
 from src.environment import AWS_S3_DEFAULT_BUCKET, AWS_DEFAULT_REGION
 
@@ -52,7 +53,7 @@ async def test_create_mentor_success(
     assert response_body["mentor"]["name"] == TEST_MENTOR_NAME
     assert response_body["mentor"]["company"] == TEST_MENTOR_COMPANY
     assert response_body["mentor"]["job_title"] == TEST_MENTOR_JOB_TITLE
-    assert response_body["mentor"]["avatar_url"] == f"{TEST_MENTOR_AVATAR_URL}/{response_body['mentor']['id']}.webp"
+    assert f"{TEST_MENTOR_AVATAR_URL}/{response_body['mentor']['id']}" in response_body["mentor"]["avatar_url"]
     assert response_body["mentor"]["linkedin_url"] == TEST_MENTOR_LINKEDIN_URL
     assert "id" in response_body["mentor"]
 

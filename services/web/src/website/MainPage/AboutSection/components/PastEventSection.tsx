@@ -60,9 +60,12 @@ export default function PastEventSection() {
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                     {events.map((event) => (
-                        <div key={event.id} className="snap-start shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[360px]">
+                        <div
+                            key={event.id}
+                            className="snap-start shrink-0 basis-[280px] sm:basis-[320px] lg:basis-[360px]"
+                        >
                             <EventTicket
-                                imgSrc={event.cover_picture}
+                                imgSrc={event.cover_picture_url}
                                 title={event.title}
                                 tags={event.tags}
                                 onClick={() => setSelectedEvent(event)}

@@ -38,7 +38,7 @@ export const MobileNavComponent = () => {
                             className="bg-[rgba(255,253,245,1)]"
                             onCloseAutoFocus={(event) => event.preventDefault()}
                         >
-                             <div className={NAV_ITEM}>
+                            <div className={NAV_ITEM}>
                                 <a href="/hackathon" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                                     <CornerUpLeft className="pb-[2px] mr-[5px]" />
                                     Go back

@@ -1,23 +1,23 @@
-.github/workflows @georginikolov7
+.github/workflows @georginikolov7 @Bubomira @StoyanChorbov
 
-.vscode @Aleks1908 @MagdalenaZh
+.vscode @georginikolov7 @Bubomira @StoyanChorbov
 
-.devcontainer @georginikolov7
+.devcontainer @georginikolov7 @Bubomira @StoyanChorbov
 
-services/web @Aleks1908 @MagdalenaZh
+services/web @georginikolov7 @Bubomira @StoyanChorbov
 
-**/Dockerfile @georginikolov7
+**/Dockerfile @georginikolov7 @Bubomira @StoyanChorbov
 
-**/*.yml @georginikolov7
+**/*.yml @georginikolov7 @Bubomira @StoyanChorbov
 
-**/*.sh @georginikolov7
+**/*.sh @georginikolov7 @Bubomira @StoyanChorbov
 
-Makefile @georginikolov7
+Makefile @georginikolov7 @Bubomira @StoyanChorbov
 
-**/*.conf @georginikolov7
+**/*.conf @georginikolov7 @Bubomira @StoyanChorbov
 
-services/questionnaire @Aleks1908
+services/questionnaire @georginikolov7 @Bubomira @StoyanChorbov
 
-services/py-api @georginikolov7
+services/py-api @georginikolov7 @Bubomira @StoyanChorbov
 
-README.md @Aleks1908 @georginikolov7 @MagdalenaZh
+README.md @georginikolov7 @Bubomira @StoyanChorbov

@@ -30,7 +30,10 @@ const OPTIONS: EmblaOptionsType = {
 };
 
 export default function MeetTheTeamSection() {
-    const [selected, setSelected] = useState<Departments>(Departments.All);
+    const FILTERS = [...Object.values(Departments), 'Board'] as const;
+    type TeamFilter = Departments | 'Board';
+
+    const [selected, setSelected] = useState<TeamFilter>(Departments.All);
     const [carouselKey, setCarouselKey] = useState(0);
 
     const { data: hubbers } = useQuery({
@@ -39,18 +42,53 @@ export default function MeetTheTeamSection() {
         select: (data) => data.members,
     });
 
-    const handleSelect = (value: Departments) => {
+    const handleSelect = (value: TeamFilter) => {
         setSelected(value);
         setCarouselKey((prevKey) => prevKey + 1);
     };
 
+    const hasPosition = (member: BaseHubMember) => Boolean(member.position?.trim());
+
     const initialSlides: React.ReactElement[] = hubbers
         ? hubbers
-              .filter((hubbers) => {
+              .filter((hubber) => {
+                  if (selected === 'Board') return hasPosition(hubber);
                   if (selected === Departments.All) return true;
-                  return hubbers.departments.includes(selected);
+                  return hubber.departments.includes(selected);
               })
-              .map((hubber, index) => <HubberModule imgSrc={hubber.avatar_url} name={hubber.name} key={index} />)
+              .sort((a, b) => {
+                  const posA = a.position?.toLowerCase() || '';
+                  const posB = b.position?.toLowerCase() || '';
+
+                  // 1. Department Head Logic (Matches department name in position)
+                  const deptName = selected.toLowerCase();
+                  const aIsHead = posA.includes(deptName);
+                  const bIsHead = posB.includes(deptName);
+
+                  if (aIsHead && !bIsHead) return -1;
+                  if (!aIsHead && bIsHead) return 1;
+
+                  //2. Priority list:
+                  if (selected === 'All' || selected === 'Board') {
+                      const getBoardPriority = (pos: string) => {
+                          if (pos.includes('president') && !pos.includes('vice')) return 1;
+                          if (pos.includes('vice')) return 2;
+                          if (pos.includes('treasurer')) return 3;
+                          if (pos) return 4;
+                          return 5; // Everyone else on the board
+                      };
+                      const priorityA = getBoardPriority(posA);
+                      const priorityB = getBoardPriority(posB);
+
+                      if (priorityA !== priorityB) return priorityA - priorityB;
+                  }
+
+                  // 3. Alphabetical by Name
+                  return (a.name ?? '').localeCompare(b.name ?? '');
+              })
+              .map((hubber, index) => (
+                  <HubberModule imgSrc={hubber.avatar_url} name={hubber.name} key={hubber.id ?? index} />
+              ))
         : [];
 
     const SLIDES = chunkArray(initialSlides, 2);
@@ -65,7 +103,7 @@ export default function MeetTheTeamSection() {
             <div className="space-y-7 font-mont sm:w-3/5 w-11/12 mx-auto z-10 relative">
                 <h2 className="font-semibold text-3xl text-[#9cbeff] mb-10">Meet the team</h2>
                 <div className="flex flex-wrap gap-3">
-                    {Object.values(Departments).map((label) =>
+                    {FILTERS.map((label) =>
                         selected === label ? (
                             <Button
                                 variant="team_selected"
