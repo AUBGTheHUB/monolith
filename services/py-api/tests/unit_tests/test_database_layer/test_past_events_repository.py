@@ -9,7 +9,7 @@ from src.database.model.admin.past_event_model import PastEvent, UpdatePastEvent
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.exception import PastEventNotFoundError
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 def _fields_are_correct(expected: PastEvent, result: PastEvent) -> bool:
@@ -229,7 +229,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: PastEventsRepository,
     past_event_mock: PastEvent,
 ) -> None:
@@ -264,7 +264,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: PastEventsRepository,
 ) -> None:
     # Given
@@ -282,7 +282,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: PastEventsRepository,
 ) -> None:
     # Given

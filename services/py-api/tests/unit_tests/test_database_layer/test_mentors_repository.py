@@ -9,7 +9,7 @@ from src.database.model.admin.mentor_model import Mentor, UpdateMentorParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.mentors_repository import MentorsRepository
 from src.exception import MentorNotFoundError
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 def _validate_fields(expected: Mentor, actual: Mentor) -> bool:
@@ -228,7 +228,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: MentorsRepository,
     mentor_mock: Mentor,
 ) -> None:
@@ -269,7 +269,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: MentorsRepository,
 ) -> None:
     # Given
@@ -287,7 +287,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: MentorsRepository,
 ) -> None:
     # Given
