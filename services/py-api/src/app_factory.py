@@ -59,7 +59,7 @@ from src.service.mail_service.mail_clients.mail_client_factory import mail_clien
 LOG = get_logger()
 
 
-def _ping_db(mongo_client: AsyncMongoClient) -> None:
+async def _ping_db(mongo_client: AsyncMongoClient) -> None:
     """
     This method is used only on application startup.
     Raises:
@@ -70,7 +70,7 @@ def _ping_db(mongo_client: AsyncMongoClient) -> None:
 
     try:
         LOG.debug("Pinging MongoDB...")
-        mongo_client.get_database(name=DB_NAME).command("ping")
+        await mongo_client.get_database(name=DB_NAME).command("ping")
 
     except ConnectionFailure as cf:
         LOG.exception("Pinging db failed due to err", error=cf)
@@ -98,7 +98,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
-    _ping_db(db_client)
+    await _ping_db(db_client)
 
     # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
     # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator

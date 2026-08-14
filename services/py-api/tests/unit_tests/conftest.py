@@ -156,14 +156,14 @@ def background_tasks_mock() -> BackgroundTasksMock:
 # ===============================
 
 # ======================================
-# Mocking Motor library classes start
+# Mocking Mongo library classes start
 # ======================================
 
 
-class MotorCollectionMock(Protocol):
+class MongoCollectionMock(Protocol):
     """A Static Duck Type, modeling a Mocked AsyncCollection
 
-    Should not be initialized directly by application developers to create a MotorCollectionMock instance. It is
+    Should not be initialized directly by application developers to create a MongoCollectionMock instance. It is
     used just for type hinting purposes.
     """
 
@@ -176,16 +176,16 @@ class MotorCollectionMock(Protocol):
 
 
 @pytest.fixture
-def motor_collection_mock() -> MotorCollectionMock:
+def mongo_collection_mock() -> MongoCollectionMock:
     """Mock object for AsyncCollection.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_collection_mock.method_name.return_value = some_value
+        mongo_collection_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_collection_mock.method_name.side_effect = SomeException()
+        mongo_collection_mock.method_name.side_effect = SomeException()
 
     Returns:
         A mocked AsyncCollection
@@ -199,32 +199,32 @@ def motor_collection_mock() -> MotorCollectionMock:
     mock_collection.find_one = AsyncMock()
     mock_collection.count_documents = AsyncMock()
 
-    return cast(MotorCollectionMock, mock_collection)
+    return cast(MongoCollectionMock, mock_collection)
 
 
-class MotorDatabaseMock(Protocol):
+class MongoDatabaseMock(Protocol):
     """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
-    Should not be initialized directly by application developers to create a MotorDatabaseMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDatabaseMock instance. It is
     used just for type hinting purposes.
     """
 
     command: AsyncMock
-    get_collection: MotorCollectionMock
+    get_collection: MongoCollectionMock
     # Add more methods if needed
 
 
 @pytest.fixture
-def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorDatabaseMock:
+def mongo_database_mock(mongo_collection_mock: MongoCollectionMock) -> MongoDatabaseMock:
     """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_client_mock.method_name.return_value = some_value
+        mongo_db_client_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_client_mock.method_name.side_effect = SomeException()
+        mongo_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
         A mocked AsyncDatabase
@@ -232,37 +232,37 @@ def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorData
     mock_db = _create_typed_mock(AsyncDatabase)
 
     mock_db.command = AsyncMock()
-    # make get_collection return a motor_database_mock
-    mock_db.get_collection = Mock(return_value=motor_database_mock)
+    # make get_collection return a mongo_database_mock
+    mock_db.get_collection = Mock(return_value=mongo_database_mock)
     # Add more methods if needed
 
-    return cast(MotorDatabaseMock, mock_db)
+    return cast(MongoDatabaseMock, mock_db)
 
 
-class MotorDbClientSessionMock(Protocol):
+class MongoDbClientSessionMock(Protocol):
     """A Static Duck Type, modeling a Mocked AsyncClientSession
 
-    Should not be initialized directly by application developers to create a MotorDbClientSessionMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDbClientSessionMock instance. It is
     used just for type hinting purposes.
     """
 
-    start_transaction: MagicMock
+    start_transaction: AsyncMock
     commit_transaction: AsyncMock
     abort_transaction: AsyncMock
     end_session: AsyncMock
 
 
 @pytest.fixture
-def motor_db_session_mock() -> MotorDbClientSessionMock:
+def mongo_db_session_mock() -> MongoDbClientSessionMock:
     """Mock object for AsyncClientSession.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_session_mock.method_name.return_value = some_value
+        mongo_db_session_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_session_mock.method_name.side_effect = SomeException()
+        mongo_db_session_mock.method_name.side_effect = SomeException()
 
     Returns:
         A mocked AsyncClientSession
@@ -270,63 +270,63 @@ def motor_db_session_mock() -> MotorDbClientSessionMock:
 
     mock_session = _create_typed_mock(AsyncClientSession)
 
-    mock_session.start_transaction = MagicMock()
+    mock_session.start_transaction = AsyncMock()
     mock_session.commit_transaction = AsyncMock()
     mock_session.abort_transaction = AsyncMock()
     mock_session.end_session = AsyncMock()
 
-    return cast(MotorDbClientSessionMock, mock_session)
+    return cast(MongoDbClientSessionMock, mock_session)
 
 
-class MotorDbClientMock(Protocol):
+class MongoDbClientMock(Protocol):
     """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
-    Should not be initialized directly by application developers to create a MotorDbClientMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDbClientMock instance. It is
     used just for type hinting purposes.
     """
 
-    start_session: AsyncMock
-    get_database: MotorDatabaseMock
+    start_session: Mock
+    get_database: MongoDatabaseMock
     # Add more methods if needed
 
 
 @pytest.fixture
-def motor_db_client_mock(
-    motor_database_mock: MotorDatabaseMock, motor_db_session_mock: MotorDbClientSessionMock
-) -> MotorDbClientMock:
+def mongo_db_client_mock(
+    mongo_database_mock: MongoDatabaseMock, mongo_db_session_mock: MongoDbClientSessionMock
+) -> MongoDbClientMock:
     """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_client_mock.method_name.return_value = some_value
+        mongo_db_client_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_client_mock.method_name.side_effect = SomeException()
+        mongo_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
         A mocked AsyncMongoClient
     """
     mock_client = _create_typed_mock(AsyncMongoClient)
 
-    mock_client.start_session = AsyncMock(return_value=motor_db_session_mock)
-    # make get_database return a motor_database_mock
-    mock_client.get_database = Mock(return_value=motor_database_mock)
+    mock_client.start_session = Mock(return_value=mongo_db_session_mock)
+    # make get_database return a mongo_database_mock
+    mock_client.get_database = Mock(return_value=mongo_database_mock)
     # Add more methods if needed
 
-    return cast(MotorDbClientMock, mock_client)
+    return cast(MongoDbClientMock, mock_client)
 
 
-class MotorDbCursorMock(Protocol):
+class MongoDbCursorMock(Protocol):
     to_list: AsyncMock
 
 
 @pytest.fixture
-def db_cursor_mock() -> MotorDbCursorMock:
+def db_cursor_mock() -> MongoDbCursorMock:
     db_cursor_mock = _create_typed_mock(AsyncCursor)
     db_cursor_mock.to_list = AsyncMock()
 
-    return cast(MotorDbCursorMock, db_cursor_mock)
+    return cast(MongoDbCursorMock, db_cursor_mock)
 
 
 class MongoTransactionManagerMock(Protocol):
@@ -345,7 +345,7 @@ def tx_manager_mock() -> MongoTransactionManagerMock:
 
 
 # ======================================
-# Mocking Motor library classes end
+# Mocking Mongo library classes end
 # ======================================
 
 
@@ -367,7 +367,7 @@ class MongoDbManagerMock(Protocol):
 
 
 @pytest.fixture
-def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDbManagerMock:
+def mongo_db_manager_mock(mongo_collection_mock: MongoCollectionMock) -> MongoDbManagerMock:
     """Mock object for MongoDatabaseManager.
 
     For mocking purposes, you can modify the return values of its methods::
@@ -387,8 +387,8 @@ def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDb
     mock_db_manager.async_ping_db = AsyncMock()
 
     mock_db_manager.async_ping_db = AsyncMock()
-    # make get_collection return a motor_collection_mock
-    mock_db_manager.get_collection = Mock(return_value=motor_collection_mock)
+    # make get_collection return a mongo_collection_mock
+    mock_db_manager.get_collection = Mock(return_value=mongo_collection_mock)
     mock_db_manager.close_all_connections = Mock()
 
     return cast(MongoDbManagerMock, mock_db_manager)
