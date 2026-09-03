@@ -208,3 +208,10 @@ class MentorNotFoundError(CustomError):
 
     message = "The specified mentor was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class QuestionNotFoundError:
+    """Exception raised when the question cannot be found in the database"""
+
+    message = "The specified question was not found"
+    status_code = status.HTTP_404_NOT_FOUND

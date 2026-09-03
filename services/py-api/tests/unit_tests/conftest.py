@@ -17,6 +17,9 @@ from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
 
+from src.database.model.admin.candidates_form.question_model import (
+    Question,
+)
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.judge_model import Judge
@@ -28,6 +31,7 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -664,6 +668,27 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_admin_by_username = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
+
+
+class QuestionsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def questions_repo_mock() -> QuestionsRepoMock:
+    sponsors_repo = _create_typed_mock(QuestionsRepository)
+
+    sponsors_repo.fetch_by_id = AsyncMock()
+    sponsors_repo.fetch_all = AsyncMock()
+    sponsors_repo.update = AsyncMock()
+    sponsors_repo.create = AsyncMock()
+    sponsors_repo.delete = AsyncMock()
+
+    return cast(SponsorsRepoMock, sponsors_repo)
 
 
 # ======================================
@@ -1579,6 +1604,25 @@ def thirty_sec_jwt_exp_limit() -> int:
 @pytest.fixture
 def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
     return ResendEmailParticipantData(participant_id=obj_id_mock)
+
+
+@pytest.fixture
+def question_mock(obj_id_mock: str) -> Question:
+    return Question(
+        id=obj_id_mock,
+        prompt="Test question",
+        options=None,
+        answer="some answer",
+        question_type="GENERAL",
+        answer_type="TEXT",
+    )
+
+
+@pytest.fixture
+def question_no_id_mock(question_mock: Question) -> dict[str, Any]:
+    document = question_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
 
 
 # =================================================
