@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import UploadFile
-from result import Result, Err, Ok
+from result import Result
 
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember, DEPARTMENTS_LIST, SocialLinks
@@ -20,7 +20,7 @@ class HubMembersService:
     async def get_all(self) -> Result[list[HubMember], Exception]:
         return await self._repo.fetch_all()
 
-    async def get(self, member_id: str) -> Ok[HubMember | HubAdmin] | Err[HubMemberNotFoundError | Exception]:
+    async def get(self, member_id: str) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         return await self._repo.fetch_by_id(member_id)
 
     async def create(
@@ -30,7 +30,7 @@ class HubMembersService:
         departments: list[DEPARTMENTS_LIST],
         avatar: UploadFile,
         social_links: SocialLinks,
-    ) -> Ok[HubMember | HubAdmin] | Err[DuplicateHubMemberUsernameError | Exception]:
+    ) -> Result[HubMember | HubAdmin, DuplicateHubMemberUsernameError | Exception]:
         member = HubMember(
             name=name,
             position=position,
@@ -52,7 +52,7 @@ class HubMembersService:
         departments: list[DEPARTMENTS_LIST] | None = None,
         avatar: UploadFile | None = None,
         social_links: SocialLinks | None = None,
-    ) -> Ok[HubMember | HubAdmin] | Err[HubMemberNotFoundError | Exception]:
+    ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
 
         avatar_url: str | None = None
         if avatar is not None:
@@ -66,7 +66,7 @@ class HubMembersService:
         )
         return await self._repo.update(member_id, update_params)
 
-    async def delete(self, member_id: str) -> Ok[HubMember | HubAdmin] | Err[HubMemberNotFoundError | Exception]:
+    async def delete(self, member_id: str) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         result = await self._repo.delete(member_id)
 
         if result.is_ok():
