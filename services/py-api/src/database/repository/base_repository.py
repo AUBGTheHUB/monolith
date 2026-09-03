@@ -1,8 +1,8 @@
 from abc import abstractmethod, ABC
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from pydantic import BaseModel
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Result, Err
 
 from src.database.model.base_model import BaseDbModel
@@ -25,7 +25,7 @@ class CRUDRepository[T: BaseDbModel](ABC):
     """
 
     @abstractmethod
-    async def create(self, obj: T, session: Optional[AsyncIOMotorClientSession] = None) -> Result[T, Exception]:
+    async def create(self, obj: T, session: Optional[AsyncClientSession] = None) -> Result[T, Exception]:
         """Create a new document in a particular collection in Mongo.
 
         Args:
@@ -50,10 +50,10 @@ class CRUDRepository[T: BaseDbModel](ABC):
         self,
         obj_id: str,
         obj_fields: BaseModel,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[T, Exception]:
         raise NotImplementedError()
 
     @abstractmethod
-    async def delete(self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None) -> Result[T, Exception]:
+    async def delete(self, obj_id: str, session: Optional[AsyncClientSession] = None) -> Result[T, Exception]:
         raise NotImplementedError()

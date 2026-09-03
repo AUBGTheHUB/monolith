@@ -1,16 +1,16 @@
 from typing import cast
 
 import pytest
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure
 
 from src.database.mongo.db_manager import MongoDatabaseManager
-from tests.unit_tests.conftest import MotorDbClientMock, MotorDatabaseMock
+from tests.unit_tests.conftest import MongoDbClientMock, MongoDatabaseMock
 
 
 @pytest.fixture
-def db_manager(motor_db_client_mock: MotorDbClientMock) -> MongoDatabaseManager:
-    return MongoDatabaseManager(client=cast(AsyncIOMotorClient, motor_db_client_mock))
+def db_manager(mongo_db_client_mock: MongoDbClientMock) -> MongoDatabaseManager:
+    return MongoDatabaseManager(client=cast(AsyncMongoClient, mongo_db_client_mock))
 
 
 @pytest.fixture
@@ -19,9 +19,9 @@ def db_manager_none_client() -> MongoDatabaseManager:
 
 
 @pytest.mark.asyncio
-async def test_async_ping_db_success(db_manager: MongoDatabaseManager, motor_database_mock: MotorDatabaseMock) -> None:
+async def test_async_ping_db_success(db_manager: MongoDatabaseManager, mongo_database_mock: MongoDatabaseMock) -> None:
     # Given command("ping) has passed successfully
-    motor_database_mock.command.return_value = {"ok": 1}
+    mongo_database_mock.command.return_value = {"ok": 1}
 
     # When we ping the database
     err = await db_manager.async_ping_db()
@@ -31,9 +31,9 @@ async def test_async_ping_db_success(db_manager: MongoDatabaseManager, motor_dat
 
 
 @pytest.mark.asyncio
-async def test_async_ping_db_err(db_manager: MongoDatabaseManager, motor_database_mock: MotorDatabaseMock) -> None:
+async def test_async_ping_db_err(db_manager: MongoDatabaseManager, mongo_database_mock: MongoDatabaseMock) -> None:
     # Given command("ping) has raised a ConnectionFailure exception
-    motor_database_mock.command.side_effect = ConnectionFailure("Test err")
+    mongo_database_mock.command.side_effect = ConnectionFailure("Test err")
 
     # When we ping the database
     err = await db_manager.async_ping_db()

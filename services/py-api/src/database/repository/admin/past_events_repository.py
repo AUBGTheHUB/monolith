@@ -1,8 +1,8 @@
 from typing import Optional
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Err, Ok, Result
 from structlog.stdlib import get_logger
 
@@ -22,7 +22,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
     async def create(
         self,
         obj: PastEvent,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             LOG.info("Inserting past event...", past_event=obj.dump_as_json())
@@ -38,7 +38,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
     async def fetch_by_id(
         self,
         obj_id: str,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             LOG.debug("Fetching past event by ObjectId...", past_event_id=obj_id)
@@ -59,7 +59,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
 
     async def fetch_all(
         self,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[list[PastEvent], Exception]:
         try:
             LOG.debug("Fetching all past events...")
@@ -98,7 +98,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
         self,
         obj_id: str,
         obj_fields: UpdatePastEventParams,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             update_data = obj_fields.model_dump(exclude_none=True)
@@ -136,7 +136,7 @@ class PastEventsRepository(CRUDRepository[PastEvent]):
     async def delete(
         self,
         obj_id: str,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[PastEvent, Exception]:
         try:
             LOG.info("Deleting past event...", past_event_id=obj_id)

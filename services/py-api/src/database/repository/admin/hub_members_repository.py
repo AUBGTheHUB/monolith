@@ -1,8 +1,9 @@
 from typing import Any, Optional
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
+from pymongo.asynchronous.client_session import AsyncClientSession
+
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.exception import DuplicateHubMemberUsernameError, HubMemberNotFoundError
 from pymongo.asynchronous.collection import ReturnDocument
@@ -41,7 +42,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         return HubMember.from_mongo_db_document(doc)
 
     async def create(
-        self, hub_member: HubMember | HubAdmin, session: Optional[AsyncIOMotorClientSession] = None
+        self, hub_member: HubMember | HubAdmin, session: Optional[AsyncClientSession] = None
     ) -> Result[HubMember | HubAdmin, DuplicateHubMemberUsernameError | Exception]:
         try:
             LOG.info("Inserting HUB member...", hub_member=hub_member.dump_as_json())
@@ -110,7 +111,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
         return await self.fetch_all_filtered(MEMBER_TYPE_FILTER.MEMBER)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateHubMemberParams, session: Optional[AsyncClientSession] = None
     ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info(f"Updating HUB member...", hub_member_id=obj_id, updated_fields=obj_fields.model_dump())
@@ -134,7 +135,7 @@ class HubMembersRepository(CRUDRepository[HubMember]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[HubMember | HubAdmin, HubMemberNotFoundError | Exception]:
         try:
             LOG.info("Deleting HUB member...", hub_member_id=obj_id)

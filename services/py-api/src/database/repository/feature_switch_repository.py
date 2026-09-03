@@ -1,7 +1,7 @@
 from typing import Optional, cast, Any
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.asynchronous.collection import ReturnDocument
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
@@ -36,12 +36,12 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             return Err(e)
 
     async def create(
-        self, obj: FeatureSwitch, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj: FeatureSwitch, session: Optional[AsyncClientSession] = None
     ) -> Result[FeatureSwitch, Exception]:
         return Err(NotImplementedError())
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[FeatureSwitch, Exception]:
         return Err(NotImplementedError())
 
@@ -85,7 +85,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             return Err(e)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncClientSession] = None
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
             LOG.info(f"Updating Feature Switch...", feature_switch_id=obj_id, updated_fields=obj_fields.model_dump())
@@ -111,7 +111,7 @@ class FeatureSwitchRepository(CRUDRepository[FeatureSwitch]):
             return Err(e)
 
     async def update_by_name(
-        self, name: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, name: str, obj_fields: UpdateFeatureSwitchParams, session: Optional[AsyncClientSession] = None
     ) -> Result[FeatureSwitch, FeatureSwitchNotFoundError | Exception]:
         try:
             LOG.info(f"Updating Feature Switch...", feature_switch_name=name, updated_fields=obj_fields.model_dump())

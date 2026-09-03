@@ -1,6 +1,6 @@
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 from bson import ObjectId
@@ -19,7 +19,7 @@ class JudgesRepository(CRUDRepository[Judge]):
         self._collection = db_manager.get_collection(JUDGES_COLLECTION)
 
     async def fetch_by_id(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Judge, JudgeNotFoundError | Exception]:
         try:
             LOG.info("Fetching judge by ObjectId", sponsor_id=obj_id)
@@ -37,7 +37,7 @@ class JudgesRepository(CRUDRepository[Judge]):
             LOG.exception("Failed to fetch judge due to error", judge_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self, session: Optional[AsyncIOMotorClientSession] = None) -> Result[list[Judge], Exception]:
+    async def fetch_all(self, session: Optional[AsyncClientSession] = None) -> Result[list[Judge], Exception]:
         try:
             LOG.info("Fetching all judges")
 
@@ -57,7 +57,7 @@ class JudgesRepository(CRUDRepository[Judge]):
             return Err(e)
 
     async def create(
-        self, judge: Judge, session: Optional[AsyncIOMotorClientSession] = None
+        self, judge: Judge, session: Optional[AsyncClientSession] = None
     ) -> Result[Judge, JudgeNotFoundError | Exception]:
         try:
             LOG.info("Inserting judge...", judge=judge.dump_as_json())
@@ -68,7 +68,7 @@ class JudgesRepository(CRUDRepository[Judge]):
             return Err(e)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateJudgeParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateJudgeParams, session: Optional[AsyncClientSession] = None
     ) -> Result[Judge, JudgeNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
@@ -94,7 +94,7 @@ class JudgesRepository(CRUDRepository[Judge]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Judge, JudgeNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}

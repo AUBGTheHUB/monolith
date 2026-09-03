@@ -2,7 +2,7 @@ from math import ceil
 from secrets import token_hex
 from typing import Optional, TypedDict
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import is_err, Ok, Result
 from structlog.stdlib import get_logger
 
@@ -106,7 +106,7 @@ class TeamService:
         return teams
 
     async def _create_random_participant_teams_in_transaction_callback(
-        self, random_teams: list[_RandomTeam], session: Optional[AsyncIOMotorClientSession] = None
+        self, random_teams: list[_RandomTeam], session: Optional[AsyncClientSession] = None
     ) -> Result[list[_RandomTeam], DuplicateTeamNameError | ParticipantNotFoundError | Exception]:
         # Loop through each RandomTeam in the list. Create the team. Update all the participants with the id of the team
         # created

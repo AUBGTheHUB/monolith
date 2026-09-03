@@ -10,8 +10,8 @@ import pytest
 import pytest_asyncio
 from PIL import Image
 from httpx import AsyncClient, ASGITransport, Response
+from pymongo import AsyncMongoClient
 from moto import mock_aws
-from motor.motor_asyncio import AsyncIOMotorClient
 from mypy_boto3_s3.client import S3Client
 from structlog.stdlib import get_logger
 
@@ -452,13 +452,13 @@ def generate_register_hub_admin_request_body() -> RegisterHubAdminBodyCallable:
 
 
 @pytest.fixture(scope="session")
-def test_mongo_client() -> AsyncIOMotorClient:
+def test_mongo_client() -> AsyncMongoClient:
     """Uses the existing singleton provider logic."""
     return mongo_db_client_provider()
 
 
 @pytest.fixture(scope="session")
-def db_manager(test_mongo_client: AsyncIOMotorClient) -> MongoDatabaseManager:
+def db_manager(test_mongo_client: AsyncMongoClient) -> MongoDatabaseManager:
     """
     Provides the MongoDatabaseManager using the singleton client.
     """

@@ -10,7 +10,7 @@ from src.database.model.admin.judge_model import Judge, UpdateJudgeParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.judges_repository import JudgesRepository
 from src.exception import JudgeNotFoundError
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 def _validate_fields(expected: Judge, actual: Judge) -> bool:
@@ -229,7 +229,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: JudgesRepository,
     judge_mock: Judge,
 ) -> None:
@@ -270,7 +270,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: JudgesRepository,
 ) -> None:
     # Given
@@ -288,7 +288,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: JudgesRepository,
 ) -> None:
     # Given
