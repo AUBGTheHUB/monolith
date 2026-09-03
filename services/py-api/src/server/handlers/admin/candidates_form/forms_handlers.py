@@ -1,5 +1,6 @@
 from result import is_err
 
+from src.database.model.admin.candidates_form.question_model import Question
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.admin.candidates_form.form_schemas import (
     CandidateFormPostReqData,
@@ -19,7 +20,18 @@ class CandidateFormsHandlers(BaseHandler):
         self._service = service
 
     async def create_form(self, request: CandidateFormPostReqData) -> Response:
-        result = await self._service.create(questions=request.questions)
+        result = await self._service.create(
+            questions=[
+                Question(
+                    prompt=question.prompt,
+                    answer=question.answer,
+                    question_type=question.question_type,
+                    answer_type=question.answer_type,
+                    options=question.options,
+                )
+                for question in request.questions
+            ]
+        )
 
         if is_err(result):
             return self.handle_error(result.err_value)

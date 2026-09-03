@@ -6,6 +6,7 @@ from structlog.stdlib import get_logger
 from bson import ObjectId
 from pymongo import ReturnDocument
 
+from src.database.model.admin.candidates_form.question_model import Question
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.admin_collections import CANDIDATES_FORMS_COLLECTION
 from src.database.model.admin.candidates_form.form_model import CandidateForm, UpdateCandidateFormParams
@@ -33,7 +34,7 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             if candidate_form is None:
                 return Err(CandidateFormNotFoundError())
 
-            return Ok(CandidateForm(id=ObjectId(obj_id), **candidate_form))
+            return Ok(CandidateForm.from_mongo_db_document(candidate_form))
         except Exception as e:
             LOG.exception("Failed to fetch candidate form due to error", candidate_form_id=obj_id, error=e)
             return Err(e)
@@ -43,12 +44,9 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             LOG.info("Fetching all candidate forms")
 
             candidate_forms_data = await self._collection.find({}, session=session).to_list(length=None)
-            candidate_forms: list[CandidateForm] = []
-
-            for candidate_form in candidate_forms_data:
-                candidate_form["id"] = candidate_form.pop("_id")
-
-                candidate_forms.append(CandidateForm(**candidate_form))
+            candidate_forms: list[CandidateForm] = [
+                CandidateForm.from_mongo_db_document(document) for document in candidate_forms_data
+            ]
 
             LOG.debug(f"Fetched {len(candidate_forms)} candidate forms.")
             return Ok(candidate_forms)
@@ -62,8 +60,28 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
     ) -> Result[CandidateForm, CandidateFormNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
-            update = {"$set": obj_fields.model_dump(exclude_none=True, exclude_unset=True)}
             projection = {"_id": 0}
+
+            update_data = obj_fields.model_dump(
+                exclude_none=True,
+                exclude_unset=True,
+            )
+
+            if obj_fields.questions is not None:
+                questions = [
+                    Question(
+                        prompt=question.prompt,
+                        options=question.options,
+                        answer=question.answer,
+                        question_type=question.question_type,
+                        answer_type=question.answer_type,
+                    )
+                    for question in obj_fields.questions
+                ]
+
+                update_data["questions"] = [question.dump_as_mongo_db_document() for question in questions]
+
+            update = {"$set": update_data}
 
             # ReturnDocument.AFTER returns the updated document with the new data
             result = await self._collection.find_one_and_update(
@@ -77,7 +95,7 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             if result is None:
                 return Err(CandidateFormNotFoundError())
 
-            return Ok(CandidateForm(id=ObjectId(obj_id), **result))
+            return Ok(CandidateForm.from_mongo_db_document(result))
 
         except Exception as e:
             LOG.exception("Could not update candidate form", candidate_form_id=ObjectId(obj_id), error=e)
@@ -94,7 +112,7 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             if result is None:
                 return Err(CandidateFormNotFoundError())
 
-            return Ok(CandidateForm(id=ObjectId(obj_id), **result))
+            return Ok(CandidateForm.from_mongo_db_document(result))
 
         except Exception as e:
             LOG.exception("Candidate form deletion failed due to error", candidate_form_id=obj_id, error=e)

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Literal, Any
 
+from pydantic import BaseModel
+
 from src.database.model.base_model import BaseDbModel, UpdateParams
 
 ALLOWED_QUESTION_TYPES = Literal["GENERAL", "DEVELOPMENT", "DESIGN", "PR", "MARKETING", "LOGISTICS"]
@@ -38,6 +40,14 @@ class Question(BaseDbModel):
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
             "updated_at": self.updated_at.strftime("%Y-%m-%d %H:%M:%S"),
         }
+
+
+class QuestionParams(BaseModel):
+    prompt: str
+    options: list[str]
+    answer: str | list[str]
+    question_type: ALLOWED_QUESTION_TYPES
+    answer_type: ALLOWED_ANSWER_TYPES
 
 
 class UpdateQuestionParams(UpdateParams):

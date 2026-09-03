@@ -4,7 +4,7 @@ from src.database.model.admin.candidates_form.form_model import (
     CandidateForm,
     UpdateCandidateFormParams,
 )
-from src.database.model.admin.candidates_form.question_model import Question
+from src.database.model.admin.candidates_form.question_model import Question, QuestionParams
 from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
 from src.exception import CandidateFormNotFoundError
 
@@ -30,7 +30,7 @@ class CandidateFormsService:
     async def update(
         self,
         candidate_form_id: str,
-        questions: list[Question],
+        questions: list[QuestionParams],
     ) -> Result[CandidateForm, CandidateFormNotFoundError | Exception]:
 
         params = UpdateCandidateFormParams(questions=questions)
