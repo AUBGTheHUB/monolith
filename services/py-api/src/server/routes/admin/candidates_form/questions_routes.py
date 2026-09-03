@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends
+
+from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.admin.candidates_form.questions_handlers import QuestionsHandlers
 from src.server.routes.route_dependencies import validate_obj_id
 from src.server.schemas.response_schemas.admin.candidates_form.question_schemas import (
@@ -6,6 +8,7 @@ from src.server.schemas.response_schemas.admin.candidates_form.question_schemas 
     QuestionsResponse,
 )
 from src.server.schemas.response_schemas.schemas import ErrResponse
+from src.server.utility.role_checker import RoleChecker
 
 
 def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -> APIRouter:
@@ -35,7 +38,7 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        # dependencies=[Depends(RoleChecker([Role.BOARD]))],
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
     questions_router.add_api_route(
         path="/{object_id}",
@@ -47,8 +50,7 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(validate_obj_id)],
-        # dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
     questions_router.add_api_route(
         path="/{object_id}",
@@ -60,8 +62,7 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
             401: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(validate_obj_id)],
-        # dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
 
     return questions_router
