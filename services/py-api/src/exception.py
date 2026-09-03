@@ -215,3 +215,10 @@ class QuestionNotFoundError(CustomError):
 
     message = "The specified question was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class CandidateFormNotFoundError:
+    """Exception raised when the candidate form cannot be found in the database"""
+
+    message = "The specified candidate form was not found"
+    status_code = status.HTTP_404_NOT_FOUND

@@ -1,77 +1,59 @@
 from result import is_err
 
-from src.server.schemas.request_schemas.admin.candidates_form.question_schemas import (
-    QuestionPostReqData,
-    QuestionPatchReqData,
-)
-from src.server.schemas.response_schemas.admin.candidates_form.question_schemas import (
-    QuestionResponse,
-    QuestionsResponse,
-)
-
 from src.server.handlers.base_handler import BaseHandler
+from src.server.schemas.request_schemas.admin.candidates_form.form_schemas import (
+    CandidateFormPostReqData,
+    CandidatesFormPatchReqData,
+)
+from src.server.schemas.response_schemas.admin.candidates_form.form_schemas import (
+    CandidateFormResponse,
+    CandidateFormsResponse,
+)
 from src.server.schemas.response_schemas.schemas import Response
-from src.service.admin.candidates_form.questions_service import QuestionsService
-from structlog.stdlib import get_logger
-
-LOG = get_logger()
+from src.service.admin.candidates_form.forms_service import CandidateFormsService
 
 
-# Questions Handlers
-class QuestionsHandlers(BaseHandler):
-    def __init__(self, service: QuestionsService) -> None:
+# Candidate Forms Handlers
+class CandidateFormsHandlers(BaseHandler):
+    def __init__(self, service: CandidateFormsService) -> None:
         self._service = service
 
-    async def create_question(self, request: QuestionPostReqData) -> Response:
-        LOG.debug("Request", request=request)
-        result = await self._service.create(
-            prompt=request.prompt,
-            question_type=request.question_type,
-            answer_type=request.answer_type,
-            options=request.options,
-        )
-        LOG.debug("Result", result=result)
+    async def create_form(self, request: CandidateFormPostReqData) -> Response:
+        result = await self._service.create(questions=request.questions)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(QuestionResponse(question=result.ok_value), status_code=201)
+        return Response(CandidateFormResponse(candidate_form=result.ok_value), status_code=201)
 
-    async def get_all_questions(self) -> Response:
+    async def get_all_forms(self) -> Response:
         result = await self._service.get_all()
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(QuestionsResponse(questions=result.ok_value), status_code=200)
+        return Response(CandidateFormsResponse(candidate_forms=result.ok_value), status_code=200)
 
-    async def get_question(self, object_id: str) -> Response:
+    async def get_form(self, object_id: str) -> Response:
         result = await self._service.get(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(QuestionResponse(question=result.ok_value), status_code=200)
+        return Response(CandidateFormResponse(candidate_form=result.ok_value), status_code=200)
 
-    async def update_question(self, object_id: str, request: QuestionPatchReqData) -> Response:
-        result = await self._service.update(
-            question_id=object_id,
-            prompt=request.prompt,
-            question_type=request.question_type,
-            answer_type=request.answer_type,
-            answer=request.answer,
-            options=request.options,
-        )
+    async def update_form(self, object_id: str, request: CandidatesFormPatchReqData) -> Response:
+        result = await self._service.update(candidate_form_id=object_id, questions=request.questions)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(QuestionResponse(question=result.ok_value), status_code=200)
+        return Response(CandidateFormResponse(candidate_form=result.ok_value), status_code=200)
 
-    async def delete_question(self, object_id: str) -> Response:
+    async def delete_form(self, object_id: str) -> Response:
         result = await self._service.delete(object_id)
 
         if is_err(result):
             return self.handle_error(result.err_value)
 
-        return Response(QuestionResponse(question=result.ok_value), status_code=200)
+        return Response(CandidateFormResponse(candidate_form=result.ok_value), status_code=200)

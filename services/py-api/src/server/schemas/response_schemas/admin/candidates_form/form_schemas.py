@@ -2,24 +2,24 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, field_serializer
 
-from src.database.model.admin.candidates_form.question_model import Question
+from src.database.model.admin.candidates_form.form_model import CandidateForm
 
 
-class QuestionResponse(BaseModel):
+class CandidateFormResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    question: Question
+    candidate_form: CandidateForm
 
-    @field_serializer("question")
-    def serialize_question(self, question: Question) -> dict[str, Any]:
-        return question.dump_as_json()
+    @field_serializer("candidate_form")
+    def serialize_form(self, candidate_form: CandidateForm) -> dict[str, Any]:
+        return candidate_form.dump_as_json()
 
 
-class QuestionsResponse(BaseModel):
+class CandidateFormsResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    questions: list[Question]
+    candidate_forms: list[CandidateForm]
 
-    @field_serializer("questions")
-    def serialize_question(self, questions: list[Question]) -> list[dict[str, Any]]:
-        return [question.dump_as_json() for question in questions]
+    @field_serializer("candidate_forms")
+    def serialize_form(self, candidate_forms: list[CandidateForm]) -> list[dict[str, Any]]:
+        return [candidate_form.dump_as_json() for candidate_form in candidate_forms]
