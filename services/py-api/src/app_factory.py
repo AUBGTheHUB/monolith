@@ -4,8 +4,12 @@ import boto3
 from fastapi import FastAPI
 from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+
+from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
+from src.server.handlers.admin.candidates_form.questions_handlers import QuestionsHandlers
 from src.server.handlers.user_handlers import UserHandlers
+from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.auth.auth_token_service import AuthTokenService
 from structlog.stdlib import get_logger
 
@@ -142,6 +146,7 @@ def create_app() -> FastAPI:
     hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
     refresh_tokens_repo = RefreshTokenRepository(db_manager=db_manager)
+    candidates_form_questions_repo = QuestionsRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -212,6 +217,7 @@ def create_app() -> FastAPI:
     judges_service = JudgesService(repo=judges_repo, image_storing_service=image_storing_service)
     hub_members_service = HubMembersService(repo=hub_members_repo, image_storing_service=image_storing_service)
     past_events_service = PastEventsService(repo=past_events_repo, image_storing_service=image_storing_service)
+    candidates_form_questions_service = QuestionsService(repo=candidates_form_questions_repo)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
@@ -235,6 +241,7 @@ def create_app() -> FastAPI:
         ),
         auth_handlers=AuthHandlers(service=auth_service),
         user_handlers=UserHandlers(service=user_service),
+        candidates_form_questions_handlers=QuestionsHandlers(service=candidates_form_questions_service),
     )
 
     Routes.register_routes(app.router, http_handlers)

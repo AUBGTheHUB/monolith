@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from src.server.handlers.admin.candidates_form.questions_handlers import QuestionsHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
 from src.server.handlers.admin.mentor_handlers import MentorsHandlers
@@ -44,3 +45,4 @@ class HttpHandlersContainer:
     admin_handlers: AdminHandlers
     auth_handlers: AuthHandlers
     user_handlers: UserHandlers
+    candidates_form_questions_handlers: QuestionsHandlers

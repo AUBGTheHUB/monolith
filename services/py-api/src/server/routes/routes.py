@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 
 from src.server.handlers.http_handlers import HttpHandlersContainer
+from src.server.routes.admin.admin_routes import register_admin_routes
+from src.server.routes.admin.candidates_form.questions_routes import register_candidates_form_questions_router
 from src.server.routes.auth.auth_routes import register_auth_routes
 from src.server.routes.feature_swithces_routes import register_feature_switches_routes
 from src.server.routes.hackathon.hackathon_management_routes import register_hackathon_management_routes
@@ -8,7 +10,6 @@ from src.server.routes.hackathon.participant_reg_routes import register_particip
 from src.server.routes.hackathon.verification_routes import register_verification_routes
 from src.server.routes.user_routes import register_user_routes
 from src.server.routes.utility_routes import register_utility_routes
-from src.server.routes.admin.admin_routes import register_admin_routes
 
 
 class Routes:
@@ -31,6 +32,9 @@ class Routes:
 
         auth_router = register_auth_routes(http_handler=http_handlers.auth_handlers)
         user_router = register_user_routes(http_handler=http_handlers.user_handlers)
+        candidates_form_questions_router = register_candidates_form_questions_router(
+            http_handler=http_handlers.candidates_form_questions_handlers
+        )
         # Bind all routers to the main one
         main_router.include_router(utility_router)
         main_router.include_router(fs_router)
@@ -40,3 +44,4 @@ class Routes:
         main_router.include_router(admin_router)
         main_router.include_router(auth_router)
         main_router.include_router(user_router)
+        main_router.include_router(candidates_form_questions_router)

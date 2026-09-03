@@ -47,6 +47,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -1097,6 +1098,27 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
+
+
+class QuestionsServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def questions_service_mock() -> QuestionsServiceMock:
+    service = _create_typed_mock(QuestionsService)
+
+    service.get_all = _create_typed_async_mock(QuestionsService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(QuestionsServiceMock, service)
 
 
 # =================================================
