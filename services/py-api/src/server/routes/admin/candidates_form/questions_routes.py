@@ -18,6 +18,12 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
         path="", endpoint=http_handler.get_all_questions, methods=["GET"], responses={200: {"model": QuestionsResponse}}
     )
     questions_router.add_api_route(
+        path="/type/{question_type}",
+        endpoint=http_handler.get_by_type,
+        methods=["GET"],
+        responses={200: {"model": QuestionsResponse}},
+    )
+    questions_router.add_api_route(
         path="/{object_id}",
         endpoint=http_handler.get_question,
         methods=["GET"],
@@ -26,7 +32,7 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
             400: {"model": ErrResponse},
             404: {"model": ErrResponse},
         },
-        dependencies=[Depends(validate_obj_id)],
+        dependencies=[Depends(RoleChecker([Role.BOARD])), Depends(validate_obj_id)],
     )
     questions_router.add_api_route(
         path="",

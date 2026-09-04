@@ -34,7 +34,6 @@ class AdminHandlers:
     judges_handlers: JudgesHandlers
     hub_members_handlers: HubMembersHandlers
     past_events_handlers: PastEventsHandlers
-    candidates_form_questions_handlers: QuestionsHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -48,3 +47,4 @@ class HttpHandlersContainer:
     auth_handlers: AuthHandlers
     user_handlers: UserHandlers
     candidates_forms_handlers: CandidateFormsHandlers
+    candidates_form_questions_handlers: QuestionsHandlers

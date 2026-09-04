@@ -128,6 +128,38 @@ async def test_get_all_questions_success(async_client: AsyncClient, super_auth_t
 
 
 @pytest.mark.asyncio
+async def test_get_by_type_success(async_client: AsyncClient, super_auth_token: str) -> None:
+    # Arrange
+
+    created = await async_client.post(
+        url=QUESTIONS_ENDPOINT_URL,
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        json=valid_question_input,
+        follow_redirects=True,
+    )
+
+    assert created.status_code == 201
+    question_id = created.json()["question"]["id"]
+    # Act
+    response = await async_client.get(
+        url=f"{QUESTIONS_ENDPOINT_URL}/type/DEVELOPMENT",
+        headers={"Authorization": f"Bearer {super_auth_token}"},
+        follow_redirects=True,
+    )
+
+    # Assert
+    assert response.status_code == 200
+    response_body = response.json()
+
+    assert "questions" in response_body
+    assert isinstance(response_body["questions"], list)
+    assert any(question["id"] == question_id for question in response_body["questions"])
+
+    # Cleanup
+    await _delete_question(async_client, question_id, super_auth_token)
+
+
+@pytest.mark.asyncio
 async def test_get_question_by_id_success(async_client: AsyncClient, super_auth_token: str) -> None:
     # Arrange
     created = await async_client.post(

@@ -243,11 +243,11 @@ def create_app() -> FastAPI:
             judges_handlers=JudgesHandlers(service=judges_service),
             past_events_handlers=PastEventsHandlers(service=past_events_service),
             hub_members_handlers=HubMembersHandlers(service=hub_members_service),
-            candidates_form_questions_handlers=QuestionsHandlers(service=candidates_form_questions_service),
         ),
         auth_handlers=AuthHandlers(service=auth_service),
         user_handlers=UserHandlers(service=user_service),
         candidates_forms_handlers=CandidateFormsHandlers(service=candidates_forms_service),
+        candidates_form_questions_handlers=QuestionsHandlers(service=candidates_form_questions_service),
     )
 
     Routes.register_routes(app.router, http_handlers)

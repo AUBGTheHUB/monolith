@@ -8,7 +8,11 @@ from pymongo import ReturnDocument
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.admin_collections import CANDIDATES_FORM_QUESTIONS_COLLECTION
-from src.database.model.admin.candidates_form.question_model import Question, UpdateQuestionParams
+from src.database.model.admin.candidates_form.question_model import (
+    Question,
+    UpdateQuestionParams,
+    ALLOWED_QUESTION_TYPES,
+)
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import QuestionNotFoundError
 
@@ -36,6 +40,29 @@ class QuestionsRepository(CRUDRepository[Question]):
             return Ok(Question(id=ObjectId(obj_id), **question))
         except Exception as e:
             LOG.exception("Failed to fetch question due to error", question_id=obj_id, error=e)
+            return Err(e)
+
+    async def fetch_by_type(
+        self, question_type: ALLOWED_QUESTION_TYPES, session: Optional[AsyncClientSession] = None
+    ) -> Result[list[Question], QuestionNotFoundError | Exception]:
+        try:
+            LOG.info("Fetching all questions")
+
+            questions_data = await self._collection.find(
+                filter={"question_type": question_type}, session=session
+            ).to_list(length=None)
+            questions: list[Question] = []
+
+            for question in questions_data:
+                question["id"] = question.pop("_id")
+
+                questions.append(Question(**question))
+
+            LOG.debug(f"Fetched {len(questions)} questions.")
+            return Ok(questions)
+
+        except Exception as e:
+            LOG.exception(f"Failed to fetch all questions due to err: {e}")
             return Err(e)
 
     async def fetch_all(self, session: Optional[AsyncClientSession] = None) -> Result[list[Question], Exception]:
@@ -100,9 +127,7 @@ class QuestionsRepository(CRUDRepository[Question]):
             LOG.exception("Question deletion failed due to error", question_id=obj_id, error=e)
             return Err(e)
 
-    async def create(
-        self, obj: Question, session: Optional[AsyncClientSession] = None
-    ) -> Result[Question, QuestionNotFoundError | Exception]:
+    async def create(self, obj: Question, session: Optional[AsyncClientSession] = None) -> Result[Question, Exception]:
         try:
             LOG.info("Inserting question...", question=obj.dump_as_json())
             await self._collection.insert_one(document=obj.dump_as_mongo_db_document(), session=session)

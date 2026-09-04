@@ -687,6 +687,7 @@ def questions_repo_mock() -> QuestionsRepoMock:
     questions_repo = _create_typed_mock(QuestionsRepository)
 
     questions_repo.fetch_by_id = AsyncMock()
+    questions_repo.fetch_by_type = AsyncMock()
     questions_repo.fetch_all = AsyncMock()
     questions_repo.update = AsyncMock()
     questions_repo.create = AsyncMock()
@@ -1138,6 +1139,7 @@ def questions_service_mock() -> QuestionsServiceMock:
 
     service.get_all = _create_typed_async_mock(QuestionsService.get_all)
     service.get = AsyncMock()
+    service.get_by_type = AsyncMock()
     service.create = AsyncMock()
     service.update = AsyncMock()
     service.delete = AsyncMock()

@@ -20,6 +20,11 @@ class QuestionsService:
     async def get(self, question_id: str) -> Result[Question, QuestionNotFoundError | Exception]:
         return await self._repo.fetch_by_id(question_id)
 
+    async def get_by_type(
+        self, question_type: ALLOWED_QUESTION_TYPES
+    ) -> Result[list[Question], QuestionNotFoundError | Exception]:
+        return await self._repo.fetch_by_type(question_type)
+
     async def create(
         self,
         prompt: str,

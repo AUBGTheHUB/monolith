@@ -1,5 +1,6 @@
 from result import is_err
 
+from src.database.model.admin.candidates_form.question_model import ALLOWED_QUESTION_TYPES
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.admin.candidates_form.question_schemas import (
     QuestionPostReqData,
@@ -33,6 +34,14 @@ class QuestionsHandlers(BaseHandler):
 
     async def get_all_questions(self) -> Response:
         result = await self._service.get_all()
+
+        if is_err(result):
+            return self.handle_error(result.err_value)
+
+        return Response(QuestionsResponse(questions=result.ok_value), status_code=200)
+
+    async def get_by_type(self, question_type: ALLOWED_QUESTION_TYPES) -> Response:
+        result = await self._service.get_by_type(question_type)
 
         if is_err(result):
             return self.handle_error(result.err_value)
