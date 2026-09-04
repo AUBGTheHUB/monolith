@@ -101,12 +101,12 @@ class QuestionsRepository(CRUDRepository[Question]):
             return Err(e)
 
     async def create(
-        self, question: Question, session: Optional[AsyncClientSession] = None
+        self, obj: Question, session: Optional[AsyncClientSession] = None
     ) -> Result[Question, QuestionNotFoundError | Exception]:
         try:
-            LOG.info("Inserting question...", question=question.dump_as_json())
-            await self._collection.insert_one(document=question.dump_as_mongo_db_document(), session=session)
-            return Ok(question)
+            LOG.info("Inserting question...", question=obj.dump_as_json())
+            await self._collection.insert_one(document=obj.dump_as_mongo_db_document(), session=session)
+            return Ok(obj)
         except Exception as e:
-            LOG.debug("Question insertion failed due to...", question_id=str(question.id), error=e)
+            LOG.debug("Question insertion failed due to...", question_id=str(obj.id), error=e)
             return Err(e)

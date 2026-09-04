@@ -27,9 +27,7 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             LOG.info("Fetching candidate form by ObjectId", candidate_form_id=obj_id)
 
             # Query the db for the candidate_form with the given id
-            candidate_form = await self._collection.find_one(
-                filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
-            )
+            candidate_form = await self._collection.find_one(filter={"_id": ObjectId(obj_id)}, session=session)
 
             if candidate_form is None:
                 return Err(CandidateFormNotFoundError())
@@ -48,6 +46,8 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
                 CandidateForm.from_mongo_db_document(document) for document in candidate_forms_data
             ]
 
+            LOG.debug("Result", result=candidate_forms)
+
             LOG.debug(f"Fetched {len(candidate_forms)} candidate forms.")
             return Ok(candidate_forms)
 
@@ -60,7 +60,6 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
     ) -> Result[CandidateForm, CandidateFormNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
-            projection = {"_id": 0}
 
             update_data = obj_fields.model_dump(
                 exclude_none=True,
@@ -87,7 +86,6 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             result = await self._collection.find_one_and_update(
                 filter=filter,
                 update=update,
-                projection=projection,
                 return_document=ReturnDocument.AFTER,
                 session=session,
             )
@@ -106,8 +104,10 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
     ) -> Result[CandidateForm, CandidateFormNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
-            projection = {"_id": 0}
-            result = await self._collection.find_one_and_delete(filter=filter, projection=projection, session=session)
+            result = await self._collection.find_one_and_delete(filter=filter, session=session)
+
+            LOG.debug("Result", result=result)
+            LOG.debug("Type", type=type(result))
 
             if result is None:
                 return Err(CandidateFormNotFoundError())
@@ -119,12 +119,12 @@ class CandidateFormsRepository(CRUDRepository[CandidateForm]):
             return Err(e)
 
     async def create(
-        self, candidate_form: CandidateForm, session: Optional[AsyncClientSession] = None
+        self, obj: CandidateForm, session: Optional[AsyncClientSession] = None
     ) -> Result[CandidateForm, CandidateFormNotFoundError | Exception]:
         try:
-            LOG.info("Inserting candidate form...", candidate_form=candidate_form.dump_as_json())
-            await self._collection.insert_one(document=candidate_form.dump_as_mongo_db_document(), session=session)
-            return Ok(candidate_form)
+            LOG.info("Inserting candidate form...", candidate_form=obj.dump_as_json())
+            await self._collection.insert_one(document=obj.dump_as_mongo_db_document(), session=session)
+            return Ok(obj)
         except Exception as e:
-            LOG.debug("Candidate form insertion failed due to...", candidate_form_id=str(candidate_form.id), error=e)
+            LOG.debug("Candidate form insertion failed due to...", candidate_form_id=str(obj.id), error=e)
             return Err(e)

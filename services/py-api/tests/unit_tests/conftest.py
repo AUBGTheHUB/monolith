@@ -17,6 +17,7 @@ from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
 
+from src.database.model.admin.candidates_form.form_model import CandidateForm
 from src.database.model.admin.candidates_form.question_model import (
     Question,
 )
@@ -31,6 +32,7 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
 from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
@@ -47,6 +49,7 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.candidates_form.forms_service import CandidateFormsService
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
@@ -681,15 +684,36 @@ class QuestionsRepoMock(Protocol):
 
 @pytest.fixture
 def questions_repo_mock() -> QuestionsRepoMock:
-    sponsors_repo = _create_typed_mock(QuestionsRepository)
+    questions_repo = _create_typed_mock(QuestionsRepository)
 
-    sponsors_repo.fetch_by_id = AsyncMock()
-    sponsors_repo.fetch_all = AsyncMock()
-    sponsors_repo.update = AsyncMock()
-    sponsors_repo.create = AsyncMock()
-    sponsors_repo.delete = AsyncMock()
+    questions_repo.fetch_by_id = AsyncMock()
+    questions_repo.fetch_all = AsyncMock()
+    questions_repo.update = AsyncMock()
+    questions_repo.create = AsyncMock()
+    questions_repo.delete = AsyncMock()
 
-    return cast(SponsorsRepoMock, sponsors_repo)
+    return cast(QuestionsRepoMock, questions_repo)
+
+
+class CandidateFormsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def candidate_forms_repo_mock() -> CandidateFormsRepoMock:
+    forms_repo = _create_typed_mock(CandidateFormsRepository)
+
+    forms_repo.fetch_by_id = AsyncMock()
+    forms_repo.fetch_all = AsyncMock()
+    forms_repo.update = AsyncMock()
+    forms_repo.create = AsyncMock()
+    forms_repo.delete = AsyncMock()
+
+    return cast(CandidateFormsRepoMock, forms_repo)
 
 
 # ======================================
@@ -1119,6 +1143,27 @@ def questions_service_mock() -> QuestionsServiceMock:
     service.delete = AsyncMock()
 
     return cast(QuestionsServiceMock, service)
+
+
+class CandidateFormsServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def candidate_forms_service_mock() -> CandidateFormsServiceMock:
+    service = _create_typed_mock(CandidateFormsService)
+
+    service.get_all = _create_typed_async_mock(CandidateFormsService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(CandidateFormsServiceMock, service)
 
 
 # =================================================
@@ -1631,7 +1676,7 @@ def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticip
 @pytest.fixture
 def question_mock(obj_id_mock: str) -> Question:
     return Question(
-        id=obj_id_mock,
+        id=ObjectId(obj_id_mock),
         prompt="Test question",
         options=None,
         answer="some answer",
@@ -1645,6 +1690,59 @@ def question_no_id_mock(question_mock: Question) -> dict[str, Any]:
     document = question_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
+
+
+@pytest.fixture
+def candidate_form_mock(obj_id_mock: str) -> CandidateForm:
+    return CandidateForm(
+        id=ObjectId(obj_id_mock),
+        questions=[
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Test question",
+                options=None,
+                answer="test answer",
+                question_type="GENERAL",
+                answer_type="TEXT",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Another question",
+                options=["some answer", "another answer"],
+                answer="another answer",
+                question_type="DESIGN",
+                answer_type="MULTIPLE_CHOICE",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Some question",
+                options=["this answer", "that answer", "some answer"],
+                answer="some answer",
+                question_type="MARKETING",
+                answer_type="SINGLE_CHOICE",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="This question",
+                options=None,
+                answer="that answer",
+                question_type="DEVELOPMENT",
+                answer_type="TEXT",
+            ),
+        ],
+    )
+
+
+@pytest.fixture
+def candidate_form_no_id_mock(candidate_form_mock: CandidateForm) -> dict[str, Any]:
+    document = candidate_form_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def candidate_form_mock_document(candidate_form_mock: CandidateForm) -> dict[str, Any]:
+    return candidate_form_mock.dump_as_mongo_db_document()
 
 
 # =================================================

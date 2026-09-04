@@ -9,6 +9,6 @@ class CandidateFormPostReqData(BaseModel):
     questions: list[QuestionParams]
 
 
-class CandidatesFormPatchReqData(BasePatchReqData):
+class CandidateFormPatchReqData(BasePatchReqData):
     model_config = ConfigDict(extra="forbid")
     questions: list[QuestionParams]

@@ -15,6 +15,7 @@ class CandidateForm(BaseDbModel):
         document: Mapping[str, Any],
     ) -> "CandidateForm":
         return cls(
+            id=document["_id"],
             questions=[
                 Question(
                     id=question["_id"],

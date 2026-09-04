@@ -4,7 +4,7 @@ from src.database.model.admin.candidates_form.question_model import Question
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.admin.candidates_form.form_schemas import (
     CandidateFormPostReqData,
-    CandidatesFormPatchReqData,
+    CandidateFormPatchReqData,
 )
 from src.server.schemas.response_schemas.admin.candidates_form.form_schemas import (
     CandidateFormResponse,
@@ -54,7 +54,7 @@ class CandidateFormsHandlers(BaseHandler):
 
         return Response(CandidateFormResponse(candidate_form=result.ok_value), status_code=200)
 
-    async def update_form(self, object_id: str, request: CandidatesFormPatchReqData) -> Response:
+    async def update_form(self, object_id: str, request: CandidateFormPatchReqData) -> Response:
         result = await self._service.update(candidate_form_id=object_id, questions=request.questions)
 
         if is_err(result):

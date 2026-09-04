@@ -217,7 +217,7 @@ class QuestionNotFoundError(CustomError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class CandidateFormNotFoundError:
+class CandidateFormNotFoundError(CustomError):
     """Exception raised when the candidate form cannot be found in the database"""
 
     message = "The specified candidate form was not found"
