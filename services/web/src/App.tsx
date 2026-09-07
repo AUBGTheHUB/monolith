@@ -33,6 +33,8 @@ import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { CandidateFormQuestionsPage } from './website/AdminPanelPage/DashboardPages/pages/CandidateFormQuestionsPage/CandidateFormQuestionsPage';
+import { CandidateFormQuestionsEditPage } from './website/AdminPanelPage/DashboardPages/pages/CandidateFormQuestionsPage/CandidateFormQuestionsEditPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -104,6 +106,13 @@ function App() {
                                             <Route index element={<PastEventsPage />} />
                                             <Route path="add" element={<PastEventsEditPage />} />
                                             <Route path=":id" element={<PastEventsEditPage />} />
+                                        </Route>
+
+                                        {/* Candidate form questions Sub-group */}
+                                        <Route path="candidate-form-questions">
+                                            <Route index element={<CandidateFormQuestionsPage />} />
+                                            <Route path="add" element={<CandidateFormQuestionsEditPage />} />
+                                            <Route path=":id" element={<CandidateFormQuestionsEditPage />} />
                                         </Route>
 
                                         {/* Participants Sub-group */}
