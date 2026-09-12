@@ -33,6 +33,7 @@ import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
 
 function App() {
     const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ function App() {
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<MainPage />} />
+                    <Route path="/apply" element={<CandidatesFormPage />} />
                     {/* Hackathon Group */}
                     <Route path="/hackathon">
                         <Route index element={<HackathonPage />} />

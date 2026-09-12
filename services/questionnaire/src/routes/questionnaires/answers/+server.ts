@@ -1,7 +1,5 @@
 import { answers, questions } from '$lib/database/mongo';
-import type { Question } from '$lib/inputs/types';
 import { error } from 'console';
-import { ReturnDocument } from 'mongodb';
 import type { DepartmentQuestions } from '../../types';
 
 type Body = {
