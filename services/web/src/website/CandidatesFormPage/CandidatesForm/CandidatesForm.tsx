@@ -24,11 +24,12 @@ import {
     errorTextStyles,
 } from './styles';
 import { MultiSelectComponent } from '@/internalLibrary/MultiSelectComponent/MultiSelectComponent.tsx';
-// interface RegistrationFormProps {
+import { formCardStyles } from '@/website/RegistrationFormPage/RegistrationForm/styles.ts';
+// interface CandidatesFormProps {
 //     RegSwitch: boolean;
-//     isRegTeamsFull: boolean;
 // }
 
+// export default function CandidatesForm({ RegSwitch }: CandidatesFormProps) {
 export default function CandidatesForm() {
     // const params = new URLSearchParams(window.location.search);
     // const token = params.get('jwt_token') ?? undefined;
@@ -156,12 +157,7 @@ export default function CandidatesForm() {
 
             <div className="flex justify-center w-full z-10">
                 <FormProvider {...form}>
-                    {/*<form onSubmit={form.handleSubmit(onSubmit)} className={formCardStyles}>*/}
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                            console.log('VALIDATION ERRORS:', errors);
-                        })}
-                    >
+                    <form onSubmit={form.handleSubmit(onSubmit)} className={formCardStyles}>
                         <div>
                             <p className={`${sectionHeadingStyles} mt-4`}>General Questions</p>
                             <hr className={sectionDividerStyles} />

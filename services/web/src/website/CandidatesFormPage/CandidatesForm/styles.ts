@@ -12,7 +12,7 @@ export const formControlStyles = 'bg-white border border-gray-400 min-h-[48px] s
 
 // Layout styles (used directly in the form structure)
 export const sectionHeadingStyles = 'text-gray-800 text-base mb-2 font-normal';
-export const sectionDividerStyles = 'mb-4 sm:mb-8 h-[2px] bg-red-300/60 border-0';
+export const sectionDividerStyles = 'mb-4 sm:mb-8 h-[2px] bg-blue-300/60 border-0';
 export const fieldGridStyles = 'grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6';
 export const fieldGridWithMarginStyles = 'grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-8';
 export const formCardStyles =
@@ -20,7 +20,7 @@ export const formCardStyles =
 
 // Button styles
 export const submitButtonStyles =
-    'mt-4 px-10 py-3 sm:px-8 sm:py-2 text-base sm:text-sm text-gray-800 border-2 border-red-400 rounded-full bg-transparent hover:bg-red-600 transition-all duration-300 hover:text-white';
+    'mt-4 px-10 py-3 sm:px-8 sm:py-2 text-base sm:text-sm text-gray-800 border-2 border-blue-400 rounded-full bg-transparent hover:bg-blue-600 transition-all duration-300 hover:text-white';
 export const resendButtonStyles =
     'px-8 py-3 sm:px-6 sm:py-2 text-base sm:text-sm text-gray-800 border border-gray-400 rounded-full bg-transparent hover:bg-gray-100 transition-all duration-300';
 export const errorTextStyles = 'text-sm text-red-600 mt-4';

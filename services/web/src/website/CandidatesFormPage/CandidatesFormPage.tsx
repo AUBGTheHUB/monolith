@@ -10,11 +10,11 @@ export const CandidatesFormPage = () => {
     return (
         <Fragment>
             <Helmet>
-                <title>Hackathon 8.0</title>
-                <link rel="icon" href="/faviconHack.ico" />
+                <title>Apply</title>
+                <link rel="icon" href="/favicon.ico" />
             </Helmet>
             <Navigation />
-            {/*<CandidatesForm RegSwitch={featureSwitches.RegSwitch} isRegTeamsFull={featureSwitches.isRegTeamsFull} />*/}
+            {/*<CandidatesForm RegSwitch={featureSwitches.RegSwitch}*/}
             <CandidatesForm />
         </Fragment>
     );
