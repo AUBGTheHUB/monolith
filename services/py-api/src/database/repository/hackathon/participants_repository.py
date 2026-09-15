@@ -1,8 +1,8 @@
 from typing import Optional
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
+from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.errors import DuplicateKeyError
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
@@ -59,7 +59,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         self,
         obj_id: str,
         obj_fields: UpdateParticipantParams,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         try:
             LOG.info(f"Updating participant...", participant_obj_id=obj_id, updated_fields=obj_fields.model_dump())
@@ -88,7 +88,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
         self,
         obj_ids: list[ObjectId],
         obj_fields: UpdateParticipantParams,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[list[ObjectId], Exception]:
         try:
             LOG.info(f"Updating participants...", participant_ids=obj_ids, updated_fields=obj_fields.model_dump())
@@ -106,7 +106,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Participant, ParticipantNotFoundError | Exception]:
         """
         Deletes the participant which corresponds to the provided object_id
@@ -134,7 +134,7 @@ class ParticipantsRepository(CRUDRepository[Participant]):
     async def create(
         self,
         participant: Participant,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[Participant, DuplicateEmailError | Exception]:
         try:
             LOG.info("Inserting participant...", participant=participant.dump_as_json())

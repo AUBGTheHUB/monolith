@@ -28,7 +28,7 @@ from tests.integration_tests.conftest import (
     TEST_HUB_MEMBER_AVATAR_URL,
     TEST_HUB_MEMBER_DEPARTMENTS,
 )
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 LOG = get_logger()
 
@@ -349,7 +349,7 @@ async def test_update_hub_member_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: HubMembersRepository,
     hub_member_dict_mock: dict[str, Any],
 ) -> None:
@@ -376,7 +376,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_filtered_admins_only_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: HubMembersRepository,
     hub_admin_dict_mock: dict[str, Any],
 ) -> None:
@@ -403,7 +403,7 @@ async def test_fetch_all_filtered_admins_only_success(
 @pytest.mark.asyncio
 async def test_fetch_all_filtered_members_only_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: HubMembersRepository,
     hub_member_dict_mock: dict[str, Any],
 ) -> None:
@@ -430,7 +430,7 @@ async def test_fetch_all_filtered_members_only_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: HubMembersRepository,
 ) -> None:
     # Given
@@ -448,7 +448,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_general_exception(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: HubMembersRepository,
 ) -> None:
     # Given

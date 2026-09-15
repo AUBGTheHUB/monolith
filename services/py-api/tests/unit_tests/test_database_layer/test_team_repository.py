@@ -12,7 +12,7 @@ from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.hackathon.teams_repository import TeamsRepository
 from src.exception import TeamNotFoundError, DuplicateTeamNameError
 from tests.integration_tests.conftest import TEST_TEAM_NAME
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 @pytest.fixture
@@ -286,7 +286,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: TeamsRepository,
     verified_team_mock: Team,
 ) -> None:
@@ -323,7 +323,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: TeamsRepository,
 ) -> None:
 
@@ -342,7 +342,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: TeamsRepository,
 ) -> None:
 

@@ -33,6 +33,8 @@ import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
+import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
 
 function App() {
     const queryClient = new QueryClient();
@@ -44,6 +46,7 @@ function App() {
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<MainPage />} />
+                    <Route path="/apply" element={<CandidatesFormPage />} />
                     {/* Hackathon Group */}
                     <Route path="/hackathon">
                         <Route index element={<HackathonPage />} />
@@ -76,6 +79,10 @@ function App() {
                                             <Route index element={<MeetTheTeamPage />} />
                                             <Route path="add" element={<MeetTheTeamEditPage />} />
                                             <Route path=":id" element={<MeetTheTeamEditPage />} />
+                                        </Route>
+
+                                        <Route path="seed-questions">
+                                            <Route index element={<SeedDataPage />} />
                                         </Route>
 
                                         {/* Judges Sub-group */}

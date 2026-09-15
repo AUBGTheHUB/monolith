@@ -1,6 +1,6 @@
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 
 from src.database.model.admin.hub_admin_model import HubAdmin, UpdateHubAdminParams, AssignableRole
 from src.database.model.admin.hub_member_model import MEMBER_TYPE_FILTER
@@ -26,7 +26,7 @@ class UserService:
         self._tx_manager = tx_manager
 
     async def _change_role_callback(
-        self, user_id: str, update_params: UpdateHubAdminParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, user_id: str, update_params: UpdateHubAdminParams, session: Optional[AsyncClientSession] = None
     ) -> Result[HubAdmin, HubMemberNotFoundError | Exception]:
         result = await self._hub_members_repo.update(user_id, update_params, session=session)
         if is_err(result):

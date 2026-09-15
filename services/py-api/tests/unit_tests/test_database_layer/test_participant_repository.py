@@ -11,7 +11,7 @@ from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.exception import DuplicateEmailError, ParticipantNotFoundError
 from tests.integration_tests.conftest import TEST_USER_EMAIL, TEST_USER_NAME
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 @pytest.fixture
@@ -185,7 +185,7 @@ from unittest.mock import AsyncMock
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: ParticipantsRepository,
     admin_participant_mock: Participant,
 ) -> None:
@@ -217,7 +217,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: ParticipantsRepository,
 ) -> None:
     # Given
@@ -235,7 +235,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: ParticipantsRepository,
 ) -> None:
     # Given

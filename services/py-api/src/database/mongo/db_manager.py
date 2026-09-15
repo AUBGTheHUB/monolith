@@ -1,4 +1,5 @@
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 from result import Err
 from structlog.stdlib import get_logger
@@ -14,7 +15,7 @@ class MongoDatabaseManager:
     """Provides utils for pinging the database, closing connections, and getting access to a particular collection in
     our Mongo database"""
 
-    def __init__(self, client: AsyncIOMotorClient) -> None:
+    def __init__(self, client: AsyncMongoClient) -> None:
         self._client = client
 
     def close_all_connections(self) -> Err[str] | None:
@@ -44,7 +45,7 @@ class MongoDatabaseManager:
             LOG.exception("Pinging db failed due to err", error=err)
             return Err(err)
 
-    def get_collection(self, collection_name: str) -> AsyncIOMotorCollection:
+    def get_collection(self, collection_name: str) -> AsyncCollection:
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-database
         # https://pymongo.readthedocs.io/en/stable/tutorial.html#getting-a-collection
         return self._client.get_database(name=DB_NAME).get_collection(name=collection_name)
