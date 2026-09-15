@@ -184,7 +184,7 @@ export default function CandidatesForm() {
                                                     name={`generalQuestions.${i}.answer`}
                                                     label={question.prompt}
                                                     placeholder={''}
-                                                    items={question.options.map((option) => ({
+                                                    items={(question.options ?? []).map((option) => ({
                                                         name: option,
                                                         value: option,
                                                     }))}
@@ -197,7 +197,7 @@ export default function CandidatesForm() {
                                                     control={form.control}
                                                     name={`generalQuestions.${i}.answer`}
                                                     label={question.prompt}
-                                                    options={question.options}
+                                                    options={question.options ?? []}
                                                 />
                                             );
                                     })}
@@ -238,7 +238,7 @@ export default function CandidatesForm() {
                                                         name={`developmentQuestions.${i}.answer`}
                                                         label={question.prompt}
                                                         placeholder=""
-                                                        items={question.options.map((option) => ({
+                                                        items={(question.options ?? []).map((option) => ({
                                                             name: option,
                                                             value: option,
                                                         }))}
@@ -253,7 +253,7 @@ export default function CandidatesForm() {
                                                         control={form.control}
                                                         name={`developmentQuestions.${i}.answer`}
                                                         label={question.prompt}
-                                                        options={question.options}
+                                                        options={question.options ?? []}
                                                     />
                                                 );
                                             }
@@ -291,7 +291,7 @@ export default function CandidatesForm() {
                                                         name={`designQuestions.${i}.answer`}
                                                         label={question.prompt}
                                                         placeholder=""
-                                                        items={question.options.map((option) => ({
+                                                        items={(question.options ?? []).map((option) => ({
                                                             name: option,
                                                             value: option,
                                                         }))}
@@ -306,7 +306,7 @@ export default function CandidatesForm() {
                                                         control={form.control}
                                                         name={`designQuestions.${i}.answer`}
                                                         label={question.prompt}
-                                                        options={question.options}
+                                                        options={question.options ?? []}
                                                     />
                                                 );
                                             }
@@ -344,7 +344,7 @@ export default function CandidatesForm() {
                                                         name={`marketingQuestions.${i}.answer`}
                                                         label={question.prompt}
                                                         placeholder=""
-                                                        items={question.options.map((option) => ({
+                                                        items={(question.options ?? []).map((option) => ({
                                                             name: option,
                                                             value: option,
                                                         }))}
@@ -359,7 +359,7 @@ export default function CandidatesForm() {
                                                         control={form.control}
                                                         name={`marketingQuestions.${i}.answer`}
                                                         label={question.prompt}
-                                                        options={question.options}
+                                                        options={question.options ?? []}
                                                     />
                                                 );
                                             }
@@ -397,7 +397,7 @@ export default function CandidatesForm() {
                                                         name={`prQuestions.${i}.answer`}
                                                         label={question.prompt}
                                                         placeholder=""
-                                                        items={question.options.map((option) => ({
+                                                        items={(question.options ?? []).map((option) => ({
                                                             name: option,
                                                             value: option,
                                                         }))}
@@ -412,7 +412,7 @@ export default function CandidatesForm() {
                                                         control={form.control}
                                                         name={`prQuestions.${i}.answer`}
                                                         label={question.prompt}
-                                                        options={question.options}
+                                                        options={question.options ?? []}
                                                     />
                                                 );
                                             }
@@ -447,10 +447,10 @@ export default function CandidatesForm() {
                                                     <DropdownComponent
                                                         key={question.prompt}
                                                         control={form.control}
-                                                        name={`logisticsQuestions.${i}.prompt`}
+                                                        name={`logisticsQuestions.${i}.answer`}
                                                         label={question.prompt}
                                                         placeholder=""
-                                                        items={question.options.map((option) => ({
+                                                        items={(question.options ?? []).map((option) => ({
                                                             name: option,
                                                             value: option,
                                                         }))}
@@ -463,9 +463,9 @@ export default function CandidatesForm() {
                                                     <MultiSelectComponent
                                                         key={question.prompt}
                                                         control={form.control}
-                                                        name={`logisticsQuestions.${i}.prompt`}
+                                                        name={`logisticsQuestions.${i}.answer`}
                                                         label={question.prompt}
-                                                        options={question.options}
+                                                        options={question.options ?? []}
                                                     />
                                                 );
                                             }
