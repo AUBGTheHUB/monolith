@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants';
-import  { CandidateForm, DEPARTMENTS_OPTIONS, Question, RegistrationInfo, ResendEmailType } from './constants';
+import { CandidateForm, DEPARTMENTS_OPTIONS, Question, RegistrationInfo, ResendEmailType } from './constants';
 
 export async function getQuestions(): Promise<{ questions: Question[] }> {
     let response: Response;
@@ -20,6 +20,9 @@ export async function registerCandidate(data: CandidateForm): Promise<void> {
     let response: Response;
     if (data.form.generalQuestions.find((q) => q.answer == null || q.answer === '')) {
         throw new Error('All questions must be answered');
+    }
+    if (data.form.departments.length == 0) {
+        throw new Error('Please, pick a department');
     }
     for (const department of data.form.departments) {
         switch (department) {
@@ -70,9 +73,9 @@ export async function registerCandidate(data: CandidateForm): Promise<void> {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                questions: questions
+                questions: questions,
             }),
-        })
+        });
     } catch {
         throw new Error('Unable to create candidate');
     }

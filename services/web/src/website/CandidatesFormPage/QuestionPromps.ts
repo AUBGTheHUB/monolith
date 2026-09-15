@@ -15,7 +15,7 @@ export const questionPrompts: Question[] = [
         prompt: 'What is your standing?',
         options: ['Freshman', 'Sophomore', 'Junior', 'Senior'],
         question_type: 'GENERAL',
-        answer_type: 'MULTIPLE_CHOICE',
+        answer_type: 'SINGLE_CHOICE',
     },
     {
         prompt: 'What are your intended majors?',
