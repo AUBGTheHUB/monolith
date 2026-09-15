@@ -22,6 +22,7 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
         endpoint=http_handler.seed_questions,
         methods=["POST"],
         responses={200: {"model": QuestionsResponse}},
+        dependencies=[Depends(RoleChecker([Role.SUPER]))],
     )
     questions_router.add_api_route(
         path="/type/{question_type}",
