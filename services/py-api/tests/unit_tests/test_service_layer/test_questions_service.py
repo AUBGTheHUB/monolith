@@ -125,7 +125,7 @@ async def test_update_calls_repo_with_update_params(
     questions_repo_mock.update.assert_awaited_once()
 
     assert questions_repo_mock.update.call_args is not None
-    assert questions_repo_mock.update.call_args.args[0] == question_mock.id
+    assert questions_repo_mock.update.call_args.args[0] == str(question_mock.id)
 
     body = result.ok_value
     assert body.prompt == updated.prompt
