@@ -34,6 +34,7 @@ import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/Ad
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
+import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
 
 function App() {
     const queryClient = new QueryClient();
@@ -78,6 +79,10 @@ function App() {
                                             <Route index element={<MeetTheTeamPage />} />
                                             <Route path="add" element={<MeetTheTeamEditPage />} />
                                             <Route path=":id" element={<MeetTheTeamEditPage />} />
+                                        </Route>
+
+                                        <Route path="seed-questions">
+                                            <Route index element={<SeedDataPage />} />
                                         </Route>
 
                                         {/* Judges Sub-group */}

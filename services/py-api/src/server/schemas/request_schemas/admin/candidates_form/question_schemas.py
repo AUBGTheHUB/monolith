@@ -14,6 +14,18 @@ class QuestionPostReqData(BaseModel):
     options: Optional[list[str]] = None
 
 
+class QuestionsPostRequestionQuestionData(BaseModel):
+    prompt: NonEmptyStr
+    question_type: ALLOWED_QUESTION_TYPES
+    answer_type: ALLOWED_ANSWER_TYPES
+    options: Optional[list[str]] = None
+
+
+class QuestionsPostReqData(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    questions: list[QuestionsPostRequestionQuestionData]
+
+
 class QuestionPatchReqData(BasePatchReqData):
     model_config = ConfigDict(extra="forbid")
 
