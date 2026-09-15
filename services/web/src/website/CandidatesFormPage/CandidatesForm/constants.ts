@@ -65,8 +65,8 @@ export const DEPARTMENTS_OPTIONS = [
 
 export type Question = {
     prompt: string;
-    options: string[];
-    answer: string | string[];
+    options?: string[];
+    answer?: string | string[];
     question_type: 'GENERAL' | 'DEVELOPMENT' | 'DESIGN' | 'PR' | 'MARKETING' | 'LOGISTICS';
     answer_type: 'TEXT' | 'SINGLE_CHOICE' | 'MULTIPLE_CHOICE';
 };

@@ -18,6 +18,12 @@ def register_candidates_form_questions_router(http_handler: QuestionsHandlers) -
         path="", endpoint=http_handler.get_all_questions, methods=["GET"], responses={200: {"model": QuestionsResponse}}
     )
     questions_router.add_api_route(
+        path="/seed",
+        endpoint=http_handler.seed_questions,
+        methods=["POST"],
+        responses={200: {"model": QuestionsResponse}},
+    )
+    questions_router.add_api_route(
         path="/type/{question_type}",
         endpoint=http_handler.get_by_type,
         methods=["GET"],

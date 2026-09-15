@@ -18,6 +18,38 @@ export async function getQuestions(): Promise<{ questions: Question[] }> {
 
 export async function registerCandidate(data: CandidateForm): Promise<void> {
     let response: Response;
+    if (data.form.generalQuestions.find((q) => q.answer == null || q.answer === '')) {
+        throw new Error('All questions must be answered');
+    }
+    for (const department of data.form.departments) {
+        switch (department) {
+            case 'Development':
+                if (data.form.developmentQuestions.find((q) => q.answer == null || q.answer === '')) {
+                    throw new Error('All questions must be answered');
+                }
+                break;
+            case 'Design':
+                if (data.form.designQuestions.find((q) => q.answer == null || q.answer === '')) {
+                    throw new Error('All questions must be answered');
+                }
+                break;
+            case 'Marketing':
+                if (data.form.marketingQuestions.find((q) => q.answer == null || q.answer === '')) {
+                    throw new Error('All questions must be answered');
+                }
+                break;
+            case 'PR':
+                if (data.form.prQuestions.find((q) => q.answer == null || q.answer === '')) {
+                    throw new Error('All questions must be answered');
+                }
+                break;
+            case 'Logistics':
+                if (data.form.logisticsQuestions.find((q) => q.answer == null || q.answer === '')) {
+                    throw new Error('All questions must be answered');
+                }
+                break;
+        }
+    }
     try {
         const questions: Question[] = [
             ...data.form.generalQuestions,

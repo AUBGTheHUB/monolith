@@ -5,6 +5,7 @@ from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.request_schemas.admin.candidates_form.question_schemas import (
     QuestionPostReqData,
     QuestionPatchReqData,
+    QuestionsPostReqData,
 )
 from src.server.schemas.response_schemas.admin.candidates_form.question_schemas import (
     QuestionResponse,
@@ -39,6 +40,23 @@ class QuestionsHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(QuestionsResponse(questions=result.ok_value), status_code=200)
+
+    async def seed_questions(self, request: QuestionsPostReqData) -> Response:
+
+        for question in request.questions:
+            result = await self._service.create(
+                prompt=question.prompt,
+                question_type=question.question_type,
+                answer_type=question.answer_type,
+                options=question.options,
+            )
+
+            if is_err(result):
+                return self.handle_error(result.err_value)
+
+        response = await self._service.get_all()
+
+        return Response(QuestionsResponse(questions=response.ok_value), status_code=200)
 
     async def get_by_type(self, question_type: ALLOWED_QUESTION_TYPES) -> Response:
         result = await self._service.get_by_type(question_type)
