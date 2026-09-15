@@ -1,8 +1,8 @@
 from typing import Optional, cast, Any
 
 from bson import ObjectId
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from pymongo import ReturnDocument
+from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.errors import DuplicateKeyError
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
@@ -24,7 +24,7 @@ class TeamsRepository(CRUDRepository[Team]):
     async def create(
         self,
         team: Team,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[Team, DuplicateTeamNameError | Exception]:
 
         try:
@@ -82,7 +82,7 @@ class TeamsRepository(CRUDRepository[Team]):
         self,
         obj_id: str,
         obj_fields: UpdateTeamParams,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[Team, TeamNotFoundError | Exception]:
         try:
 
@@ -107,7 +107,7 @@ class TeamsRepository(CRUDRepository[Team]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Team, TeamNotFoundError | Exception]:
         """
         Deletes the team which corresponds to the provided object_id

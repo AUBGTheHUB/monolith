@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import UploadFile, File
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Err, Ok, Result, is_err
-from motor.motor_asyncio import AsyncIOMotorClientSession
 from uuid import uuid4
 
 from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTokenParams
@@ -42,7 +42,7 @@ class AuthService:
         self._tx_manager = tx_manager
 
     async def _invalidate_old_and_create_new_refresh_token_callback(
-        self, refresh_token_id: str, refresh_expiration: datetime, session: Optional[AsyncIOMotorClientSession] = None
+        self, refresh_token_id: str, refresh_expiration: datetime, session: Optional[AsyncClientSession] = None
     ) -> Result[RefreshToken, Exception]:
 
         # Invalidate the old refresh token

@@ -9,7 +9,7 @@ from src.database.model.admin.refresh_token import RefreshToken, UpdateRefreshTo
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
 from src.exception import RefreshTokenNotFound
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 @pytest.fixture
@@ -153,7 +153,7 @@ from unittest.mock import AsyncMock
 @pytest.mark.asyncio
 async def test_fetch_all_refresh_tokens_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: RefreshTokenRepository,
     refresh_token_dict_mock: dict[str, Any],
 ) -> None:
@@ -178,7 +178,7 @@ async def test_fetch_all_refresh_tokens_success(
 @pytest.mark.asyncio
 async def test_fetch_all_refresh_tokens_empty(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: RefreshTokenRepository,
 ) -> None:
     # Given
@@ -196,7 +196,7 @@ async def test_fetch_all_refresh_tokens_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_refresh_tokens_error(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: RefreshTokenRepository,
 ) -> None:
     # Given

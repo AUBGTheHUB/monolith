@@ -1,6 +1,6 @@
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Err, is_err, Ok, Result
 from structlog.stdlib import get_logger
 
@@ -38,7 +38,7 @@ class AdminTeamService:
         self._tx_manager = tx_manager
 
     async def _create_participant_and_team_in_transaction_callback(
-        self, input_data: AdminParticipantInputData, session: Optional[AsyncIOMotorClientSession] = None
+        self, input_data: AdminParticipantInputData, session: Optional[AsyncClientSession] = None
     ) -> Result[tuple[Participant, Team], DuplicateEmailError | DuplicateTeamNameError | Exception]:
         """
         This method is intended to be passed as the `callback` argument to the `TransactionManager.with_transaction(...)`
@@ -74,16 +74,16 @@ class AdminTeamService:
 
     async def verify_admin_participant_and_team_in_transaction(
         self, jwt_data: JwtParticipantVerificationData
-    ) -> Result[
-        tuple[Participant, Team],
-        ParticipantNotFoundError | TeamNotFoundError | Exception,
-    ]:
+    ) -> (
+        Ok[tuple[Participant, Team]]
+        | Err[ParticipantNotFoundError | TeamNotFoundError | ParticipantAlreadyVerifiedError | Exception]
+    ):
         return await self._tx_manager.with_transaction(self._verify_admin_participant_and_team_callback, jwt_data)
 
     async def _verify_admin_participant_and_team_callback(
         self,
         jwt_data: JwtParticipantVerificationData,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        session: Optional[AsyncClientSession] = None,
     ) -> Result[
         tuple[Participant, Team],
         ParticipantNotFoundError | TeamNotFoundError | ParticipantAlreadyVerifiedError | Exception,

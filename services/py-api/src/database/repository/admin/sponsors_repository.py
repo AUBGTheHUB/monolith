@@ -1,6 +1,6 @@
 from typing import Optional
 
-from motor.motor_asyncio import AsyncIOMotorClientSession
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Result, Ok, Err
 from structlog.stdlib import get_logger
 from bson import ObjectId
@@ -11,7 +11,6 @@ from src.database.mongo.collections.admin_collections import SPONSORS_COLLECTION
 from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import SponsorNotFoundError
-from datetime import datetime
 
 LOG = get_logger()
 
@@ -21,30 +20,26 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
         self._collection = db_manager.get_collection(SPONSORS_COLLECTION)
 
     async def fetch_by_id(
-        self, 
-        obj_id: str,
-        session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
-            LOG.info("Fetching sponsor by ObjectId", sponsor_id = obj_id)
+            LOG.info("Fetching sponsor by ObjectId", sponsor_id=obj_id)
 
-            # Query the db for the sponsor with the given id 
+            # Query the db for the sponsor with the given id
             sponsor = await self._collection.find_one(
-                filter={"_id": ObjectId(obj_id)}, 
-                projection={"_id": 0},
-                session=session
+                filter={"_id": ObjectId(obj_id)}, projection={"_id": 0}, session=session
             )
 
             if sponsor is None:
                 return Err(SponsorNotFoundError())
-            
+
             return Ok(Sponsor(id=ObjectId(obj_id), **sponsor))
         except Exception as e:
             LOG.exception("Failed to fetch sponsor due to error", sponsor_id=obj_id, error=e)
             return Err(e)
 
-    async def fetch_all(self, session: Optional[AsyncIOMotorClientSession] = None) -> Result[list[Sponsor], Exception]:
-        try: 
+    async def fetch_all(self, session: Optional[AsyncClientSession] = None) -> Result[list[Sponsor], Exception]:
+        try:
             LOG.info("Fetching all sponsors")
 
             sponsors_data = await self._collection.find({}, session=session).to_list(length=None)
@@ -63,7 +58,7 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             return Err(e)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateSponsorParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateSponsorParams, session: Optional[AsyncClientSession] = None
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
@@ -73,32 +68,28 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             # ReturnDocument.AFTER returns the updated document with the new data
             result = await self._collection.find_one_and_update(
                 filter=filter,
-                update=update, 
+                update=update,
                 projection=projection,
                 return_document=ReturnDocument.AFTER,
-                session=session
+                session=session,
             )
-            
+
             if result is None:
                 return Err(SponsorNotFoundError())
-            
-            return Ok(Sponsor(id = ObjectId(obj_id), **result))
+
+            return Ok(Sponsor(id=ObjectId(obj_id), **result))
 
         except Exception as e:
             LOG.exception("Could not update sponsor", sponsor_id=ObjectId(obj_id), error=e)
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             filter = {"_id": ObjectId(obj_id)}
             projection = {"_id": 0}
-            result = await self._collection.find_one_and_delete(
-                filter=filter, 
-                projection=projection, 
-                session=session
-            )
+            result = await self._collection.find_one_and_delete(filter=filter, projection=projection, session=session)
 
             if result is None:
                 return Err(SponsorNotFoundError())
@@ -110,12 +101,12 @@ class SponsorsRepository(CRUDRepository[Sponsor]):
             return Err(e)
 
     async def create(
-        self, sponsor: Sponsor, session: Optional[AsyncIOMotorClientSession] = None
+        self, sponsor: Sponsor, session: Optional[AsyncClientSession] = None
     ) -> Result[Sponsor, SponsorNotFoundError | Exception]:
         try:
             LOG.info("Inserting sponsor...", sponsor=sponsor.dump_as_json())
             await self._collection.insert_one(document=sponsor.dump_as_mongo_db_document(), session=session)
             return Ok(sponsor)
-        except Exception as e: 
-            LOG.debug("Sponsor insertion failed due to...", sponsor_id = str(sponsor.id), error=e)
+        except Exception as e:
+            LOG.debug("Sponsor insertion failed due to...", sponsor_id=str(sponsor.id), error=e)
             return Err(e)

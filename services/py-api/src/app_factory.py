@@ -2,10 +2,17 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 import boto3
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
+
+from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
+from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
+from src.server.handlers.admin.candidates_form.forms_handlers import CandidateFormsHandlers
+from src.server.handlers.admin.candidates_form.questions_handlers import QuestionsHandlers
 from src.server.handlers.user_handlers import UserHandlers
+from src.service.admin.candidates_form.forms_service import CandidateFormsService
+from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.auth.auth_token_service import AuthTokenService
 from structlog.stdlib import get_logger
 
@@ -59,7 +66,7 @@ from src.service.mail_service.mail_clients.mail_client_factory import mail_clien
 LOG = get_logger()
 
 
-def _ping_db(mongo_client: AsyncIOMotorClient) -> None:
+async def _ping_db(mongo_client: AsyncMongoClient) -> None:
     """
     This method is used only on application startup.
     Raises:
@@ -70,7 +77,7 @@ def _ping_db(mongo_client: AsyncIOMotorClient) -> None:
 
     try:
         LOG.debug("Pinging MongoDB...")
-        mongo_client.get_database(name=DB_NAME).command("ping")
+        await mongo_client.get_database(name=DB_NAME).command("ping")
 
     except ConnectionFailure as cf:
         LOG.exception("Pinging db failed due to err", error=cf)
@@ -98,7 +105,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
-    _ping_db(db_client)
+    await _ping_db(db_client)
 
     # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
     # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator
@@ -142,6 +149,8 @@ def create_app() -> FastAPI:
     hub_members_repo = HubMembersRepository(db_manager=db_manager)
     past_events_repo = PastEventsRepository(db_manager=db_manager)
     refresh_tokens_repo = RefreshTokenRepository(db_manager=db_manager)
+    candidates_form_questions_repo = QuestionsRepository(db_manager=db_manager)
+    candidates_forms_repo = CandidateFormsRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -212,6 +221,8 @@ def create_app() -> FastAPI:
     judges_service = JudgesService(repo=judges_repo, image_storing_service=image_storing_service)
     hub_members_service = HubMembersService(repo=hub_members_repo, image_storing_service=image_storing_service)
     past_events_service = PastEventsService(repo=past_events_repo, image_storing_service=image_storing_service)
+    candidates_form_questions_service = QuestionsService(repo=candidates_form_questions_repo)
+    candidates_forms_service = CandidateFormsService(repo=candidates_forms_repo)
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
@@ -235,6 +246,8 @@ def create_app() -> FastAPI:
         ),
         auth_handlers=AuthHandlers(service=auth_service),
         user_handlers=UserHandlers(service=user_service),
+        candidates_forms_handlers=CandidateFormsHandlers(service=candidates_forms_service),
+        candidates_form_questions_handlers=QuestionsHandlers(service=candidates_form_questions_service),
     )
 
     Routes.register_routes(app.router, http_handlers)

@@ -1,10 +1,10 @@
 from typing import Optional
 from bson import ObjectId
 from pymongo import ReturnDocument
+from pymongo.asynchronous.client_session import AsyncClientSession
 from result import Err, Ok, Result
 from src.exception import RefreshTokenNotFound
 from structlog.stdlib import get_logger
-from motor.motor_asyncio import AsyncIOMotorClientSession
 
 from src.database.mongo.collections.admin_collections import REFRESH_TOKENS
 from src.database.mongo.db_manager import MongoDatabaseManager
@@ -19,7 +19,7 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
         self._collection = db_manager.get_collection(REFRESH_TOKENS)
 
     async def create(
-        self, refresh_token: RefreshToken, session: Optional[AsyncIOMotorClientSession] = None
+        self, refresh_token: RefreshToken, session: Optional[AsyncClientSession] = None
     ) -> Result[RefreshToken, Exception]:
         try:
             LOG.info("Inserting refresh token for HUB member with id", hub_member_id=refresh_token.hub_member_id)
@@ -48,7 +48,7 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
             return Err(e)
 
     async def delete(
-        self, obj_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[RefreshToken, Exception]:
         try:
             LOG.info("Deleting refresh token...", refresh_token_id=obj_id)
@@ -82,7 +82,7 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
             return Err(e)
 
     async def update(
-        self, obj_id: str, obj_fields: UpdateRefreshTokenParams, session: Optional[AsyncIOMotorClientSession] = None
+        self, obj_id: str, obj_fields: UpdateRefreshTokenParams, session: Optional[AsyncClientSession] = None
     ) -> Result[RefreshToken, RefreshTokenNotFound | Exception]:
         try:
             LOG.info("Updating refresh token...", refresh_token_id=obj_id)
@@ -107,7 +107,7 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
             return Err(e)
 
     async def invalidate_all_tokens_by_family_id(
-        self, family_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, family_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[int, RefreshTokenNotFound | Exception]:
         try:
             LOG.info("Invalidating refresh tokens with family id...", family_id=family_id)
@@ -127,7 +127,7 @@ class RefreshTokenRepository(CRUDRepository[RefreshToken]):
             return Err(e)
 
     async def invalidate_all_tokens_by_hub_member_id(
-        self, hub_admin_id: str, session: Optional[AsyncIOMotorClientSession] = None
+        self, hub_admin_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[int, RefreshTokenNotFound | Exception]:
         try:
             LOG.info("Invalidating refresh tokens with hub member id...", hub_member_id=hub_admin_id)

@@ -3,7 +3,8 @@
 from asyncio import sleep
 from typing import Callable, Any, Awaitable
 
-from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorClient
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.errors import PyMongoError
 from result import Err, is_err, Result, is_ok
 from structlog.stdlib import get_logger
@@ -34,7 +35,7 @@ class MongoTransactionManager:
     https://www.mongodb.com/docs/manual/core/read-isolation-consistency-recency/
     """
 
-    def __init__(self, client: AsyncIOMotorClient) -> None:
+    def __init__(self, client: AsyncMongoClient) -> None:
         self._client = client
 
     @staticmethod
@@ -83,7 +84,7 @@ class MongoTransactionManager:
         return Err(PyMongoError("Transaction failed after maximum retries"))
 
     @staticmethod
-    async def _retry_commit(session: AsyncIOMotorClientSession) -> None:
+    async def _retry_commit(session: AsyncClientSession) -> None:
         """
         Uses the same logic for the retries as the _retry_tx (exponential backoff)
         Inspired by:
@@ -138,9 +139,9 @@ class MongoTransactionManager:
         https://www.youtube.com/watch?v=q6ujWWaRdbA
         """
 
-        session = await self._client.start_session()
+        session = self._client.start_session()
         try:
-            session.start_transaction()
+            await session.start_transaction()
             LOG.debug("Starting transaction")
 
             result = await self._retry_tx(callback, *args, session=session, **kwargs)
@@ -165,10 +166,10 @@ class MongoTransactionManager:
             await session.end_session()
 
 
-def mongo_tx_manager_provider(client: AsyncIOMotorClient) -> MongoTransactionManager:
+def mongo_tx_manager_provider(client: AsyncMongoClient) -> MongoTransactionManager:
     """
     Args:
-        client: A singleton AsyncIOMotorClient instance
+        client: A singleton AsyncMongoClient instance
 
     Returns:
         A TransactionManager instance

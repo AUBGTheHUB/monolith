@@ -3,7 +3,7 @@
 from math import ceil
 from os import environ
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 
 from src.utils import singleton
 
@@ -15,10 +15,10 @@ from src.utils import singleton
 
 
 @singleton
-def mongo_db_client_provider() -> AsyncIOMotorClient:
+def mongo_db_client_provider() -> AsyncMongoClient:
     """
     This method could be used as the global access point for the async MongoDB client. It provides a preconfigured
-    Singleton thread-safe AsyncIOMotorClient instance
+    Singleton thread-safe AsyncMongoClient instance
     """
 
     # The mongo client is thread-safe and has a conn pool under the hood. We set a min number of idle connections that
@@ -31,7 +31,7 @@ def mongo_db_client_provider() -> AsyncIOMotorClient:
     # https://alexedwards.net/blog/configuring-sqldb
     # https://medium.com/@dhanushkasampath.mtr/what-are-the-default-values-for-hikari-connection-pool-if-we-do-not-override-in-application-properti-11932cdbe321
     # https://www.mongodb.com/docs/languages/python/pymongo-driver/current/faq/#how-does-connection-pooling-work-in-pymongo-
-    return AsyncIOMotorClient(
+    return AsyncMongoClient(
         host=environ["DATABASE_URL"],
         connect=True,
         minPoolSize=ceil(0.1 * 25),

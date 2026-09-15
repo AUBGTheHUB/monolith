@@ -9,8 +9,7 @@ from src.database.model.admin.sponsor_model import Sponsor, UpdateSponsorParams
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.exception import SponsorNotFoundError
-from tests.unit_tests.conftest import MongoDbManagerMock, MotorDbCursorMock
-from structlog.stdlib import get_logger
+from tests.unit_tests.conftest import MongoDbManagerMock, MongoDbCursorMock
 
 
 def _validate_fields(expected: Sponsor, actual: Sponsor) -> bool:
@@ -26,6 +25,7 @@ def _validate_fields(expected: Sponsor, actual: Sponsor) -> bool:
 @pytest.fixture
 def repo(mongo_db_manager_mock: MongoDbManagerMock) -> SponsorsRepository:
     return SponsorsRepository(cast(MongoDatabaseManager, mongo_db_manager_mock))
+
 
 @pytest.mark.asyncio
 async def test_create_sponsor_success(
@@ -74,9 +74,7 @@ async def test_delete_sponsor_success(
     repo: SponsorsRepository,
 ) -> None:
     # Given
-    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(
-        return_value=sponsor_no_id_mock
-    )
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_delete = AsyncMock(return_value=sponsor_no_id_mock)
 
     # When
     response = await repo.delete(obj_id_mock)
@@ -132,9 +130,7 @@ async def test_update_sponsor_success(
 ) -> None:
     # Given
     sponsor_no_id_mock["name"] = "Coca-Cola HBC"
-    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(
-        return_value=sponsor_no_id_mock
-    )
+    mongo_db_manager_mock.get_collection.return_value.find_one_and_update = AsyncMock(return_value=sponsor_no_id_mock)
 
     # When
     response = await repo.update(obj_id_mock, UpdateSponsorParams(name="Coca-Cola HBC"))
@@ -231,7 +227,7 @@ async def test_fetch_by_id_general_error(
 @pytest.mark.asyncio
 async def test_fetch_all_success(
     mongo_db_manager_mock: MongoDbManagerMock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: SponsorsRepository,
     sponsor_mock: Sponsor,
 ) -> None:
@@ -270,7 +266,7 @@ async def test_fetch_all_success(
 @pytest.mark.asyncio
 async def test_fetch_all_empty(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: SponsorsRepository,
 ) -> None:
     # Given
@@ -288,7 +284,7 @@ async def test_fetch_all_empty(
 @pytest.mark.asyncio
 async def test_fetch_all_error(
     mongo_db_manager_mock: Mock,
-    db_cursor_mock: MotorDbCursorMock,
+    db_cursor_mock: MongoDbCursorMock,
     repo: SponsorsRepository,
 ) -> None:
     # Given

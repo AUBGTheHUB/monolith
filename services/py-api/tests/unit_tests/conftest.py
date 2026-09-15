@@ -11,14 +11,16 @@ import pytest
 from PIL import Image
 from bson import ObjectId
 from fastapi import BackgroundTasks, UploadFile
-from motor.motor_asyncio import (
-    AsyncIOMotorClient,
-    AsyncIOMotorClientSession,
-    AsyncIOMotorCollection,
-    AsyncIOMotorCursor,
-    AsyncIOMotorDatabase,
-)
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.client_session import AsyncClientSession
+from pymongo.asynchronous.collection import AsyncCollection
+from pymongo.asynchronous.cursor import AsyncCursor
+from pymongo.asynchronous.database import AsyncDatabase
 
+from src.database.model.admin.candidates_form.form_model import CandidateForm
+from src.database.model.admin.candidates_form.question_model import (
+    Question,
+)
 from src.database.model.admin.hub_admin_model import HubAdmin
 from src.database.model.admin.hub_member_model import HubMember
 from src.database.model.admin.judge_model import Judge
@@ -30,6 +32,8 @@ from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
+from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
+from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.past_events_repository import PastEventsRepository
 from src.database.repository.admin.sponsors_repository import SponsorsRepository
 from src.database.repository.admin.hub_members_repository import HubMembersRepository
@@ -45,6 +49,8 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.service.admin.candidates_form.forms_service import CandidateFormsService
+from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.admin.judges_service import JudgesService
 from src.service.hackathon.admin_team_service import AdminTeamService
 from src.service.hackathon.hackathon_mail_service import HackathonMailService
@@ -158,14 +164,14 @@ def background_tasks_mock() -> BackgroundTasksMock:
 # ===============================
 
 # ======================================
-# Mocking Motor library classes start
+# Mocking Mongo library classes start
 # ======================================
 
 
-class MotorCollectionMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorCollection
+class MongoCollectionMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncCollection
 
-    Should not be initialized directly by application developers to create a MotorCollectionMock instance. It is
+    Should not be initialized directly by application developers to create a MongoCollectionMock instance. It is
     used just for type hinting purposes.
     """
 
@@ -178,22 +184,22 @@ class MotorCollectionMock(Protocol):
 
 
 @pytest.fixture
-def motor_collection_mock() -> MotorCollectionMock:
-    """Mock object for AsyncIOMotorCollection.
+def mongo_collection_mock() -> MongoCollectionMock:
+    """Mock object for AsyncCollection.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_collection_mock.method_name.return_value = some_value
+        mongo_collection_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_collection_mock.method_name.side_effect = SomeException()
+        mongo_collection_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorCollection
+        A mocked AsyncCollection
     """
 
-    mock_collection = _create_typed_mock(AsyncIOMotorCollection)
+    mock_collection = _create_typed_mock(AsyncCollection)
 
     mock_collection.insert_one = AsyncMock()
     mock_collection.find_one_and_update = AsyncMock()
@@ -201,134 +207,134 @@ def motor_collection_mock() -> MotorCollectionMock:
     mock_collection.find_one = AsyncMock()
     mock_collection.count_documents = AsyncMock()
 
-    return cast(MotorCollectionMock, mock_collection)
+    return cast(MongoCollectionMock, mock_collection)
 
 
-class MotorDatabaseMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
+class MongoDatabaseMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
-    Should not be initialized directly by application developers to create a MotorDatabaseMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDatabaseMock instance. It is
     used just for type hinting purposes.
     """
 
     command: AsyncMock
-    get_collection: MotorCollectionMock
+    get_collection: MongoCollectionMock
     # Add more methods if needed
 
 
 @pytest.fixture
-def motor_database_mock(motor_collection_mock: MotorCollectionMock) -> MotorDatabaseMock:
-    """Mock object for AsyncIOMotorClient.
+def mongo_database_mock(mongo_collection_mock: MongoCollectionMock) -> MongoDatabaseMock:
+    """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_client_mock.method_name.return_value = some_value
+        mongo_db_client_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_client_mock.method_name.side_effect = SomeException()
+        mongo_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorDatabase
+        A mocked AsyncDatabase
     """
-    mock_db = _create_typed_mock(AsyncIOMotorDatabase)
+    mock_db = _create_typed_mock(AsyncDatabase)
 
     mock_db.command = AsyncMock()
-    # make get_collection return a motor_database_mock
-    mock_db.get_collection = Mock(return_value=motor_database_mock)
+    # make get_collection return a mongo_database_mock
+    mock_db.get_collection = Mock(return_value=mongo_database_mock)
     # Add more methods if needed
 
-    return cast(MotorDatabaseMock, mock_db)
+    return cast(MongoDatabaseMock, mock_db)
 
 
-class MotorDbClientSessionMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClientSession
+class MongoDbClientSessionMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncClientSession
 
-    Should not be initialized directly by application developers to create a MotorDbClientSessionMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDbClientSessionMock instance. It is
     used just for type hinting purposes.
     """
 
-    start_transaction: MagicMock
+    start_transaction: AsyncMock
     commit_transaction: AsyncMock
     abort_transaction: AsyncMock
     end_session: AsyncMock
 
 
 @pytest.fixture
-def motor_db_session_mock() -> MotorDbClientSessionMock:
-    """Mock object for AsyncIOMotorClientSession.
+def mongo_db_session_mock() -> MongoDbClientSessionMock:
+    """Mock object for AsyncClientSession.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_session_mock.method_name.return_value = some_value
+        mongo_db_session_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_session_mock.method_name.side_effect = SomeException()
+        mongo_db_session_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorClientSession
+        A mocked AsyncClientSession
     """
 
-    mock_session = _create_typed_mock(AsyncIOMotorClientSession)
+    mock_session = _create_typed_mock(AsyncClientSession)
 
-    mock_session.start_transaction = MagicMock()
+    mock_session.start_transaction = AsyncMock()
     mock_session.commit_transaction = AsyncMock()
     mock_session.abort_transaction = AsyncMock()
     mock_session.end_session = AsyncMock()
 
-    return cast(MotorDbClientSessionMock, mock_session)
+    return cast(MongoDbClientSessionMock, mock_session)
 
 
-class MotorDbClientMock(Protocol):
-    """A Static Duck Type, modeling a Mocked AsyncIOMotorClient
+class MongoDbClientMock(Protocol):
+    """A Static Duck Type, modeling a Mocked AsyncMongoClient
 
-    Should not be initialized directly by application developers to create a MotorDbClientMock instance. It is
+    Should not be initialized directly by application developers to create a MongoDbClientMock instance. It is
     used just for type hinting purposes.
     """
 
-    start_session: AsyncMock
-    get_database: MotorDatabaseMock
+    start_session: Mock
+    get_database: MongoDatabaseMock
     # Add more methods if needed
 
 
 @pytest.fixture
-def motor_db_client_mock(
-    motor_database_mock: MotorDatabaseMock, motor_db_session_mock: MotorDbClientSessionMock
-) -> MotorDbClientMock:
-    """Mock object for AsyncIOMotorClient.
+def mongo_db_client_mock(
+    mongo_database_mock: MongoDatabaseMock, mongo_db_session_mock: MongoDbClientSessionMock
+) -> MongoDbClientMock:
+    """Mock object for AsyncMongoClient.
 
     For mocking purposes, you can modify the return values of its methods::
 
-        motor_db_client_mock.method_name.return_value = some_value
+        mongo_db_client_mock.method_name.return_value = some_value
 
     To simulate raising exceptions, set the side effects::
 
-        motor_db_client_mock.method_name.side_effect = SomeException()
+        mongo_db_client_mock.method_name.side_effect = SomeException()
 
     Returns:
-        A mocked AsyncIOMotorClient
+        A mocked AsyncMongoClient
     """
-    mock_client = _create_typed_mock(AsyncIOMotorClient)
+    mock_client = _create_typed_mock(AsyncMongoClient)
 
-    mock_client.start_session = AsyncMock(return_value=motor_db_session_mock)
-    # make get_database return a motor_database_mock
-    mock_client.get_database = Mock(return_value=motor_database_mock)
+    mock_client.start_session = Mock(return_value=mongo_db_session_mock)
+    # make get_database return a mongo_database_mock
+    mock_client.get_database = Mock(return_value=mongo_database_mock)
     # Add more methods if needed
 
-    return cast(MotorDbClientMock, mock_client)
+    return cast(MongoDbClientMock, mock_client)
 
 
-class MotorDbCursorMock(Protocol):
+class MongoDbCursorMock(Protocol):
     to_list: AsyncMock
 
 
 @pytest.fixture
-def db_cursor_mock() -> MotorDbCursorMock:
-    db_cursor_mock = _create_typed_mock(AsyncIOMotorCursor)
+def db_cursor_mock() -> MongoDbCursorMock:
+    db_cursor_mock = _create_typed_mock(AsyncCursor)
     db_cursor_mock.to_list = AsyncMock()
 
-    return cast(MotorDbCursorMock, db_cursor_mock)
+    return cast(MongoDbCursorMock, db_cursor_mock)
 
 
 class MongoTransactionManagerMock(Protocol):
@@ -347,7 +353,7 @@ def tx_manager_mock() -> MongoTransactionManagerMock:
 
 
 # ======================================
-# Mocking Motor library classes end
+# Mocking Mongo library classes end
 # ======================================
 
 
@@ -369,7 +375,7 @@ class MongoDbManagerMock(Protocol):
 
 
 @pytest.fixture
-def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDbManagerMock:
+def mongo_db_manager_mock(mongo_collection_mock: MongoCollectionMock) -> MongoDbManagerMock:
     """Mock object for MongoDatabaseManager.
 
     For mocking purposes, you can modify the return values of its methods::
@@ -389,8 +395,8 @@ def mongo_db_manager_mock(motor_collection_mock: MotorCollectionMock) -> MongoDb
     mock_db_manager.async_ping_db = AsyncMock()
 
     mock_db_manager.async_ping_db = AsyncMock()
-    # make get_collection return a motor_collection_mock
-    mock_db_manager.get_collection = Mock(return_value=motor_collection_mock)
+    # make get_collection return a mongo_collection_mock
+    mock_db_manager.get_collection = Mock(return_value=mongo_collection_mock)
     mock_db_manager.close_all_connections = Mock()
 
     return cast(MongoDbManagerMock, mock_db_manager)
@@ -666,6 +672,49 @@ def hub_members_repo_mock() -> HubMembersRepoMock:
     hub_members_repo.fetch_admin_by_username = AsyncMock()
 
     return cast(HubMembersRepoMock, hub_members_repo)
+
+
+class QuestionsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def questions_repo_mock() -> QuestionsRepoMock:
+    questions_repo = _create_typed_mock(QuestionsRepository)
+
+    questions_repo.fetch_by_id = AsyncMock()
+    questions_repo.fetch_by_type = AsyncMock()
+    questions_repo.fetch_all = AsyncMock()
+    questions_repo.update = AsyncMock()
+    questions_repo.create = AsyncMock()
+    questions_repo.delete = AsyncMock()
+
+    return cast(QuestionsRepoMock, questions_repo)
+
+
+class CandidateFormsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def candidate_forms_repo_mock() -> CandidateFormsRepoMock:
+    forms_repo = _create_typed_mock(CandidateFormsRepository)
+
+    forms_repo.fetch_by_id = AsyncMock()
+    forms_repo.fetch_all = AsyncMock()
+    forms_repo.update = AsyncMock()
+    forms_repo.create = AsyncMock()
+    forms_repo.delete = AsyncMock()
+
+    return cast(CandidateFormsRepoMock, forms_repo)
 
 
 # ======================================
@@ -1074,6 +1123,49 @@ def auth_tokens_service_mock() -> AuthTokensServiceMock:
     auth_tokens_service_mock.decode_refresh_token = Mock()
     auth_tokens_service_mock.generate_refresh_expiration = Mock()
     return cast(AuthTokensServiceMock, auth_tokens_service_mock)
+
+
+class QuestionsServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def questions_service_mock() -> QuestionsServiceMock:
+    service = _create_typed_mock(QuestionsService)
+
+    service.get_all = _create_typed_async_mock(QuestionsService.get_all)
+    service.get = AsyncMock()
+    service.get_by_type = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(QuestionsServiceMock, service)
+
+
+class CandidateFormsServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def candidate_forms_service_mock() -> CandidateFormsServiceMock:
+    service = _create_typed_mock(CandidateFormsService)
+
+    service.get_all = _create_typed_async_mock(CandidateFormsService.get_all)
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(CandidateFormsServiceMock, service)
 
 
 # =================================================
@@ -1581,6 +1673,78 @@ def thirty_sec_jwt_exp_limit() -> int:
 @pytest.fixture
 def resend_verification_email_data_mock(obj_id_mock: str) -> ResendEmailParticipantData:
     return ResendEmailParticipantData(participant_id=obj_id_mock)
+
+
+@pytest.fixture
+def question_mock(obj_id_mock: str) -> Question:
+    return Question(
+        id=ObjectId(obj_id_mock),
+        prompt="Test question",
+        options=None,
+        answer="some answer",
+        question_type="GENERAL",
+        answer_type="TEXT",
+    )
+
+
+@pytest.fixture
+def question_no_id_mock(question_mock: Question) -> dict[str, Any]:
+    document = question_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def candidate_form_mock(obj_id_mock: str) -> CandidateForm:
+    return CandidateForm(
+        id=ObjectId(obj_id_mock),
+        questions=[
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Test question",
+                options=None,
+                answer="test answer",
+                question_type="GENERAL",
+                answer_type="TEXT",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Another question",
+                options=["some answer", "another answer"],
+                answer="another answer",
+                question_type="DESIGN",
+                answer_type="MULTIPLE_CHOICE",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="Some question",
+                options=["this answer", "that answer", "some answer"],
+                answer="some answer",
+                question_type="MARKETING",
+                answer_type="SINGLE_CHOICE",
+            ),
+            Question(
+                id=ObjectId(obj_id_mock),
+                prompt="This question",
+                options=None,
+                answer="that answer",
+                question_type="DEVELOPMENT",
+                answer_type="TEXT",
+            ),
+        ],
+    )
+
+
+@pytest.fixture
+def candidate_form_no_id_mock(candidate_form_mock: CandidateForm) -> dict[str, Any]:
+    document = candidate_form_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def candidate_form_mock_document(candidate_form_mock: CandidateForm) -> dict[str, Any]:
+    return candidate_form_mock.dump_as_mongo_db_document()
 
 
 # =================================================
