@@ -1,6 +1,11 @@
 import { answers, questions } from '$lib/database/mongo';
 import { error } from 'console';
 import type { DepartmentQuestions } from '../../types';
+import { BEARER_TOKEN } from '$env/static/private';
+
+function isAuthorizedDepartment(headers: Headers, department: string) {
+    return headers.get(`DEPARTMENT-TOKEN-${department.toUpperCase()}`) === BEARER_TOKEN || headers.get('BEARER-TOKEN') === BEARER_TOKEN;
+}
 
 type Body = {
     department: string;
