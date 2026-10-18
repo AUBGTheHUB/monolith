@@ -35,6 +35,8 @@ import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/Ad
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
 import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
+import TournamentRegistrationForm from './website/TournamentPages/TournamentRegistration/TournamentRegistrationForm';
+import TournamentBracket from './website/TournamentPages/TournamentBracket/TournamentBracket';
 
 function App() {
     const queryClient = new QueryClient();
@@ -55,6 +57,11 @@ function App() {
                         <Route path="verification" element={<VerificationPage />} />
                         {/* 404 Catch-all */}
                         <Route path="*" element={<Hackathon404Page />} />
+                    </Route>
+
+                    <Route path="/tournament">
+                        <Route path="registration" element={<TournamentRegistrationForm />} />
+                        <Route path="bracket" element={<TournamentBracket />} />
                     </Route>
 
                     <Route path="/auth">
