@@ -30,6 +30,11 @@ export default function DesktopNav() {
                                 Hackathon
                             </a>
                         </span>
+                        <span className={NAV_ITEM}>
+                            <a href="/tournament" className={NAV_ITEM_A}>
+                                Tournament
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>
