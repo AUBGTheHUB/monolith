@@ -3,13 +3,13 @@ export const TournamentErrorPage = () => {
         <div className="relative bg-[#061F36] min-h-screen w-full bg-white overflow-hidden flex items-center justify-center px-4">
             <img
                 src="/Tournament/hextech.png"
-                alt="Left background fire image"
+                alt="left background hextech image"
                 className="absolute rotate-180 left-0 top-0 h-[40%] lg:h-[60%] w-auto object-cover pointer-events-none"
             />
 
             <img
                 src="/Tournament/hextech.png"
-                alt="Right background fire image"
+                alt="Right background hextech image"
                 className="absolute right-0 bottom-[0] h-[40%] lg:h-[60%] w-auto object-cover pointer-events-none"
             />
 

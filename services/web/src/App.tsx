@@ -37,7 +37,7 @@ import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormP
 import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
 import TournamentRegistrationForm from './website/TournamentPages/TournamentRegistration/TournamentRegistrationForm';
 import TournamentBracket from './website/TournamentPages/TournamentBracket/TournamentBracket';
-import TournamentLandingPage from './website/TournamentPages/TournamentLandingPage/TournamentLandingPage';
+import TournamentPage from './website/TournamentPages/TournamentPage/TournamentPage';
 import { TournamentErrorPage } from './website/ErrorPages/TournamentErrorPage/TournamentErrorPage';
 
 function App() {
@@ -62,7 +62,7 @@ function App() {
                     </Route>
 
                     <Route path="/tournament">
-                        <Route index element={<TournamentLandingPage />} />
+                        <Route index element={<TournamentPage />} />
                         <Route path="registration" element={<TournamentRegistrationForm />} />
                         <Route path="bracket" element={<TournamentBracket />} />
                         {/* 404 Catch-all */}
