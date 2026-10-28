@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from 
 import { useEffect, useState } from 'react';
 
 export const MobileNavComponent = () => {
-    const NAV_ITEM_A = 'text-[#C79B3B] hover:text-black';
+    const NAV_ITEM_A = 'text-[#061F36] hover:text-[#C79B3B]';
     const NAV_ITEM = 'text-[18pt] text-left leading-[1.5em] my-4';
     const [isOpen, setIsOpen] = useState(false);
     const [fadeIn, setFadeIn] = useState(false);
@@ -45,8 +45,8 @@ export const MobileNavComponent = () => {
                                     FAQ
                                 </a>
                             </div>
-                            <div className={`${NAV_ITEM}`}>
-                                <a className="text-[#061F36] hover:text-sky-600" href="/hackathon/registration">
+                            <div className={NAV_ITEM}>
+                                <a className="text-[#061F36] hover:text-sky-600" href="/tournament/registration">
                                     REGISTER NOW
                                 </a>
                             </div>
