@@ -11,7 +11,7 @@ export default function FAQSection() {
             <h4 className="text-[#C79B3B] text-xl md:text-2xl font-bold">EVENT INFORMATION</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 py-2 md:flex-row gap-7 justify-center wrap">
                 <FAQCard question="When?" answer="November 15, 2026 (Sunday)" image={calendar} />
-                <FAQCard question="Where?" answer="AUBG,ABF Building — Sports Hall" image={location} />
+                <FAQCard question="Where?" answer="AUBG, ABF Building — Sports Hall" image={location} />
                 <FAQCard question="How many teams?" answer="8 teams" image={community} />
                 <FAQCard question="How many players?" answer="5 players per team" image={person} />
             </div>
