@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&family=Rubik:wght@300;400;500;700&display=swap');
 @import '../fonts.css';
+
 
 @tailwind base;
 @tailwind components;
