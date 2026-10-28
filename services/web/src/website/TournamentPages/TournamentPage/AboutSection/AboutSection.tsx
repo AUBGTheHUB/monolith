@@ -4,8 +4,8 @@ import AboutCard from './components/AboutCard';
 
 export default function AboutSection() {
     return (
-        <div id="about" className="flex flex-col items-center gap-20 justify-around bg-[#061F36] font-mont px-10">
-            <div className="flex flex-col md:flex-row md:items-stretch items-center justify-center gap-20">
+        <div id="about" className="flex flex-col items-center gap-20 justify-around px-10">
+            <div className="flex flex-col md:flex-row md:items-stretch items-center justify-center gap-5 md:gap-20">
                 <AboutCard
                     title="THE CONFERENCE"
                     description="Inspiring talks, panel discussions and insights from industry professionals, game developers and creators."

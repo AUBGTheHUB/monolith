@@ -6,11 +6,11 @@ interface EventCardContent {
 
 export default function FAQCard({ question, answer, image }: EventCardContent) {
     return (
-        <div className="flex items-center border-2 rounded-2xl p-3 md:p-8 gap-3 border-[#C79B3B]">
-            <img src={`${image}`} className="w-[32px] h-auto md:w-[56px] shrink-0" alt="" />
-            <div className="text-[#90D5FF] min-w-0">
-                <h5 className="text-base md:text-2xl font-bold">{question}</h5>
-                <div className="text-sm md:text-xl font-normal">{answer}</div>
+        <div className="flex items-center border border-[#C79B3B] rounded-2xl px-5 py-4 gap-4">
+            <img src={`${image}`} className="w-20 h-20 object-contain shrink-0" alt="" />
+            <div className="text-[#90D5FF] min-w-0 text-left">
+                <h5 className="text-2xl font-league font-bold leading-tight">{question}</h5>
+                <div className="text-xl font-normal leading-snug">{answer}</div>
             </div>
         </div>
     );

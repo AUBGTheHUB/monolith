@@ -26,8 +26,7 @@ export const MobileNavComponent = () => {
             className={`sticky h-[10vh] top-0 z-[50] bg-[#163B59] transform transition-all duration-1000 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Mobile Navigation"
         >
-            <div className="flex justify-around items-center h-full">
-                <h2 className="text-[#C79B3B] text-center font-medium text-2xl mr-[10px]">The Hub</h2>
+            <div className="flex justify-end px-5 items-center h-full">
                 <div className="h-[50px]">
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTitle />
