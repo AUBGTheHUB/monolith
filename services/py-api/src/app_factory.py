@@ -63,6 +63,25 @@ from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.auth.password_hash_service import PasswordHashService
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
+from src.database.repository.event_registration.participants_repository import (
+    ParticipantsRepository as EventParticipantsRepository,
+)
+
+from src.database.repository.event_registration.teams_repository import (
+    TeamsRepository as EventTeamsRepository,
+)
+
+from src.server.handlers.event_registration.registration_handlers import (
+    RegistrationHandlers,
+)
+
+from src.database.mongo.collections.event_registration_collections import (
+    ensure_event_registration_indexes,
+)
+from src.service.event_registration_mail_service import (
+    EventRegistrationMailService,
+)
+
 LOG = get_logger()
 
 
@@ -107,6 +126,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     db_client = mongo_db_client_provider()
     await _ping_db(db_client)
 
+    await ensure_event_registration_indexes(MongoDatabaseManager(client=db_client))
+
     # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
     # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator
     #
@@ -142,6 +163,13 @@ def create_app() -> FastAPI:
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
     participants_repo = ParticipantsRepository(db_manager=db_manager)
     teams_repo = TeamsRepository(db_manager=db_manager)
+    event_participants_repo = EventParticipantsRepository(
+        db_manager=db_manager,
+    )
+
+    event_teams_repo = EventTeamsRepository(
+        db_manager=db_manager,
+    )
     fs_repo = FeatureSwitchRepository(db_manager=db_manager)
     sponsors_repo = SponsorsRepository(db_manager=db_manager)
     mentors_repo = MentorsRepository(db_manager=db_manager)
@@ -164,6 +192,10 @@ def create_app() -> FastAPI:
     password_hash_service = PasswordHashService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
+    event_registration_mail_service = EventRegistrationMailService(
+        client=mail_client,
+        teams_repository=event_teams_repo,
+    )
     hackathon_mail_service = HackathonMailService(client=mail_client)
     participant_service = ParticipantService(
         participants_repo=participants_repo,
@@ -226,6 +258,12 @@ def create_app() -> FastAPI:
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
+        event_registration_handlers=RegistrationHandlers(
+            participants_repository=event_participants_repo,
+            teams_repository=event_teams_repo,
+            transaction_manager=tx_manager,
+            mail_service=event_registration_mail_service,
+        ),
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),
         hackathon_handlers=HackathonHandlers(

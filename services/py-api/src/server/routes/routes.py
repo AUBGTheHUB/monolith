@@ -11,6 +11,9 @@ from src.server.routes.hackathon.participant_reg_routes import register_particip
 from src.server.routes.hackathon.verification_routes import register_verification_routes
 from src.server.routes.user_routes import register_user_routes
 from src.server.routes.utility_routes import register_utility_routes
+from src.server.routes.registration_routes import (
+    register_registration_routes,
+)
 
 
 class Routes:
@@ -37,6 +40,7 @@ class Routes:
 
         auth_router = register_auth_routes(http_handler=http_handlers.auth_handlers)
         user_router = register_user_routes(http_handler=http_handlers.user_handlers)
+        registration_router = register_registration_routes(http_handler=http_handlers.event_registration_handlers)
         # Bind all routers to the main one
         main_router.include_router(utility_router)
         main_router.include_router(fs_router)
@@ -48,3 +52,4 @@ class Routes:
         main_router.include_router(user_router)
         main_router.include_router(candidates_form_questions_router)
         main_router.include_router(candidates_forms_router)
+        main_router.include_router(registration_router)

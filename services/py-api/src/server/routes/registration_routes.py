@@ -1,24 +1,73 @@
-from fastapi import APIRouter, status
-from src.database.registration_models import Participant
+from fastapi import APIRouter, BackgroundTasks, Depends, status
+
+from src.database.model.admin.hub_admin_model import Role
+from src.server.utility.role_checker import RoleChecker
+from src.server.schemas.request_schemas.event_registration.schemas import (
+    AssignSoloMemberRequest,
+)
+
+from src.server.schemas.request_schemas.event_registration.schemas import (
+    CreateTeamRequest,
+    JoinTeamRequest,
+    SoloRegistrationRequest,
+)
 
 
 def register_registration_routes(http_handler) -> APIRouter:
-    router = APIRouter(prefix="/registration", tags=["Registration"])
+    router = APIRouter(
+        prefix="/registration",
+        tags=["Registration"],
+    )
 
-    @router.post("/team/admin", status_code=status.HTTP_201_CREATED)
-    async def register_team_admin(participant: Participant, team_name: str):
-        return await http_handler.register_team_admin_handler(participant, team_name)
+    @router.post(
+        "/team/admin",
+        status_code=status.HTTP_201_CREATED,
+    )
+    async def register_team_admin(request: CreateTeamRequest):
+        return await http_handler.register_team_admin_handler(request)
 
-    @router.post("/team/member", status_code=status.HTTP_201_CREATED)
-    async def register_team_member(participant: Participant, team_code: str):
-        return await http_handler.register_team_member_handler(participant, team_code)
+    @router.post(
+        "/team/member",
+        status_code=status.HTTP_201_CREATED,
+    )
+    async def register_team_member(
+        request: JoinTeamRequest,
+        background_tasks: BackgroundTasks,
+    ):
+        return await http_handler.register_team_member_handler(
+            request,
+            background_tasks,
+        )
 
-    @router.post("/solo", status_code=status.HTTP_201_CREATED)
-    async def register_solo(participant: Participant):
-        return await http_handler.register_solo_handler(participant)
+    @router.post(
+        "/solo",
+        status_code=status.HTTP_201_CREATED,
+    )
+    async def register_solo(request: SoloRegistrationRequest):
+        return await http_handler.register_solo_handler(request)
 
-    @router.post("/team/backfill", status_code=status.HTTP_200_OK)
-    async def backfill_teams():
-        return await http_handler.backfill_teams_handler()
+    @router.post(
+        "/admin/assign-solo",
+        status_code=status.HTTP_200_OK,
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
+    )
+    async def assign_solo(
+        request: AssignSoloMemberRequest,
+        background_tasks: BackgroundTasks,
+    ):
+        return await http_handler.assign_solo_handler(
+            request,
+            background_tasks,
+        )
+
+    @router.post(
+        "/admin/retry-completion-emails",
+        status_code=status.HTTP_202_ACCEPTED,
+        dependencies=[Depends(RoleChecker([Role.BOARD]))],
+    )
+    async def retry_completion_emails(
+        background_tasks: BackgroundTasks,
+    ):
+        return await http_handler.retry_completion_emails_handler(background_tasks)
 
     return router

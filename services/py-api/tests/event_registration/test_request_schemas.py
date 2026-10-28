@@ -16,6 +16,8 @@ VALID_PARTICIPANT = {
     "location": "Blagoevgrad",
     "share_info_with_sponsors": False,
     "game_rank": "Gold",
+    "primary_role": "Top",
+    "alternative_role": "Mid",
 }
 
 

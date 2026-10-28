@@ -42,3 +42,14 @@ class SoloRegistrationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     participant: ParticipantInput
+
+
+class AssignSoloMemberRequest(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+
+    participant_id: str = Field(min_length=24, max_length=24)
+    team_code: str = Field(min_length=6, max_length=32)
+    assigned_role: str = Field(min_length=1, max_length=50)
