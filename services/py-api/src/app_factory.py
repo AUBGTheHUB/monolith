@@ -14,6 +14,8 @@ from src.server.handlers.user_handlers import UserHandlers
 from src.service.admin.candidates_form.forms_service import CandidateFormsService
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.auth.auth_token_service import AuthTokenService
+from src.service.tournament.tournament_code_service import TournamentCodeService
+from src.service.tournament.tournament_services import TournamentRegistrationService
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
@@ -63,24 +65,10 @@ from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.auth.password_hash_service import PasswordHashService
 from src.service.mail_service.mail_clients.mail_client_factory import mail_client_factory, MailClients
 
-from src.database.repository.event_registration.participants_repository import (
-    ParticipantsRepository as EventParticipantsRepository,
-)
-
-from src.database.repository.event_registration.teams_repository import (
-    TeamsRepository as EventTeamsRepository,
-)
-
-from src.server.handlers.event_registration.registration_handlers import (
-    RegistrationHandlers,
-)
-
-from src.database.mongo.collections.event_registration_collections import (
-    ensure_event_registration_indexes,
-)
-from src.service.event_registration_mail_service import (
-    EventRegistrationMailService,
-)
+from src.database.repository.tournament.tournament_participants_repository import TournamentParticipantsRepository
+from src.database.repository.tournament.tournament_teams_repository import TournamentTeamsRepository
+from src.server.handlers.tournament.tournament_registration_handlers import TournamentRegistrationHandlers
+from src.service.tournament.tournament_mail_service import TournamentMailService
 
 LOG = get_logger()
 
@@ -125,9 +113,6 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Open a connection to Mongo
     db_client = mongo_db_client_provider()
     await _ping_db(db_client)
-
-    await ensure_event_registration_indexes(MongoDatabaseManager(client=db_client))
-
     # @asynccontextmanager makes the function an Async context manager. We need the yield as this decorator must be
     # applied to an asynchronous generator function. https://docs.python.org/3/glossary.html#term-asynchronous-generator
     #
@@ -163,13 +148,8 @@ def create_app() -> FastAPI:
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
     participants_repo = ParticipantsRepository(db_manager=db_manager)
     teams_repo = TeamsRepository(db_manager=db_manager)
-    event_participants_repo = EventParticipantsRepository(
-        db_manager=db_manager,
-    )
-
-    event_teams_repo = EventTeamsRepository(
-        db_manager=db_manager,
-    )
+    tournament_participants_repo = TournamentParticipantsRepository(db_manager=db_manager)
+    tournament_teams_repo = TournamentTeamsRepository(db_manager=db_manager)
     fs_repo = FeatureSwitchRepository(db_manager=db_manager)
     sponsors_repo = SponsorsRepository(db_manager=db_manager)
     mentors_repo = MentorsRepository(db_manager=db_manager)
@@ -190,12 +170,10 @@ def create_app() -> FastAPI:
     app.state.jwt_utility = jwt_utility
 
     password_hash_service = PasswordHashService()
+    tournament_code_service = TournamentCodeService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
-    event_registration_mail_service = EventRegistrationMailService(
-        client=mail_client,
-        teams_repository=event_teams_repo,
-    )
+    tournament_registration_mail_service = TournamentMailService(client=mail_client)
     hackathon_mail_service = HackathonMailService(client=mail_client)
     participant_service = ParticipantService(
         participants_repo=participants_repo,
@@ -255,14 +233,18 @@ def create_app() -> FastAPI:
     past_events_service = PastEventsService(repo=past_events_repo, image_storing_service=image_storing_service)
     candidates_form_questions_service = QuestionsService(repo=candidates_form_questions_repo)
     candidates_forms_service = CandidateFormsService(repo=candidates_forms_repo)
+    tournament_registration_service = TournamentRegistrationService(
+        tournament_teams_repo=tournament_teams_repo,
+        tournament_participant_repo=tournament_participants_repo,
+        tx_manager=tx_manager,
+        tournament_code_service=tournament_code_service,
+    )
 
     # Handlers layer wiring
     http_handlers = HttpHandlersContainer(
-        event_registration_handlers=RegistrationHandlers(
-            participants_repository=event_participants_repo,
-            teams_repository=event_teams_repo,
-            transaction_manager=tx_manager,
-            mail_service=event_registration_mail_service,
+        tournament_registration_handlers=TournamentRegistrationHandlers(
+            tournament_service=tournament_registration_service,
+            tournament_mail_service=tournament_registration_mail_service,
         ),
         utility_handlers=UtilityHandlers(db_manager=db_manager),
         fs_handlers=FeatureSwitchHandlers(service=fs_service),

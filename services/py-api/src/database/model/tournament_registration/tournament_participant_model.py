@@ -1,15 +1,15 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal, Union
 
-from src.database.model.base_model import (
-    BaseDbModel,
-    SerializableObjectId,
-)
+from bson import ObjectId
+from pydantic import ConfigDict
+from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
+
+LEAGUE_ROLES = Literal["Jungle", "Top Lane", "Bot Lane", "Support", "Mid Lane "]
 
 
 @dataclass(kw_only=True)
-class Participant(BaseDbModel):
-    """Participant registered for the separate Project S event."""
+class TournamentParticipant(BaseDbModel):
 
     full_name: str
     age: int
@@ -18,8 +18,9 @@ class Participant(BaseDbModel):
     location: str
     share_info_with_sponsors: bool
     game_rank: str
-    primary_role: str
-    alternative_role: str
+    primary_role: LEAGUE_ROLES
+    alternative_role: LEAGUE_ROLES
+    is_confirmed: bool
 
     team_id: SerializableObjectId | None = None
     is_team_leader: bool = False
@@ -62,3 +63,11 @@ class Participant(BaseDbModel):
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
+
+
+class UpdateTournamentParticipantParams(UpdateParams):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    is_confirmed: Union[bool | None] = None
+    team_id: Union[ObjectId, None] = None
+    assigned_role: Union[str | None] = None
