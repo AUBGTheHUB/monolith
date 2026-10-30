@@ -33,6 +33,7 @@ class TournamentParticipant(BaseDbModel):
             "age": self.age,
             "email": self.email,
             "university": self.university,
+            "is_confirmed": self.is_confirmed,
             "location": self.location,
             "share_info_with_sponsors": self.share_info_with_sponsors,
             "game_rank": self.game_rank,

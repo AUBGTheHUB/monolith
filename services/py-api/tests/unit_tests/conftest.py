@@ -30,6 +30,8 @@ from src.database.model.admin.sponsor_model import Sponsor
 from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
+from src.database.model.tournament_registration.tournament_participant_model import TournamentParticipant
+from src.database.model.tournament_registration.tournament_team_model import TournamentTeam
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
@@ -74,6 +76,7 @@ from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 from tests.integration_tests.conftest import (
+    TEST_TEAM_CODE,
     TEST_TEAM_NAME,
     TEST_UNIVERSITY_NAME,
     TEST_USER_EMAIL,
@@ -90,6 +93,8 @@ from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_MEMBER_TYPE,
     TEST_HUB_ADMIN_ROLE,
     TEST_HUB_MEMBER_USERNAME,
+    TEST_TOURNAMENT_RANK,
+    TEST_TOURNAMENT_LEAGUE_ROLE,
 )
 
 TEST_REFRESH_ID = "1234567"
@@ -1745,6 +1750,47 @@ def candidate_form_no_id_mock(candidate_form_mock: CandidateForm) -> dict[str, A
 @pytest.fixture
 def candidate_form_mock_document(candidate_form_mock: CandidateForm) -> dict[str, Any]:
     return candidate_form_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
+def tournament_participant_mock(obj_id_mock: str) -> TournamentParticipant:
+    return TournamentParticipant(
+        id=ObjectId(obj_id_mock),
+        is_confirmed=False,
+        is_team_leader=False,
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        team_id=ObjectId(obj_id_mock),
+        assigned_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+    )
+
+
+@pytest.fixture
+def tournament_participant_dict_mock(tournament_participant_mock: TournamentParticipant) -> dict[str, Any]:
+    document = tournament_participant_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def tournament_team_mock(obj_id_mock: str) -> TournamentTeam:
+    return TournamentTeam(
+        id=ObjectId(obj_id_mock), name=TEST_TEAM_NAME, code=TEST_TEAM_CODE, completion_email_sent_at=None
+    )
+
+
+@pytest.fixture
+def tournament_team_dict_mock(tournament_team_mock: TournamentTeam) -> dict[str, Any]:
+    document = tournament_team_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
 
 
 # =================================================

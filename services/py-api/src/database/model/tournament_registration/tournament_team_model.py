@@ -41,4 +41,4 @@ class UpdateTournamentTeamParams(UpdateParams):
 
     name: Union[str | None] = None
     code: Union[str | None] = None
-    completion_email_sent_at: datetime | None
+    completion_email_sent_at: datetime | None = None
