@@ -80,6 +80,7 @@ class TournamentRegistrationService:
                 team_id=tournament_team.id,
                 is_confirmed=False,
                 is_team_leader=False,
+                assigned_role=tournament_participant.primary_role,
             )
         )
 
@@ -151,6 +152,7 @@ class TournamentRegistrationService:
                 team_id=tournament_team.ok_value.id,
                 is_confirmed=False,
                 is_team_leader=True,
+                assigned_role=tour_participant.primary_role,
             ),
             session,
         )
