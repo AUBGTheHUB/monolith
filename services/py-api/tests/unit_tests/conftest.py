@@ -51,6 +51,11 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.server.schemas.request_schemas.tournament.schemas import (
+    TournamentAdminTeamReqData,
+    TournamentParticipantJoinTeamReqData,
+    TournamentParticipantReqData,
+)
 from src.service.admin.candidates_form.forms_service import CandidateFormsService
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.admin.judges_service import JudgesService
@@ -61,6 +66,8 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
+from src.service.tournament.tournament_mail_service import TournamentMailService
+from src.service.tournament.tournament_services import TournamentRegistrationService
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
@@ -1173,6 +1180,39 @@ def candidate_forms_service_mock() -> CandidateFormsServiceMock:
     return cast(CandidateFormsServiceMock, service)
 
 
+class TournamentRegistrationServiceMock(Protocol):
+    register_team_member: AsyncMock
+    register_team_admin_with_transaction: AsyncMock
+    register_solo_member: AsyncMock
+
+
+@pytest.fixture
+def tournament_registration_service_mock() -> TournamentRegistrationServiceMock:
+    service = _create_typed_mock(TournamentRegistrationService)
+
+    service.register_team_member = AsyncMock()
+    service.register_solo_member = AsyncMock()
+    service.register_team_admin_with_transaction = AsyncMock()
+
+    return cast(TournamentRegistrationServiceMock, service)
+
+
+class TournamentMailServiceMock(Protocol):
+    send_email_when_team_is_complete: AsyncMock
+    send_email_with_team_code: AsyncMock
+
+
+@pytest.fixture
+def tournament_mail_service_mock() -> TournamentMailServiceMock:
+    service = _create_typed_mock(TournamentMailService)
+
+    service.send_email_when_team_is_complete = AsyncMock()
+    service.send_email_with_team_code = AsyncMock()
+
+    return cast(TournamentMailServiceMock, service)
+    tournament_mail_service: TournamentMailService
+
+
 # =================================================
 # Helper functions for creating test objects start
 # =================================================
@@ -1791,6 +1831,39 @@ def tournament_team_dict_mock(tournament_team_mock: TournamentTeam) -> dict[str,
     document = tournament_team_mock.dump_as_mongo_db_document()
     document.pop("_id")
     return document
+
+
+@pytest.fixture
+def tournament_solo_participant_req_data() -> TournamentParticipantReqData:
+    return TournamentParticipantReqData(
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+    )
+
+
+@pytest.fixture
+def tournament_admin_participant_with_team_req_data(
+    tournament_solo_participant_req_data: TournamentParticipantReqData,
+) -> TournamentAdminTeamReqData:
+    return TournamentAdminTeamReqData(
+        tournament_participant=tournament_solo_participant_req_data, team_name=TEST_TEAM_NAME
+    )
+
+
+@pytest.fixture
+def tournament_participant_with_code_req_data(
+    tournament_solo_participant_req_data: TournamentParticipantReqData,
+) -> TournamentParticipantJoinTeamReqData:
+    return TournamentParticipantJoinTeamReqData(
+        tournament_participant=tournament_solo_participant_req_data, team_code=TEST_TEAM_CODE
+    )
 
 
 # =================================================
