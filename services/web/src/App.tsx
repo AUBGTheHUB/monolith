@@ -37,6 +37,7 @@ import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormP
 import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
 import TournamentRegistrationPage from './website/TournamentPages/TournamentRegistration/TournamentRegistrationPage';
 import TournamentBracket from './website/TournamentPages/TournamentBracket/TournamentBracket';
+import { TournamentErrorPage } from './website/ErrorPages/TournamentErrorPage/TournamentErrorPage';
 
 function App() {
     const queryClient = new QueryClient();
@@ -62,6 +63,8 @@ function App() {
                     <Route path="/tournament">
                         <Route path="registration" element={<TournamentRegistrationPage />} />
                         <Route path="bracket" element={<TournamentBracket />} />
+                        {/* 404 Catch-all */}
+                        <Route path="*" element={<TournamentErrorPage />} />
                     </Route>
 
                     <Route path="/auth">

@@ -53,6 +53,12 @@ export default function MobileNavComponent() {
                             Hackathon
                         </a>
                     </div>
+                    <div className={NAV_ITEM}>
+                        <a href="/tournament" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                            <img src={codeIcon} className={NAV_ITEM_IMG} />
+                            Tournament
+                        </a>
+                    </div>
                 </SheetContent>
             </Sheet>
         </div>
