@@ -27,20 +27,23 @@ export default function RegistrationFormPage() {
         <section id="register" className={`${sectionStyles} ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
             <div className={glowStyles} />
 
-            <img
-                src={ellipse1}
-                alt=""
-                className="pointer-events-none absolute left-1/2 top-0 z-10 h-auto w-[min(95vw,1400px)] max-w-none -translate-x-1/2"
-            />
+            {/* Arc + divider: the divider always sits right under the arc */}
+            <div className="relative z-10 flex w-[min(78vw,850px)] flex-col items-center">
+                <img src={ellipse1} alt="" className="pointer-events-none block h-auto w-full" />
 
-            <div className="z-10 flex items-center justify-center gap-[clamp(12px,2.5vw,40px)] mt-[clamp(4rem,14vw,11rem)] mb-[clamp(1rem,2vw,2rem)]">
-                <img src={line} alt="" className="pointer-events-none h-auto w-[clamp(48px,17vw,200px)] shrink-0" />
-                <img src={diamond} alt="" className="pointer-events-none h-auto w-[clamp(18px,3.5vw,48px)] shrink-0" />
-                <img
-                    src={line}
-                    alt=""
-                    className="pointer-events-none h-auto w-[clamp(48px,17vw,200px)] shrink-0 rotate-180"
-                />
+                <div className="mt-[clamp(0.5rem,1.8vw,1.75rem)] mb-[clamp(1rem,2vw,2rem)] flex items-center justify-center gap-[clamp(12px,2.5vw,40px)]">
+                    <img src={line} alt="" className="pointer-events-none h-auto w-[clamp(48px,17vw,200px)] shrink-0" />
+                    <img
+                        src={diamond}
+                        alt=""
+                        className="pointer-events-none h-auto w-[clamp(18px,3.5vw,48px)] shrink-0"
+                    />
+                    <img
+                        src={line}
+                        alt=""
+                        className="pointer-events-none h-auto w-[clamp(48px,17vw,200px)] shrink-0 rotate-180"
+                    />
+                </div>
             </div>
 
             <h2 className={titleStyles}>

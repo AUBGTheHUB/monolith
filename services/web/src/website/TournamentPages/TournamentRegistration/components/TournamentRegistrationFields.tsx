@@ -7,7 +7,6 @@ import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownC
 import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent.tsx';
 import { RADIO_OPTIONS, TEAM_OPTIONS, UNIVERSITY_OPTIONS, LEAGUE_ROLES } from '../constants';
 import {
-    ageControlStyles,
     formControlStyles,
     inputStyles,
     labelStyles,
@@ -83,7 +82,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 type="number"
                 placeholder=""
                 labelClassName={labelStyles}
-                inputClassName={`${inputStyles} ${ageControlStyles} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+                inputClassName={`${inputStyles}  [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
             />
             <InputComponent
                 control={control}

@@ -48,8 +48,6 @@ export const formControlStyles =
     '[&_svg]:!h-[clamp(0.9rem,0.6rem+0.6vw,1.5rem)] [&_svg]:!w-[clamp(0.9rem,0.6rem+0.6vw,1.5rem)] ' +
     '[&_svg]:!opacity-100 [&_svg]:text-[#90D5FF] [&_svg]:stroke-[1.5]';
 
-export const ageControlStyles = '!w-[clamp(5.5rem,3rem+8vw,11rem)]';
-
 export const selectContentStyles =
     'bg-[#163B59] text-[#90D5FF] border border-[#90D5FF] rounded-[3px] max-h-60 ' +
     "font-['Rubik'] text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)]";
