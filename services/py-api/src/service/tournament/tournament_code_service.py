@@ -1,6 +1,7 @@
 import secrets
+import string
 
-CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+CODE_ALPHABET = string.ascii_letters + string.digits
 
 
 class TournamentCodeService:

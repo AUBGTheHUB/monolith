@@ -14,7 +14,7 @@ from src.server.schemas.response_schemas.tournament.schemas import (
     TournamentSoloParticipantResponse,
     TournamentTeamAndParticipantResponse,
 )
-from src.service.tournament.tournament_services import TournamentRegistrationService
+from src.service.tournament.tournament_registration_service import TournamentRegistrationService
 
 from src.service.tournament.tournament_mail_service import TournamentMailService
 

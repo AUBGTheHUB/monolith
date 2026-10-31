@@ -60,7 +60,7 @@ class TournamentMailService:
         self, tournament_participant: TournamentParticipant, team_name: str, background_tasks: BackgroundTasks
     ) -> Result[None, ValueError]:
         """
-        Sends an email confirming the successful comletion of the tournament team.
+        Sends an email confirming the successful completion of the tournament team.
         """
         try:
             body_html = load_email_tournament_team_complete_html_template(

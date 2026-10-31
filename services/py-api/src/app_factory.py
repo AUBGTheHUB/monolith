@@ -15,7 +15,7 @@ from src.service.admin.candidates_form.forms_service import CandidateFormsServic
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.auth.auth_token_service import AuthTokenService
 from src.service.tournament.tournament_code_service import TournamentCodeService
-from src.service.tournament.tournament_services import TournamentRegistrationService
+from src.service.tournament.tournament_registration_service import TournamentRegistrationService
 from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
