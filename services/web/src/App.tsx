@@ -31,6 +31,8 @@ import { RoleGuard } from './guards/RoleGuard';
 import FeatureSwitchesPage from '@/website/AdminPanelPage/DashboardPages/pages/FeatureSwitchesPage/FeatureSwitchesPage';
 import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/ParticipantsPage/ParticipantsPage';
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
+import { AttendeesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AttendeesPage/AttendeesPage';
+import { AttendeesEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/AttendeesPage/AttendeesEditPage';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
@@ -127,6 +129,13 @@ function App() {
 
                                         {/* Participants Sub-group */}
                                         <Route path="participants" element={<ParticipantsPage />} />
+
+                                        {/* Gaming Event Attendees Sub-group */}
+                                        <Route path="gaming-event-attendees">
+                                            <Route index element={<AttendeesPage />} />
+                                            <Route path="add" element={<AttendeesEditPage />} />
+                                            <Route path=":id" element={<AttendeesEditPage />} />
+                                        </Route>
                                     </Route>
                                     <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
                                         <Route path="feature-switches" element={<FeatureSwitchesPage />} />
