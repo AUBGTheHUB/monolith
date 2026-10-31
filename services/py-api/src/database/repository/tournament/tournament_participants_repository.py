@@ -35,11 +35,13 @@ class TournamentParticipantsRepository(CRUDRepository[TournamentParticipant]):
             )
 
             if tournament_participant is None:
+                LOG.warning("Did not find tournament participant with ObjectID", obj_id=obj_id)
                 return Err(TournamentParticipantNotFoundError())
 
             return Ok(tournament_participant)
 
         except Exception as error:
+            LOG.exception("Failed to fetch tournament participant by ObjectID", obj_id=obj_id, error=error)
             return Err(error)
 
     async def fetch_all(self) -> Result[list[TournamentParticipant], Exception]:
@@ -58,7 +60,7 @@ class TournamentParticipantsRepository(CRUDRepository[TournamentParticipant]):
             return Ok(tournament_participants)
 
         except Exception as e:
-            LOG.exception(f"Failed to fetch all participants due to err {e}")
+            LOG.exception(f"Failed to fetch all tournament participants due to err {e}")
             return Err(e)
 
     async def create(
@@ -111,6 +113,7 @@ class TournamentParticipantsRepository(CRUDRepository[TournamentParticipant]):
             )
 
             if tournament_participant is None:
+                LOG.warning("Did not find tournament participant with ObjectID", obj_id=obj_id)
                 return Err(TournamentParticipantNotFoundError())
 
             return Ok(tournament_participant)
@@ -135,12 +138,13 @@ class TournamentParticipantsRepository(CRUDRepository[TournamentParticipant]):
             )
 
             if document is None:
+                LOG.warning("Did not find tournament participant with ObjectID", obj_id=obj_id)
                 return Err(TournamentParticipantNotFoundError())
 
             return Ok(TournamentParticipant(id=ObjectId(obj_id), **document))
         except Exception as exc:
             LOG.exception(
-                "tournament participant deletion failed due to error", tournament_participant_id=obj_id, error=exc
+                "Tournament participant deletion failed due to error", tournament_participant_id=obj_id, error=exc
             )
             return Err(exc)
 
@@ -161,6 +165,7 @@ class TournamentParticipantsRepository(CRUDRepository[TournamentParticipant]):
             return Ok(tournament_participant)
 
         except Exception as error:
+            LOG.exception("Failed to fetch tournament participant by email", email=email, error=error)
             return Err(error)
 
     async def check_team_members_count_by_team_id(

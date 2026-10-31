@@ -29,11 +29,13 @@ class TournamentTeamsRepository:
             )
 
             if tournament_team is None:
+                LOG.warning("Did not find tournament team with ObjectID", obj_id=obj_id)
                 return Err(TournamentTeamNotFoundError())
 
             return Ok(tournament_team)
 
         except Exception as error:
+            LOG.exception("Failed to fetch tournament team with ObjectID", obj_id=obj_id, error=error)
             return Err(error)
 
     async def fetch_all(self) -> Result[list[TournamentTeam], Exception]:
@@ -71,7 +73,7 @@ class TournamentTeamsRepository:
             return Err(DuplicateTournamentTeamNameError(tournament_team.name))
 
         except Exception as e:
-            LOG.exception("Tournament Team insertion failed due to error", team_id=str(tournament_team.id), error=e)
+            LOG.exception("Tournament team insertion failed due to error", team_id=str(tournament_team.id), error=e)
             return Err(e)
 
     async def update(
@@ -91,6 +93,7 @@ class TournamentTeamsRepository:
             )
 
             if tournament_team is None:
+                LOG.warning("Did not find tournament team with ObjectID", obj_id=obj_id)
                 return Err(TournamentTeamNotFoundError())
 
             return Ok(tournament_team)
@@ -113,6 +116,7 @@ class TournamentTeamsRepository:
             )
 
             if document is None:
+                LOG.warning("Did not find tournament team with ObjectID", obj_id=obj_id)
                 return Err(TournamentTeamNotFoundError())
 
             return Ok(TournamentTeam(id=ObjectId(obj_id), **document))
@@ -135,6 +139,7 @@ class TournamentTeamsRepository:
             )
 
             if tournament_team is None:
+                LOG.warning("Did not find tournament team with code", team_code=code)
                 return Err(TournamentTeamNotFoundError())
 
             tournament_team["id"] = tournament_team.pop("_id")
@@ -142,4 +147,5 @@ class TournamentTeamsRepository:
             return Ok(TournamentTeam(**tournament_team))
 
         except Exception as error:
+            LOG.exception("Failed to fetch tournament team by code", team_code=code, error=error)
             return Err(error)
