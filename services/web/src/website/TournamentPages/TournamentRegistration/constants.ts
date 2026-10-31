@@ -3,24 +3,10 @@ export const AGE_OPTIONS = Array.from({ length: 54 }, (_, i) => {
     return { label: age, value: age };
 });
 
-export const COUNTRY_OPTIONS = [
-    { label: 'Bulgaria', value: 'Bulgaria' },
-    { label: 'Albania', value: 'Albania' },
-    { label: 'Georgia', value: 'Georgia' },
-    { label: 'Kosovo', value: 'Kosovo' },
-    { label: 'North Macedonia', value: 'North Macedonia' },
-    { label: 'Romania', value: 'Romania' },
-    { label: 'Serbia', value: 'Serbia' },
-    { label: 'Turkey', value: 'Turkey' },
-    { label: 'Ukraine', value: 'Ukraine' },
-    { label: 'United Kingdom', value: 'United Kingdom' },
-    { label: 'United States', value: 'United States' },
-    { label: 'Other', value: 'Other' },
-];
 export const TEAM_OPTIONS = [
     { label: 'I already have a code', value: 'has_code' },
     { label: 'I want to register a team', value: 'create_team' },
-    { label: 'I want to join a team', value: 'join_team' },
+    { label: 'I want to register solo', value: 'join_team' },
 ];
 
 export const RADIO_OPTIONS = [
@@ -35,7 +21,6 @@ export const UNIVERSITY_OPTIONS = [
     { label: 'Plovdiv University', value: 'Plovdiv University' },
     { label: 'Other', value: 'Other' },
 ];
-
 
 export type RegistrationInfo = {
     registration_info: {

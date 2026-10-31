@@ -35,7 +35,7 @@ import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/Ad
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
 import { SeedDataPage } from '@/website/CandidatesFormPage/SeedData.tsx';
-import TournamentRegistrationForm from './website/TournamentPages/TournamentRegistration/TournamentRegistrationForm';
+import TournamentRegistrationPage from './website/TournamentPages/TournamentRegistration/TournamentRegistrationPage';
 import TournamentBracket from './website/TournamentPages/TournamentBracket/TournamentBracket';
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
                     </Route>
 
                     <Route path="/tournament">
-                        <Route path="registration" element={<TournamentRegistrationForm />} />
+                        <Route path="registration" element={<TournamentRegistrationPage />} />
                         <Route path="bracket" element={<TournamentBracket />} />
                     </Route>
 

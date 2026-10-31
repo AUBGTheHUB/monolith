@@ -22,21 +22,15 @@ const baseSchema = z.object({
     university: z.string().min(1, { message: 'University is required.' }),
 
     age: z.coerce
-    .number({
-        required_error: 'Age is required.',
-        invalid_type_error: 'Age is required.',
-    })
-    .int({ message: 'Age must be a whole number.' })
-    .min(16, { message: 'You must be at least 16 years old.' })
-    .max(69, { message: 'Age cannot exceed 69.' }),
+        .number({
+            required_error: 'Age is required.',
+            invalid_type_error: 'Age is required.',
+        })
+        .int({ message: 'Age must be a whole number.' })
+        .min(16, { message: 'You must be at least 16 years old.' })
+        .max(69, { message: 'Age cannot exceed 69.' }),
 
-
-    email: z
-        .string()
-        .min(1, { message: 'Email is required' })
-        .email({ message: 'Invalid email format.' }),
-
-
+    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format.' }),
 
     country: z.string().min(1, { message: 'Country is required.' }),
 
@@ -46,10 +40,9 @@ const baseSchema = z.object({
         .min(3, { message: 'Adress must be at least 3 characters long.' })
         .max(100, { message: 'Adress cannot exceed 100 characters.' }),
 
-
     team_option: z.enum(['has_code', 'create_team', 'join_team'], {
-    required_error: 'Please choose an option.',
-}),
+        required_error: 'Please choose an option.',
+    }),
     team_code: z.string().trim().optional(),
     team_name: z.string().trim().max(50, { message: 'Team name cannot exceed 50 characters.' }).optional(),
     has_team: z.boolean({ required_error: 'Please choose an option.' }),
@@ -60,7 +53,6 @@ const baseSchema = z.object({
 
     share_info_with_sponsors: z.boolean({ message: 'Please select an option.' }),
 });
-
 
 export const registrationSchema = baseSchema.superRefine((data, ctx) => {
     if (data.has_team && !data.team_name) {
@@ -84,4 +76,4 @@ export const registrationSchema = baseSchema.superRefine((data, ctx) => {
     }
 });
 
-export type RegistrationFormData = z.infer<typeof registrationSchema>;
+export type TournamentRegistrationFormData = z.infer<typeof registrationSchema>;
