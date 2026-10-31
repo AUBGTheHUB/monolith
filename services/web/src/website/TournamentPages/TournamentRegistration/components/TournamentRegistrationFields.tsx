@@ -1,21 +1,22 @@
-import { Control, useWatch, useFormContext } from 'react-hook-form';
+import { useEffect } from 'react';
+import { Control, useFormContext, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { TournamentRegistrationFormData } from '../schema';
 import { InputComponent } from '@/internalLibrary/InputComponent/InputComponent';
 import { DropdownComponent } from '@/internalLibrary/DropdownComponent/DropdownComponent';
-
-import { AGE_OPTIONS, RADIO_OPTIONS, TEAM_OPTIONS, UNIVERSITY_OPTIONS } from '../constants';
+import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent.tsx';
+import { RADIO_OPTIONS, TEAM_OPTIONS, UNIVERSITY_OPTIONS, LEAGUE_ROLES } from '../constants';
 import {
+    ageControlStyles,
+    formControlStyles,
     inputStyles,
     labelStyles,
     radioGroupStyles,
-    radioQuestionStyles,
     radioOptionLabelStyles,
-    formControlStyles,
+    radioQuestionStyles,
     selectContentStyles,
+    teamRadioGroupStyles,
 } from '../styles.ts';
-import { RadioComponent } from '@/internalLibrary/RadioComponent/RadioComponent.tsx';
-import { useEffect } from 'react';
-import { toast } from 'react-toastify';
 
 type TournamentFieldsProps = {
     control: Control<TournamentRegistrationFormData>;
@@ -31,6 +32,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
         control: control,
         name: 'team_option',
     });
+
     useEffect(() => {
         if (teamOption === 'join_team') {
             toast('If you register as an individual participant, your participation is not guaranteed.', {
@@ -39,7 +41,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 autoClose: 8000,
                 icon: false,
                 className:
-                    "!bg-[#163B59] !text-[#90D5FF] !border-2 !border-[#C79B3B] !rounded-[12px] !font-['Rubik'] !font-bold !text-lg !shadow-[0_0_20px_rgba(199,155,59,0.5)]",
+                    "!bg-[#163B59] !text-[#90D5FF] !border-2 !border-[#C79B3B] !rounded-[12px] !font-['Rubik'] !font-bold !text-sm sm:!text-base !shadow-[0_0_20px_rgba(199,155,59,0.5)]",
                 progressClassName: '!bg-[#C79B3B]',
             });
         }
@@ -53,6 +55,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
             setValue('team_name', '');
         }
     }, [teamOption, setValue, clearErrors]);
+
     return (
         <>
             <InputComponent
@@ -73,15 +76,14 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 labelClassName={labelStyles}
                 inputClassName={inputStyles}
             />
-            <DropdownComponent
+            <InputComponent
                 control={control}
                 name="age"
                 label="Age"
+                type="number"
                 placeholder=""
-                dropdownLabelClassName={labelStyles}
-                selectContentClassName={selectContentStyles}
-                formControlClassName={formControlStyles}
-                items={toDropdownItems(AGE_OPTIONS)}
+                labelClassName={labelStyles}
+                inputClassName={`${inputStyles} ${ageControlStyles} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
             />
             <InputComponent
                 control={control}
@@ -104,15 +106,6 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
             />
             <InputComponent
                 control={control}
-                name="country"
-                label="Country"
-                type="text"
-                placeholder="Choose your country..."
-                labelClassName={labelStyles}
-                inputClassName={inputStyles}
-            />
-            <InputComponent
-                control={control}
                 name="address"
                 label="Address"
                 type="text"
@@ -127,7 +120,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 options={TEAM_OPTIONS}
                 groupLabel="How do you want to register?"
                 groupClassName={radioQuestionStyles}
-                radioGroupClassName={`${radioGroupStyles} xl:[&[role=radiogroup]]:!flex xl:[&[role=radiogroup]]:!justify-between xl:[&[role=radiogroup]]:!gap-10`}
+                radioGroupClassName={teamRadioGroupStyles}
                 labelClassName={radioOptionLabelStyles}
             />
 
@@ -164,24 +157,25 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 labelClassName={labelStyles}
                 inputClassName={inputStyles}
             />
-            <InputComponent
+            <DropdownComponent
                 control={control}
                 name="primary_role"
-                label="Primary role in the game"
-                type="text"
-                placeholder="Type here..."
-                labelClassName={labelStyles}
-                inputClassName={inputStyles}
+                label="Primary role"
+                placeholder=""
+                dropdownLabelClassName={labelStyles}
+                selectContentClassName={selectContentStyles}
+                formControlClassName={formControlStyles}
+                items={toDropdownItems(LEAGUE_ROLES)}
             />
-
-            <InputComponent
+            <DropdownComponent
                 control={control}
                 name="alternative_role"
-                label="Alternative role in the game"
-                type="text"
-                placeholder="Type here..."
-                labelClassName={labelStyles}
-                inputClassName={inputStyles}
+                label="Alternative role"
+                placeholder=""
+                dropdownLabelClassName={labelStyles}
+                selectContentClassName={selectContentStyles}
+                formControlClassName={formControlStyles}
+                items={toDropdownItems(LEAGUE_ROLES)}
             />
 
             <RadioComponent

@@ -6,7 +6,7 @@ import { registrationSchema, type TournamentRegistrationFormData } from './schem
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { fieldGridStyles, submitButtonStyles } from './styles';
+import { fieldGridStyles, formBlurBgStyles, formCardStyles, submitButtonStyles } from './styles';
 import TournamentRegistrationFields from './components/TournamentRegistrationFields';
 
 export default function TournamentRegistrationForm() {
@@ -24,8 +24,8 @@ export default function TournamentRegistrationForm() {
             team_code: '',
             team_name: '',
             rank: '',
-            primary_role: '',
-            alternative_role: '',
+            primary_role: undefined,
+            alternative_role: undefined,
             share_info_with_sponsors: undefined,
         },
     });
@@ -44,16 +44,14 @@ export default function TournamentRegistrationForm() {
     return (
         <>
             <FormProvider {...form}>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="relative isolate w-full rounded-[20px] px-5 py-8 md:px-12 md:py-10 flex flex-col"
-                >
-                    <div className="absolute inset-0 -z-10 rounded-[20px] bg-[#163B59] blur-[20px]" />
+                <form onSubmit={handleSubmit(onSubmit)} className={formCardStyles}>
+                    <div className={formBlurBgStyles} />
+
                     <div className={fieldGridStyles}>
                         <TournamentRegistrationFields control={control} />
                     </div>
 
-                    <div className="flex justify-end mt-8">
+                    <div className="flex justify-end mt-[clamp(1.5rem,5vw,2.5rem)]">
                         <Button type="submit" className={submitButtonStyles}>
                             SEND
                         </Button>

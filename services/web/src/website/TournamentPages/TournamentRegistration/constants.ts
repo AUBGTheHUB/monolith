@@ -1,8 +1,3 @@
-export const AGE_OPTIONS = Array.from({ length: 54 }, (_, i) => {
-    const age = String(i + 16);
-    return { label: age, value: age };
-});
-
 export const TEAM_OPTIONS = [
     { label: 'I already have a code', value: 'has_code' },
     { label: 'I want to register a team', value: 'create_team' },
@@ -14,6 +9,14 @@ export const RADIO_OPTIONS = [
     { label: 'No', value: false },
 ];
 
+export const LEAGUE_ROLES = [
+    { label: 'Jungle', value: 'Jungle' },
+    { label: 'Top Lane', value: 'Top Lane' },
+    { label: 'Bot Lane', value: 'Bot Lane' },
+    { label: 'Mid Lane', value: 'Mid Lane' },
+    { label: 'Support', value: 'Support' },
+];
+
 export const UNIVERSITY_OPTIONS = [
     { label: 'American University in Bulgaria', value: 'American University in Bulgaria' },
     { label: 'Sofia University', value: 'Sofia University' },
@@ -22,24 +25,14 @@ export const UNIVERSITY_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
-export type RegistrationInfo = {
+export type TournamentRegistrationInfo = {
     registration_info: {
-        name: string;
+        first_name: string;
+        last_name: string;
         email: string;
-        tshirt_size: string;
         university: string;
         location: string;
         age: number;
-        source_of_referral: string;
-        programming_language: string;
-        programming_level: string;
-        has_participated_in_hackaubg: boolean;
-        has_internship_interest: boolean;
-        has_participated_in_hackathons: boolean;
-        has_previous_coding_experience: boolean;
-        share_info_with_sponsors: boolean;
-        registration_type: string;
-        is_admin?: boolean | null;
         team_name?: string;
     };
 };
