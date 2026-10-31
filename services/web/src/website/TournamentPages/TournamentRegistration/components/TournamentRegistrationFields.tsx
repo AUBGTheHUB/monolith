@@ -33,7 +33,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
     });
 
     useEffect(() => {
-        if (teamOption === 'join_team') {
+        if (teamOption === 'solo') {
             toast('If you register as an individual participant, your participation is not guaranteed.', {
                 toastId: 'join-team-warning',
                 position: 'top-center',
@@ -59,17 +59,8 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
         <>
             <InputComponent
                 control={control}
-                name="first_name"
-                label="First Name"
-                type="text"
-                placeholder="Type here..."
-                labelClassName={labelStyles}
-                inputClassName={inputStyles}
-            />
-            <InputComponent
-                control={control}
-                name="last_name"
-                label="Last Name"
+                name="full_name"
+                label="Full Name"
                 type="text"
                 placeholder="Type here..."
                 labelClassName={labelStyles}

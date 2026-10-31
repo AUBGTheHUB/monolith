@@ -2,7 +2,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { registrationSchema, type TournamentRegistrationFormData } from './schema';
-
+import { TournamentAdminAndTeam, TournamentMemberWithCode, TournamentParticipantPayload } from './constants';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,12 +13,10 @@ export default function TournamentRegistrationForm() {
     const form = useForm<TournamentRegistrationFormData>({
         resolver: zodResolver(registrationSchema),
         defaultValues: {
-            first_name: '',
-            last_name: '',
+            full_name: '',
             age: undefined,
             email: '',
             university: '',
-            country: '',
             address: '',
             team_option: undefined,
             team_code: '',
@@ -33,7 +31,30 @@ export default function TournamentRegistrationForm() {
     const { control, handleSubmit } = form;
 
     const onSubmit = (data: TournamentRegistrationFormData) => {
-        console.log('Form data:', data);
+        const participantData: TournamentParticipantPayload = {
+            full_name: data.full_name,
+            age: data.age,
+            email: data.email,
+            university: data.university,
+            location: data.address,
+            share_info_with_sponsors: data.share_info_with_sponsors,
+            game_rank: data.rank,
+            primary_role: data.primary_role,
+            alternative_role: data.alternative_role,
+        };
+        if (data.team_option == 'create_team') {
+            const teamAndParticipantData: TournamentAdminAndTeam = {
+                tournament_participant: participantData,
+                team_name: data.team_name || '',
+            };
+            console.log(teamAndParticipantData);
+        } else if (data.team_option == 'has_code') {
+            const participantWithCodeData: TournamentMemberWithCode = {
+                tournament_participant: participantData,
+                team_code: data.team_code || '',
+            };
+            console.log(participantWithCodeData);
+        }
         toast.success('Form submitted', {
             position: 'top-right',
             autoClose: 5000,

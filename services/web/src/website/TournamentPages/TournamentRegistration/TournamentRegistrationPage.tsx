@@ -27,7 +27,6 @@ export default function RegistrationFormPage() {
         <section id="register" className={`${sectionStyles} ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
             <div className={glowStyles} />
 
-            {/* Arc + divider: the divider always sits right under the arc */}
             <div className="relative z-10 flex w-[min(78vw,850px)] flex-col items-center">
                 <img src={ellipse1} alt="" className="pointer-events-none block h-auto w-full" />
 

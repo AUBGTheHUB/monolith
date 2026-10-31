@@ -1,9 +1,8 @@
 import { z } from 'zod';
 
 const ROLES = ['Jungle', 'Top Lane', 'Bot Lane', 'Support', 'Mid Lane'] as const;
-const TEAM_OPTIONS = ['has_code', 'create_team', 'join_team'] as const;
+const TEAM_OPTIONS = ['has_code', 'create_team', 'solo'] as const;
 
-// Latin + Cyrillic letters, with single spaces/hyphens/apostrophes between words
 const NAME_REGEX = /^[\p{Script=Latin}\p{Script=Cyrillic}]+(?:[ '-][\p{Script=Latin}\p{Script=Cyrillic}]+)*$/u;
 
 const nameField = (label: string) =>
@@ -31,13 +30,11 @@ const roleField = (label: string) =>
     });
 
 const baseSchema = z.object({
-    first_name: nameField('First name'),
-    last_name: nameField('Last name'),
+    full_name: nameField('Full name'),
 
     university: requiredString('University', 100),
 
     age: z.preprocess(
-        // Treat empty input as "missing" instead of coercing '' to 0
         (val) => (val === '' || val === null ? undefined : val),
         z.coerce
             .number({
@@ -57,8 +54,6 @@ const baseSchema = z.object({
         .max(254, { message: 'Email cannot exceed 254 characters.' })
         .email({ message: 'Invalid email format.' }),
 
-    country: requiredString('Country'),
-
     address: requiredString('Address', 100).min(3, {
         message: 'Address must be at least 3 characters long.',
     }),
@@ -68,10 +63,6 @@ const baseSchema = z.object({
     }),
     team_code: z.string().trim().optional(),
     team_name: z.string().trim().max(50, { message: 'Team name cannot exceed 50 characters.' }).optional(),
-    has_team: z.boolean({
-        required_error: 'Please choose an option.',
-        invalid_type_error: 'Please choose an option.',
-    }),
 
     primary_role: roleField('Primary role'),
     alternative_role: roleField('Alternative role'),
@@ -83,31 +74,30 @@ const baseSchema = z.object({
         invalid_type_error: 'Please select an option.',
     }),
 });
-const crossFieldSchema = z
-    .object({
-        primary_role: z.unknown(),
-        alternative_role: z.unknown(),
-        has_team: z.unknown(),
-        team_name: z.unknown(),
-    })
-    .superRefine((data, ctx) => {
-        if (data.has_team === true && !data.team_name) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: ['team_name'],
-                message: 'Team name is required.',
-            });
-        }
 
-        if (data.primary_role && data.primary_role === data.alternative_role) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                path: ['alternative_role'],
-                message: 'Alternative role must be different from your primary role.',
-            });
-        }
-    });
+export const registrationSchema = baseSchema.superRefine((data, ctx) => {
+    if (data.team_option === 'has_code' && !data.team_code) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['team_code'],
+            message: 'Team code is required.',
+        });
+    }
 
-export const registrationSchema = baseSchema.and(crossFieldSchema);
+    if (data.team_option === 'create_team' && !data.team_name) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['team_name'],
+            message: 'Team name is required.',
+        });
+    }
 
+    if (data.primary_role === data.alternative_role) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['alternative_role'],
+            message: 'Alternative role must be different from your primary role.',
+        });
+    }
+});
 export type TournamentRegistrationFormData = z.infer<typeof baseSchema>;
