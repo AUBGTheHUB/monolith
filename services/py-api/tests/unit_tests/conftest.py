@@ -30,6 +30,8 @@ from src.database.model.admin.sponsor_model import Sponsor
 from src.database.model.admin.mentor_model import Mentor
 from src.database.model.hackathon.participant_model import Participant
 from src.database.model.hackathon.team_model import Team
+from src.database.model.tournament_registration.tournament_participant_model import TournamentParticipant
+from src.database.model.tournament_registration.tournament_team_model import TournamentTeam
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
@@ -41,6 +43,8 @@ from src.database.repository.admin.refresh_token_repository import RefreshTokenR
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.database.repository.tournament.tournament_participants_repository import TournamentParticipantsRepository
+from src.database.repository.tournament.tournament_teams_repository import TournamentTeamsRepository
 from src.server.schemas.request_schemas.hackathon.schemas import (
     AdminParticipantInputData,
     InviteLinkParticipantInputData,
@@ -49,6 +53,11 @@ from src.server.schemas.request_schemas.hackathon.schemas import (
     ResendEmailParticipantData,
 )
 from src.server.schemas.request_schemas.auth.schemas import LoginHubAdminData, RegisterHubAdminData
+from src.server.schemas.request_schemas.tournament.schemas import (
+    TournamentAdminTeamReqData,
+    TournamentParticipantJoinTeamReqData,
+    TournamentParticipantReqData,
+)
 from src.service.admin.candidates_form.forms_service import CandidateFormsService
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.admin.judges_service import JudgesService
@@ -59,6 +68,9 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.team_service import TeamService
 from src.service.hackathon.verification_service import VerificationService
+from src.service.tournament.tournament_code_service import TournamentCodeService
+from src.service.tournament.tournament_mail_service import TournamentMailService
+from src.service.tournament.tournament_registration_service import TournamentRegistrationService
 from src.service.utility.jwt_utils.codec import JwtUtility
 from src.service.utility.jwt_utils.schemas import (
     JwtParticipantInviteRegistrationData,
@@ -74,6 +86,7 @@ from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 
 from tests.integration_tests.conftest import (
+    TEST_TEAM_CODE,
     TEST_TEAM_NAME,
     TEST_UNIVERSITY_NAME,
     TEST_USER_EMAIL,
@@ -90,6 +103,8 @@ from tests.integration_tests.conftest import (
     TEST_HUB_ADMIN_MEMBER_TYPE,
     TEST_HUB_ADMIN_ROLE,
     TEST_HUB_MEMBER_USERNAME,
+    TEST_TOURNAMENT_RANK,
+    TEST_TOURNAMENT_LEAGUE_ROLE,
 )
 
 TEST_REFRESH_ID = "1234567"
@@ -717,6 +732,54 @@ def candidate_forms_repo_mock() -> CandidateFormsRepoMock:
     return cast(CandidateFormsRepoMock, forms_repo)
 
 
+class TournamentTeamsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+    find_by_code: AsyncMock
+
+
+@pytest.fixture
+def tournament_teams_repo_mock() -> TournamentTeamsRepoMock:
+    teams_repo = _create_typed_mock(TournamentTeamsRepository)
+
+    teams_repo.fetch_by_id = AsyncMock()
+    teams_repo.fetch_all = AsyncMock()
+    teams_repo.create = AsyncMock()
+    teams_repo.update = AsyncMock()
+    teams_repo.delete = AsyncMock()
+    teams_repo.find_by_code = AsyncMock()
+
+    return cast(TournamentTeamsRepoMock, teams_repo)
+
+
+class TournamentParticipantsRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+    find_by_email: AsyncMock
+    check_team_members_count_by_team_id: AsyncMock
+
+
+@pytest.fixture
+def tournament_participants_repo_mock() -> TournamentParticipantsRepoMock:
+    participants_repo = _create_typed_mock(TournamentParticipantsRepository)
+
+    participants_repo.fetch_by_id = AsyncMock()
+    participants_repo.fetch_all = AsyncMock()
+    participants_repo.create = AsyncMock()
+    participants_repo.update = AsyncMock()
+    participants_repo.delete = AsyncMock()
+    participants_repo.find_by_email = AsyncMock()
+    participants_repo.check_team_members_count_by_team_id = AsyncMock()
+
+    return cast(TournamentParticipantsRepoMock, participants_repo)
+
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -1166,6 +1229,51 @@ def candidate_forms_service_mock() -> CandidateFormsServiceMock:
     service.delete = AsyncMock()
 
     return cast(CandidateFormsServiceMock, service)
+
+
+class TournamentRegistrationServiceMock(Protocol):
+    register_team_member: AsyncMock
+    register_team_admin_with_transaction: AsyncMock
+    register_solo_member: AsyncMock
+
+
+@pytest.fixture
+def tournament_registration_service_mock() -> TournamentRegistrationServiceMock:
+    service = _create_typed_mock(TournamentRegistrationService)
+
+    service.register_team_member = AsyncMock()
+    service.register_solo_member = AsyncMock()
+    service.register_team_admin_with_transaction = AsyncMock()
+
+    return cast(TournamentRegistrationServiceMock, service)
+
+
+class TournamentMailServiceMock(Protocol):
+    send_email_when_team_is_complete: AsyncMock
+    send_email_with_team_code: AsyncMock
+
+
+@pytest.fixture
+def tournament_mail_service_mock() -> TournamentMailServiceMock:
+    service = _create_typed_mock(TournamentMailService)
+
+    service.send_email_when_team_is_complete = AsyncMock()
+    service.send_email_with_team_code = AsyncMock()
+
+    return cast(TournamentMailServiceMock, service)
+
+
+class TournamentCodeServiceMock(Protocol):
+    generate_team_code: Mock
+
+
+@pytest.fixture
+def tournament_code_service_mock() -> TournamentCodeServiceMock:
+    service = _create_typed_mock(TournamentCodeService)
+
+    service.generate_team_code = Mock()
+
+    return cast(TournamentCodeServiceMock, service)
 
 
 # =================================================
@@ -1745,6 +1853,121 @@ def candidate_form_no_id_mock(candidate_form_mock: CandidateForm) -> dict[str, A
 @pytest.fixture
 def candidate_form_mock_document(candidate_form_mock: CandidateForm) -> dict[str, Any]:
     return candidate_form_mock.dump_as_mongo_db_document()
+
+
+@pytest.fixture
+def tournament_participant_mock(obj_id_mock: str) -> TournamentParticipant:
+    return TournamentParticipant(
+        id=ObjectId(obj_id_mock),
+        is_confirmed=False,
+        is_team_leader=False,
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        team_id=ObjectId(obj_id_mock),
+        assigned_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+    )
+
+
+@pytest.fixture
+def tournament_participant_dict_mock(tournament_participant_mock: TournamentParticipant) -> dict[str, Any]:
+    document = tournament_participant_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def tournament_team_mock(obj_id_mock: str) -> TournamentTeam:
+    return TournamentTeam(
+        id=ObjectId(obj_id_mock), name=TEST_TEAM_NAME, code=TEST_TEAM_CODE, completion_email_sent_at=None
+    )
+
+
+@pytest.fixture
+def tournament_team_dict_mock(tournament_team_mock: TournamentTeam) -> dict[str, Any]:
+    document = tournament_team_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
+
+
+@pytest.fixture
+def tournament_team_name_mock() -> str:
+    return TEST_TEAM_NAME
+
+
+@pytest.fixture
+def tournament_team_code_mock() -> str:
+    return TEST_TEAM_CODE
+
+
+@pytest.fixture
+def tournament_participant_req_data() -> TournamentParticipant:
+    return TournamentParticipant(
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        is_confirmed=False,
+    )
+
+
+@pytest.fixture
+def tournament_solo_participant_req_data() -> TournamentParticipantReqData:
+    return TournamentParticipantReqData(
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+    )
+
+
+@pytest.fixture
+def tournament_admin_participant_req_data() -> TournamentParticipantReqData:
+    return TournamentParticipantReqData(
+        full_name=TEST_USER_NAME,
+        age=TEST_ALLOWED_AGE,
+        email=TEST_USER_EMAIL,
+        university=TEST_UNIVERSITY_NAME,
+        location=TEST_LOCATION,
+        share_info_with_sponsors=True,
+        game_rank=TEST_TOURNAMENT_RANK,
+        primary_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+        alternative_role=TEST_TOURNAMENT_LEAGUE_ROLE,
+    )
+
+
+@pytest.fixture
+def tournament_admin_participant_with_team_req_data(
+    tournament_solo_participant_req_data: TournamentParticipantReqData,
+) -> TournamentAdminTeamReqData:
+    return TournamentAdminTeamReqData(
+        tournament_participant=tournament_solo_participant_req_data, team_name=TEST_TEAM_NAME
+    )
+
+
+@pytest.fixture
+def tournament_participant_with_code_req_data(
+    tournament_solo_participant_req_data: TournamentParticipantReqData,
+) -> TournamentParticipantJoinTeamReqData:
+    return TournamentParticipantJoinTeamReqData(
+        tournament_participant=tournament_solo_participant_req_data, team_code=TEST_TEAM_CODE
+    )
 
 
 # =================================================

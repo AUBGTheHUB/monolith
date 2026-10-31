@@ -14,6 +14,7 @@ from src.server.handlers.hackathon.participants_handlers import ParticipantHandl
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
 from src.server.handlers.user_handlers import UserHandlers
 from src.server.handlers.utility_handlers import UtilityHandlers
+from src.server.handlers.tournament.tournament_registration_handlers import TournamentRegistrationHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -48,3 +49,4 @@ class HttpHandlersContainer:
     user_handlers: UserHandlers
     candidates_forms_handlers: CandidateFormsHandlers
     candidates_form_questions_handlers: QuestionsHandlers
+    tournament_registration_handlers: TournamentRegistrationHandlers
