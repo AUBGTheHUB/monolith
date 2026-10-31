@@ -25,6 +25,7 @@ export default {
                 mont: ['Montserrat', 'serif'],
                 hank: ['Hanken Grotesk', 'serif'],
                 distant: ['SF Distant Galaxy', 'sans-serif'],
+                league: ['LeagueFont', 'sans-serif'],
                 distantOutline: ['SF Distant Galaxy Outline', 'sans-serif'],
                 orbitron: ['Orbitron', 'sans-serif'],
                 oxanium: ['Oxanium', 'sans-serif'],
