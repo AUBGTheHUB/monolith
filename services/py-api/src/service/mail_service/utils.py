@@ -37,3 +37,31 @@ def load_email_verify_participant_html_template(
         participant_greeting=participant_greeting,
         verification_link=verification_link,
     )
+
+
+def load_email_tournament_team_registration_html_template(participant_name: str, team_code: str | None) -> str:
+    base_dir = dirname(__file__)
+    template_path = join(base_dir, "email_templates", "email-tournament-team-code.html")
+
+    with open(template_path, "r", encoding="utf-8") as file:
+        email_template = file.read()
+
+    participant_greeting = f"{participant_name}"
+
+    team_code_statement = "" if team_code is None else f"Invite your teammates using this code: {team_code}"
+
+    return email_template.format(participant_greeting=participant_greeting, team_code_statement=team_code_statement)
+
+
+def load_email_tournament_team_complete_html_template(participant_name: str, team_name: str) -> str:
+    base_dir = dirname(__file__)
+    template_path = join(base_dir, "email_templates", "email-tournament-team-complete.html")
+
+    with open(template_path, "r", encoding="utf-8") as file:
+        email_template = file.read()
+
+    participant_greeting = f"{participant_name}"
+
+    team_name = f"{team_name}"
+
+    return email_template.format(participant_greeting=participant_greeting, team_name=team_name)
