@@ -5,7 +5,7 @@ from bson import ObjectId
 from pydantic import ConfigDict
 from src.database.model.base_model import BaseDbModel, SerializableObjectId, UpdateParams
 
-LEAGUE_ROLES = Literal["Jungle", "Top Lane", "Bot Lane", "Support", "Mid Lane "]
+LEAGUE_ROLES = Literal["Jungle", "Top Lane", "Bot Lane", "Support", "Mid Lane"]
 
 
 @dataclass(kw_only=True)
