@@ -10,8 +10,10 @@ import {
     titleStyles,
     titleWhiteStyles,
 } from './styles.ts';
+import { useFeatureSwitches } from '@/config.ts';
 
 export default function RegistrationFormPage() {
+    const featureSwitches = useFeatureSwitches();
     const [fadeIn, setFadeIn] = useState(false);
 
     useEffect(() => {
@@ -53,11 +55,15 @@ export default function RegistrationFormPage() {
                     </h2>
                 </div>
 
-                <p className={subtitleStyles}>Fill in the form below to register for the tournament</p>
-
-                <div className={formFrameStyles}>
-                    <TournamentRegistrationForm />
-                </div>
+                {featureSwitches.RegSwitch && (
+                    <>
+                        <p className={subtitleStyles}>Fill in the form below to register for the tournament</p>
+                        <div className={formFrameStyles}>
+                            <TournamentRegistrationForm isRegTeamsFull={featureSwitches.isRegTeamsFull} />
+                        </div>
+                    </>
+                )}
+                {!featureSwitches.RegSwitch && <p className={subtitleStyles}>Registration closed</p>}
             </section>
         </>
     );

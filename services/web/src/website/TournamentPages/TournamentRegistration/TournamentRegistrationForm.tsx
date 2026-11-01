@@ -10,7 +10,11 @@ import { fieldGridStyles, formBlurBgStyles, formCardStyles, submitButtonStyles }
 import TournamentRegistrationFields from './components/TournamentRegistrationFields';
 import { registerParticipant } from './api';
 
-export default function TournamentRegistrationForm() {
+type TournamentRegistrationFormProps = {
+    isRegTeamsFull: boolean;
+};
+
+export default function TournamentRegistrationForm({ isRegTeamsFull }: TournamentRegistrationFormProps) {
     const defaultValues = {
         full_name: '',
         age: undefined,
@@ -58,7 +62,7 @@ export default function TournamentRegistrationForm() {
                     <div className={formBlurBgStyles} />
 
                     <div className={fieldGridStyles}>
-                        <TournamentRegistrationFields control={control} />
+                        <TournamentRegistrationFields control={control} isRegTeamsFull={isRegTeamsFull} />
                     </div>
 
                     <div className="flex justify-end mt-[clamp(1.5rem,5vw,2.5rem)]">

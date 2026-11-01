@@ -19,12 +19,13 @@ import {
 
 type TournamentFieldsProps = {
     control: Control<TournamentRegistrationFormData>;
+    isRegTeamsFull: boolean;
 };
 
 const toDropdownItems = (options: { label: string; value: string }[]) =>
     options.map(({ label, value }) => ({ name: label, value }));
 
-export default function TournamentRegistrationFields({ control }: TournamentFieldsProps) {
+export default function TournamentRegistrationFields({ control, isRegTeamsFull }: TournamentFieldsProps) {
     const { setValue, clearErrors } = useFormContext<TournamentRegistrationFormData>();
 
     const teamOption = useWatch({
@@ -126,7 +127,7 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                 />
             )}
 
-            {teamOption === 'create_team' && (
+            {teamOption === 'create_team' && !isRegTeamsFull && (
                 <InputComponent
                     control={control}
                     name="team_name"
@@ -136,6 +137,10 @@ export default function TournamentRegistrationFields({ control }: TournamentFiel
                     labelClassName={labelStyles}
                     inputClassName={inputStyles}
                 />
+            )}
+
+            {teamOption === 'create_team' && isRegTeamsFull && (
+                <p className={labelStyles}>The maximum number of teams has been reached.</p>
             )}
 
             <InputComponent
