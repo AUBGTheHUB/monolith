@@ -92,8 +92,6 @@ class TournamentMailService:
             content_type="html",
         )
 
-        await self.send_email_upon_registration(tournament_participant, background_tasks)
-
         return Ok(None)
 
     async def send_email_upon_registration(
