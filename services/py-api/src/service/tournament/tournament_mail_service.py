@@ -4,6 +4,7 @@ from src.database.model.tournament_registration.tournament_participant_model imp
 from src.service.mail_service.utils import (
     load_email_tournament_team_registration_html_template,
     load_email_tournament_team_complete_html_template,
+    load_email_tournament_registration_confirmation_html_template,
 )
 from structlog.stdlib import get_logger
 
@@ -54,6 +55,8 @@ class TournamentMailService:
             content_type="html",
         )
 
+        await self.send_email_upon_registration(tournament_participant, background_tasks)
+
         return Ok(None)
 
     async def send_email_when_team_is_complete(
@@ -85,6 +88,43 @@ class TournamentMailService:
             sender=self._SENDER_EMAIL,
             receiver=tournament_participant.email,
             subject="Team Complete! See You at Play Con!",
+            body_content=body_html,
+            content_type="html",
+        )
+
+        await self.send_email_upon_registration(tournament_participant, background_tasks)
+
+        return Ok(None)
+
+    async def send_email_upon_registration(
+        self, tournament_participant: TournamentParticipant, background_tasks: BackgroundTasks
+    ) -> Result[None, ValueError]:
+        """
+        Sends an email confirming the successful completion of the tournament team.
+        """
+        try:
+            body_html = load_email_tournament_registration_confirmation_html_template(
+                participant_name=tournament_participant.full_name
+            )
+
+        except ValueError as e:
+            LOG.exception(
+                "Error loading the HTML template for successful tournament registration email",
+                err=e,
+                tournament_participant=tournament_participant,
+            )
+            return Err(e)
+
+        LOG.info(
+            "Sending successful tournament registration confirmation email...",
+            tournament_participant=tournament_participant.dump_as_json(),
+        )
+
+        background_tasks.add_task(
+            self._client.send_email,
+            sender=self._SENDER_EMAIL,
+            receiver=tournament_participant.email,
+            subject="Registration Complete! See You at Play Con!",
             body_content=body_html,
             content_type="html",
         )

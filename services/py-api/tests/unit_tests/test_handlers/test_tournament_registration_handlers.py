@@ -210,12 +210,14 @@ async def test_register_solo_handler_returns_201(
     tournament_registration_service_mock: TournamentRegistrationServiceMock,
     tournament_participant_mock: TournamentParticipant,
     tournament_solo_participant_req_data: TournamentParticipantReqData,
+    background_tasks_mock: BackgroundTasksMock,
 ) -> None:
 
     tournament_registration_service_mock.register_solo_member.return_value = Ok(tournament_participant_mock)
 
     resp = await tournament_registration_handlers.register_solo_handler(
         data=tournament_solo_participant_req_data,
+        background_tasks=background_tasks_mock,
     )
 
     assert isinstance(resp, Response)
@@ -229,12 +231,14 @@ async def test_register_solo_handler_returns_409_when_registering_with_an_existi
     tournament_registration_handlers: TournamentRegistrationHandlers,
     tournament_registration_service_mock: TournamentRegistrationServiceMock,
     tournament_solo_participant_req_data: TournamentParticipantReqData,
+    background_tasks_mock: BackgroundTasksMock,
 ) -> None:
 
     tournament_registration_service_mock.register_solo_member.return_value = Err(DuplicateTournamentParticipantError())
 
     resp = await tournament_registration_handlers.register_solo_handler(
         data=tournament_solo_participant_req_data,
+        background_tasks=background_tasks_mock,
     )
 
     assert isinstance(resp, Response)
