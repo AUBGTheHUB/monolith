@@ -11,9 +11,6 @@ export const DesktopNavComponent = () => {
                     <a href="/" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         The HUB
                     </a>
-                    <a href="#about" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
-                        About
-                    </a>
                     <a href="#faq" className={`${NAV_ITEM_A} ${NAV_ITEM_A_EFFECT}`}>
                         FAQ
                     </a>

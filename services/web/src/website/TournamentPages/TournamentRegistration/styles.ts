@@ -10,14 +10,14 @@ export const gearStyles =
     'w-[clamp(180px,42vw,520px)] left-[calc(clamp(180px,42vw,520px)*-0.65)] top-[clamp(170px,30vw,360px)]';
 
 export const titleStyles =
-    "font-['League_Spartan'] font-normal text-[clamp(1.75rem,6.5vw,4rem)] leading-[0.95] text-center w-full px-4 z-10 " +
+    'font-normal text-[clamp(1.75rem,6.5vw,4rem)] leading-[0.95] text-center w-full px-4 z-10 ' +
     'mb-[clamp(0.75rem,1.5vw,1.5rem)]';
 
 export const titleWhiteStyles = 'text-white';
 export const titleGoldStyles = 'text-[#C79B3B]';
 
 export const subtitleStyles =
-    "font-['Rubik'] font-light text-[clamp(0.85rem,0.5rem+1.1vw,1.5rem)] leading-[1.19] text-[#90D5FF] text-center w-full px-4 " +
+    'font-light text-[clamp(0.85rem,0.5rem+1.1vw,1.5rem)] leading-[1.19] text-[#90D5FF] text-center w-full px-4 ' +
     'mb-[clamp(1.5rem,3vw,2.5rem)] z-10';
 
 export const formFrameStyles =
@@ -32,28 +32,27 @@ export const formBlurBgStyles =
 
 export const fieldGridStyles = 'flex flex-col gap-[clamp(1.25rem,0.8rem+1.5vw,2.25rem)]';
 
-export const labelStyles =
-    "font-['Rubik'] font-bold text-[clamp(0.8rem,0.55rem+0.8vw,1.5rem)] leading-tight text-[#90D5FF]";
+export const labelStyles = 'font-bold text-[clamp(0.8rem,0.55rem+0.8vw,1.5rem)] leading-tight text-[#90D5FF]';
 export const dropdownLabelStyles = labelStyles;
 
 export const inputStyles =
     '!h-[clamp(2.25rem,1.5rem+1.5vw,3.5rem)] w-full min-w-0 bg-transparent border border-[#90D5FF] rounded-[3px] px-3 md:px-4 ' +
-    "font-['Rubik'] text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)] text-[#90D5FF] placeholder:text-[#90D5FF]/80 " +
+    'text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)] text-[#90D5FF] placeholder:text-[#90D5FF]/80 ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C79B3B]';
 
 export const formControlStyles =
     '!h-[clamp(2.25rem,1.5rem+1.5vw,3.5rem)] !w-full min-w-0 bg-transparent border border-[#90D5FF] rounded-[3px] px-3 md:px-4 ' +
-    "font-['Rubik'] text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)] text-[#90D5FF] " +
+    'text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)] text-[#90D5FF] ' +
     'focus:outline-none focus:ring-2 focus:ring-[#C79B3B] ' +
     '[&_svg]:!h-[clamp(0.9rem,0.6rem+0.6vw,1.5rem)] [&_svg]:!w-[clamp(0.9rem,0.6rem+0.6vw,1.5rem)] ' +
     '[&_svg]:!opacity-100 [&_svg]:text-[#90D5FF] [&_svg]:stroke-[1.5]';
 
 export const selectContentStyles =
     'bg-[#163B59] text-[#90D5FF] border border-[#90D5FF] rounded-[3px] max-h-60 ' +
-    "font-['Rubik'] text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)]";
+    'text-[clamp(0.8rem,0.5rem+0.6vw,1.25rem)]';
 
 export const radioQuestionStyles =
-    "[&>label]:font-['Rubik'] [&>label]:!font-bold [&>label]:!text-[clamp(0.8rem,0.55rem+0.8vw,1.5rem)] " +
+    '[&>label]:[&>label]:!font-bold [&>label]:!text-[clamp(0.8rem,0.55rem+0.8vw,1.5rem)] ' +
     '[&>label]:!leading-tight [&>label]:!text-[#90D5FF]';
 
 const radioItemStyles =
@@ -76,10 +75,10 @@ export const teamRadioGroupStyles =
     radioItemStyles;
 
 export const radioOptionLabelStyles =
-    "font-['Rubik'] font-bold !text-[clamp(0.8rem,0.5rem+0.7vw,1.35rem)] !leading-tight !text-[#90D5FF]";
+    'font-bold !text-[clamp(0.8rem,0.5rem+0.7vw,1.35rem)] !leading-tight !text-[#90D5FF]';
 
 export const submitButtonStyles =
     'w-[clamp(6rem,3.5rem+5vw,13rem)] h-[clamp(2.25rem,1.4rem+1.5vw,3.25rem)] bg-[#C79B3B] hover:bg-[#d6ab4c] text-[#0f1f38] ' +
-    "font-['Rubik'] font-bold text-[clamp(0.85rem,0.5rem+0.8vw,1.5rem)] rounded-none shadow-[0_4px_4px_rgba(0,0,0,0.4)] transition-colors";
+    'font-bold text-[clamp(0.85rem,0.5rem+0.8vw,1.5rem)] rounded-none shadow-[0_4px_4px_rgba(0,0,0,0.4)] transition-colors';
 
-export const errorTextStyles = "font-['Rubik'] text-sm text-red-400 mt-2";
+export const errorTextStyles = 'text-sm text-red-400 mt-2';

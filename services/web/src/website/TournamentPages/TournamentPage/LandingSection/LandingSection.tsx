@@ -1,6 +1,6 @@
 export default function LandingSection() {
     return (
-        <div className=" h-[80dvh] lg:h-[calc(80dvh-5rem)]">
+        <div className=" h-[50dvh] lg:h-[calc(70dvh-5rem)]">
             <div className="h-full flex flex-col justify-center items-center">
                 <div className="w-fit max-w-[90%] flex flex-col gap-8 sm:gap-12">
                     <div className="font-semibold">
