@@ -93,22 +93,12 @@ class TournamentRegistrationHandlers(BaseHandler):
     async def register_solo_handler(
         self,
         data: TournamentParticipantReqData,
-        background_tasks: BackgroundTasks,
     ) -> Response:
 
         result = await self._tournament_service.register_solo_member(tour_participant=data)
 
         if is_err(result):
             return self.handle_error(result.err_value)
-
-        participant = result.ok_value
-
-        email_result = await self._tournament_mail_service.send_email_upon_registration(
-            tournament_participant=participant, background_tasks=background_tasks
-        )
-
-        if is_err(email_result):
-            return self.handle_error(email_result.err_value)
 
         return Response(
             response_model=TournamentSoloParticipantResponse(tournament_participant=result.ok_value), status_code=201
