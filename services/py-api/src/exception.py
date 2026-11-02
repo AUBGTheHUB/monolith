@@ -222,3 +222,45 @@ class CandidateFormNotFoundError(CustomError):
 
     message = "The specified candidate form was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class TournamentParticipantNotFoundError(CustomError):
+    """Exception raised when the tournament participant cannot be found in the database"""
+
+    message = "The specified tournament participant was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class DuplicateTournamentParticipantError(CustomError):
+    """Exception raised when a tournament participant tries to register with an existing email"""
+
+    message = "Tournament participant with this email already exists"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class TournamentTeamNotFoundError(CustomError):
+    """Exception raised when the tournament team cannot be found in the database"""
+
+    message = "The specified tournament team was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class DuplicateTournamentTeamNameError(CustomError):
+    """Exception raised when a tournament participant tries to register a team with a name that exists"""
+
+    message = "Tournament team with this team already exists"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class DuplicateRegisterTournamentTeamError(CustomError):
+    """Exception raised when a tournament participant tries to register a second team"""
+
+    message = "You have already registered a team!"
+    status_code = status.HTTP_409_CONFLICT
+
+
+class TournamentTeamFullError(CustomError):
+    """Exception raised when the tournament team is full"""
+
+    message = "The specified tournament team is full"
+    status_code = status.HTTP_409_CONFLICT

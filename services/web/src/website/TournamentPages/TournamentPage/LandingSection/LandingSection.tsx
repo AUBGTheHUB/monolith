@@ -1,6 +1,6 @@
 export default function LandingSection() {
     return (
-        <div className=" h-[80dvh] lg:h-[calc(80dvh-5rem)]">
+        <div className=" h-[50dvh] lg:h-[calc(70dvh-5rem)]">
             <div className="h-full flex flex-col justify-center items-center">
                 <div className="w-fit max-w-[90%] flex flex-col gap-8 sm:gap-12">
                     <div className="font-semibold">
@@ -19,7 +19,8 @@ export default function LandingSection() {
                     <div className="w-0 min-w-[85%] text-[#90D5FF] text-xs sm:text-lg">
                         A one-day event that brings together the gaming community, industry professionals and passionate
                         players. Explore the latest in gaming through inspiring talks and discussions, and put your
-                        skills to the test in an exciting League of Legends tournament.
+                        skills to the test in an exciting League of Legends tournament. Conquer the rift for a chance to
+                        win one of our prizes!
                     </div>
                 </div>
             </div>

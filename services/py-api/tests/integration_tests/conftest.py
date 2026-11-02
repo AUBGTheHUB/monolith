@@ -13,6 +13,7 @@ from httpx import AsyncClient, ASGITransport, Response
 from pymongo import AsyncMongoClient
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
+from src.database.model.tournament_registration.tournament_participant_model import LEAGUE_ROLES
 from structlog.stdlib import get_logger
 
 from src.app_entrypoint import app
@@ -68,6 +69,10 @@ TEST_HUB_MEMBER_SOCIAL_LINKS: SocialLinks = {"linkedin": "https://www.linkedin.c
 TEST_HUB_ADMIN_PASSWORD_HASH = "some password hash"
 TEST_HUB_ADMIN_MEMBER_TYPE: MEMBER_TYPE = "admin"
 TEST_HUB_ADMIN_ROLE: Role = Role.MEMBER
+
+TEST_TOURNAMENT_RANK = "strong"
+TEST_TOURNAMENT_LEAGUE_ROLE: LEAGUE_ROLES = "Support"
+TEST_TEAM_CODE = "TEAMCODE"
 
 
 # Due to the `async_client` fixture which is persisted across the integration tests session we need to keep all tests
