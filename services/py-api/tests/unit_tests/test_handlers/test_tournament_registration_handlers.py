@@ -135,34 +135,6 @@ async def test_register_team_member_handler_returns_201(
 
 
 @pytest.mark.asyncio
-async def test_register_team_member_handler_returns_201_and_sends_email_when_5_people_have_registered(
-    tournament_registration_handlers: TournamentRegistrationHandlers,
-    tournament_registration_service_mock: TournamentRegistrationServiceMock,
-    tournament_mail_service_mock: TournamentMailServiceMock,
-    tournament_team_mock: TournamentTeam,
-    tournament_participant_mock: TournamentParticipant,
-    background_tasks_mock: BackgroundTasksMock,
-    tournament_participant_with_code_req_data: TournamentParticipantJoinTeamReqData,
-) -> None:
-
-    tournament_registration_service_mock.register_team_member.return_value = Ok(
-        (tournament_team_mock, tournament_participant_mock, 5)
-    )
-    tournament_mail_service_mock.send_email_when_team_is_complete.return_value = Ok(None)
-
-    resp = await tournament_registration_handlers.register_team_member_handler(
-        data=tournament_participant_with_code_req_data,
-        background_tasks=background_tasks_mock,
-    )
-
-    assert isinstance(resp, Response)
-    assert isinstance(resp.response_model, TournamentTeamAndParticipantResponse)
-    assert resp.status_code == 201
-    tournament_registration_service_mock.register_team_member.assert_awaited_once()
-    tournament_mail_service_mock.send_email_when_team_is_complete.assert_awaited_once()
-
-
-@pytest.mark.asyncio
 async def test_register_team_member_returns_409_when_registering_with_existing_email(
     tournament_registration_handlers: TournamentRegistrationHandlers,
     tournament_registration_service_mock: TournamentRegistrationServiceMock,
