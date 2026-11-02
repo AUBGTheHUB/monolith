@@ -12,11 +12,11 @@ export default function TournamentPage() {
             </Helmet>
             <Navigation />
             <div className="relative overflow-hidden bg-[color:#061F36] bg-[image:radial-gradient(ellipse_at_20%_40%,#2A506B_0%,#163B59_25%,#061F36_60%)] bg-no-repeat bg-top bg-[length:100%_600px]">
-                <div className="hidden xs:block absolute right-0 top-[20dvh] sm:top-[18dvh] lg:top-[calc((80dvh-5rem)/2+3rem)] lg:-translate-y-1/2 h-[34dvh] sm:h-[40dvh] lg:h-[70dvh] translate-x-1/2 opacity-40 sm:opacity-60 lg:opacity-100 pointer-events-none z-0">
+                <div className="pointer-events-none absolute right-0 top-[min(14vw,200px)] z-0 hidden h-[min(47vw,680px)] translate-x-[52%] sm:block xl:top-[6vw] 2xl:-top-4">
                     <img
                         src="/Tournament/hextech.png"
                         alt=""
-                        className="h-full w-auto max-w-none object-contain animate-spin [animation-duration:60s]"
+                        className="h-full w-auto max-w-none animate-[spin_60s_linear_infinite] object-contain"
                     />
                 </div>
 

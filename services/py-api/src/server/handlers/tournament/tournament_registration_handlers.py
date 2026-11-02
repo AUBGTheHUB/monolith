@@ -76,6 +76,13 @@ class TournamentRegistrationHandlers(BaseHandler):
             if is_err(email_result):
                 return self.handle_error(email_result.err_value)
 
+        email_result = await self._tournament_mail_service.send_email_upon_registration(
+            tournament_participant=tournament_participant, background_tasks=background_tasks
+        )
+
+        if is_err(email_result):
+            return self.handle_error(email_result.err_value)
+
         return Response(
             response_model=TournamentTeamAndParticipantResponse(
                 tournament_team=tournament_team, tournament_participant=tournament_participant

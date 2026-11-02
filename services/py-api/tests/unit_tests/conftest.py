@@ -16,6 +16,7 @@ from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.asynchronous.collection import AsyncCollection
 from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
+from result import Ok
 
 from src.database.model.admin.candidates_form.form_model import CandidateForm
 from src.database.model.admin.candidates_form.question_model import (
@@ -1251,6 +1252,7 @@ def tournament_registration_service_mock() -> TournamentRegistrationServiceMock:
 class TournamentMailServiceMock(Protocol):
     send_email_when_team_is_complete: AsyncMock
     send_email_with_team_code: AsyncMock
+    send_email_upon_registration: AsyncMock
 
 
 @pytest.fixture
@@ -1259,6 +1261,7 @@ def tournament_mail_service_mock() -> TournamentMailServiceMock:
 
     service.send_email_when_team_is_complete = AsyncMock()
     service.send_email_with_team_code = AsyncMock()
+    service.send_email_upon_registration = AsyncMock(return_value=Ok(None))
 
     return cast(TournamentMailServiceMock, service)
 

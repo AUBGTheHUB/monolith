@@ -1,4 +1,5 @@
 import community from './assets/community.png';
+import euro from './assets/euro.png';
 import person from './assets/person.png';
 import location from './assets/location.png';
 import calendar from './assets/calendar.png';
@@ -14,6 +15,8 @@ export default function FAQSection() {
                 <FAQCard question="Where?" answer="AUBG, ABF Building — Sports Hall" image={location} />
                 <FAQCard question="How many teams?" answer="8 teams" image={community} />
                 <FAQCard question="How many players?" answer="5 players per team" image={person} />
+                <FAQCard question="Cost to attend the conference?" answer="3€ per person" image={euro} />
+                <FAQCard question="Cost to attend both?" answer="5€ per person" image={euro} />
             </div>
         </div>
     );
