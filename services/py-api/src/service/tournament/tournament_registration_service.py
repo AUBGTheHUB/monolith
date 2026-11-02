@@ -36,7 +36,7 @@ class TournamentRegistrationService:
     async def register_team_member(
         self, tournament_participant: TournamentParticipantReqData, team_code: str
     ) -> Result[
-        tuple[TournamentTeam, TournamentParticipant, int],
+        tuple[TournamentTeam, TournamentParticipant],
         TournamentTeamFullError | TournamentTeamNotFoundError | DuplicateTournamentParticipantError | Exception,
     ]:
         # check if participant exists
@@ -87,7 +87,7 @@ class TournamentRegistrationService:
         if is_err(tournament_team_member_result):
             return tournament_team_member_result
 
-        return Ok((tournament_team, tournament_team_member_result.ok_value, team_members_count_result.ok_value + 1))
+        return Ok((tournament_team, tournament_team_member_result.ok_value))
 
     async def register_team_admin_with_transaction(
         self,

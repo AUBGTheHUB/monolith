@@ -8,7 +8,6 @@ from src.server.schemas.request_schemas.tournament.schemas import (
     TournamentParticipantReqData,
 )
 from src.server.schemas.response_schemas.schemas import Response
-from src.service.tournament.constants import MAX_CAPACITY
 
 from src.server.schemas.response_schemas.tournament.schemas import (
     TournamentSoloParticipantResponse,
@@ -45,6 +44,13 @@ class TournamentRegistrationHandlers(BaseHandler):
         if is_err(email_result):
             return self.handle_error(email_result.err_value)
 
+        second_email_result = await self._tournament_mail_service.send_email_upon_registration(
+            tournament_participant=result.ok_value[1], background_tasks=background_tasks
+        )
+
+        if is_err(second_email_result):
+            return self.handle_error(second_email_result.err_value)
+
         return Response(
             response_model=TournamentTeamAndParticipantResponse(
                 tournament_team=result.ok_value[0], tournament_participant=result.ok_value[1]
@@ -64,17 +70,6 @@ class TournamentRegistrationHandlers(BaseHandler):
 
         tournament_team = result.ok_value[0]
         tournament_participant = result.ok_value[1]
-
-        # TODO
-        if result.ok_value[2] == MAX_CAPACITY:
-            email_result = await self._tournament_mail_service.send_email_when_team_is_complete(
-                tournament_participant=result.ok_value[1],
-                team_name=tournament_team.name,
-                background_tasks=background_tasks,
-            )
-
-            if is_err(email_result):
-                return self.handle_error(email_result.err_value)
 
         email_result = await self._tournament_mail_service.send_email_upon_registration(
             tournament_participant=tournament_participant, background_tasks=background_tasks

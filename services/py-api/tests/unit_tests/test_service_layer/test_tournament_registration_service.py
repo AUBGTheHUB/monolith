@@ -63,7 +63,7 @@ async def test_register_team_member_success(
     )
 
     assert result.is_ok()
-    assert result.ok_value == (tournament_team_mock, tournament_participant_mock, current_members + 1)
+    assert result.ok_value == (tournament_team_mock, tournament_participant_mock)
 
     tournament_participants_repo_mock.find_by_email.assert_awaited_once_with(
         email=tournament_solo_participant_req_data.email

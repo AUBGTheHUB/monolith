@@ -41,7 +41,7 @@ export default function TournamentRegistrationFields({ control, isRegTeamsFull }
                 autoClose: 8000,
                 icon: false,
                 className:
-                    "!bg-[#163B59] !text-[#90D5FF] !border-2 !border-[#C79B3B] !rounded-[12px] !font-['Rubik'] !font-bold !text-sm sm:!text-base !shadow-[0_0_20px_rgba(199,155,59,0.5)]",
+                    '!bg-[#163B59] !text-[#90D5FF] !border-2 !border-[#C79B3B] !rounded-[12px] !font-bold !text-sm sm:!text-base !shadow-[0_0_20px_rgba(199,155,59,0.5)]',
                 progressClassName: '!bg-[#C79B3B]',
             });
         }
