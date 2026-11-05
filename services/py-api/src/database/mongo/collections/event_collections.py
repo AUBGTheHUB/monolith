@@ -1,0 +1,1 @@
+EVENT_ATTENDEE_COLLECTION = "attendee"
