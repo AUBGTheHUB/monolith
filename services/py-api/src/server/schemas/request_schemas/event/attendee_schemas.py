@@ -13,7 +13,6 @@ class AttendeePostReqData(BaseModel):
     email: NonEmptyStr
     has_paid: bool
     ticket_type: ALLOWED_TICKET_TYPES
-    ticket_serial_number: NonEmptyStr
 
 
 class AttendeePatchReqData(BasePatchReqData):

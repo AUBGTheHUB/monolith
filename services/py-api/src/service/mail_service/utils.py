@@ -77,3 +77,13 @@ def load_email_tournament_registration_confirmation_html_template(participant_na
     participant_greeting = f"{participant_name}"
 
     return email_template.format(participant_greeting=participant_greeting)
+
+
+def load_email_attendee_ticket_html_template(name: str) -> str:
+    base_dir = dirname(__file__)
+    template_path = join(base_dir, "email_templates", "event-ticket.html")
+
+    with open(template_path, "r", encoding="utf-8") as file:
+        email_template = file.read()
+
+    return email_template.format(attendee_greeting=name)
