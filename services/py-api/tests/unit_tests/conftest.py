@@ -1,9 +1,10 @@
 # mypy: disable_error_code=method-assign
 # This is because we have TypedMocks which mypy thinks are the actual classes
+from os import environ
 
+environ.setdefault("WW_LIVE_KEY", "fake_ww_key")
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
@@ -11,6 +12,7 @@ import pytest
 from PIL import Image
 from bson import ObjectId
 from fastapi import BackgroundTasks, UploadFile
+from httpx import AsyncClient, Response
 from pymongo import AsyncMongoClient
 from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.asynchronous.collection import AsyncCollection
@@ -18,6 +20,13 @@ from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
 from result import Ok
 
+from src.service.mail_service.mail_clients.base_mail_client import MailClient
+from src.service.event.tickets_service import TicketsService
+from src.service.mail_service.mail_service import MailService
+from src.database.model.event.attendee_model import Attendee
+from src.database.repository.event.attendees_repository import AttendeesRepository
+from src.server.schemas.request_schemas.event.attendee_schemas import AttendeePostReqData, AttendeePatchReqData
+from src.service.event.attendees_service import AttendeesService
 from src.database.model.admin.candidates_form.form_model import CandidateForm
 from src.database.model.admin.candidates_form.question_model import (
     Question,
@@ -781,6 +790,27 @@ def tournament_participants_repo_mock() -> TournamentParticipantsRepoMock:
     return cast(TournamentParticipantsRepoMock, participants_repo)
 
 
+class AttendeesRepoMock(Protocol):
+    fetch_by_id: AsyncMock
+    fetch_all: AsyncMock
+    update: AsyncMock
+    create: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def attendees_repo_mock() -> AttendeesRepoMock:
+    attendees_repo = _create_typed_mock(AttendeesRepository)
+
+    attendees_repo.fetch_by_id = AsyncMock()
+    attendees_repo.fetch_all = AsyncMock()
+    attendees_repo.update = AsyncMock()
+    attendees_repo.create = AsyncMock()
+    attendees_repo.delete = AsyncMock()
+
+    return cast(AttendeesRepoMock, attendees_repo)
+
+
 # ======================================
 # Mocking Repository layer classes end
 # ======================================
@@ -905,6 +935,75 @@ def judges_service_mock() -> JudgesServiceMock:
     service.delete = AsyncMock()
 
     return cast(JudgesServiceMock, service)
+
+
+class MailServiceMock(Protocol):
+    send_email_with_ticket: AsyncMock
+    send_update_email_with_ticket: AsyncMock
+
+
+@pytest.fixture
+def mail_service_mock() -> MailServiceMock:
+    service = _create_typed_mock(MailService)
+
+    service.send_email_with_ticket = AsyncMock()
+    service.send_update_email_with_ticket = AsyncMock()
+
+    return cast(MailServiceMock, service)
+
+
+class MailClientMock(Protocol):
+    send_email: AsyncMock
+    send_email_with_attachments: AsyncMock
+
+
+@pytest.fixture
+def mail_client_mock() -> MailClientMock:
+    client = _create_typed_mock(MailClient)
+
+    client.send_email = AsyncMock()
+    client.send_email_with_attachments = AsyncMock()
+
+    return cast(MailClientMock, client)
+
+
+class TicketsServiceMock(Protocol):
+    _format_fields: MagicMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def tickets_service_mock() -> TicketsServiceMock:
+    service = _create_typed_mock(TicketsService)
+
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(TicketsServiceMock, service)
+
+
+class AttendeesServiceMock(Protocol):
+    get_all: AsyncMock
+    get: AsyncMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def attendees_service_mock() -> AttendeesServiceMock:
+    service = _create_typed_mock(AttendeesService)
+
+    service.get_all = AsyncMock()
+    service.get = AsyncMock()
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(AttendeesServiceMock, service)
 
 
 class HackathonUtilityServiceMock(Protocol):
@@ -1275,8 +1374,35 @@ def tournament_code_service_mock() -> TournamentCodeServiceMock:
     service = _create_typed_mock(TournamentCodeService)
 
     service.generate_team_code = Mock()
-
     return cast(TournamentCodeServiceMock, service)
+
+
+class HttpClientResponseMock(Protocol):
+    raise_for_status: MagicMock
+    json: MagicMock
+
+
+@pytest.fixture
+def http_client_response_mock() -> HttpClientResponseMock:
+    client = _create_typed_mock(Response)
+    client.raise_for_status = MagicMock()
+    client.json = MagicMock()
+    return cast(HttpClientResponseMock, client)
+
+
+class HttpClientMock(Protocol):
+    post: AsyncMock
+    put: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def http_client_mock() -> HttpClientMock:
+    client = _create_typed_mock(AsyncClient)
+    client.post = AsyncMock()
+    client.put = AsyncMock()
+    client.delete = AsyncMock()
+    return cast(HttpClientMock, client)
 
 
 # =================================================
@@ -1971,6 +2097,45 @@ def tournament_participant_with_code_req_data(
     return TournamentParticipantJoinTeamReqData(
         tournament_participant=tournament_solo_participant_req_data, team_code=TEST_TEAM_CODE
     )
+
+
+@pytest.fixture
+def attendee_mock() -> Attendee:
+    return Attendee(
+        name="Test Attendee",
+        email="test_att@email.com",
+        has_paid=False,
+        ticket_type="GUEST",
+        ticket_serial_number="ZmFrZS1wYXNzLWJhc2U2NA==",
+    )
+
+
+@pytest.fixture
+def attendee_post_mock() -> AttendeePostReqData:
+    return AttendeePostReqData(
+        name="Test Attendee",
+        email="test_att@email.com",
+        has_paid=False,
+        ticket_type="GUEST",
+    )
+
+
+@pytest.fixture
+def attendee_patch_mock() -> AttendeePatchReqData:
+    return AttendeePatchReqData(
+        name="Test Attendee",
+        email="test_att@email.com",
+        has_paid=False,
+        ticket_type="GUEST",
+        ticket_serial_number="1234",
+    )
+
+
+@pytest.fixture
+def attendee_no_id_mock(attendee_mock: Attendee) -> dict[str, Any]:
+    document = attendee_mock.dump_as_mongo_db_document()
+    document.pop("_id")
+    return document
 
 
 # =================================================
