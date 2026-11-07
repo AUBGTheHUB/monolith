@@ -36,17 +36,12 @@ export const MobileNavComponent = () => {
                         </SheetTrigger>
                         <SheetContent onCloseAutoFocus={(event) => event.preventDefault()}>
                             <div className={NAV_ITEM}>
-                                <a href="#about" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
-                                    About
-                                </a>
-                            </div>
-                            <div className={NAV_ITEM}>
                                 <a href="#faq" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                                     FAQ
                                 </a>
                             </div>
                             <div className={NAV_ITEM}>
-                                <a className="text-[#061F36] hover:text-sky-600" href="/tournament/registration">
+                                <a className="text-[#C79B3B] hover:text-[#C79B3B]" href="/tournament/registration">
                                     REGISTER NOW
                                 </a>
                             </div>

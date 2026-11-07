@@ -1,34 +1,78 @@
-export default function TournamentRegistrationForm() {
-    return (
-        <div className="relative min-h-screen w-full bg-white overflow-hidden flex items-center justify-center px-4">
-            <div className="hidden xs:block absolute right-0 top-[68%] h-[34dvh] sm:h-[40dvh] lg:h-[70dvh] translate-x-1/2 -translate-y-1/2 opacity-40 sm:opacity-60 lg:opacity-100 pointer-events-none z-0">
-                <img
-                    src="/Tournament/hextech.png"
-                    alt=""
-                    className="h-full w-auto max-w-none object-contain animate-spin [animation-duration:60s]"
-                />
-            </div>
-            <div className="absolute left-0 top-[30%] h-[50dvh] lg:h-[70dvh] -translate-x-1/2 -translate-y-1/2 -scale-x-100 pointer-events-none z-0">
-                <img
-                    src="/Tournament/hextech.png"
-                    alt=""
-                    className="h-full w-auto max-w-none object-contain animate-spin [animation-duration:60s] [animation-direction:reverse]"
-                />
-            </div>
-            <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-[2rem] md:gap-[4.063rem] lg:gap-[5rem]">
-                <div className="flex flex-col text-center md:text-left">
-                    <h1 className="text-[4rem] md:text-[6rem]  font-orbitron text-[#C79B3B] leading-[1.25]">
-                        Coming soon....
-                    </h1>
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { registrationSchema, type TournamentRegistrationFormData } from './schema';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useMutation } from '@tanstack/react-query';
 
-                    <a
-                        href="/tournament"
-                        className="text-[#C79B3B] hover:text-[#DC2626] font-oxanium text-[0.75rem] md:text-[0.875rem] lg:text-[1.125rem] leading-[1.25] underline"
-                    >
-                        Go to tournament &gt;
-                    </a>
-                </div>
-            </div>
-        </div>
+import { fieldGridStyles, formBlurBgStyles, formCardStyles, submitButtonStyles } from './styles';
+import TournamentRegistrationFields from './components/TournamentRegistrationFields';
+import { registerParticipant } from './api';
+
+type TournamentRegistrationFormProps = {
+    isRegTeamsFull: boolean;
+};
+
+export default function TournamentRegistrationForm({ isRegTeamsFull }: TournamentRegistrationFormProps) {
+    const defaultValues = {
+        full_name: '',
+        age: undefined,
+        email: '',
+        university: '',
+        address: '',
+        team_option: undefined,
+        team_code: '',
+        team_name: '',
+        rank: '',
+        primary_role: undefined,
+        alternative_role: undefined,
+        share_info_with_sponsors: undefined,
+    };
+
+    const form = useForm<TournamentRegistrationFormData>({
+        resolver: zodResolver(registrationSchema),
+        defaultValues: defaultValues,
+    });
+
+    const { control, handleSubmit } = form;
+
+    const { mutate } = useMutation({
+        mutationFn: registerParticipant,
+        onSuccess: () => {
+            toast.success('You have successfully signed up!', {
+                position: 'top-right',
+                className: 'bg-[#213a5a] text-[#a9ccf0] border border-[#c9a24a]',
+            });
+            form.reset();
+        },
+        onError: () => {
+            toast.error('Something went wrong. Please try again.', { position: 'top-right' });
+        },
+    });
+
+    const onSubmit = (data: TournamentRegistrationFormData) => {
+        mutate(data);
+    };
+
+    return (
+        <>
+            <FormProvider {...form}>
+                <form onSubmit={handleSubmit(onSubmit)} className={formCardStyles}>
+                    <div className={formBlurBgStyles} />
+
+                    <div className={fieldGridStyles}>
+                        <TournamentRegistrationFields control={control} isRegTeamsFull={isRegTeamsFull} />
+                    </div>
+
+                    <div className="flex justify-end mt-[clamp(1.5rem,5vw,2.5rem)]">
+                        <Button type="submit" className={submitButtonStyles}>
+                            SEND
+                        </Button>
+                    </div>
+                </form>
+            </FormProvider>
+            <ToastContainer position="top-right" autoClose={5000} pauseOnHover draggable closeOnClick />
+        </>
     );
 }

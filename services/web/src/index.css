@@ -19,36 +19,36 @@
 }
 
 .scroll-section-outer {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .scroll-section-inner {
-  height: 100vh;
-  width: 350vw;
-  display: flex;
-  flex-direction: row;
-  position: relative;
+    height: 100vh;
+    width: 350vw;
+    display: flex;
+    flex-direction: row;
+    position: relative;
 }
 
 .scroll-section {
-  height: 100vh;
-  width: 40vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    height: 100vh;
+    width: 40vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 768px) {
-  .scroll-section {
-    width: 70vw;
-  }
+    .scroll-section {
+        width: 70vw;
+    }
 }
 
 .scroll-section h3 {
-  color: var(--primaryTextColor);
-  letter-spacing: var(--headlineMedium);
-  font-size: var(--headlineMedium);
-  text-transform: uppercase;
+    color: var(--primaryTextColor);
+    letter-spacing: var(--headlineMedium);
+    font-size: var(--headlineMedium);
+    text-transform: uppercase;
 }
 
 html {
