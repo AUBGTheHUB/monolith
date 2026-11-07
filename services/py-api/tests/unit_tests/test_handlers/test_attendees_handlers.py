@@ -5,7 +5,7 @@ from typing import cast
 import pytest
 from result import Err, Ok
 
-from server.schemas.request_schemas.event.attendee_schemas import AttendeePostReqData, AttendeePatchReqData
+from src.server.schemas.request_schemas.event.attendee_schemas import AttendeePostReqData, AttendeePatchReqData
 from src.database.model.event.attendee_model import Attendee
 from src.exception import AttendeeNotFoundError
 from src.server.handlers.event.attendees_handlers import AttendeesHandlers

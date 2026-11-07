@@ -1,9 +1,10 @@
 # mypy: disable_error_code=method-assign
 # This is because we have TypedMocks which mypy thinks are the actual classes
+from os import environ
 
+environ.setdefault("WW_LIVE_KEY", "fake_ww_key")
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from os import environ
 from typing import Any, cast
 from unittest.mock import AsyncMock, MagicMock, Mock
 
@@ -19,7 +20,7 @@ from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
 from result import Ok
 
-from service.mail_service.mail_clients.base_mail_client import MailClient
+from src.service.mail_service.mail_clients.base_mail_client import MailClient
 from src.service.event.tickets_service import TicketsService
 from src.service.mail_service.mail_service import MailService
 from src.database.model.event.attendee_model import Attendee
