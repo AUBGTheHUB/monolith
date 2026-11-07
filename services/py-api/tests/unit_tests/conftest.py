@@ -11,6 +11,7 @@ import pytest
 from PIL import Image
 from bson import ObjectId
 from fastapi import BackgroundTasks, UploadFile
+from httpx import AsyncClient, Response
 from pymongo import AsyncMongoClient
 from pymongo.asynchronous.client_session import AsyncClientSession
 from pymongo.asynchronous.collection import AsyncCollection
@@ -18,7 +19,8 @@ from pymongo.asynchronous.cursor import AsyncCursor
 from pymongo.asynchronous.database import AsyncDatabase
 from result import Ok
 
-from src.service.mail_service.mail_clients.base_mail_client import MailClient
+from service.mail_service.mail_clients.base_mail_client import MailClient
+from src.service.event.tickets_service import TicketsService
 from src.service.mail_service.mail_service import MailService
 from src.database.model.event.attendee_model import Attendee
 from src.database.repository.event.attendees_repository import AttendeesRepository
@@ -934,6 +936,54 @@ def judges_service_mock() -> JudgesServiceMock:
     return cast(JudgesServiceMock, service)
 
 
+class MailServiceMock(Protocol):
+    send_email_with_ticket: AsyncMock
+    send_update_email_with_ticket: AsyncMock
+
+
+@pytest.fixture
+def mail_service_mock() -> MailServiceMock:
+    service = _create_typed_mock(MailService)
+
+    service.send_email_with_ticket = AsyncMock()
+    service.send_update_email_with_ticket = AsyncMock()
+
+    return cast(MailServiceMock, service)
+
+
+class MailClientMock(Protocol):
+    send_email: AsyncMock
+    send_email_with_attachments: AsyncMock
+
+
+@pytest.fixture
+def mail_client_mock() -> MailClientMock:
+    client = _create_typed_mock(MailClient)
+
+    client.send_email = AsyncMock()
+    client.send_email_with_attachments = AsyncMock()
+
+    return cast(MailClientMock, client)
+
+
+class TicketsServiceMock(Protocol):
+    _format_fields: MagicMock
+    create: AsyncMock
+    update: AsyncMock
+    delete: AsyncMock
+
+
+@pytest.fixture
+def tickets_service_mock() -> TicketsServiceMock:
+    service = _create_typed_mock(TicketsService)
+
+    service.create = AsyncMock()
+    service.update = AsyncMock()
+    service.delete = AsyncMock()
+
+    return cast(TicketsServiceMock, service)
+
+
 class AttendeesServiceMock(Protocol):
     get_all: AsyncMock
     get: AsyncMock
@@ -1323,34 +1373,35 @@ def tournament_code_service_mock() -> TournamentCodeServiceMock:
     service = _create_typed_mock(TournamentCodeService)
 
     service.generate_team_code = Mock()
-
     return cast(TournamentCodeServiceMock, service)
 
 
-class MailClientMock(Protocol):
-    send_email: AsyncMock
-    send_email_with_attachments: AsyncMock
+class HttpClientResponseMock(Protocol):
+    raise_for_status: MagicMock
+    json: MagicMock
 
 
 @pytest.fixture
-def mail_client_mock() -> MailClientMock:
-    mail_client = _create_typed_mock(MailClient)
+def http_client_response_mock() -> HttpClientResponseMock:
+    client = _create_typed_mock(Response)
+    client.raise_for_status = MagicMock()
+    client.json = MagicMock()
+    return cast(HttpClientResponseMock, client)
 
-    mail_client.send_email = AsyncMock()
-    mail_client.send_email_with_attachments = AsyncMock()
-    return cast(MailClientMock, mail_client)
 
-
-class MailServiceMock(Protocol):
-    send_email_with_ticket: AsyncMock
+class HttpClientMock(Protocol):
+    post: AsyncMock
+    put: AsyncMock
+    delete: AsyncMock
 
 
 @pytest.fixture
-def mail_service_mock(mail_client_mock: MagicMock) -> MailServiceMock:
-    service = _create_typed_mock(MailService)
-
-    service.send_email_with_ticket = AsyncMock()
-    return cast(MailServiceMock, service)
+def http_client_mock() -> HttpClientMock:
+    client = _create_typed_mock(AsyncClient)
+    client.post = AsyncMock()
+    client.put = AsyncMock()
+    client.delete = AsyncMock()
+    return cast(HttpClientMock, client)
 
 
 # =================================================
@@ -2054,6 +2105,7 @@ def attendee_mock() -> Attendee:
         email="test_att@email.com",
         has_paid=False,
         ticket_type="GUEST",
+        ticket_serial_number="ZmFrZS1wYXNzLWJhc2U2NA==",
     )
 
 

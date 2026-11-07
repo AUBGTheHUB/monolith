@@ -52,7 +52,7 @@ class TicketsService:
         barcode_value: str,
         primary_fields: dict[str | None, str],
         secondary_fields: dict[str | None, str],
-    ) -> Result[tuple[str, str], Exception]:
+    ) -> Result[tuple[str, str, str], Exception]:
         header_fields: list[TicketField] = [
             TicketField(label="Ticket Type", value=ticket_type),
         ]
@@ -73,8 +73,9 @@ class TicketsService:
             response.raise_for_status()
             data = response.json()
             pass_data: str = data["applePass"]
+            google_url: str = data["googleSaveUrl"]
 
-            return Ok((pass_data, str(data["serialNumber"])))
+            return Ok((pass_data, str(data["serialNumber"]), google_url))
 
         except Exception as e:
             LOG.error("There was an error when creating ticket", error=e)

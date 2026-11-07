@@ -41,9 +41,10 @@ class AttendeesService:
         if is_err(ticket_result):
             return ticket_result
 
-        result_value: tuple[str, str] = ticket_result.ok_value
+        result_value: tuple[str, str, str] = ticket_result.ok_value
         ticket_data = result_value[0]
         ticket_number = result_value[1]
+        ticket_google_url = result_value[2]
 
         attendee = Attendee(
             name=name, email=email, has_paid=has_paid, ticket_type=ticket_type, ticket_serial_number=ticket_number
@@ -57,6 +58,7 @@ class AttendeesService:
         email_result = await self._mail_service.send_email_with_ticket(
             attendee=attendee,
             pass_data=ticket_data,
+            google_url=ticket_google_url,
             background_tasks=background_tasks,
         )
 
@@ -105,16 +107,11 @@ class AttendeesService:
         if is_err(ticket_result):
             return ticket_result
 
-        result_value: tuple[str, str] = ticket_result.ok_value
-        ticket_data = result_value[0]
-        ticket_number = result_value[1]
-
         params = UpdateAttendeeParams(
             name=name,
             email=email,
             has_paid=has_paid,
             ticket_type=ticket_type,
-            ticket_serial_number=ticket_number,
         )
 
         repo_result = await self._repo.update(attendee_id, params)
@@ -122,9 +119,8 @@ class AttendeesService:
         if is_err(repo_result):
             return repo_result
 
-        email_result = await self._mail_service.send_email_with_ticket(
-            attendee=attendee.ok_value,
-            pass_data=ticket_data,
+        email_result = await self._mail_service.send_update_email_with_ticket(
+            attendee=repo_result.ok_value,
             background_tasks=background_tasks,
         )
 
