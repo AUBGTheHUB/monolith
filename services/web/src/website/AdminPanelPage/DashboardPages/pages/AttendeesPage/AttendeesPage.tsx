@@ -5,20 +5,21 @@ import { cn } from '@/lib/utils.ts';
 import { apiClient } from '@/services/apiClient.ts';
 import type { Attendee } from '@/types/attendee.ts';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Fragment, useEffect } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router';
 import { Styles } from '../../../AdminStyle.ts';
 import { AttendeesPageMessages as MESSAGES } from './messages.tsx';
-import { ATTENDEES_ENDPOINT, ATTENDEES_QUERY_KEY, ATTENDEES_ROUTE, unwrapAttendees } from './constants.ts';
+import { ATTENDEES_ENDPOINT, ATTENDEES_QUERY_KEY, ATTENDEES_ROUTE, hasTicketBeenSent } from './constants.ts';
 
 export function AttendeesPage() {
     const queryClient = useQueryClient();
+    const [sentIds, setSentIds] = useState<Set<string>>(new Set());
 
     const { data, isLoading, error, isError } = useQuery({
         queryKey: [ATTENDEES_QUERY_KEY, 'list'],
-        queryFn: () => apiClient.get<{ attendees: Attendee[] } | Attendee[]>(ATTENDEES_ENDPOINT),
-        select: unwrapAttendees,
+        queryFn: () => apiClient.get<{ attendees: Attendee[] }>(ATTENDEES_ENDPOINT),
+        select: (res) => res.attendees,
     });
 
     useEffect(() => {
@@ -39,7 +40,12 @@ export function AttendeesPage() {
     const sendTicketMutation = useMutation({
         mutationFn: (attendee: Attendee) =>
             apiClient.post<unknown, { id: string }>(`${ATTENDEES_ENDPOINT}/send-ticket`, { id: attendee.id }),
-        onSuccess: (_res, attendee) => alert(MESSAGES.SEND_TICKET_SUCCESS(attendee.name)),
+        onSuccess: async (_res, attendee) => {
+            // Lock the button straight away, then refetch so the list matches the backend.
+            setSentIds((ids) => new Set(ids).add(attendee.id));
+            alert(MESSAGES.SEND_TICKET_SUCCESS(attendee.name));
+            await queryClient.invalidateQueries({ queryKey: [ATTENDEES_QUERY_KEY] });
+        },
         onError: (error) => alert(error.message),
     });
 
@@ -49,7 +55,10 @@ export function AttendeesPage() {
         }
     };
 
+    const isTicketSent = (attendee: Attendee) => hasTicketBeenSent(attendee) || sentIds.has(attendee.id);
+
     const handleSendTicket = (attendee: Attendee) => {
+        if (isTicketSent(attendee)) return;
         if (window.confirm(MESSAGES.SEND_TICKET_CONFIRM(attendee.name, attendee.email))) {
             sendTicketMutation.mutate(attendee);
         }
@@ -127,6 +136,11 @@ export function AttendeesPage() {
                             >
                                 {attendee.has_paid ? MESSAGES.PAID : MESSAGES.NOT_PAID}
                             </Badge>
+                            {isTicketSent(attendee) && (
+                                <Badge variant="outline" className="border-[#00B2FF]/40 text-[#7FD8FF]">
+                                    {MESSAGES.TICKET_SENT_BADGE}
+                                </Badge>
+                            )}
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-3 mt-auto">
@@ -142,12 +156,14 @@ export function AttendeesPage() {
                             <Button
                                 style={{ backgroundColor: Styles.colors.hubCyan }}
                                 className="flex-1 text-white font-semibold hover:opacity-90 transition-all"
-                                disabled={isSendingTicketFor(attendee.id)}
+                                disabled={isTicketSent(attendee) || isSendingTicketFor(attendee.id)}
                                 onClick={() => handleSendTicket(attendee)}
                             >
-                                {isSendingTicketFor(attendee.id)
-                                    ? MESSAGES.SENDING_TICKET_BUTTON
-                                    : MESSAGES.SEND_TICKET_BUTTON}
+                                {isTicketSent(attendee)
+                                    ? MESSAGES.TICKET_SENT_BUTTON
+                                    : isSendingTicketFor(attendee.id)
+                                      ? MESSAGES.SENDING_TICKET_BUTTON
+                                      : MESSAGES.SEND_TICKET_BUTTON}
                             </Button>
 
                             <Button

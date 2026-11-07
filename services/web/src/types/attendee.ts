@@ -1,4 +1,4 @@
-export type TicketType = 'guest' | 'participant';
+export type TicketType = 'GUEST' | 'PARTICIPANT';
 
 export type Attendee = {
     id: string;
@@ -6,6 +6,6 @@ export type Attendee = {
     email: string;
     ticket_type: TicketType;
     has_paid: boolean;
-    created_at?: string;
-    updated_at?: string;
+    // Set by the backend once the ticket has been created and emailed
+    ticket_serial_number: string | null;
 };

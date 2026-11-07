@@ -58,9 +58,11 @@ export const AttendeesPageMessages = {
     DELETE_BUTTON: 'Delete',
     SEND_TICKET_BUTTON: 'Send Ticket',
     SENDING_TICKET_BUTTON: 'Sending...',
+    TICKET_SENT_BUTTON: 'Ticket Sent',
+    TICKET_SENT_BADGE: 'Ticket sent',
     TICKET_TYPE_LABELS: {
-        guest: 'Guest',
-        participant: 'Participant',
+        GUEST: 'Guest',
+        PARTICIPANT: 'Participant',
     },
     PAID: 'Paid',
     NOT_PAID: 'Not paid',
@@ -112,8 +114,8 @@ export const AttendeesFormFieldMessages = {
         EMAIL: 'Enter attendee email (e.g., name@example.com)',
     },
     TICKET_TYPE_OPTIONS: [
-        { label: 'Guest', value: 'guest' },
-        { label: 'Participant', value: 'participant' },
+        { label: 'Guest', value: 'GUEST' },
+        { label: 'Participant', value: 'PARTICIPANT' },
     ],
     HAS_PAID_OPTIONS: [
         { label: 'Yes', value: true },

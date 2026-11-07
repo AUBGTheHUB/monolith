@@ -13,7 +13,7 @@ export const attendeeSchema = z.object({
 
     email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Please enter a valid email' }),
 
-    ticket_type: z.enum(['guest', 'participant'], { errorMap: () => ({ message: 'Please select a ticket type' }) }),
+    ticket_type: z.enum(['GUEST', 'PARTICIPANT'], { errorMap: () => ({ message: 'Please select a ticket type' }) }),
 
     has_paid: z.boolean({
         required_error: 'Please select whether the ticket is paid',

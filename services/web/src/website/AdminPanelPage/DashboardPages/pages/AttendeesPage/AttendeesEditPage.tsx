@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { Styles } from '../../../AdminStyle.ts';
 import { AttendeeFormFields } from './components/AttendeeFormFields.tsx';
-import { ATTENDEES_ENDPOINT, ATTENDEES_QUERY_KEY, ATTENDEES_ROUTE, unwrapAttendee } from './constants.ts';
+import { ATTENDEES_ENDPOINT, ATTENDEES_QUERY_KEY, ATTENDEES_ROUTE } from './constants.ts';
 import { AttendeesAddMessages, AttendeesEditMessages } from './messages.tsx';
 import { type AttendeeFormData, attendeeSchema } from './validation/validation.tsx';
 
@@ -29,7 +29,7 @@ export function AttendeesEditPage() {
             name: '',
             email: '',
             ticket_type: undefined,
-            has_paid: false,
+            has_paid: undefined,
         },
         mode: 'onTouched',
     });
@@ -39,9 +39,9 @@ export function AttendeesEditPage() {
     // Fetch the attendee when editing
     const { data: attendee, isLoading } = useQuery({
         queryKey: [ATTENDEES_QUERY_KEY, id],
-        queryFn: () => apiClient.get<{ attendee: Attendee } | Attendee>(`${ATTENDEES_ENDPOINT}/${id}`),
+        queryFn: () => apiClient.get<{ attendee: Attendee }>(`${ATTENDEES_ENDPOINT}/${id}`),
         enabled: isEditMode,
-        select: unwrapAttendee,
+        select: (res) => res.attendee,
     });
 
     // Prefill the form when editing
@@ -60,7 +60,7 @@ export function AttendeesEditPage() {
         mutationFn: (data: AttendeeFormData) =>
             isEditMode
                 ? apiClient.patch<Attendee, AttendeeFormData>(`${ATTENDEES_ENDPOINT}/${id}`, data)
-                : apiClient.post<Attendee, AttendeeFormData>(`${ATTENDEES_ENDPOINT}/`, data),
+                : apiClient.post<Attendee, AttendeeFormData>(ATTENDEES_ENDPOINT, data),
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: [ATTENDEES_QUERY_KEY] });
             navigate(ATTENDEES_ROUTE);
