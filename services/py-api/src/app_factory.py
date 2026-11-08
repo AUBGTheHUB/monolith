@@ -12,6 +12,8 @@ from src.server.handlers.admin.candidates_form.forms_handlers import CandidateFo
 from src.server.handlers.admin.candidates_form.questions_handlers import QuestionsHandlers
 from src.server.handlers.user_handlers import UserHandlers
 from src.service.admin.candidates_form.forms_service import CandidateFormsService
+from src.server.handlers.http_handlers import TournamentHandlers
+from src.server.handlers.tournament.group_handlers import GroupHandlers
 from src.service.admin.candidates_form.questions_service import QuestionsService
 from src.service.auth.auth_token_service import AuthTokenService
 from structlog.stdlib import get_logger
@@ -22,6 +24,7 @@ from src.database.mongo.transaction_manager import MongoTransactionManager
 from src.database.repository.feature_switch_repository import FeatureSwitchRepository
 from src.database.repository.hackathon.participants_repository import ParticipantsRepository
 from src.database.repository.hackathon.teams_repository import TeamsRepository
+from src.database.repository.tournament.groups_repository import GroupsRepository
 from src.server.exception_handler import ExceptionHandlers
 from src.server.handlers.admin.hub_members_handlers import HubMembersHandlers
 from src.server.handlers.admin.judges_handlers import JudgesHandlers
@@ -57,6 +60,7 @@ from src.service.hackathon.participant_service import ParticipantService
 from src.service.hackathon.registration_service import RegistrationService
 from src.service.hackathon.verification_service import VerificationService
 from src.service.hackathon.team_service import TeamService
+from src.service.tournament.group_service import GroupService
 from src.service.utility.aws.aws_service import AwsService
 from src.service.utility.image_storing.image_storing_service import ImageStoringService
 from src.service.utility.jwt_utils.codec import JwtUtility
@@ -142,6 +146,7 @@ def create_app() -> FastAPI:
     tx_manager = MongoTransactionManager(client=mongo_db_client_provider())
     participants_repo = ParticipantsRepository(db_manager=db_manager)
     teams_repo = TeamsRepository(db_manager=db_manager)
+    groups_repo = GroupsRepository(db_manager=db_manager)
     fs_repo = FeatureSwitchRepository(db_manager=db_manager)
     sponsors_repo = SponsorsRepository(db_manager=db_manager)
     mentors_repo = MentorsRepository(db_manager=db_manager)
@@ -175,6 +180,11 @@ def create_app() -> FastAPI:
         teams_repo=teams_repo,
         participant_service=participant_service,
         participant_repo=participants_repo,
+        tx_manager=tx_manager,
+    )
+    group_service = GroupService(
+        groups_repo=groups_repo,
+        team_service=team_service,
         tx_manager=tx_manager,
     )
     admin_team_service = AdminTeamService(
@@ -236,6 +246,11 @@ def create_app() -> FastAPI:
             ),
             participant_handlers=ParticipantHandlers(service=registration_service),
             verification_handlers=VerificationHandlers(service=verification_service, jwt_utility=jwt_utility),
+        ),
+        tournament_handlers=TournamentHandlers(
+            group_handlers=GroupHandlers(
+                group_service=group_service,
+            ),
         ),
         admin_handlers=AdminHandlers(
             sponsors_handlers=SponsorsHandlers(service=sponsors_service),
