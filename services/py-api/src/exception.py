@@ -222,3 +222,10 @@ class CandidateFormNotFoundError(CustomError):
 
     message = "The specified candidate form was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class GroupNotFoundError(CustomError, Exception):
+    """Exception raised when the specified group does not exist."""
+
+    message = "The specified group was not found"
+    status_code = status.HTTP_404_NOT_FOUND
