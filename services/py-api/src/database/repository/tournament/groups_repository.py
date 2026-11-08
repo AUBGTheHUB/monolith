@@ -86,7 +86,7 @@ class GroupsRepository(CRUDRepository[Group]):
     ) -> Result[Group, GroupNotFoundError | Exception]:
         try:
             filter_query = {"_id": ObjectId(obj_id)}
-            update_query = {"$set": obj_fields.model_dump()}
+            update_query = {"$set": obj_fields.model_dump(exclude_unset=True)}
 
             result = await self._collection.find_one_and_update(
                 filter=filter_query,
