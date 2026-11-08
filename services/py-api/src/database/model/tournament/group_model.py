@@ -1,10 +1,13 @@
 from dataclasses import dataclass
 from typing import Annotated, Any
 
-from bson import ObjectId
-from pydantic import Field
+from pydantic import ConfigDict, Field
 
-from src.database.model.base_model import BaseDbModel, UpdateParams
+from src.database.model.base_model import (
+    BaseDbModel,
+    SerializableObjectId,
+    UpdateParams,
+)
 
 
 @dataclass(kw_only=True)
@@ -14,9 +17,9 @@ class Group(BaseDbModel):
     round: int
     bracket_number: Annotated[int, Field(ge=1, le=4)]
 
-    first_team_id: ObjectId | None = None
-    second_team_id: ObjectId | None = None
-    winner_id: ObjectId | None = None
+    first_team_id: SerializableObjectId | None = None
+    second_team_id: SerializableObjectId | None = None
+    winner_id: SerializableObjectId | None = None
 
     def dump_as_json(self) -> dict[str, Any]:
         return {
@@ -46,9 +49,11 @@ class Group(BaseDbModel):
 class GroupUpdateParams(UpdateParams):
     """Defines the fields that can be updated for a Group."""
 
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     round: int | None = None
     bracket_number: Annotated[int, Field(ge=1, le=4)] | None = None
 
-    first_team_id: ObjectId | None = None
-    second_team_id: ObjectId | None = None
-    winner_id: ObjectId | None = None
+    first_team_id: SerializableObjectId | None = None
+    second_team_id: SerializableObjectId | None = None
+    winner_id: SerializableObjectId | None = None
