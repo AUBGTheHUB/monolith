@@ -2,6 +2,7 @@ import logo from './images/hublogo.webp';
 import hamburgerMenuIcon from './images/hamburger_menu.svg';
 import photoIcon from './images/past_events.svg';
 import threeDots from './images/departments.svg';
+import controller from './images/controller.svg';
 import codeIcon from './images/hackathon.svg';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { useState } from 'react';
@@ -51,6 +52,12 @@ export default function MobileNavComponent() {
                         <a href="/hackathon" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
                             <img src={codeIcon} className={NAV_ITEM_IMG} />
                             Hackathon
+                        </a>
+                    </div>
+                    <div className={NAV_ITEM}>
+                        <a href="/tournament" className={NAV_ITEM_A} onClick={() => setIsOpen(false)}>
+                            <img src={controller} className={NAV_ITEM_IMG} />
+                            Tournament
                         </a>
                     </div>
                 </SheetContent>

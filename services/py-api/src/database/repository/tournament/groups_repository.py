@@ -8,7 +8,7 @@ from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
-from src.database.mongo.collections.tournament_collections import GROUPS_COLLECTION
+from src.database.mongo.collections.tournament_collections import TOURNAMENT_GROUPS_COLLECTION
 from src.database.model.tournament.group_model import Group
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import GroupNotFoundError
@@ -18,7 +18,7 @@ LOG = get_logger()
 
 class GroupsRepository(CRUDRepository[Group]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
-        self._collection = db_manager.get_collection(GROUPS_COLLECTION)
+        self._collection = db_manager.get_collection(TOURNAMENT_GROUPS_COLLECTION)
 
     async def fetch_by_id(self, obj_id: str, session: Optional[AsyncClientSession] = None) -> Result[Group, Err]:
         try:
