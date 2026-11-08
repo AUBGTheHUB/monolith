@@ -8,8 +8,7 @@ from typing import Optional, cast
 
 from pymongo.asynchronous.client_session import AsyncClientSession
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.service.hackathon.team_service import TeamService
-
+from src.database.repository.tournament.tournament_teams_repository import TournamentTeamsRepository
 from src.database.model.tournament.group_model import Group, GroupUpdateParams
 
 LOG = get_logger()
@@ -21,11 +20,11 @@ class GroupService:
     def __init__(
         self,
         groups_repo: GroupsRepository,
-        team_service: TeamService,
+        tournament_teams_repo: TournamentTeamsRepository,
         tx_manager: MongoTransactionManager,
     ) -> None:
         self._groups_repo = groups_repo
-        self._team_service = team_service
+        self._tournament_teams_repo = tournament_teams_repo
         self._tx_manager = tx_manager
 
     async def fetch_all_groups(self) -> Result[list[Group], Exception]:
@@ -68,7 +67,7 @@ class GroupService:
                     return Ok(groups)
 
         # Fetch all teams
-        teams_result = await self._team_service.fetch_all_teams()
+        teams_result = await self._tournament_teams_repo.fetch_all()
 
         match teams_result:
             case Err(error):
@@ -138,9 +137,11 @@ class GroupService:
                     Result[Group, Exception],
                     cast(object, Err(error)),
                 )
+
             case Ok(group):
                 if group.winner_id is not None:
                     return Err(ValueError("A winner has already been declared."))
+
                 if group.first_team_id is None or group.second_team_id is None:
                     return Err(ValueError("Both teams must be assigned before declaring a winner."))
 
@@ -155,63 +156,63 @@ class GroupService:
                 ):
                     return Err(ValueError("Winner must be one of the two teams."))
 
-        update_result = await self._groups_repo.update(
-            obj_id=group_id,
-            obj_fields=GroupUpdateParams(winner_id=winner_object_id),
-            session=session,
-        )
-
-        match update_result:
-            case Err(error):
-                return Err(error)
-            case Ok(updated_group):
-                if group.round >= 3:
-                    return Ok(updated_group)
-
-        next_round = group.round + 1
-        next_bracket_number = (group.bracket_number + 1) // 2
-
-        groups_result = await self._groups_repo.fetch_all(session=session)
-
-        match groups_result:
-            case Err(error):
-                return Err(error)
-            case Ok(groups):
-                next_group = next(
-                    (
-                        item
-                        for item in groups
-                        if item.round == next_round and item.bracket_number == next_bracket_number
-                    ),
-                    None,
+                update_result = await self._groups_repo.update(
+                    obj_id=group_id,
+                    obj_fields=GroupUpdateParams(winner_id=winner_object_id),
+                    session=session,
                 )
 
-        field_to_update = "first_team_id" if group.bracket_number % 2 == 1 else "second_team_id"
+                match update_result:
+                    case Err(error):
+                        return Err(error)
 
-        update_params = GroupUpdateParams(**{field_to_update: winner_object_id})
+                    case Ok(updated_group):
+                        if group.round >= 3:
+                            return Ok(updated_group)
 
-        if next_group is None:
-            new_group = Group(
-                round=next_round,
-                bracket_number=next_bracket_number,
-                **{field_to_update: winner_object_id},
-            )
-            next_group_result = await self._groups_repo.create(
-                obj=new_group,
-                session=session,
-            )
-        else:
-            next_group_result = await self._groups_repo.update(
-                obj_id=str(next_group.id),
-                obj_fields=update_params,
-                session=session,
-            )
+                next_round = group.round + 1
+                next_bracket_number = (group.bracket_number + 1) // 2
 
-        match next_group_result:
-            case Err(error):
-                return cast(
-                    Result[Group, Exception],
-                    cast(object, Err(error)),
-                )
-            case Ok(_):
-                return Ok(updated_group)
+                groups_result = await self._groups_repo.fetch_all(session=session)
+
+                match groups_result:
+                    case Err(error):
+                        return Err(error)
+
+                    case Ok(groups):
+                        next_group = next(
+                            (
+                                item
+                                for item in groups
+                                if item.round == next_round and item.bracket_number == next_bracket_number
+                            ),
+                            None,
+                        )
+
+                field_to_update = "first_team_id" if group.bracket_number % 2 == 1 else "second_team_id"
+
+                update_params = GroupUpdateParams(**{field_to_update: winner_object_id})
+
+                if next_group is None:
+                    new_group = Group(
+                        round=next_round,
+                        bracket_number=next_bracket_number,
+                        **{field_to_update: winner_object_id},
+                    )
+                    next_group_result = await self._groups_repo.create(
+                        obj=new_group,
+                        session=session,
+                    )
+                else:
+                    next_group_result = await self._groups_repo.update(
+                        obj_id=str(next_group.id),
+                        obj_fields=update_params,
+                        session=session,
+                    )
+
+                match next_group_result:
+                    case Err(error):
+                        return Err(error)
+
+                    case Ok(_):
+                        return Ok(updated_group)

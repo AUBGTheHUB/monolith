@@ -194,7 +194,7 @@ def create_app() -> FastAPI:
     )
     group_service = GroupService(
         groups_repo=groups_repo,
-        team_service=team_service,
+        tournament_teams_repo=tournament_teams_repo,
         tx_manager=tx_manager,
     )
     admin_team_service = AdminTeamService(
