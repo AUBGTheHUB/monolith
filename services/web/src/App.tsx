@@ -87,6 +87,13 @@ function App() {
                             <Route element={<AuthenticatedGuard isAuth={true} />}>
                                 <Route path="dashboard">
                                     <Route index element={<DashboardPage />} />
+
+                                    {/* Gaming Event Attendees Sub-group */}
+                                    <Route path="gaming-event-attendees">
+                                        <Route index element={<AttendeesPage />} />
+                                        <Route path="add" element={<AttendeesEditPage />} />
+                                        <Route path=":id" element={<AttendeesEditPage />} />
+                                    </Route>
                                     <Route element={<RoleGuard allowedRoles={['board', 'super_admin']} />}>
                                         {/* Meet the Team Sub-group */}
                                         <Route path="meet-the-team">
@@ -129,13 +136,6 @@ function App() {
 
                                         {/* Participants Sub-group */}
                                         <Route path="participants" element={<ParticipantsPage />} />
-
-                                        {/* Gaming Event Attendees Sub-group */}
-                                        <Route path="gaming-event-attendees">
-                                            <Route index element={<AttendeesPage />} />
-                                            <Route path="add" element={<AttendeesEditPage />} />
-                                            <Route path=":id" element={<AttendeesEditPage />} />
-                                        </Route>
                                     </Route>
                                     <Route element={<RoleGuard allowedRoles={['dev', 'super_admin']} />}>
                                         <Route path="feature-switches" element={<FeatureSwitchesPage />} />
