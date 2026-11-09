@@ -86,7 +86,7 @@ async def test_create_sends_defaults_and_formatted_fields(
     payload = http_client_mock.post.call_args.kwargs["json"]
     assert payload == {
         **DEFAULT_TICKET_FIELDS,
-        "barcodeValue": "BARCODE-1",
+        "barcodeValue": "https://thehub-aubg.com/tournament/verify/BARCODE-1",
         "headerFields": [{"label": "Ticket Type", "value": "VIP"}],
         "primaryFields": [{"label": "Name", "value": "Jane"}],
         "secondaryFields": [{"label": "Seat", "value": "A1"}, {"value": "Row 2"}],
