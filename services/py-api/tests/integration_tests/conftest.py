@@ -17,6 +17,8 @@ from pymongo import AsyncMongoClient
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
 from src.database.model.tournament_registration.tournament_participant_model import LEAGUE_ROLES
+from src.database.model.tournament_registration.tournament_participant_model import LEAGUE_ROLES
+from structlog.stdlib import get_logger
 
 from src.database.db_clients import mongo_db_client_provider
 from src.database.model.admin.hub_admin_model import Role
