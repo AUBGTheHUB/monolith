@@ -128,6 +128,7 @@ services:
       AWS_SECRET_ACCESS_KEY: /run/secrets/aws-secret-access-key
       AWS_DEFAULT_REGION: /run/secrets/aws-default-region
       AWS_BUCKET: /run/secrets/aws-bucket
+      WW_LIVE_KEY: /run/secrets/ww-live-key
 
     # When running in Swarm mode, health checks are used for maintaining the desired state of the service. If a
     # health check fails, the task (container) enters a FAILED state, and the Swarm orchestrator creates a new
@@ -151,6 +152,7 @@ services:
       - aws-secret-access-key
       - aws-default-region
       - aws-bucket
+      - ww-live-key
 
     volumes:
       # Storing the logs like this is temporary solution until more sophisticated monitoring and observability system
@@ -188,4 +190,6 @@ secrets:
   aws-default-region:
     external: true
   aws-bucket:
+    external: true
+  ww-live-key:
     external: true

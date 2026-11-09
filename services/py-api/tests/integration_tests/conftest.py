@@ -1,32 +1,31 @@
+from os import environ
+
+environ["WW_LIVE_KEY"] = "test_ww_key"
+
+
 import uuid
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from os import environ
-from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from unittest.mock import patch
 
 import boto3
 import pytest
 import pytest_asyncio
 from PIL import Image
-from httpx import AsyncClient, ASGITransport, Response
+from httpx import AsyncClient, ASGITransport, Response, Request, AsyncHTTPTransport
 from pymongo import AsyncMongoClient
 from moto import mock_aws
 from mypy_boto3_s3.client import S3Client
 from src.database.model.tournament_registration.tournament_participant_model import LEAGUE_ROLES
+from src.database.model.tournament_registration.tournament_participant_model import LEAGUE_ROLES
 from structlog.stdlib import get_logger
 
-from src.app_entrypoint import app
 from src.database.db_clients import mongo_db_client_provider
 from src.database.model.admin.hub_admin_model import Role
 from src.database.model.admin.hub_member_model import DEPARTMENTS_LIST, MEMBER_TYPE, SocialLinks
-from src.database.mongo.db_manager import MongoDatabaseManager
-from src.service.utility.jwt_utils.codec import JwtUtility
-from src.service.utility.jwt_utils.schemas import JwtParticipantInviteRegistrationData, JwtParticipantVerificationData
 from structlog.stdlib import get_logger
 from typing import AsyncGenerator, Any, Literal, Protocol, Union, Generator
 from src.app_entrypoint import app
-from os import environ
 from src.database.model.hackathon.participant_model import (
     TSHIRT_SIZE,
     UNIVERSITIES_LIST,
@@ -155,6 +154,37 @@ def aws_mock() -> Generator[None, Any, None]:
         )
 
         yield
+
+
+def ww_request_handler(request: Request) -> Response:
+    if request.method == "POST" and request.url.path == "/api/passes":
+        return Response(
+            status_code=200,
+            json={
+                "applePass": "ZmFrZS1wYXNz",
+                "serialNumber": "serial-123",
+                "googleSaveUrl": "https://pay.google.com/gp/v/save/fi3nofiwnf",
+            },
+        )
+    if request.method == "PUT":
+        return Response(status_code=200, json={})
+    if request.method == "DELETE":
+        return Response(status_code=200, json={})
+    else:
+        return Response(status_code=400)
+
+
+@pytest.fixture(autouse=True)
+def mock_walletwallet(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
+    original = AsyncHTTPTransport.handle_async_request
+
+    async def patched(self: AsyncHTTPTransport, request: Request) -> Response:
+        if request.url.host == "api.walletwallet.dev":
+            return ww_request_handler(request)
+        return await original(self, request)
+
+    monkeypatch.setattr(AsyncHTTPTransport, "handle_async_request", patched)
+    yield
 
 
 class CreateTestParticipantCallable(Protocol):
