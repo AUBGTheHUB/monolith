@@ -1,15 +1,14 @@
-from typing import Optional, cast
+from typing import Optional
 
 from bson import ObjectId
 from pymongo import ReturnDocument
 from pymongo.asynchronous.client_session import AsyncClientSession
-from pydantic import BaseModel
 from result import Result, Err, Ok
 from structlog.stdlib import get_logger
 
 from src.database.mongo.db_manager import MongoDatabaseManager
 from src.database.mongo.collections.tournament_collections import TOURNAMENT_GROUPS_COLLECTION
-from src.database.model.tournament.group_model import Group
+from src.database.model.tournament.group_model import Group, GroupUpdateParams
 from src.database.repository.base_repository import CRUDRepository
 from src.exception import GroupNotFoundError
 
@@ -20,7 +19,9 @@ class GroupsRepository(CRUDRepository[Group]):
     def __init__(self, db_manager: MongoDatabaseManager) -> None:
         self._collection = db_manager.get_collection(TOURNAMENT_GROUPS_COLLECTION)
 
-    async def fetch_by_id(self, obj_id: str, session: Optional[AsyncClientSession] = None) -> Result[Group, Err]:
+    async def fetch_by_id(
+        self, obj_id: str, session: Optional[AsyncClientSession] = None
+    ) -> Result[Group, GroupNotFoundError | Exception]:
         try:
             LOG.info("Fetching group by ObjectId", group_id=obj_id)
 
@@ -31,19 +32,14 @@ class GroupsRepository(CRUDRepository[Group]):
             )
 
             if group is None:
-                return cast(
-                    Result[Group, Err],
-                    cast(object, Err(GroupNotFoundError())),
-                )
+                LOG.warning("Group not found", group_id=obj_id)
+                return Err(GroupNotFoundError())
 
             return Ok(Group(id=ObjectId(obj_id), **group))
 
         except Exception as e:
             LOG.exception("Failed to fetch group", group_id=obj_id, error=e)
-            return cast(
-                Result[Group, Err],
-                cast(object, Err(e)),
-            )
+            return Err(e)
 
     async def fetch_all(self, session: Optional[AsyncClientSession] = None) -> Result[list[Group], Exception]:
         try:
@@ -57,6 +53,7 @@ class GroupsRepository(CRUDRepository[Group]):
                 group["id"] = group.pop("_id")
                 groups.append(Group(**group))
 
+            LOG.info("Fetched all groups", count=len(groups))
             return Ok(groups)
 
         except Exception as e:
@@ -81,7 +78,7 @@ class GroupsRepository(CRUDRepository[Group]):
     async def update(
         self,
         obj_id: str,
-        obj_fields: BaseModel,
+        obj_fields: GroupUpdateParams,
         session: Optional[AsyncClientSession] = None,
     ) -> Result[Group, GroupNotFoundError | Exception]:
         try:
@@ -97,6 +94,7 @@ class GroupsRepository(CRUDRepository[Group]):
             )
 
             if result is None:
+                LOG.warning("Group not found during update", group_id=obj_id)
                 return Err(GroupNotFoundError())
 
             return Ok(Group(id=ObjectId(obj_id), **result))
@@ -116,6 +114,7 @@ class GroupsRepository(CRUDRepository[Group]):
             )
 
             if result is None:
+                LOG.warning("Group not found during deletion", group_id=obj_id)
                 return Err(GroupNotFoundError())
 
             return Ok(Group(id=ObjectId(obj_id), **result))
