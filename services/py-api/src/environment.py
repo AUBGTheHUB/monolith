@@ -54,6 +54,7 @@ def _load_docker_secrets() -> None:
         "AWS_SECRET_ACCESS_KEY": "/run/secrets/aws-secret-access-key",
         "AWS_DEFAULT_REGION": "/run/secrets/aws-default-region",
         "AWS_BUCKET": "/run/secrets/aws-bucket",
+        "WW_LIVE_KEY": "/run/secrets/ww-live-key",
     }
 
     # We set the env var value only if we are in a deployed env, and the env var has been set on the given Node
