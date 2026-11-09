@@ -58,7 +58,7 @@ class TicketsService:
         ]
         ticket: dict[str, Any] = {
             **DEFAULT_TICKET_FIELDS,
-            "barcodeValue": barcode_value,
+            "barcodeValue": f"https://thehub-aubg.com/tournament/verify/{barcode_value}",
             "headerFields": [field.get_as_json() for field in header_fields],
             "primaryFields": [field.get_as_json() for field in self._format_fields(primary_fields)],
             "secondaryFields": [field.get_as_json() for field in self._format_fields(secondary_fields)],
