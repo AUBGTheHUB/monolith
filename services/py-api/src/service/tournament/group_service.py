@@ -1,10 +1,10 @@
-from result import Err, Ok, Result
+from result import Err, Ok, Result, is_err
 from structlog.stdlib import get_logger
 from bson import ObjectId
 
 from src.database.repository.tournament.groups_repository import GroupsRepository
 
-from typing import Optional, cast
+from typing import Optional
 
 from pymongo.asynchronous.client_session import AsyncClientSession
 from src.database.mongo.transaction_manager import MongoTransactionManager
@@ -37,46 +37,40 @@ class GroupService:
         """Fetch groups where a winner has already been declared."""
         groups_result = await self._groups_repo.fetch_all()
 
-        match groups_result:
-            case Err(error):
-                return Err(error)
-            case Ok(groups):
-                return Ok([group for group in groups if group.winner_id is not None])
+        if is_err(groups_result):
+            return Err(groups_result.err_value)
+
+        return Ok([group for group in groups_result.ok_value if group.winner_id is not None])
 
     async def fetch_active_groups(self) -> Result[list[Group], Exception]:
         """Fetch groups where no winner has been declared yet."""
         groups_result = await self._groups_repo.fetch_all()
 
-        match groups_result:
-            case Err(error):
-                return Err(error)
-            case Ok(groups):
-                return Ok([group for group in groups if group.winner_id is None])
+        if is_err(groups_result):
+            return Err(groups_result.err_value)
+
+        return Ok([group for group in groups_result.ok_value if group.winner_id is None])
 
     async def generate_bracket(self) -> Result[list[Group], Exception]:
         """Generate the first round of the tournament bracket."""
-
-        # Check whether a bracket already exists
         existing_groups = await self._groups_repo.fetch_all()
 
-        match existing_groups:
-            case Err(error):
-                return Err(error)
-            case Ok(groups):
-                if groups:
-                    return Ok(groups)
+        if is_err(existing_groups):
+            return Err(existing_groups.err_value)
 
-        # Fetch all teams
+        if existing_groups.ok_value:
+            return Ok(existing_groups.ok_value)
+
         teams_result = await self._tournament_teams_repo.fetch_all()
 
-        match teams_result:
-            case Err(error):
-                return Err(error)
-            case Ok(teams):
-                if len(teams) != 8:
-                    return Err(ValueError("A tournament bracket requires exactly 8 teams."))
+        if is_err(teams_result):
+            return Err(teams_result.err_value)
 
-        # Create four groups for the first round
+        teams = teams_result.ok_value
+
+        if len(teams) != 8:
+            return Err(ValueError("A tournament bracket requires exactly 8 teams."))
+
         groups_to_create = [
             Group(
                 round=1,
@@ -105,11 +99,10 @@ class GroupService:
                 session=session,
             )
 
-            match result:
-                case Err(error):
-                    return Err(error)
-                case Ok(created_group):
-                    created_groups.append(created_group)
+            if is_err(result):
+                return Err(result.err_value)
+
+            created_groups.append(result.ok_value)
 
         return Ok(created_groups)
 
@@ -131,88 +124,82 @@ class GroupService:
             session=session,
         )
 
-        match group_result:
-            case Err(error):
-                return cast(
-                    Result[Group, Exception],
-                    cast(object, Err(error)),
-                )
+        if is_err(group_result):
+            return Err(group_result.err_value)
 
-            case Ok(group):
-                if group.winner_id is not None:
-                    return Err(ValueError("A winner has already been declared."))
+        group = group_result.ok_value
 
-                if group.first_team_id is None or group.second_team_id is None:
-                    return Err(ValueError("Both teams must be assigned before declaring a winner."))
+        if group.winner_id is not None:
+            return Err(ValueError("A winner has already been declared."))
 
-                if not ObjectId.is_valid(winner_id):
-                    return Err(ValueError("Invalid winner ID."))
+        if group.first_team_id is None or group.second_team_id is None:
+            return Err(ValueError("Both teams must be assigned before declaring a winner."))
 
-                winner_object_id = ObjectId(winner_id)
+        if not ObjectId.is_valid(winner_id):
+            return Err(ValueError("Invalid winner ID."))
 
-                if winner_object_id not in (
-                    group.first_team_id,
-                    group.second_team_id,
-                ):
-                    return Err(ValueError("Winner must be one of the two teams."))
+        winner_object_id = ObjectId(winner_id)
 
-                update_result = await self._groups_repo.update(
-                    obj_id=group_id,
-                    obj_fields=GroupUpdateParams(winner_id=winner_object_id),
-                    session=session,
-                )
+        if winner_object_id not in (
+            group.first_team_id,
+            group.second_team_id,
+        ):
+            return Err(ValueError("Winner must be one of the two teams."))
 
-                match update_result:
-                    case Err(error):
-                        return Err(error)
+        update_result = await self._groups_repo.update(
+            obj_id=group_id,
+            obj_fields=GroupUpdateParams(winner_id=winner_object_id),
+            session=session,
+        )
 
-                    case Ok(updated_group):
-                        if group.round >= 3:
-                            return Ok(updated_group)
+        if is_err(update_result):
+            return Err(update_result.err_value)
 
-                next_round = group.round + 1
-                next_bracket_number = (group.bracket_number + 1) // 2
+        updated_group = update_result.ok_value
 
-                groups_result = await self._groups_repo.fetch_all(session=session)
+        if group.round >= 3:
+            return Ok(updated_group)
 
-                match groups_result:
-                    case Err(error):
-                        return Err(error)
+        next_round = group.round + 1
+        next_bracket_number = (group.bracket_number + 1) // 2
 
-                    case Ok(groups):
-                        next_group = next(
-                            (
-                                item
-                                for item in groups
-                                if item.round == next_round and item.bracket_number == next_bracket_number
-                            ),
-                            None,
-                        )
+        groups_result = await self._groups_repo.fetch_all(session=session)
 
-                field_to_update = "first_team_id" if group.bracket_number % 2 == 1 else "second_team_id"
+        if is_err(groups_result):
+            return Err(groups_result.err_value)
 
-                update_params = GroupUpdateParams(**{field_to_update: winner_object_id})
+        next_group = next(
+            (
+                item
+                for item in groups_result.ok_value
+                if item.round == next_round and item.bracket_number == next_bracket_number
+            ),
+            None,
+        )
 
-                if next_group is None:
-                    new_group = Group(
-                        round=next_round,
-                        bracket_number=next_bracket_number,
-                        **{field_to_update: winner_object_id},
-                    )
-                    next_group_result = await self._groups_repo.create(
-                        obj=new_group,
-                        session=session,
-                    )
-                else:
-                    next_group_result = await self._groups_repo.update(
-                        obj_id=str(next_group.id),
-                        obj_fields=update_params,
-                        session=session,
-                    )
+        field_to_update = "first_team_id" if group.bracket_number % 2 == 1 else "second_team_id"
 
-                match next_group_result:
-                    case Err(error):
-                        return Err(error)
+        update_params = GroupUpdateParams(**{field_to_update: winner_object_id})
 
-                    case Ok(_):
-                        return Ok(updated_group)
+        if next_group is None:
+            new_group = Group(
+                round=next_round,
+                bracket_number=next_bracket_number,
+                **{field_to_update: winner_object_id},
+            )
+
+            next_group_result = await self._groups_repo.create(
+                obj=new_group,
+                session=session,
+            )
+        else:
+            next_group_result = await self._groups_repo.update(
+                obj_id=str(next_group.id),
+                obj_fields=update_params,
+                session=session,
+            )
+
+        if is_err(next_group_result):
+            return Err(next_group_result.err_value)
+
+        return Ok(updated_group)
