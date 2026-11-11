@@ -93,6 +93,7 @@ export function DashboardPage() {
                                 <AdminPageCard title="Mentors" link="/admin/dashboard/mentors" />
                                 <AdminPageCard title="Past Events" link="/admin/dashboard/past-events" />
                                 <AdminPageCard title="Participants" link="/admin/dashboard/participants" />
+                                <AdminPageCard title="Tournament" link="/admin/dashboard/tournament-management" />
                             </>
                         )}
 
