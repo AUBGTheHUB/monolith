@@ -78,6 +78,7 @@ export function DashboardPage() {
 
                     {/* Dashboard Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <AdminPageCard title="Gaming Event Attendees" link="/admin/dashboard/gaming-event-attendees" />
                         {/* Developer/SuperAdmin Only */}
                         {(siteRole === ROLES.dev || siteRole === ROLES.superAdmin) && (
                             <AdminPageCard title="Feature Switches" link="/admin/dashboard/feature-switches" />

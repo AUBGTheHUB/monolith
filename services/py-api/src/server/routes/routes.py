@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.server.routes.event.attendees_routes import register_attendee_routes
 from src.server.handlers.http_handlers import HttpHandlersContainer
 from src.server.routes.admin.admin_routes import register_admin_routes
 from src.server.routes.admin.candidates_form.forms_routes import register_candidates_forms_router
@@ -43,6 +44,7 @@ class Routes:
         tournament_router = register_tournament_registration_routes(
             http_handler=http_handlers.tournament_registration_handlers
         )
+        attendees_router = register_attendee_routes(http_handler=http_handlers.event_attendee_handlers)
         # Bind all routers to the main one
         main_router.include_router(utility_router)
         main_router.include_router(fs_router)
@@ -56,3 +58,4 @@ class Routes:
         main_router.include_router(candidates_forms_router)
         main_router.include_router(group_router)
         main_router.include_router(tournament_router)
+        main_router.include_router(attendees_router)

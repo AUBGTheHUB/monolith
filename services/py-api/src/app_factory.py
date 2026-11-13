@@ -5,6 +5,12 @@ from fastapi import FastAPI
 from pymongo import AsyncMongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure, ConfigurationError
 
+from src.database.repository.event.attendees_repository import AttendeesRepository
+from src.server.handlers.event.attendees_handlers import AttendeesHandlers
+from src.service.event.attendees_service import AttendeesService
+from src.service.event.tickets_service import TicketsService
+from src.service.mail_service.mail_service import MailService
+from src.service.utility.http.http_client_factory import get_http_client
 from src.database.repository.admin.candidates_form.forms_repository import CandidateFormsRepository
 from src.database.repository.admin.candidates_form.questions_repository import QuestionsRepository
 from src.database.repository.admin.refresh_token_repository import RefreshTokenRepository
@@ -164,6 +170,7 @@ def create_app() -> FastAPI:
     refresh_tokens_repo = RefreshTokenRepository(db_manager=db_manager)
     candidates_form_questions_repo = QuestionsRepository(db_manager=db_manager)
     candidates_forms_repo = CandidateFormsRepository(db_manager=db_manager)
+    event_attendees_repository = AttendeesRepository(db_manager=db_manager)
 
     # Store FeatureSwitchRepository in app.state for access in route dependencies
     # https://www.starlette.io/applications/#storing-state-on-the-app-instance
@@ -174,10 +181,13 @@ def create_app() -> FastAPI:
     # Store JwtUtility in app.state for access in route dependencies
     app.state.jwt_utility = jwt_utility
 
+    http_client = get_http_client()
+
     password_hash_service = PasswordHashService()
     tournament_code_service = TournamentCodeService()
     auth_token_service = AuthTokenService(jwt_utility=jwt_utility)
     mail_client = mail_client_factory(mail_client_type=MailClients.RESEND)
+    mail_service = MailService(client=mail_client)
     tournament_registration_mail_service = TournamentMailService(client=mail_client)
     hackathon_mail_service = HackathonMailService(client=mail_client)
     participant_service = ParticipantService(
@@ -206,7 +216,12 @@ def create_app() -> FastAPI:
         team_service=team_service,
         feature_switch_repo=fs_repo,
     )
-
+    event_tickets_service = TicketsService(http_client=http_client)
+    event_attendees_service = AttendeesService(
+        repo=event_attendees_repository,
+        ticket_service=event_tickets_service,
+        mail_service=mail_service,
+    )
     registration_service = RegistrationService(
         participant_service=participant_service,
         hackathon_utility_service=hackathon_utility_service,
@@ -283,6 +298,7 @@ def create_app() -> FastAPI:
         user_handlers=UserHandlers(service=user_service),
         candidates_forms_handlers=CandidateFormsHandlers(service=candidates_forms_service),
         candidates_form_questions_handlers=QuestionsHandlers(service=candidates_form_questions_service),
+        event_attendee_handlers=AttendeesHandlers(service=event_attendees_service),
     )
 
     Routes.register_routes(app.router, http_handlers)
