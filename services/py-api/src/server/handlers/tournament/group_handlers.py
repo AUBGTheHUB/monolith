@@ -3,7 +3,7 @@ from result import is_err
 from src.server.handlers.base_handler import BaseHandler
 from src.server.schemas.response_schemas.schemas import Response
 from src.server.schemas.response_schemas.tournament.schemas import (
-    AllGroupsResponse,
+    GroupsResponse,
     GroupResponse,
 )
 from src.service.tournament.group_service import GroupService
@@ -21,7 +21,7 @@ class GroupHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(
-            response_model=AllGroupsResponse(groups=result.ok_value),
+            response_model=GroupsResponse(groups=result.ok_value),
             status_code=200,
         )
 
@@ -43,7 +43,7 @@ class GroupHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(
-            AllGroupsResponse(groups=result.ok_value),
+            GroupsResponse(groups=result.ok_value),
             status_code=200,
         )
 
@@ -54,7 +54,7 @@ class GroupHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(
-            AllGroupsResponse(groups=result.ok_value),
+            GroupsResponse(groups=result.ok_value),
             status_code=200,
         )
 
@@ -65,7 +65,7 @@ class GroupHandlers(BaseHandler):
             return self.handle_error(result.err_value)
 
         return Response(
-            AllGroupsResponse(groups=result.ok_value),
+            GroupsResponse(groups=result.ok_value),
             status_code=200,
         )
 

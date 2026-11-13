@@ -271,3 +271,17 @@ class GroupNotFoundError(CustomError, Exception):
 
     message = "The specified group was not found"
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class AttendeeNotFoundError(CustomError):
+    """Exception raised when the attendee cannot be found in the database"""
+
+    message = "The specified attendee was not found"
+    status_code = status.HTTP_404_NOT_FOUND
+
+
+class AttendeeTicketNotFoundException(CustomError):
+    """Exception raised when the attendee does not have a ticket"""
+
+    message = "The attendee does not have a ticket"
+    status_code = status.HTTP_400_BAD_REQUEST

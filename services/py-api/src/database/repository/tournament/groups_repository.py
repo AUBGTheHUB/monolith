@@ -82,6 +82,7 @@ class GroupsRepository(CRUDRepository[Group]):
         session: Optional[AsyncClientSession] = None,
     ) -> Result[Group, GroupNotFoundError | Exception]:
         try:
+            LOG.info("Updating group", group_id=obj_id)
             filter_query = {"_id": ObjectId(obj_id)}
             update_query = {"$set": obj_fields.model_dump(exclude_unset=True)}
 
@@ -107,6 +108,7 @@ class GroupsRepository(CRUDRepository[Group]):
         self, obj_id: str, session: Optional[AsyncClientSession] = None
     ) -> Result[Group, GroupNotFoundError | Exception]:
         try:
+            LOG.info("Deleting group", group_id=obj_id)
             result = await self._collection.find_one_and_delete(
                 filter={"_id": ObjectId(obj_id)},
                 projection={"_id": 0},

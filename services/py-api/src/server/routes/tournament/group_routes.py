@@ -3,10 +3,11 @@ from src.database.model.admin.hub_admin_model import Role
 from src.server.handlers.tournament.group_handlers import GroupHandlers
 from src.server.utility.role_checker import RoleChecker
 from src.server.schemas.response_schemas.tournament.schemas import (
-    AllGroupsResponse,
+    GroupsResponse,
     GroupResponse,
 )
 from src.server.schemas.response_schemas.schemas import ErrResponse
+from src.exception import GroupNotFoundError
 
 
 def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
@@ -19,7 +20,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
         path="",
         methods=["GET"],
         endpoint=http_handler.get_all_groups,
-        responses={200: {"model": AllGroupsResponse}},
+        responses={200: {"model": GroupsResponse}},
     )
 
     # Protected routes
@@ -28,7 +29,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
         methods=["GET"],
         endpoint=http_handler.generate_bracket,
         responses={
-            200: {"model": AllGroupsResponse},
+            200: {"model": GroupsResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
         },
@@ -40,7 +41,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
         methods=["GET"],
         endpoint=http_handler.get_inactive_groups,
         responses={
-            200: {"model": AllGroupsResponse},
+            200: {"model": GroupsResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
         },
@@ -52,7 +53,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
         methods=["GET"],
         endpoint=http_handler.get_active_groups,
         responses={
-            200: {"model": AllGroupsResponse},
+            200: {"model": GroupsResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
         },
@@ -68,7 +69,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
             400: {"model": ErrResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
-            404: {"model": ErrResponse},
+            404: {"model": GroupNotFoundError},
         },
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
@@ -81,7 +82,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
             200: {"model": GroupResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
-            404: {"model": ErrResponse},
+            404: {"model": GroupNotFoundError},
         },
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )

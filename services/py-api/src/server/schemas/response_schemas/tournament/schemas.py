@@ -48,7 +48,7 @@ class GroupResponse(BaseModel):
         return group.dump_as_json()
 
 
-class AllGroupsResponse(BaseModel):
+class GroupsResponse(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     groups: list[Group]
