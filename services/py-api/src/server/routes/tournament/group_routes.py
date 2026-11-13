@@ -5,9 +5,10 @@ from src.server.utility.role_checker import RoleChecker
 from src.server.schemas.response_schemas.tournament.schemas import (
     GroupsResponse,
     GroupResponse,
+    GroupNotFound,
+    InvalidGroupWinner,
 )
 from src.server.schemas.response_schemas.schemas import ErrResponse
-from src.exception import GroupNotFoundError
 
 
 def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
@@ -66,10 +67,10 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
         endpoint=http_handler.declare_winner,
         responses={
             200: {"model": GroupResponse},
-            400: {"model": ErrResponse},
+            400: {"model": InvalidGroupWinner},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
-            404: {"model": GroupNotFoundError},
+            404: {"model": GroupNotFound},
         },
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )
@@ -82,7 +83,7 @@ def register_group_routes(http_handler: GroupHandlers) -> APIRouter:
             200: {"model": GroupResponse},
             401: {"model": ErrResponse},
             403: {"model": ErrResponse},
-            404: {"model": GroupNotFoundError},
+            404: {"model": GroupNotFound},
         },
         dependencies=[Depends(RoleChecker([Role.BOARD]))],
     )

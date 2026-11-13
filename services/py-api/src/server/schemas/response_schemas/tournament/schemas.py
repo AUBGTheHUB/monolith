@@ -1,7 +1,6 @@
 from typing import Any
-
-from pydantic import BaseModel, ConfigDict, field_serializer
-
+from pydantic import BaseModel, ConfigDict, field_serializer, Field
+from src.server.schemas.response_schemas.schemas import ErrResponse
 from src.database.model.tournament.group_model import Group
 from src.database.model.tournament_registration.tournament_participant_model import TournamentParticipant
 from src.database.model.tournament_registration.tournament_team_model import TournamentTeam
@@ -56,3 +55,14 @@ class GroupsResponse(BaseModel):
     @field_serializer("groups")
     def serialize_groups(self, groups: list[Group]) -> list[dict[str, Any]]:
         return [group.dump_as_json() for group in groups]
+
+
+class GroupNotFound(ErrResponse):
+    error: str = Field(default="group not found", examples=["group not found"])
+
+
+class InvalidGroupWinner(ErrResponse):
+    error: str = Field(
+        default="invalid winner for group",
+        examples=["invalid winner for group"],
+    )
