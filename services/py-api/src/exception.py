@@ -266,13 +266,6 @@ class TournamentTeamFullError(CustomError):
     status_code = status.HTTP_409_CONFLICT
 
 
-class GroupNotFoundError(CustomError, Exception):
-    """Exception raised when the specified group does not exist."""
-
-    message = "The specified group was not found"
-    status_code = status.HTTP_404_NOT_FOUND
-
-
 class AttendeeNotFoundError(CustomError):
     """Exception raised when the attendee cannot be found in the database"""
 
@@ -285,3 +278,10 @@ class AttendeeTicketNotFoundException(CustomError):
 
     message = "The attendee does not have a ticket"
     status_code = status.HTTP_400_BAD_REQUEST
+
+
+class GroupNotFoundError(CustomError, Exception):
+    """Exception raised when the specified group does not exist."""
+
+    message = "The specified group was not found"
+    status_code = status.HTTP_404_NOT_FOUND
