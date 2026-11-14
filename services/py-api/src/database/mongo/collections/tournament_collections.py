@@ -1,2 +1,3 @@
 TOURNAMENT_PARTICIPANTS_COLLECTION = "tournament-participants"
 TOURNAMENT_TEAMS_COLLECTION = "tournament-teams"
+TOURNAMENT_GROUPS_COLLECTION = "tournament-groups"
