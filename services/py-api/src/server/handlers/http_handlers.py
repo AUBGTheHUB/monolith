@@ -13,6 +13,7 @@ from src.server.handlers.feature_switch_handlers import FeatureSwitchHandlers
 from src.server.handlers.hackathon.hackathon_handlers import HackathonManagementHandlers
 from src.server.handlers.hackathon.participants_handlers import ParticipantHandlers
 from src.server.handlers.hackathon.verification_handlers import VerificationHandlers
+from src.server.handlers.tournament.group_handlers import GroupHandlers
 from src.server.handlers.user_handlers import UserHandlers
 from src.server.handlers.utility_handlers import UtilityHandlers
 from src.server.handlers.tournament.tournament_registration_handlers import TournamentRegistrationHandlers
@@ -25,6 +26,13 @@ class HackathonHandlers:
     hackathon_management_handlers: HackathonManagementHandlers
     participant_handlers: ParticipantHandlers
     verification_handlers: VerificationHandlers
+
+
+@dataclass(kw_only=True, frozen=True)
+class TournamentHandlers:
+    """Container for holding HTTP handlers for the Tournament domain."""
+
+    group_handlers: GroupHandlers
 
 
 @dataclass(kw_only=True, frozen=True)
@@ -45,6 +53,7 @@ class HttpHandlersContainer:
     utility_handlers: UtilityHandlers
     fs_handlers: FeatureSwitchHandlers
     hackathon_handlers: HackathonHandlers
+    tournament_handlers: TournamentHandlers
     admin_handlers: AdminHandlers
     auth_handlers: AuthHandlers
     user_handlers: UserHandlers

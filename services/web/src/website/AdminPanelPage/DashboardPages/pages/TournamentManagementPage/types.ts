@@ -1,6 +1,6 @@
 export interface TournamentTeam {
-    id: string;
-    name: string;
+    id: string | null;
+    name: string | null;
 }
 
 export interface TournamentGroup {

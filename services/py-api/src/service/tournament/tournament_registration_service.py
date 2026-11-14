@@ -188,3 +188,6 @@ class TournamentRegistrationService:
             return result
 
         return Ok(result.ok_value)
+
+    async def fetch_all_teams(self) -> Result[list[TournamentTeam], Exception]:
+        return await self._tournament_teams_repo.fetch_all()
