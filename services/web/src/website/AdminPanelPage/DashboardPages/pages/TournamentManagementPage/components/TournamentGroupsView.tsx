@@ -82,7 +82,7 @@ export function TournamentGroupsView({ inactive = false }: { inactive?: boolean 
             </p>
             {tournament.loadError && (
                 <div role="alert" className="mb-6 rounded-xl border border-red-300/30 bg-red-400/10 p-4 text-red-100">
-                    <p>Could not load tournament groups.</p>
+                    <p>{`Could not load tournament groups. ${tournament.loadError}`}</p>
                     <div className="mt-3 flex flex-wrap gap-3">
                         <Button
                             type="button"

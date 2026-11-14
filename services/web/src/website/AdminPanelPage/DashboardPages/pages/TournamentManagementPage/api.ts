@@ -2,18 +2,14 @@ import { z } from 'zod';
 import { apiClient } from '@/services/apiClient';
 import type { TournamentGroup, TournamentTeam } from './types';
 
-// Group.dump_as_json in backend PR #1387 returns team IDs without display names.
-const teamSchema = z
-    .string()
-    .min(1)
-    .transform((id) => ({ id, name: id }))
-    .nullable();
 const groupSchema = z.object({
     id: z.string().min(1),
     round: z.number().int().positive(),
     bracket_number: z.number().int().min(1).max(4),
-    first_team_id: teamSchema,
-    second_team_id: teamSchema,
+    first_team_id: z.string().min(1).nullable(),
+    second_team_id: z.string().min(1).nullable(),
+    first_team_name: z.string().min(1).nullable(),
+    second_team_name: z.string().min(1).nullable(),
     winner_id: z.string().min(1).nullable(),
 });
 const groupsSchema = z.object({ groups: z.array(groupSchema) });
@@ -30,7 +26,16 @@ export function parseGroups(response: unknown): TournamentGroup[] {
         throw new Error('The server returned duplicate groups. Please refresh the page.');
     }
     return groups.map((group) => {
-        const teams: TournamentGroup['teams'] = [group.first_team_id, group.second_team_id];
+        const teams: TournamentGroup['teams'] = [
+            {
+                id: group.first_team_id,
+                name: group.first_team_name
+            },
+            {
+                id: group.second_team_id,
+                name: group.second_team_name,
+            }
+        ];
         if (group.winner_id && !teams.some((team) => team?.id === group.winner_id)) {
             throw new Error('A group has an unknown winner. Please contact the tournament administrator.');
         }
@@ -50,7 +55,7 @@ export const tournamentApi = {
     generateBracket: () => apiClient.get<unknown>('/groups/generate-bracket'),
     declareWinner: (groupId: string, team: TournamentTeam) => {
         const endpoint = `/groups/${encodeURIComponent(groupId)}/declare-winner`;
-        const query = new URLSearchParams({ winner_id: team.id });
+        const query = new URLSearchParams(team.id ? { winner_id: team.id } : undefined);
         return apiClient.post<unknown, undefined>(`${endpoint}?${query}`, undefined);
     },
 };
