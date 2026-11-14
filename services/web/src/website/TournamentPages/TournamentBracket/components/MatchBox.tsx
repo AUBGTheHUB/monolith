@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import type { BackendGroup } from '../types/bracket';
+import type { Group } from '../types/bracket';
 
 function TeamRow({ name, isWinner }: { name?: string | null; isWinner: boolean }) {
     return (
@@ -14,16 +14,16 @@ function TeamRow({ name, isWinner }: { name?: string | null; isWinner: boolean }
                     {name ?? '\u00A0'}
                 </span>
             </div>
-            <div className="flex w-12 items-center justify-center bg-white font-bold text-[#0B1E33] 2xl:w-14">-</div>
+            {/*<div className="flex w-12 items-center justify-center bg-white font-bold text-[#0B1E33] 2xl:w-14">-</div>*/}
         </div>
     );
 }
 
-export function MatchBox({ group }: { group?: BackendGroup }) {
+export function MatchBox({ group }: { group?: Group }) {
     return (
         <div className="flex w-full flex-col gap-1.5">
-            <TeamRow name={group?.first} isWinner={group?.winner === 'first'} />
-            <TeamRow name={group?.second} isWinner={group?.winner === 'second'} />
+            <TeamRow name={group?.first_team_name} isWinner={group?.winner === 'first'} />
+            <TeamRow name={group?.second_team_name} isWinner={group?.winner === 'second'} />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { MatchBox } from './MatchBox';
-import { ROUND_TITLES, findGroup, slotsInRound, type BackendGroup } from '../types/bracket';
+import { ROUND_TITLES, findGroup, slotsInRound, type Group } from '../types/bracket';
 
 function Connector({ single }: { single: boolean }) {
     // final
@@ -14,7 +14,7 @@ function Connector({ single }: { single: boolean }) {
     );
 }
 
-export function BracketRound({ round, groups }: { round: number; groups: BackendGroup[] }) {
+export function BracketRound({ round, groups }: { round: number; groups: Group[] }) {
     const slots = slotsInRound(round);
     const single = slots === 1;
     // round 1 -> [[1,2],[3,4]], round 2 -> [[1,2]], round 3 -> [[1]]

@@ -4,7 +4,7 @@ import { apiClient } from '@/services/apiClient';
 import { BracketRound } from './components/BracketRound';
 import { ChampionBox } from './components/ChampionBox';
 import { MobileBracket } from './components/MobileBracket';
-import { TOTAL_ROUNDS, findGroup, type BackendGroup } from './types/bracket';
+import { TOTAL_ROUNDS, type Group } from './types/bracket';
 
 export default function TournamentBracket() {
     const {
@@ -13,7 +13,7 @@ export default function TournamentBracket() {
         isError,
     } = useQuery({
         queryKey: ['tournament', 'groups'],
-        queryFn: () => apiClient.get<{ groups: BackendGroup[] }>('/groups'),
+        queryFn: () => apiClient.get<{ groups: Group[] }>('/groups'),
         select: (res) => res.groups,
     });
 
@@ -40,7 +40,7 @@ export default function TournamentBracket() {
                         <BracketRound key={r} round={r} groups={groups} />
                     ))}
                 </div>
-                <ChampionBox final={findGroup(groups, TOTAL_ROUNDS, 1)} />
+                <ChampionBox groups={groups} />
             </div>
         </div>
     );

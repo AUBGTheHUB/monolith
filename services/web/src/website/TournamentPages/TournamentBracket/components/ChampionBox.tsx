@@ -1,4 +1,4 @@
-import { getWinnerName, type BackendGroup } from '../types/bracket';
+import { getWinnerName, type Group } from '../types/bracket';
 
 export function WinnerName({ name }: { name: string | null }) {
     return (
@@ -13,7 +13,7 @@ export function WinnerName({ name }: { name: string | null }) {
     );
 }
 
-export function ChampionBox({ final }: { final?: BackendGroup }) {
+export function ChampionBox({ groups }: { groups: Group[] }) {
     return (
         <div className="flex w-[24vw] min-w-[20rem] shrink-0 flex-col items-center bg-gradient-to-b from-[#E9D06A] to-[#F2C94C] py-12 [clip-path:polygon(0_0,100%_0,92%_100%,8%_100%)]">
             <div className="flex h-[var(--head)] flex-col items-center">
@@ -21,7 +21,7 @@ export function ChampionBox({ final }: { final?: BackendGroup }) {
                 <img src="/trophy.svg" alt="" className="mt-3 h-14 w-14 2xl:h-16 2xl:w-16" draggable={false} />
             </div>
             <div className="flex w-full flex-1 items-center px-[12%]">
-                <WinnerName name={getWinnerName(final)} />
+                <WinnerName name={getWinnerName(groups)} />
             </div>
         </div>
     );

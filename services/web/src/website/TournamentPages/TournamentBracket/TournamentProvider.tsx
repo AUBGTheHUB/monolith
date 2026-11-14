@@ -1,114 +1,37 @@
-import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { tournamentApi } from '@/website/AdminPanelPage/DashboardPages/pages/TournamentManagementPage/api.ts';
-import { WinnerSelection } from '@/website/AdminPanelPage/DashboardPages/pages/TournamentManagementPage/types.ts';
+import { createContext, useContext, type ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { tournamentApi } from '@/website/TournamentPages/TournamentBracket/api.ts';
 
-const queryKey = ['tournament-management'];
+const queryKey = ['tournament-bracket'];
 
-function useTournamentState() {
-    const queryClient = useQueryClient();
-    const [message, setMessage] = useState('');
-    const mutationLock = useRef(false);
-
-    const activeQuery = useQuery({
+function useTournamentBracketState() {
+    const groupsQuery = useQuery({
         queryKey: [...queryKey, 'active'],
-        queryFn: tournamentApi.getActive,
-        retry: false,
-        refetchOnWindowFocus: false,
-    });
-    const inactiveQuery = useQuery({
-        queryKey: [...queryKey, 'inactive'],
-        queryFn: tournamentApi.getInactive,
+        queryFn: tournamentApi.getGroups,
         retry: false,
         refetchOnWindowFocus: false,
     });
 
-    const refreshAfterChange = () => queryClient.invalidateQueries({ queryKey });
-
-    const generateMutation = useMutation({
-        mutationFn: tournamentApi.generateBracket,
-        onSuccess: async () => {
-            setMessage('Bracket generated.');
-            await refreshAfterChange();
-        },
-        // lost response may still have created groups -> recheck before allowing another generation.
-        onError: refreshAfterChange,
-    });
-
-    const winnerMutation = useMutation({
-        mutationFn: async ({ group, team }: WinnerSelection) => {
-            if (!group.teams.every(Boolean) || !group.teams.some((entry) => entry?.id === team.id)) {
-                throw new Error('Both teams must be known before declaring a winner.');
-            }
-            await tournamentApi.declareWinner(group.id, team);
-        },
-        onSuccess: async (_, { team }) => {
-            setMessage(`${team.name} declared the winner.`);
-            await refreshAfterChange();
-        },
-    });
-
-    const activeGroups = activeQuery.data ?? [];
-    const inactiveGroups = inactiveQuery.data ?? [];
-    const isLoading = activeQuery.isPending || inactiveQuery.isPending;
-    const isRefreshing = activeQuery.isFetching || inactiveQuery.isFetching;
-    const loadError = activeQuery.error ?? inactiveQuery.error;
-    const isBusy = generateMutation.isPending || winnerMutation.isPending;
-    const hasGenerated = activeGroups.length > 0 || inactiveGroups.length > 0;
+    const isLoading = groupsQuery.isPending;
+    const isRefreshing = groupsQuery.isFetching;
+    const loadError = groupsQuery.error;
 
     return {
-        activeGroups,
-        inactiveGroups,
-        message,
         isLoading,
         isRefreshing,
         loadError,
-        isBusy,
-        isGenerating: generateMutation.isPending,
-        isSavingWinner: winnerMutation.isPending,
-        generateError: generateMutation.error,
-        winnerError: winnerMutation.error,
-        hasGenerated,
-        refresh: () => {
-            void activeQuery.refetch();
-            void inactiveQuery.refetch();
-        },
-        generateBracket: () => {
-            if (mutationLock.current || isBusy || isRefreshing || loadError || isLoading || hasGenerated) return;
-            mutationLock.current = true;
-            setMessage('');
-            generateMutation.mutate(undefined, {
-                onSettled: () => {
-                    mutationLock.current = false;
-                },
-            });
-        },
-        clearWinnerError: winnerMutation.reset,
-        declareWinner: async (selection: WinnerSelection) => {
-            if (mutationLock.current || isBusy || isRefreshing || loadError || isLoading) return false;
-            mutationLock.current = true;
-            setMessage('');
-            try {
-                await winnerMutation.mutateAsync(selection);
-                return true;
-            } catch {
-                return false;
-            } finally {
-                mutationLock.current = false;
-            }
-        },
     };
 }
 
-const TournamentContext = createContext<ReturnType<typeof useTournamentState> | null>(null);
+const TournamentBracketContext = createContext<ReturnType<typeof useTournamentBracketState> | null>(null);
 
-export function TournamentProvider({ children }: { children: ReactNode }) {
-    const state = useTournamentState();
-    return <TournamentContext.Provider value={state}>{children}</TournamentContext.Provider>;
+export function TournamentBracketProvider({ children }: { children: ReactNode }) {
+    const state = useTournamentBracketState();
+    return <TournamentBracketContext.Provider value={state}>{children}</TournamentBracketContext.Provider>;
 }
 
-export function useTournament() {
-    const context = useContext(TournamentContext);
+export function useTournamentBracket() {
+    const context = useContext(TournamentBracketContext);
     if (!context) throw new Error('Tournament pages must be wrapped in TournamentProvider.');
     return context;
 }

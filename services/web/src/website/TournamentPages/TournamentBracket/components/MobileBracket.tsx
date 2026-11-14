@@ -1,13 +1,6 @@
 import { MatchBox } from './MatchBox';
 import { WinnerName } from './ChampionBox';
-import {
-    ROUND_TITLES,
-    TOTAL_ROUNDS,
-    findGroup,
-    getWinnerName,
-    slotsInRound,
-    type BackendGroup,
-} from '../types/bracket';
+import { ROUND_TITLES, TOTAL_ROUNDS, findGroup, getWinnerName, slotsInRound, type Group } from '../types/bracket';
 import { cn } from '@/lib/utils';
 
 function WinnerCard({ name }: { name: string | null }) {
@@ -22,12 +15,12 @@ function WinnerCard({ name }: { name: string | null }) {
     );
 }
 
-function RoundSection({ round, groups }: { round: number; groups: BackendGroup[] }) {
+function RoundSection({ round, groups }: { round: number; groups: Group[] }) {
     const slots = slotsInRound(round);
     const bracketNumbers = Array.from({ length: slots }, (_, i) => i + 1);
 
     return (
-        <section className="mt-10">
+        <section className="mb-10">
             <h3 className="mb-4 flex items-center gap-3 font-oxanium text-xl font-bold tracking-wide text-[#F2C94C]">
                 {ROUND_TITLES[round - 1]}
                 <span className="h-px flex-1 bg-[#F2C94C]/30" aria-hidden />
@@ -41,16 +34,16 @@ function RoundSection({ round, groups }: { round: number; groups: BackendGroup[]
     );
 }
 
-export function MobileBracket({ groups }: { groups: BackendGroup[] }) {
+export function MobileBracket({ groups }: { groups: Group[] }) {
     // newest round first: FINALS, SEMI-FINALS, QUARTER-FINALS
     const rounds = Array.from({ length: TOTAL_ROUNDS }, (_, i) => TOTAL_ROUNDS - i);
 
     return (
         <div className="min-h-screen bg-[linear-gradient(180deg,#0A1C30_0%,#081A2E_60%,#1F3F5C_100%)] px-4 py-8 text-white sm:px-8">
-            <WinnerCard name={getWinnerName(findGroup(groups, TOTAL_ROUNDS, 1))} />
-            {rounds.map((r) => (
+            {rounds.reverse().map((r) => (
                 <RoundSection key={r} round={r} groups={groups} />
             ))}
+            <WinnerCard name={getWinnerName(groups)} />
         </div>
     );
 }
