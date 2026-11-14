@@ -1,14 +1,11 @@
 from result import Err, Ok, Result, is_err
+from typing import Any, Optional
 from structlog.stdlib import get_logger
 from bson import ObjectId
-
 from src.database.repository.tournament.groups_repository import GroupsRepository
-
-from typing import Optional
-
+from src.service.tournament.tournament_registration_service import TournamentRegistrationService
 from pymongo.asynchronous.client_session import AsyncClientSession
 from src.database.mongo.transaction_manager import MongoTransactionManager
-from src.database.repository.tournament.tournament_teams_repository import TournamentTeamsRepository
 from src.database.model.tournament.group_model import Group, GroupUpdateParams
 
 LOG = get_logger()
@@ -20,38 +17,86 @@ class GroupService:
     def __init__(
         self,
         groups_repo: GroupsRepository,
-        tournament_teams_repo: TournamentTeamsRepository,
+        tournament_registration_service: TournamentRegistrationService,
         tx_manager: MongoTransactionManager,
     ) -> None:
         self._groups_repo = groups_repo
-        self._tournament_teams_repo = tournament_teams_repo
+        self._tournament_registration_service = tournament_registration_service
         self._tx_manager = tx_manager
 
-    async def fetch_all_groups(self) -> Result[list[Group], Exception]:
-        return await self._groups_repo.fetch_all()
+    async def _groups_with_team_names(
+        self,
+        groups: list[Group],
+    ) -> Result[list[dict[str, Any]], Exception]:
+        teams_result = await self._tournament_registration_service.fetch_all_teams()
 
-    async def fetch_group_by_id(self, group_id: str) -> Result[Group, Err]:
-        return await self._groups_repo.fetch_by_id(obj_id=group_id)
+        if is_err(teams_result):
+            return Err(teams_result.err_value)
 
-    async def fetch_inactive_groups(self) -> Result[list[Group], Exception]:
-        """Fetch groups where a winner has already been declared."""
+        teams_by_id = {str(team.id): team.name for team in teams_result.ok_value}
+
+        enriched_groups = []
+
+        for group in groups:
+            group_data = group.dump_as_json()
+
+            group_data["first_team_name"] = (
+                teams_by_id.get(str(group.first_team_id)) if group.first_team_id is not None else None
+            )
+
+            group_data["second_team_name"] = (
+                teams_by_id.get(str(group.second_team_id)) if group.second_team_id is not None else None
+            )
+
+            enriched_groups.append(group_data)
+
+        return Ok(enriched_groups)
+
+    async def fetch_all_groups(self) -> Result[list[dict[str, Any]], Exception]:
         groups_result = await self._groups_repo.fetch_all()
 
         if is_err(groups_result):
             return Err(groups_result.err_value)
 
-        return Ok([group for group in groups_result.ok_value if group.winner_id is not None])
+        return await self._groups_with_team_names(groups_result.ok_value)
 
-    async def fetch_active_groups(self) -> Result[list[Group], Exception]:
-        """Fetch groups where no winner has been declared yet."""
+    async def fetch_group_by_id(
+        self,
+        group_id: ObjectId,
+    ) -> Result[dict[str, Any], Exception]:
+        group_result = await self._groups_repo.fetch_by_id(obj_id=group_id)
+
+        if is_err(group_result):
+            return Err(group_result.err_value)
+
+        enriched_result = await self._groups_with_team_names([group_result.ok_value])
+
+        if is_err(enriched_result):
+            return Err(enriched_result.err_value)
+
+        return Ok(enriched_result.ok_value[0])
+
+    async def fetch_inactive_groups(self) -> Result[list[dict[str, Any]], Exception]:
         groups_result = await self._groups_repo.fetch_all()
 
         if is_err(groups_result):
             return Err(groups_result.err_value)
 
-        return Ok([group for group in groups_result.ok_value if group.winner_id is None])
+        inactive_groups = [group for group in groups_result.ok_value if group.winner_id is not None]
 
-    async def generate_bracket(self) -> Result[list[Group], Exception]:
+        return await self._groups_with_team_names(inactive_groups)
+
+    async def fetch_active_groups(self) -> Result[list[dict[str, Any]], Exception]:
+        groups_result = await self._groups_repo.fetch_all()
+
+        if is_err(groups_result):
+            return Err(groups_result.err_value)
+
+        active_groups = [group for group in groups_result.ok_value if group.winner_id is None]
+
+        return await self._groups_with_team_names(active_groups)
+
+    async def generate_bracket(self) -> Result[list[dict[str, Any]], Exception]:
         """Generate the first round of the tournament bracket."""
         existing_groups = await self._groups_repo.fetch_all()
 
@@ -59,9 +104,9 @@ class GroupService:
             return Err(existing_groups.err_value)
 
         if existing_groups.ok_value:
-            return Ok(existing_groups.ok_value)
+            return await self._groups_with_team_names(existing_groups.ok_value)
 
-        teams_result = await self._tournament_teams_repo.fetch_all()
+        teams_result = await self._tournament_registration_service.fetch_all_teams()
 
         if is_err(teams_result):
             return Err(teams_result.err_value)
@@ -81,10 +126,15 @@ class GroupService:
             for i in range(4)
         ]
 
-        return await self._tx_manager.with_transaction(
+        creation_result = await self._tx_manager.with_transaction(
             self._create_groups_in_transaction,
             groups_to_create,
         )
+
+        if is_err(creation_result):
+            return Err(creation_result.err_value)
+
+        return await self._groups_with_team_names(creation_result.ok_value)
 
     async def _create_groups_in_transaction(
         self,
@@ -106,12 +156,26 @@ class GroupService:
 
         return Ok(created_groups)
 
-    async def declare_winner(self, group_id: str, winner_id: str) -> Result[Group, Exception]:
-        return await self._tx_manager.with_transaction(
+    async def declare_winner(
+        self,
+        group_id: str,
+        winner_id: str,
+    ) -> Result[dict[str, Any], Exception]:
+        result = await self._tx_manager.with_transaction(
             self._declare_winner_in_transaction,
             group_id,
             winner_id,
         )
+
+        if is_err(result):
+            return Err(result.err_value)
+
+        enriched_result = await self._groups_with_team_names([result.ok_value])
+
+        if is_err(enriched_result):
+            return Err(enriched_result.err_value)
+
+        return Ok(enriched_result.ok_value[0])
 
     async def _declare_winner_in_transaction(
         self,

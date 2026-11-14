@@ -1,7 +1,6 @@
 from typing import Any
 from pydantic import BaseModel, ConfigDict, field_serializer, Field
 from src.server.schemas.response_schemas.schemas import ErrResponse
-from src.database.model.tournament.group_model import Group
 from src.database.model.tournament_registration.tournament_participant_model import TournamentParticipant
 from src.database.model.tournament_registration.tournament_team_model import TournamentTeam
 
@@ -38,23 +37,11 @@ class TournamentSoloParticipantResponse(BaseModel):
 
 
 class GroupResponse(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    group: Group
-
-    @field_serializer("group")
-    def serialize_group(self, group: Group) -> dict[str, Any]:
-        return group.dump_as_json()
+    group: dict[str, Any]
 
 
 class GroupsResponse(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    groups: list[Group]
-
-    @field_serializer("groups")
-    def serialize_groups(self, groups: list[Group]) -> list[dict[str, Any]]:
-        return [group.dump_as_json() for group in groups]
+    groups: list[dict[str, Any]]
 
 
 class GroupNotFound(ErrResponse):

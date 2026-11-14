@@ -202,11 +202,6 @@ def create_app() -> FastAPI:
         participant_repo=participants_repo,
         tx_manager=tx_manager,
     )
-    group_service = GroupService(
-        groups_repo=groups_repo,
-        tournament_teams_repo=tournament_teams_repo,
-        tx_manager=tx_manager,
-    )
     admin_team_service = AdminTeamService(
         teams_repo=teams_repo, participant_repo=participants_repo, tx_manager=tx_manager
     )
@@ -263,6 +258,11 @@ def create_app() -> FastAPI:
         tournament_participant_repo=tournament_participants_repo,
         tx_manager=tx_manager,
         tournament_code_service=tournament_code_service,
+    )
+    group_service = GroupService(
+        groups_repo=groups_repo,
+        tournament_registration_service=tournament_registration_service,
+        tx_manager=tx_manager,
     )
 
     # Handlers layer wiring
