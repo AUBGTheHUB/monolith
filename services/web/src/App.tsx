@@ -33,6 +33,9 @@ import { ParticipantsPage } from '@/website/AdminPanelPage/DashboardPages/pages/
 import { AdminRolesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AdminRolesPage/AdminRolesPage';
 import { AttendeesPage } from '@/website/AdminPanelPage/DashboardPages/pages/AttendeesPage/AttendeesPage';
 import { AttendeesEditPage } from '@/website/AdminPanelPage/DashboardPages/pages/AttendeesPage/AttendeesEditPage';
+import { TournamentManagementPage } from '@/website/AdminPanelPage/DashboardPages/pages/TournamentManagementPage/TournamentManagementPage';
+import { TournamentPastGroupsPage } from '@/website/AdminPanelPage/DashboardPages/pages/TournamentManagementPage/TournamentPastGroupsPage';
+import { TournamentManagementLayout } from '@/website/AdminPanelPage/DashboardPages/pages/TournamentManagementPage/TournamentManagementLayout';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { CandidatesFormPage } from '@/website/CandidatesFormPage/CandidatesFormPage.tsx';
@@ -136,6 +139,11 @@ function App() {
 
                                         {/* Participants Sub-group */}
                                         <Route path="participants" element={<ParticipantsPage />} />
+
+                                        <Route path="tournament-management" element={<TournamentManagementLayout />}>
+                                            <Route index element={<TournamentManagementPage />} />
+                                            <Route path="past" element={<TournamentPastGroupsPage />} />
+                                        </Route>
 
                                         {/* Gaming Event Attendees Sub-group */}
                                         <Route path="gaming-event-attendees">
