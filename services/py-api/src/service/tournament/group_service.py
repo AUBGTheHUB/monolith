@@ -119,11 +119,28 @@ class GroupService:
         groups_to_create = [
             Group(
                 round=1,
-                bracket_number=i + 1,
-                first_team_id=teams[i * 2].id,
-                second_team_id=teams[i * 2 + 1].id,
-            )
-            for i in range(4)
+                bracket_number=1,
+                first_team_id=ObjectId("6ae8cb910f664c6ac3625dda"),
+                second_team_id=ObjectId("6af0c51a0f44ba7d8d3c76f8"),
+            ),
+            Group(
+                round=1,
+                bracket_number=2,
+                first_team_id=ObjectId("6af5d5263dbcda1812218052"),
+                second_team_id=ObjectId("6af4565f9dea08f6ac56204d"),
+            ),
+            Group(
+                round=1,
+                bracket_number=3,
+                first_team_id=ObjectId("6aec60abe185c9006056bfd9"),
+                second_team_id=ObjectId("6aeb7f98e185c9006056bfd7"),
+            ),
+            Group(
+                round=1,
+                bracket_number=4,
+                first_team_id=ObjectId("6af66528ec7600e868e28b6e"),
+                second_team_id=ObjectId("6af61e0c3dbcda1812218054"),
+            ),
         ]
 
         creation_result = await self._tx_manager.with_transaction(
